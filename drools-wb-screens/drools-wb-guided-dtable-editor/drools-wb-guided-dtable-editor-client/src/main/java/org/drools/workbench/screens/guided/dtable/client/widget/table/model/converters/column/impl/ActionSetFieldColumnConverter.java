@@ -17,14 +17,15 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.model.con
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
+import org.kie.soup.project.datamodel.oracle.DataType;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 
@@ -32,62 +33,60 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 public class ActionSetFieldColumnConverter extends BaseColumnConverterImpl {
 
     @Override
-    public boolean handles( final BaseColumn column ) {
+    public boolean handles(final BaseColumn column) {
         return column instanceof ActionSetFieldCol52;
     }
 
     @Override
-    public GridColumn<?> convertColumn( final BaseColumn column,
-                                        final GuidedDecisionTablePresenter.Access access,
-                                        final GuidedDecisionTableView gridWidget ) {
-        return convertColumn( (ActionSetFieldCol52) column,
-                              access,
-                              gridWidget );
+    public GridColumn<?> convertColumn(final BaseColumn column,
+                                       final GuidedDecisionTablePresenter.Access access,
+                                       final GuidedDecisionTableView gridWidget) {
+        return convertColumn((ActionSetFieldCol52) column,
+                             access,
+                             gridWidget);
     }
 
-    private GridColumn<?> convertColumn( final ActionSetFieldCol52 column,
-                                         final GuidedDecisionTablePresenter.Access access,
-                                         final GuidedDecisionTableView gridWidget ) {
+    private GridColumn<?> convertColumn(final ActionSetFieldCol52 column,
+                                        final GuidedDecisionTablePresenter.Access access,
+                                        final GuidedDecisionTableView gridWidget) {
         //Check if the column has a "Value List" or an enumeration. Value List takes precedence
-        final String factType = columnUtilities.getBoundFactType( column.getBoundName() );
+        final String factType = columnUtilities.getBoundFactType(column.getBoundName());
         final String fieldName = column.getFactField();
-        final DataType.DataTypes dataType = columnUtilities.getDataType( column );
-        if ( columnUtilities.hasValueList( column ) ) {
-            return newValueListColumn( column,
-                                       access,
-                                       gridWidget );
-
-        } else if ( oracle.hasEnums( factType,
-                                     fieldName ) ) {
-            return newSingleSelectionEnumColumn( factType,
-                                                 fieldName,
-                                                 dataType,
-                                                 column,
-                                                 access,
-                                                 gridWidget );
+        final DataType.DataTypes dataType = columnUtilities.getDataType(column);
+        if (columnUtilities.hasValueList(column)) {
+            return newValueListColumn(column,
+                                      access,
+                                      gridWidget);
+        } else if (oracle.hasEnums(factType,
+                                   fieldName)) {
+            return newSingleSelectionEnumColumn(factType,
+                                                fieldName,
+                                                dataType,
+                                                column,
+                                                access,
+                                                gridWidget);
         }
 
-        return newColumn( column,
-                          access,
-                          gridWidget );
+        return newColumn(column,
+                         access,
+                         gridWidget);
     }
 
     @Override
-    public List<GridColumn.HeaderMetaData> makeHeaderMetaData( final BaseColumn column ) {
+    public List<GridColumn.HeaderMetaData> makeHeaderMetaData(final BaseColumn column) {
         return new ArrayList<GridColumn.HeaderMetaData>() {{
-            if ( column instanceof ActionSetFieldCol52 ) {
-                ActionSetFieldCol52 actionSetFieldColumn = ( ActionSetFieldCol52 ) column;
-                if ( actionSetFieldColumn.getBoundName() != null && !actionSetFieldColumn.getBoundName().isEmpty() ) {
-                    add( new BaseHeaderMetaData( actionSetFieldColumn.getBoundName(),
-                                                 ActionCol52.class.getName() ) );
-                    add( new BaseHeaderMetaData( column.getHeader(),
-                                                 actionSetFieldColumn.getBoundName() ) );
+            if (column instanceof ActionSetFieldCol52) {
+                ActionSetFieldCol52 actionSetFieldColumn = (ActionSetFieldCol52) column;
+                if (actionSetFieldColumn.getBoundName() != null && !actionSetFieldColumn.getBoundName().isEmpty()) {
+                    add(new BaseHeaderMetaData(actionSetFieldColumn.getBoundName(),
+                                               ActionCol52.class.getName()));
+                    add(new BaseHeaderMetaData(column.getHeader(),
+                                               actionSetFieldColumn.getBoundName()));
                 }
             } else {
-                add( new BaseHeaderMetaData( column.getHeader(),
-                                             ActionCol52.class.getName() ) );
+                add(new BaseHeaderMetaData(column.getHeader(),
+                                           ActionCol52.class.getName()));
             }
         }};
     }
-
 }

@@ -17,7 +17,7 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table;
 
 import com.ait.lienzo.client.core.types.Transform;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 
@@ -36,9 +36,9 @@ public class BoundaryTransformMediator implements TransformMediator {
 
     private final GuidedDecisionTableModellerView view;
 
-    public BoundaryTransformMediator( final GuidedDecisionTableModellerView view ) {
-        this.view = PortablePreconditions.checkNotNull( "view",
-                                                        view );
+    public BoundaryTransformMediator(final GuidedDecisionTableModellerView view) {
+        this.view = PortablePreconditions.checkNotNull("view",
+                                                       view);
         updateBounds();
     }
 
@@ -51,8 +51,8 @@ public class BoundaryTransformMediator implements TransformMediator {
     }
 
     @Override
-    public Transform adjust( final Transform transform,
-                             final Bounds visibleBounds ) {
+    public Transform adjust(final Transform transform,
+                            final Bounds visibleBounds) {
         updateBounds();
 
         Transform newTransform = transform.copy();
@@ -66,26 +66,23 @@ public class BoundaryTransformMediator implements TransformMediator {
         final double visibleBoundsWidth = visibleBounds.getWidth();
         final double visibleBoundsHeight = visibleBounds.getHeight();
 
-        if ( -scaledTranslateX < minX ) {
-            newTransform = newTransform.translate( -scaledTranslateX - minX,
-                                                   0 );
+        if (-scaledTranslateX < minX) {
+            newTransform = newTransform.translate(-scaledTranslateX - minX,
+                                                  0);
         }
-        if ( -scaledTranslateY < minY ) {
-            newTransform = newTransform.translate( 0,
-                                                   -scaledTranslateY - minY );
+        if (-scaledTranslateY < minY) {
+            newTransform = newTransform.translate(0,
+                                                  -scaledTranslateY - minY);
         }
-        if ( -scaledTranslateX + visibleBoundsWidth > maxX ) {
-            newTransform = newTransform.translate( -scaledTranslateX + visibleBoundsWidth - maxX,
-                                                   0 );
-
+        if (-scaledTranslateX + visibleBoundsWidth > maxX) {
+            newTransform = newTransform.translate(-scaledTranslateX + visibleBoundsWidth - maxX,
+                                                  0);
         }
-        if ( -scaledTranslateY + visibleBoundsHeight > maxY ) {
-            newTransform = newTransform.translate( 0,
-                                                   -scaledTranslateY + visibleBoundsHeight - maxY );
-
+        if (-scaledTranslateY + visibleBoundsHeight > maxY) {
+            newTransform = newTransform.translate(0,
+                                                  -scaledTranslateY + visibleBoundsHeight - maxY);
         }
 
         return newTransform;
     }
-
 }

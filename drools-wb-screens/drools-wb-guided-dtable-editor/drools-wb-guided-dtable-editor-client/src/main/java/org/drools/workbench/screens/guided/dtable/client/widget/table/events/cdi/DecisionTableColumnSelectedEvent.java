@@ -15,19 +15,19 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi;
 
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 
 public class DecisionTableColumnSelectedEvent {
 
     private final GridColumn<?> column;
 
-    public DecisionTableColumnSelectedEvent( final GridColumn<?> column ) {
-        this.column = PortablePreconditions.checkNotNull( "column", column );
+    public DecisionTableColumnSelectedEvent(final GridColumn<?> column) {
+        this.column = PortablePreconditions.checkNotNull("column",
+                                                         column);
     }
 
     public GridColumn<?> getColumn() {
         return column;
     }
-
 }

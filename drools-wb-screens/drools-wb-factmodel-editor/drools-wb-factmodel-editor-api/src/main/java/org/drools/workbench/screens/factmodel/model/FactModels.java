@@ -19,10 +19,10 @@ package org.drools.workbench.screens.factmodel.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.appformer.project.datamodel.imports.HasImports;
-import org.appformer.project.datamodel.imports.Imports;
-import org.appformer.project.datamodel.packages.HasPackageName;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.project.datamodel.imports.HasImports;
+import org.kie.soup.project.datamodel.imports.Imports;
+import org.kie.soup.project.datamodel.packages.HasPackageName;
 
 /**
  * Model for Declarative Fact Types
@@ -50,7 +50,7 @@ public class FactModels implements HasImports,
     }
 
     @Override
-    public void setImports( Imports imports ) {
+    public void setImports(Imports imports) {
         this.imports = imports;
     }
 
@@ -60,8 +60,7 @@ public class FactModels implements HasImports,
     }
 
     @Override
-    public void setPackageName( final String packageName ) {
+    public void setPackageName(final String packageName) {
         this.packageName = packageName;
     }
-
 }

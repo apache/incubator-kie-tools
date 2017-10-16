@@ -19,8 +19,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.appformer.project.datamodel.imports.Import;
-import org.appformer.project.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
@@ -38,7 +36,9 @@ import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.soup.project.datamodel.imports.Import;
+import org.kie.soup.project.datamodel.imports.Imports;
 
 /**
  * A RuleModel Visitor to identify fully qualified class names used by the RuleModel
@@ -49,9 +49,9 @@ public class GuidedRuleModelVisitor {
     private final String packageName;
     private final Imports imports;
 
-    public GuidedRuleModelVisitor( final RuleModel model ) {
-        this.model = PortablePreconditions.checkNotNull( "model",
-                                                         model );
+    public GuidedRuleModelVisitor(final RuleModel model) {
+        this.model = PortablePreconditions.checkNotNull("model",
+                                                        model);
         this.packageName = model.getPackageName();
         this.imports = model.getImports();
     }
@@ -59,179 +59,178 @@ public class GuidedRuleModelVisitor {
     public Set<String> getConsumedModelClasses() {
         final Set<String> factTypes = new HashSet<String>();
         //Extract Fact Types from model
-        if ( model.lhs != null ) {
-            for ( int i = 0; i < model.lhs.length; i++ ) {
-                IPattern pattern = model.lhs[ i ];
-                factTypes.addAll( visit( pattern ) );
+        if (model.lhs != null) {
+            for (int i = 0; i < model.lhs.length; i++) {
+                IPattern pattern = model.lhs[i];
+                factTypes.addAll(visit(pattern));
             }
         }
-        if ( model.rhs != null ) {
-            for ( int i = 0; i < model.rhs.length; i++ ) {
-                IAction action = model.rhs[ i ];
-                factTypes.addAll( visit( action ) );
+        if (model.rhs != null) {
+            for (int i = 0; i < model.rhs.length; i++) {
+                IAction action = model.rhs[i];
+                factTypes.addAll(visit(action));
             }
         }
 
         //Convert Fact Types into Fully Qualified Class Names
         final Set<String> fullyQualifiedClassNames = new HashSet<String>();
-        for ( String factType : factTypes ) {
-            fullyQualifiedClassNames.add( convertToFullyQualifiedClassName( factType ) );
+        for (String factType : factTypes) {
+            fullyQualifiedClassNames.add(convertToFullyQualifiedClassName(factType));
         }
 
         return fullyQualifiedClassNames;
     }
 
     //Get the fully qualified class name of the fact type
-    private String convertToFullyQualifiedClassName( final String factType ) {
-        if ( factType.contains( "." ) ) {
+    private String convertToFullyQualifiedClassName(final String factType) {
+        if (factType.contains(".")) {
             return factType;
         }
         String fullyQualifiedClassName = null;
-        for ( Import imp : imports.getImports() ) {
-            if ( imp.getType().endsWith( factType ) ) {
+        for (Import imp : imports.getImports()) {
+            if (imp.getType().endsWith(factType)) {
                 fullyQualifiedClassName = imp.getType();
                 break;
             }
         }
-        if ( fullyQualifiedClassName == null ) {
+        if (fullyQualifiedClassName == null) {
             fullyQualifiedClassName = packageName + "." + factType;
         }
         return fullyQualifiedClassName;
     }
 
-    private Set<String> visit( Object o ) {
-        if ( o == null ) {
+    private Set<String> visit(Object o) {
+        if (o == null) {
             return Collections.EMPTY_SET;
         }
-        if ( o instanceof FactPattern ) {
-            return visitFactPattern( (FactPattern) o );
-        } else if ( o instanceof CompositeFieldConstraint ) {
-            return visitCompositeFieldConstraint( (CompositeFieldConstraint) o );
-        } else if ( o instanceof SingleFieldConstraintEBLeftSide ) {
-            return visitSingleFieldConstraint( (SingleFieldConstraintEBLeftSide) o );
-        } else if ( o instanceof SingleFieldConstraint ) {
-            return visitSingleFieldConstraint( (SingleFieldConstraint) o );
-        } else if ( o instanceof ExpressionFormLine ) {
-            return visitExpressionFormLine( (ExpressionFormLine) o );
-        } else if ( o instanceof ConnectiveConstraint ) {
-            return visitConnectiveConstraint( (ConnectiveConstraint) o );
-        } else if ( o instanceof CompositeFactPattern ) {
-            return visitCompositeFactPattern( (CompositeFactPattern) o );
-        } else if ( o instanceof FromAccumulateCompositeFactPattern ) {
-            return visitFromAccumulateCompositeFactPattern( (FromAccumulateCompositeFactPattern) o );
-        } else if ( o instanceof FromCollectCompositeFactPattern ) {
-            return visitFromCollectCompositeFactPattern( (FromCollectCompositeFactPattern) o );
-        } else if ( o instanceof FromCompositeFactPattern ) {
-            return visitFromCompositeFactPattern( (FromCompositeFactPattern) o );
-        } else if ( o instanceof ActionInsertFact ) {
-            return visitActionInsertFact( (ActionInsertFact) o );
+        if (o instanceof FactPattern) {
+            return visitFactPattern((FactPattern) o);
+        } else if (o instanceof CompositeFieldConstraint) {
+            return visitCompositeFieldConstraint((CompositeFieldConstraint) o);
+        } else if (o instanceof SingleFieldConstraintEBLeftSide) {
+            return visitSingleFieldConstraint((SingleFieldConstraintEBLeftSide) o);
+        } else if (o instanceof SingleFieldConstraint) {
+            return visitSingleFieldConstraint((SingleFieldConstraint) o);
+        } else if (o instanceof ExpressionFormLine) {
+            return visitExpressionFormLine((ExpressionFormLine) o);
+        } else if (o instanceof ConnectiveConstraint) {
+            return visitConnectiveConstraint((ConnectiveConstraint) o);
+        } else if (o instanceof CompositeFactPattern) {
+            return visitCompositeFactPattern((CompositeFactPattern) o);
+        } else if (o instanceof FromAccumulateCompositeFactPattern) {
+            return visitFromAccumulateCompositeFactPattern((FromAccumulateCompositeFactPattern) o);
+        } else if (o instanceof FromCollectCompositeFactPattern) {
+            return visitFromCollectCompositeFactPattern((FromCollectCompositeFactPattern) o);
+        } else if (o instanceof FromCompositeFactPattern) {
+            return visitFromCompositeFactPattern((FromCompositeFactPattern) o);
+        } else if (o instanceof ActionInsertFact) {
+            return visitActionInsertFact((ActionInsertFact) o);
         }
         return Collections.EMPTY_SET;
     }
 
-    private Set<String> visitActionInsertFact( ActionInsertFact afl ) {
+    private Set<String> visitActionInsertFact(ActionInsertFact afl) {
         final Set<String> factTypes = new HashSet<String>();
-        factTypes.add( afl.getFactType() );
+        factTypes.add(afl.getFactType());
         return factTypes;
     }
 
-    private Set<String> visitCompositeFactPattern( CompositeFactPattern pattern ) {
+    private Set<String> visitCompositeFactPattern(CompositeFactPattern pattern) {
         final Set<String> factTypes = new HashSet<String>();
-        if ( pattern.getPatterns() != null ) {
-            for ( IFactPattern fp : pattern.getPatterns() ) {
-                factTypes.addAll( visit( fp ) );
+        if (pattern.getPatterns() != null) {
+            for (IFactPattern fp : pattern.getPatterns()) {
+                factTypes.addAll(visit(fp));
             }
         }
         return factTypes;
     }
 
-    private Set<String> visitCompositeFieldConstraint( CompositeFieldConstraint cfc ) {
+    private Set<String> visitCompositeFieldConstraint(CompositeFieldConstraint cfc) {
         final Set<String> factTypes = new HashSet<String>();
-        if ( cfc.getConstraints() != null ) {
-            for ( int i = 0; i < cfc.getConstraints().length; i++ ) {
-                FieldConstraint fc = cfc.getConstraints()[ i ];
-                factTypes.addAll( visit( fc ) );
+        if (cfc.getConstraints() != null) {
+            for (int i = 0; i < cfc.getConstraints().length; i++) {
+                FieldConstraint fc = cfc.getConstraints()[i];
+                factTypes.addAll(visit(fc));
             }
         }
         return factTypes;
     }
 
-    private Set<String> visitFactPattern( FactPattern pattern ) {
+    private Set<String> visitFactPattern(FactPattern pattern) {
         final Set<String> factTypes = new HashSet<String>();
-        factTypes.add( pattern.getFactType() );
-        for ( FieldConstraint fc : pattern.getFieldConstraints() ) {
-            factTypes.addAll( visit( fc ) );
+        factTypes.add(pattern.getFactType());
+        for (FieldConstraint fc : pattern.getFieldConstraints()) {
+            factTypes.addAll(visit(fc));
         }
         return factTypes;
     }
 
-    private Set<String> visitFromAccumulateCompositeFactPattern( FromAccumulateCompositeFactPattern pattern ) {
+    private Set<String> visitFromAccumulateCompositeFactPattern(FromAccumulateCompositeFactPattern pattern) {
         final Set<String> factTypes = new HashSet<String>();
-        factTypes.addAll( visit( pattern.getFactPattern() ) );
-        factTypes.addAll( visit( pattern.getSourcePattern() ) );
+        factTypes.addAll(visit(pattern.getFactPattern()));
+        factTypes.addAll(visit(pattern.getSourcePattern()));
         return factTypes;
     }
 
-    private Set<String> visitFromCollectCompositeFactPattern( FromCollectCompositeFactPattern pattern ) {
+    private Set<String> visitFromCollectCompositeFactPattern(FromCollectCompositeFactPattern pattern) {
         final Set<String> factTypes = new HashSet<String>();
-        factTypes.addAll( visit( pattern.getFactPattern() ) );
-        factTypes.addAll( visit( pattern.getRightPattern() ) );
-        factTypes.addAll( visit( pattern.getExpression() ) );
+        factTypes.addAll(visit(pattern.getFactPattern()));
+        factTypes.addAll(visit(pattern.getRightPattern()));
+        factTypes.addAll(visit(pattern.getExpression()));
         return factTypes;
     }
 
-    private Set<String> visitFromCompositeFactPattern( FromCompositeFactPattern pattern ) {
+    private Set<String> visitFromCompositeFactPattern(FromCompositeFactPattern pattern) {
         final Set<String> factTypes = new HashSet<String>();
-        factTypes.addAll( visit( pattern.getFactPattern() ) );
-        factTypes.addAll( visit( pattern.getExpression() ) );
+        factTypes.addAll(visit(pattern.getFactPattern()));
+        factTypes.addAll(visit(pattern.getExpression()));
         return factTypes;
     }
 
-    private Set<String> visitSingleFieldConstraint( SingleFieldConstraint sfc ) {
+    private Set<String> visitSingleFieldConstraint(SingleFieldConstraint sfc) {
         final Set<String> factTypes = new HashSet<String>();
-        if ( sfc.getFactType() != null ) {
-            factTypes.add( sfc.getFactType() );
+        if (sfc.getFactType() != null) {
+            factTypes.add(sfc.getFactType());
         }
-        factTypes.addAll( visit( sfc.getExpressionValue() ) );
-        if ( sfc.getConnectives() != null ) {
-            for ( int i = 0; i < sfc.getConnectives().length; i++ ) {
-                factTypes.addAll( visit( sfc.getConnectives()[ i ] ) );
+        factTypes.addAll(visit(sfc.getExpressionValue()));
+        if (sfc.getConnectives() != null) {
+            for (int i = 0; i < sfc.getConnectives().length; i++) {
+                factTypes.addAll(visit(sfc.getConnectives()[i]));
             }
         }
         return factTypes;
     }
 
-    private Set<String> visitExpressionFormLine( ExpressionFormLine efl ) {
+    private Set<String> visitExpressionFormLine(ExpressionFormLine efl) {
         final Set<String> factTypes = new HashSet<String>();
-        for ( ExpressionPart part : efl.getParts() ) {
-            if ( part.getClassType() != null ) {
-                factTypes.add( part.getClassType() );
+        for (ExpressionPart part : efl.getParts()) {
+            if (part.getClassType() != null) {
+                factTypes.add(part.getClassType());
             }
         }
         return factTypes;
     }
 
-    private Set<String> visitConnectiveConstraint( ConnectiveConstraint cc ) {
+    private Set<String> visitConnectiveConstraint(ConnectiveConstraint cc) {
         final Set<String> factTypes = new HashSet<String>();
-        if ( cc.getFactType() != null ) {
-            factTypes.add( cc.getFactType() );
+        if (cc.getFactType() != null) {
+            factTypes.add(cc.getFactType());
         }
         return factTypes;
     }
 
-    private Set<String> visitSingleFieldConstraint( SingleFieldConstraintEBLeftSide sfexp ) {
+    private Set<String> visitSingleFieldConstraint(SingleFieldConstraintEBLeftSide sfexp) {
         final Set<String> factTypes = new HashSet<String>();
-        if ( sfexp.getFactType() != null ) {
-            factTypes.add( sfexp.getFactType() );
+        if (sfexp.getFactType() != null) {
+            factTypes.add(sfexp.getFactType());
         }
-        factTypes.addAll( visit( sfexp.getExpressionValue() ) );
-        factTypes.addAll( visit( sfexp.getExpressionLeftSide() ) );
-        if ( sfexp.getConnectives() != null ) {
-            for ( int i = 0; i < sfexp.getConnectives().length; i++ ) {
-                factTypes.addAll( visit( sfexp.getConnectives()[ i ] ) );
+        factTypes.addAll(visit(sfexp.getExpressionValue()));
+        factTypes.addAll(visit(sfexp.getExpressionLeftSide()));
+        if (sfexp.getConnectives() != null) {
+            for (int i = 0; i < sfexp.getConnectives().length; i++) {
+                factTypes.addAll(visit(sfexp.getConnectives()[i]));
             }
         }
         return factTypes;
     }
-
 }

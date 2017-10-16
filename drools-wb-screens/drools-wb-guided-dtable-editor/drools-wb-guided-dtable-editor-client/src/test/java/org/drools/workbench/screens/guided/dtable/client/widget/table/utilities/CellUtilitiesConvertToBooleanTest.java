@@ -22,12 +22,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 import static org.junit.Assert.*;
 
@@ -40,9 +40,9 @@ public class CellUtilitiesConvertToBooleanTest {
 
     private CellUtilities cellUtilities;
 
-    public CellUtilitiesConvertToBooleanTest( final Object expected,
-                                              final Object value,
-                                              final boolean isOtherwise ) {
+    public CellUtilitiesConvertToBooleanTest(final Object expected,
+                                             final Object value,
+                                             final boolean isOtherwise) {
         this.expected = expected;
         this.value = value;
         this.isOtherwise = isOtherwise;
@@ -55,31 +55,31 @@ public class CellUtilitiesConvertToBooleanTest {
 
     @Parameterized.Parameters
     public static Collection testParameters() {
-        return Arrays.asList( new Object[][]{
-                { null, new BigDecimal( "1" ), false },
-                { null, new BigInteger( "2" ), false },
-                { null, new Byte( "3" ), false },
-                { null, new Double( "4.0" ), false },
-                { null, new Float( "5.0" ), false },
-                { null, new Integer( "6" ), false },
-                { null, new Long( "7" ), false },
-                { null, new Short( "8" ), false },
-                { null, "9", false },
-                { true, true, false },
-                { null, new Date(), false },
-                { null, "banana", false },
-                { true, "true", false },
-                { false, "false", false },
-                { null, null, true }
-        } );
+        return Arrays.asList(new Object[][]{
+                {null, new BigDecimal("1"), false},
+                {null, new BigInteger("2"), false},
+                {null, new Byte("3"), false},
+                {null, new Double("4.0"), false},
+                {null, new Float("5.0"), false},
+                {null, new Integer("6"), false},
+                {null, new Long("7"), false},
+                {null, new Short("8"), false},
+                {null, "9", false},
+                {true, true, false},
+                {null, new Date(), false},
+                {null, "banana", false},
+                {true, "true", false},
+                {false, "false", false},
+                {null, null, true}
+        });
     }
 
     @Test
     public void conversion() {
-        final DTCellValue52 dcv = new DTCellValue52( value );
-        dcv.setOtherwise( isOtherwise );
-        assertEquals( expected,
-                      cellUtilities.convertToBoolean( dcv ) );
+        final DTCellValue52 dcv = new DTCellValue52(value);
+        dcv.setOtherwise(isOtherwise);
+        assertEquals(expected,
+                     cellUtilities.convertToBoolean(dcv));
     }
 
     @Test
@@ -91,5 +91,4 @@ public class CellUtilitiesConvertToBooleanTest {
         assertEquals(expected,
                      dcv.getBooleanValue());
     }
-
 }

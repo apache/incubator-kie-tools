@@ -22,12 +22,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 import static org.junit.Assert.*;
 
@@ -40,9 +40,9 @@ public class CellUtilitiesConvertToFloatTest {
 
     private CellUtilities cellUtilities;
 
-    public CellUtilitiesConvertToFloatTest( final Object expected,
-                                            final Object value,
-                                            final boolean isOtherwise ) {
+    public CellUtilitiesConvertToFloatTest(final Object expected,
+                                           final Object value,
+                                           final boolean isOtherwise) {
         this.expected = expected;
         this.value = value;
         this.isOtherwise = isOtherwise;
@@ -55,29 +55,29 @@ public class CellUtilitiesConvertToFloatTest {
 
     @Parameterized.Parameters
     public static Collection testParameters() {
-        return Arrays.asList( new Object[][]{
-                { new Float( "1" ), new BigDecimal( "1" ), false },
-                { new Float( "2" ), new BigInteger( "2" ), false },
-                { new Float( "3" ), new Byte( "3" ), false },
-                { new Float( "4.0" ), new Double( "4.0" ), false },
-                { new Float( "5.0" ), new Float( "5.0" ), false },
-                { new Float( "6" ), new Integer( "6" ), false },
-                { new Float( "7" ), new Long( "7" ), false },
-                { new Float( "8" ), new Short( "8" ), false },
-                { new Float( "9" ), "9", false },
-                { null, true, false },
-                { null, new Date(), false },
-                { null, "banana", false },
-                { null, null, true }
-        } );
+        return Arrays.asList(new Object[][]{
+                {new Float("1"), new BigDecimal("1"), false},
+                {new Float("2"), new BigInteger("2"), false},
+                {new Float("3"), new Byte("3"), false},
+                {new Float("4.0"), new Double("4.0"), false},
+                {new Float("5.0"), new Float("5.0"), false},
+                {new Float("6"), new Integer("6"), false},
+                {new Float("7"), new Long("7"), false},
+                {new Float("8"), new Short("8"), false},
+                {new Float("9"), "9", false},
+                {null, true, false},
+                {null, new Date(), false},
+                {null, "banana", false},
+                {null, null, true}
+        });
     }
 
     @Test
     public void conversion() {
-        final DTCellValue52 dcv = new DTCellValue52( value );
-        dcv.setOtherwise( isOtherwise );
-        assertEquals( expected,
-                      cellUtilities.convertToFloat( dcv ) );
+        final DTCellValue52 dcv = new DTCellValue52(value);
+        dcv.setOtherwise(isOtherwise);
+        assertEquals(expected,
+                     cellUtilities.convertToFloat(dcv));
     }
 
     @Test
@@ -89,5 +89,4 @@ public class CellUtilitiesConvertToFloatTest {
         assertEquals(expected,
                      dcv.getNumericValue());
     }
-
 }

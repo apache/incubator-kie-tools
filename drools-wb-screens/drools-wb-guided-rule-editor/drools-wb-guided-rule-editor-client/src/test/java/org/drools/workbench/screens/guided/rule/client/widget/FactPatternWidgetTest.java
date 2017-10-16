@@ -22,7 +22,6 @@ import java.util.stream.Stream;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
-import org.appformer.project.datamodel.oracle.OperatorsOracle;
 import org.drools.workbench.models.datamodel.rule.FieldConstraint;
 import org.drools.workbench.screens.guided.rule.client.OperatorsBaseTest;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPOperatorsDropdown;
@@ -30,6 +29,7 @@ import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRu
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.oracle.OperatorsOracle;
 import org.kie.workbench.common.widgets.client.datamodel.OracleUtils;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;

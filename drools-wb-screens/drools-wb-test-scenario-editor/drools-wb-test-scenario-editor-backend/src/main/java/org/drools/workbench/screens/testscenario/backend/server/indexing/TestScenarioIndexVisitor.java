@@ -19,10 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.appformer.project.datamodel.imports.Import;
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.ModelField;
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.drools.workbench.models.testscenarios.shared.Field;
 import org.drools.workbench.models.testscenarios.shared.Fixture;
@@ -32,12 +28,16 @@ import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.models.testscenarios.shared.VerifyFact;
 import org.drools.workbench.models.testscenarios.shared.VerifyField;
 import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
+import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.soup.project.datamodel.imports.Import;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.refactoring.ResourceReference;
 import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.metadata.model.KProperty;
 
 /**
@@ -50,24 +50,24 @@ public class TestScenarioIndexVisitor extends ResourceReferenceCollector {
     private final Scenario model;
     private final Map<String, String> factDataToFullyQualifiedClassNameMap = new HashMap<String, String>();
 
-    public TestScenarioIndexVisitor( final ProjectDataModelOracle dmo,
-                                     final DefaultIndexBuilder builder,
-                                     final Scenario model ) {
-        this.dmo = PortablePreconditions.checkNotNull( "dmo",
-                                                       dmo );
-        this.builder = PortablePreconditions.checkNotNull( "builder",
-                                                           builder );
-        this.model = PortablePreconditions.checkNotNull( "model",
-                                                         model );
+    public TestScenarioIndexVisitor(final ProjectDataModelOracle dmo,
+                                    final DefaultIndexBuilder builder,
+                                    final Scenario model) {
+        this.dmo = PortablePreconditions.checkNotNull("dmo",
+                                                      dmo);
+        this.builder = PortablePreconditions.checkNotNull("builder",
+                                                          builder);
+        this.model = PortablePreconditions.checkNotNull("model",
+                                                        model);
     }
 
     public Set<KProperty<?>> visit() {
-        visit( model );
+        visit(model);
         return builder.build();
     }
 
     private void visit(final Scenario scenario) {
-        for( FactData global : scenario.getGlobals()) {
+        for (FactData global : scenario.getGlobals()) {
             visit(global);
         }
 
@@ -76,86 +76,89 @@ public class TestScenarioIndexVisitor extends ResourceReferenceCollector {
         }
     }
 
-    private void visit( final Fixture fixture ) {
-        if ( fixture instanceof FixtureList ) {
-            for ( Fixture child : ( (FixtureList) fixture ) ) {
-                visit( child );
+    private void visit(final Fixture fixture) {
+        if (fixture instanceof FixtureList) {
+            for (Fixture child : ((FixtureList) fixture)) {
+                visit(child);
             }
-
-        } else if ( fixture instanceof FixturesMap ) {
-            for ( Fixture child : ( (FixturesMap) fixture ).values() ) {
-                visit( child );
+        } else if (fixture instanceof FixturesMap) {
+            for (Fixture child : ((FixturesMap) fixture).values()) {
+                visit(child);
             }
-
-        } else if ( fixture instanceof FactData ) {
+        } else if (fixture instanceof FactData) {
             final FactData factData = (FactData) fixture;
             final String typeName = factData.getType();
-            final String fullyQualifiedClassName = getFullyQualifiedClassName( typeName );
-            ResourceReference resRef = addResourceReference(fullyQualifiedClassName, ResourceType.JAVA);
+            final String fullyQualifiedClassName = getFullyQualifiedClassName(typeName);
+            ResourceReference resRef = addResourceReference(fullyQualifiedClassName,
+                                                            ResourceType.JAVA);
 
-            factDataToFullyQualifiedClassNameMap.put( factData.getName(),
-                                                      fullyQualifiedClassName );
+            factDataToFullyQualifiedClassNameMap.put(factData.getName(),
+                                                     fullyQualifiedClassName);
 
-            for ( Field field : factData.getFieldData() ) {
+            for (Field field : factData.getFieldData()) {
                 final String fieldName = field.getName();
-                final String fieldFullyQualifiedClassName = getFieldFullyQualifiedClassName( fullyQualifiedClassName,
-                                                                                             fieldName );
-                resRef.addPartReference(fieldName, PartType.FIELD);
-                addResourceReference(fieldFullyQualifiedClassName, ResourceType.JAVA);
+                final String fieldFullyQualifiedClassName = getFieldFullyQualifiedClassName(fullyQualifiedClassName,
+                                                                                            fieldName);
+                resRef.addPartReference(fieldName,
+                                        PartType.FIELD);
+                addResourceReference(fieldFullyQualifiedClassName,
+                                     ResourceType.JAVA);
             }
-
-        } else if ( fixture instanceof VerifyFact ) {
+        } else if (fixture instanceof VerifyFact) {
             final VerifyFact verifyFact = (VerifyFact) fixture;
             final String typeName = verifyFact.getName();
 
             //If VerifyFact is not anonymous lookup FQCN from previous FactData elements
             String fullyQualifiedClassName = null;
-            if ( !verifyFact.anonymous ) {
-                fullyQualifiedClassName = factDataToFullyQualifiedClassNameMap.get( verifyFact.getName() );
+            if (!verifyFact.anonymous) {
+                fullyQualifiedClassName = factDataToFullyQualifiedClassNameMap.get(verifyFact.getName());
             } else {
-                fullyQualifiedClassName = getFullyQualifiedClassName( typeName );
+                fullyQualifiedClassName = getFullyQualifiedClassName(typeName);
             }
             ResourceReference resRef = null;
-            if ( fullyQualifiedClassName != null ) {
-                resRef = addResourceReference(fullyQualifiedClassName, ResourceType.JAVA);
+            if (fullyQualifiedClassName != null) {
+                resRef = addResourceReference(fullyQualifiedClassName,
+                                              ResourceType.JAVA);
 
-                for ( VerifyField field : verifyFact.getFieldValues() ) {
+                for (VerifyField field : verifyFact.getFieldValues()) {
                     final String fieldName = field.getFieldName();
-                    final String fieldFullyQualifiedClassName = getFieldFullyQualifiedClassName( fullyQualifiedClassName,
-                                                                                             fieldName );
-                    resRef.addPartReference(fieldName, PartType.FIELD);
-                    addResourceReference(fieldFullyQualifiedClassName, ResourceType.JAVA);
+                    final String fieldFullyQualifiedClassName = getFieldFullyQualifiedClassName(fullyQualifiedClassName,
+                                                                                                fieldName);
+                    resRef.addPartReference(fieldName,
+                                            PartType.FIELD);
+                    addResourceReference(fieldFullyQualifiedClassName,
+                                         ResourceType.JAVA);
                 }
             }
-        } else if ( fixture instanceof VerifyRuleFired ) {
+        } else if (fixture instanceof VerifyRuleFired) {
             final VerifyRuleFired verifyRuleFired = (VerifyRuleFired) fixture;
-            addResourceReference(verifyRuleFired.getRuleName(), ResourceType.RULE);
+            addResourceReference(verifyRuleFired.getRuleName(),
+                                 ResourceType.RULE);
         }
     }
 
-    private String getFullyQualifiedClassName( final String typeName ) {
-        if ( typeName.contains( "." ) ) {
+    private String getFullyQualifiedClassName(final String typeName) {
+        if (typeName.contains(".")) {
             return typeName;
         }
 
-        for ( Import i : model.getImports().getImports() ) {
-            if ( i.getType().endsWith( typeName ) ) {
+        for (Import i : model.getImports().getImports()) {
+            if (i.getType().endsWith(typeName)) {
                 return i.getType();
             }
         }
         final String packageName = model.getPackageName();
-        return ( !( packageName == null || packageName.isEmpty() ) ? packageName + "." + typeName : typeName );
+        return (!(packageName == null || packageName.isEmpty()) ? packageName + "." + typeName : typeName);
     }
 
-    private String getFieldFullyQualifiedClassName( final String fullyQualifiedClassName,
-                                                    final String fieldName ) {
-        final ModelField[] mfs = dmo.getProjectModelFields().get( fullyQualifiedClassName );
-        for ( ModelField mf : mfs ) {
-            if ( mf.getName().equals( fieldName ) ) {
+    private String getFieldFullyQualifiedClassName(final String fullyQualifiedClassName,
+                                                   final String fieldName) {
+        final ModelField[] mfs = dmo.getProjectModelFields().get(fullyQualifiedClassName);
+        for (ModelField mf : mfs) {
+            if (mf.getName().equals(fieldName)) {
                 return mf.getClassName();
             }
         }
         return DataType.TYPE_OBJECT;
     }
-
 }

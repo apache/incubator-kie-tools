@@ -18,9 +18,9 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.popovers.
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.inject.Instance;
 
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
@@ -36,6 +36,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -44,8 +45,8 @@ import org.uberfire.client.callbacks.Callback;
 import org.uberfire.mocks.CallerMock;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ColumnDefinitionFactoryTest {
@@ -71,33 +72,33 @@ public class ColumnDefinitionFactoryTest {
     @Before
     public void setup() {
         this.model = new GuidedDecisionTable52();
-        this.serviceCaller = new CallerMock<>( service );
+        this.serviceCaller = new CallerMock<>(service);
 
-        this.conditionCol52DefinitionBuilder = spy( new ConditionCol52DefinitionBuilder( serviceCaller ) );
-        this.actionInsertFactCol52DefinitionBuilder = spy( new ActionInsertFactCol52DefinitionBuilder( serviceCaller ) );
-        this.actionSetFieldCol52DefinitionBuilder = spy( new ActionSetFieldCol52DefinitionBuilder( serviceCaller ) );
-        this.actionRetractFactCol52DefinitionBuilder = spy( new ActionRetractFactCol52DefinitionBuilder( serviceCaller ) );
+        this.conditionCol52DefinitionBuilder = spy(new ConditionCol52DefinitionBuilder(serviceCaller));
+        this.actionInsertFactCol52DefinitionBuilder = spy(new ActionInsertFactCol52DefinitionBuilder(serviceCaller));
+        this.actionSetFieldCol52DefinitionBuilder = spy(new ActionSetFieldCol52DefinitionBuilder(serviceCaller));
+        this.actionRetractFactCol52DefinitionBuilder = spy(new ActionRetractFactCol52DefinitionBuilder(serviceCaller));
 
-        when( dtPresenter.getModel() ).thenReturn( model );
-        when( dtPresenter.getDataModelOracle() ).thenReturn( dmo );
-        when( service.toSource( any( Path.class ),
-                                any( GuidedDecisionTable52.class ) ) ).thenReturn( "source" );
-        when( dmo.getFieldType( any( String.class ),
-                                any( String.class ) ) ).thenReturn( DataType.TYPE_STRING );
+        when(dtPresenter.getModel()).thenReturn(model);
+        when(dtPresenter.getDataModelOracle()).thenReturn(dmo);
+        when(service.toSource(any(Path.class),
+                              any(GuidedDecisionTable52.class))).thenReturn("source");
+        when(dmo.getFieldType(any(String.class),
+                              any(String.class))).thenReturn(DataType.TYPE_STRING);
 
         final Instance<ColumnDefinitionBuilder> buildersInstance = makeBuildersInstance();
-        this.columnDefinitionFactory = new ColumnDefinitionFactory( buildersInstance );
+        this.columnDefinitionFactory = new ColumnDefinitionFactory(buildersInstance);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void unknownColumnTypeDoesNotTriggerBuilder() {
-        final Callback<String> callback = mock( Callback.class );
-        columnDefinitionFactory.generateColumnDefinition( dtPresenter,
-                                                          new RowNumberCol52(),
-                                                          callback );
-        verify( callback,
-                never() ).callback( any( String.class ) );
+        final Callback<String> callback = mock(Callback.class);
+        columnDefinitionFactory.generateColumnDefinition(dtPresenter,
+                                                         new RowNumberCol52(),
+                                                         callback);
+        verify(callback,
+               never()).callback(any(String.class));
     }
 
     @Test
@@ -105,77 +106,76 @@ public class ColumnDefinitionFactoryTest {
     public void knownColumnType_ConditionCol52() {
         final Pattern52 p = new Pattern52();
         final ConditionCol52 column = new ConditionCol52();
-        p.getChildColumns().add( column );
-        model.getConditions().add( p );
+        p.getChildColumns().add(column);
+        model.getConditions().add(p);
 
-        final Callback<String> callback = mock( Callback.class );
-        columnDefinitionFactory.generateColumnDefinition( dtPresenter,
-                                                          column,
-                                                          callback );
-        verify( conditionCol52DefinitionBuilder,
-                times( 1 ) ).generateDefinition( eq( dtPresenter ),
-                                                 eq( column ),
-                                                 any( Callback.class ) );
-        verify( callback,
-                times( 1 ) ).callback( any( String.class ) );
+        final Callback<String> callback = mock(Callback.class);
+        columnDefinitionFactory.generateColumnDefinition(dtPresenter,
+                                                         column,
+                                                         callback);
+        verify(conditionCol52DefinitionBuilder,
+               times(1)).generateDefinition(eq(dtPresenter),
+                                            eq(column),
+                                            any(Callback.class));
+        verify(callback,
+               times(1)).callback(any(String.class));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void knownColumnType_ActionInsertFactCol52() {
         final BaseColumn column = new ActionInsertFactCol52();
-        final Callback<String> callback = mock( Callback.class );
-        columnDefinitionFactory.generateColumnDefinition( dtPresenter,
-                                                          column,
-                                                          callback );
-        verify( actionInsertFactCol52DefinitionBuilder,
-                times( 1 ) ).generateDefinition( eq( dtPresenter ),
-                                                 eq( column ),
-                                                 any( Callback.class ) );
-        verify( callback,
-                times( 1 ) ).callback( any( String.class ) );
+        final Callback<String> callback = mock(Callback.class);
+        columnDefinitionFactory.generateColumnDefinition(dtPresenter,
+                                                         column,
+                                                         callback);
+        verify(actionInsertFactCol52DefinitionBuilder,
+               times(1)).generateDefinition(eq(dtPresenter),
+                                            eq(column),
+                                            any(Callback.class));
+        verify(callback,
+               times(1)).callback(any(String.class));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void knownColumnType_ActionSetFieldCol52() {
         final BaseColumn column = new ActionSetFieldCol52();
-        final Callback<String> callback = mock( Callback.class );
-        columnDefinitionFactory.generateColumnDefinition( dtPresenter,
-                                                          column,
-                                                          callback );
-        verify( actionSetFieldCol52DefinitionBuilder,
-                times( 1 ) ).generateDefinition( eq( dtPresenter ),
-                                                 eq( column ),
-                                                 any( Callback.class ) );
-        verify( callback,
-                times( 1 ) ).callback( any( String.class ) );
+        final Callback<String> callback = mock(Callback.class);
+        columnDefinitionFactory.generateColumnDefinition(dtPresenter,
+                                                         column,
+                                                         callback);
+        verify(actionSetFieldCol52DefinitionBuilder,
+               times(1)).generateDefinition(eq(dtPresenter),
+                                            eq(column),
+                                            any(Callback.class));
+        verify(callback,
+               times(1)).callback(any(String.class));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void knownColumnType_ActionRetractFactCol52() {
         final BaseColumn column = new ActionRetractFactCol52();
-        final Callback<String> callback = mock( Callback.class );
-        columnDefinitionFactory.generateColumnDefinition( dtPresenter,
-                                                          column,
-                                                          callback );
-        verify( actionRetractFactCol52DefinitionBuilder,
-                times( 1 ) ).generateDefinition( eq( dtPresenter ),
-                                                 eq( column ),
-                                                 any( Callback.class ) );
-        verify( callback,
-                times( 1 ) ).callback( any( String.class ) );
+        final Callback<String> callback = mock(Callback.class);
+        columnDefinitionFactory.generateColumnDefinition(dtPresenter,
+                                                         column,
+                                                         callback);
+        verify(actionRetractFactCol52DefinitionBuilder,
+               times(1)).generateDefinition(eq(dtPresenter),
+                                            eq(column),
+                                            any(Callback.class));
+        verify(callback,
+               times(1)).callback(any(String.class));
     }
 
     private Instance<ColumnDefinitionBuilder> makeBuildersInstance() {
         final List<ColumnDefinitionBuilder> builders = new ArrayList<>();
-        builders.add( conditionCol52DefinitionBuilder );
-        builders.add( actionInsertFactCol52DefinitionBuilder );
-        builders.add( actionSetFieldCol52DefinitionBuilder );
-        builders.add( actionRetractFactCol52DefinitionBuilder );
+        builders.add(conditionCol52DefinitionBuilder);
+        builders.add(actionInsertFactCol52DefinitionBuilder);
+        builders.add(actionSetFieldCol52DefinitionBuilder);
+        builders.add(actionRetractFactCol52DefinitionBuilder);
 
-        return new MockInstanceImpl<>( builders );
+        return new MockInstanceImpl<>(builders);
     }
-
 }

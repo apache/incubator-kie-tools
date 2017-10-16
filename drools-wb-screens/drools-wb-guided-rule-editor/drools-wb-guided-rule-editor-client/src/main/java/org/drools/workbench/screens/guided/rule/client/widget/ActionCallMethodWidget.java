@@ -28,8 +28,6 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
-import org.appformer.project.datamodel.oracle.DropDownData;
-import org.appformer.project.datamodel.oracle.MethodInfo;
 import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
 import org.drools.workbench.models.datamodel.rule.ActionFieldFunction;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
@@ -41,6 +39,8 @@ import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEdito
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.util.FieldNatureUtil;
 import org.gwtbootstrap3.client.ui.ListBox;
+import org.kie.soup.project.datamodel.oracle.DropDownData;
+import org.kie.soup.project.datamodel.oracle.MethodInfo;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.client.callbacks.Callback;
@@ -66,40 +66,40 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
     private boolean isFactTypeKnown = false;
     private static final String READ_ONLY_STYLE_NAME = "editor-disabled-widget";
 
-    public ActionCallMethodWidget( final RuleModeller mod,
-                                   final EventBus eventBus,
-                                   final ActionCallMethod actionCallMethod,
-                                   final Boolean readOnly ) {
-        super( mod,
-               eventBus );
+    public ActionCallMethodWidget(final RuleModeller mod,
+                                  final EventBus eventBus,
+                                  final ActionCallMethod actionCallMethod,
+                                  final Boolean readOnly) {
+        super(mod,
+              eventBus);
         model = actionCallMethod;
         oracle = this.getModeller().getDataModelOracle();
 
         getMethodInfos();
-        checkIfReadOnly( readOnly );
+        checkIfReadOnly(readOnly);
 
-        initWidget( layout );
+        initWidget(layout);
     }
 
     private void getMethodInfos() {
-        if ( oracle.isGlobalVariable( model.getVariable() ) ) {
+        if (oracle.isGlobalVariable(model.getVariable())) {
             getMethodInfosForGlobalVariable();
         } else {
             getMethodInfosForBasicFactType();
         }
     }
 
-    private void checkIfReadOnly( Boolean readOnly ) {
-        if ( readOnly == null ) {
+    private void checkIfReadOnly(Boolean readOnly) {
+        if (readOnly == null) {
             this.readOnly = !this.isFactTypeKnown;
         } else {
             this.readOnly = readOnly;
         }
 
-        if ( this.readOnly ) {
-            layout.addStyleName( READ_ONLY_STYLE_NAME );
+        if (this.readOnly) {
+            layout.addStyleName(READ_ONLY_STYLE_NAME);
         } else {
-            layout.removeStyleName( READ_ONLY_STYLE_NAME );
+            layout.removeStyleName(READ_ONLY_STYLE_NAME);
         }
 
         doLayout();
@@ -109,240 +109,234 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
         String factType = getFactTypeLHS();
 
-        if ( factType == null ) {
+        if (factType == null) {
             factType = getFactTypeFromRHS();
         }
 
-        if ( factType == null ) {
+        if (factType == null) {
             factType = getFactTypeFromLHSField();
         }
 
-        if ( factType != null ) {
-            setMethodInfos( factType );
+        if (factType != null) {
+            setMethodInfos(factType);
         } else {
-            checkIfReadOnly( null );
+            checkIfReadOnly(null);
         }
     }
 
     private String getFactTypeFromLHSField() {
-        SingleFieldConstraint lhsBoundField = modeller.getModel().getLHSBoundField( model.getVariable() );
-        if ( lhsBoundField != null ) {
-            return oracle.getFieldClassName( lhsBoundField.getFactType(), lhsBoundField.getFieldName() );
+        SingleFieldConstraint lhsBoundField = modeller.getModel().getLHSBoundField(model.getVariable());
+        if (lhsBoundField != null) {
+            return oracle.getFieldClassName(lhsBoundField.getFactType(), lhsBoundField.getFieldName());
         } else {
             return null;
         }
     }
 
     private String getFactTypeFromRHS() {
-        ActionInsertFact rhsBoundFact = modeller.getModel().getRHSBoundFact( model.getVariable() );
-        if ( rhsBoundFact != null ) {
+        ActionInsertFact rhsBoundFact = modeller.getModel().getRHSBoundFact(model.getVariable());
+        if (rhsBoundFact != null) {
             return rhsBoundFact.getFactType();
         }
         return null;
     }
 
     private String getFactTypeLHS() {
-        FactPattern lhsBoundFact = modeller.getModel().getLHSBoundFact( model.getVariable() );
-        if ( lhsBoundFact != null ) {
+        FactPattern lhsBoundFact = modeller.getModel().getLHSBoundFact(model.getVariable());
+        if (lhsBoundFact != null) {
             return lhsBoundFact.getFactType();
         }
         return null;
     }
 
-    private void setMethodInfos( final String factType ) {
-        oracle.getMethodInfos( factType,
-                               new Callback<List<MethodInfo>>() {
-                                   @Override
-                                   public void callback( final List<MethodInfo> methodInfos ) {
+    private void setMethodInfos(final String factType) {
+        oracle.getMethodInfos(factType,
+                              new Callback<List<MethodInfo>>() {
+                                  @Override
+                                  public void callback(final List<MethodInfo> methodInfos) {
 
-                                       checkIfFactTypeKnown( methodInfos );
-                                       checkIfReadOnly( null );
+                                      checkIfFactTypeKnown(methodInfos);
+                                      checkIfReadOnly(null);
 
-                                       setMethodInfos( methodInfos, factType );
-                                       isBoundFact = true;
-
-                                   }
-                               } );
+                                      setMethodInfos(methodInfos, factType);
+                                      isBoundFact = true;
+                                  }
+                              });
     }
 
-    private void checkIfFactTypeKnown( List<MethodInfo> methodInfos ) {
-        if ( methodInfos != null ) {
+    private void checkIfFactTypeKnown(List<MethodInfo> methodInfos) {
+        if (methodInfos != null) {
             isFactTypeKnown = true;
         }
-        if ( !isFactTypeKnown ) {
-            this.isFactTypeKnown = oracle.isFactTypeRecognized( this.variableClass );
+        if (!isFactTypeKnown) {
+            this.isFactTypeKnown = oracle.isFactTypeRecognized(this.variableClass);
         }
-        fireEvent( new FactTypeKnownValueChangeEvent() );
+        fireEvent(new FactTypeKnownValueChangeEvent());
     }
 
-    private void setMethodInfos( List<MethodInfo> methodInfos,
-                                 String factType ) {
-        this.fieldCompletionTexts = new String[ methodInfos.size() ];
-        this.fieldCompletionValues = new String[ methodInfos.size() ];
+    private void setMethodInfos(List<MethodInfo> methodInfos,
+                                String factType) {
+        this.fieldCompletionTexts = new String[methodInfos.size()];
+        this.fieldCompletionValues = new String[methodInfos.size()];
         int i = 0;
-        for ( MethodInfo methodInfo : methodInfos ) {
-            this.fieldCompletionTexts[ i ] = methodInfo.getName();
-            this.fieldCompletionValues[ i ] = methodInfo.getNameWithParameters();
+        for (MethodInfo methodInfo : methodInfos) {
+            this.fieldCompletionTexts[i] = methodInfo.getName();
+            this.fieldCompletionValues[i] = methodInfo.getNameWithParameters();
             i++;
         }
         this.variableClass = factType;
     }
 
     private void getMethodInfosForGlobalVariable() {
-        oracle.getMethodInfosForGlobalVariable( model.getVariable(),
-                                                new Callback<List<MethodInfo>>() {
-                                                    @Override
-                                                    public void callback( final List<MethodInfo> methodInfos ) {
-                                                        if ( methodInfos != null ) {
-                                                            checkIfFactTypeKnown( methodInfos );
-                                                            setMethodInfos( methodInfos, oracle.getGlobalVariable( model.getVariable() ) );
-                                                            checkIfReadOnly( null );
-                                                        } else {
-                                                            ActionCallMethodWidget.this.fieldCompletionTexts = new String[ 0 ];
-                                                            ActionCallMethodWidget.this.fieldCompletionValues = new String[ 0 ];
-                                                            checkIfReadOnly( true );
-                                                        }
-                                                    }
-                                                } );
+        oracle.getMethodInfosForGlobalVariable(model.getVariable(),
+                                               new Callback<List<MethodInfo>>() {
+                                                   @Override
+                                                   public void callback(final List<MethodInfo> methodInfos) {
+                                                       if (methodInfos != null) {
+                                                           checkIfFactTypeKnown(methodInfos);
+                                                           setMethodInfos(methodInfos, oracle.getGlobalVariable(model.getVariable()));
+                                                           checkIfReadOnly(null);
+                                                       } else {
+                                                           ActionCallMethodWidget.this.fieldCompletionTexts = new String[0];
+                                                           ActionCallMethodWidget.this.fieldCompletionValues = new String[0];
+                                                           checkIfReadOnly(true);
+                                                       }
+                                                   }
+                                               });
     }
 
     private void doLayout() {
         layout.clear();
-        layout.setWidget( 0,
-                          0,
-                          getSetterLabel() );
+        layout.setWidget(0,
+                         0,
+                         getSetterLabel());
         FlexTable inner = new FlexTable();
-        for ( int i = 0; i < model.getFieldValues().length; i++ ) {
-            ActionFieldFunction val = model.getFieldValue( i );
+        for (int i = 0; i < model.getFieldValues().length; i++) {
+            ActionFieldFunction val = model.getFieldValue(i);
 
-            inner.setWidget( i,
-                             0,
-                             typeLabel( val.getType() ) );
-            inner.setWidget( i,
-                             1,
-                             valueEditor( val ) );
-
+            inner.setWidget(i,
+                            0,
+                            typeLabel(val.getType()));
+            inner.setWidget(i,
+                            1,
+                            valueEditor(val));
         }
-        layout.setWidget( 0,
-                          1,
-                          inner );
+        layout.setWidget(0,
+                         1,
+                         inner);
     }
 
     private Widget getSetterLabel() {
         HorizontalPanel horiz = new HorizontalPanel();
 
-        if ( model.getState() == ActionCallMethod.TYPE_UNDEFINED ) {
+        if (model.getState() == ActionCallMethod.TYPE_UNDEFINED) {
             Image edit = GuidedRuleEditorImages508.INSTANCE.AddFieldToFact();
-            edit.setAltText( GuidedRuleEditorResources.CONSTANTS.AddAnotherFieldToThisSoYouCanSetItsValue() );
-            edit.setTitle( GuidedRuleEditorResources.CONSTANTS.AddAnotherFieldToThisSoYouCanSetItsValue() );
-            edit.addClickHandler( new ClickHandler() {
+            edit.setAltText(GuidedRuleEditorResources.CONSTANTS.AddAnotherFieldToThisSoYouCanSetItsValue());
+            edit.setTitle(GuidedRuleEditorResources.CONSTANTS.AddAnotherFieldToThisSoYouCanSetItsValue());
+            edit.addClickHandler(new ClickHandler() {
 
-                public void onClick( ClickEvent event ) {
+                public void onClick(ClickEvent event) {
                     Widget w = (Widget) event.getSource();
-                    showAddFieldPopup( w );
-
+                    showAddFieldPopup(w);
                 }
-            } );
-            horiz.add( new SmallLabel( HumanReadable.getActionDisplayName( "call" ) + " [" + model.getVariable() + "]" ) ); // NON-NLS
-            if ( !this.readOnly ) {
-                horiz.add( edit );
+            });
+            horiz.add(new SmallLabel(HumanReadable.getActionDisplayName("call") + " [" + model.getVariable() + "]")); // NON-NLS
+            if (!this.readOnly) {
+                horiz.add(edit);
             }
-
         } else {
-            horiz.add( new SmallLabel( HumanReadable.getActionDisplayName( "call" ) + " [" + model.getVariable() + "." + model.getMethodName() + "]" ) ); // NON-NLS
+            horiz.add(new SmallLabel(HumanReadable.getActionDisplayName("call") + " [" + model.getVariable() + "." + model.getMethodName() + "]")); // NON-NLS
         }
 
         return horiz;
     }
 
-    protected void showAddFieldPopup( Widget w ) {
+    protected void showAddFieldPopup(Widget w) {
 
         final AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
 
-        final FormStylePopup popup = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
-                                                         GuidedRuleEditorResources.CONSTANTS.ChooseAMethodToInvoke() );
+        final FormStylePopup popup = new FormStylePopup(GuidedRuleEditorImages508.INSTANCE.Wizard(),
+                                                        GuidedRuleEditorResources.CONSTANTS.ChooseAMethodToInvoke());
         final ListBox box = new ListBox();
-        box.addItem( "..." );
+        box.addItem("...");
 
-        for ( int i = 0; i < fieldCompletionTexts.length; i++ ) {
-            box.addItem( fieldCompletionValues[ i ],
-                         fieldCompletionTexts[ i ] );
+        for (int i = 0; i < fieldCompletionTexts.length; i++) {
+            box.addItem(fieldCompletionValues[i],
+                        fieldCompletionTexts[i]);
         }
 
-        box.setSelectedIndex( 0 );
+        box.setSelectedIndex(0);
 
-        popup.addAttribute( GuidedRuleEditorResources.CONSTANTS.ChooseAMethodToInvoke(),
-                            box );
-        box.addChangeHandler( new ChangeHandler() {
+        popup.addAttribute(GuidedRuleEditorResources.CONSTANTS.ChooseAMethodToInvoke(),
+                           box);
+        box.addChangeHandler(new ChangeHandler() {
 
-            public void onChange( ChangeEvent event ) {
+            public void onChange(ChangeEvent event) {
 
-                final String methodNameWithParams = box.getItemText( box.getSelectedIndex() );
+                final String methodNameWithParams = box.getItemText(box.getSelectedIndex());
 
-                oracle.getMethodParams( variableClass,
-                                        methodNameWithParams,
-                                        new Callback<List<String>>() {
-                                            @Override
-                                            public void callback( final List<String> methodParameters ) {
-                                                final String methodName = box.getValue( box.getSelectedIndex() );
+                oracle.getMethodParams(variableClass,
+                                       methodNameWithParams,
+                                       new Callback<List<String>>() {
+                                           @Override
+                                           public void callback(final List<String> methodParameters) {
+                                               final String methodName = box.getValue(box.getSelectedIndex());
 
-                                                model.setMethodName( methodName );
-                                                model.setState( ActionCallMethod.TYPE_DEFINED );
+                                               model.setMethodName(methodName);
+                                               model.setState(ActionCallMethod.TYPE_DEFINED);
 
-                                                for ( String methodParameter : methodParameters ) {
-                                                    model.addFieldValue(
-                                                            new ActionFieldFunction( methodName,
-                                                                                     null,
-                                                                                     methodParameter ) );
-                                                }
+                                               for (String methodParameter : methodParameters) {
+                                                   model.addFieldValue(
+                                                           new ActionFieldFunction(methodName,
+                                                                                   null,
+                                                                                   methodParameter));
+                                               }
 
-                                                getModeller().refreshWidget();
-                                                popup.hide();
-
-                                            }
-                                        } );
-
+                                               getModeller().refreshWidget();
+                                               popup.hide();
+                                           }
+                                       });
             }
-        } );
+        });
 
         popup.show();
     }
 
-    private Widget valueEditor( final ActionFieldFunction val ) {
+    private Widget valueEditor(final ActionFieldFunction val) {
         return new MethodParameterValueEditor(
                 oracle,
                 val,
-                getEnums( val.getField() ),
+                getEnums(val.getField()),
                 this.getModeller(),
                 new Command() {
 
                     public void execute() {
-                        setModified( true );
+                        setModified(true);
                     }
-                } );
+                });
     }
 
     private String getVariableType() {
         String type;
-        if ( oracle.isGlobalVariable( this.model.getVariable() ) ) {
-            type = oracle.getGlobalVariable( this.model.getVariable() );
+        if (oracle.isGlobalVariable(this.model.getVariable())) {
+            type = oracle.getGlobalVariable(this.model.getVariable());
         } else {
-            type = this.getModeller().getModel().getLHSBindingType( this.model.getVariable() );
-            if ( type == null ) {
-                type = this.getModeller().getModel().getRHSBoundFact( this.model.getVariable() ).getFactType();
+            type = this.getModeller().getModel().getLHSBindingType(this.model.getVariable());
+            if (type == null) {
+                type = this.getModeller().getModel().getRHSBoundFact(this.model.getVariable()).getFactType();
             }
         }
         return type;
     }
 
-    private DropDownData getEnums( String field ) {
-        return oracle.getEnums( getVariableType(),
-                                field,
-                                FieldNatureUtil.toMap( this.model.getFieldValues() ) );
+    private DropDownData getEnums(String field) {
+        return oracle.getEnums(getVariableType(),
+                               field,
+                               FieldNatureUtil.toMap(this.model.getFieldValues()));
     }
 
-    private Widget typeLabel( String type ) {
-        return new SmallLabel( type );
+    private Widget typeLabel(String type) {
+        return new SmallLabel(type);
     }
 
     /**
@@ -361,5 +355,4 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
     public boolean isFactTypeKnown() {
         return this.isFactTypeKnown;
     }
-
 }

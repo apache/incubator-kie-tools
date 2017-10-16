@@ -19,12 +19,12 @@ import java.util.HashMap;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.appformer.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.FieldAccessorsAndMutators;
-import org.appformer.project.datamodel.oracle.ModelField;
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.screens.dsltext.type.DSLResourceTypeDefinition;
+import org.kie.soup.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
+import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.io.IOService;
@@ -38,57 +38,56 @@ public class TestDslFileIndexer extends DslFileIndexer implements TestIndexer<DS
     private final String packageName;
 
     public TestDslFileIndexer(final String packageName) {
-        this.packageName=packageName;
+        this.packageName = packageName;
     }
 
     @Override
-    public void setIOService( final IOService ioService ) {
+    public void setIOService(final IOService ioService) {
         this.ioService = ioService;
     }
 
     @Override
-    public void setProjectService( final KieProjectService projectService ) {
+    public void setProjectService(final KieProjectService projectService) {
         this.projectService = projectService;
     }
 
     @Override
-    public void setResourceTypeDefinition( final DSLResourceTypeDefinition type ) {
+    public void setResourceTypeDefinition(final DSLResourceTypeDefinition type) {
         this.dslType = type;
     }
 
     @Override
-    protected String getPackageName( final Path path ) {
+    protected String getPackageName(final Path path) {
         return packageName;
     }
 
     @Override
-    protected ProjectDataModelOracle getProjectDataModelOracle( final Path path ) {
+    protected ProjectDataModelOracle getProjectDataModelOracle(final Path path) {
         final ProjectDataModelOracle dmo = new ProjectDataModelOracleImpl();
-        dmo.addProjectModelFields( new HashMap<String, ModelField[]>() {{
-            put( "org.drools.workbench.screens.dsltext.backend.server.indexing.classes.Applicant",
-                 new ModelField[]{
-                         new ModelField( "age",
-                                         "java.lang.Integer",
-                                         ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                         ModelField.FIELD_ORIGIN.DECLARED,
-                                         FieldAccessorsAndMutators.ACCESSOR,
-                                         DataType.TYPE_NUMERIC_INTEGER ) } );
-            put( "org.drools.workbench.screens.dsltext.backend.server.indexing.classes.Mortgage",
-                 new ModelField[]{
-                         new ModelField( "amount",
-                                         "java.lang.Integer",
-                                         ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                         ModelField.FIELD_ORIGIN.DECLARED,
-                                         FieldAccessorsAndMutators.ACCESSOR,
-                                         DataType.TYPE_NUMERIC_INTEGER ),
-                         new ModelField( "applicant",
-                                         "org.drools.workbench.screens.dsltext.backend.server.indexing.classes.Applicant",
-                                         ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                         ModelField.FIELD_ORIGIN.DECLARED,
-                                         FieldAccessorsAndMutators.ACCESSOR,
-                                         "org.drools.workbench.screens.dsltext.backend.server.indexing.classes.Applicant" ) } );
-        }} );
+        dmo.addProjectModelFields(new HashMap<String, ModelField[]>() {{
+            put("org.drools.workbench.screens.dsltext.backend.server.indexing.classes.Applicant",
+                new ModelField[]{
+                        new ModelField("age",
+                                       "java.lang.Integer",
+                                       ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                       ModelField.FIELD_ORIGIN.DECLARED,
+                                       FieldAccessorsAndMutators.ACCESSOR,
+                                       DataType.TYPE_NUMERIC_INTEGER)});
+            put("org.drools.workbench.screens.dsltext.backend.server.indexing.classes.Mortgage",
+                new ModelField[]{
+                        new ModelField("amount",
+                                       "java.lang.Integer",
+                                       ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                       ModelField.FIELD_ORIGIN.DECLARED,
+                                       FieldAccessorsAndMutators.ACCESSOR,
+                                       DataType.TYPE_NUMERIC_INTEGER),
+                        new ModelField("applicant",
+                                       "org.drools.workbench.screens.dsltext.backend.server.indexing.classes.Applicant",
+                                       ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                       ModelField.FIELD_ORIGIN.DECLARED,
+                                       FieldAccessorsAndMutators.ACCESSOR,
+                                       "org.drools.workbench.screens.dsltext.backend.server.indexing.classes.Applicant")});
+        }});
         return dmo;
     }
-
 }

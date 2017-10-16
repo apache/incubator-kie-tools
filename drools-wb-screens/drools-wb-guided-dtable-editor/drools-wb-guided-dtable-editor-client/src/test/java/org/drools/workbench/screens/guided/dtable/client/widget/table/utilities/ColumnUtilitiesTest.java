@@ -18,7 +18,6 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.utilities
 import java.util.Arrays;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
@@ -30,13 +29,14 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.co
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.mockito.Mock;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ColumnUtilitiesTest {

@@ -17,7 +17,6 @@ package org.drools.workbench.services.verifier.plugin.client.builders;
 
 import java.util.List;
 
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
@@ -27,6 +26,7 @@ import org.drools.workbench.services.verifier.api.client.index.Action;
 import org.drools.workbench.services.verifier.api.client.index.Condition;
 import org.drools.workbench.services.verifier.api.client.index.Pattern;
 import org.drools.workbench.services.verifier.api.client.index.Rule;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 import static org.drools.workbench.services.verifier.plugin.client.builders.Utils.*;
 
@@ -38,75 +38,73 @@ public class CellBuilder {
     private Rule rule;
     private List<DTCellValue52> row;
 
-    public CellBuilder( final BuilderFactory builderFactory) {
-        this.builderFactory = PortablePreconditions.checkNotNull( "builderFactory",
-                                                                  builderFactory );
+    public CellBuilder(final BuilderFactory builderFactory) {
+        this.builderFactory = PortablePreconditions.checkNotNull("builderFactory",
+                                                                 builderFactory);
     }
 
     public void build() throws
-                        BuildException {
-        if ( baseColumn instanceof ActionCol52 ) {
+            BuildException {
+        if (baseColumn instanceof ActionCol52) {
 
             final Action action = builderFactory.getActionBuilder()
-                    .with( rule )
-                    .with( row )
-                    .with( columnIndex )
-                    .with( (ActionCol52) baseColumn )
+                    .with(rule)
+                    .with(row)
+                    .with(columnIndex)
+                    .with((ActionCol52) baseColumn)
                     .build();
             rule.getActions()
-                    .add( action );
+                    .add(action);
+        } else if (baseColumn instanceof ConditionCol52) {
 
-        } else if ( baseColumn instanceof ConditionCol52 ) {
-
-            if ( baseColumn instanceof BRLConditionVariableColumn ) {
+            if (baseColumn instanceof BRLConditionVariableColumn) {
                 final Condition condition = builderFactory.getBRLConditionBuilder()
-                        .with( (BRLConditionVariableColumn) baseColumn )
-                        .with( getRealCellValue( (BRLConditionVariableColumn) baseColumn,
-                                                 row.get( columnIndex ) ) )
-                        .with( columnIndex )
+                        .with((BRLConditionVariableColumn) baseColumn)
+                        .with(getRealCellValue((BRLConditionVariableColumn) baseColumn,
+                                               row.get(columnIndex)))
+                        .with(columnIndex)
                         .build();
 
                 rule.getConditions()
-                        .add( condition );
-
+                        .add(condition);
             } else {
                 final Condition condition = builderFactory.getFieldConditionsBuilder()
-                        .with( resolvePattern( rule ) )
-                        .with( (ConditionCol52) baseColumn )
-                        .with( getRealCellValue( (ConditionCol52) baseColumn,
-                                                 row.get( columnIndex ) ) )
-                        .with( columnIndex )
+                        .with(resolvePattern(rule))
+                        .with((ConditionCol52) baseColumn)
+                        .with(getRealCellValue((ConditionCol52) baseColumn,
+                                               row.get(columnIndex)))
+                        .with(columnIndex)
                         .build();
 
                 rule.getConditions()
-                        .add( condition );
+                        .add(condition);
             }
         }
     }
 
-    private Pattern resolvePattern( final Rule rule ) {
+    private Pattern resolvePattern(final Rule rule) {
         return builderFactory.getPatternResolver()
-                .with( rule )
-                .with( columnIndex )
+                .with(rule)
+                .with(columnIndex)
                 .resolve();
     }
 
-    public CellBuilder with( final Rule rule ) {
+    public CellBuilder with(final Rule rule) {
         this.rule = rule;
         return this;
     }
 
-    public CellBuilder with( final List<DTCellValue52> row ) {
+    public CellBuilder with(final List<DTCellValue52> row) {
         this.row = row;
         return this;
     }
 
-    public CellBuilder with( final int columnIndex ) {
+    public CellBuilder with(final int columnIndex) {
         this.columnIndex = columnIndex;
         return this;
     }
 
-    public CellBuilder with( final BaseColumn baseColumn ) {
+    public CellBuilder with(final BaseColumn baseColumn) {
         this.baseColumn = baseColumn;
         return this;
     }

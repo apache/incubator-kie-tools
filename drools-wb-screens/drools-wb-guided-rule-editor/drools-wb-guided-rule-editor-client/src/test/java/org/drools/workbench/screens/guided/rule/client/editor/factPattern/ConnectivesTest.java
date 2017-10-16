@@ -18,12 +18,12 @@ package org.drools.workbench.screens.guided.rule.client.editor.factPattern;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
-import org.appformer.project.datamodel.oracle.OperatorsOracle;
 import org.drools.workbench.screens.guided.rule.client.OperatorsBaseTest;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.oracle.OperatorsOracle;
 
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;

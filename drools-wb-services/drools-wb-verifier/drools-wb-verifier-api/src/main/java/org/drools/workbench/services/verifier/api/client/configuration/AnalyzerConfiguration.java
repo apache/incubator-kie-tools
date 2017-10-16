@@ -20,7 +20,7 @@ import java.util.Date;
 import org.drools.workbench.services.verifier.api.client.index.keys.UUIDKey;
 import org.drools.workbench.services.verifier.api.client.index.keys.UUIDKeyProvider;
 import org.drools.workbench.services.verifier.api.client.maps.util.HasKeys;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class AnalyzerConfiguration {
 
@@ -30,33 +30,33 @@ public class AnalyzerConfiguration {
     private final CheckConfiguration checkConfiguration;
     private final RunnerType runnerType;
 
-    public AnalyzerConfiguration( final String webWorkerUUID,
-                                  final DateTimeFormatProvider dateTimeFormatter,
-                                  final UUIDKeyProvider uuidKeyProvider,
-                                  final CheckConfiguration checkConfiguration,
-                                  final RunnerType runnerType ) {
-        this.webWorkerUUID = PortablePreconditions.checkNotNull( "webWorkerUUID",
-                                                                 webWorkerUUID );
-        this.dateTimeFormatter = PortablePreconditions.checkNotNull( "dateTimeFormatter",
-                                                                     dateTimeFormatter );
-        this.uuidKeyProvider = PortablePreconditions.checkNotNull( "uuidKeyProvider",
-                                                                   uuidKeyProvider );
-        this.checkConfiguration = PortablePreconditions.checkNotNull( "checkConfiguration",
-                                                                      checkConfiguration );
-        this.runnerType = PortablePreconditions.checkNotNull( "runnerType",
-                                                              runnerType );
+    public AnalyzerConfiguration(final String webWorkerUUID,
+                                 final DateTimeFormatProvider dateTimeFormatter,
+                                 final UUIDKeyProvider uuidKeyProvider,
+                                 final CheckConfiguration checkConfiguration,
+                                 final RunnerType runnerType) {
+        this.webWorkerUUID = PortablePreconditions.checkNotNull("webWorkerUUID",
+                                                                webWorkerUUID);
+        this.dateTimeFormatter = PortablePreconditions.checkNotNull("dateTimeFormatter",
+                                                                    dateTimeFormatter);
+        this.uuidKeyProvider = PortablePreconditions.checkNotNull("uuidKeyProvider",
+                                                                  uuidKeyProvider);
+        this.checkConfiguration = PortablePreconditions.checkNotNull("checkConfiguration",
+                                                                     checkConfiguration);
+        this.runnerType = PortablePreconditions.checkNotNull("runnerType",
+                                                             runnerType);
     }
 
     public String getWebWorkerUUID() {
         return webWorkerUUID;
     }
 
-    public UUIDKey getUUID( final HasKeys hasKeys ) {
-        return uuidKeyProvider.get( hasKeys );
+    public UUIDKey getUUID(final HasKeys hasKeys) {
+        return uuidKeyProvider.get(hasKeys);
     }
 
-    public String formatDate( final Date dateValue ) {
-        return dateTimeFormatter.format( dateValue );
+    public String formatDate(final Date dateValue) {
+        return dateTimeFormatter.format(dateValue);
     }
 
     public CheckConfiguration getCheckConfiguration() {

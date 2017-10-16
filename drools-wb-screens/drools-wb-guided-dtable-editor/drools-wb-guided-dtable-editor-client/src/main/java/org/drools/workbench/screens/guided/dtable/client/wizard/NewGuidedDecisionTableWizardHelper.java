@@ -25,12 +25,12 @@ import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEdi
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 
@@ -60,10 +60,11 @@ public class NewGuidedDecisionTableWizardHelper {
 
     /**
      * Presents the {@link NewGuidedDecisionTableWizard} to Users to creates a new Guided Decision Table.
-     * @param contextPath The base path where the Decision Table will be created. Cannot be null.
-     * @param baseFileName The base file name of the new Decision Table. Cannot be null.
-     * @param tableFormat The format of the Decision Table. Cannot be null.
-     * @param view A {@link HasBusyIndicator} to handle status messages. Cannot be null.
+     *
+     * @param contextPath           The base path where the Decision Table will be created. Cannot be null.
+     * @param baseFileName          The base file name of the new Decision Table. Cannot be null.
+     * @param tableFormat           The format of the Decision Table. Cannot be null.
+     * @param view                  A {@link HasBusyIndicator} to handle status messages. Cannot be null.
      * @param onSaveSuccessCallback Called when the new Decision Table has successfully been created. Cannot be null.
      */
     public void createNewGuidedDecisionTable(final Path contextPath,

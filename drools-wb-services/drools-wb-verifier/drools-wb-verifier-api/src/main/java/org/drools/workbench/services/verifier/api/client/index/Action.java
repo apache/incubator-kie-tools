@@ -24,21 +24,21 @@ import org.drools.workbench.services.verifier.api.client.index.keys.Values;
 import org.drools.workbench.services.verifier.api.client.index.matchers.UUIDMatchers;
 import org.drools.workbench.services.verifier.api.client.maps.KeyDefinition;
 import org.drools.workbench.services.verifier.api.client.maps.util.HasKeys;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public abstract class Action
         implements HasKeys {
 
     protected static final KeyDefinition VALUE = KeyDefinition.newKeyDefinition()
-            .withId( "value" )
+            .withId("value")
             .updatable()
             .build();
     protected static final KeyDefinition SUPER_TYPE = KeyDefinition.newKeyDefinition()
-            .withId( "superType" )
+            .withId("superType")
             .updatable()
             .build();
     protected static final KeyDefinition COLUMN_UUID = KeyDefinition.newKeyDefinition()
-            .withId( "columnUUID" )
+            .withId("columnUUID")
             .build();
 
     protected final UUIDKey uuidKey;
@@ -47,30 +47,30 @@ public abstract class Action
     private final Values<Comparable> values = new Values<>();
     protected UpdatableKey<Action> valueKey;
 
-    public Action( final Column column,
-                   final ActionSuperType superType,
-                   final Values values,
-                   final AnalyzerConfiguration configuration ) {
-        this.column = PortablePreconditions.checkNotNull( "column",
-                                                          column );
-        this.superType = PortablePreconditions.checkNotNull( "superType",
-                                                             superType );
-        this.valueKey = new UpdatableKey<>( Action.VALUE,
-                                            values );
-        this.uuidKey = configuration.getUUID( this );
+    public Action(final Column column,
+                  final ActionSuperType superType,
+                  final Values values,
+                  final AnalyzerConfiguration configuration) {
+        this.column = PortablePreconditions.checkNotNull("column",
+                                                         column);
+        this.superType = PortablePreconditions.checkNotNull("superType",
+                                                            superType);
+        this.valueKey = new UpdatableKey<>(Action.VALUE,
+                                           values);
+        this.uuidKey = configuration.getUUID(this);
         resetValues();
     }
 
     public static Matchers value() {
-        return new Matchers( VALUE );
+        return new Matchers(VALUE);
     }
 
     public static Matchers superType() {
-        return new Matchers( SUPER_TYPE );
+        return new Matchers(SUPER_TYPE);
     }
 
     public static Matchers columnUUID() {
-        return new Matchers( COLUMN_UUID );
+        return new Matchers(COLUMN_UUID);
     }
 
     public static Matchers uuid() {
@@ -89,8 +89,8 @@ public abstract class Action
     private void resetValues() {
         values.clear();
 
-        for ( final Object o : valueKey.getValues() ) {
-            values.add( ( (Value) o ).getComparable() );
+        for (final Object o : valueKey.getValues()) {
+            values.add(((Value) o).getComparable());
         }
     }
 
@@ -107,27 +107,27 @@ public abstract class Action
     public Key[] keys() {
         return new Key[]{
                 uuidKey,
-                new Key( SUPER_TYPE,
-                         superType ),
-                new Key( COLUMN_UUID,
-                         column.getUuidKey() ),
+                new Key(SUPER_TYPE,
+                        superType),
+                new Key(COLUMN_UUID,
+                        column.getUuidKey()),
                 valueKey
         };
     }
 
-    public void setValue( final Values values ) {
-        if ( !valueKey.getValues()
-                .isThereChanges( values ) ) {
+    public void setValue(final Values values) {
+        if (!valueKey.getValues()
+                .isThereChanges(values)) {
             return;
         } else {
             final UpdatableKey<Action> oldKey = valueKey;
 
-            final UpdatableKey<Action> newKey = new UpdatableKey<>( Action.VALUE,
-                                                                    values );
+            final UpdatableKey<Action> newKey = new UpdatableKey<>(Action.VALUE,
+                                                                   values);
             valueKey = newKey;
 
-            oldKey.update( newKey,
-                           this );
+            oldKey.update(newKey,
+                          this);
             resetValues();
         }
     }

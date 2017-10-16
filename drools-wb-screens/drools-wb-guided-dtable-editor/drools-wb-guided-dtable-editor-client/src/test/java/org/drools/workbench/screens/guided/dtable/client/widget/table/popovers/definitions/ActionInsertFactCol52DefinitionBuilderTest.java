@@ -18,12 +18,12 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.popovers.
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.oracle.DataType;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
@@ -34,47 +34,46 @@ public class ActionInsertFactCol52DefinitionBuilderTest extends BaseColumnDefini
 
     @Override
     protected ColumnDefinitionBuilder getBuilder() {
-        return new ActionInsertFactCol52DefinitionBuilder( serviceCaller );
+        return new ActionInsertFactCol52DefinitionBuilder(serviceCaller);
     }
 
     @Test
     public void checkColumnType() {
-        assertEquals( ActionInsertFactCol52.class,
-                      builder.getSupportedColumnType() );
+        assertEquals(ActionInsertFactCol52.class,
+                     builder.getSupportedColumnType());
     }
 
     @Test
     public void unknownColumnTypeDoesNotTriggerBuilder() {
         final BaseColumn column = new RowNumberCol52();
-        builder.generateDefinition( dtPresenter,
-                                    column,
-                                    ( String definition ) -> {
-                                        fail( "RowNumberCol52 should not be handled by ActionInsertFactCol52DefinitionBuilder" );
-                                    } );
+        builder.generateDefinition(dtPresenter,
+                                   column,
+                                   (String definition) -> {
+                                       fail("RowNumberCol52 should not be handled by ActionInsertFactCol52DefinitionBuilder");
+                                   });
     }
 
     @Test
     public void simpleAction() {
-        final AtomicBoolean calledBack = new AtomicBoolean( false );
+        final AtomicBoolean calledBack = new AtomicBoolean(false);
 
         final ActionInsertFactCol52 aif = new ActionInsertFactCol52();
-        aif.setFactType( "Person" );
-        aif.setFactField( "name" );
-        model.getActionCols().add( aif );
+        aif.setFactType("Person");
+        aif.setFactField("name");
+        model.getActionCols().add(aif);
 
-        when( dmo.getFieldType( eq( "Person" ),
-                                eq( "name" ) ) ).thenReturn( DataType.TYPE_STRING );
+        when(dmo.getFieldType(eq("Person"),
+                              eq("name"))).thenReturn(DataType.TYPE_STRING);
 
-        builder.generateDefinition( dtPresenter,
-                                    aif,
-                                    ( String definition ) -> {
-                                        calledBack.set( true );
-                                        assertEquals( "Person fact0 = new Person();<br/>" +
-                                                              "fact0.setName( \"x\" );<br/>" +
-                                                              "insert( fact0 );",
-                                                      definition );
-                                    } );
-        assertTrue( calledBack.get() );
+        builder.generateDefinition(dtPresenter,
+                                   aif,
+                                   (String definition) -> {
+                                       calledBack.set(true);
+                                       assertEquals("Person fact0 = new Person();<br/>" +
+                                                            "fact0.setName( \"x\" );<br/>" +
+                                                            "insert( fact0 );",
+                                                    definition);
+                                   });
+        assertTrue(calledBack.get());
     }
-
 }

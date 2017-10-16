@@ -31,20 +31,20 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.appformer.project.datamodel.oracle.OperatorsOracle;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ConstraintNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.Node;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.impl.ConstraintNodeImpl;
 import org.drools.workbench.screens.guided.dtree.client.resources.i18n.GuidedDecisionTreeConstants;
 import org.drools.workbench.screens.guided.dtree.client.widget.utils.BindingUtilities;
-import org.kie.workbench.common.widgets.client.widget.BindingTextBox;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
+import org.kie.soup.project.datamodel.oracle.OperatorsOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
+import org.kie.workbench.common.widgets.client.widget.BindingTextBox;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
@@ -57,7 +57,7 @@ public class EditConstraintPopup extends BaseModal {
 
     }
 
-    private static EditConstraintBinder uiBinder = GWT.create( EditConstraintBinder.class );
+    private static EditConstraintBinder uiBinder = GWT.create(EditConstraintBinder.class);
 
     private final ConstraintNode node;
     private final ConstraintNode clone;
@@ -73,11 +73,11 @@ public class EditConstraintPopup extends BaseModal {
             //as this represents the boundary between Patterns.
             final Map<String, String> currentValueMap = new HashMap<String, String>();
             Node parent = node.getParent();
-            while ( parent != null ) {
-                if ( parent instanceof ConstraintNode ) {
+            while (parent != null) {
+                if (parent instanceof ConstraintNode) {
                     final ConstraintNode cn = (ConstraintNode) parent;
-                    currentValueMap.put( cn.getFieldName(),
-                                         cn.getValue().toString() );
+                    currentValueMap.put(cn.getFieldName(),
+                                        cn.getValue().toString());
                     parent = parent.getParent();
                 } else {
                     parent = null;
@@ -101,8 +101,8 @@ public class EditConstraintPopup extends BaseModal {
         }
     };
 
-    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( okCommand,
-                                                                                      cancelCommand );
+    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons(okCommand,
+                                                                                     cancelCommand);
 
     @UiField
     Label classNameLabel;
@@ -133,161 +133,161 @@ public class EditConstraintPopup extends BaseModal {
      * of the original node should editing be cancelled by the User. Bindings are checked to be unique
      * in the path from this node being edited to the tree's root. When the User commits the changes
      * the provided callback is executed and this popup closed.
-     * @param node The node to edit
-     * @param oracle DataModelOracle to drive population of popup
+     *
+     * @param node     The node to edit
+     * @param oracle   DataModelOracle to drive population of popup
      * @param callback Callback to execute when the User commits changes
      */
-    public EditConstraintPopup( final ConstraintNode node,
-                                final AsyncPackageDataModelOracle oracle,
-                                final Command callback ) {
-        setTitle( GuidedDecisionTreeConstants.INSTANCE.popupTitleEditConstraint() );
+    public EditConstraintPopup(final ConstraintNode node,
+                               final AsyncPackageDataModelOracle oracle,
+                               final Command callback) {
+        setTitle(GuidedDecisionTreeConstants.INSTANCE.popupTitleEditConstraint());
 
-        setBody( uiBinder.createAndBindUi( this ) );
-        add( footer );
+        setBody(uiBinder.createAndBindUi(this));
+        add(footer);
 
-        bindingTextBox.addKeyPressHandler( new KeyPressHandler() {
+        bindingTextBox.addKeyPressHandler(new KeyPressHandler() {
             @Override
-            public void onKeyPress( final KeyPressEvent event ) {
-                bindingGroup.setValidationState( ValidationState.NONE );
-                bindingHelpInline.setText( "" );
+            public void onKeyPress(final KeyPressEvent event) {
+                bindingGroup.setValidationState(ValidationState.NONE);
+                bindingHelpInline.setText("");
             }
-        } );
+        });
 
-        bindingTextBox.addBlurHandler( new BlurHandler() {
+        bindingTextBox.addBlurHandler(new BlurHandler() {
             @Override
-            public void onBlur( final BlurEvent event ) {
-                clone.setBinding( bindingTextBox.getText() );
+            public void onBlur(final BlurEvent event) {
+                clone.setBinding(bindingTextBox.getText());
             }
-        } );
+        });
 
         this.node = node;
-        this.clone = cloneNode( node );
+        this.clone = cloneNode(node);
         this.oracle = oracle;
         this.callback = callback;
 
-        this.classNameLabel.setText( clone.getClassName() );
-        this.fieldNameLabel.setText( clone.getFieldName() );
-        this.bindingTextBox.setText( clone.getBinding() );
+        this.classNameLabel.setText(clone.getClassName());
+        this.fieldNameLabel.setText(clone.getFieldName());
+        this.bindingTextBox.setText(clone.getBinding());
 
         initialiseOperators();
     }
 
     //Clone node whilst editing to preserve original node should User cancel the edit
-    private ConstraintNode cloneNode( final ConstraintNode node ) {
-        final ConstraintNode clone = new ConstraintNodeImpl( node.getClassName(),
-                                                             node.getFieldName() );
-        if ( node.getOperator() != null ) {
-            clone.setOperator( node.getOperator() );
+    private ConstraintNode cloneNode(final ConstraintNode node) {
+        final ConstraintNode clone = new ConstraintNodeImpl(node.getClassName(),
+                                                            node.getFieldName());
+        if (node.getOperator() != null) {
+            clone.setOperator(node.getOperator());
         }
-        if ( node.getValue() != null ) {
-            clone.setValue( node.getValue() );
+        if (node.getValue() != null) {
+            clone.setValue(node.getValue());
         }
-        clone.setParent( node.getParent() );
-        clone.setBinding( node.getBinding() );
+        clone.setParent(node.getParent());
+        clone.setBinding(node.getBinding());
         return clone;
     }
 
     private void initialiseOperators() {
-        oracle.getOperatorCompletions( clone.getClassName(),
-                                       clone.getFieldName(),
-                                       new Callback<String[]>() {
-                                           @Override
-                                           public void callback( final String[] operators ) {
-                                               operatorListBox.clear();
-                                               operatorListBox.setEnabled( false );
-                                               if ( operators == null ) {
-                                                   return;
-                                               }
+        oracle.getOperatorCompletions(clone.getClassName(),
+                                      clone.getFieldName(),
+                                      new Callback<String[]>() {
+                                          @Override
+                                          public void callback(final String[] operators) {
+                                              operatorListBox.clear();
+                                              operatorListBox.setEnabled(false);
+                                              if (operators == null) {
+                                                  return;
+                                              }
 
-                                               int selectedIndex = 0;
-                                               operatorListBox.setEnabled( true );
-                                               operatorListBox.addItem( GuidedDecisionTreeConstants.INSTANCE.noOperator() );
-                                               for ( int index = 0; index < operators.length; index++ ) {
-                                                   final String operator = operators[ index ];
-                                                   if ( operator.equals( clone.getOperator() ) ) {
-                                                       selectedIndex = index + 1;
-                                                   }
-                                                   operatorListBox.addItem( HumanReadable.getOperatorDisplayName( operator ),
-                                                                            operator );
-                                               }
-                                               operatorListBox.setSelectedIndex( selectedIndex );
-                                               initialiseValue();
-                                           }
-                                       } );
+                                              int selectedIndex = 0;
+                                              operatorListBox.setEnabled(true);
+                                              operatorListBox.addItem(GuidedDecisionTreeConstants.INSTANCE.noOperator());
+                                              for (int index = 0; index < operators.length; index++) {
+                                                  final String operator = operators[index];
+                                                  if (operator.equals(clone.getOperator())) {
+                                                      selectedIndex = index + 1;
+                                                  }
+                                                  operatorListBox.addItem(HumanReadable.getOperatorDisplayName(operator),
+                                                                          operator);
+                                              }
+                                              operatorListBox.setSelectedIndex(selectedIndex);
+                                              initialiseValue();
+                                          }
+                                      });
 
-        operatorListBox.addChangeHandler( new ChangeHandler() {
+        operatorListBox.addChangeHandler(new ChangeHandler() {
             @Override
-            public void onChange( final ChangeEvent event ) {
+            public void onChange(final ChangeEvent event) {
                 final int selectedIndex = operatorListBox.getSelectedIndex();
-                if ( selectedIndex == 0 ) {
-                    clone.setOperator( null );
+                if (selectedIndex == 0) {
+                    clone.setOperator(null);
                 } else {
-                    clone.setOperator( operatorListBox.getValue( selectedIndex ) );
+                    clone.setOperator(operatorListBox.getValue(selectedIndex));
                 }
                 initialiseValue();
             }
-        } );
+        });
     }
 
     private void initialiseValue() {
         //Don't show a ValueEditor if no operator has been selected
-        if ( operatorListBox.getSelectedIndex() == 0 ) {
-            clone.setValue( null );
-            valueGroup.setVisible( false );
+        if (operatorListBox.getSelectedIndex() == 0) {
+            clone.setValue(null);
+            valueGroup.setVisible(false);
             valueHolder.clear();
             return;
         }
 
         //Don't show a ValueEditor if the operator does not require a Value
-        final String operator = operatorListBox.getValue( operatorListBox.getSelectedIndex() );
-        if ( !OperatorsOracle.isValueRequired( operator ) ) {
-            clone.setValue( null );
-            valueGroup.setVisible( false );
+        final String operator = operatorListBox.getValue(operatorListBox.getSelectedIndex());
+        if (!OperatorsOracle.isValueRequired(operator)) {
+            clone.setValue(null);
+            valueGroup.setVisible(false);
             valueHolder.clear();
             return;
         }
 
         //Get an editor for the class, field and operator
-        final Widget editor = valueEditorFactory.getValueEditor( clone.getClassName(),
-                                                                 clone.getFieldName(),
-                                                                 clone,
-                                                                 oracle,
-                                                                 OperatorsOracle.operatorRequiresList( operator ) );
+        final Widget editor = valueEditorFactory.getValueEditor(clone.getClassName(),
+                                                                clone.getFieldName(),
+                                                                clone,
+                                                                oracle,
+                                                                OperatorsOracle.operatorRequiresList(operator));
         valueHolder.clear();
-        if ( editor != null ) {
-            valueGroup.setVisible( true );
-            valueHolder.setWidget( editor );
+        if (editor != null) {
+            valueGroup.setVisible(true);
+            valueHolder.setWidget(editor);
         }
     }
 
     private void onOKButtonClick() {
         boolean hasError = false;
         final String binding = clone.getBinding();
-        if ( !( binding == null || binding.isEmpty() ) ) {
-            if ( !BindingUtilities.isUniqueInPath( binding,
-                                                   clone ) ) {
-                bindingGroup.setValidationState( ValidationState.ERROR );
-                bindingHelpInline.setText( GuidedDecisionTreeConstants.INSTANCE.bindingIsNotUnique() );
+        if (!(binding == null || binding.isEmpty())) {
+            if (!BindingUtilities.isUniqueInPath(binding,
+                                                 clone)) {
+                bindingGroup.setValidationState(ValidationState.ERROR);
+                bindingHelpInline.setText(GuidedDecisionTreeConstants.INSTANCE.bindingIsNotUnique());
                 hasError = true;
             }
         } else {
-            bindingGroup.setValidationState( ValidationState.NONE );
+            bindingGroup.setValidationState(ValidationState.NONE);
         }
 
-        if ( hasError ) {
+        if (hasError) {
             return;
         }
 
         //Copy changes into the original node
-        node.setBinding( clone.getBinding() );
-        node.setOperator( clone.getOperator() );
-        node.setValue( clone.getValue() );
+        node.setBinding(clone.getBinding());
+        node.setOperator(clone.getOperator());
+        node.setValue(clone.getValue());
 
-        if ( callback != null ) {
+        if (callback != null) {
             callback.execute();
         }
 
         hide();
     }
-
 }

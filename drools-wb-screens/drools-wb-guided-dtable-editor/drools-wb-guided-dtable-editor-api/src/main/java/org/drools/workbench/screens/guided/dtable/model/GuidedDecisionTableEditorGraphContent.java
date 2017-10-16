@@ -18,7 +18,7 @@ package org.drools.workbench.screens.guided.dtable.model;
 
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 @Portable
 public class GuidedDecisionTableEditorGraphContent {
@@ -29,12 +29,12 @@ public class GuidedDecisionTableEditorGraphContent {
     public GuidedDecisionTableEditorGraphContent() {
     }
 
-    public GuidedDecisionTableEditorGraphContent( final GuidedDecisionTableEditorGraphModel model,
-                                                  final Overview overview ) {
-        this.model = PortablePreconditions.checkNotNull( "model",
-                                                         model );
-        this.overview = PortablePreconditions.checkNotNull( "overview",
-                                                            overview );
+    public GuidedDecisionTableEditorGraphContent(final GuidedDecisionTableEditorGraphModel model,
+                                                 final Overview overview) {
+        this.model = PortablePreconditions.checkNotNull("model",
+                                                        model);
+        this.overview = PortablePreconditions.checkNotNull("overview",
+                                                           overview);
     }
 
     public GuidedDecisionTableEditorGraphModel getModel() {
@@ -44,5 +44,4 @@ public class GuidedDecisionTableEditorGraphContent {
     public Overview getOverview() {
         return overview;
     }
-
 }

@@ -17,7 +17,6 @@ package org.drools.workbench.services.verifier.plugin.client.builders;
 
 import java.util.List;
 
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
@@ -27,6 +26,7 @@ import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerC
 import org.drools.workbench.services.verifier.api.client.index.Action;
 import org.drools.workbench.services.verifier.api.client.index.Condition;
 import org.drools.workbench.services.verifier.api.client.index.Rule;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class RuleBuilder {
 
@@ -36,19 +36,19 @@ public class RuleBuilder {
     private List<DTCellValue52> row;
     private Rule rule;
 
-    public RuleBuilder( final BuilderFactory builderFactory,
-                        final GuidedDecisionTable52 model,
-                        final AnalyzerConfiguration configuration ) {
-        this.builderFactory = PortablePreconditions.checkNotNull( "builderFactory",
-                                                                  builderFactory );
-        this.model = PortablePreconditions.checkNotNull( "model",
-                                                         model );
-        this.configuration = PortablePreconditions.checkNotNull( "configuration",
-                                                                 configuration );
+    public RuleBuilder(final BuilderFactory builderFactory,
+                       final GuidedDecisionTable52 model,
+                       final AnalyzerConfiguration configuration) {
+        this.builderFactory = PortablePreconditions.checkNotNull("builderFactory",
+                                                                 builderFactory);
+        this.model = PortablePreconditions.checkNotNull("model",
+                                                        model);
+        this.configuration = PortablePreconditions.checkNotNull("configuration",
+                                                                configuration);
     }
 
     public Rule build() throws
-                        BuildException {
+            BuildException {
 
         resolveColumns();
 
@@ -56,47 +56,45 @@ public class RuleBuilder {
     }
 
     private void resolveColumns() throws
-                                   BuildException {
+            BuildException {
 
         int columnIndex = 0;
 
-        for ( final BaseColumn baseColumn : model.getExpandedColumns() ) {
+        for (final BaseColumn baseColumn : model.getExpandedColumns()) {
 
-            if ( baseColumn instanceof ConditionCol52 ) {
+            if (baseColumn instanceof ConditionCol52) {
                 final Condition condition = builderFactory.getConditionBuilder()
-                        .with( (ConditionCol52) baseColumn )
-                        .with( rule )
-                        .with( row )
-                        .with( columnIndex )
+                        .with((ConditionCol52) baseColumn)
+                        .with(rule)
+                        .with(row)
+                        .with(columnIndex)
                         .build();
 
                 rule.getConditions()
-                        .add( condition );
-
-            } else if ( baseColumn instanceof ActionCol52 ) {
+                        .add(condition);
+            } else if (baseColumn instanceof ActionCol52) {
 
                 final Action action = builderFactory.getActionBuilder()
-                        .with( rule )
-                        .with( (ActionCol52) baseColumn )
-                        .with( row )
-                        .with( columnIndex )
+                        .with(rule)
+                        .with((ActionCol52) baseColumn)
+                        .with(row)
+                        .with(columnIndex)
                         .build();
 
                 rule.getActions()
-                        .add( action );
-
+                        .add(action);
             }
 
             columnIndex++;
         }
     }
 
-    public RuleBuilder with( final int rowIndex ) {
+    public RuleBuilder with(final int rowIndex) {
 
         this.row = model.getData()
-                .get( rowIndex );
-        this.rule = new Rule( rowIndex,
-                              configuration );
+                .get(rowIndex);
+        this.rule = new Rule(rowIndex,
+                             configuration);
 
         return this;
     }

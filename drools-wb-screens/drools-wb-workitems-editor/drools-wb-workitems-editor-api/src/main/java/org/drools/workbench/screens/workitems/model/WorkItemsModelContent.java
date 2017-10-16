@@ -19,7 +19,7 @@ import java.util.List;
 
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 @Portable
 public class WorkItemsModelContent {
@@ -31,16 +31,15 @@ public class WorkItemsModelContent {
     public WorkItemsModelContent() {
     }
 
-    public WorkItemsModelContent( final String definition,
-                                  final Overview overview,
-                                  final List<String> workItemImages ) {
-        this.definition = PortablePreconditions.checkNotNull( "definition",
-                                                              definition );
-        this.overview = PortablePreconditions.checkNotNull( "overview",
-                                                              overview );
-        this.workItemImages = PortablePreconditions.checkNotNull( "workItemImages",
-                                                                  workItemImages );
-
+    public WorkItemsModelContent(final String definition,
+                                 final Overview overview,
+                                 final List<String> workItemImages) {
+        this.definition = PortablePreconditions.checkNotNull("definition",
+                                                             definition);
+        this.overview = PortablePreconditions.checkNotNull("overview",
+                                                           overview);
+        this.workItemImages = PortablePreconditions.checkNotNull("workItemImages",
+                                                                 workItemImages);
     }
 
     public String getDefinition() {
@@ -54,5 +53,4 @@ public class WorkItemsModelContent {
     public Overview getOverview() {
         return overview;
     }
-
 }

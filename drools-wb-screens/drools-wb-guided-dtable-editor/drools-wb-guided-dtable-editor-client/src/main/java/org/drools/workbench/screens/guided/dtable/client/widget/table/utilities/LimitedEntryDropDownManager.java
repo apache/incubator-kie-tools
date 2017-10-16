@@ -29,9 +29,9 @@ import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.DropDownDataValueMapProvider;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * Specific implementation for Limited Entry Decision Table definition (i.e. for

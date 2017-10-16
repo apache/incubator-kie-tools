@@ -18,11 +18,11 @@ package org.drools.workbench.screens.guided.scorecard.backend.server;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.appformer.project.datamodel.imports.Import;
-import org.appformer.project.datamodel.imports.Imports;
 import org.drools.workbench.models.guided.scorecard.shared.Characteristic;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.soup.project.datamodel.imports.Import;
+import org.kie.soup.project.datamodel.imports.Imports;
 
 /**
  * A ScoreCardModel Visitor to identify fully qualified class names used by the ScoreCardModel
@@ -33,9 +33,9 @@ public class GuidedScoreCardModelVisitor {
     private final String packageName;
     private final Imports imports;
 
-    public GuidedScoreCardModelVisitor( final ScoreCardModel model ) {
-        this.model = PortablePreconditions.checkNotNull( "model",
-                                                         model );
+    public GuidedScoreCardModelVisitor(final ScoreCardModel model) {
+        this.model = PortablePreconditions.checkNotNull("model",
+                                                        model);
         this.packageName = model.getPackageName();
         this.imports = model.getImports();
     }
@@ -43,36 +43,35 @@ public class GuidedScoreCardModelVisitor {
     public Set<String> getConsumedModelClasses() {
         final Set<String> factTypes = new HashSet<String>();
         //Extract Fact Types from model
-        factTypes.add( model.getFactName() );
-        for ( Characteristic c : model.getCharacteristics() ) {
-            factTypes.add( c.getFact() );
+        factTypes.add(model.getFactName());
+        for (Characteristic c : model.getCharacteristics()) {
+            factTypes.add(c.getFact());
         }
 
         //Convert Fact Types into Fully Qualified Class Names
         final Set<String> fullyQualifiedClassNames = new HashSet<String>();
-        for ( String factType : factTypes ) {
-            fullyQualifiedClassNames.add( convertToFullyQualifiedClassName( factType ) );
+        for (String factType : factTypes) {
+            fullyQualifiedClassNames.add(convertToFullyQualifiedClassName(factType));
         }
 
         return fullyQualifiedClassNames;
     }
 
     //Get the fully qualified class name of the fact type
-    private String convertToFullyQualifiedClassName( final String factType ) {
-        if ( factType.contains( "." ) ) {
+    private String convertToFullyQualifiedClassName(final String factType) {
+        if (factType.contains(".")) {
             return factType;
         }
         String fullyQualifiedClassName = null;
-        for ( Import imp : imports.getImports() ) {
-            if ( imp.getType().endsWith( factType ) ) {
+        for (Import imp : imports.getImports()) {
+            if (imp.getType().endsWith(factType)) {
                 fullyQualifiedClassName = imp.getType();
                 break;
             }
         }
-        if ( fullyQualifiedClassName == null ) {
+        if (fullyQualifiedClassName == null) {
             fullyQualifiedClassName = packageName + "." + factType;
         }
         return fullyQualifiedClassName;
     }
-
 }

@@ -19,8 +19,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Widget;
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.ModelField;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionInsertNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionRetractNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionUpdateNode;
@@ -51,9 +49,11 @@ import org.gwtbootstrap3.client.ui.PanelGroup;
 import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.constants.HeadingSize;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
+import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 public class GuidedDecisionTreePalette extends Panel {
 
@@ -80,124 +80,124 @@ public class GuidedDecisionTreePalette extends Panel {
 
     protected void onAttach() {
         super.onAttach();
-        this.setId( DOM.createUniqueId() );
+        this.setId(DOM.createUniqueId());
     }
 
-    public void setDataModelOracle( final AsyncPackageDataModelOracle oracle,
-                                    final boolean isReadOnly ) {
-        this.oracle = PortablePreconditions.checkNotNull( "oracle",
-                                                          oracle );
+    public void setDataModelOracle(final AsyncPackageDataModelOracle oracle,
+                                   final boolean isReadOnly) {
+        this.oracle = PortablePreconditions.checkNotNull("oracle",
+                                                         oracle);
         clear();
 
         //Add types and constraints
-        for ( String className : oracle.getFactTypes() ) {
-            add( makePanelGroup( className,
-                                 isReadOnly ) );
+        for (String className : oracle.getFactTypes()) {
+            add(makePanelGroup(className,
+                               isReadOnly));
         }
 
         //Add actions
         final GuidedDecisionTreePaletteGroup paletteGroup = new GuidedDecisionTreePaletteGroup();
 
-        if ( oracle.getFactTypes().length > 0 ) {
-            final String className = oracle.getFactTypes()[ 0 ];
-            final ActionInsertNode an1 = new ActionInsertNodeImpl( className );
-            paletteGroup.addStencil( actionInsertNodeFactory,
-                                     stencilBuilder,
-                                     new ActionInsertFactoryHelper( an1,
-                                                                    isReadOnly ),
-                                     isReadOnly );
+        if (oracle.getFactTypes().length > 0) {
+            final String className = oracle.getFactTypes()[0];
+            final ActionInsertNode an1 = new ActionInsertNodeImpl(className);
+            paletteGroup.addStencil(actionInsertNodeFactory,
+                                    stencilBuilder,
+                                    new ActionInsertFactoryHelper(an1,
+                                                                  isReadOnly),
+                                    isReadOnly);
         }
 
         final ActionUpdateNode an2 = new ActionUpdateNodeImpl();
-        paletteGroup.addStencil( actionUpdateNodeFactory,
-                                 stencilBuilder,
-                                 new ActionUpdateFactoryHelper( an2,
-                                                                isReadOnly ),
-                                 isReadOnly );
+        paletteGroup.addStencil(actionUpdateNodeFactory,
+                                stencilBuilder,
+                                new ActionUpdateFactoryHelper(an2,
+                                                              isReadOnly),
+                                isReadOnly);
 
         final ActionRetractNode an3 = new ActionRetractNodeImpl();
-        paletteGroup.addStencil( actionRetractNodeFactory,
-                                 stencilBuilder,
-                                 new ActionRetractFactoryHelper( an3,
-                                                                 isReadOnly ),
-                                 isReadOnly );
+        paletteGroup.addStencil(actionRetractNodeFactory,
+                                stencilBuilder,
+                                new ActionRetractFactoryHelper(an3,
+                                                               isReadOnly),
+                                isReadOnly);
 
-        add( new PanelGroup() {{
+        add(new PanelGroup() {{
             final PanelCollapse collapse = new PanelCollapse() {{
-                add( new PanelBody() {{
-                    add( paletteGroup );
-                }} );
+                add(new PanelBody() {{
+                    add(paletteGroup);
+                }});
             }};
-            add( new PanelHeader() {{
-                setDataToggle( Toggle.COLLAPSE );
-                setDataParent( getId() );
-                setDataTargetWidget( collapse );
-                add( new Heading( HeadingSize.H4 ) {{
-                    setText( GuidedDecisionTreeConstants.INSTANCE.actionsPaletteGroup() );
-                }} );
-            }} );
-            add( collapse );
-        }} );
+            add(new PanelHeader() {{
+                setDataToggle(Toggle.COLLAPSE);
+                setDataParent(getId());
+                setDataTargetWidget(collapse);
+                add(new Heading(HeadingSize.H4) {{
+                    setText(GuidedDecisionTreeConstants.INSTANCE.actionsPaletteGroup());
+                }});
+            }});
+            add(collapse);
+        }});
     }
 
-    private PanelGroup makePanelGroup( final String className,
-                                       final boolean isReadOnly ) {
+    private PanelGroup makePanelGroup(final String className,
+                                      final boolean isReadOnly) {
         return new PanelGroup() {{
             final PanelCollapse collapse = new PanelCollapse() {{
-                add( new PanelBody() {{
-                    add( makeStencils( className, isReadOnly ) );
-                }} );
+                add(new PanelBody() {{
+                    add(makeStencils(className,
+                                     isReadOnly));
+                }});
             }};
-            add( new PanelHeader() {{
-                setDataToggle( Toggle.COLLAPSE );
-                setDataParent( getId() );
-                setDataTargetWidget( collapse );
-                add( new Heading( HeadingSize.H4 ) {{
-                    setText( className );
-                }} );
-            }} );
-            add( collapse );
+            add(new PanelHeader() {{
+                setDataToggle(Toggle.COLLAPSE);
+                setDataParent(getId());
+                setDataTargetWidget(collapse);
+                add(new Heading(HeadingSize.H4) {{
+                    setText(className);
+                }});
+            }});
+            add(collapse);
         }};
     }
 
-    private Widget makeStencils( final String className,
-                                 final boolean isReadOnly ) {
+    private Widget makeStencils(final String className,
+                                final boolean isReadOnly) {
         final GuidedDecisionTreePaletteGroup paletteGroup = new GuidedDecisionTreePaletteGroup();
-        if ( className == null ) {
+        if (className == null) {
             return paletteGroup;
         }
 
-        oracle.getFieldCompletions( className,
-                                    new Callback<ModelField[]>() {
-                                        @Override
-                                        public void callback( final ModelField[] mfs ) {
-                                            if ( mfs == null || mfs.length == 0 ) {
-                                                return;
-                                            }
-                                            final TypeNode tn = new TypeNodeImpl( className );
-                                            paletteGroup.addStencil( typeNodeFactory,
-                                                                     stencilBuilder,
-                                                                     new TypeFactoryHelper( tn,
-                                                                                            isReadOnly ),
-                                                                     isReadOnly );
+        oracle.getFieldCompletions(className,
+                                   new Callback<ModelField[]>() {
+                                       @Override
+                                       public void callback(final ModelField[] mfs) {
+                                           if (mfs == null || mfs.length == 0) {
+                                               return;
+                                           }
+                                           final TypeNode tn = new TypeNodeImpl(className);
+                                           paletteGroup.addStencil(typeNodeFactory,
+                                                                   stencilBuilder,
+                                                                   new TypeFactoryHelper(tn,
+                                                                                         isReadOnly),
+                                                                   isReadOnly);
 
-                                            for ( ModelField mf : mfs ) {
-                                                final String fieldName = mf.getName();
-                                                if ( !fieldName.equals( DataType.TYPE_THIS ) ) {
-                                                    final ConstraintNode cn = new ConstraintNodeImpl( className,
-                                                                                                      fieldName,
-                                                                                                      "",
-                                                                                                      new StringValue( "" ) );
-                                                    paletteGroup.addStencil( constraintNodeFactory,
-                                                                             stencilBuilder,
-                                                                             new ConstraintFactoryHelper( cn,
-                                                                                                          isReadOnly ),
-                                                                             isReadOnly );
-                                                }
-                                            }
-                                        }
-                                    } );
+                                           for (ModelField mf : mfs) {
+                                               final String fieldName = mf.getName();
+                                               if (!fieldName.equals(DataType.TYPE_THIS)) {
+                                                   final ConstraintNode cn = new ConstraintNodeImpl(className,
+                                                                                                    fieldName,
+                                                                                                    "",
+                                                                                                    new StringValue(""));
+                                                   paletteGroup.addStencil(constraintNodeFactory,
+                                                                           stencilBuilder,
+                                                                           new ConstraintFactoryHelper(cn,
+                                                                                                       isReadOnly),
+                                                                           isReadOnly);
+                                               }
+                                           }
+                                       }
+                                   });
         return paletteGroup;
     }
-
 }

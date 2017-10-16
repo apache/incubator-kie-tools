@@ -15,8 +15,6 @@
  */
 package org.drools.workbench.services.verifier.plugin.client.builders;
 
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.OperatorsOracle;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
@@ -43,7 +41,9 @@ import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.OperatorsOracle;
 
 /**
  * Utilities for Columns
@@ -371,6 +371,7 @@ public abstract class ColumnUtilitiesBase {
 
     /**
      * Check is the model uses DSLSentences and hence requires expansion
+     *
      * @return true if any BRLColumn's contain DSLSentence's
      */
     public boolean hasDSLSentences() {
@@ -402,6 +403,7 @@ public abstract class ColumnUtilitiesBase {
      * ConditonCol52 and it is not associated with a Pattern52 in the decision
      * table (e.g. it has been cloned) the overloaded method
      * getDataType(Pattern52, ConditionCol52) should be used.
+     *
      * @param column
      * @return
      */
@@ -438,7 +440,8 @@ public abstract class ColumnUtilitiesBase {
 
     /**
      * Get the Data Type corresponding to a given column
-     * @param pattern Pattern52
+     *
+     * @param pattern   Pattern52
      * @param condition ConditionCol52
      * @return
      */
@@ -464,8 +467,9 @@ public abstract class ColumnUtilitiesBase {
 
     /**
      * Get the Data Type corresponding to a given column
+     *
      * @param pattern Pattern52
-     * @param action ActionSetFieldCol52
+     * @param action  ActionSetFieldCol52
      * @return
      */
     public DataType.DataTypes getDataType(Pattern52 pattern,

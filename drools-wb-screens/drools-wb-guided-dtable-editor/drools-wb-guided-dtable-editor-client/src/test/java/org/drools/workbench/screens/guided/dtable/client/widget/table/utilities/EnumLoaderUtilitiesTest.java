@@ -18,13 +18,13 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.utilities
 
 import java.util.Map;
 
-import org.appformer.project.datamodel.oracle.DropDownData;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.oracle.DropDownData;
 import org.kie.workbench.common.services.shared.enums.EnumDropdownService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -58,126 +58,125 @@ public class EnumLoaderUtilitiesTest {
 
     @Before
     public void setup() {
-        enumDropdownServiceCaller = new CallerMock<>( enumDropdownService );
-        enumLoaderUtilities = spy( new EnumLoaderUtilities( enumDropdownServiceCaller ) );
-        when( presenter.getView() ).thenReturn( view );
+        enumDropdownServiceCaller = new CallerMock<>(enumDropdownService);
+        enumLoaderUtilities = spy(new EnumLoaderUtilities(enumDropdownServiceCaller));
+        when(presenter.getView()).thenReturn(view);
     }
 
     @Test
     public void checkNullDefinition() {
-        final Callback<Map<String, String>> callback = ( result ) -> assertTrue( result.isEmpty() );
-        enumLoaderUtilities.getEnums( null,
-                                      callback,
-                                      presenter,
-                                      onFetchCommand,
-                                      onFetchCompleteCommand );
+        final Callback<Map<String, String>> callback = (result) -> assertTrue(result.isEmpty());
+        enumLoaderUtilities.getEnums(null,
+                                     callback,
+                                     presenter,
+                                     onFetchCommand,
+                                     onFetchCompleteCommand);
 
         assertNoInteractions();
     }
 
     @Test
     public void checkEmptyDefinition() {
-        final Callback<Map<String, String>> callback = ( result ) -> assertTrue( result.isEmpty() );
-        enumLoaderUtilities.getEnums( new DropDownData(),
-                                      callback,
-                                      presenter,
-                                      onFetchCommand,
-                                      onFetchCompleteCommand );
+        final Callback<Map<String, String>> callback = (result) -> assertTrue(result.isEmpty());
+        enumLoaderUtilities.getEnums(new DropDownData(),
+                                     callback,
+                                     presenter,
+                                     onFetchCommand,
+                                     onFetchCompleteCommand);
 
         assertNoInteractions();
     }
 
     private void assertNoInteractions() {
-        verify( enumDropdownService,
-                never() ).loadDropDownExpression( any( Path.class ),
-                                                  any( String[].class ),
-                                                  any( String.class ) );
-        verify( onFetchCommand,
-                never() ).execute();
-        verify( onFetchCompleteCommand,
-                never() ).execute();
-        verify( enumLoaderUtilities,
-                never() ).convertDropDownData( any( String[].class ) );
+        verify(enumDropdownService,
+               never()).loadDropDownExpression(any(Path.class),
+                                               any(String[].class),
+                                               any(String.class));
+        verify(onFetchCommand,
+               never()).execute();
+        verify(onFetchCompleteCommand,
+               never()).execute();
+        verify(enumLoaderUtilities,
+               never()).convertDropDownData(any(String[].class));
     }
 
     @Test
     public void checkFixedListDefinitionWithCaching() {
-        final Callback<Map<String, String>> callback = ( result ) -> {
-            assertFalse( result.isEmpty() );
-            assertEquals( 2,
-                          result.size() );
-            assertTrue( result.containsKey( "one" ) );
-            assertTrue( result.containsKey( "two" ) );
+        final Callback<Map<String, String>> callback = (result) -> {
+            assertFalse(result.isEmpty());
+            assertEquals(2,
+                         result.size());
+            assertTrue(result.containsKey("one"));
+            assertTrue(result.containsKey("two"));
         };
-        final String[] fixedList = { "one", "two" };
-        final DropDownData enumDefinition = DropDownData.create( fixedList );
+        final String[] fixedList = {"one", "two"};
+        final DropDownData enumDefinition = DropDownData.create(fixedList);
 
         //Call twice to check caching
-        enumLoaderUtilities.getEnums( enumDefinition,
-                                      callback,
-                                      presenter,
-                                      onFetchCommand,
-                                      onFetchCompleteCommand );
-        enumLoaderUtilities.getEnums( enumDefinition,
-                                      callback,
-                                      presenter,
-                                      onFetchCommand,
-                                      onFetchCompleteCommand );
+        enumLoaderUtilities.getEnums(enumDefinition,
+                                     callback,
+                                     presenter,
+                                     onFetchCommand,
+                                     onFetchCompleteCommand);
+        enumLoaderUtilities.getEnums(enumDefinition,
+                                     callback,
+                                     presenter,
+                                     onFetchCommand,
+                                     onFetchCompleteCommand);
 
-        verify( enumDropdownService,
-                never() ).loadDropDownExpression( any( Path.class ),
-                                                  any( String[].class ),
-                                                  any( String.class ) );
-        verify( onFetchCommand,
-                never() ).execute();
-        verify( onFetchCompleteCommand,
-                never() ).execute();
-        verify( enumLoaderUtilities,
-                times( 1 ) ).convertDropDownData( any( String[].class ) );
+        verify(enumDropdownService,
+               never()).loadDropDownExpression(any(Path.class),
+                                               any(String[].class),
+                                               any(String.class));
+        verify(onFetchCommand,
+               never()).execute();
+        verify(onFetchCompleteCommand,
+               never()).execute();
+        verify(enumLoaderUtilities,
+               times(1)).convertDropDownData(any(String[].class));
     }
 
     @Test
     public void checkQueryExpressionDefinitionWithCaching() {
-        final Callback<Map<String, String>> callback = ( result ) -> {
-            assertFalse( result.isEmpty() );
-            assertEquals( 2,
-                          result.size() );
-            assertTrue( result.containsKey( "one" ) );
-            assertTrue( result.containsKey( "two" ) );
+        final Callback<Map<String, String>> callback = (result) -> {
+            assertFalse(result.isEmpty());
+            assertEquals(2,
+                         result.size());
+            assertTrue(result.containsKey("one"));
+            assertTrue(result.containsKey("two"));
         };
-        final String[] fixedList = { "one", "two" };
-        final String[] valuePairs = { "param1=a", "param2=b" };
-        final DropDownData enumDefinition = DropDownData.create( "expression",
-                                                                 valuePairs );
+        final String[] fixedList = {"one", "two"};
+        final String[] valuePairs = {"param1=a", "param2=b"};
+        final DropDownData enumDefinition = DropDownData.create("expression",
+                                                                valuePairs);
 
-        when( enumDropdownService.loadDropDownExpression( any( Path.class ),
-                                                          any( String[].class ),
-                                                          any( String.class ) ) ).thenReturn( fixedList );
+        when(enumDropdownService.loadDropDownExpression(any(Path.class),
+                                                        any(String[].class),
+                                                        any(String.class))).thenReturn(fixedList);
 
         //Call twice to check caching
-        enumLoaderUtilities.getEnums( enumDefinition,
-                                      callback,
-                                      presenter,
-                                      onFetchCommand,
-                                      onFetchCompleteCommand );
-        enumLoaderUtilities.getEnums( enumDefinition,
-                                      callback,
-                                      presenter,
-                                      onFetchCommand,
-                                      onFetchCompleteCommand );
+        enumLoaderUtilities.getEnums(enumDefinition,
+                                     callback,
+                                     presenter,
+                                     onFetchCommand,
+                                     onFetchCompleteCommand);
+        enumLoaderUtilities.getEnums(enumDefinition,
+                                     callback,
+                                     presenter,
+                                     onFetchCommand,
+                                     onFetchCompleteCommand);
 
-        verify( enumDropdownService,
-                times( 1 ) ).loadDropDownExpression( any( Path.class ),
-                                                     any( String[].class ),
-                                                     any( String.class ) );
-        verify( onFetchCommand,
-                times( 1 ) ).execute();
-        verify( onFetchCompleteCommand,
-                times( 1 ) ).execute();
-        verify( enumLoaderUtilities,
-                times( 1 ) ).convertDropDownData( any( String[].class ) );
-        verify( view,
-                times( 1 ) ).batch();
+        verify(enumDropdownService,
+               times(1)).loadDropDownExpression(any(Path.class),
+                                                any(String[].class),
+                                                any(String.class));
+        verify(onFetchCommand,
+               times(1)).execute();
+        verify(onFetchCompleteCommand,
+               times(1)).execute();
+        verify(enumLoaderUtilities,
+               times(1)).convertDropDownData(any(String[].class));
+        verify(view,
+               times(1)).batch();
     }
-
 }

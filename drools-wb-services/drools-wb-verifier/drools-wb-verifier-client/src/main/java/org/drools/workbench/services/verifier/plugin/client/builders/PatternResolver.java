@@ -21,7 +21,7 @@ import org.drools.workbench.services.verifier.api.client.index.ObjectType;
 import org.drools.workbench.services.verifier.api.client.index.Pattern;
 import org.drools.workbench.services.verifier.api.client.index.Rule;
 import org.drools.workbench.services.verifier.plugin.client.api.HeaderMetaData;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class PatternResolver {
 

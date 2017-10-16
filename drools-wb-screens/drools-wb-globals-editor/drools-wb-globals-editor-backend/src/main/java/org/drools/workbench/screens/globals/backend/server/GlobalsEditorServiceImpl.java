@@ -19,11 +19,11 @@ package org.drools.workbench.screens.globals.backend.server;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.screens.globals.backend.server.util.GlobalsPersistence;
 import org.drools.workbench.screens.globals.model.GlobalsEditorContent;
 import org.drools.workbench.screens.globals.model.GlobalsModel;
@@ -39,6 +39,7 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
@@ -86,206 +87,198 @@ public class GlobalsEditorServiceImpl
     }
 
     @Inject
-    public GlobalsEditorServiceImpl( final SessionInfo sessionInfo ) {
-        safeSessionInfo = new SafeSessionInfo( sessionInfo );
+    public GlobalsEditorServiceImpl(final SessionInfo sessionInfo) {
+        safeSessionInfo = new SafeSessionInfo(sessionInfo);
     }
 
     @Override
-    public Path create( final Path context,
-                        final String fileName,
-                        final GlobalsModel content,
-                        final String comment ) {
-        return createInternal( context,
-                               fileName,
-                               content,
-                               comment,
-                               false );
+    public Path create(final Path context,
+                       final String fileName,
+                       final GlobalsModel content,
+                       final String comment) {
+        return createInternal(context,
+                              fileName,
+                              content,
+                              comment,
+                              false);
     }
 
     @Override
-    public Path generate( Path context,
-                          String fileName,
-                          GlobalsModel content,
-                          String comment ) {
-        return createInternal( context,
-                               fileName,
-                               content,
-                               comment,
-                               true );
+    public Path generate(Path context,
+                         String fileName,
+                         GlobalsModel content,
+                         String comment) {
+        return createInternal(context,
+                              fileName,
+                              content,
+                              comment,
+                              true);
     }
 
-    private Path createInternal( final Path context,
-                                 final String fileName,
-                                 final GlobalsModel content,
-                                 final String comment,
-                                 final boolean generate ) {
+    private Path createInternal(final Path context,
+                                final String fileName,
+                                final GlobalsModel content,
+                                final String comment,
+                                final boolean generate) {
         try {
-            final Package pkg = projectService.resolvePackage( context );
-            final String packageName = ( pkg == null ? null : pkg.getPackageName() );
-            content.setPackageName( packageName );
+            final Package pkg = projectService.resolvePackage(context);
+            final String packageName = (pkg == null ? null : pkg.getPackageName());
+            content.setPackageName(packageName);
 
-            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
-            final Path newPath = Paths.convert( nioPath );
+            final org.uberfire.java.nio.file.Path nioPath = Paths.convert(context).resolve(fileName);
+            final Path newPath = Paths.convert(nioPath);
 
-            if ( ioService.exists( nioPath ) ) {
-                throw new FileAlreadyExistsException( nioPath.toString() );
+            if (ioService.exists(nioPath)) {
+                throw new FileAlreadyExistsException(nioPath.toString());
             }
 
-            if ( generate ) {
-                Metadata metadata = MetadataBuilder.newMetadata().withGenerated( true ).build();
-                ioService.write( nioPath,
-                                 GlobalsPersistence.getInstance().marshal( content ),
-                                 metadataService.configAttrs( new HashMap<>(),
-                                                              metadata ),
-                                 commentedOptionFactory.makeCommentedOption( comment ) );
+            if (generate) {
+                Metadata metadata = MetadataBuilder.newMetadata().withGenerated(true).build();
+                ioService.write(nioPath,
+                                GlobalsPersistence.getInstance().marshal(content),
+                                metadataService.configAttrs(new HashMap<>(),
+                                                            metadata),
+                                commentedOptionFactory.makeCommentedOption(comment));
             } else {
-                ioService.write( nioPath,
-                                 GlobalsPersistence.getInstance().marshal( content ),
-                                 commentedOptionFactory.makeCommentedOption( comment ) );
+                ioService.write(nioPath,
+                                GlobalsPersistence.getInstance().marshal(content),
+                                commentedOptionFactory.makeCommentedOption(comment));
             }
 
             return newPath;
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public GlobalsModel load( final Path path ) {
+    public GlobalsModel load(final Path path) {
         try {
-            final String content = ioService.readAllString( Paths.convert( path ) );
+            final String content = ioService.readAllString(Paths.convert(path));
 
-            return GlobalsPersistence.getInstance().unmarshal( content );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return GlobalsPersistence.getInstance().unmarshal(content);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public GlobalsEditorContent loadContent( final Path path ) {
-        return super.loadContent( path );
+    public GlobalsEditorContent loadContent(final Path path) {
+        return super.loadContent(path);
     }
 
     @Override
-    protected GlobalsEditorContent constructContent( Path path,
-                                                     Overview overview ) {
+    protected GlobalsEditorContent constructContent(Path path,
+                                                    Overview overview) {
         //De-serialize model
-        final GlobalsModel model = load( path );
-        final ProjectDataModelOracle oracle = dataModelService.getProjectDataModel( path );
-        final String[] fullyQualifiedClassNames = new String[ oracle.getProjectModelFields().size() ];
-        oracle.getProjectModelFields().keySet().toArray( fullyQualifiedClassNames );
+        final GlobalsModel model = load(path);
+        final ProjectDataModelOracle oracle = dataModelService.getProjectDataModel(path);
+        final String[] fullyQualifiedClassNames = new String[oracle.getProjectModelFields().size()];
+        oracle.getProjectModelFields().keySet().toArray(fullyQualifiedClassNames);
 
         //Signal opening to interested parties
-        resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                           safeSessionInfo ) );
+        resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
+                                                         safeSessionInfo));
 
-        return new GlobalsEditorContent( model,
-                                         overview,
-                                         Arrays.asList( fullyQualifiedClassNames ) );
-
+        return new GlobalsEditorContent(model,
+                                        overview,
+                                        Arrays.asList(fullyQualifiedClassNames));
     }
 
     @Override
-    public Path save( final Path resource,
-                      final GlobalsModel content,
-                      final Metadata metadata,
-                      final String comment ) {
+    public Path save(final Path resource,
+                     final GlobalsModel content,
+                     final Metadata metadata,
+                     final String comment) {
         try {
-            final Package pkg = projectService.resolvePackage( resource );
-            final String packageName = ( pkg == null ? null : pkg.getPackageName() );
-            content.setPackageName( packageName );
+            final Package pkg = projectService.resolvePackage(resource);
+            final String packageName = (pkg == null ? null : pkg.getPackageName());
+            content.setPackageName(packageName);
 
-            Metadata currentMetadata = metadataService.getMetadata( resource );
-            ioService.write( Paths.convert( resource ),
-                             GlobalsPersistence.getInstance().marshal( content ),
-                             metadataService.setUpAttributes( resource,
-                                                              metadata ),
-                             commentedOptionFactory.makeCommentedOption( comment ) );
+            Metadata currentMetadata = metadataService.getMetadata(resource);
+            ioService.write(Paths.convert(resource),
+                            GlobalsPersistence.getInstance().marshal(content),
+                            metadataService.setUpAttributes(resource,
+                                                            metadata),
+                            commentedOptionFactory.makeCommentedOption(comment));
 
             //Invalidate Package-level DMO cache as Globals have changed.
-            invalidatePackageDMOEvent.fire( new InvalidateDMOPackageCacheEvent( resource ) );
+            invalidatePackageDMOEvent.fire(new InvalidateDMOPackageCacheEvent(resource));
 
-            fireMetadataSocialEvents( resource, currentMetadata, metadata );
+            fireMetadataSocialEvents(resource, currentMetadata, metadata);
             return resource;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public void delete( final Path path,
-                        final String comment ) {
+    public void delete(final Path path,
+                       final String comment) {
         try {
-            deleteService.delete( path,
-                                  comment );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            deleteService.delete(path,
+                                 comment);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Path rename( final Path path,
-                        final String newName,
-                        final String comment ) {
+    public Path rename(final Path path,
+                       final String newName,
+                       final String comment) {
         try {
-            return renameService.rename( path,
-                                         newName,
-                                         comment );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return renameService.rename(path,
+                                        newName,
+                                        comment);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Path copy( final Path path,
-                      final String newName,
-                      final String comment ) {
+    public Path copy(final Path path,
+                     final String newName,
+                     final String comment) {
         try {
-            return copyService.copy( path,
-                                     newName,
-                                     comment );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return copyService.copy(path,
+                                    newName,
+                                    comment);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Path copy( final Path path,
-                      final String newName,
-                      final Path targetDirectory,
-                      final String comment ) {
+    public Path copy(final Path path,
+                     final String newName,
+                     final Path targetDirectory,
+                     final String comment) {
         try {
-            return copyService.copy( path,
-                                     newName,
-                                     targetDirectory,
-                                     comment );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return copyService.copy(path,
+                                    newName,
+                                    targetDirectory,
+                                    comment);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public String toSource( final Path path,
-                            final GlobalsModel model ) {
-        return sourceServices.getServiceFor( Paths.convert( path ) ).getSource( Paths.convert( path ),
-                                                                                GlobalsPersistence.getInstance().marshal( model ) );
+    public String toSource(final Path path,
+                           final GlobalsModel model) {
+        return sourceServices.getServiceFor(Paths.convert(path)).getSource(Paths.convert(path),
+                                                                           GlobalsPersistence.getInstance().marshal(model));
     }
 
     @Override
-    public List<ValidationMessage> validate( final Path path,
-                                             final GlobalsModel content ) {
+    public List<ValidationMessage> validate(final Path path,
+                                            final GlobalsModel content) {
         try {
-            return genericValidator.validate( path,
-                                              GlobalsPersistence.getInstance().marshal( content ) );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return genericValidator.validate(path,
+                                             GlobalsPersistence.getInstance().marshal(content));
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 }

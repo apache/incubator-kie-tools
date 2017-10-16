@@ -18,7 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.events.cd
 import java.util.Optional;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class DecisionTableSelectedEvent {
 

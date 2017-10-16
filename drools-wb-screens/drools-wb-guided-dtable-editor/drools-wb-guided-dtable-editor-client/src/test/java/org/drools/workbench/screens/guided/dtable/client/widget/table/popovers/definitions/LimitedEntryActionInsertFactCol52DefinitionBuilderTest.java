@@ -18,13 +18,13 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.popovers.
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.oracle.DataType;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
@@ -35,48 +35,47 @@ public class LimitedEntryActionInsertFactCol52DefinitionBuilderTest extends Base
 
     @Override
     protected ColumnDefinitionBuilder getBuilder() {
-        return new LimitedEntryActionInsertFactCol52DefinitionBuilder( serviceCaller );
+        return new LimitedEntryActionInsertFactCol52DefinitionBuilder(serviceCaller);
     }
 
     @Test
     public void checkColumnType() {
-        assertEquals( LimitedEntryActionInsertFactCol52.class,
-                      builder.getSupportedColumnType() );
+        assertEquals(LimitedEntryActionInsertFactCol52.class,
+                     builder.getSupportedColumnType());
     }
 
     @Test
     public void unknownColumnTypeDoesNotTriggerBuilder() {
         final BaseColumn column = new RowNumberCol52();
-        builder.generateDefinition( dtPresenter,
-                                    column,
-                                    ( String definition ) -> {
-                                        fail( "RowNumberCol52 should not be handled by ActionInsertFactCol52DefinitionBuilder" );
-                                    } );
+        builder.generateDefinition(dtPresenter,
+                                   column,
+                                   (String definition) -> {
+                                       fail("RowNumberCol52 should not be handled by ActionInsertFactCol52DefinitionBuilder");
+                                   });
     }
 
     @Test
     public void simpleAction() {
-        final AtomicBoolean calledBack = new AtomicBoolean( false );
+        final AtomicBoolean calledBack = new AtomicBoolean(false);
 
         final LimitedEntryActionInsertFactCol52 aif = new LimitedEntryActionInsertFactCol52();
-        aif.setFactType( "Person" );
-        aif.setFactField( "name" );
-        aif.setValue( new DTCellValue52( "Michael" ) );
-        model.getActionCols().add( aif );
+        aif.setFactType("Person");
+        aif.setFactField("name");
+        aif.setValue(new DTCellValue52("Michael"));
+        model.getActionCols().add(aif);
 
-        when( dmo.getFieldType( eq( "Person" ),
-                                eq( "name" ) ) ).thenReturn( DataType.TYPE_STRING );
+        when(dmo.getFieldType(eq("Person"),
+                              eq("name"))).thenReturn(DataType.TYPE_STRING);
 
-        builder.generateDefinition( dtPresenter,
-                                    aif,
-                                    ( String definition ) -> {
-                                        calledBack.set( true );
-                                        assertEquals( "Person fact0 = new Person();<br/>" +
-                                                              "fact0.setName( \"Michael\" );<br/>" +
-                                                              "insert( fact0 );",
-                                                      definition );
-                                    } );
-        assertTrue( calledBack.get() );
+        builder.generateDefinition(dtPresenter,
+                                   aif,
+                                   (String definition) -> {
+                                       calledBack.set(true);
+                                       assertEquals("Person fact0 = new Person();<br/>" +
+                                                            "fact0.setName( \"Michael\" );<br/>" +
+                                                            "insert( fact0 );",
+                                                    definition);
+                                   });
+        assertTrue(calledBack.get());
     }
-
 }

@@ -23,14 +23,14 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.DateConverter;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.screens.guided.dtable.model.JVMDateConverter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.DateConverter;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 
 import static org.junit.Assert.*;
@@ -44,9 +44,9 @@ public class CellUtilitiesConvertToDateTest {
 
     private CellUtilities cellUtilities;
 
-    public CellUtilitiesConvertToDateTest( final Object expected,
-                                           final Object value,
-                                           final boolean isOtherwise ) {
+    public CellUtilitiesConvertToDateTest(final Object expected,
+                                          final Object value,
+                                          final boolean isOtherwise) {
         this.expected = expected;
         this.value = value;
         this.isOtherwise = isOtherwise;
@@ -59,40 +59,40 @@ public class CellUtilitiesConvertToDateTest {
 
     @Parameterized.Parameters
     public static Collection testParameters() {
-        ApplicationPreferences.setUp( new HashMap<String, String>() {{
-            put( ApplicationPreferences.DATE_FORMAT,
-                 "dd-MM-yyyy" );
-        }} );
+        ApplicationPreferences.setUp(new HashMap<String, String>() {{
+            put(ApplicationPreferences.DATE_FORMAT,
+                "dd-MM-yyyy");
+        }});
 
         final DateConverter dateConverter = JVMDateConverter.getInstance();
-        final Date date = dateConverter.parse( "28-06-2016" );
+        final Date date = dateConverter.parse("28-06-2016");
 
-        CellUtilities.injectDateConvertor( dateConverter );
+        CellUtilities.injectDateConvertor(dateConverter);
 
-        return Arrays.asList( new Object[][]{
-                { null, new BigDecimal( "1" ), false },
-                { null, new BigInteger( "2" ), false },
-                { null, new Byte( "3" ), false },
-                { null, new Double( "4.0" ), false },
-                { null, new Float( "5.0" ), false },
-                { null, new Integer( "6" ), false },
-                { null, new Long( "7" ), false },
-                { null, new Short( "8" ), false },
-                { null, "9", false },
-                { null, true, false },
-                { date, date, false },
-                { null, "banana", false },
-                { date, "28-06-2016", false },
-                { null, null, true }
-        } );
+        return Arrays.asList(new Object[][]{
+                {null, new BigDecimal("1"), false},
+                {null, new BigInteger("2"), false},
+                {null, new Byte("3"), false},
+                {null, new Double("4.0"), false},
+                {null, new Float("5.0"), false},
+                {null, new Integer("6"), false},
+                {null, new Long("7"), false},
+                {null, new Short("8"), false},
+                {null, "9", false},
+                {null, true, false},
+                {date, date, false},
+                {null, "banana", false},
+                {date, "28-06-2016", false},
+                {null, null, true}
+        });
     }
 
     @Test
     public void conversion() {
-        final DTCellValue52 dcv = new DTCellValue52( value );
-        dcv.setOtherwise( isOtherwise );
-        assertEquals( expected,
-                      cellUtilities.convertToDate( dcv ) );
+        final DTCellValue52 dcv = new DTCellValue52(value);
+        dcv.setOtherwise(isOtherwise);
+        assertEquals(expected,
+                     cellUtilities.convertToDate(dcv));
     }
 
     @Test
@@ -104,5 +104,4 @@ public class CellUtilitiesConvertToDateTest {
         assertEquals(expected,
                      dcv.getDateValue());
     }
-
 }

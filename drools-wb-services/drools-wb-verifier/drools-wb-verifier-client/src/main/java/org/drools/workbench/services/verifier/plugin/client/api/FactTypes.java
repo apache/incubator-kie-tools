@@ -18,28 +18,28 @@ package org.drools.workbench.services.verifier.plugin.client.api;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 @Portable
 public class FactTypes {
 
-    private final  Set<FactType> factTypes;
+    private final Set<FactType> factTypes;
 
     public FactTypes() {
-        this( new HashSet<>() );
+        this(new HashSet<>());
     }
 
-    public FactTypes( @MapsTo("factTypes") final Set<FactType> factTypes ) {
-        this.factTypes = PortablePreconditions.checkNotNull( "factTypes",
-                                                             factTypes );
+    public FactTypes(@MapsTo("factTypes") final Set<FactType> factTypes) {
+        this.factTypes = PortablePreconditions.checkNotNull("factTypes",
+                                                            factTypes);
     }
 
-    public FactType getFactType( final String factTypeName ) {
-        for ( final FactType factType : factTypes ) {
-            if ( factType.getName()
-                    .equals( factTypeName ) ) {
+    public FactType getFactType(final String factTypeName) {
+        for (final FactType factType : factTypes) {
+            if (factType.getName()
+                    .equals(factTypeName)) {
                 return factType;
             }
         }
@@ -51,22 +51,22 @@ public class FactTypes {
         return factTypes;
     }
 
-    public String getFieldType( final String factTypeName,
-                                final String fieldName ) {
+    public String getFieldType(final String factTypeName,
+                               final String fieldName) {
 
-        PortablePreconditions.checkNotNull( "factTypeName",
-                                            factTypeName );
-        PortablePreconditions.checkNotNull( "fieldName",
-                                            fieldName );
+        PortablePreconditions.checkNotNull("factTypeName",
+                                           factTypeName);
+        PortablePreconditions.checkNotNull("fieldName",
+                                           fieldName);
 
-        final FactType factType = getFactType( factTypeName );
-        if ( factType == null ) {
+        final FactType factType = getFactType(factTypeName);
+        if (factType == null) {
             return null;
         }
 
-        for ( final Field field : factType.getFields() ) {
-            if ( field.getFieldName()
-                    .equals( fieldName ) ) {
+        for (final Field field : factType.getFields()) {
+            if (field.getFieldName()
+                    .equals(fieldName)) {
                 return field.getType();
             }
         }
@@ -74,29 +74,27 @@ public class FactTypes {
         return null;
     }
 
-
     @Override
     public String toString() {
 
         StringBuilder builder = new StringBuilder();
 
-        for ( final FactType key : factTypes ) {
-            builder.append( key.getName() );
-            builder.append( "{" );
+        for (final FactType key : factTypes) {
+            builder.append(key.getName());
+            builder.append("{");
 
-            for ( final Field field : key.getFields() ) {
-                builder.append( field.toString() );
-                builder.append( ", " );
+            for (final Field field : key.getFields()) {
+                builder.append(field.toString());
+                builder.append(", ");
             }
-            builder.append( "}" );
-
+            builder.append("}");
         }
 
         return builder.toString();
     }
 
-    public void add( final FactType factType ) {
-        factTypes.add( factType );
+    public void add(final FactType factType) {
+        factTypes.add(factType);
     }
 
     @Portable
@@ -106,8 +104,8 @@ public class FactTypes {
 
         private final Set<Field> fields;
 
-        public FactType( @MapsTo("name") final String name,
-                         @MapsTo("fields") final Set<Field> fields ) {
+        public FactType(@MapsTo("name") final String name,
+                        @MapsTo("fields") final Set<Field> fields) {
             this.name = name;
             this.fields = fields;
         }
@@ -127,8 +125,8 @@ public class FactTypes {
         private final String fieldName;
         private final String type;
 
-        public Field( @MapsTo("fieldName") final String fieldName,
-                      @MapsTo("type") final String type ) {
+        public Field(@MapsTo("fieldName") final String fieldName,
+                     @MapsTo("type") final String type) {
 
             this.fieldName = fieldName;
             this.type = type;

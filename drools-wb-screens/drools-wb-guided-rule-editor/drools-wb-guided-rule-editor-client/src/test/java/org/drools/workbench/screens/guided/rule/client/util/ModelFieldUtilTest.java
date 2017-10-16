@@ -15,12 +15,12 @@
  */
 package org.drools.workbench.screens.guided.rule.client.util;
 
-import org.appformer.project.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.rule.ActionFieldList;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 

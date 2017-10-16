@@ -15,9 +15,9 @@
  */
 package org.drools.workbench.services.verifier.plugin.client.builders;
 
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.drools.workbench.services.verifier.api.client.index.Column;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class ColumnBuilder {
 
@@ -25,19 +25,18 @@ public class ColumnBuilder {
 
     private int columnIndex;
 
-    public ColumnBuilder( final AnalyzerConfiguration configuration ) {
-        this.configuration = PortablePreconditions.checkNotNull( "configuration",
-                                                                 configuration);
+    public ColumnBuilder(final AnalyzerConfiguration configuration) {
+        this.configuration = PortablePreconditions.checkNotNull("configuration",
+                                                                configuration);
     }
 
     public Column build() {
-        return new Column( columnIndex,
-                           configuration );
+        return new Column(columnIndex,
+                          configuration);
     }
 
-    public ColumnBuilder with( final int columnIndex ) {
+    public ColumnBuilder with(final int columnIndex) {
         this.columnIndex = columnIndex;
         return this;
     }
-
 }

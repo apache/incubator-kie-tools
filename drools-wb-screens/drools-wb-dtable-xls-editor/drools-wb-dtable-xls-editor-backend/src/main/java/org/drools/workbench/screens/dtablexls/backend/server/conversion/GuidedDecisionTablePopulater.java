@@ -26,8 +26,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
-import org.appformer.project.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.ActionRetractFact;
 import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.datamodel.rule.IPattern;
@@ -53,6 +51,8 @@ import org.drools.workbench.screens.dtablexls.backend.server.conversion.builders
 import org.drools.workbench.screens.dtablexls.backend.server.conversion.builders.LiteralValueBuilder;
 import org.drools.workbench.screens.dtablexls.backend.server.conversion.builders.ParameterUtilities;
 import org.drools.workbench.screens.dtablexls.backend.server.conversion.builders.ParameterizedValueBuilder;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
 
 import static org.drools.workbench.screens.dtablexls.backend.server.conversion.DTCellValueUtilities.assertDTCellValue;
 

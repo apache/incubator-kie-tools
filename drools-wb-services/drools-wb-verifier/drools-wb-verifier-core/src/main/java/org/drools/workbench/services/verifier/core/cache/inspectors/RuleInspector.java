@@ -50,7 +50,7 @@ import org.drools.workbench.services.verifier.core.cache.inspectors.condition.Co
 import org.drools.workbench.services.verifier.core.cache.inspectors.condition.ConditionsInspectorMultiMap;
 import org.drools.workbench.services.verifier.core.checks.base.Check;
 import org.drools.workbench.services.verifier.core.checks.base.CheckStorage;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class RuleInspector
         implements IsRedundant,

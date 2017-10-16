@@ -25,7 +25,6 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.Widget;
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -33,6 +32,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidge
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.uberfire.ext.widgets.common.client.common.DatePicker;
@@ -43,7 +43,7 @@ import org.uberfire.ext.widgets.common.client.common.DatePicker;
 public class DefaultValueWidgetFactory {
 
     private static final String DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
-    private static final DateTimeFormat format = DateTimeFormat.getFormat( DATE_FORMAT );
+    private static final DateTimeFormat format = DateTimeFormat.getFormat(DATE_FORMAT);
 
     /**
      * BZ-996932: Default value changed event handler interface.
@@ -52,7 +52,7 @@ public class DefaultValueWidgetFactory {
      */
     public interface DefaultValueChangedEventHandler {
 
-        void onDefaultValueChanged( DefaultValueChangedEvent event );
+        void onDefaultValueChanged(DefaultValueChangedEvent event);
     }
 
     /**
@@ -65,8 +65,8 @@ public class DefaultValueWidgetFactory {
         private final DTCellValue52 originalDefaultValue;
         private final DTCellValue52 editedDefaultValue;
 
-        public DefaultValueChangedEvent( DTCellValue52 originalDefaultValue,
-                                         DTCellValue52 editedDefaultValue ) {
+        public DefaultValueChangedEvent(DTCellValue52 originalDefaultValue,
+                                        DTCellValue52 editedDefaultValue) {
             this.originalDefaultValue = originalDefaultValue;
             this.editedDefaultValue = editedDefaultValue;
         }
@@ -78,198 +78,189 @@ public class DefaultValueWidgetFactory {
         public DTCellValue52 getEditedDefaultValue() {
             return editedDefaultValue;
         }
-
     }
 
     // BZ-996932: Added value change notifications.
-    public static Widget getDefaultValueWidget( final AttributeCol52 ac,
-                                                final boolean isReadOnly,
-                                                final DefaultValueChangedEventHandler defaultValueChangedEventHandler ) {
+    public static Widget getDefaultValueWidget(final AttributeCol52 ac,
+                                               final boolean isReadOnly,
+                                               final DefaultValueChangedEventHandler defaultValueChangedEventHandler) {
         Widget editor = null;
         final String attributeName = ac.getAttribute();
-        if ( attributeName.equals( RuleAttributeWidget.RULEFLOW_GROUP_ATTR )
-                || attributeName.equals( RuleAttributeWidget.AGENDA_GROUP_ATTR )
-                || attributeName.equals( RuleAttributeWidget.ACTIVATION_GROUP_ATTR )
-                || attributeName.equals( RuleAttributeWidget.TIMER_ATTR )
-                || attributeName.equals( RuleAttributeWidget.CALENDARS_ATTR ) ) {
-            final TextBox tb = TextBoxFactory.getTextBox( DataType.TYPE_STRING );
-            if ( ac.getDefaultValue() == null ) {
-                ac.setDefaultValue( new DTCellValue52( "" ) );
+        if (attributeName.equals(RuleAttributeWidget.RULEFLOW_GROUP_ATTR)
+                || attributeName.equals(RuleAttributeWidget.AGENDA_GROUP_ATTR)
+                || attributeName.equals(RuleAttributeWidget.ACTIVATION_GROUP_ATTR)
+                || attributeName.equals(RuleAttributeWidget.TIMER_ATTR)
+                || attributeName.equals(RuleAttributeWidget.CALENDARS_ATTR)) {
+            final TextBox tb = TextBoxFactory.getTextBox(DataType.TYPE_STRING);
+            if (ac.getDefaultValue() == null) {
+                ac.setDefaultValue(new DTCellValue52(""));
             }
             final DTCellValue52 defaultValue = ac.getDefaultValue();
-            tb.setValue( defaultValue.getStringValue() );
-            tb.setEnabled( !isReadOnly );
-            if ( !isReadOnly ) {
-                tb.addValueChangeHandler( new ValueChangeHandler<String>() {
+            tb.setValue(defaultValue.getStringValue());
+            tb.setEnabled(!isReadOnly);
+            if (!isReadOnly) {
+                tb.addValueChangeHandler(new ValueChangeHandler<String>() {
 
-                    public void onValueChange( ValueChangeEvent<String> event ) {
+                    public void onValueChange(ValueChangeEvent<String> event) {
                         DTCellValue52 editedDefaultValue = defaultValue.cloneDefaultValueCell();
-                        editedDefaultValue.setStringValue( tb.getValue() );
-                        defaultValueChangedEventHandler.onDefaultValueChanged( new DefaultValueChangedEvent( defaultValue,
-                                                                                                             editedDefaultValue ) );
+                        editedDefaultValue.setStringValue(tb.getValue());
+                        defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(defaultValue,
+                                                                                                           editedDefaultValue));
                     }
-
-                } );
+                });
             }
             editor = tb;
-
-        } else if ( attributeName.equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
-            final TextBox tb = TextBoxFactory.getTextBox( DataType.TYPE_NUMERIC_INTEGER );
-            if ( ac.getDefaultValue() == null ) {
-                ac.setDefaultValue( new DTCellValue52( 0 ) );
+        } else if (attributeName.equals(RuleAttributeWidget.SALIENCE_ATTR)) {
+            final TextBox tb = TextBoxFactory.getTextBox(DataType.TYPE_NUMERIC_INTEGER);
+            if (ac.getDefaultValue() == null) {
+                ac.setDefaultValue(new DTCellValue52(0));
             } else {
-                assertIntegerDefaultValue( ac.getDefaultValue() );
+                assertIntegerDefaultValue(ac.getDefaultValue());
             }
             final DTCellValue52 defaultValue = ac.getDefaultValue();
             final Integer numericValue = (Integer) defaultValue.getNumericValue();
-            tb.setValue( numericValue == null ? "" : numericValue.toString() );
-            tb.setEnabled( !isReadOnly );
-            if ( !isReadOnly ) {
-                tb.addValueChangeHandler( new ValueChangeHandler<String>() {
+            tb.setValue(numericValue == null ? "" : numericValue.toString());
+            tb.setEnabled(!isReadOnly);
+            if (!isReadOnly) {
+                tb.addValueChangeHandler(new ValueChangeHandler<String>() {
 
-                    public void onValueChange( ValueChangeEvent<String> event ) {
+                    public void onValueChange(ValueChangeEvent<String> event) {
                         DTCellValue52 editedDefaultValue = defaultValue.cloneDefaultValueCell();
                         try {
-                            editedDefaultValue.setNumericValue( Integer.valueOf( event.getValue() ) );
-                        } catch ( NumberFormatException nfe ) {
-                            editedDefaultValue.setNumericValue( 0 );
-                            tb.setValue( "0" );
+                            editedDefaultValue.setNumericValue(Integer.valueOf(event.getValue()));
+                        } catch (NumberFormatException nfe) {
+                            editedDefaultValue.setNumericValue(0);
+                            tb.setValue("0");
                         } finally {
-                            defaultValueChangedEventHandler.onDefaultValueChanged( new DefaultValueChangedEvent( defaultValue,
-                                                                                                                 editedDefaultValue ) );
+                            defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(defaultValue,
+                                                                                                               editedDefaultValue));
                         }
                     }
-
-                } );
+                });
             }
             editor = tb;
-
-        } else if ( attributeName.equals( RuleAttributeWidget.DURATION_ATTR ) ) {
-            final TextBox tb = TextBoxFactory.getTextBox( DataType.TYPE_NUMERIC_LONG );
-            if ( ac.getDefaultValue() == null ) {
-                ac.setDefaultValue( new DTCellValue52( 0L ) );
+        } else if (attributeName.equals(RuleAttributeWidget.DURATION_ATTR)) {
+            final TextBox tb = TextBoxFactory.getTextBox(DataType.TYPE_NUMERIC_LONG);
+            if (ac.getDefaultValue() == null) {
+                ac.setDefaultValue(new DTCellValue52(0L));
             } else {
-                assertLongDefaultValue( ac.getDefaultValue() );
+                assertLongDefaultValue(ac.getDefaultValue());
             }
             final DTCellValue52 defaultValue = ac.getDefaultValue();
             final Long numericValue = (Long) defaultValue.getNumericValue();
-            tb.setValue( numericValue == null ? "" : numericValue.toString() );
-            tb.setEnabled( !isReadOnly );
-            if ( !isReadOnly ) {
-                tb.addValueChangeHandler( new ValueChangeHandler<String>() {
+            tb.setValue(numericValue == null ? "" : numericValue.toString());
+            tb.setEnabled(!isReadOnly);
+            if (!isReadOnly) {
+                tb.addValueChangeHandler(new ValueChangeHandler<String>() {
 
-                    public void onValueChange( ValueChangeEvent<String> event ) {
+                    public void onValueChange(ValueChangeEvent<String> event) {
                         DTCellValue52 editedDefaultValue = defaultValue.cloneDefaultValueCell();
                         try {
-                            editedDefaultValue.setNumericValue( Long.valueOf( event.getValue() ) );
-                        } catch ( NumberFormatException nfe ) {
-                            editedDefaultValue.setNumericValue( 0L );
-                            tb.setValue( "0" );
+                            editedDefaultValue.setNumericValue(Long.valueOf(event.getValue()));
+                        } catch (NumberFormatException nfe) {
+                            editedDefaultValue.setNumericValue(0L);
+                            tb.setValue("0");
                         } finally {
-                            defaultValueChangedEventHandler.onDefaultValueChanged( new DefaultValueChangedEvent( defaultValue,
-                                                                                                                 editedDefaultValue ) );
+                            defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(defaultValue,
+                                                                                                               editedDefaultValue));
                         }
                     }
-
-                } );
+                });
             }
             editor = tb;
-
-        } else if ( attributeName.equals( RuleAttributeWidget.NO_LOOP_ATTR )
-                || attributeName.equals( RuleAttributeWidget.LOCK_ON_ACTIVE_ATTR )
-                || attributeName.equals( RuleAttributeWidget.AUTO_FOCUS_ATTR )
-                || attributeName.equals( RuleAttributeWidget.ENABLED_ATTR )
-                || attributeName.equals( GuidedDecisionTable52.NEGATE_RULE_ATTR ) ) {
+        } else if (attributeName.equals(RuleAttributeWidget.NO_LOOP_ATTR)
+                || attributeName.equals(RuleAttributeWidget.LOCK_ON_ACTIVE_ATTR)
+                || attributeName.equals(RuleAttributeWidget.AUTO_FOCUS_ATTR)
+                || attributeName.equals(RuleAttributeWidget.ENABLED_ATTR)
+                || attributeName.equals(GuidedDecisionTable52.NEGATE_RULE_ATTR)) {
             final CheckBox cb = new CheckBox();
-            if ( ac.getDefaultValue() == null ) {
-                ac.setDefaultValue( new DTCellValue52( Boolean.FALSE ) );
+            if (ac.getDefaultValue() == null) {
+                ac.setDefaultValue(new DTCellValue52(Boolean.FALSE));
             } else {
-                assertBooleanDefaultValue( ac.getDefaultValue() );
+                assertBooleanDefaultValue(ac.getDefaultValue());
             }
             final DTCellValue52 defaultValue = ac.getDefaultValue();
             final Boolean booleanValue = defaultValue.getBooleanValue();
-            cb.setEnabled( !isReadOnly );
-            if ( booleanValue == null ) {
-                cb.setValue( false );
-                defaultValue.setBooleanValue( Boolean.FALSE );
+            cb.setEnabled(!isReadOnly);
+            if (booleanValue == null) {
+                cb.setValue(false);
+                defaultValue.setBooleanValue(Boolean.FALSE);
             } else {
-                cb.setValue( booleanValue );
+                cb.setValue(booleanValue);
             }
 
-            cb.addClickHandler( new ClickHandler() {
-                public void onClick( ClickEvent event ) {
+            cb.addClickHandler(new ClickHandler() {
+                public void onClick(ClickEvent event) {
                     DTCellValue52 editedDefaultValue = defaultValue.cloneDefaultValueCell();
-                    editedDefaultValue.setBooleanValue( cb.getValue() );
-                    defaultValueChangedEventHandler.onDefaultValueChanged( new DefaultValueChangedEvent( defaultValue,
-                                                                                                         editedDefaultValue ) );
+                    editedDefaultValue.setBooleanValue(cb.getValue());
+                    defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(defaultValue,
+                                                                                                       editedDefaultValue));
                 }
-            } );
+            });
             editor = cb;
-
-        } else if ( attributeName.equals( RuleAttributeWidget.DATE_EFFECTIVE_ATTR )
-                || attributeName.equals( RuleAttributeWidget.DATE_EXPIRES_ATTR ) ) {
-            if ( ac.getDefaultValue() == null ) {
-                ac.setDefaultValue( new DTCellValue52( new Date() ) );
+        } else if (attributeName.equals(RuleAttributeWidget.DATE_EFFECTIVE_ATTR)
+                || attributeName.equals(RuleAttributeWidget.DATE_EXPIRES_ATTR)) {
+            if (ac.getDefaultValue() == null) {
+                ac.setDefaultValue(new DTCellValue52(new Date()));
             } else {
-                assertDateDefaultValue( ac.getDefaultValue() );
+                assertDateDefaultValue(ac.getDefaultValue());
             }
             final DTCellValue52 defaultValue = ac.getDefaultValue();
-            if ( isReadOnly ) {
-                final TextBox tb = TextBoxFactory.getTextBox( DataType.TYPE_STRING );
-                tb.setValue( format.format( defaultValue.getDateValue() ) );
-                tb.setEnabled( false );
+            if (isReadOnly) {
+                final TextBox tb = TextBoxFactory.getTextBox(DataType.TYPE_STRING);
+                tb.setValue(format.format(defaultValue.getDateValue()));
+                tb.setEnabled(false);
             } else {
                 final DatePicker datePicker = new DatePicker();
 
                 // Wire up update handler
-                datePicker.addChangeDateHandler( ( e ) -> {
+                datePicker.addChangeDateHandler((e) -> {
                     DTCellValue52 editedDefaultValue = defaultValue.cloneDefaultValueCell();
-                    editedDefaultValue.setDateValue( datePicker.getValue() );
-                    defaultValueChangedEventHandler.onDefaultValueChanged( new DefaultValueChangedEvent( defaultValue,
-                                                                                                         editedDefaultValue ) );
-                } );
+                    editedDefaultValue.setDateValue(datePicker.getValue());
+                    defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(defaultValue,
+                                                                                                       editedDefaultValue));
+                });
 
                 final Date dateValue = defaultValue.getDateValue();
-                datePicker.setFormat( DATE_FORMAT );
-                datePicker.setValue( dateValue );
+                datePicker.setFormat(DATE_FORMAT);
+                datePicker.setValue(dateValue);
                 editor = datePicker;
             }
-
-        } else if ( attributeName.equals( RuleAttributeWidget.DIALECT_ATTR ) ) {
+        } else if (attributeName.equals(RuleAttributeWidget.DIALECT_ATTR)) {
             final ListBox lb = new ListBox();
-            lb.addItem( RuleAttributeWidget.DIALECTS[ 0 ] );
-            lb.addItem( RuleAttributeWidget.DIALECTS[ 1 ] );
-            if ( ac.getDefaultValue() == null ) {
-                ac.setDefaultValue( new DTCellValue52( RuleAttributeWidget.DIALECTS[ 1 ] ) );
+            lb.addItem(RuleAttributeWidget.DIALECTS[0]);
+            lb.addItem(RuleAttributeWidget.DIALECTS[1]);
+            if (ac.getDefaultValue() == null) {
+                ac.setDefaultValue(new DTCellValue52(RuleAttributeWidget.DIALECTS[1]));
             }
             final DTCellValue52 defaultValue = ac.getDefaultValue();
             final String stringValue = defaultValue.getStringValue();
-            lb.setEnabled( !isReadOnly );
-            if ( !isReadOnly ) {
-                lb.addChangeHandler( new ChangeHandler() {
+            lb.setEnabled(!isReadOnly);
+            if (!isReadOnly) {
+                lb.addChangeHandler(new ChangeHandler() {
                     @Override
-                    public void onChange( ChangeEvent event ) {
+                    public void onChange(ChangeEvent event) {
                         final int selectedIndex = lb.getSelectedIndex();
-                        if ( selectedIndex < 0 ) {
+                        if (selectedIndex < 0) {
                             return;
                         }
                         DTCellValue52 editedDefaultValue = defaultValue.cloneDefaultValueCell();
-                        editedDefaultValue.setStringValue( lb.getValue( selectedIndex ) );
-                        defaultValueChangedEventHandler.onDefaultValueChanged( new DefaultValueChangedEvent( defaultValue,
-                                                                                                             editedDefaultValue ) );
+                        editedDefaultValue.setStringValue(lb.getValue(selectedIndex));
+                        defaultValueChangedEventHandler.onDefaultValueChanged(new DefaultValueChangedEvent(defaultValue,
+                                                                                                           editedDefaultValue));
                     }
-                } );
+                });
             }
-            if ( stringValue == null || stringValue.isEmpty() ) {
-                lb.setSelectedIndex( 1 );
-                defaultValue.setStringValue( RuleAttributeWidget.DIALECTS[ 1 ] );
-            } else if ( stringValue.equals( RuleAttributeWidget.DIALECTS[ 0 ] ) ) {
-                lb.setSelectedIndex( 0 );
-            } else if ( stringValue.equals( RuleAttributeWidget.DIALECTS[ 1 ] ) ) {
-                lb.setSelectedIndex( 1 );
+            if (stringValue == null || stringValue.isEmpty()) {
+                lb.setSelectedIndex(1);
+                defaultValue.setStringValue(RuleAttributeWidget.DIALECTS[1]);
+            } else if (stringValue.equals(RuleAttributeWidget.DIALECTS[0])) {
+                lb.setSelectedIndex(0);
+            } else if (stringValue.equals(RuleAttributeWidget.DIALECTS[1])) {
+                lb.setSelectedIndex(1);
             } else {
-                lb.setSelectedIndex( 1 );
-                defaultValue.setStringValue( RuleAttributeWidget.DIALECTS[ 1 ] );
+                lb.setSelectedIndex(1);
+                defaultValue.setStringValue(RuleAttributeWidget.DIALECTS[1]);
             }
             editor = lb;
         }
@@ -277,43 +268,42 @@ public class DefaultValueWidgetFactory {
     }
 
     //Legacy DefaultValues always used String to store the value; so attempt to convert it
-    private static void assertIntegerDefaultValue( final DTCellValue52 dcv ) {
-        if ( dcv.getNumericValue() == null ) {
+    private static void assertIntegerDefaultValue(final DTCellValue52 dcv) {
+        if (dcv.getNumericValue() == null) {
             try {
-                dcv.setNumericValue( Integer.valueOf( dcv.getStringValue() ) );
-            } catch ( NumberFormatException nfe ) {
-                dcv.setNumericValue( 0 );
+                dcv.setNumericValue(Integer.valueOf(dcv.getStringValue()));
+            } catch (NumberFormatException nfe) {
+                dcv.setNumericValue(0);
             }
         }
     }
 
     //Legacy DefaultValues always used String to store the value; so attempt to convert it
-    private static void assertLongDefaultValue( final DTCellValue52 dcv ) {
-        if ( dcv.getNumericValue() == null ) {
+    private static void assertLongDefaultValue(final DTCellValue52 dcv) {
+        if (dcv.getNumericValue() == null) {
             try {
-                dcv.setNumericValue( Long.valueOf( dcv.getStringValue() ) );
-            } catch ( NumberFormatException nfe ) {
-                dcv.setNumericValue( 0L );
+                dcv.setNumericValue(Long.valueOf(dcv.getStringValue()));
+            } catch (NumberFormatException nfe) {
+                dcv.setNumericValue(0L);
             }
         }
     }
 
     //Legacy DefaultValues always used String to store the value; so attempt to convert it
-    private static void assertBooleanDefaultValue( final DTCellValue52 dcv ) {
-        if ( dcv.getBooleanValue() == null ) {
-            dcv.setBooleanValue( Boolean.valueOf( dcv.getStringValue() ) );
+    private static void assertBooleanDefaultValue(final DTCellValue52 dcv) {
+        if (dcv.getBooleanValue() == null) {
+            dcv.setBooleanValue(Boolean.valueOf(dcv.getStringValue()));
         }
     }
 
     //Legacy DefaultValues always used String to store the value; so attempt to convert it
-    private static void assertDateDefaultValue( final DTCellValue52 dcv ) {
-        if ( dcv.getDateValue() == null ) {
+    private static void assertDateDefaultValue(final DTCellValue52 dcv) {
+        if (dcv.getDateValue() == null) {
             try {
-                dcv.setDateValue( format.parse( dcv.getStringValue() ) );
-            } catch ( IllegalArgumentException eae ) {
-                dcv.setDateValue( new Date() );
+                dcv.setDateValue(format.parse(dcv.getStringValue()));
+            } catch (IllegalArgumentException eae) {
+                dcv.setDateValue(new Date());
             }
         }
     }
-
 }

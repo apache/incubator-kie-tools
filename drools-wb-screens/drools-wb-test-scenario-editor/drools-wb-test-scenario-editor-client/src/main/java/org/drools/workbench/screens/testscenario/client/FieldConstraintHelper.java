@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.appformer.project.datamodel.oracle.DropDownData;
 import org.drools.workbench.models.testscenarios.shared.CollectionFieldData;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Fact;
@@ -28,6 +27,7 @@ import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.drools.workbench.models.testscenarios.shared.Field;
 import org.drools.workbench.models.testscenarios.shared.FieldData;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
+import org.kie.soup.project.datamodel.oracle.DropDownData;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 
 public class FieldConstraintHelper {
@@ -41,12 +41,12 @@ public class FieldConstraintHelper {
 
     private boolean parentIsAList = false;
 
-    public FieldConstraintHelper( final Scenario scenario,
-                                  final ExecutionTrace executionTrace,
-                                  final AsyncPackageDataModelOracle oracle,
-                                  final String factType,
-                                  final Field field,
-                                  final Fact fact ) {
+    public FieldConstraintHelper(final Scenario scenario,
+                                 final ExecutionTrace executionTrace,
+                                 final AsyncPackageDataModelOracle oracle,
+                                 final String factType,
+                                 final Field field,
+                                 final Fact fact) {
         this.scenario = scenario;
         this.executionTrace = executionTrace;
         this.oracle = oracle;
@@ -56,11 +56,11 @@ public class FieldConstraintHelper {
     }
 
     boolean isThereABoundVariableToSet() {
-        List<?> vars = scenario.getFactNamesInScope( executionTrace, true );
+        List<?> vars = scenario.getFactNamesInScope(executionTrace, true);
 
-        if ( vars.size() > 0 ) {
-            for ( int i = 0; i < vars.size(); i++ ) {
-                if ( scenario.getFactTypes().get( vars.get( i ) ).getType().equals( resolveFieldType() ) ) {
+        if (vars.size() > 0) {
+            for (int i = 0; i < vars.size(); i++) {
+                if (scenario.getFactTypes().get(vars.get(i)).getType().equals(resolveFieldType())) {
                     return true;
                 }
             }
@@ -70,23 +70,23 @@ public class FieldConstraintHelper {
     }
 
     String resolveFieldType() {
-        String className = oracle.getFieldClassName( factType, field.getName() );
+        String className = oracle.getFieldClassName(factType, field.getName());
 
-        if ( className == null ) {
+        if (className == null) {
             return null;
-        } else if ( className.equals( "Collection" ) ) {
+        } else if (className.equals("Collection")) {
             return oracle.getParametricFieldType(
                     factType,
-                    field.getName() );
+                    field.getName());
         } else {
             return className;
         }
     }
 
     boolean isItAList() {
-        String fieldType = oracle.getFieldType( factType, field.getName() );
+        String fieldType = oracle.getFieldType(factType, field.getName());
 
-        if ( fieldType != null && fieldType.equals( "Collection" ) ) {
+        if (fieldType != null && fieldType.equals("Collection")) {
             return true;
         }
 
@@ -94,88 +94,86 @@ public class FieldConstraintHelper {
     }
 
     List<String> getFactNamesInScope() {
-        return this.scenario.getFactNamesInScope( this.executionTrace, true );
+        return this.scenario.getFactNamesInScope(this.executionTrace, true);
     }
 
-    FactData getFactTypeByVariableName( final String var ) {
-        return this.scenario.getFactTypes().get( var );
+    FactData getFactTypeByVariableName(final String var) {
+        return this.scenario.getFactTypes().get(var);
     }
 
     DropDownData getEnums() {
         Map<String, String> currentValueMap = new HashMap<String, String>();
-        for ( Field f : fact.getFieldData() ) {
-            if ( f instanceof FieldData ) {
+        for (Field f : fact.getFieldData()) {
+            if (f instanceof FieldData) {
                 FieldData otherFieldData = (FieldData) f;
-                currentValueMap.put( otherFieldData.getName(),
-                                     otherFieldData.getValue() );
+                currentValueMap.put(otherFieldData.getName(),
+                                    otherFieldData.getValue());
             }
         }
         return oracle.getEnums(
                 factType,
                 field.getName(),
-                currentValueMap );
+                currentValueMap);
     }
 
     String getFieldType() {
-        return oracle.getFieldType( factType,
-                                    field.getName() );
+        return oracle.getFieldType(factType,
+                                   field.getName());
     }
 
-    public FieldDataConstraintEditor createFieldDataConstraintEditor( final FieldData fieldData ) {
-        return new FieldDataConstraintEditor( factType,
-                                              fieldData,
-                                              fact,
-                                              oracle,
-                                              scenario,
-                                              executionTrace );
+    public FieldDataConstraintEditor createFieldDataConstraintEditor(final FieldData fieldData) {
+        return new FieldDataConstraintEditor(factType,
+                                             fieldData,
+                                             fact,
+                                             oracle,
+                                             scenario,
+                                             executionTrace);
     }
 
-    public void replaceFieldWith( final Field newField ) {
-        for ( Field factsField : fact.getFieldData() ) {
-            if ( factsField instanceof CollectionFieldData ) {
+    public void replaceFieldWith(final Field newField) {
+        for (Field factsField : fact.getFieldData()) {
+            if (factsField instanceof CollectionFieldData) {
                 CollectionFieldData fData = (CollectionFieldData) factsField;
 
                 List<FieldData> list = fData.getCollectionFieldList();
                 boolean aNewItem = true;
-                for ( FieldData aField : list ) {
-                    if ( aField.getNature() == 0 ) {
+                for (FieldData aField : list) {
+                    if (aField.getNature() == 0) {
                         aNewItem = false;
-                        aField.setNature( ( (FieldData) newField ).getNature() );
+                        aField.setNature(((FieldData) newField).getNature());
                     }
                 }
-                if ( aNewItem && list.contains(field)) {
-                    list.set( list.indexOf(field),
-                              (FieldData) newField );
+                if (aNewItem && list.contains(field)) {
+                    list.set(list.indexOf(field),
+                             (FieldData) newField);
                 }
             }
-
         }
-        if ( fact.getFieldData().contains( field ) ) {
-            fact.getFieldData().set( fact.getFieldData().indexOf( field ),
-                                     newField );
+        if (fact.getFieldData().contains(field)) {
+            fact.getFieldData().set(fact.getFieldData().indexOf(field),
+                                    newField);
             field = newField;
         }
     }
 
-    public boolean isDependentEnum( final FieldConstraintHelper child ) {
-        if ( !fact.getType().equals( child.fact.getType() ) ) {
+    public boolean isDependentEnum(final FieldConstraintHelper child) {
+        if (!fact.getType().equals(child.fact.getType())) {
             return false;
         }
-        return oracle.isDependentEnum( fact.getType(),
-                                       field.getName(),
-                                       child.field.getName() );
+        return oracle.isDependentEnum(fact.getType(),
+                                      field.getName(),
+                                      child.field.getName());
     }
 
     public boolean isTheParentAList() {
         return parentIsAList;
     }
 
-    public void setParentIsAList( final boolean parentIsAList ) {
+    public void setParentIsAList(final boolean parentIsAList) {
         this.parentIsAList = parentIsAList;
     }
 
     public AsyncPackageDataModelOracle getDataModelOracle() {
         return this.oracle;
     }
-
 }

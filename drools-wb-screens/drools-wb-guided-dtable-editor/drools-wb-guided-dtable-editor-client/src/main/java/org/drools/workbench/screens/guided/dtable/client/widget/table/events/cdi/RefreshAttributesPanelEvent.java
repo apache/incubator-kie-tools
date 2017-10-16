@@ -19,17 +19,19 @@ import java.util.List;
 
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class RefreshAttributesPanelEvent {
 
     private final GuidedDecisionTableView.Presenter presenter;
     private final List<AttributeCol52> columns;
 
-    public RefreshAttributesPanelEvent( final GuidedDecisionTableView.Presenter presenter,
-                                        final List<AttributeCol52> columns ) {
-        this.presenter = PortablePreconditions.checkNotNull( "presenter", presenter );
-        this.columns = PortablePreconditions.checkNotNull( "columns", columns );
+    public RefreshAttributesPanelEvent(final GuidedDecisionTableView.Presenter presenter,
+                                       final List<AttributeCol52> columns) {
+        this.presenter = PortablePreconditions.checkNotNull("presenter",
+                                                            presenter);
+        this.columns = PortablePreconditions.checkNotNull("columns",
+                                                          columns);
     }
 
     public GuidedDecisionTableView.Presenter getPresenter() {
@@ -39,5 +41,4 @@ public class RefreshAttributesPanelEvent {
     public List<AttributeCol52> getColumns() {
         return columns;
     }
-
 }

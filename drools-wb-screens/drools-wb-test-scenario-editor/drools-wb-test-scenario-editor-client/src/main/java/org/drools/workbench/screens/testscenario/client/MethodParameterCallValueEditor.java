@@ -33,8 +33,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.DropDownData;
 import org.drools.workbench.models.datamodel.rule.FieldNature;
 import org.drools.workbench.models.datamodel.rule.FieldNatureType;
 import org.drools.workbench.models.testscenarios.shared.CallFieldValue;
@@ -48,6 +46,8 @@ import org.drools.workbench.screens.testscenario.client.resources.images.TestSce
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.DropDownData;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
@@ -69,14 +69,14 @@ public class MethodParameterCallValueEditor extends Composite {
     private AsyncPackageDataModelOracle oracle;
     private ExecutionTrace ex;
 
-    public MethodParameterCallValueEditor( final CallFieldValue val,
-                                           final DropDownData enums,
-                                           final ExecutionTrace ex,
-                                           final Scenario model,
-                                           final String parameterType,
-                                           final AsyncPackageDataModelOracle oracle ) {
-        if ( val.type.equals( DataType.TYPE_BOOLEAN ) ) {
-            this.enums = DropDownData.create( new String[]{ "true", "false" } );
+    public MethodParameterCallValueEditor(final CallFieldValue val,
+                                          final DropDownData enums,
+                                          final ExecutionTrace ex,
+                                          final Scenario model,
+                                          final String parameterType,
+                                          final AsyncPackageDataModelOracle oracle) {
+        if (val.type.equals(DataType.TYPE_BOOLEAN)) {
+            this.enums = DropDownData.create(new String[]{"true", "false"});
         } else {
             this.enums = enums;
         }
@@ -88,192 +88,184 @@ public class MethodParameterCallValueEditor extends Composite {
         this.oracle = oracle;
 
         refresh();
-        initWidget( root );
+        initWidget(root);
     }
 
     private void refresh() {
         root.clear();
-        if ( enums != null && ( enums.getFixedList() != null || enums.getQueryExpression() != null ) ) {
-            root.add( new EnumDropDown( methodParameter.value,
-                                        new DropDownValueChanged() {
-                                            public void valueChanged( String newText,
-                                                                      String newValue ) {
-                                                methodParameter.value = newValue;
-                                            }
-                                        },
-                                        enums,
-                                        oracle.getResourcePath() ) );
+        if (enums != null && (enums.getFixedList() != null || enums.getQueryExpression() != null)) {
+            root.add(new EnumDropDown(methodParameter.value,
+                                      new DropDownValueChanged() {
+                                          public void valueChanged(String newText,
+                                                                   String newValue) {
+                                              methodParameter.value = newValue;
+                                          }
+                                      },
+                                      enums,
+                                      oracle.getResourcePath()));
         } else {
 
-            if ( methodParameter.nature == FieldNatureType.TYPE_UNDEFINED ) {
+            if (methodParameter.nature == FieldNatureType.TYPE_UNDEFINED) {
                 // we have a blank slate..
                 // have to give them a choice
-                root.add( choice() );
+                root.add(choice());
             } else {
-                if ( methodParameter.nature == FieldNatureType.TYPE_VARIABLE ) {
-                    ListBox list = boundVariable( methodParameter );
-                    root.add( list );
+                if (methodParameter.nature == FieldNatureType.TYPE_VARIABLE) {
+                    ListBox list = boundVariable(methodParameter);
+                    root.add(list);
                 } else {
-                    TextBox box = boundTextBox( this.methodParameter );
-                    root.add( box );
+                    TextBox box = boundTextBox(this.methodParameter);
+                    root.add(box);
                 }
-
             }
-
         }
     }
 
-    private ListBox boundVariable( final FieldNature c ) {
+    private ListBox boundVariable(final FieldNature c) {
         /*
          * If there is a bound variable that is the same type of the current
          * variable type, then propose a list
          */
         final ListBox listVariable = new ListBox();
-        List<String> vars = model.getFactNamesInScope( ex,
-                                                       true );
-        for ( String v : vars ) {
-            FactData factData = (FactData) model.getFactTypes().get( v );
-            if ( factData.getType().equals( this.methodParameter.type ) ) {
+        List<String> vars = model.getFactNamesInScope(ex,
+                                                      true);
+        for (String v : vars) {
+            FactData factData = (FactData) model.getFactTypes().get(v);
+            if (factData.getType().equals(this.methodParameter.type)) {
                 // First selection is empty
-                if ( listVariable.getItemCount() == 0 ) {
-                    listVariable.addItem( "..." );
+                if (listVariable.getItemCount() == 0) {
+                    listVariable.addItem("...");
                 }
 
-                listVariable.addItem( "=" + v );
+                listVariable.addItem("=" + v);
             }
         }
-        if ( methodParameter.value.equals( "=" ) ) {
-            listVariable.setSelectedIndex( 0 );
+        if (methodParameter.value.equals("=")) {
+            listVariable.setSelectedIndex(0);
         } else {
-            for ( int i = 0; i < listVariable.getItemCount(); i++ ) {
-                if ( listVariable.getItemText( i ).equals( methodParameter.value ) ) {
-                    listVariable.setSelectedIndex( i );
+            for (int i = 0; i < listVariable.getItemCount(); i++) {
+                if (listVariable.getItemText(i).equals(methodParameter.value)) {
+                    listVariable.setSelectedIndex(i);
                 }
             }
         }
-        if ( listVariable.getItemCount() > 0 ) {
+        if (listVariable.getItemCount() > 0) {
 
-            listVariable.addChangeHandler( new ChangeHandler() {
+            listVariable.addChangeHandler(new ChangeHandler() {
 
-                public void onChange( ChangeEvent event ) {
-                    methodParameter.value = listVariable.getValue( listVariable.getSelectedIndex() );
+                public void onChange(ChangeEvent event) {
+                    methodParameter.value = listVariable.getValue(listVariable.getSelectedIndex());
                     refresh();
                 }
-            } );
-
+            });
         }
         return listVariable;
     }
 
-    private TextBox boundTextBox( final CallFieldValue c ) {
+    private TextBox boundTextBox(final CallFieldValue c) {
 
-        final TextBox box = TextBoxFactory.getTextBox( methodParameter.type );
-        box.setStyleName( "constraint-value-Editor" );
-        if ( c.value == null ) {
-            box.setText( "" );
+        final TextBox box = TextBoxFactory.getTextBox(methodParameter.type);
+        box.setStyleName("constraint-value-Editor");
+        if (c.value == null) {
+            box.setText("");
         } else {
-            if ( c.value.trim().equals( "" ) ) {
+            if (c.value.trim().equals("")) {
                 c.value = "";
             }
-            box.setText( c.value );
+            box.setText(c.value);
         }
 
-        if ( c.value == null || c.value.length() < 5 ) {
-            ( (InputElement) box.getElement().cast() ).setSize( 6 );
+        if (c.value == null || c.value.length() < 5) {
+            ((InputElement) box.getElement().cast()).setSize(6);
         } else {
-            ( (InputElement) box.getElement().cast() ).setSize( c.value.length() - 1 );
+            ((InputElement) box.getElement().cast()).setSize(c.value.length() - 1);
         }
 
-        box.addValueChangeHandler( new ValueChangeHandler<String>() {
+        box.addValueChangeHandler(new ValueChangeHandler<String>() {
 
-            public void onValueChange( final ValueChangeEvent<String> event ) {
+            public void onValueChange(final ValueChangeEvent<String> event) {
                 c.value = event.getValue();
             }
+        });
 
-        } );
+        box.addKeyUpHandler(new KeyUpHandler() {
 
-        box.addKeyUpHandler( new KeyUpHandler() {
-
-            public void onKeyUp( KeyUpEvent event ) {
-                ( (InputElement) box.getElement().cast() ).setSize( box.getText().length() );
+            public void onKeyUp(KeyUpEvent event) {
+                ((InputElement) box.getElement().cast()).setSize(box.getText().length());
             }
-        } );
+        });
 
         return box;
     }
 
     private Widget choice() {
         Image clickme = CommonAltedImages.INSTANCE.Edit();
-        clickme.addClickHandler( new ClickHandler() {
+        clickme.addClickHandler(new ClickHandler() {
 
-            public void onClick( ClickEvent event ) {
-                showTypeChoice( (Widget) event.getSource() );
+            public void onClick(ClickEvent event) {
+                showTypeChoice((Widget) event.getSource());
             }
-        } );
+        });
         return clickme;
     }
 
-    protected void showTypeChoice( final Widget w ) {
-        final FormStylePopup form = new FormStylePopup( TestScenarioAltedImages.INSTANCE.Wizard(),
-                                                        TestScenarioConstants.INSTANCE.FieldValue() );
-        Button lit = new Button( TestScenarioConstants.INSTANCE.LiteralValue() );
-        lit.addClickHandler( new ClickHandler() {
+    protected void showTypeChoice(final Widget w) {
+        final FormStylePopup form = new FormStylePopup(TestScenarioAltedImages.INSTANCE.Wizard(),
+                                                       TestScenarioConstants.INSTANCE.FieldValue());
+        Button lit = new Button(TestScenarioConstants.INSTANCE.LiteralValue());
+        lit.addClickHandler(new ClickHandler() {
 
-            public void onClick( ClickEvent event ) {
+            public void onClick(ClickEvent event) {
                 methodParameter.nature = FieldData.TYPE_LITERAL;
                 methodParameter.value = " ";
                 refresh();
                 form.hide();
             }
-
-        } );
-        form.addAttribute( TestScenarioConstants.INSTANCE.LiteralValue() + ":",
-                           widgets( lit,
-                                    new InfoPopup( TestScenarioConstants.INSTANCE.Literal(),
-                                                   TestScenarioConstants.INSTANCE.LiteralValTip() ) ) );
-        form.addRow( new HTML( "<hr/>" ) );
-        form.addRow( new SmallLabel( TestScenarioConstants.INSTANCE.AdvancedSection() ) );
+        });
+        form.addAttribute(TestScenarioConstants.INSTANCE.LiteralValue() + ":",
+                          widgets(lit,
+                                  new InfoPopup(TestScenarioConstants.INSTANCE.Literal(),
+                                                TestScenarioConstants.INSTANCE.LiteralValTip())));
+        form.addRow(new HTML("<hr/>"));
+        form.addRow(new SmallLabel(TestScenarioConstants.INSTANCE.AdvancedSection()));
 
         /*
          * If there is a bound variable that is the same type of the current
          * variable type, then show a button
          */
 
-        List<String> vars = model.getFactNamesInScope( ex,
-                                                       true );
-        for ( String v : vars ) {
+        List<String> vars = model.getFactNamesInScope(ex,
+                                                      true);
+        for (String v : vars) {
             boolean createButton = false;
-            Button variable = new Button( TestScenarioConstants.INSTANCE.BoundVariable() );
-            FactData factData = (FactData) model.getFactTypes().get( v );
-            if ( factData.getType().equals( this.parameterType ) ) {
+            Button variable = new Button(TestScenarioConstants.INSTANCE.BoundVariable());
+            FactData factData = (FactData) model.getFactTypes().get(v);
+            if (factData.getType().equals(this.parameterType)) {
                 createButton = true;
             }
-            if ( createButton == true ) {
-                form.addAttribute( TestScenarioConstants.INSTANCE.BoundVariable() + ":",
-                                   variable );
-                variable.addClickHandler( new ClickHandler() {
+            if (createButton == true) {
+                form.addAttribute(TestScenarioConstants.INSTANCE.BoundVariable() + ":",
+                                  variable);
+                variable.addClickHandler(new ClickHandler() {
 
-                    public void onClick( ClickEvent event ) {
+                    public void onClick(ClickEvent event) {
                         methodParameter.nature = FieldData.TYPE_VARIABLE;
                         methodParameter.value = "=";
                         refresh();
                         form.hide();
                     }
-
-                } );
+                });
                 break;
             }
-
         }
         form.show();
     }
 
-    private Widget widgets( final Button lit,
-                            final InfoPopup popup ) {
+    private Widget widgets(final Button lit,
+                           final InfoPopup popup) {
         HorizontalPanel h = new HorizontalPanel();
-        h.add( lit );
-        h.add( popup );
+        h.add(lit);
+        h.add(popup);
         return h;
     }
-
 }

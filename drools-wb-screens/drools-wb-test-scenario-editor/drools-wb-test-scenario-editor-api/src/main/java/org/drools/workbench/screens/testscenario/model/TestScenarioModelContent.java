@@ -18,8 +18,8 @@ package org.drools.workbench.screens.testscenario.model;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 @Portable
 public class TestScenarioModelContent {
@@ -38,13 +38,13 @@ public class TestScenarioModelContent {
             final String packageName,
             final PackageDataModelOracleBaselinePayload dataModel) {
         this.overview = PortablePreconditions.checkNotNull("overview",
-                overview);
+                                                           overview);
         this.scenario = PortablePreconditions.checkNotNull("scenario",
-                scenario);
+                                                           scenario);
         this.packageName = PortablePreconditions.checkNotNull("packageName",
-                packageName);
+                                                              packageName);
         this.dataModel = PortablePreconditions.checkNotNull("dataModel",
-                dataModel);
+                                                            dataModel);
     }
 
     public Scenario getScenario() {

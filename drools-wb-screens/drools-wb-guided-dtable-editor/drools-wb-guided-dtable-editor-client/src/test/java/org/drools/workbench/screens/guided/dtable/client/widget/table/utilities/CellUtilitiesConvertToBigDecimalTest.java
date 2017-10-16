@@ -22,12 +22,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 import static org.junit.Assert.*;
 

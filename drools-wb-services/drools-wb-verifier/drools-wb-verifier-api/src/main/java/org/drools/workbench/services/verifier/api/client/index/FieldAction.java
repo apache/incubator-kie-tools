@@ -22,35 +22,35 @@ import org.drools.workbench.services.verifier.api.client.index.keys.Key;
 import org.drools.workbench.services.verifier.api.client.index.keys.Values;
 import org.drools.workbench.services.verifier.api.client.index.matchers.FieldMatchers;
 import org.drools.workbench.services.verifier.api.client.maps.KeyDefinition;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class FieldAction
         extends Action {
 
-    private static final KeyDefinition FIELD                 = KeyDefinition.newKeyDefinition().withId( "field" ).build();
-    private static final KeyDefinition FACT_TYPE__FIELD_NAME = KeyDefinition.newKeyDefinition().withId( "factType.fieldName" ).build();
+    private static final KeyDefinition FIELD = KeyDefinition.newKeyDefinition().withId("field").build();
+    private static final KeyDefinition FACT_TYPE__FIELD_NAME = KeyDefinition.newKeyDefinition().withId("factType.fieldName").build();
 
-    private final Field              field;
+    private final Field field;
     private final DataType.DataTypes dataType;
 
-    public FieldAction( final Field field,
-                        final Column column,
-                        final DataType.DataTypes dataType,
-                        final Values values,
-                        final AnalyzerConfiguration configuration ) {
-        super( column,
-               ActionSuperType.FIELD_ACTION,
-               values,
-               configuration );
+    public FieldAction(final Field field,
+                       final Column column,
+                       final DataType.DataTypes dataType,
+                       final Values values,
+                       final AnalyzerConfiguration configuration) {
+        super(column,
+              ActionSuperType.FIELD_ACTION,
+              values,
+              configuration);
 
-        this.field = PortablePreconditions.checkNotNull( "field",
-                                                         field );
-        this.dataType = PortablePreconditions.checkNotNull( "dataType",
-                                                            dataType );
+        this.field = PortablePreconditions.checkNotNull("field",
+                                                        field);
+        this.dataType = PortablePreconditions.checkNotNull("dataType",
+                                                           dataType);
     }
 
     public static FieldMatchers field() {
-        return new FieldMatchers( FIELD );
+        return new FieldMatchers(FIELD);
     }
 
     public Field getField() {
@@ -63,29 +63,29 @@ public class FieldAction
 
     public static KeyDefinition[] keyDefinitions() {
         final ArrayList<KeyDefinition> keyDefinitions = new ArrayList<>();
-        for ( final KeyDefinition key : Action.keyDefinitions() ) {
-            keyDefinitions.add( key );
+        for (final KeyDefinition key : Action.keyDefinitions()) {
+            keyDefinitions.add(key);
         }
 
-        keyDefinitions.add( FIELD );
-        keyDefinitions.add( FACT_TYPE__FIELD_NAME );
+        keyDefinitions.add(FIELD);
+        keyDefinitions.add(FACT_TYPE__FIELD_NAME);
 
-        return keyDefinitions.toArray( new KeyDefinition[keyDefinitions.size()] );
+        return keyDefinitions.toArray(new KeyDefinition[keyDefinitions.size()]);
     }
 
     @Override
     public Key[] keys() {
         final ArrayList<Key> keys = new ArrayList<>();
 
-        for ( final Key key : super.keys() ) {
-            keys.add( key );
+        for (final Key key : super.keys()) {
+            keys.add(key);
         }
 
-        keys.add( new Key( FIELD,
-                           field ) );
-        keys.add( new Key( FACT_TYPE__FIELD_NAME,
-                           field.getFactType() + "." + field.getName() ) );
+        keys.add(new Key(FIELD,
+                         field));
+        keys.add(new Key(FACT_TYPE__FIELD_NAME,
+                         field.getFactType() + "." + field.getName()));
 
-        return keys.toArray( new Key[keys.size()] );
+        return keys.toArray(new Key[keys.size()]);
     }
 }

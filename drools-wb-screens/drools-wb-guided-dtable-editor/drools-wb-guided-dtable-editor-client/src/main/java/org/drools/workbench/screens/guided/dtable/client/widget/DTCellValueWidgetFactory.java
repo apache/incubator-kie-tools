@@ -29,9 +29,6 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.Widget;
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.DropDownData;
-import org.appformer.project.datamodel.oracle.OperatorsOracle;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
@@ -48,6 +45,9 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.DropDownData;
+import org.kie.soup.project.datamodel.oracle.OperatorsOracle;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.EnumDropDownUtilities;
@@ -116,6 +116,7 @@ public class DTCellValueWidgetFactory {
 
     /**
      * Make a DTCellValue for a column
+     *
      * @param c
      * @return
      */
@@ -130,6 +131,7 @@ public class DTCellValueWidgetFactory {
      * object as well since the pattern may be different to that to which the
      * column has been bound in the Decision Table model, i.e. when adding or
      * editing a column
+     *
      * @param p
      * @param c
      * @return
@@ -149,6 +151,7 @@ public class DTCellValueWidgetFactory {
      * Pattern52 object as well since the pattern may be different to that to
      * which the column has been bound in the Decision Table model, i.e. when
      * adding or editing a column
+     *
      * @param pattern
      * @param column
      * @param value
@@ -188,6 +191,7 @@ public class DTCellValueWidgetFactory {
      * Make a DTCellValue for a column. This overloaded method takes a Pattern52
      * object as well since the ActionSetFieldCol52 column may be associated
      * with an unbound Pattern
+     *
      * @param p
      * @param c
      * @return
@@ -206,6 +210,7 @@ public class DTCellValueWidgetFactory {
      * "Default Value" and "Option List"). This overloaded method takes a
      * Pattern52 object as well since the ActionSetFieldCol52 column may be
      * associated with an unbound Pattern
+     *
      * @param pattern
      * @param column
      * @param value
@@ -243,6 +248,7 @@ public class DTCellValueWidgetFactory {
      * Get a Widget to edit a DTCellValue. A value is explicitly provided as
      * some columns (in the future) will have multiple DTCellValues (for
      * "Default Value" and "Option List").
+     *
      * @param column
      * @param value
      * @return

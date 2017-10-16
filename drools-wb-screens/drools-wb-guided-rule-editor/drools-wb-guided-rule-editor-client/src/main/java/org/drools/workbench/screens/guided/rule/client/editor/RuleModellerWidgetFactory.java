@@ -54,7 +54,7 @@ import org.drools.workbench.screens.guided.rule.client.widget.FromCompositeFactP
 import org.drools.workbench.screens.guided.rule.client.widget.FromEntryPointFactPatternWidget;
 import org.drools.workbench.screens.guided.rule.client.widget.GlobalCollectionAddWidget;
 import org.drools.workbench.screens.guided.rule.client.widget.RuleModellerWidget;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class RuleModellerWidgetFactory
         implements

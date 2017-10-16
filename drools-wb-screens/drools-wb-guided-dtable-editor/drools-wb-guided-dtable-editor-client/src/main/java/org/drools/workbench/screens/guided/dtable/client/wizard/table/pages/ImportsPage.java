@@ -18,14 +18,15 @@ package org.drools.workbench.screens.guided.dtable.client.wizard.table.pages;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.appformer.project.datamodel.imports.Import;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
+import org.kie.soup.project.datamodel.imports.Import;
 import org.kie.workbench.common.widgets.client.datamodel.ImportAddedEvent;
 import org.kie.workbench.common.widgets.client.datamodel.ImportRemovedEvent;
 import org.uberfire.client.callbacks.Callback;
@@ -56,21 +57,21 @@ public class ImportsPage extends AbstractGuidedDecisionTableWizardPage
 
     @Override
     public void initialise() {
-        view.init( this );
+        view.init(this);
 
         final List<String> chosenImports = getChosenImports();
-        final List<String> availableImports = Arrays.asList( oracle.getExternalFactTypes() );
-        view.setChosenImports( chosenImports );
-        view.setAvailableImports( availableImports );
+        final List<String> availableImports = Arrays.asList(oracle.getExternalFactTypes());
+        view.setChosenImports(chosenImports);
+        view.setAvailableImports(availableImports);
 
         validator = getValidator();
-        content.setWidget( view );
+        content.setWidget(view);
     }
 
     private List<String> getChosenImports() {
         final List<String> imports = new ArrayList<String>();
-        for ( Import imp : model.getImports().getImports() ) {
-            imports.add( imp.getType() );
+        for (Import imp : model.getImports().getImports()) {
+            imports.add(imp.getType());
         }
         return imports;
     }
@@ -81,44 +82,43 @@ public class ImportsPage extends AbstractGuidedDecisionTableWizardPage
     }
 
     @Override
-    public void isComplete( final Callback<Boolean> callback ) {
+    public void isComplete(final Callback<Boolean> callback) {
         //Imports are optional
-        callback.callback( true );
+        callback.callback(true);
     }
 
     @Override
-    public void addImport( final String fqcn ) {
+    public void addImport(final String fqcn) {
         //Filter DMO
-        final Import addedImport = new Import( fqcn );
-        model.getImports().addImport( addedImport );
-        oracle.filter( model.getImports() );
+        final Import addedImport = new Import(fqcn);
+        model.getImports().addImport(addedImport);
+        oracle.filter(model.getImports());
 
         //Signal change to any other interested consumers (e.g. some editors support rendering of unknown fact-types)
-        importAddedEvent.fire( new ImportAddedEvent( oracle,
-                                                     addedImport ) );
+        importAddedEvent.fire(new ImportAddedEvent(oracle,
+                                                   addedImport));
     }
 
     @Override
-    public boolean removeImport( final String fqcn ) {
+    public boolean removeImport(final String fqcn) {
         //Check import can be removed
-        if ( validator.isTypeUsed( fqcn ) ) {
+        if (validator.isTypeUsed(fqcn)) {
             return false;
         }
 
         //Filter DMO
-        final Import removedImport = new Import( fqcn );
-        model.getImports().removeImport( removedImport );
-        oracle.filter( model.getImports() );
+        final Import removedImport = new Import(fqcn);
+        model.getImports().removeImport(removedImport);
+        oracle.filter(model.getImports());
 
         //Signal change to any other interested consumers (e.g. some editors support rendering of unknown fact-types)
-        importRemovedEvent.fire( new ImportRemovedEvent( oracle,
-                                                         removedImport ) );
+        importRemovedEvent.fire(new ImportRemovedEvent(oracle,
+                                                       removedImport));
         return true;
     }
 
     @Override
-    public void makeResult( final GuidedDecisionTable52 model ) {
+    public void makeResult(final GuidedDecisionTable52 model) {
         //Nothing to do; imports are adjusted as and when they're removed in the UI
     }
-
 }

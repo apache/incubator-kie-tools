@@ -18,12 +18,12 @@ package org.drools.workbench.screens.testscenario.backend.server.indexing;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.testscenarios.backend.util.ScenarioXMLPersistence;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.type.TestScenarioResourceTypeDefinition;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.AbstractFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;

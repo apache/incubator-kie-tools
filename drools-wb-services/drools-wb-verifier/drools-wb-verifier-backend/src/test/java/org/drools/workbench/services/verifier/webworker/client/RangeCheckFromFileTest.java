@@ -19,7 +19,6 @@ package org.drools.workbench.services.verifier.webworker.client;
 import java.util.HashSet;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.services.verifier.core.main.Analyzer;
@@ -28,6 +27,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.assertOnlyContains;
 import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.loadResource;

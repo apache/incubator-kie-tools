@@ -19,7 +19,7 @@ package org.drools.workbench.services.verifier.api.client.relations;
 import org.drools.workbench.services.verifier.api.client.index.keys.UUIDKey;
 import org.drools.workbench.services.verifier.api.client.maps.InspectorList;
 import org.drools.workbench.services.verifier.api.client.maps.util.HasUUID;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class SubsumptionBlocker
         extends Relation<SubsumptionBlocker> {
@@ -27,31 +27,31 @@ public class SubsumptionBlocker
     public static final SubsumptionBlocker EMPTY = new SubsumptionBlocker();
 
     private final InspectorList list;
-    private final HasUUID       item;
+    private final HasUUID item;
 
     private SubsumptionBlocker() {
-        super( null );
+        super(null);
         list = null;
         item = null;
     }
 
-    public SubsumptionBlocker( final InspectorList list,
-                               final HasUUID item ) {
-        super( null );
-        this.list = PortablePreconditions.checkNotNull( "list",
-                                                        list );
-        this.item = PortablePreconditions.checkNotNull( "item",
-                                                        item );
+    public SubsumptionBlocker(final InspectorList list,
+                              final HasUUID item) {
+        super(null);
+        this.list = PortablePreconditions.checkNotNull("list",
+                                                       list);
+        this.item = PortablePreconditions.checkNotNull("item",
+                                                       item);
     }
 
-    public SubsumptionBlocker( final InspectorList list,
-                               final HasUUID item,
-                               final SubsumptionBlocker origin ) {
-        super( origin );
-        this.list = PortablePreconditions.checkNotNull( "list",
-                                                        list );
-        this.item = PortablePreconditions.checkNotNull( "item",
-                                                        item );
+    public SubsumptionBlocker(final InspectorList list,
+                              final HasUUID item,
+                              final SubsumptionBlocker origin) {
+        super(origin);
+        this.list = PortablePreconditions.checkNotNull("list",
+                                                       list);
+        this.item = PortablePreconditions.checkNotNull("item",
+                                                       item);
     }
 
     private HasUUID getItem() {
@@ -73,21 +73,21 @@ public class SubsumptionBlocker
 
     @Override
     public boolean doesRelationStillExist() {
-        if ( origin != null
-                && stillContainsBlockingItem( getOrigin().getItem() ) ) {
-            return SubsumptionResolver.isSubsumedByAnObjectInThisList( getOrigin().getList(),
-                                                                       getOrigin().getItem() ).foundIssue();
+        if (origin != null
+                && stillContainsBlockingItem(getOrigin().getItem())) {
+            return SubsumptionResolver.isSubsumedByAnObjectInThisList(getOrigin().getList(),
+                                                                      getOrigin().getItem()).foundIssue();
         } else {
             return false;
         }
     }
 
-    private boolean stillContainsBlockingItem( final HasUUID item ) {
-        if ( this.item instanceof InspectorList ) {
-            return (( InspectorList ) this.item).contains( item );
+    private boolean stillContainsBlockingItem(final HasUUID item) {
+        if (this.item instanceof InspectorList) {
+            return ((InspectorList) this.item).contains(item);
         } else {
-            if ( parent != null ) {
-                return parent.stillContainsBlockingItem( item );
+            if (parent != null) {
+                return parent.stillContainsBlockingItem(item);
             } else {
                 return false;
             }

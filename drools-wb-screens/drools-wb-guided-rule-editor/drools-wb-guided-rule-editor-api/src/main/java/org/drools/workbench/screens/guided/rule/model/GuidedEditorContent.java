@@ -19,8 +19,8 @@ package org.drools.workbench.screens.guided.rule.model;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 @Portable
 public class GuidedEditorContent {
@@ -34,15 +34,15 @@ public class GuidedEditorContent {
     public GuidedEditorContent() {
     }
 
-    public GuidedEditorContent( final RuleModel model,
-                                final Overview overview,
-                                final PackageDataModelOracleBaselinePayload dataModel ) {
-        this.model = PortablePreconditions.checkNotNull( "model",
-                                                         model );
-        this.overview = PortablePreconditions.checkNotNull( "overview",
-                                                         overview );
-        this.dataModel = PortablePreconditions.checkNotNull( "dataModel",
-                                                             dataModel );
+    public GuidedEditorContent(final RuleModel model,
+                               final Overview overview,
+                               final PackageDataModelOracleBaselinePayload dataModel) {
+        this.model = PortablePreconditions.checkNotNull("model",
+                                                        model);
+        this.overview = PortablePreconditions.checkNotNull("overview",
+                                                           overview);
+        this.dataModel = PortablePreconditions.checkNotNull("dataModel",
+                                                            dataModel);
     }
 
     public RuleModel getModel() {

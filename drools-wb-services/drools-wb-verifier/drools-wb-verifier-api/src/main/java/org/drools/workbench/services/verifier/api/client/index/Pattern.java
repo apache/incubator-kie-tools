@@ -21,16 +21,16 @@ import org.drools.workbench.services.verifier.api.client.index.keys.UUIDKey;
 import org.drools.workbench.services.verifier.api.client.index.matchers.UUIDMatchers;
 import org.drools.workbench.services.verifier.api.client.maps.KeyDefinition;
 import org.drools.workbench.services.verifier.api.client.maps.util.HasKeys;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class Pattern
         implements HasKeys {
 
     private static final KeyDefinition NAME = KeyDefinition.newKeyDefinition()
-            .withId( "name" )
+            .withId("name")
             .build();
     private static final KeyDefinition BOUND_NAME = KeyDefinition.newKeyDefinition()
-            .withId( "boundName" )
+            .withId("boundName")
             .build();
 
     private final UUIDKey uuidKey;
@@ -39,23 +39,23 @@ public class Pattern
     private final String boundName;
     private final ObjectType objectType;
 
-    public Pattern( final String boundName,
-                    final ObjectType objectType,
-                    final AnalyzerConfiguration configuration ) {
-        this.boundName = PortablePreconditions.checkNotNull( "boundName",
-                                                             boundName );
-        this.objectType = PortablePreconditions.checkNotNull( "objectType",
-                                                              objectType );
+    public Pattern(final String boundName,
+                   final ObjectType objectType,
+                   final AnalyzerConfiguration configuration) {
+        this.boundName = PortablePreconditions.checkNotNull("boundName",
+                                                            boundName);
+        this.objectType = PortablePreconditions.checkNotNull("objectType",
+                                                             objectType);
         this.name = objectType.getType();
-        this.uuidKey = configuration.getUUID( this );
+        this.uuidKey = configuration.getUUID(this);
     }
 
     public static Matchers boundName() {
-        return new Matchers( BOUND_NAME );
+        return new Matchers(BOUND_NAME);
     }
 
     public static Matchers name() {
-        return new Matchers( NAME );
+        return new Matchers(NAME);
     }
 
     public static Matchers uuid() {
@@ -94,10 +94,10 @@ public class Pattern
     public Key[] keys() {
         return new Key[]{
                 uuidKey,
-                new Key( NAME,
-                         name ),
-                new Key( BOUND_NAME,
-                         boundName )
+                new Key(NAME,
+                        name),
+                new Key(BOUND_NAME,
+                        boundName)
         };
     }
 }

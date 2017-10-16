@@ -16,12 +16,12 @@
 
 package org.drools.workbench.screens.globals.backend.server.util;
 
-import org.appformer.project.datamodel.commons.packages.PackageNameParser;
-import org.appformer.project.datamodel.commons.packages.PackageNameWriter;
-import org.uberfire.commons.data.Pair;
-import org.kie.workbench.common.services.datamodel.backend.server.builder.util.GlobalsParser;
 import org.drools.workbench.screens.globals.model.Global;
 import org.drools.workbench.screens.globals.model.GlobalsModel;
+import org.kie.soup.project.datamodel.commons.packages.PackageNameParser;
+import org.kie.soup.project.datamodel.commons.packages.PackageNameWriter;
+import org.kie.workbench.common.services.datamodel.backend.server.builder.util.GlobalsParser;
+import org.uberfire.commons.data.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,38 +40,37 @@ public class GlobalsPersistence {
         return INSTANCE;
     }
 
-    public String marshal( final GlobalsModel model ) {
+    public String marshal(final GlobalsModel model) {
         final StringBuilder sb = new StringBuilder();
 
-        PackageNameWriter.write( sb,
-                                 model );
+        PackageNameWriter.write(sb,
+                                model);
 
-        for ( Global global : model.getGlobals() ) {
-            sb.append( "global " ).append( global.getClassName() ).append( " " ).append( global.getAlias() ).append( ";\n" );
+        for (Global global : model.getGlobals()) {
+            sb.append("global ").append(global.getClassName()).append(" ").append(global.getAlias()).append(";\n");
         }
         return sb.toString();
     }
 
-    public GlobalsModel unmarshal( final String content ) {
+    public GlobalsModel unmarshal(final String content) {
         //De-serialize model
-        final List<Pair<String, String>> parsedGlobalsContent = GlobalsParser.parseGlobals( content );
-        final List<Global> globals = makeGlobals( parsedGlobalsContent );
+        final List<Pair<String, String>> parsedGlobalsContent = GlobalsParser.parseGlobals(content);
+        final List<Global> globals = makeGlobals(parsedGlobalsContent);
         final GlobalsModel model = new GlobalsModel();
-        model.setGlobals( globals );
+        model.setGlobals(globals);
 
         //De-serialize Package name
-        final String packageName = PackageNameParser.parsePackageName( content );
-        model.setPackageName( packageName );
+        final String packageName = PackageNameParser.parsePackageName(content);
+        model.setPackageName(packageName);
         return model;
     }
 
-    private List<Global> makeGlobals( final List<Pair<String, String>> parsedGlobalsContent ) {
+    private List<Global> makeGlobals(final List<Pair<String, String>> parsedGlobalsContent) {
         final List<Global> globals = new ArrayList<Global>();
-        for ( Pair<String, String> p : parsedGlobalsContent ) {
-            globals.add( new Global( p.getK1(),
-                                     p.getK2() ) );
+        for (Pair<String, String> p : parsedGlobalsContent) {
+            globals.add(new Global(p.getK1(),
+                                   p.getK2()));
         }
         return globals;
     }
-
 }

@@ -16,7 +16,7 @@ package org.drools.workbench.screens.guided.dtable.client.resources;
 
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class HitPolicyInternationalizer {
 

@@ -26,58 +26,58 @@ import org.drools.workbench.services.verifier.plugin.client.api.RemoveRule;
 import org.drools.workbench.services.verifier.plugin.client.api.RequestStatus;
 import org.drools.workbench.services.verifier.plugin.client.api.Update;
 import org.jboss.errai.enterprise.client.jaxrs.MarshallingWrapper;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class Poster {
 
-    private static final Logger LOGGER = Logger.getLogger( "DTable Analyzer" );
+    private static final Logger LOGGER = Logger.getLogger("DTable Analyzer");
 
     private Worker worker;
 
-    public void setUp( final Worker worker ) {
-        this.worker = PortablePreconditions.checkNotNull( "worker",
-                                                          worker );
+    public void setUp(final Worker worker) {
+        this.worker = PortablePreconditions.checkNotNull("worker",
+                                                         worker);
     }
 
-    private void postObject( final Object object ) {
+    private void postObject(final Object object) {
 
-        PortablePreconditions.checkNotNull( "worker",
-                                            worker );
-        PortablePreconditions.checkNotNull( "object",
-                                            object );
+        PortablePreconditions.checkNotNull("worker",
+                                           worker);
+        PortablePreconditions.checkNotNull("object",
+                                           object);
 
-        final String json = MarshallingWrapper.toJSON( object );
+        final String json = MarshallingWrapper.toJSON(object);
 
-        LOGGER.finest( "Sending: " + json );
+        LOGGER.finest("Sending: " + json);
 
-        worker.postMessage( json );
+        worker.postMessage(json);
     }
 
-    public void post( final MakeRule makeRule ) {
-        postObject( makeRule );
+    public void post(final MakeRule makeRule) {
+        postObject(makeRule);
     }
 
-    public void post( final DeleteColumns deleteColumns ) {
-        postObject( deleteColumns );
+    public void post(final DeleteColumns deleteColumns) {
+        postObject(deleteColumns);
     }
 
-    public void post( final NewColumn newColumn ) {
-        postObject( newColumn );
+    public void post(final NewColumn newColumn) {
+        postObject(newColumn);
     }
 
-    public void post( final Update update ) {
-        postObject( update );
+    public void post(final Update update) {
+        postObject(update);
     }
 
-    public void post( final Initialize initialize ) {
-        postObject( initialize );
+    public void post(final Initialize initialize) {
+        postObject(initialize);
     }
 
-    public void post( final RequestStatus requestStatus ) {
-        postObject( requestStatus );
+    public void post(final RequestStatus requestStatus) {
+        postObject(requestStatus);
     }
 
-    public void post( final RemoveRule removeRule ) {
-        postObject( removeRule );
+    public void post(final RemoveRule removeRule) {
+        postObject(removeRule);
     }
 }

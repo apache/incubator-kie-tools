@@ -20,18 +20,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.decisiontable.parser.ActionType;
 import org.drools.decisiontable.parser.ActionType.Code;
+import org.drools.decisiontable.parser.ActionType;
 import org.drools.decisiontable.parser.DefaultRuleSheetListener;
 import org.drools.decisiontable.parser.RuleSheetListener;
 import org.drools.decisiontable.parser.RuleSheetParserUtil;
 import org.drools.decisiontable.parser.SourceBuilder;
-import org.drools.decisiontable.parser.xls.PropertiesSheetListener;
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener.CaseInsensitiveMap;
+import org.drools.decisiontable.parser.xls.PropertiesSheetListener;
 import org.drools.template.model.Global;
 import org.drools.template.model.Import;
 import org.drools.template.model.Package;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionMessageType;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -60,6 +59,7 @@ import org.drools.workbench.screens.dtablexls.backend.server.conversion.builders
 import org.drools.workbench.screens.dtablexls.backend.server.conversion.builders.ParameterUtilities;
 import org.drools.workbench.screens.dtablexls.backend.server.conversion.builders.ParameterizedValueBuilder;
 import org.drools.workbench.screens.dtablexls.backend.server.conversion.builders.RowNumberBuilder;
+import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
 
 public class GuidedDecisionTableGeneratorListener
         implements

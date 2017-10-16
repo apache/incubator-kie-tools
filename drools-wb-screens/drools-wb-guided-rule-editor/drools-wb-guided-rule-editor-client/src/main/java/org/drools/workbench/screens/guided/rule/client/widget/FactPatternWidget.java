@@ -40,9 +40,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.ModelField;
-import org.appformer.project.datamodel.oracle.OperatorsOracle;
 import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FieldConstraint;
@@ -68,6 +65,9 @@ import org.drools.workbench.screens.guided.rule.client.editor.factPattern.PopupC
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.kie.soup.project.datamodel.oracle.OperatorsOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
 import org.uberfire.client.callbacks.Callback;
@@ -104,9 +104,10 @@ public class FactPatternWidget extends RuleModellerWidget {
 
     /**
      * Creates a new FactPatternWidget
+     *
      * @param canBind
      * @param readOnly if the widget should be in RO mode. If this parameter is null,
-     * the readOnly attribute is calculated.
+     *                 the readOnly attribute is calculated.
      */
     public FactPatternWidget(RuleModeller ruleModeller,
                              EventBus eventBus,
@@ -189,6 +190,7 @@ public class FactPatternWidget extends RuleModellerWidget {
      * may themselves depend on members of constraint objects. With this code,
      * the GUI enables clicking rules of the form: $result = RoutingResult(
      * NerOption.types contains "arzt" )
+     *
      * @param sortedConst a sorted list of constraints to display.
      */
     protected void drawConstraints(List<FieldConstraint> sortedConst,
@@ -279,6 +281,7 @@ public class FactPatternWidget extends RuleModellerWidget {
     /**
      * Sort the rule constraints such that parent rules are inserted directly
      * before their child rules.
+     *
      * @param constraints the list of inheriting constraints to sort.
      * @return a sorted list of constraints ready for display.
      */
@@ -307,8 +310,9 @@ public class FactPatternWidget extends RuleModellerWidget {
 
     /**
      * Recursively add constraints and their parents.
+     *
      * @param sortedConst the array to fill.
-     * @param fieldConst the constraint to investigate.
+     * @param fieldConst  the constraint to investigate.
      */
     private void insertSingleFieldConstraint(SingleFieldConstraint fieldConst,
                                              List<FieldConstraint> sortedConst) {

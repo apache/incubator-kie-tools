@@ -16,17 +16,17 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class DecisionTablePinnedEvent {
 
     private final GuidedDecisionTableModellerView.Presenter presenter;
     private final boolean isPinned;
 
-    public DecisionTablePinnedEvent( final GuidedDecisionTableModellerView.Presenter presenter,
-                                     final boolean isPinned ) {
-        this.presenter = PortablePreconditions.checkNotNull( "presenter",
-                                                             presenter );
+    public DecisionTablePinnedEvent(final GuidedDecisionTableModellerView.Presenter presenter,
+                                    final boolean isPinned) {
+        this.presenter = PortablePreconditions.checkNotNull("presenter",
+                                                            presenter);
         this.isPinned = isPinned;
     }
 
@@ -37,5 +37,4 @@ public class DecisionTablePinnedEvent {
     public boolean isPinned() {
         return isPinned;
     }
-
 }

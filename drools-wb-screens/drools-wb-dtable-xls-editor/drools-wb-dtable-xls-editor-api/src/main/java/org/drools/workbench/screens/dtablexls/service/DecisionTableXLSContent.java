@@ -17,20 +17,19 @@ package org.drools.workbench.screens.dtablexls.service;
 
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 @Portable
 public class DecisionTableXLSContent {
 
     private Overview overview;
 
-    public void setOverview( final Overview overview ) {
-        this.overview = PortablePreconditions.checkNotNull( "overview",
-                                                            overview );
+    public void setOverview(final Overview overview) {
+        this.overview = PortablePreconditions.checkNotNull("overview",
+                                                           overview);
     }
 
     public Overview getOverview() {
         return overview;
     }
-
 }

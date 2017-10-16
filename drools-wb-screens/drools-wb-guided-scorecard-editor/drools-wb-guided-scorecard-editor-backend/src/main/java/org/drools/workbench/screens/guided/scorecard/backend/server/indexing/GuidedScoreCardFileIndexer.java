@@ -18,10 +18,10 @@ package org.drools.workbench.screens.guided.scorecard.backend.server.indexing;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.guided.scorecard.backend.GuidedScoreCardXMLPersistence;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.type.GuidedScoreCardResourceTypeDefinition;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.AbstractFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
@@ -38,23 +38,23 @@ public class GuidedScoreCardFileIndexer extends AbstractFileIndexer {
     protected GuidedScoreCardResourceTypeDefinition type;
 
     @Override
-    public boolean supportsPath( final Path path ) {
-        return type.accept( Paths.convert( path ) );
+    public boolean supportsPath(final Path path) {
+        return type.accept(Paths.convert(path));
     }
 
     @Override
     public DefaultIndexBuilder fillIndexBuilder(final Path path) throws Exception {
-        final String content = ioService.readAllString( path );
-        final ScoreCardModel model = GuidedScoreCardXMLPersistence.getInstance().unmarshall( content );
+        final String content = ioService.readAllString(path);
+        final ScoreCardModel model = GuidedScoreCardXMLPersistence.getInstance().unmarshall(content);
 
-        final ProjectDataModelOracle dmo = getProjectDataModelOracle( path );
+        final ProjectDataModelOracle dmo = getProjectDataModelOracle(path);
 
         final DefaultIndexBuilder builder = getIndexBuilder(path);
-        if( builder == null ) {
+        if (builder == null) {
             return null;
         }
 
-        final GuidedScoreCardIndexVisitor visitor = new GuidedScoreCardIndexVisitor( dmo, model );
+        final GuidedScoreCardIndexVisitor visitor = new GuidedScoreCardIndexVisitor(dmo, model);
         visitor.visit();
         addReferencedResourcesToIndexBuilder(builder, visitor);
 
@@ -62,8 +62,7 @@ public class GuidedScoreCardFileIndexer extends AbstractFileIndexer {
     }
 
     //Delegate resolution of DMO to method to assist testing
-    protected ProjectDataModelOracle getProjectDataModelOracle( final Path path ) {
-        return dataModelService.getProjectDataModel( Paths.convert( path ) );
+    protected ProjectDataModelOracle getProjectDataModelOracle(final Path path) {
+        return dataModelService.getProjectDataModel(Paths.convert(path));
     }
-
 }

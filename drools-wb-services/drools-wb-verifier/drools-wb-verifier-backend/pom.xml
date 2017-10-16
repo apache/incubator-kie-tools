@@ -65,6 +65,11 @@
             <artifactId>uberfire-commons</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.kie.soup</groupId>
+            <artifactId>kie-soup-commons</artifactId>
+        </dependency>
+
         <!-- GWT and GWT Extensions -->
         <dependency>
             <groupId>com.google.gwt</groupId>
@@ -110,6 +115,7 @@
                     <compileSourcesArtifacts>
 
                         <compileSourcesArtifact>org.drools:drools-workbench-models-guided-dtable</compileSourcesArtifact>
+                        <compileSourcesArtifact>org.kie.soup:kie-soup-commons</compileSourcesArtifact>
                         <compileSourcesArtifact>org.uberfire:uberfire-commons</compileSourcesArtifact>
 
                         <compileSourcesArtifact>org.drools:drools-wb-verifier-api</compileSourcesArtifact>

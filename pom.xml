@@ -42,6 +42,7 @@
     <module>drools-wb-services</module>
     <module>drools-wb-screens</module>
     <module>drools-wb-webapp</module>
+    <module>drools-wb-extensions</module>
   </modules>
 
   <dependencyManagement>

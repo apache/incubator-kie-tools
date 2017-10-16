@@ -45,8 +45,6 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.ModelField;
 import org.drools.workbench.models.guided.scorecard.shared.Attribute;
 import org.drools.workbench.models.guided.scorecard.shared.Characteristic;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
@@ -54,6 +52,8 @@ import org.drools.workbench.screens.guided.scorecard.client.resources.i18n.Guide
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.uberfire.client.callbacks.Callback;
@@ -61,15 +61,15 @@ import org.uberfire.ext.widgets.common.client.common.DecoratedDisclosurePanel;
 
 public class GuidedScoreCardEditor extends Composite {
 
-    private static final String[] reasonCodeAlgorithms = new String[]{ "none", "pointsAbove", "pointsBelow" };
-    private static final String[] typesForAttributes = new String[]{ "String", "int", "double", "boolean", "Integer" };
-    private static final String[] typesForScore = new String[]{ "double", "Double" };
-    private static final String[] typesForRC = new String[]{ "List" };
+    private static final String[] reasonCodeAlgorithms = new String[]{"none", "pointsAbove", "pointsBelow"};
+    private static final String[] typesForAttributes = new String[]{"String", "int", "double", "boolean", "Integer"};
+    private static final String[] typesForScore = new String[]{"double", "Double"};
+    private static final String[] typesForRC = new String[]{"List"};
 
-    private static final String[] stringOperators = new String[]{ "=", "in" };
-    private static final String[] enumStringOperators = new String[]{ "=" };//, "in" };
-    private static final String[] booleanOperators = new String[]{ "false", "true" };
-    private static final String[] numericOperators = new String[]{ "=", ">", "<", ">=", "<=", ">..<", ">=..<", ">=..<=", ">..<=" };
+    private static final String[] stringOperators = new String[]{"=", "in"};
+    private static final String[] enumStringOperators = new String[]{"="};//, "in" };
+    private static final String[] booleanOperators = new String[]{"false", "true"};
+    private static final String[] numericOperators = new String[]{"=", ">", "<", ">=", "<=", ">..<", ">=..<", ">=..<=", ">..<="};
 
     private SimplePanel container = new SimplePanel();
 
@@ -97,186 +97,186 @@ public class GuidedScoreCardEditor extends Composite {
     private AsyncPackageDataModelOracle oracle;
 
     public GuidedScoreCardEditor() {
-        initWidget( container );
+        initWidget(container);
     }
 
-    public void setContent( final ScoreCardModel model,
-                            final AsyncPackageDataModelOracle oracle ) {
+    public void setContent(final ScoreCardModel model,
+                           final AsyncPackageDataModelOracle oracle) {
         this.model = model;
         this.oracle = oracle;
 
-        final DecoratedDisclosurePanel disclosurePanel = new DecoratedDisclosurePanel( GuidedScoreCardConstants.INSTANCE.scoreCardTitle0( model.getName() ) );
-        disclosurePanel.setWidth( "100%" );
-        disclosurePanel.setTitle( GuidedScoreCardConstants.INSTANCE.scorecard() );
-        disclosurePanel.setOpen( true );
+        final DecoratedDisclosurePanel disclosurePanel = new DecoratedDisclosurePanel(GuidedScoreCardConstants.INSTANCE.scoreCardTitle0(model.getName()));
+        disclosurePanel.setWidth("100%");
+        disclosurePanel.setTitle(GuidedScoreCardConstants.INSTANCE.scorecard());
+        disclosurePanel.setOpen(true);
 
-        final DecoratedDisclosurePanel configPanel = new DecoratedDisclosurePanel( GuidedScoreCardConstants.INSTANCE.setupParameters() );
-        configPanel.setWidth( "95%" );
-        configPanel.setOpen( true );
-        configPanel.add( getScorecardProperties() );
+        final DecoratedDisclosurePanel configPanel = new DecoratedDisclosurePanel(GuidedScoreCardConstants.INSTANCE.setupParameters());
+        configPanel.setWidth("95%");
+        configPanel.setOpen(true);
+        configPanel.add(getScorecardProperties());
 
-        final DecoratedDisclosurePanel ruleAttributesPanel = new DecoratedDisclosurePanel( GuidedScoreCardConstants.INSTANCE.ruleAttributes() );
-        ruleAttributesPanel.setWidth( "95%" );
-        ruleAttributesPanel.setOpen( false );
-        ruleAttributesPanel.add( getRuleAttributesPanel() );
+        final DecoratedDisclosurePanel ruleAttributesPanel = new DecoratedDisclosurePanel(GuidedScoreCardConstants.INSTANCE.ruleAttributes());
+        ruleAttributesPanel.setWidth("95%");
+        ruleAttributesPanel.setOpen(false);
+        ruleAttributesPanel.add(getRuleAttributesPanel());
 
-        final DecoratedDisclosurePanel characteristicsPanel = new DecoratedDisclosurePanel( GuidedScoreCardConstants.INSTANCE.characteristics() );
-        characteristicsPanel.setOpen( model.getCharacteristics().size() > 0 );
-        characteristicsPanel.setWidth( "95%" );
-        characteristicsPanel.add( getCharacteristics() );
+        final DecoratedDisclosurePanel characteristicsPanel = new DecoratedDisclosurePanel(GuidedScoreCardConstants.INSTANCE.characteristics());
+        characteristicsPanel.setOpen(model.getCharacteristics().size() > 0);
+        characteristicsPanel.setWidth("95%");
+        characteristicsPanel.add(getCharacteristics());
 
         final VerticalPanel config = new VerticalPanel();
-        config.setWidth( "100%" );
-        config.add( ruleAttributesPanel );
-        config.add( configPanel );
-        config.add( characteristicsPanel );
+        config.setWidth("100%");
+        config.add(ruleAttributesPanel);
+        config.add(configPanel);
+        config.add(characteristicsPanel);
 
-        disclosurePanel.add( config );
-        container.setWidget( disclosurePanel );
+        disclosurePanel.add(config);
+        container.setWidget(disclosurePanel);
 
         characteristicsAttrMap.clear();
         characteristicsAttrPanelMap.clear();
 
-        for ( final Characteristic characteristic : model.getCharacteristics() ) {
-            final FlexTable flexTable = addCharacteristic( characteristic );
-            for ( Attribute attribute : characteristic.getAttributes() ) {
-                addAttribute( flexTable,
-                              attribute );
+        for (final Characteristic characteristic : model.getCharacteristics()) {
+            final FlexTable flexTable = addCharacteristic(characteristic);
+            for (Attribute attribute : characteristic.getAttributes()) {
+                addAttribute(flexTable,
+                             attribute);
             }
         }
     }
 
     public ScoreCardModel getModel() {
         //ScoreCardModel could be null if the ScoreCard failed to load (e.g. the file was not found in VFS)
-        if ( model == null ) {
+        if (model == null) {
             return null;
         }
 
         //Otherwise populate model from UI...
-        model.setBaselineScore( Double.parseDouble( tbBaselineScore.getValue() ) );
-        model.setInitialScore( Double.parseDouble( tbInitialScore.getValue() ) );
-        model.setUseReasonCodes( ddUseReasonCode.getSelectedIndex() == 1 );
-        if ( ddReasonCodeAlgorithm.getSelectedIndex() > 0 ) {
-            model.setReasonCodesAlgorithm( ddReasonCodeAlgorithm.getValue( ddReasonCodeAlgorithm.getSelectedIndex() ) );
+        model.setBaselineScore(Double.parseDouble(tbBaselineScore.getValue()));
+        model.setInitialScore(Double.parseDouble(tbInitialScore.getValue()));
+        model.setUseReasonCodes(ddUseReasonCode.getSelectedIndex() == 1);
+        if (ddReasonCodeAlgorithm.getSelectedIndex() > 0) {
+            model.setReasonCodesAlgorithm(ddReasonCodeAlgorithm.getValue(ddReasonCodeAlgorithm.getSelectedIndex()));
         } else {
-            model.setReasonCodesAlgorithm( "" );
+            model.setReasonCodesAlgorithm("");
         }
 
-        ListBox enumDropDown = (ListBox) scorecardPropertiesGrid.getWidget( 1,
-                                                                            0 );
-        if ( enumDropDown.getSelectedIndex() > 0 ) {
-            final String simpleFactName = enumDropDown.getValue( enumDropDown.getSelectedIndex() );
-            model.setFactName( simpleFactName );
-            oracle.getFieldCompletions( simpleFactName,
-                                        new Callback<ModelField[]>() {
-                                            @Override
-                                            public void callback( final ModelField[] fields ) {
-                                                if ( fields != null ) {
-                                                    for ( final ModelField mf : fields ) {
-                                                        if ( mf.getType().equals( simpleFactName ) ) {
-                                                            model.setFactName( mf.getClassName() );
-                                                            break;
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        } );
+        ListBox enumDropDown = (ListBox) scorecardPropertiesGrid.getWidget(1,
+                                                                           0);
+        if (enumDropDown.getSelectedIndex() > 0) {
+            final String simpleFactName = enumDropDown.getValue(enumDropDown.getSelectedIndex());
+            model.setFactName(simpleFactName);
+            oracle.getFieldCompletions(simpleFactName,
+                                       new Callback<ModelField[]>() {
+                                           @Override
+                                           public void callback(final ModelField[] fields) {
+                                               if (fields != null) {
+                                                   for (final ModelField mf : fields) {
+                                                       if (mf.getType().equals(simpleFactName)) {
+                                                           model.setFactName(mf.getClassName());
+                                                           break;
+                                                       }
+                                                   }
+                                               }
+                                           }
+                                       });
         } else {
-            model.setFactName( "" );
+            model.setFactName("");
         }
 
-        enumDropDown = (ListBox) scorecardPropertiesGrid.getWidget( 1,
-                                                                    1 );
-        if ( enumDropDown.getSelectedIndex() > 0 ) {
-            String fieldName = enumDropDown.getValue( enumDropDown.getSelectedIndex() );
-            fieldName = fieldName.substring( 0, fieldName.indexOf( ":" ) ).trim();
-            model.setFieldName( fieldName );
+        enumDropDown = (ListBox) scorecardPropertiesGrid.getWidget(1,
+                                                                   1);
+        if (enumDropDown.getSelectedIndex() > 0) {
+            String fieldName = enumDropDown.getValue(enumDropDown.getSelectedIndex());
+            fieldName = fieldName.substring(0, fieldName.indexOf(":")).trim();
+            model.setFieldName(fieldName);
         } else {
-            model.setFieldName( "" );
+            model.setFieldName("");
         }
 
-        if ( ddReasonCodeField.getSelectedIndex() > 0 ) {
-            String rcField = ddReasonCodeField.getValue( ddReasonCodeField.getSelectedIndex() );
-            rcField = rcField.substring( 0, rcField.indexOf( ":" ) ).trim();
-            model.setReasonCodeField( rcField );
+        if (ddReasonCodeField.getSelectedIndex() > 0) {
+            String rcField = ddReasonCodeField.getValue(ddReasonCodeField.getSelectedIndex());
+            rcField = rcField.substring(0, rcField.indexOf(":")).trim();
+            model.setReasonCodeField(rcField);
         } else {
-            model.setReasonCodeField( "" );
+            model.setReasonCodeField("");
         }
 
         model.getCharacteristics().clear();
-        for ( final FlexTable flexTable : characteristicsTables ) {
-            final Characteristic characteristic = getCharacteristicFromTable( flexTable );
+        for (final FlexTable flexTable : characteristicsTables) {
+            final Characteristic characteristic = getCharacteristicFromTable(flexTable);
             //Characteristic Attributes
             characteristic.getAttributes().clear();
-            characteristic.getAttributes().addAll( characteristicsAttrMap.get( flexTable ).getList() );
+            characteristic.getAttributes().addAll(characteristicsAttrMap.get(flexTable).getList());
 
-            model.getCharacteristics().add( characteristic );
+            model.getCharacteristics().add(characteristic);
         }
 
-        model.setAgendaGroup( tbAgendaGroup.getValue() );
-        model.setRuleFlowGroup( tbRuleFlowGroup.getValue() );
+        model.setAgendaGroup(tbAgendaGroup.getValue());
+        model.setRuleFlowGroup(tbRuleFlowGroup.getValue());
 
         return model;
     }
 
-    private Characteristic getCharacteristicFromTable( FlexTable flexTable ) {
+    private Characteristic getCharacteristicFromTable(FlexTable flexTable) {
         ListBox enumDropDown;
         final Characteristic characteristic = new Characteristic();
-        characteristic.setName( ( (TextBox) flexTable.getWidget( 0,
-                                                                 1 ) ).getValue() );
+        characteristic.setName(((TextBox) flexTable.getWidget(0,
+                                                              1)).getValue());
 
         //Characteristic Fact Type
-        enumDropDown = (ListBox) flexTable.getWidget( 2,
-                                                      0 );
-        if ( enumDropDown.getSelectedIndex() > -1 ) {
-            final String simpleFactName = enumDropDown.getValue( enumDropDown.getSelectedIndex() );
-            characteristic.setFact( simpleFactName );
-            oracle.getFieldCompletions( simpleFactName,
-                                        new Callback<ModelField[]>() {
-                                            @Override
-                                            public void callback( final ModelField[] fields ) {
-                                                if ( fields != null ) {
-                                                    for ( ModelField mf : fields ) {
-                                                        if ( mf.getType().equals( simpleFactName ) ) {
-                                                            characteristic.setFact( mf.getClassName() );
-                                                            break;
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        } );
+        enumDropDown = (ListBox) flexTable.getWidget(2,
+                                                     0);
+        if (enumDropDown.getSelectedIndex() > -1) {
+            final String simpleFactName = enumDropDown.getValue(enumDropDown.getSelectedIndex());
+            characteristic.setFact(simpleFactName);
+            oracle.getFieldCompletions(simpleFactName,
+                                       new Callback<ModelField[]>() {
+                                           @Override
+                                           public void callback(final ModelField[] fields) {
+                                               if (fields != null) {
+                                                   for (ModelField mf : fields) {
+                                                       if (mf.getType().equals(simpleFactName)) {
+                                                           characteristic.setFact(mf.getClassName());
+                                                           break;
+                                                       }
+                                                   }
+                                               }
+                                           }
+                                       });
 
             //Characteristic Field (cannot be set if no Fact Type has been set)
-            enumDropDown = (ListBox) flexTable.getWidget( 2,
-                                                          1 );
-            if ( enumDropDown.getSelectedIndex() > -1 ) {
-                String fieldName = enumDropDown.getValue( enumDropDown.getSelectedIndex() );
-                fieldName = fieldName.substring( 0, fieldName.indexOf( ":" ) ).trim();
-                characteristic.setField( fieldName );
+            enumDropDown = (ListBox) flexTable.getWidget(2,
+                                                         1);
+            if (enumDropDown.getSelectedIndex() > -1) {
+                String fieldName = enumDropDown.getValue(enumDropDown.getSelectedIndex());
+                fieldName = fieldName.substring(0, fieldName.indexOf(":")).trim();
+                characteristic.setField(fieldName);
             } else {
-                characteristic.setField( "" );
+                characteristic.setField("");
             }
-            getDataTypeForField( simpleFactName,
-                                 characteristic.getField(),
-                                 new Callback<String>() {
-                                     @Override
-                                     public void callback( final String result ) {
-                                         characteristic.setDataType( result );
-                                     }
-                                 } );
+            getDataTypeForField(simpleFactName,
+                                characteristic.getField(),
+                                new Callback<String>() {
+                                    @Override
+                                    public void callback(final String result) {
+                                        characteristic.setDataType(result);
+                                    }
+                                });
         }
 
         //Characteristic Reason Code
-        characteristic.setReasonCode( ( (TextBox) flexTable.getWidget( 2,
-                                                                       3 ) ).getValue() );
+        characteristic.setReasonCode(((TextBox) flexTable.getWidget(2,
+                                                                    3)).getValue());
 
         //Characteristic Base Line Score
-        final String baselineScore = ( (TextBox) flexTable.getWidget( 2,
-                                                                      2 ) ).getValue();
+        final String baselineScore = ((TextBox) flexTable.getWidget(2,
+                                                                    2)).getValue();
         try {
-            characteristic.setBaselineScore( Double.parseDouble( baselineScore ) );
-        } catch ( Exception e ) {
-            characteristic.setBaselineScore( 0.0d );
+            characteristic.setBaselineScore(Double.parseDouble(baselineScore));
+        } catch (Exception e) {
+            characteristic.setBaselineScore(0.0d);
         }
 
         return characteristic;
@@ -284,335 +284,333 @@ public class GuidedScoreCardEditor extends Composite {
 
     public void refreshFactTypes() {
         dropDownFacts.clear();
-        dropDownFacts.addItem( GuidedScoreCardConstants.INSTANCE.pleaseChoose() );
+        dropDownFacts.addItem(GuidedScoreCardConstants.INSTANCE.pleaseChoose());
 
         final String[] eligibleFacts = oracle.getFactTypes();
-        for ( final String factType : eligibleFacts ) {
-            dropDownFacts.addItem( factType );
+        for (final String factType : eligibleFacts) {
+            dropDownFacts.addItem(factType);
         }
 
         String factName = model.getFactName();
         // if fact is a fully qualified className, strip off the packageName
-        if ( factName.lastIndexOf( "." ) > -1 ) {
-            factName = factName.substring( factName.lastIndexOf( "." ) + 1 );
+        if (factName.lastIndexOf(".") > -1) {
+            factName = factName.substring(factName.lastIndexOf(".") + 1);
         }
 
-        final int selectedFactIndex = Arrays.asList( eligibleFacts ).indexOf( factName );
-        dropDownFacts.setSelectedIndex( selectedFactIndex >= 0 ? selectedFactIndex : 0 );
-        scoreCardPropertyFactChanged( dropDownFacts,
-                                      dropDownFields );
-
+        final int selectedFactIndex = Arrays.asList(eligibleFacts).indexOf(factName);
+        dropDownFacts.setSelectedIndex(selectedFactIndex >= 0 ? selectedFactIndex : 0);
+        scoreCardPropertyFactChanged(dropDownFacts,
+                                     dropDownFields);
     }
 
     private Widget getRuleAttributesPanel() {
-        ruleAttributesGrid = new Grid( 2, 4 );
-        ruleAttributesGrid.setCellSpacing( 5 );
-        ruleAttributesGrid.setCellPadding( 5 );
-        ruleAttributesGrid.setText( 0, 0, GuidedScoreCardConstants.INSTANCE.ruleFlowGroup() );
-        ruleAttributesGrid.setText( 0, 1, GuidedScoreCardConstants.INSTANCE.agendaGroup() );
+        ruleAttributesGrid = new Grid(2, 4);
+        ruleAttributesGrid.setCellSpacing(5);
+        ruleAttributesGrid.setCellPadding(5);
+        ruleAttributesGrid.setText(0, 0, GuidedScoreCardConstants.INSTANCE.ruleFlowGroup());
+        ruleAttributesGrid.setText(0, 1, GuidedScoreCardConstants.INSTANCE.agendaGroup());
 
         final String ruleFlowGroup = model.getRuleFlowGroup();
         final String agendaGroup = model.getAgendaGroup();
 
-        tbRuleFlowGroup = TextBoxFactory.getTextBox( DataType.TYPE_STRING );
-        if ( !( ruleFlowGroup == null || ruleFlowGroup.isEmpty() ) ) {
-            tbRuleFlowGroup.setText( ruleFlowGroup );
+        tbRuleFlowGroup = TextBoxFactory.getTextBox(DataType.TYPE_STRING);
+        if (!(ruleFlowGroup == null || ruleFlowGroup.isEmpty())) {
+            tbRuleFlowGroup.setText(ruleFlowGroup);
         }
-        tbAgendaGroup = TextBoxFactory.getTextBox( DataType.TYPE_STRING );
-        if ( !( agendaGroup == null || agendaGroup.isEmpty() ) ) {
-            tbAgendaGroup.setText( agendaGroup );
+        tbAgendaGroup = TextBoxFactory.getTextBox(DataType.TYPE_STRING);
+        if (!(agendaGroup == null || agendaGroup.isEmpty())) {
+            tbAgendaGroup.setText(agendaGroup);
         }
 
-        ruleAttributesGrid.setWidget( 1, 0, tbRuleFlowGroup );
-        ruleAttributesGrid.setWidget( 1, 1, tbAgendaGroup );
+        ruleAttributesGrid.setWidget(1, 0, tbRuleFlowGroup);
+        ruleAttributesGrid.setWidget(1, 1, tbAgendaGroup);
 
         return ruleAttributesGrid;
     }
 
     private Widget getScorecardProperties() {
 
-        scorecardPropertiesGrid = new Grid( 4,
-                                            4 );
-        scorecardPropertiesGrid.setCellSpacing( 5 );
-        scorecardPropertiesGrid.setCellPadding( 5 );
+        scorecardPropertiesGrid = new Grid(4,
+                                           4);
+        scorecardPropertiesGrid.setCellSpacing(5);
+        scorecardPropertiesGrid.setCellPadding(5);
 
-        tbInitialScore = TextBoxFactory.getTextBox( DataType.TYPE_NUMERIC_DOUBLE );
-        tbInitialScore.setText( Double.toString( model.getInitialScore() ) );
+        tbInitialScore = TextBoxFactory.getTextBox(DataType.TYPE_NUMERIC_DOUBLE);
+        tbInitialScore.setText(Double.toString(model.getInitialScore()));
 
         String factName = model.getFactName();
         // if fact is a fully qualified className, strip off the packageName
-        if ( factName.lastIndexOf( "." ) > -1 ) {
-            factName = factName.substring( factName.lastIndexOf( "." ) + 1 );
+        if (factName.lastIndexOf(".") > -1) {
+            factName = factName.substring(factName.lastIndexOf(".") + 1);
         }
 
         dropDownFacts.clear();
-        dropDownFacts.addItem( GuidedScoreCardConstants.INSTANCE.pleaseChoose() );
+        dropDownFacts.addItem(GuidedScoreCardConstants.INSTANCE.pleaseChoose());
 
         final String[] eligibleFacts = oracle.getFactTypes();
-        for ( final String factType : eligibleFacts ) {
-            dropDownFacts.addItem( factType );
+        for (final String factType : eligibleFacts) {
+            dropDownFacts.addItem(factType);
         }
-        dropDownFacts.addChangeHandler( new ChangeHandler() {
+        dropDownFacts.addChangeHandler(new ChangeHandler() {
 
             @Override
-            public void onChange( final ChangeEvent event ) {
-                scoreCardPropertyFactChanged( dropDownFacts,
-                                              dropDownFields );
+            public void onChange(final ChangeEvent event) {
+                scoreCardPropertyFactChanged(dropDownFacts,
+                                             dropDownFields);
             }
-
-        } );
-        final int selectedFactIndex = Arrays.asList( eligibleFacts ).indexOf( factName );
-        dropDownFacts.setSelectedIndex( selectedFactIndex >= 0 ? selectedFactIndex + 1 : 0 );
-        scoreCardPropertyFactChanged( dropDownFacts,
-                                      dropDownFields );
+        });
+        final int selectedFactIndex = Arrays.asList(eligibleFacts).indexOf(factName);
+        dropDownFacts.setSelectedIndex(selectedFactIndex >= 0 ? selectedFactIndex + 1 : 0);
+        scoreCardPropertyFactChanged(dropDownFacts,
+                                     dropDownFields);
 
         //Reason Codes List Box
         ddReasonCodeField = new ListBox();
-        getEligibleFields( factName,
-                           typesForRC,
-                           new Callback<String[]>() {
-                               @Override
-                               public void callback( final String[] eligibleReasonCodeFields ) {
-                                   ddReasonCodeField.addItem( GuidedScoreCardConstants.INSTANCE.pleaseChoose() );
-                                   ddReasonCodeField.setEnabled( eligibleReasonCodeFields.length > 0 );
-                                   for ( final String field : eligibleReasonCodeFields ) {
-                                       ddReasonCodeField.addItem( field );
-                                   }
-                                   final String rcField = model.getReasonCodeField() + " : List";
-                                   final int selectedReasonCodeIndex = Arrays.asList( eligibleReasonCodeFields ).indexOf( rcField );
-                                   ddReasonCodeField.setSelectedIndex( selectedReasonCodeIndex >= 0 ? selectedReasonCodeIndex : 0 );
-                               }
-                           } );
+        getEligibleFields(factName,
+                          typesForRC,
+                          new Callback<String[]>() {
+                              @Override
+                              public void callback(final String[] eligibleReasonCodeFields) {
+                                  ddReasonCodeField.addItem(GuidedScoreCardConstants.INSTANCE.pleaseChoose());
+                                  ddReasonCodeField.setEnabled(eligibleReasonCodeFields.length > 0);
+                                  for (final String field : eligibleReasonCodeFields) {
+                                      ddReasonCodeField.addItem(field);
+                                  }
+                                  final String rcField = model.getReasonCodeField() + " : List";
+                                  final int selectedReasonCodeIndex = Arrays.asList(eligibleReasonCodeFields).indexOf(rcField);
+                                  ddReasonCodeField.setSelectedIndex(selectedReasonCodeIndex >= 0 ? selectedReasonCodeIndex : 0);
+                              }
+                          });
 
         final boolean useReasonCodes = model.isUseReasonCodes();
         final String reasonCodesAlgo = model.getReasonCodesAlgorithm();
 
-        ddUseReasonCode = booleanEditor( Boolean.toString( useReasonCodes ) );
-        ddReasonCodeAlgorithm = listBoxEditor( reasonCodeAlgorithms,
-                                               reasonCodesAlgo,
-                                               true );
-        tbBaselineScore = TextBoxFactory.getTextBox( DataType.TYPE_NUMERIC_DOUBLE );
+        ddUseReasonCode = booleanEditor(Boolean.toString(useReasonCodes));
+        ddReasonCodeAlgorithm = listBoxEditor(reasonCodeAlgorithms,
+                                              reasonCodesAlgo,
+                                              true);
+        tbBaselineScore = TextBoxFactory.getTextBox(DataType.TYPE_NUMERIC_DOUBLE);
 
-        scorecardPropertiesGrid.setText( 0,
-                                         0,
-                                         GuidedScoreCardConstants.INSTANCE.facts() );
-        scorecardPropertiesGrid.setText( 0,
-                                         1,
-                                         GuidedScoreCardConstants.INSTANCE.resultantScoreField() );
-        scorecardPropertiesGrid.setText( 0,
-                                         2,
-                                         GuidedScoreCardConstants.INSTANCE.initialScore() );
+        scorecardPropertiesGrid.setText(0,
+                                        0,
+                                        GuidedScoreCardConstants.INSTANCE.facts());
+        scorecardPropertiesGrid.setText(0,
+                                        1,
+                                        GuidedScoreCardConstants.INSTANCE.resultantScoreField());
+        scorecardPropertiesGrid.setText(0,
+                                        2,
+                                        GuidedScoreCardConstants.INSTANCE.initialScore());
 
-        scorecardPropertiesGrid.setWidget( 1,
-                                           0,
-                                           dropDownFacts );
-        scorecardPropertiesGrid.setWidget( 1,
-                                           1,
-                                           dropDownFields );
-        scorecardPropertiesGrid.setWidget( 1,
-                                           2,
-                                           tbInitialScore );
+        scorecardPropertiesGrid.setWidget(1,
+                                          0,
+                                          dropDownFacts);
+        scorecardPropertiesGrid.setWidget(1,
+                                          1,
+                                          dropDownFields);
+        scorecardPropertiesGrid.setWidget(1,
+                                          2,
+                                          tbInitialScore);
 
-        scorecardPropertiesGrid.setText( 2,
-                                         0,
-                                         GuidedScoreCardConstants.INSTANCE.useReasonCodes() );
-        scorecardPropertiesGrid.setText( 2,
-                                         1,
-                                         GuidedScoreCardConstants.INSTANCE.resultantReasonCodesField() );
-        scorecardPropertiesGrid.setText( 2,
-                                         2,
-                                         GuidedScoreCardConstants.INSTANCE.reasonCodesAlgorithm() );
-        scorecardPropertiesGrid.setText( 2,
-                                         3,
-                                         GuidedScoreCardConstants.INSTANCE.baselineScore() );
+        scorecardPropertiesGrid.setText(2,
+                                        0,
+                                        GuidedScoreCardConstants.INSTANCE.useReasonCodes());
+        scorecardPropertiesGrid.setText(2,
+                                        1,
+                                        GuidedScoreCardConstants.INSTANCE.resultantReasonCodesField());
+        scorecardPropertiesGrid.setText(2,
+                                        2,
+                                        GuidedScoreCardConstants.INSTANCE.reasonCodesAlgorithm());
+        scorecardPropertiesGrid.setText(2,
+                                        3,
+                                        GuidedScoreCardConstants.INSTANCE.baselineScore());
 
-        scorecardPropertiesGrid.setWidget( 3,
-                                           0,
-                                           ddUseReasonCode );
-        scorecardPropertiesGrid.setWidget( 3,
-                                           1,
-                                           ddReasonCodeField );
-        scorecardPropertiesGrid.setWidget( 3,
-                                           2,
-                                           ddReasonCodeAlgorithm );
-        scorecardPropertiesGrid.setWidget( 3,
-                                           3,
-                                           tbBaselineScore );
+        scorecardPropertiesGrid.setWidget(3,
+                                          0,
+                                          ddUseReasonCode);
+        scorecardPropertiesGrid.setWidget(3,
+                                          1,
+                                          ddReasonCodeField);
+        scorecardPropertiesGrid.setWidget(3,
+                                          2,
+                                          ddReasonCodeAlgorithm);
+        scorecardPropertiesGrid.setWidget(3,
+                                          3,
+                                          tbBaselineScore);
 
         /* TODO : Remove this explicitly Disabled Reasoncode support field*/
-        ddUseReasonCode.setEnabled( false );
-        ddReasonCodeField.setEnabled( false );
+        ddUseReasonCode.setEnabled(false);
+        ddReasonCodeField.setEnabled(false);
 
-        tbBaselineScore.setText( Double.toString( model.getBaselineScore() ) );
+        tbBaselineScore.setText(Double.toString(model.getBaselineScore()));
 
-        scorecardPropertiesGrid.getCellFormatter().setWidth( 0,
-                                                             0,
-                                                             "200px" );
-        scorecardPropertiesGrid.getCellFormatter().setWidth( 0,
-                                                             1,
-                                                             "250px" );
-        scorecardPropertiesGrid.getCellFormatter().setWidth( 0,
-                                                             2,
-                                                             "200px" );
-        scorecardPropertiesGrid.getCellFormatter().setWidth( 0,
-                                                             3,
-                                                             "200px" );
+        scorecardPropertiesGrid.getCellFormatter().setWidth(0,
+                                                            0,
+                                                            "200px");
+        scorecardPropertiesGrid.getCellFormatter().setWidth(0,
+                                                            1,
+                                                            "250px");
+        scorecardPropertiesGrid.getCellFormatter().setWidth(0,
+                                                            2,
+                                                            "200px");
+        scorecardPropertiesGrid.getCellFormatter().setWidth(0,
+                                                            3,
+                                                            "200px");
 
         return scorecardPropertiesGrid;
     }
 
-    private void scoreCardPropertyFactChanged( final ListBox dropDownFacts,
-                                               final ListBox dropDownFields ) {
+    private void scoreCardPropertyFactChanged(final ListBox dropDownFacts,
+                                              final ListBox dropDownFields) {
         final int selectedIndex = dropDownFacts.getSelectedIndex();
         dropDownFields.clear();
 
-        final String selectedFactType = dropDownFacts.getItemText( selectedIndex );
-        getEligibleFields( selectedFactType,
-                           typesForScore,
-                           new Callback<String[]>() {
-                               @Override
-                               public void callback( final String[] eligibleFieldsForSelectedFactType ) {
-                                   int selectedFieldIndex = 0;
-                                   dropDownFields.addItem( GuidedScoreCardConstants.INSTANCE.pleaseChoose() );
-                                   dropDownFields.setEnabled( eligibleFieldsForSelectedFactType.length > 0 );
-                                   for ( final String field : eligibleFieldsForSelectedFactType ) {
-                                       dropDownFields.addItem( field );
-                                   }
-                                   for ( String type : typesForScore ) {
-                                       final String qualifiedFieldName = model.getFieldName() + " : " + type;
-                                       selectedFieldIndex = Math.max( selectedFieldIndex,
-                                                                      Arrays.asList( eligibleFieldsForSelectedFactType ).indexOf( qualifiedFieldName ) + 1 );
-                                       if ( selectedFieldIndex > 0 ) {
-                                           break;
-                                       }
-                                   }
-                                   dropDownFields.setSelectedIndex( selectedFieldIndex );
-                               }
-                           } );
+        final String selectedFactType = dropDownFacts.getItemText(selectedIndex);
+        getEligibleFields(selectedFactType,
+                          typesForScore,
+                          new Callback<String[]>() {
+                              @Override
+                              public void callback(final String[] eligibleFieldsForSelectedFactType) {
+                                  int selectedFieldIndex = 0;
+                                  dropDownFields.addItem(GuidedScoreCardConstants.INSTANCE.pleaseChoose());
+                                  dropDownFields.setEnabled(eligibleFieldsForSelectedFactType.length > 0);
+                                  for (final String field : eligibleFieldsForSelectedFactType) {
+                                      dropDownFields.addItem(field);
+                                  }
+                                  for (String type : typesForScore) {
+                                      final String qualifiedFieldName = model.getFieldName() + " : " + type;
+                                      selectedFieldIndex = Math.max(selectedFieldIndex,
+                                                                    Arrays.asList(eligibleFieldsForSelectedFactType).indexOf(qualifiedFieldName) + 1);
+                                      if (selectedFieldIndex > 0) {
+                                          break;
+                                      }
+                                  }
+                                  dropDownFields.setSelectedIndex(selectedFieldIndex);
+                              }
+                          });
     }
 
     private Widget getCharacteristics() {
         characteristicsPanel = new VerticalPanel();
-        characteristicsTables = new ArrayList<FlexTable>(  );
+        characteristicsTables = new ArrayList<FlexTable>();
         final HorizontalPanel toolbar = new HorizontalPanel();
-        btnAddCharacteristic = new Button( GuidedScoreCardConstants.INSTANCE.addCharacteristic(),
-                                           new ClickHandler() {
-                                               public void onClick( ClickEvent event ) {
-                                                   addCharacteristic( null );
-                                               }
-                                           } );
-        toolbar.add( btnAddCharacteristic );
+        btnAddCharacteristic = new Button(GuidedScoreCardConstants.INSTANCE.addCharacteristic(),
+                                          new ClickHandler() {
+                                              public void onClick(ClickEvent event) {
+                                                  addCharacteristic(null);
+                                              }
+                                          });
+        toolbar.add(btnAddCharacteristic);
 
-        toolbar.setHeight( "24" );
-        characteristicsPanel.add( toolbar );
+        toolbar.setHeight("24");
+        characteristicsPanel.add(toolbar);
         final SimplePanel gapPanel = new SimplePanel();
-        gapPanel.add( new HTML( "<br/>" ) );
-        characteristicsPanel.add( gapPanel );
+        gapPanel.add(new HTML("<br/>"));
+        characteristicsPanel.add(gapPanel);
         return characteristicsPanel;
     }
 
-    private void removeCharacteristic( final FlexTable selectedTable ) {
-        if ( selectedTable != null ) {
-            final TextBox tbName = (TextBox) selectedTable.getWidget( 0,
-                                                                      1 );
+    private void removeCharacteristic(final FlexTable selectedTable) {
+        if (selectedTable != null) {
+            final TextBox tbName = (TextBox) selectedTable.getWidget(0,
+                                                                     1);
             String name = tbName.getValue();
-            if ( name == null || name.trim().length() == 0 ) {
+            if (name == null || name.trim().length() == 0) {
                 name = "Untitled";
             }
-            final String msg = GuidedScoreCardConstants.INSTANCE.promptDeleteCharacteristic0( name );
-            if ( Window.confirm( msg ) ) {
-                characteristicsTables.remove( selectedTable );
-                characteristicsAttrMap.remove( selectedTable );
+            final String msg = GuidedScoreCardConstants.INSTANCE.promptDeleteCharacteristic0(name);
+            if (Window.confirm(msg)) {
+                characteristicsTables.remove(selectedTable);
+                characteristicsAttrMap.remove(selectedTable);
                 final Widget parent = selectedTable.getParent().getParent();
-                final int i = characteristicsPanel.getWidgetIndex( parent );
-                characteristicsPanel.remove( parent );
-                characteristicsPanel.remove( i );
+                final int i = characteristicsPanel.getWidgetIndex(parent);
+                characteristicsPanel.remove(parent);
+                characteristicsPanel.remove(i);
             }
         }
     }
 
-    private void addAttribute( final FlexTable selectedTable,
-                               final Attribute attribute ) {
+    private void addAttribute(final FlexTable selectedTable,
+                              final Attribute attribute) {
 
         //Disable the fact & field dropdowns
-        ( (ListBox) selectedTable.getWidget( 2, 0 ) ).setEnabled( false );
+        ((ListBox) selectedTable.getWidget(2, 0)).setEnabled(false);
         //( (ListBox) selectedTable.getWidget( 2, 1 ) ).setEnabled( false );
-        final ListBox edd = ( (ListBox) selectedTable.getWidget( 2, 1 ) );
-        edd.setEnabled( false );
+        final ListBox edd = ((ListBox) selectedTable.getWidget(2, 1));
+        edd.setEnabled(false);
         int selectedIndex = edd.getSelectedIndex() > -1 ? edd.getSelectedIndex() : 0;
-        String field = edd.getValue( selectedIndex );
+        String field = edd.getValue(selectedIndex);
         //field is in the format 'fieldName : datatype';
-        String fieldName = field.substring( 0, field.indexOf( ":" ) ).trim(); //the actual name
-        String dataType = field.substring( field.indexOf( ":" ) + 1 ).trim(); //the data type
+        String fieldName = field.substring(0, field.indexOf(":")).trim(); //the actual name
+        String dataType = field.substring(field.indexOf(":") + 1).trim(); //the data type
         //enum values
-        final ListBox factDD = (ListBox) selectedTable.getWidget( 2, 0 );
-        String factName = factDD.getValue( factDD.getSelectedIndex() );
-        boolean enumColumn = oracle.hasEnums( factName, fieldName );
+        final ListBox factDD = (ListBox) selectedTable.getWidget(2, 0);
+        String factName = factDD.getValue(factDD.getSelectedIndex());
+        boolean enumColumn = oracle.hasEnums(factName, fieldName);
         final List<String> operators = new ArrayList<String>();
-        if ( "String".equalsIgnoreCase( dataType ) ) {
-            if ( enumColumn ) {
-                operators.addAll( Arrays.asList( enumStringOperators ) );
+        if ("String".equalsIgnoreCase(dataType)) {
+            if (enumColumn) {
+                operators.addAll(Arrays.asList(enumStringOperators));
             } else {
-                operators.addAll( Arrays.asList( stringOperators ) );
+                operators.addAll(Arrays.asList(stringOperators));
             }
-        } else if ( "boolean".equalsIgnoreCase( dataType ) ) {
-            operators.addAll( Arrays.asList( booleanOperators ) );
+        } else if ("boolean".equalsIgnoreCase(dataType)) {
+            operators.addAll(Arrays.asList(booleanOperators));
         } else {
-            operators.addAll( Arrays.asList( numericOperators ) );
+            operators.addAll(Arrays.asList(numericOperators));
         }
 
-        if ( characteristicsAttrMap.get( selectedTable ) == null ) {
-            final Characteristic characteristic = getCharacteristicFromTable( selectedTable );
+        if (characteristicsAttrMap.get(selectedTable) == null) {
+            final Characteristic characteristic = getCharacteristicFromTable(selectedTable);
             //first attribute, construct and add the table
-            VerticalPanel vPanel = characteristicsAttrPanelMap.get( selectedTable );
-            vPanel.add( addAttributeCellTable( selectedTable, characteristic, enumColumn, dataType, operators ) );
-            characteristicsAttrPanelMap.remove( selectedTable );
+            VerticalPanel vPanel = characteristicsAttrPanelMap.get(selectedTable);
+            vPanel.add(addAttributeCellTable(selectedTable, characteristic, enumColumn, dataType, operators));
+            characteristicsAttrPanelMap.remove(selectedTable);
         }
         Attribute newAttribute = null;
-        if ( attribute != null ) {
-            characteristicsAttrMap.get( selectedTable ).getList().add( attribute );
+        if (attribute != null) {
+            characteristicsAttrMap.get(selectedTable).getList().add(attribute);
         } else {
             newAttribute = new Attribute();
-            characteristicsAttrMap.get( selectedTable ).getList().add( newAttribute );
-            newAttribute.setOperator( operators.get( 0 ) );
+            characteristicsAttrMap.get(selectedTable).getList().add(newAttribute);
+            newAttribute.setOperator(operators.get(0));
         }
-        characteristicsAttrMap.get( selectedTable ).refresh();
-        if ( "boolean".equalsIgnoreCase( dataType ) ) {
-            ( (Button) selectedTable.getWidget( 0, 3 ) ).setEnabled( characteristicsAttrMap.get( selectedTable ).getList().size() != 2 );
-            if ( newAttribute != null ) {
-                newAttribute.setValue( GuidedScoreCardConstants.INSTANCE.notApplicable() );
+        characteristicsAttrMap.get(selectedTable).refresh();
+        if ("boolean".equalsIgnoreCase(dataType)) {
+            ((Button) selectedTable.getWidget(0, 3)).setEnabled(characteristicsAttrMap.get(selectedTable).getList().size() != 2);
+            if (newAttribute != null) {
+                newAttribute.setValue(GuidedScoreCardConstants.INSTANCE.notApplicable());
             }
         }
     }
 
-    private FlexTable addCharacteristic( final Characteristic characteristic ) {
+    private FlexTable addCharacteristic(final Characteristic characteristic) {
         final FlexTable cGrid = new FlexTable();
-        cGrid.setBorderWidth( 0 );
-        cGrid.setCellPadding( 1 );
-        cGrid.setCellSpacing( 1 );
+        cGrid.setBorderWidth(0);
+        cGrid.setCellPadding(1);
+        cGrid.setCellSpacing(1);
 
-        cGrid.setStyleName( "rule-ListHeader" );
+        cGrid.setStyleName("rule-ListHeader");
 
-        Button btnAddAttribute = new Button( GuidedScoreCardConstants.INSTANCE.addAttribute(),
-                                             new ClickHandler() {
-                                                 public void onClick( final ClickEvent event ) {
-                                                     addAttribute( cGrid,
-                                                                   null );
-                                                 }
-                                             } );
+        Button btnAddAttribute = new Button(GuidedScoreCardConstants.INSTANCE.addAttribute(),
+                                            new ClickHandler() {
+                                                public void onClick(final ClickEvent event) {
+                                                    addAttribute(cGrid,
+                                                                 null);
+                                                }
+                                            });
 
-        Button btnRemoveCharacteristic = new Button( GuidedScoreCardConstants.INSTANCE.removeCharacteristic(),
-                                                     new ClickHandler() {
-                                                         public void onClick( ClickEvent event ) {
-                                                             removeCharacteristic( cGrid );
-                                                         }
-                                                     } );
+        Button btnRemoveCharacteristic = new Button(GuidedScoreCardConstants.INSTANCE.removeCharacteristic(),
+                                                    new ClickHandler() {
+                                                        public void onClick(ClickEvent event) {
+                                                            removeCharacteristic(cGrid);
+                                                        }
+                                                    });
 
         String selectedFact = "";
-        if ( characteristic != null ) {
+        if (characteristic != null) {
             selectedFact = characteristic.getFact();
-            if ( selectedFact.lastIndexOf( "." ) > -1 ) {
-                selectedFact = selectedFact.substring( selectedFact.lastIndexOf( "." ) + 1 );
+            if (selectedFact.lastIndexOf(".") > -1) {
+                selectedFact = selectedFact.substring(selectedFact.lastIndexOf(".") + 1);
             }
         }
 
@@ -622,396 +620,395 @@ public class GuidedScoreCardEditor extends Composite {
         //Facts List Box
         final ListBox dropDownFacts = new ListBox();
         final String[] eligibleFacts = oracle.getFactTypes();
-        for ( final String factType : eligibleFacts ) {
-            dropDownFacts.addItem( factType );
+        for (final String factType : eligibleFacts) {
+            dropDownFacts.addItem(factType);
         }
-        dropDownFacts.addChangeHandler( new ChangeHandler() {
+        dropDownFacts.addChangeHandler(new ChangeHandler() {
 
             @Override
-            public void onChange( final ChangeEvent event ) {
-                characteristicFactChanged( characteristic,
-                                           dropDownFacts,
-                                           dropDownFields );
+            public void onChange(final ChangeEvent event) {
+                characteristicFactChanged(characteristic,
+                                          dropDownFacts,
+                                          dropDownFields);
             }
+        });
+        final int selectedFactIndex = Arrays.asList(eligibleFacts).indexOf(selectedFact);
+        dropDownFacts.setSelectedIndex(selectedFactIndex >= 0 ? selectedFactIndex : 0);
+        characteristicFactChanged(characteristic,
+                                  dropDownFacts,
+                                  dropDownFields);
 
-        } );
-        final int selectedFactIndex = Arrays.asList( eligibleFacts ).indexOf( selectedFact );
-        dropDownFacts.setSelectedIndex( selectedFactIndex >= 0 ? selectedFactIndex : 0 );
-        characteristicFactChanged( characteristic,
-                                   dropDownFacts,
-                                   dropDownFields );
+        cGrid.setWidget(0,
+                        0,
+                        new Label(GuidedScoreCardConstants.INSTANCE.name()));
+        final TextBox tbName = TextBoxFactory.getTextBox(DataType.TYPE_STRING);
+        cGrid.setWidget(0,
+                        1,
+                        tbName);
+        cGrid.setWidget(0,
+                        2,
+                        btnRemoveCharacteristic);
+        cGrid.setWidget(0,
+                        3,
+                        btnAddAttribute);
 
-        cGrid.setWidget( 0,
-                         0,
-                         new Label( GuidedScoreCardConstants.INSTANCE.name() ) );
-        final TextBox tbName = TextBoxFactory.getTextBox( DataType.TYPE_STRING );
-        cGrid.setWidget( 0,
-                         1,
-                         tbName );
-        cGrid.setWidget( 0,
-                         2,
-                         btnRemoveCharacteristic );
-        cGrid.setWidget( 0,
-                         3,
-                         btnAddAttribute );
+        cGrid.setWidget(1,
+                        0,
+                        new Label(GuidedScoreCardConstants.INSTANCE.fact()));
+        cGrid.setWidget(1,
+                        1,
+                        new Label(GuidedScoreCardConstants.INSTANCE.characteristic()));
+        cGrid.setWidget(1,
+                        2,
+                        new Label(GuidedScoreCardConstants.INSTANCE.baselineScore()));
+        cGrid.setWidget(1,
+                        3,
+                        new Label(GuidedScoreCardConstants.INSTANCE.reasonCode()));
 
-        cGrid.setWidget( 1,
-                         0,
-                         new Label( GuidedScoreCardConstants.INSTANCE.fact() ) );
-        cGrid.setWidget( 1,
-                         1,
-                         new Label( GuidedScoreCardConstants.INSTANCE.characteristic() ) );
-        cGrid.setWidget( 1,
-                         2,
-                         new Label( GuidedScoreCardConstants.INSTANCE.baselineScore() ) );
-        cGrid.setWidget( 1,
-                         3,
-                         new Label( GuidedScoreCardConstants.INSTANCE.reasonCode() ) );
+        cGrid.setWidget(2,
+                        0,
+                        dropDownFacts);
+        cGrid.setWidget(2,
+                        1,
+                        dropDownFields);
 
-        cGrid.setWidget( 2,
-                         0,
-                         dropDownFacts );
-        cGrid.setWidget( 2,
-                         1,
-                         dropDownFields );
+        final TextBox tbBaseline = TextBoxFactory.getTextBox(DataType.TYPE_NUMERIC_DOUBLE);
+        final boolean useReasonCodesValue = "true".equalsIgnoreCase(ddUseReasonCode.getValue(ddUseReasonCode.getSelectedIndex()));
+        tbBaseline.setEnabled(useReasonCodesValue);
+        cGrid.setWidget(2,
+                        2,
+                        tbBaseline);
 
-        final TextBox tbBaseline = TextBoxFactory.getTextBox( DataType.TYPE_NUMERIC_DOUBLE );
-        final boolean useReasonCodesValue = "true".equalsIgnoreCase( ddUseReasonCode.getValue( ddUseReasonCode.getSelectedIndex() ) );
-        tbBaseline.setEnabled( useReasonCodesValue );
-        cGrid.setWidget( 2,
-                         2,
-                         tbBaseline );
-
-        final TextBox tbReasonCode = TextBoxFactory.getTextBox( DataType.TYPE_STRING );
-        tbReasonCode.setEnabled( useReasonCodesValue );
-        cGrid.setWidget( 2,
-                         3,
-                         tbReasonCode );
+        final TextBox tbReasonCode = TextBoxFactory.getTextBox(DataType.TYPE_STRING);
+        tbReasonCode.setEnabled(useReasonCodesValue);
+        cGrid.setWidget(2,
+                        3,
+                        tbReasonCode);
 
         final SimplePanel gapPanel = new SimplePanel();
-        gapPanel.add( new HTML( "<br/>" ) );
+        gapPanel.add(new HTML("<br/>"));
 
         final VerticalPanel panel = new VerticalPanel();
-        panel.add( cGrid );
-        characteristicsAttrPanelMap.put( cGrid, panel );
+        panel.add(cGrid);
+        characteristicsAttrPanelMap.put(cGrid, panel);
         //panel.add( addAttributeCellTable( cGrid, characteristic ) );
-        panel.setWidth( "100%" );
+        panel.setWidth("100%");
         DecoratorPanel decoratorPanel = new DecoratorPanel();
-        decoratorPanel.add( panel );
+        decoratorPanel.add(panel);
 
-        characteristicsPanel.add( decoratorPanel );
-        characteristicsPanel.add( gapPanel );
-        characteristicsTables.add( cGrid );
+        characteristicsPanel.add(decoratorPanel);
+        characteristicsPanel.add(gapPanel);
+        characteristicsTables.add(cGrid);
 
-        cGrid.getColumnFormatter().setWidth( 0, "150px" );
-        cGrid.getColumnFormatter().setWidth( 1, "250px" );
-        cGrid.getColumnFormatter().setWidth( 2, "150px" );
-        cGrid.getColumnFormatter().setWidth( 3, "150px" );
+        cGrid.getColumnFormatter().setWidth(0, "150px");
+        cGrid.getColumnFormatter().setWidth(1, "250px");
+        cGrid.getColumnFormatter().setWidth(2, "150px");
+        cGrid.getColumnFormatter().setWidth(3, "150px");
 
-        if ( characteristic != null ) {
-            tbReasonCode.setValue( characteristic.getReasonCode() );
-            tbBaseline.setValue( "" + characteristic.getBaselineScore() );
-            tbName.setValue( characteristic.getName() );
+        if (characteristic != null) {
+            tbReasonCode.setValue(characteristic.getReasonCode());
+            tbBaseline.setValue("" + characteristic.getBaselineScore());
+            tbName.setValue(characteristic.getName());
         }
 
         return cGrid;
     }
 
-    private void characteristicFactChanged( final Characteristic characteristic,
-                                            final ListBox dropDownFacts,
-                                            final ListBox dropDownFields ) {
+    private void characteristicFactChanged(final Characteristic characteristic,
+                                           final ListBox dropDownFacts,
+                                           final ListBox dropDownFields) {
         final int selectedIndex = dropDownFacts.getSelectedIndex();
-        final String selectedFactType = dropDownFacts.getItemText( selectedIndex );
-        getEligibleFields( selectedFactType,
-                           typesForAttributes,
-                           new Callback<String[]>() {
-                               @Override
-                               public void callback( final String[] eligibleFieldsForSelectedFactType ) {
-                                   String selectedField = "";
-                                   if ( characteristic != null ) {
-                                       selectedField = characteristic.getField();
-                                       selectedField = selectedField + " : ";// + characteristic.getDataType();
-                                   }
+        final String selectedFactType = dropDownFacts.getItemText(selectedIndex);
+        getEligibleFields(selectedFactType,
+                          typesForAttributes,
+                          new Callback<String[]>() {
+                              @Override
+                              public void callback(final String[] eligibleFieldsForSelectedFactType) {
+                                  String selectedField = "";
+                                  if (characteristic != null) {
+                                      selectedField = characteristic.getField();
+                                      selectedField = selectedField + " : ";// + characteristic.getDataType();
+                                  }
 
-                                   dropDownFields.clear();
-                                   for ( final String field : eligibleFieldsForSelectedFactType ) {
-                                       dropDownFields.addItem( field );
-                                   }
-                                   int selectedFieldIndex = -1;
-                                   for ( String availableFactType : eligibleFieldsForSelectedFactType ) {
-                                       selectedFieldIndex++;
-                                       //availableFactType is in format "fieldname : dataType"
-                                       if ( availableFactType.toLowerCase().startsWith( selectedField.toLowerCase() ) ) {
-                                           break;
-                                       }
-                                   }
-                                   dropDownFields.setSelectedIndex( selectedFieldIndex >= 0 ? selectedFieldIndex : 0 );
-                               }
-                           } );
+                                  dropDownFields.clear();
+                                  for (final String field : eligibleFieldsForSelectedFactType) {
+                                      dropDownFields.addItem(field);
+                                  }
+                                  int selectedFieldIndex = -1;
+                                  for (String availableFactType : eligibleFieldsForSelectedFactType) {
+                                      selectedFieldIndex++;
+                                      //availableFactType is in format "fieldname : dataType"
+                                      if (availableFactType.toLowerCase().startsWith(selectedField.toLowerCase())) {
+                                          break;
+                                      }
+                                  }
+                                  dropDownFields.setSelectedIndex(selectedFieldIndex >= 0 ? selectedFieldIndex : 0);
+                              }
+                          });
     }
 
-    private Widget addAttributeCellTable( final FlexTable cGrid,
-                                          final Characteristic characteristic,
-                                          final boolean enumColumn,
-                                          final String dataType,
-                                          final List<String> operators ) {
+    private Widget addAttributeCellTable(final FlexTable cGrid,
+                                         final Characteristic characteristic,
+                                         final boolean enumColumn,
+                                         final String dataType,
+                                         final List<String> operators) {
         String[] enumValues = null;
-        if ( characteristic != null ) {
+        if (characteristic != null) {
             //enum values
-            if ( enumColumn ) {
+            if (enumColumn) {
                 String factName = characteristic.getFact();
                 String fieldName = characteristic.getField();
-                enumValues = oracle.getEnumValues( factName, fieldName );
+                enumValues = oracle.getEnumValues(factName, fieldName);
             }
         }
 
         final CellTable<Attribute> attributeCellTable = new CellTable<Attribute>();
 
         //Operators column
-        final DynamicSelectionCell categoryCell = new DynamicSelectionCell( operators );
-        final Column<Attribute, String> operatorColumn = new Column<Attribute, String>( categoryCell ) {
-            public String getValue( final Attribute object ) {
+        final DynamicSelectionCell categoryCell = new DynamicSelectionCell(operators);
+        final Column<Attribute, String> operatorColumn = new Column<Attribute, String>(categoryCell) {
+            public String getValue(final Attribute object) {
                 return object.getOperator();
             }
         };
-        operatorColumn.setFieldUpdater( new FieldUpdater<Attribute, String>() {
-            public void update( int index,
-                                Attribute object,
-                                String value ) {
-                object.setOperator( value );
+        operatorColumn.setFieldUpdater(new FieldUpdater<Attribute, String>() {
+            public void update(int index,
+                               Attribute object,
+                               String value) {
+                object.setOperator(value);
                 attributeCellTable.redraw();
             }
-        } );
+        });
 
         //Value column
         Column<Attribute, String> valueColumn = null;
-        if ( enumValues != null && enumValues.length > 0 ) {
-            valueColumn = new Column<Attribute, String>( new DynamicSelectionCell( Arrays.asList( enumValues ) ) ) {
-                public String getValue( final Attribute object ) {
+        if (enumValues != null && enumValues.length > 0) {
+            valueColumn = new Column<Attribute, String>(new DynamicSelectionCell(Arrays.asList(enumValues))) {
+                public String getValue(final Attribute object) {
                     return object.getValue();
                 }
             };
-            valueColumn.setFieldUpdater( new FieldUpdater<Attribute, String>() {
-                public void update( int index,
-                                    Attribute object,
-                                    String value ) {
-                    object.setValue( value );
+            valueColumn.setFieldUpdater(new FieldUpdater<Attribute, String>() {
+                public void update(int index,
+                                   Attribute object,
+                                   String value) {
+                    object.setValue(value);
                     attributeCellTable.redraw();
                 }
-            } );
+            });
         }
-        if ( valueColumn == null ) {
-            valueColumn = new Column<Attribute, String>( new CustomEditTextCell() ) {
-                public String getValue( final Attribute attribute ) {
+        if (valueColumn == null) {
+            valueColumn = new Column<Attribute, String>(new CustomEditTextCell()) {
+                public String getValue(final Attribute attribute) {
                     return attribute.getValue();
                 }
             };
-            valueColumn.setFieldUpdater( new FieldUpdater<Attribute, String>() {
-                public void update( int index,
-                                    Attribute object,
-                                    String value ) {
-                    object.setValue( value );
+            valueColumn.setFieldUpdater(new FieldUpdater<Attribute, String>() {
+                public void update(int index,
+                                   Attribute object,
+                                   String value) {
+                    object.setValue(value);
                     attributeCellTable.redraw();
                 }
-            } );
+            });
         }
         //Partial Score column
         final EditTextCell partialScoreCell = new EditTextCell();
-        final Column<Attribute, String> partialScoreColumn = new Column<Attribute, String>( partialScoreCell ) {
-            public String getValue( final Attribute attribute ) {
+        final Column<Attribute, String> partialScoreColumn = new Column<Attribute, String>(partialScoreCell) {
+            public String getValue(final Attribute attribute) {
                 return "" + attribute.getPartialScore();
             }
         };
-        partialScoreColumn.setFieldUpdater( new FieldUpdater<Attribute, String>() {
-            public void update( int index,
-                                Attribute object,
-                                String value ) {
+        partialScoreColumn.setFieldUpdater(new FieldUpdater<Attribute, String>() {
+            public void update(int index,
+                               Attribute object,
+                               String value) {
                 try {
-                    double d = Double.parseDouble( value );
-                    object.setPartialScore( d );
-                } catch ( Exception e1 ) {
-                    partialScoreCell.clearViewData( object );
+                    double d = Double.parseDouble(value);
+                    object.setPartialScore(d);
+                } catch (Exception e1) {
+                    partialScoreCell.clearViewData(object);
                 }
                 attributeCellTable.redraw();
             }
-        } );
+        });
 
         //Reason Code column
-        final Column<Attribute, String> reasonCodeColumn = new Column<Attribute, String>( new EditTextCell() ) {
-            public String getValue( final Attribute attribute ) {
+        final Column<Attribute, String> reasonCodeColumn = new Column<Attribute, String>(new EditTextCell()) {
+            public String getValue(final Attribute attribute) {
                 return attribute.getReasonCode();
             }
         };
-        reasonCodeColumn.setFieldUpdater( new FieldUpdater<Attribute, String>() {
-            public void update( int index,
-                                Attribute object,
-                                String value ) {
-                object.setReasonCode( value );
+        reasonCodeColumn.setFieldUpdater(new FieldUpdater<Attribute, String>() {
+            public void update(int index,
+                               Attribute object,
+                               String value) {
+                object.setReasonCode(value);
                 attributeCellTable.redraw();
             }
-        } );
+        });
 
         final ActionCell.Delegate<Attribute> delegate = new ActionCell.Delegate<Attribute>() {
-            public void execute( final Attribute attribute ) {
-                if ( Window.confirm( GuidedScoreCardConstants.INSTANCE.promptDeleteAttribute() ) ) {
-                    final List<Attribute> list = characteristicsAttrMap.get( cGrid ).getList();
-                    list.remove( attribute );
-                    if ( "boolean".equalsIgnoreCase( dataType ) ) {
-                        ( (Button) cGrid.getWidget( 0, 3 ) ).setEnabled( list.size() != 2 );
+            public void execute(final Attribute attribute) {
+                if (Window.confirm(GuidedScoreCardConstants.INSTANCE.promptDeleteAttribute())) {
+                    final List<Attribute> list = characteristicsAttrMap.get(cGrid).getList();
+                    list.remove(attribute);
+                    if ("boolean".equalsIgnoreCase(dataType)) {
+                        ((Button) cGrid.getWidget(0, 3)).setEnabled(list.size() != 2);
                     }
                     attributeCellTable.redraw();
                 }
             }
         };
 
-        final Cell<Attribute> actionCell = new ActionCell<Attribute>( GuidedScoreCardConstants.INSTANCE.remove(),
-                                                                      delegate );
-        final Column<Attribute, String> actionColumn = new IdentityColumn( actionCell );
+        final Cell<Attribute> actionCell = new ActionCell<Attribute>(GuidedScoreCardConstants.INSTANCE.remove(),
+                                                                     delegate);
+        final Column<Attribute, String> actionColumn = new IdentityColumn(actionCell);
 
         // Add the columns.
-        attributeCellTable.addColumn( operatorColumn,
-                                      GuidedScoreCardConstants.INSTANCE.operator() );
-        attributeCellTable.addColumn( valueColumn,
-                                      GuidedScoreCardConstants.INSTANCE.value() );
-        attributeCellTable.addColumn( partialScoreColumn,
-                                      GuidedScoreCardConstants.INSTANCE.partialScore() );
-        attributeCellTable.addColumn( reasonCodeColumn,
-                                      GuidedScoreCardConstants.INSTANCE.reasonCode() );
-        attributeCellTable.addColumn( actionColumn,
-                                      GuidedScoreCardConstants.INSTANCE.actions() );
-        attributeCellTable.setWidth( "100%",
-                                     true );
+        attributeCellTable.addColumn(operatorColumn,
+                                     GuidedScoreCardConstants.INSTANCE.operator());
+        attributeCellTable.addColumn(valueColumn,
+                                     GuidedScoreCardConstants.INSTANCE.value());
+        attributeCellTable.addColumn(partialScoreColumn,
+                                     GuidedScoreCardConstants.INSTANCE.partialScore());
+        attributeCellTable.addColumn(reasonCodeColumn,
+                                     GuidedScoreCardConstants.INSTANCE.reasonCode());
+        attributeCellTable.addColumn(actionColumn,
+                                     GuidedScoreCardConstants.INSTANCE.actions());
+        attributeCellTable.setWidth("100%",
+                                    true);
 
-        attributeCellTable.setColumnWidth( operatorColumn,
-                                           20.0,
-                                           Style.Unit.PCT );
-        attributeCellTable.setColumnWidth( valueColumn,
-                                           20.0,
-                                           Style.Unit.PCT );
-        attributeCellTable.setColumnWidth( partialScoreColumn,
-                                           20.0,
-                                           Style.Unit.PCT );
-        attributeCellTable.setColumnWidth( reasonCodeColumn,
-                                           20.0,
-                                           Style.Unit.PCT );
-        attributeCellTable.setColumnWidth( actionColumn,
-                                           20.0,
-                                           Style.Unit.PCT );
+        attributeCellTable.setColumnWidth(operatorColumn,
+                                          20.0,
+                                          Style.Unit.PCT);
+        attributeCellTable.setColumnWidth(valueColumn,
+                                          20.0,
+                                          Style.Unit.PCT);
+        attributeCellTable.setColumnWidth(partialScoreColumn,
+                                          20.0,
+                                          Style.Unit.PCT);
+        attributeCellTable.setColumnWidth(reasonCodeColumn,
+                                          20.0,
+                                          Style.Unit.PCT);
+        attributeCellTable.setColumnWidth(actionColumn,
+                                          20.0,
+                                          Style.Unit.PCT);
 
         ListDataProvider<Attribute> dataProvider = new ListDataProvider<Attribute>();
-        dataProvider.addDataDisplay( attributeCellTable );
-        characteristicsAttrMap.put( cGrid,
-                                    dataProvider );
+        dataProvider.addDataDisplay(attributeCellTable);
+        characteristicsAttrMap.put(cGrid,
+                                   dataProvider);
 
-        if ( "boolean".equalsIgnoreCase( dataType ) ) {
-            CustomEditTextCell etc = (CustomEditTextCell) attributeCellTable.getColumn( 1 ).getCell();
-            etc.setEnabled( false );
+        if ("boolean".equalsIgnoreCase(dataType)) {
+            CustomEditTextCell etc = (CustomEditTextCell) attributeCellTable.getColumn(1).getCell();
+            etc.setEnabled(false);
         }
 
-        return ( attributeCellTable );
+        return (attributeCellTable);
     }
 
-    private void getEligibleFields( final String factName,
-                                    final String[] types,
-                                    final Callback<String[]> callback ) {
-        oracle.getFieldCompletions( factName,
-                                    new Callback<ModelField[]>() {
-                                        @Override
-                                        public void callback( final ModelField[] fields ) {
-                                            final List<String> eligibleFieldNames = new ArrayList<String>();
-                                            for ( final ModelField field : fields ) {
-                                                String type = field.getClassName();
-                                                if ( type.lastIndexOf( "." ) > -1 ) {
-                                                    type = type.substring( type.lastIndexOf( "." ) + 1 );
-                                                }
-                                                for ( final String t : types ) {
-                                                    if ( type.equalsIgnoreCase( t ) ) {
-                                                        eligibleFieldNames.add( field.getName() + " : " + type );
-                                                        break;
-                                                    }
-                                                }
-                                            }
-                                            callback.callback( eligibleFieldNames.toArray( new String[]{} ) );
-                                        }
-                                    } );
+    private void getEligibleFields(final String factName,
+                                   final String[] types,
+                                   final Callback<String[]> callback) {
+        oracle.getFieldCompletions(factName,
+                                   new Callback<ModelField[]>() {
+                                       @Override
+                                       public void callback(final ModelField[] fields) {
+                                           final List<String> eligibleFieldNames = new ArrayList<String>();
+                                           for (final ModelField field : fields) {
+                                               String type = field.getClassName();
+                                               if (type.lastIndexOf(".") > -1) {
+                                                   type = type.substring(type.lastIndexOf(".") + 1);
+                                               }
+                                               for (final String t : types) {
+                                                   if (type.equalsIgnoreCase(t)) {
+                                                       eligibleFieldNames.add(field.getName() + " : " + type);
+                                                       break;
+                                                   }
+                                               }
+                                           }
+                                           callback.callback(eligibleFieldNames.toArray(new String[]{}));
+                                       }
+                                   });
     }
 
-    private void getDataTypeForField( final String factName,
-                                      final String fieldName,
-                                      final Callback<String> callback ) {
-        oracle.getFieldCompletions( factName,
-                                    new Callback<ModelField[]>() {
+    private void getDataTypeForField(final String factName,
+                                     final String fieldName,
+                                     final Callback<String> callback) {
+        oracle.getFieldCompletions(factName,
+                                   new Callback<ModelField[]>() {
 
-                                        @Override
-                                        public void callback( final ModelField[] fields ) {
-                                            for ( final ModelField field : fields ) {
-                                                if ( fieldName.equalsIgnoreCase( field.getName() ) ) {
-                                                    String type = field.getClassName();
-                                                    if ( type.endsWith( "String" ) ) {
-                                                        type = "String";
-                                                    } else if ( type.endsWith( "Double" ) ) {
-                                                        type = "Double";
-                                                    } else if ( endsWithIgnoreCase( type, "integer" ) ) {
-                                                        type = "int";
-                                                    }
-                                                    callback.callback( type );
-                                                    return;
-                                                }
-                                            }
-                                            callback.callback( null );
-                                        }
-                                    } );
+                                       @Override
+                                       public void callback(final ModelField[] fields) {
+                                           for (final ModelField field : fields) {
+                                               if (fieldName.equalsIgnoreCase(field.getName())) {
+                                                   String type = field.getClassName();
+                                                   if (type.endsWith("String")) {
+                                                       type = "String";
+                                                   } else if (type.endsWith("Double")) {
+                                                       type = "Double";
+                                                   } else if (endsWithIgnoreCase(type, "integer")) {
+                                                       type = "int";
+                                                   }
+                                                   callback.callback(type);
+                                                   return;
+                                               }
+                                           }
+                                           callback.callback(null);
+                                       }
+                                   });
     }
 
-    private ListBox booleanEditor( final String currentValue ) {
-        final ListBox listBox = listBoxEditor( booleanOperators,
-                                               currentValue,
-                                               false );
-        listBox.addChangeHandler( new ChangeHandler() {
+    private ListBox booleanEditor(final String currentValue) {
+        final ListBox listBox = listBoxEditor(booleanOperators,
+                                              currentValue,
+                                              false);
+        listBox.addChangeHandler(new ChangeHandler() {
             @Override
-            public void onChange( final ChangeEvent event ) {
+            public void onChange(final ChangeEvent event) {
                 final int selectedIndex = listBox.getSelectedIndex();
-                final String selectedValue = listBox.getItemText( selectedIndex );
-                final boolean enabled = "true".equalsIgnoreCase( selectedValue );
-                ddReasonCodeAlgorithm.setEnabled( enabled );
-                tbBaselineScore.setEnabled( enabled );
-                ddReasonCodeField.setEnabled( enabled );
-                for ( final FlexTable cGrid : characteristicsTables ) {
+                final String selectedValue = listBox.getItemText(selectedIndex);
+                final boolean enabled = "true".equalsIgnoreCase(selectedValue);
+                ddReasonCodeAlgorithm.setEnabled(enabled);
+                tbBaselineScore.setEnabled(enabled);
+                ddReasonCodeField.setEnabled(enabled);
+                for (final FlexTable cGrid : characteristicsTables) {
                     //baseline score for each characteristic
-                    ( (TextBox) cGrid.getWidget( 2, 2 ) ).setEnabled( enabled );
+                    ((TextBox) cGrid.getWidget(2, 2)).setEnabled(enabled);
                     //reason code for each characteristic
-                    ( (TextBox) cGrid.getWidget( 2, 3 ) ).setEnabled( enabled );
+                    ((TextBox) cGrid.getWidget(2, 3)).setEnabled(enabled);
                 }
             }
-        } );
+        });
         return listBox;
     }
 
-    private ListBox listBoxEditor( final String[] values,
-                                   final String currentValue,
-                                   final boolean allowEmptyValue ) {
+    private ListBox listBoxEditor(final String[] values,
+                                  final String currentValue,
+                                  final boolean allowEmptyValue) {
         final ListBox listBox = new ListBox();
-        if ( allowEmptyValue ) {
-            listBox.addItem( GuidedScoreCardConstants.INSTANCE.pleaseChoose() );
+        if (allowEmptyValue) {
+            listBox.addItem(GuidedScoreCardConstants.INSTANCE.pleaseChoose());
         }
-        for ( final String value : values ) {
-            listBox.addItem( value );
+        for (final String value : values) {
+            listBox.addItem(value);
         }
-        final int selectedIndex = Arrays.asList( values ).indexOf( currentValue );
-        listBox.setSelectedIndex( selectedIndex >= 0 ? selectedIndex + ( allowEmptyValue ? 1 : 0 ) : 0 );
+        final int selectedIndex = Arrays.asList(values).indexOf(currentValue);
+        listBox.setSelectedIndex(selectedIndex >= 0 ? selectedIndex + (allowEmptyValue ? 1 : 0) : 0);
         return listBox;
     }
 
     /* from Commons StringUtils.java */
-    private static boolean endsWithIgnoreCase( String str,
-                                               String suffix ) {
-        if ( str == null || suffix == null ) {
-            return ( str == null && suffix == null );
+    private static boolean endsWithIgnoreCase(String str,
+                                              String suffix) {
+        if (str == null || suffix == null) {
+            return (str == null && suffix == null);
         }
-        if ( suffix.length() > str.length() ) {
+        if (suffix.length() > str.length()) {
             return false;
         }
         int strOffset = str.length() - suffix.length();
-        return str.regionMatches( true, strOffset, suffix, 0, suffix.length() );
+        return str.regionMatches(true, strOffset, suffix, 0, suffix.length());
     }
 }

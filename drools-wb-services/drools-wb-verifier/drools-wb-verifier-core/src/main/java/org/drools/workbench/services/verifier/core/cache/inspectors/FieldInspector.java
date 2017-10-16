@@ -35,11 +35,11 @@ import org.drools.workbench.services.verifier.api.client.relations.HumanReadable
 import org.drools.workbench.services.verifier.api.client.relations.IsConflicting;
 import org.drools.workbench.services.verifier.api.client.relations.IsRedundant;
 import org.drools.workbench.services.verifier.api.client.relations.IsSubsuming;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.services.verifier.core.cache.inspectors.action.ActionInspector;
 import org.drools.workbench.services.verifier.core.cache.inspectors.action.ActionInspectorFactory;
 import org.drools.workbench.services.verifier.core.cache.inspectors.condition.ConditionInspector;
 import org.drools.workbench.services.verifier.core.cache.inspectors.condition.ConditionInspectorFactory;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class FieldInspector
         implements HasConflicts,
@@ -56,84 +56,84 @@ public class FieldInspector
     private final UUIDKey uuidKey;
     private final RuleInspectorUpdater ruleInspectorUpdater;
 
-    public FieldInspector( final Field field,
-                           final RuleInspectorUpdater ruleInspectorUpdater,
-                           final AnalyzerConfiguration configuration ) {
-        this( field.getObjectField(),
-              ruleInspectorUpdater,
-              configuration );
+    public FieldInspector(final Field field,
+                          final RuleInspectorUpdater ruleInspectorUpdater,
+                          final AnalyzerConfiguration configuration) {
+        this(field.getObjectField(),
+             ruleInspectorUpdater,
+             configuration);
 
-        configuration.getUUID( this );
+        configuration.getUUID(this);
 
-        updateActionInspectors( field.getActions()
-                                        .where( Action.value()
-                                                        .any() )
-                                        .select()
-                                        .all() );
-        updateConditionInspectors( field.getConditions()
-                                           .where( Condition.value()
-                                                           .any() )
-                                           .select()
-                                           .all() );
+        updateActionInspectors(field.getActions()
+                                       .where(Action.value()
+                                                      .any())
+                                       .select()
+                                       .all());
+        updateConditionInspectors(field.getConditions()
+                                          .where(Condition.value()
+                                                         .any())
+                                          .select()
+                                          .all());
 
-        setupActionsListener( field );
-        setupConditionsListener( field );
+        setupActionsListener(field);
+        setupConditionsListener(field);
     }
 
-    public FieldInspector( final ObjectField field,
-                           final RuleInspectorUpdater ruleInspectorUpdater,
-                           final AnalyzerConfiguration configuration ) {
-        this.objectField = PortablePreconditions.checkNotNull( "field",
-                                                               field );
-        this.ruleInspectorUpdater = PortablePreconditions.checkNotNull( "ruleInspectorUpdater",
-                                                                        ruleInspectorUpdater );
+    public FieldInspector(final ObjectField field,
+                          final RuleInspectorUpdater ruleInspectorUpdater,
+                          final AnalyzerConfiguration configuration) {
+        this.objectField = PortablePreconditions.checkNotNull("field",
+                                                              field);
+        this.ruleInspectorUpdater = PortablePreconditions.checkNotNull("ruleInspectorUpdater",
+                                                                       ruleInspectorUpdater);
 
-        uuidKey = configuration.getUUID( this );
+        uuidKey = configuration.getUUID(this);
 
-        actionInspectorList = new UpdatableInspectorList<>( new ActionInspectorFactory( configuration ),
-                                                            configuration );
-        conditionInspectorList = new UpdatableInspectorList<>( new ConditionInspectorFactory( configuration ),
-                                                               configuration );
+        actionInspectorList = new UpdatableInspectorList<>(new ActionInspectorFactory(configuration),
+                                                           configuration);
+        conditionInspectorList = new UpdatableInspectorList<>(new ConditionInspectorFactory(configuration),
+                                                              configuration);
     }
 
-    private void setupConditionsListener( final Field field ) {
+    private void setupConditionsListener(final Field field) {
         field.getConditions()
-                .where( Condition.value()
-                                .any() )
+                .where(Condition.value()
+                               .any())
                 .listen()
-                .all( new AllListener<Condition>() {
+                .all(new AllListener<Condition>() {
                     @Override
-                    public void onAllChanged( final Collection<Condition> all ) {
-                        updateConditionInspectors( all );
+                    public void onAllChanged(final Collection<Condition> all) {
+                        updateConditionInspectors(all);
                         ruleInspectorUpdater.resetConditionsInspectors();
                     }
-                } );
+                });
     }
 
-    private void setupActionsListener( final Field field ) {
+    private void setupActionsListener(final Field field) {
         field.getActions()
-                .where( Action.value()
-                                .any() )
+                .where(Action.value()
+                               .any())
                 .listen()
-                .all( new AllListener<Action>() {
+                .all(new AllListener<Action>() {
                     @Override
-                    public void onAllChanged( final Collection<Action> all ) {
-                        updateActionInspectors( all );
+                    public void onAllChanged(final Collection<Action> all) {
+                        updateActionInspectors(all);
                         ruleInspectorUpdater.resetActionsInspectors();
                     }
-                } );
+                });
     }
 
     public ObjectField getObjectField() {
         return objectField;
     }
 
-    private void updateConditionInspectors( final Collection<Condition> all ) {
-        conditionInspectorList.update( all );
+    private void updateConditionInspectors(final Collection<Condition> all) {
+        conditionInspectorList.update(all);
     }
 
-    private void updateActionInspectors( final Collection<Action> all ) {
-        actionInspectorList.update( all );
+    private void updateActionInspectors(final Collection<Action> all) {
+        actionInspectorList.update(all);
     }
 
     public InspectorList<ActionInspector> getActionInspectorList() {
@@ -147,11 +147,11 @@ public class FieldInspector
     @Override
     public Conflict hasConflicts() {
         int index = 1;
-        for ( final ConditionInspector conditionInspector : conditionInspectorList ) {
-            for ( int j = index; j < conditionInspectorList.size(); j++ ) {
-                if ( conditionInspector.conflicts( conditionInspectorList.get( j ) ) ) {
-                    return new Conflict( conditionInspector,
-                                         conditionInspectorList.get( j ) );
+        for (final ConditionInspector conditionInspector : conditionInspectorList) {
+            for (int j = index; j < conditionInspectorList.size(); j++) {
+                if (conditionInspector.conflicts(conditionInspectorList.get(j))) {
+                    return new Conflict(conditionInspector,
+                                        conditionInspectorList.get(j));
                 }
             }
             index++;
@@ -160,14 +160,14 @@ public class FieldInspector
     }
 
     @Override
-    public boolean conflicts( final Object other ) {
-        if ( other instanceof FieldInspector && objectField.equals( ( (FieldInspector) other ).objectField ) ) {
+    public boolean conflicts(final Object other) {
+        if (other instanceof FieldInspector && objectField.equals(((FieldInspector) other).objectField)) {
 
-            final boolean conflicting = actionInspectorList.conflicts( ( (FieldInspector) other ).actionInspectorList );
-            if ( conflicting ) {
+            final boolean conflicting = actionInspectorList.conflicts(((FieldInspector) other).actionInspectorList);
+            if (conflicting) {
                 return true;
             } else {
-                return conditionInspectorList.conflicts( ( (FieldInspector) other ).conditionInspectorList );
+                return conditionInspectorList.conflicts(((FieldInspector) other).conditionInspectorList);
             }
         } else {
             return false;
@@ -175,21 +175,20 @@ public class FieldInspector
     }
 
     @Override
-    public boolean isRedundant( final Object other ) {
-        if ( other instanceof FieldInspector && objectField.equals( ( (FieldInspector) other ).objectField ) ) {
-            return actionInspectorList.isRedundant( ( (FieldInspector) other ).actionInspectorList )
-                    && conditionInspectorList.isRedundant( ( (FieldInspector) other ).conditionInspectorList );
+    public boolean isRedundant(final Object other) {
+        if (other instanceof FieldInspector && objectField.equals(((FieldInspector) other).objectField)) {
+            return actionInspectorList.isRedundant(((FieldInspector) other).actionInspectorList)
+                    && conditionInspectorList.isRedundant(((FieldInspector) other).conditionInspectorList);
         } else {
             return false;
         }
     }
 
     @Override
-    public boolean subsumes( final Object other ) {
-        if ( other instanceof FieldInspector && objectField.equals( ( (FieldInspector) other ).objectField ) ) {
-            return actionInspectorList.subsumes( ( (FieldInspector) other ).actionInspectorList )
-                    && conditionInspectorList.subsumes( ( (FieldInspector) other ).conditionInspectorList );
-
+    public boolean subsumes(final Object other) {
+        if (other instanceof FieldInspector && objectField.equals(((FieldInspector) other).objectField)) {
+            return actionInspectorList.subsumes(((FieldInspector) other).actionInspectorList)
+                    && conditionInspectorList.subsumes(((FieldInspector) other).conditionInspectorList);
         } else {
             return false;
         }

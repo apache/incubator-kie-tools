@@ -28,9 +28,9 @@ import org.drools.compiler.lang.Expander;
 import org.drools.compiler.lang.dsl.DSLMappingFile;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.compiler.lang.dsl.DefaultExpander;
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDSLRResourceTypeDefinition;
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.backend.file.DSLFileFilter;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
@@ -43,7 +43,7 @@ import org.uberfire.java.nio.file.Path;
 @ApplicationScoped
 public class GuidedRuleDslrFileIndexer extends AbstractDrlFileIndexer {
 
-    private static final Logger logger = LoggerFactory.getLogger( GuidedRuleDslrFileIndexer.class );
+    private static final Logger logger = LoggerFactory.getLogger(GuidedRuleDslrFileIndexer.class);
 
     private static final DSLFileFilter FILTER_DSLS = new DSLFileFilter();
 
@@ -57,16 +57,16 @@ public class GuidedRuleDslrFileIndexer extends AbstractDrlFileIndexer {
     private GuidedRuleDSLRResourceTypeDefinition dslrType;
 
     @Override
-    public boolean supportsPath( final Path path ) {
-        return dslrType.accept( Paths.convert( path ) );
+    public boolean supportsPath(final Path path) {
+        return dslrType.accept(Paths.convert(path));
     }
 
     @Override
-    public DefaultIndexBuilder fillIndexBuilder( final Path path ) throws Exception {
-        final String dslr = ioService.readAllString( path );
+    public DefaultIndexBuilder fillIndexBuilder(final Path path) throws Exception {
+        final String dslr = ioService.readAllString(path);
 
-        final Expander expander = getDSLExpander( path );
-        final String drl = expander.expand( dslr );
+        final Expander expander = getDSLExpander(path);
+        final String drl = expander.expand(dslr);
 
         return fillDrlIndexBuilder(path, drl);
     }
@@ -77,33 +77,33 @@ public class GuidedRuleDslrFileIndexer extends AbstractDrlFileIndexer {
      * @param path The {@link Path} of the resource to index
      * @return a {@link Expander} used to produce a DRL of the file
      */
-    public Expander getDSLExpander( final Path path ) {
+    public Expander getDSLExpander(final Path path) {
         final Expander expander = new DefaultExpander();
-        final List<DSLMappingFile> dsls = getDSLMappingFiles( path );
-        for ( DSLMappingFile dsl : dsls ) {
-            expander.addDSLMapping( dsl.getMapping() );
+        final List<DSLMappingFile> dsls = getDSLMappingFiles(path);
+        for (DSLMappingFile dsl : dsls) {
+            expander.addDSLMapping(dsl.getMapping());
         }
         return expander;
     }
 
-    private List<DSLMappingFile> getDSLMappingFiles( final Path path ) {
+    private List<DSLMappingFile> getDSLMappingFiles(final Path path) {
         final List<DSLMappingFile> dsls = new ArrayList<DSLMappingFile>();
-        final org.uberfire.backend.vfs.Path vfsPath = Paths.convert( path );
-        final org.uberfire.backend.vfs.Path packagePath = projectService.resolvePackage( vfsPath ).getPackageMainResourcesPath();
-        final Path nioPackagePath = Paths.convert( packagePath );
-        final Collection<Path> dslPaths = fileDiscoveryService.discoverFiles( nioPackagePath,
-                                                                              FILTER_DSLS );
-        for ( final Path dslPath : dslPaths ) {
-            final String dslDefinition = ioService.readAllString( dslPath );
+        final org.uberfire.backend.vfs.Path vfsPath = Paths.convert(path);
+        final org.uberfire.backend.vfs.Path packagePath = projectService.resolvePackage(vfsPath).getPackageMainResourcesPath();
+        final Path nioPackagePath = Paths.convert(packagePath);
+        final Collection<Path> dslPaths = fileDiscoveryService.discoverFiles(nioPackagePath,
+                                                                             FILTER_DSLS);
+        for (final Path dslPath : dslPaths) {
+            final String dslDefinition = ioService.readAllString(dslPath);
             final DSLTokenizedMappingFile dslFile = new DSLTokenizedMappingFile();
             try {
-                if ( dslFile.parseAndLoad( new StringReader( dslDefinition ) ) ) {
-                    dsls.add( dslFile );
+                if (dslFile.parseAndLoad(new StringReader(dslDefinition))) {
+                    dsls.add(dslFile);
                 } else {
-                    logger.error( "Unable to parse DSL definition: " + dslDefinition );
+                    logger.error("Unable to parse DSL definition: " + dslDefinition);
                 }
-            } catch ( IOException ioe ) {
-                logger.error( ioe.getMessage() );
+            } catch (IOException ioe) {
+                logger.error(ioe.getMessage());
             }
         }
         return dsls;
@@ -114,8 +114,7 @@ public class GuidedRuleDslrFileIndexer extends AbstractDrlFileIndexer {
      * @see org.kie.workbench.common.services.refactoring.backend.server.indexing.drools.AbstractDrlFileIndexer#getProjectDataModelOracle(org.uberfire.java.nio.file.Path)
      */
     @Override
-    protected ProjectDataModelOracle getProjectDataModelOracle( final Path path ) {
-        return dataModelService.getProjectDataModel( Paths.convert( path ) );
+    protected ProjectDataModelOracle getProjectDataModelOracle(final Path path) {
+        return dataModelService.getProjectDataModel(Paths.convert(path));
     }
-
 }

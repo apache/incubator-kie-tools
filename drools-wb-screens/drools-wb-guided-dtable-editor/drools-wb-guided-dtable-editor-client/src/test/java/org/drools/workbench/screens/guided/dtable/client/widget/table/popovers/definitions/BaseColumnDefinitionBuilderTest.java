@@ -16,7 +16,6 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table.popovers.definitions;
 
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTDRLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
@@ -27,6 +26,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDeci
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
+import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
@@ -53,51 +53,50 @@ public abstract class BaseColumnDefinitionBuilderTest {
     @Before
     public void setup() {
         this.model = new GuidedDecisionTable52();
-        this.serviceCaller = new CallerMock<>( service );
+        this.serviceCaller = new CallerMock<>(service);
 
         final ColumnDefinitionBuilder wrapped = getBuilder();
-        this.builder = spy( wrapped );
+        this.builder = spy(wrapped);
 
-        when( service.toSource( any( Path.class ),
-                                any( GuidedDecisionTable52.class ) ) ).thenAnswer( ( InvocationOnMock invocation ) -> {
-            final GuidedDecisionTable52 model = (GuidedDecisionTable52) invocation.getArguments()[ 1 ];
-            return GuidedDTDRLPersistence.getInstance().marshal( model );
-        } );
-        when( dtPresenter.getModel() ).thenReturn( model );
-        when( dtPresenter.getDataModelOracle() ).thenReturn( dmo );
+        when(service.toSource(any(Path.class),
+                              any(GuidedDecisionTable52.class))).thenAnswer((InvocationOnMock invocation) -> {
+            final GuidedDecisionTable52 model = (GuidedDecisionTable52) invocation.getArguments()[1];
+            return GuidedDTDRLPersistence.getInstance().marshal(model);
+        });
+        when(dtPresenter.getModel()).thenReturn(model);
+        when(dtPresenter.getDataModelOracle()).thenReturn(dmo);
     }
 
     protected abstract ColumnDefinitionBuilder getBuilder();
 
     protected void setupPatternAndCondition() {
         final Pattern52 p = new Pattern52();
-        p.setFactType( "Person" );
-        p.setBoundName( "$p" );
+        p.setFactType("Person");
+        p.setBoundName("$p");
         final ConditionCol52 cc = new ConditionCol52();
-        cc.setFactField( "name" );
-        cc.setOperator( "==" );
-        cc.setFieldType( DataType.TYPE_STRING );
-        p.getChildColumns().add( cc );
-        model.getConditions().add( p );
+        cc.setFactField("name");
+        cc.setOperator("==");
+        cc.setFieldType(DataType.TYPE_STRING);
+        p.getChildColumns().add(cc);
+        model.getConditions().add(p);
 
-        when( dmo.getFieldType( eq( "Person" ),
-                                eq( "name" ) ) ).thenReturn( DataType.TYPE_STRING );
+        when(dmo.getFieldType(eq("Person"),
+                              eq("name"))).thenReturn(DataType.TYPE_STRING);
     }
 
     protected void setupLimitedEntryPatternAndCondition() {
         final Pattern52 p = new Pattern52();
-        p.setFactType( "Person" );
-        p.setBoundName( "$p" );
+        p.setFactType("Person");
+        p.setBoundName("$p");
         final LimitedEntryConditionCol52 cc = new LimitedEntryConditionCol52();
-        cc.setFactField( "name" );
-        cc.setOperator( "==" );
-        cc.setFieldType( DataType.TYPE_STRING );
-        cc.setValue( new DTCellValue52( "Michael" ) );
-        p.getChildColumns().add( cc );
-        model.getConditions().add( p );
+        cc.setFactField("name");
+        cc.setOperator("==");
+        cc.setFieldType(DataType.TYPE_STRING);
+        cc.setValue(new DTCellValue52("Michael"));
+        p.getChildColumns().add(cc);
+        model.getConditions().add(p);
 
-        when( dmo.getFieldType( eq( "Person" ),
-                                eq( "name" ) ) ).thenReturn( DataType.TYPE_STRING );
+        when(dmo.getFieldType(eq("Person"),
+                              eq("name"))).thenReturn(DataType.TYPE_STRING);
     }
-
 }

@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 Red Hat, Inc. and/or its affiliates.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -19,14 +19,11 @@ package org.drools.workbench.screens.guided.dtable.model;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.enterprise.inject.Instance;
 
-import org.appformer.project.datamodel.imports.HasImports;
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.FieldAccessorsAndMutators;
-import org.appformer.project.datamodel.oracle.ModelField;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.DSLActionSentence;
+import org.drools.workbench.models.datamodel.oracle.DSLConditionSentence;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
@@ -43,6 +40,13 @@ import org.jboss.errai.validation.client.dynamic.DynamicValidator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.commons.util.RawMVELEvaluator;
+import org.kie.soup.project.datamodel.imports.HasImports;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
+import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
@@ -80,7 +84,7 @@ public class GuidedDecisionTableTest {
     @Test
     public void testValueLists() {
         final GuidedDecisionTable52 model = new GuidedDecisionTable52();
-        final PackageDataModelOracle loader = PackageDataModelOracleBuilder.newPackageOracleBuilder()
+        final PackageDataModelOracle loader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator())
                 .addEnum("Driver",
                          "name",
                          new String[]{"bob", "michael"})
@@ -101,7 +105,7 @@ public class GuidedDecisionTableTest {
         final ColumnUtilities utils = new ColumnUtilities(model,
                                                           oracle);
 
-        final Map<String, String> currentValueMap = new HashMap<String, String>();
+        final Map<String, String> currentValueMap = new HashMap<>();
 
         // add cols for LHS
         final ConditionCol52 c1 = new ConditionCol52();
@@ -311,7 +315,7 @@ public class GuidedDecisionTableTest {
     @SuppressWarnings("serial")
     public void testNumeric() {
         final GuidedDecisionTable52 model = new GuidedDecisionTable52();
-        final ProjectDataModelOracle loader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+        final ProjectDataModelOracle loader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
                 .addFact("Driver")
                 .addField(new ModelField("age",
                                          Integer.class.getName(),
@@ -424,7 +428,7 @@ public class GuidedDecisionTableTest {
     @SuppressWarnings("serial")
     public void testGetType() {
         final GuidedDecisionTable52 model = new GuidedDecisionTable52();
-        final ProjectDataModelOracle loader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+        final ProjectDataModelOracle loader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
                 .addFact("Driver")
                 .addField(new ModelField("age",
                                          Integer.class.getName(),
@@ -556,7 +560,7 @@ public class GuidedDecisionTableTest {
     @Test
     public void testNoConstraintLists() {
         final GuidedDecisionTable52 model = new GuidedDecisionTable52();
-        final PackageDataModelOracle loader = PackageDataModelOracleBuilder.newPackageOracleBuilder()
+        final PackageDataModelOracle loader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator())
                 .addEnum("Driver",
                          "name",
                          new String[]{"bob", "michael"})
@@ -601,7 +605,7 @@ public class GuidedDecisionTableTest {
     @Test
     public void testNoConstraints() {
         final GuidedDecisionTable52 model = new GuidedDecisionTable52();
-        final ProjectDataModelOracle loader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+        final ProjectDataModelOracle loader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
                 .addFact("Driver")
                 .addField(new ModelField("age",
                                          Integer.class.getName(),
@@ -719,7 +723,7 @@ public class GuidedDecisionTableTest {
     @Test
     public void testConditionPredicateChoices() {
         final GuidedDecisionTable52 model = new GuidedDecisionTable52();
-        final ProjectDataModelOracle loader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+        final ProjectDataModelOracle loader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
                 .addFact("Driver")
                 .addField(new ModelField("age",
                                          Integer.class.getName(),
@@ -771,7 +775,7 @@ public class GuidedDecisionTableTest {
     @Test
     public void testConditionFormulaChoices() {
         final GuidedDecisionTable52 model = new GuidedDecisionTable52();
-        final ProjectDataModelOracle loader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
+        final ProjectDataModelOracle loader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
                 .addFact("Driver")
                 .addField(new ModelField("age",
                                          Integer.class.getName(),
@@ -846,8 +850,8 @@ public class GuidedDecisionTableTest {
 
         oracle.setPackageName(payload.getPackageName());
         oracle.addWorkbenchEnumDefinitions(payload.getWorkbenchEnumDefinitions());
-        oracle.addDslConditionSentences(payload.getDslConditionSentences());
-        oracle.addDslActionSentences(payload.getDslActionSentences());
+        oracle.addDslConditionSentences(payload.getPackageElements(DSLConditionSentence.INSTANCE));
+        oracle.addDslActionSentences(payload.getPackageElements(DSLActionSentence.INSTANCE));
         oracle.addGlobals(payload.getGlobals());
     }
 }

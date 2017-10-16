@@ -19,7 +19,6 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.model.con
 import java.util.ArrayList;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
@@ -40,6 +39,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidge
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;

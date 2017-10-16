@@ -23,7 +23,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.services.verifier.api.client.index.Condition;
 import org.drools.workbench.services.verifier.api.client.index.Pattern;
 import org.drools.workbench.services.verifier.api.client.index.Rule;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 import static org.drools.workbench.services.verifier.plugin.client.builders.Utils.*;
 
@@ -36,66 +36,64 @@ public class ConditionBuilder {
     private int columnIndex;
     private Rule rule;
 
-    public ConditionBuilder( final BuilderFactory builderFactory ) {
-        this.builderFactory = PortablePreconditions.checkNotNull( "builderFactory",
-                                                                  builderFactory );
+    public ConditionBuilder(final BuilderFactory builderFactory) {
+        this.builderFactory = PortablePreconditions.checkNotNull("builderFactory",
+                                                                 builderFactory);
     }
 
-    public ConditionBuilder with( final ConditionCol52 conditionCol52 ) {
+    public ConditionBuilder with(final ConditionCol52 conditionCol52) {
         this.conditionCol52 = conditionCol52;
         return this;
     }
 
-    public ConditionBuilder with( final List<DTCellValue52> row ) {
+    public ConditionBuilder with(final List<DTCellValue52> row) {
         this.row = row;
         return this;
     }
 
-    public ConditionBuilder with( final int columnIndex ) {
+    public ConditionBuilder with(final int columnIndex) {
         this.columnIndex = columnIndex;
         return this;
     }
 
-    public ConditionBuilder with( final Rule rule ) {
+    public ConditionBuilder with(final Rule rule) {
         this.rule = rule;
         return this;
     }
 
     public Condition build() throws
-                             BuildException {
-        PortablePreconditions.checkNotNull( "conditionCol52",
-                                            conditionCol52 );
-        PortablePreconditions.checkNotNull( "columnIndex",
-                                            columnIndex );
-        PortablePreconditions.checkNotNull( "row",
-                                            row );
+            BuildException {
+        PortablePreconditions.checkNotNull("conditionCol52",
+                                           conditionCol52);
+        PortablePreconditions.checkNotNull("columnIndex",
+                                           columnIndex);
+        PortablePreconditions.checkNotNull("row",
+                                           row);
 
-        if ( conditionCol52 instanceof BRLConditionVariableColumn ) {
+        if (conditionCol52 instanceof BRLConditionVariableColumn) {
 
             return builderFactory.getBRLConditionBuilder()
-                    .with( (BRLConditionVariableColumn) conditionCol52 )
-                    .with( row.get( columnIndex ) )
-                    .with( columnIndex )
+                    .with((BRLConditionVariableColumn) conditionCol52)
+                    .with(row.get(columnIndex))
+                    .with(columnIndex)
                     .build();
         } else {
 
-            PortablePreconditions.checkNotNull( "rule",
-                                                rule );
+            PortablePreconditions.checkNotNull("rule",
+                                               rule);
 
             final Pattern pattern = builderFactory.getPatternResolver()
-                    .with( rule )
-                    .with( columnIndex )
+                    .with(rule)
+                    .with(columnIndex)
                     .resolve();
 
             return builderFactory.getFieldConditionsBuilder()
-                    .with( pattern )
-                    .with( conditionCol52 )
-                    .with( getRealCellValue( conditionCol52,
-                                             row.get( columnIndex ) ) )
-                    .with( columnIndex )
+                    .with(pattern)
+                    .with(conditionCol52)
+                    .with(getRealCellValue(conditionCol52,
+                                           row.get(columnIndex)))
+                    .with(columnIndex)
                     .build();
-
         }
     }
-
 }

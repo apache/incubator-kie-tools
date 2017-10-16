@@ -20,13 +20,12 @@ import java.util.Arrays;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
@@ -38,6 +37,8 @@ import org.drools.workbench.screens.guided.dtable.client.widget.DTCellValueWidge
 import org.drools.workbench.screens.guided.dtable.client.wizard.table.pages.events.ActionSetFieldsDefinedEvent;
 import org.drools.workbench.screens.guided.dtable.client.wizard.table.pages.events.DuplicatePatternsEvent;
 import org.drools.workbench.screens.guided.dtable.client.wizard.table.pages.events.PatternRemovedEvent;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.kie.workbench.common.widgets.client.widget.HumanReadableDataTypes;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
@@ -77,59 +78,59 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
 
     @Override
     public void initialise() {
-        view.init( this );
-        view.setValidator( getValidator() );
+        view.init(this);
+        view.setValidator(getValidator());
         patternToActionsMap.clear();
 
         //Set-up validator for the pattern-to-action mapping voodoo
-        getValidator().setPatternToActionSetFieldsMap( patternToActionsMap );
+        getValidator().setPatternToActionSetFieldsMap(patternToActionsMap);
 
         //Set-up a factory for value editors
-        view.setDTCellValueWidgetFactory( DTCellValueWidgetFactory.getInstance( model,
-                                                                                oracle,
-                                                                                false,
-                                                                                allowEmptyValues() ) );
+        view.setDTCellValueWidgetFactory(DTCellValueWidgetFactory.getInstance(model,
+                                                                              oracle,
+                                                                              false,
+                                                                              allowEmptyValues()));
 
         //Existing ActionSetFieldCols (should be empty for a new Decision Table)
-        for ( ActionCol52 a : model.getActionCols() ) {
-            if ( a instanceof ActionSetFieldCol52 ) {
+        for (ActionCol52 a : model.getActionCols()) {
+            if (a instanceof ActionSetFieldCol52) {
                 final ActionSetFieldCol52 asf = (ActionSetFieldCol52) a;
-                final Pattern52 p = model.getConditionPattern( asf.getBoundName() );
-                if ( !patternToActionsMap.containsKey( p ) ) {
-                    patternToActionsMap.put( p,
-                                             new ArrayList<ActionSetFieldCol52>() );
+                final Pattern52 p = model.getConditionPattern(asf.getBoundName());
+                if (!patternToActionsMap.containsKey(p)) {
+                    patternToActionsMap.put(p,
+                                            new ArrayList<ActionSetFieldCol52>());
                 }
-                final List<ActionSetFieldCol52> actions = patternToActionsMap.get( p );
-                actions.add( asf );
+                final List<ActionSetFieldCol52> actions = patternToActionsMap.get(p);
+                actions.add(asf);
             }
         }
 
-        view.setChosenFields( new ArrayList<ActionSetFieldCol52>() );
+        view.setChosenFields(new ArrayList<ActionSetFieldCol52>());
 
-        content.setWidget( view );
+        content.setWidget(view);
     }
 
     @Override
     public void prepareView() {
         //Setup the available patterns, that could have changed each time this page is visited
         List<Pattern52> availablePatterns = new ArrayList<Pattern52>();
-        for ( Pattern52 p : model.getPatterns() ) {
-            if ( p.getChildColumns().size() > 0 ) {
-                availablePatterns.add( p );
+        for (Pattern52 p : model.getPatterns()) {
+            if (p.getChildColumns().size() > 0) {
+                availablePatterns.add(p);
             } else {
-                patternToActionsMap.remove( p );
+                patternToActionsMap.remove(p);
             }
         }
-        view.setAvailablePatterns( availablePatterns );
+        view.setAvailablePatterns(availablePatterns);
     }
 
     @Override
-    public void isComplete( final Callback<Boolean> callback ) {
+    public void isComplete(final Callback<Boolean> callback) {
         //Have all Actions been defined?
         boolean areActionSetFieldsDefined = true;
-        for ( List<ActionSetFieldCol52> actions : patternToActionsMap.values() ) {
-            for ( ActionSetFieldCol52 a : actions ) {
-                if ( !getValidator().isActionValid( a ) ) {
+        for (List<ActionSetFieldCol52> actions : patternToActionsMap.values()) {
+            for (ActionSetFieldCol52 a : actions) {
+                if (!getValidator().isActionValid(a)) {
                     areActionSetFieldsDefined = false;
                     break;
                 }
@@ -137,77 +138,77 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
         }
 
         //Signal Action Set Fields definitions to other pages
-        final ActionSetFieldsDefinedEvent event = new ActionSetFieldsDefinedEvent( areActionSetFieldsDefined );
-        actionSetFieldsDefinedEvent.fire( event );
+        final ActionSetFieldsDefinedEvent event = new ActionSetFieldsDefinedEvent(areActionSetFieldsDefined);
+        actionSetFieldsDefinedEvent.fire(event);
 
-        callback.callback( areActionSetFieldsDefined );
+        callback.callback(areActionSetFieldsDefined);
     }
 
     //See comments about use of IdentityHashMap in instance member declaration section
-    public void onPatternRemoved( final @Observes PatternRemovedEvent event ) {
-        patternToActionsMap.remove( event.getPattern() );
+    public void onPatternRemoved(final @Observes PatternRemovedEvent event) {
+        patternToActionsMap.remove(event.getPattern());
     }
 
-    public void onDuplicatePatterns( final @Observes DuplicatePatternsEvent event ) {
-        view.setArePatternBindingsUnique( event.getArePatternBindingsUnique() );
+    public void onDuplicatePatterns(final @Observes DuplicatePatternsEvent event) {
+        view.setArePatternBindingsUnique(event.getArePatternBindingsUnique());
     }
 
-    public void onActionSetFieldsDefined( final @Observes ActionSetFieldsDefinedEvent event ) {
-        view.setAreActionSetFieldsDefined( event.getAreActionSetFieldsDefined() );
+    public void onActionSetFieldsDefined(final @Observes ActionSetFieldsDefinedEvent event) {
+        view.setAreActionSetFieldsDefined(event.getAreActionSetFieldsDefined());
     }
 
     @Override
-    public void selectPattern( final Pattern52 pattern ) {
+    public void selectPattern(final Pattern52 pattern) {
 
         //Pattern is null when programmatically deselecting an item
-        if ( pattern == null ) {
+        if (pattern == null) {
             return;
         }
 
         //Add fields available
         final String type = pattern.getFactType();
-        oracle.getFieldCompletions( type,
-                                    new Callback<ModelField[]>() {
-                                        @Override
-                                        public void callback( final ModelField[] fields ) {
-                                            final List<AvailableField> availableFields = new ArrayList<AvailableField>();
-                                            for ( ModelField modelField : fields ) {
-                                                final String fieldName = modelField.getName();
-                                                final String fieldType = oracle.getFieldType( type,
-                                                                                              fieldName );
-                                                final String fieldDisplayType = HumanReadableDataTypes.getUserFriendlyTypeName( fieldType );
-                                                final AvailableField field = new AvailableField( fieldName,
-                                                                                                 fieldType,
-                                                                                                 fieldDisplayType,
-                                                                                                 BaseSingleFieldConstraint.TYPE_LITERAL );
-                                                availableFields.add( field );
-                                            }
-                                            view.setAvailableFields( availableFields );
+        oracle.getFieldCompletions(type,
+                                   new Callback<ModelField[]>() {
+                                       @Override
+                                       public void callback(final ModelField[] fields) {
+                                           final List<AvailableField> availableFields = new ArrayList<AvailableField>();
+                                           for (ModelField modelField : fields) {
+                                               final String fieldName = modelField.getName();
+                                               final String fieldType = oracle.getFieldType(type,
+                                                                                            fieldName);
+                                               final String fieldDisplayType = HumanReadableDataTypes.getUserFriendlyTypeName(fieldType);
+                                               final AvailableField field = new AvailableField(fieldName,
+                                                                                               fieldType,
+                                                                                               fieldDisplayType,
+                                                                                               BaseSingleFieldConstraint.TYPE_LITERAL);
+                                               availableFields.add(field);
+                                           }
+                                           view.setAvailableFields(availableFields);
 
-                                            //Set fields already chosen
-                                            List<ActionSetFieldCol52> actionsForPattern = patternToActionsMap.get( pattern );
-                                            if ( actionsForPattern == null ) {
-                                                actionsForPattern = new ArrayList<ActionSetFieldCol52>();
-                                                patternToActionsMap.put( pattern,
-                                                                         actionsForPattern );
-                                            }
-                                            view.setChosenFields( actionsForPattern );
-                                        }
-                                    } );
+                                           //Set fields already chosen
+                                           List<ActionSetFieldCol52> actionsForPattern = patternToActionsMap.get(pattern);
+                                           if (actionsForPattern == null) {
+                                               actionsForPattern = new ArrayList<ActionSetFieldCol52>();
+                                               patternToActionsMap.put(pattern,
+                                                                       actionsForPattern);
+                                           }
+                                           view.setChosenFields(actionsForPattern);
+                                       }
+                                   });
     }
 
     @Override
-    public void makeResult( final GuidedDecisionTable52 model ) {
+    public void makeResult(final GuidedDecisionTable52 model) {
         //Copy actions to decision table model. Assertion of bindings occurs in FactPatternsPage
-        for ( Map.Entry<Pattern52, List<ActionSetFieldCol52>> ps : patternToActionsMap.entrySet() ) {
+        for (Map.Entry<Pattern52, List<ActionSetFieldCol52>> ps : patternToActionsMap.entrySet()) {
             final Pattern52 p = ps.getKey();
 
             //Patterns with no conditions don't get created
-            if ( p.getChildColumns().size() > 0 ) {
+            if (p.getChildColumns().size() > 0) {
                 final String binding = p.getBoundName();
-                for ( ActionSetFieldCol52 a : ps.getValue() ) {
-                    a.setBoundName( binding );
-                    model.getActionCols().add( a );
+                for (ActionSetFieldCol52 a : ps.getValue()) {
+                    a.setBoundName(binding);
+                    model.getActionCols().add(a);
                 }
             }
         }
@@ -219,41 +220,40 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
     }
 
     @Override
-    public boolean hasEnums( final ActionSetFieldCol52 selectedAction ) {
-        for ( Map.Entry<Pattern52, List<ActionSetFieldCol52>> e : this.patternToActionsMap.entrySet() ) {
-            if ( e.getValue().contains( selectedAction ) ) {
+    public boolean hasEnums(final ActionSetFieldCol52 selectedAction) {
+        for (Map.Entry<Pattern52, List<ActionSetFieldCol52>> e : this.patternToActionsMap.entrySet()) {
+            if (e.getValue().contains(selectedAction)) {
                 final String factType = e.getKey().getFactType();
                 final String factField = selectedAction.getFactField();
-                return this.oracle.hasEnums( factType,
-                                             factField );
+                return this.oracle.hasEnums(factType,
+                                            factField);
             }
         }
         return false;
     }
 
     @Override
-    public void assertDefaultValue( final Pattern52 selectedPattern,
-                                    final ActionSetFieldCol52 selectedAction ) {
-        final List<String> valueList = Arrays.asList( columnUtilities.getValueList( selectedAction ) );
-        if ( valueList.size() > 0 ) {
-            final String defaultValue = cellUtilities.asString( selectedAction.getDefaultValue() );
-            if ( !valueList.contains( defaultValue ) ) {
+    public void assertDefaultValue(final Pattern52 selectedPattern,
+                                   final ActionSetFieldCol52 selectedAction) {
+        final List<String> valueList = Arrays.asList(columnUtilities.getValueList(selectedAction));
+        if (valueList.size() > 0) {
+            final String defaultValue = cellUtilities.asString(selectedAction.getDefaultValue());
+            if (!valueList.contains(defaultValue)) {
                 selectedAction.getDefaultValue().clearValues();
             }
         } else {
             //Ensure the Default Value has been updated to represent the column's data-type.
             final DTCellValue52 defaultValue = selectedAction.getDefaultValue();
-            final DataType.DataTypes dataType = columnUtilities.getDataType( selectedPattern,
-                                                                             selectedAction );
-            cellUtilities.convertDTCellValueType( dataType,
-                                                  defaultValue );
+            final DataType.DataTypes dataType = columnUtilities.getDataType(selectedPattern,
+                                                                            selectedAction);
+            cellUtilities.convertDTCellValueType(dataType,
+                                                 defaultValue);
         }
     }
 
     @Override
     public void stateChanged() {
-        final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( this );
-        wizardPageStatusChangeEvent.fire( event );
+        final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent(this);
+        wizardPageStatusChangeEvent.fire(event);
     }
-
 }

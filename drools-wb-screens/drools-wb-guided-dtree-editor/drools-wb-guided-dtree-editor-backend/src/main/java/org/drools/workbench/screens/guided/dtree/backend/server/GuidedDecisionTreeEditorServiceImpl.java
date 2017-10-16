@@ -19,12 +19,12 @@ package org.drools.workbench.screens.guided.dtree.backend.server;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.dtree.backend.GuidedDecisionTreeDRLPersistence;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
 import org.drools.workbench.screens.guided.dtree.model.GuidedDecisionTreeEditorContent;
@@ -39,6 +39,7 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
@@ -95,202 +96,193 @@ public class GuidedDecisionTreeEditorServiceImpl
     }
 
     @Inject
-    public GuidedDecisionTreeEditorServiceImpl( final SessionInfo sessionInfo ) {
-        safeSessionInfo = new SafeSessionInfo( sessionInfo );
+    public GuidedDecisionTreeEditorServiceImpl(final SessionInfo sessionInfo) {
+        safeSessionInfo = new SafeSessionInfo(sessionInfo);
     }
 
     @Override
-    public Path create( final Path context,
-                        final String fileName,
-                        final GuidedDecisionTree content,
-                        final String comment ) {
+    public Path create(final Path context,
+                       final String fileName,
+                       final GuidedDecisionTree content,
+                       final String comment) {
         try {
-            final Package pkg = projectService.resolvePackage( context );
-            final String packageName = ( pkg == null ? null : pkg.getPackageName() );
-            content.setPackageName( packageName );
+            final Package pkg = projectService.resolvePackage(context);
+            final String packageName = (pkg == null ? null : pkg.getPackageName());
+            content.setPackageName(packageName);
 
-            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
-            final Path newPath = Paths.convert( nioPath );
+            final org.uberfire.java.nio.file.Path nioPath = Paths.convert(context).resolve(fileName);
+            final Path newPath = Paths.convert(nioPath);
 
-            if ( ioService.exists( nioPath ) ) {
-                throw new FileAlreadyExistsException( nioPath.toString() );
+            if (ioService.exists(nioPath)) {
+                throw new FileAlreadyExistsException(nioPath.toString());
             }
 
-            ioService.write( nioPath,
-                             GuidedDecisionTreeDRLPersistence.getInstance().marshal( content ),
-                             commentedOptionFactory.makeCommentedOption( comment ) );
+            ioService.write(nioPath,
+                            GuidedDecisionTreeDRLPersistence.getInstance().marshal(content),
+                            commentedOptionFactory.makeCommentedOption(comment));
 
             return newPath;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public GuidedDecisionTree load( final Path path ) {
+    public GuidedDecisionTree load(final Path path) {
         try {
-            final String drl = ioService.readAllString( Paths.convert( path ) );
-            final String baseFileName = FileNameUtil.removeExtension( path,
-                                                                      resourceType );
-            final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
-            final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                       baseFileName,
-                                                                                                       oracle );
+            final String drl = ioService.readAllString(Paths.convert(path));
+            final String baseFileName = FileNameUtil.removeExtension(path,
+                                                                     resourceType);
+            final PackageDataModelOracle oracle = dataModelService.getDataModel(path);
+            final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal(drl,
+                                                                                                      baseFileName,
+                                                                                                      oracle);
 
             return model;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public GuidedDecisionTreeEditorContent loadContent( final Path path ) {
-        return super.loadContent( path );
+    public GuidedDecisionTreeEditorContent loadContent(final Path path) {
+        return super.loadContent(path);
     }
 
     @Override
-    protected GuidedDecisionTreeEditorContent constructContent( Path path,
-                                                                Overview overview ) {
-        final GuidedDecisionTree model = load( path );
-        final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
+    protected GuidedDecisionTreeEditorContent constructContent(Path path,
+                                                               Overview overview) {
+        final GuidedDecisionTree model = load(path);
+        final PackageDataModelOracle oracle = dataModelService.getDataModel(path);
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
 
         //Get FQCN's used by model
-        final GuidedDecisionTreeModelVisitor visitor = new GuidedDecisionTreeModelVisitor( model );
+        final GuidedDecisionTreeModelVisitor visitor = new GuidedDecisionTreeModelVisitor(model);
         final Set<String> consumedFQCNs = visitor.getConsumedModelClasses();
 
         //Get FQCN's used by Globals
-        consumedFQCNs.addAll( oracle.getPackageGlobals().values() );
+        consumedFQCNs.addAll(oracle.getPackageGlobals().values());
 
-        DataModelOracleUtilities.populateDataModel( oracle,
-                                                    dataModel,
-                                                    consumedFQCNs );
+        DataModelOracleUtilities.populateDataModel(oracle,
+                                                   dataModel,
+                                                   consumedFQCNs);
 
         //Signal opening to interested parties
-        resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                           safeSessionInfo ) );
+        resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
+                                                         safeSessionInfo));
 
-        return new GuidedDecisionTreeEditorContent( model,
-                                                    overview,
-                                                    dataModel );
+        return new GuidedDecisionTreeEditorContent(model,
+                                                   overview,
+                                                   dataModel);
     }
 
     @Override
-    public PackageDataModelOracleBaselinePayload loadDataModel( final Path path ) {
+    public PackageDataModelOracleBaselinePayload loadDataModel(final Path path) {
         try {
-            final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
+            final PackageDataModelOracle oracle = dataModelService.getDataModel(path);
             final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
             //There are no classes to pre-load into the DMO when requesting a new Data Model only
-            DataModelOracleUtilities.populateDataModel( oracle,
-                                                        dataModel,
-                                                        new HashSet<String>() );
+            DataModelOracleUtilities.populateDataModel(oracle,
+                                                       dataModel,
+                                                       new HashSet<String>());
 
             return dataModel;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Path save( final Path resource,
-                      final GuidedDecisionTree model,
-                      final Metadata metadata,
-                      final String comment ) {
+    public Path save(final Path resource,
+                     final GuidedDecisionTree model,
+                     final Metadata metadata,
+                     final String comment) {
         try {
-            final Package pkg = projectService.resolvePackage( resource );
-            final String packageName = ( pkg == null ? null : pkg.getPackageName() );
-            model.setPackageName( packageName );
+            final Package pkg = projectService.resolvePackage(resource);
+            final String packageName = (pkg == null ? null : pkg.getPackageName());
+            model.setPackageName(packageName);
 
-            Metadata currentMetadata = metadataService.getMetadata( resource );
-            ioService.write( Paths.convert( resource ),
-                             GuidedDecisionTreeDRLPersistence.getInstance().marshal( model ),
-                             metadataService.setUpAttributes( resource,
-                                                              metadata ),
-                             commentedOptionFactory.makeCommentedOption( comment ) );
+            Metadata currentMetadata = metadataService.getMetadata(resource);
+            ioService.write(Paths.convert(resource),
+                            GuidedDecisionTreeDRLPersistence.getInstance().marshal(model),
+                            metadataService.setUpAttributes(resource,
+                                                            metadata),
+                            commentedOptionFactory.makeCommentedOption(comment));
 
-            fireMetadataSocialEvents( resource, currentMetadata, metadata );
+            fireMetadataSocialEvents(resource, currentMetadata, metadata);
             return resource;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public void delete( final Path path,
-                        final String comment ) {
+    public void delete(final Path path,
+                       final String comment) {
         try {
-            deleteService.delete( path,
-                                  comment );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            deleteService.delete(path,
+                                 comment);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Path rename( final Path path,
-                        final String newName,
-                        final String comment ) {
+    public Path rename(final Path path,
+                       final String newName,
+                       final String comment) {
         try {
-            return renameService.rename( path,
-                                         newName,
-                                         comment );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return renameService.rename(path,
+                                        newName,
+                                        comment);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Path copy( final Path path,
-                      final String newName,
-                      final String comment ) {
+    public Path copy(final Path path,
+                     final String newName,
+                     final String comment) {
         try {
-            return copyService.copy( path,
-                                     newName,
-                                     comment );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return copyService.copy(path,
+                                    newName,
+                                    comment);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Path copy( final Path path,
-                      final String newName,
-                      final Path targetDirectory,
-                      final String comment ) {
+    public Path copy(final Path path,
+                     final String newName,
+                     final Path targetDirectory,
+                     final String comment) {
         try {
-            return copyService.copy( path,
-                                     newName,
-                                     targetDirectory,
-                                     comment );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return copyService.copy(path,
+                                    newName,
+                                    targetDirectory,
+                                    comment);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public String toSource( final Path path,
-                            final GuidedDecisionTree model ) {
-        return sourceServices.getServiceFor( Paths.convert( path ) ).getSource( Paths.convert( path ),
-                                                                                model );
+    public String toSource(final Path path,
+                           final GuidedDecisionTree model) {
+        return sourceServices.getServiceFor(Paths.convert(path)).getSource(Paths.convert(path),
+                                                                           model);
     }
 
     @Override
-    public List<ValidationMessage> validate( final Path path,
-                                             final GuidedDecisionTree content ) {
+    public List<ValidationMessage> validate(final Path path,
+                                            final GuidedDecisionTree content) {
         try {
-            return genericValidator.validate( path,
-                                              GuidedDecisionTreeDRLPersistence.getInstance().marshal( content ) );
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return genericValidator.validate(path,
+                                             GuidedDecisionTreeDRLPersistence.getInstance().marshal(content));
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
-
 }

@@ -24,7 +24,7 @@ import org.drools.workbench.services.verifier.api.client.index.keys.Value;
 import org.drools.workbench.services.verifier.api.client.maps.KeyDefinition;
 import org.drools.workbench.services.verifier.api.client.maps.util.HasIndex;
 import org.drools.workbench.services.verifier.api.client.maps.util.HasKeys;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class Column
         implements HasKeys,

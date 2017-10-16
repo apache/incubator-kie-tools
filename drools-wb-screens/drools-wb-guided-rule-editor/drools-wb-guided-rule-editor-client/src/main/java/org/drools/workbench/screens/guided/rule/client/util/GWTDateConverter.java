@@ -18,7 +18,7 @@ package org.drools.workbench.screens.guided.rule.client.util;
 import java.util.Date;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
-import org.appformer.project.datamodel.oracle.DateConverter;
+import org.kie.soup.project.datamodel.oracle.DateConverter;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 
 /**
@@ -30,13 +30,13 @@ public class GWTDateConverter
 
     private final static String DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
 
-    private final static DateTimeFormat FORMATTER = DateTimeFormat.getFormat( DATE_FORMAT );
+    private final static DateTimeFormat FORMATTER = DateTimeFormat.getFormat(DATE_FORMAT);
 
     //Singleton
     private static DateConverter INSTANCE;
 
     public static synchronized DateConverter getInstance() {
-        if ( INSTANCE == null ) {
+        if (INSTANCE == null) {
             INSTANCE = new GWTDateConverter();
         }
         return INSTANCE;
@@ -45,12 +45,11 @@ public class GWTDateConverter
     private GWTDateConverter() {
     }
 
-    public String format( Date date ) {
-        return FORMATTER.format( date );
+    public String format(Date date) {
+        return FORMATTER.format(date);
     }
 
-    public Date parse( String text ) {
-        return FORMATTER.parse( text );
+    public Date parse(String text) {
+        return FORMATTER.parse(text);
     }
-
 }

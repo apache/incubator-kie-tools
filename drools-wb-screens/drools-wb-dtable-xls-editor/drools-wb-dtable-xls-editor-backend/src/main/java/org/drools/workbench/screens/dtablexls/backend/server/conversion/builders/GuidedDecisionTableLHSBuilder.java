@@ -27,14 +27,14 @@ import java.util.regex.Pattern;
 
 import org.drools.decisiontable.parser.ActionType;
 import org.drools.decisiontable.parser.RuleSheetParserUtil;
-import org.drools.template.model.SnippetBuilder;
 import org.drools.template.model.SnippetBuilder.SnippetType;
+import org.drools.template.model.SnippetBuilder;
 import org.drools.template.parser.DecisionTableParseException;
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionMessageType;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLVariableColumn;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 /**
  * Builder for Condition columns
@@ -59,25 +59,25 @@ public class GuidedDecisionTableLHSBuilder
 
     static {
         operators = new HashSet<String>();
-        operators.add( "==" );
-        operators.add( "=" );
-        operators.add( "!=" );
-        operators.add( "<" );
-        operators.add( ">" );
-        operators.add( "<=" );
-        operators.add( ">=" );
-        operators.add( "contains" );
-        operators.add( "matches" );
-        operators.add( "memberOf" );
-        operators.add( "str[startsWith]" );
-        operators.add( "str[endsWith]" );
-        operators.add( "str[length]" );
+        operators.add("==");
+        operators.add("=");
+        operators.add("!=");
+        operators.add("<");
+        operators.add(">");
+        operators.add("<=");
+        operators.add(">=");
+        operators.add("contains");
+        operators.add("matches");
+        operators.add("memberOf");
+        operators.add("str[startsWith]");
+        operators.add("str[endsWith]");
+        operators.add("str[length]");
     }
 
-    private static final Pattern patParFrm = Pattern.compile( "\\(\\s*\\)\\s*from\\b" );
-    private static final Pattern patFrm = Pattern.compile( "\\s+from\\s+" );
-    private static final Pattern patPar = Pattern.compile( "\\(\\s*\\)" );
-    private static final Pattern patEval = Pattern.compile( "\\beval\\s*(?:\\(\\s*\\)\\s*)?$" );
+    private static final Pattern patParFrm = Pattern.compile("\\(\\s*\\)\\s*from\\b");
+    private static final Pattern patFrm = Pattern.compile("\\s+from\\s+");
+    private static final Pattern patPar = Pattern.compile("\\(\\s*\\)");
+    private static final Pattern patEval = Pattern.compile("\\beval\\s*(?:\\(\\s*\\)\\s*)?$");
 
     //Map of column headers, keyed on XLS column index
     private final Map<Integer, String> columnHeaders = new HashMap<Integer, String>();
@@ -90,23 +90,23 @@ public class GuidedDecisionTableLHSBuilder
 
     private ConversionResult conversionResult;
 
-    public GuidedDecisionTableLHSBuilder( final int row,
-                                          final int column,
-                                          final String colDefinition,
-                                          final ParameterUtilities parameterUtilities,
-                                          final ConversionResult conversionResult ) {
+    public GuidedDecisionTableLHSBuilder(final int row,
+                                         final int column,
+                                         final String colDefinition,
+                                         final ParameterUtilities parameterUtilities,
+                                         final ConversionResult conversionResult) {
         this.headerRow = row;
         this.headerCol = column;
         this.parameterUtilities = parameterUtilities;
         this.conversionResult = conversionResult;
-        preProcessColumnDefinition( colDefinition );
+        preProcessColumnDefinition(colDefinition);
     }
 
-    private void preProcessColumnDefinition( final String colDefinition ) {
+    private void preProcessColumnDefinition(final String colDefinition) {
 
         //Determine DRL generation parameters
         String colDef = colDefinition == null ? "" : colDefinition;
-        if ( "".equals( colDef ) ) {
+        if ("".equals(colDef)) {
             colDefPrefix = colDefSuffix = "";
             hasPattern = false;
             andop = "";
@@ -115,10 +115,10 @@ public class GuidedDecisionTableLHSBuilder
         hasPattern = true;
 
         // ...eval
-        final Matcher matEval = patEval.matcher( colDef );
-        if ( matEval.find() ) {
-            colDefPrefix = colDef.substring( 0,
-                                             matEval.start() ) + "eval(";
+        final Matcher matEval = patEval.matcher(colDef);
+        if (matEval.find()) {
+            colDefPrefix = colDef.substring(0,
+                                            matEval.start()) + "eval(";
             colDefSuffix = ")";
             andop = " && ";
             return;
@@ -126,41 +126,40 @@ public class GuidedDecisionTableLHSBuilder
         andop = ", ";
 
         // ...(<b> ) from...
-        final Matcher matParFrm = patParFrm.matcher( colDef );
-        if ( matParFrm.find() ) {
-            colDefPrefix = colDef.substring( 0,
-                                             matParFrm.start() ) + '(';
-            colDefSuffix = ") from" + colDef.substring( matParFrm.end() );
+        final Matcher matParFrm = patParFrm.matcher(colDef);
+        if (matParFrm.find()) {
+            colDefPrefix = colDef.substring(0,
+                                            matParFrm.start()) + '(';
+            colDefSuffix = ") from" + colDef.substring(matParFrm.end());
             return;
         }
 
         // ...from...
-        final Matcher matFrm = patFrm.matcher( colDef );
-        if ( matFrm.find() ) {
-            colDefPrefix = colDef.substring( 0,
-                                             matFrm.start() ) + "(";
-            colDefSuffix = ") from " + colDef.substring( matFrm.end() );
+        final Matcher matFrm = patFrm.matcher(colDef);
+        if (matFrm.find()) {
+            colDefPrefix = colDef.substring(0,
+                                            matFrm.start()) + "(";
+            colDefSuffix = ") from " + colDef.substring(matFrm.end());
             return;
         }
 
         // ...(<b> )...
-        Matcher matPar = patPar.matcher( colDef );
-        if ( matPar.find() ) {
-            colDefPrefix = colDef.substring( 0,
-                                             matPar.start() ) + '(';
-            colDefSuffix = ")" + colDef.substring( matPar.end() );
+        Matcher matPar = patPar.matcher(colDef);
+        if (matPar.find()) {
+            colDefPrefix = colDef.substring(0,
+                                            matPar.start()) + '(';
+            colDefSuffix = ")" + colDef.substring(matPar.end());
             return;
         }
 
         // <a>
         colDefPrefix = colDef + '(';
         colDefSuffix = ")";
-
     }
 
     @Override
     public List<BRLVariableColumn> getVariableColumns() {
-        if ( !hasPattern ) {
+        if (!hasPattern) {
             //Add separate columns for each ValueBuilder
             return addExplicitColumns();
         } else {
@@ -177,118 +176,118 @@ public class GuidedDecisionTableLHSBuilder
     //An explicit column does not add constraints to a Pattern. It does not have a value in the OBJECT row
     private List<BRLVariableColumn> addExplicitColumns() {
         //Sort column builders by column index to ensure Actions are added in the correct sequence
-        final Set<Integer> sortedIndexes = new TreeSet<Integer>( this.valueBuilders.keySet() );
+        final Set<Integer> sortedIndexes = new TreeSet<Integer>(this.valueBuilders.keySet());
 
         final List<BRLVariableColumn> variableColumns = new ArrayList<BRLVariableColumn>();
 
-        for ( Integer index : sortedIndexes ) {
-            final ParameterizedValueBuilder vb = this.valueBuilders.get( index );
+        for (Integer index : sortedIndexes) {
+            final ParameterizedValueBuilder vb = this.valueBuilders.get(index);
             final List<BRLVariableColumn> vbVariableColumns = new ArrayList<BRLVariableColumn>();
-            if ( vb instanceof LiteralValueBuilder ) {
-                vbVariableColumns.addAll( addLiteralColumn( (LiteralValueBuilder) vb ) );
-                for ( BRLVariableColumn vbVariableColumn : vbVariableColumns ) {
-                    ( (BRLConditionVariableColumn) vbVariableColumn ).setHeader( this.columnHeaders.get( index ) );
+            if (vb instanceof LiteralValueBuilder) {
+                vbVariableColumns.addAll(addLiteralColumn((LiteralValueBuilder) vb));
+                for (BRLVariableColumn vbVariableColumn : vbVariableColumns) {
+                    ((BRLConditionVariableColumn) vbVariableColumn).setHeader(this.columnHeaders.get(index));
                 }
             } else {
-                vbVariableColumns.addAll( addBRLFragmentColumn( vb ) );
-                for ( BRLVariableColumn vbVariableColumn : vbVariableColumns ) {
-                    ( (BRLConditionVariableColumn) vbVariableColumn ).setHeader( this.columnHeaders.get( index ) );
+                vbVariableColumns.addAll(addBRLFragmentColumn(vb));
+                for (BRLVariableColumn vbVariableColumn : vbVariableColumns) {
+                    ((BRLConditionVariableColumn) vbVariableColumn).setHeader(this.columnHeaders.get(index));
                 }
             }
-            variableColumns.addAll( vbVariableColumns );
+            variableColumns.addAll(vbVariableColumns);
         }
         return variableColumns;
     }
 
-    private List<BRLVariableColumn> addLiteralColumn( final LiteralValueBuilder vb ) {
+    private List<BRLVariableColumn> addLiteralColumn(final LiteralValueBuilder vb) {
         final List<BRLVariableColumn> variableColumns = new ArrayList<BRLVariableColumn>();
-        final BRLConditionVariableColumn parameterColumn = new BRLConditionVariableColumn( "",
-                                                                                           DataType.TYPE_BOOLEAN );
-        variableColumns.add( parameterColumn );
+        final BRLConditionVariableColumn parameterColumn = new BRLConditionVariableColumn("",
+                                                                                          DataType.TYPE_BOOLEAN);
+        variableColumns.add(parameterColumn);
 
         //Store DRL fragment for use by GuidedDecisionTableRHSBuilder
-        drlFragments.add( vb.getTemplate() );
+        drlFragments.add(vb.getTemplate());
         return variableColumns;
     }
 
-    private List<BRLVariableColumn> addBRLFragmentColumn( final ParameterizedValueBuilder vb ) {
+    private List<BRLVariableColumn> addBRLFragmentColumn(final ParameterizedValueBuilder vb) {
         final List<BRLVariableColumn> variableColumns = new ArrayList<BRLVariableColumn>();
 
-        for ( String parameter : vb.getParameters() ) {
-            final BRLConditionVariableColumn parameterColumn = new BRLConditionVariableColumn( parameter,
-                                                                                               DataType.TYPE_OBJECT );
-            variableColumns.add( parameterColumn );
+        for (String parameter : vb.getParameters()) {
+            final BRLConditionVariableColumn parameterColumn = new BRLConditionVariableColumn(parameter,
+                                                                                              DataType.TYPE_OBJECT);
+            variableColumns.add(parameterColumn);
         }
 
         //Store DRL fragment for use by GuidedDecisionTableRHSBuilder
-        drlFragments.add( vb.getTemplate() );
+        drlFragments.add(vb.getTemplate());
         return variableColumns;
     }
 
     //A Pattern column adds constraints to a Pattern. It has a value in the OBJECT row
     private List<BRLVariableColumn> addPatternColumn() {
         //Sort column builders by column index to ensure columns are added in the correct sequence
-        final TreeSet<Integer> sortedIndexes = new TreeSet<Integer>( this.valueBuilders.keySet() );
+        final TreeSet<Integer> sortedIndexes = new TreeSet<Integer>(this.valueBuilders.keySet());
         final List<BRLVariableColumn> variableColumns = new ArrayList<BRLVariableColumn>();
 
         //DRL prefix
         final StringBuffer drl = new StringBuffer();
-        drl.append( this.colDefPrefix );
+        drl.append(this.colDefPrefix);
         String sep = "";
 
         //DRL fragment
-        for ( Integer index : sortedIndexes ) {
-            final ParameterizedValueBuilder vb = this.valueBuilders.get( index );
-            for ( String parameter : vb.getParameters() ) {
-                final BRLConditionVariableColumn parameterColumn = new BRLConditionVariableColumn( parameter,
-                                                                                                   DataType.TYPE_OBJECT );
-                parameterColumn.setHeader( this.columnHeaders.get( index ) );
-                variableColumns.add( parameterColumn );
+        for (Integer index : sortedIndexes) {
+            final ParameterizedValueBuilder vb = this.valueBuilders.get(index);
+            for (String parameter : vb.getParameters()) {
+                final BRLConditionVariableColumn parameterColumn = new BRLConditionVariableColumn(parameter,
+                                                                                                  DataType.TYPE_OBJECT);
+                parameterColumn.setHeader(this.columnHeaders.get(index));
+                variableColumns.add(parameterColumn);
             }
 
-            drl.append( sep ).append( vb.getTemplate() );
+            drl.append(sep).append(vb.getTemplate());
             sep = this.andop;
         }
 
         //DRL suffix
-        drl.append( this.colDefSuffix );
+        drl.append(this.colDefSuffix);
 
         //Store DRL fragment for use by GuidedDecisionTableRHSBuilder
-        drlFragments.add( drl.toString() );
+        drlFragments.add(drl.toString());
         return variableColumns;
     }
 
     @Override
-    public void addTemplate( final int row,
-                             final int column,
-                             final String content ) {
+    public void addTemplate(final int row,
+                            final int column,
+                            final String content) {
         //Validate column template
-        if ( valueBuilders.containsKey( column ) ) {
+        if (valueBuilders.containsKey(column)) {
             final String message = "Internal error: Can't have a code snippet added twice to one spreadsheet column.";
-            this.conversionResult.addMessage( message,
-                                              ConversionMessageType.ERROR );
+            this.conversionResult.addMessage(message,
+                                             ConversionMessageType.ERROR);
             return;
         }
 
         //Add new template
         final String template = content.trim();
         try {
-            this.valueBuilders.put( column,
-                                    getValueBuilder( template ) );
-        } catch ( DecisionTableParseException pe ) {
-            this.conversionResult.addMessage( pe.getMessage(),
-                                              ConversionMessageType.WARNING );
+            this.valueBuilders.put(column,
+                                   getValueBuilder(template));
+        } catch (DecisionTableParseException pe) {
+            this.conversionResult.addMessage(pe.getMessage(),
+                                             ConversionMessageType.WARNING);
         }
     }
 
     @Override
-    public void setColumnHeader( final int column,
-                                 final String value ) {
-        this.columnHeaders.put( column,
-                                value.trim() );
+    public void setColumnHeader(final int column,
+                                final String value) {
+        this.columnHeaders.put(column,
+                               value.trim());
     }
 
-    private ParameterizedValueBuilder getValueBuilder( final String content ) {
+    private ParameterizedValueBuilder getValueBuilder(final String content) {
 
         // Work out the type of "template":-
         // age                     ---> SnippetType.SINGLE
@@ -297,17 +296,17 @@ public class GuidedDecisionTableLHSBuilder
         // age == $1 || age == $2  ---> SnippetType.INDEXED
         // forall{age < $}{,}      ---> SnippetType.FORALL
         String template = content.trim();
-        SnippetType type = SnippetBuilder.getType( template );
-        if ( type == SnippetType.SINGLE ) {
+        SnippetType type = SnippetBuilder.getType(template);
+        if (type == SnippetType.SINGLE) {
             type = SnippetType.PARAM;
             boolean hasExplicitOperator = false;
-            for ( String op : operators ) {
-                if ( template.endsWith( op ) ) {
+            for (String op : operators) {
+                if (template.endsWith(op)) {
                     hasExplicitOperator = true;
                     break;
                 }
             }
-            if ( !hasExplicitOperator ) {
+            if (!hasExplicitOperator) {
                 template = template + " ==";
             }
             template = template + " \"";
@@ -315,38 +314,38 @@ public class GuidedDecisionTableLHSBuilder
         }
 
         //Make a ValueBuilder for the template
-        switch ( type ) {
+        switch (type) {
             case INDEXED:
-                return new IndexedParametersValueBuilder( template,
-                                                          parameterUtilities,
-                                                          ParameterizedValueBuilder.Part.LHS );
+                return new IndexedParametersValueBuilder(template,
+                                                         parameterUtilities,
+                                                         ParameterizedValueBuilder.Part.LHS);
             case PARAM:
-                return new SingleParameterValueBuilder( template,
-                                                        parameterUtilities,
-                                                        ParameterizedValueBuilder.Part.LHS );
+                return new SingleParameterValueBuilder(template,
+                                                       parameterUtilities,
+                                                       ParameterizedValueBuilder.Part.LHS);
             case SINGLE:
-                return new LiteralValueBuilder( template );
+                return new LiteralValueBuilder(template);
         }
-        throw new DecisionTableParseException( "SnippetBuilder.SnippetType '" + type.toString() + "' is not supported. The column will not be added." );
+        throw new DecisionTableParseException("SnippetBuilder.SnippetType '" + type.toString() + "' is not supported. The column will not be added.");
     }
 
     @Override
-    public void addCellValue( final int row,
-                              final int column,
-                              final String value ) {
+    public void addCellValue(final int row,
+                             final int column,
+                             final String value) {
         //Add new row to column data
-        final ParameterizedValueBuilder vb = this.valueBuilders.get( column );
-        if ( vb == null ) {
+        final ParameterizedValueBuilder vb = this.valueBuilders.get(column);
+        if (vb == null) {
             final String message = "No code snippet for CONDITION, above cell " +
-                    RuleSheetParserUtil.rc2name( this.headerRow + 2,
-                                                 this.headerCol );
-            this.conversionResult.addMessage( message,
-                                              ConversionMessageType.ERROR );
+                    RuleSheetParserUtil.rc2name(this.headerRow + 2,
+                                                this.headerCol);
+            this.conversionResult.addMessage(message,
+                                             ConversionMessageType.ERROR);
             return;
         }
-        vb.addCellValue( row,
-                         column,
-                         value );
+        vb.addCellValue(row,
+                        column,
+                        value);
     }
 
     @Override
@@ -357,8 +356,8 @@ public class GuidedDecisionTableLHSBuilder
     @Override
     public String getResult() {
         final StringBuilder sb = new StringBuilder();
-        for ( String drlFragment : drlFragments ) {
-            sb.append( drlFragment ).append( "\n" );
+        for (String drlFragment : drlFragments) {
+            sb.append(drlFragment).append("\n");
         }
         return sb.toString();
     }
@@ -376,11 +375,10 @@ public class GuidedDecisionTableLHSBuilder
     @Override
     public int getRowCount() {
         int maxRowCount = 0;
-        for ( ParameterizedValueBuilder pvb : valueBuilders.values() ) {
-            maxRowCount = Math.max( maxRowCount,
-                                    pvb.getColumnData().size() );
+        for (ParameterizedValueBuilder pvb : valueBuilders.values()) {
+            maxRowCount = Math.max(maxRowCount,
+                                   pvb.getColumnData().size());
         }
         return maxRowCount;
     }
-
 }

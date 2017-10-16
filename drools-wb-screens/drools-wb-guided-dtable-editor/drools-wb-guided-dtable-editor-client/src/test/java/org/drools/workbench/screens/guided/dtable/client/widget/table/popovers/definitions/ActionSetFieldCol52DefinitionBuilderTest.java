@@ -18,12 +18,12 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.popovers.
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.oracle.DataType;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
@@ -34,74 +34,73 @@ public class ActionSetFieldCol52DefinitionBuilderTest extends BaseColumnDefiniti
 
     @Override
     protected ColumnDefinitionBuilder getBuilder() {
-        return new ActionSetFieldCol52DefinitionBuilder( serviceCaller );
+        return new ActionSetFieldCol52DefinitionBuilder(serviceCaller);
     }
 
     @Test
     public void checkColumnType() {
-        assertEquals( ActionSetFieldCol52.class,
-                      builder.getSupportedColumnType() );
+        assertEquals(ActionSetFieldCol52.class,
+                     builder.getSupportedColumnType());
     }
 
     @Test
     public void unknownColumnTypeDoesNotTriggerBuilder() {
         final BaseColumn column = new RowNumberCol52();
-        builder.generateDefinition( dtPresenter,
-                                    column,
-                                    ( String definition ) -> {
-                                        fail( "RowNumberCol52 should not be handled by ActionSetFieldCol52DefinitionBuilder" );
-                                    } );
+        builder.generateDefinition(dtPresenter,
+                                   column,
+                                   (String definition) -> {
+                                       fail("RowNumberCol52 should not be handled by ActionSetFieldCol52DefinitionBuilder");
+                                   });
     }
 
     @Test
     public void simpleActionSetField() {
-        final AtomicBoolean calledBack = new AtomicBoolean( false );
+        final AtomicBoolean calledBack = new AtomicBoolean(false);
 
         setupPatternAndCondition();
 
         final ActionSetFieldCol52 asf = new ActionSetFieldCol52();
-        asf.setBoundName( "$p" );
-        asf.setFactField( "name" );
-        model.getActionCols().add( asf );
+        asf.setBoundName("$p");
+        asf.setFactField("name");
+        model.getActionCols().add(asf);
 
-        when( dmo.getFieldType( eq( "Person" ),
-                                eq( "name" ) ) ).thenReturn( DataType.TYPE_STRING );
+        when(dmo.getFieldType(eq("Person"),
+                              eq("name"))).thenReturn(DataType.TYPE_STRING);
 
-        builder.generateDefinition( dtPresenter,
-                                    asf,
-                                    ( String definition ) -> {
-                                        calledBack.set( true );
-                                        assertEquals( "$p.setName( \"x\" );",
-                                                      definition );
-                                    } );
-        assertTrue( calledBack.get() );
+        builder.generateDefinition(dtPresenter,
+                                   asf,
+                                   (String definition) -> {
+                                       calledBack.set(true);
+                                       assertEquals("$p.setName( \"x\" );",
+                                                    definition);
+                                   });
+        assertTrue(calledBack.get());
     }
 
     @Test
     public void simpleActionUpdateField() {
-        final AtomicBoolean calledBack = new AtomicBoolean( false );
+        final AtomicBoolean calledBack = new AtomicBoolean(false);
 
         setupPatternAndCondition();
 
         final ActionSetFieldCol52 asf = new ActionSetFieldCol52();
-        asf.setBoundName( "$p" );
-        asf.setFactField( "name" );
-        asf.setUpdate( true );
-        model.getActionCols().add( asf );
+        asf.setBoundName("$p");
+        asf.setFactField("name");
+        asf.setUpdate(true);
+        model.getActionCols().add(asf);
 
-        when( dmo.getFieldType( eq( "Person" ),
-                                eq( "name" ) ) ).thenReturn( DataType.TYPE_STRING );
+        when(dmo.getFieldType(eq("Person"),
+                              eq("name"))).thenReturn(DataType.TYPE_STRING);
 
-        builder.generateDefinition( dtPresenter,
-                                    asf,
-                                    ( String definition ) -> {
-                                        calledBack.set( true );
-                                        assertEquals( "modify( $p ) {<br/>" +
-                                                              "setName( \"x\" )<br/>" +
-                                                              "}",
-                                                      definition );
-                                    } );
-        assertTrue( calledBack.get() );
+        builder.generateDefinition(dtPresenter,
+                                   asf,
+                                   (String definition) -> {
+                                       calledBack.set(true);
+                                       assertEquals("modify( $p ) {<br/>" +
+                                                            "setName( \"x\" )<br/>" +
+                                                            "}",
+                                                    definition);
+                                   });
+        assertTrue(calledBack.get());
     }
-
 }

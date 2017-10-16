@@ -17,7 +17,6 @@ package org.drools.workbench.screens.guided.template.server.indexing;
 
 import java.util.Set;
 
-import org.appformer.project.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.ActionSetField;
@@ -38,13 +37,14 @@ import org.drools.workbench.models.datamodel.rule.RuleAttribute;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
+import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.soup.project.datamodel.imports.Import;
 import org.kie.workbench.common.services.refactoring.ResourceReference;
 import org.kie.workbench.common.services.refactoring.SharedPart;
 import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.metadata.model.KProperty;
 
 /**
@@ -55,61 +55,62 @@ public class GuidedRuleTemplateIndexVisitor extends ResourceReferenceCollector {
     private final DefaultIndexBuilder builder;
     private final TemplateModel model;
 
-    public GuidedRuleTemplateIndexVisitor( final DefaultIndexBuilder builder,
-                                           final TemplateModel model ) {
-        this.builder = PortablePreconditions.checkNotNull( "builder",
-                                                           builder );
-        this.model = PortablePreconditions.checkNotNull( "model",
-                                                         model );
+    public GuidedRuleTemplateIndexVisitor(final DefaultIndexBuilder builder,
+                                          final TemplateModel model) {
+        this.builder = PortablePreconditions.checkNotNull("builder",
+                                                          builder);
+        this.model = PortablePreconditions.checkNotNull("model",
+                                                        model);
     }
 
     public Set<KProperty<?>> visit() {
-        visit( model );
+        visit(model);
         return builder.build();
     }
 
-    private void visit( final Object o ) {
-        if ( o instanceof TemplateModel ) {
-            visitRuleModel( (TemplateModel) o );
-        } else if ( o instanceof RuleAttribute ) {
-            visitRuleAttribute( (RuleAttribute) o );
-        } else if ( o instanceof FactPattern ) {
-            visitFactPattern( (FactPattern) o );
-        } else if ( o instanceof CompositeFieldConstraint ) {
-            visitCompositeFieldConstraint( (CompositeFieldConstraint) o );
-        } else if ( o instanceof SingleFieldConstraintEBLeftSide ) {
-            visitSingleFieldConstraint( (SingleFieldConstraintEBLeftSide) o );
-        } else if ( o instanceof SingleFieldConstraint ) {
-            visitSingleFieldConstraint( (SingleFieldConstraint) o );
-        } else if ( o instanceof ConnectiveConstraint ) {
-            visitConnectiveConstraint( (ConnectiveConstraint) o );
-        } else if ( o instanceof CompositeFactPattern ) {
-            visitCompositeFactPattern( (CompositeFactPattern) o );
-        } else if ( o instanceof FreeFormLine ) {
-            visitFreeFormLine( (FreeFormLine) o );
-        } else if ( o instanceof FromAccumulateCompositeFactPattern ) {
-            visitFromAccumulateCompositeFactPattern( (FromAccumulateCompositeFactPattern) o );
-        } else if ( o instanceof FromCollectCompositeFactPattern ) {
-            visitFromCollectCompositeFactPattern( (FromCollectCompositeFactPattern) o );
-        } else if ( o instanceof FromCompositeFactPattern ) {
-            visitFromCompositeFactPattern( (FromCompositeFactPattern) o );
-        } else if ( o instanceof DSLSentence ) {
-            visitDSLSentence( (DSLSentence) o );
-        } else if ( o instanceof ActionInsertFact ) {
-            visitActionFieldList( (ActionInsertFact) o );
+    private void visit(final Object o) {
+        if (o instanceof TemplateModel) {
+            visitRuleModel((TemplateModel) o);
+        } else if (o instanceof RuleAttribute) {
+            visitRuleAttribute((RuleAttribute) o);
+        } else if (o instanceof FactPattern) {
+            visitFactPattern((FactPattern) o);
+        } else if (o instanceof CompositeFieldConstraint) {
+            visitCompositeFieldConstraint((CompositeFieldConstraint) o);
+        } else if (o instanceof SingleFieldConstraintEBLeftSide) {
+            visitSingleFieldConstraint((SingleFieldConstraintEBLeftSide) o);
+        } else if (o instanceof SingleFieldConstraint) {
+            visitSingleFieldConstraint((SingleFieldConstraint) o);
+        } else if (o instanceof ConnectiveConstraint) {
+            visitConnectiveConstraint((ConnectiveConstraint) o);
+        } else if (o instanceof CompositeFactPattern) {
+            visitCompositeFactPattern((CompositeFactPattern) o);
+        } else if (o instanceof FreeFormLine) {
+            visitFreeFormLine((FreeFormLine) o);
+        } else if (o instanceof FromAccumulateCompositeFactPattern) {
+            visitFromAccumulateCompositeFactPattern((FromAccumulateCompositeFactPattern) o);
+        } else if (o instanceof FromCollectCompositeFactPattern) {
+            visitFromCollectCompositeFactPattern((FromCollectCompositeFactPattern) o);
+        } else if (o instanceof FromCompositeFactPattern) {
+            visitFromCompositeFactPattern((FromCompositeFactPattern) o);
+        } else if (o instanceof DSLSentence) {
+            visitDSLSentence((DSLSentence) o);
+        } else if (o instanceof ActionInsertFact) {
+            visitActionFieldList((ActionInsertFact) o);
         }
     }
 
-    private void visitRuleAttribute( final RuleAttribute attr ) {
+    private void visitRuleAttribute(final RuleAttribute attr) {
         PartType type = PartType.getPartTypeFromAttribueDescrName(attr.getAttributeName());
-        switch(type) {
+        switch (type) {
             case AGENDA_GROUP:
             case ACTIVATION_GROUP:
             case RULEFLOW_GROUP:
             case ENTRY_POINT:
-                SharedPart sharedRef = new SharedPart(attr.getValue(), type);
-                builder.addGenerator( sharedRef );
-            break;
+                SharedPart sharedRef = new SharedPart(attr.getValue(),
+                                                      type);
+                builder.addGenerator(sharedRef);
+                break;
             // OCRAM: finish
             default:
 //                logger.info("Not processing attribute: " + descr.getName());
@@ -117,171 +118,183 @@ public class GuidedRuleTemplateIndexVisitor extends ResourceReferenceCollector {
     }
 
     //ActionInsertFact, ActionSetField, ActionUpdateField
-    private void visitActionFieldList( final ActionInsertFact afl ) {
-        String fullyQualifiedClassName = getFullyQualifiedClassName( afl.getFactType() );
-        addResourceReference(fullyQualifiedClassName, ResourceType.JAVA);
+    private void visitActionFieldList(final ActionInsertFact afl) {
+        String fullyQualifiedClassName = getFullyQualifiedClassName(afl.getFactType());
+        addResourceReference(fullyQualifiedClassName,
+                             ResourceType.JAVA);
     }
 
-    private void visitActionFieldList( final String fullyQualifiedClassName,
-                                       final ActionSetField afl ) {
-        for ( ActionFieldValue afv : afl.getFieldValues() ) {
-            visit( fullyQualifiedClassName,
-                   afv );
+    private void visitActionFieldList(final String fullyQualifiedClassName,
+                                      final ActionSetField afl) {
+        for (ActionFieldValue afv : afl.getFieldValues()) {
+            visit(fullyQualifiedClassName,
+                  afv);
         }
     }
 
-    private void visitCompositeFactPattern( final CompositeFactPattern pattern ) {
-        String fullyQualifiedClassName = getFullyQualifiedClassName( pattern.getType() );
-        addResourceReference(fullyQualifiedClassName, ResourceType.JAVA);
-        if ( pattern.getPatterns() != null ) {
-            for ( IFactPattern fp : pattern.getPatterns() ) {
-                visit( fp );
+    private void visitCompositeFactPattern(final CompositeFactPattern pattern) {
+        String fullyQualifiedClassName = getFullyQualifiedClassName(pattern.getType());
+        addResourceReference(fullyQualifiedClassName,
+                             ResourceType.JAVA);
+        if (pattern.getPatterns() != null) {
+            for (IFactPattern fp : pattern.getPatterns()) {
+                visit(fp);
             }
         }
     }
 
-    private void visitCompositeFieldConstraint( final CompositeFieldConstraint cfc ) {
-        if ( cfc.getConstraints() != null ) {
-            for ( int i = 0; i < cfc.getConstraints().length; i++ ) {
-                FieldConstraint fc = cfc.getConstraints()[ i ];
-                visit( fc );
+    private void visitCompositeFieldConstraint(final CompositeFieldConstraint cfc) {
+        if (cfc.getConstraints() != null) {
+            for (int i = 0; i < cfc.getConstraints().length; i++) {
+                FieldConstraint fc = cfc.getConstraints()[i];
+                visit(fc);
             }
         }
     }
 
-    private void visitDSLSentence( final DSLSentence sentence ) {
+    private void visitDSLSentence(final DSLSentence sentence) {
         //TODO - Index DSLSentences
     }
 
-    private void visitFactPattern( final FactPattern pattern ) {
-        String fullyQualifiedClassName = getFullyQualifiedClassName( pattern.getFactType() );
-        addResourceReference(fullyQualifiedClassName, ResourceType.JAVA);
-        for ( FieldConstraint fc : pattern.getFieldConstraints() ) {
-            visit( fc );
+    private void visitFactPattern(final FactPattern pattern) {
+        String fullyQualifiedClassName = getFullyQualifiedClassName(pattern.getFactType());
+        addResourceReference(fullyQualifiedClassName,
+                             ResourceType.JAVA);
+        for (FieldConstraint fc : pattern.getFieldConstraints()) {
+            visit(fc);
         }
     }
 
-    private void visitFreeFormLine( final FreeFormLine ffl ) {
+    private void visitFreeFormLine(final FreeFormLine ffl) {
         //TODO - Index FreeFormLines
     }
 
-    private void visitFromAccumulateCompositeFactPattern( final FromAccumulateCompositeFactPattern pattern ) {
-        visit( pattern.getFactPattern() );
-        visit( pattern.getExpression() );
-        visit( pattern.getSourcePattern() );
+    private void visitFromAccumulateCompositeFactPattern(final FromAccumulateCompositeFactPattern pattern) {
+        visit(pattern.getFactPattern());
+        visit(pattern.getExpression());
+        visit(pattern.getSourcePattern());
     }
 
-    private void visitFromCollectCompositeFactPattern( final FromCollectCompositeFactPattern pattern ) {
-        visit( pattern.getExpression() );
-        visit( pattern.getFactPattern() );
-        visit( pattern.getRightPattern() );
+    private void visitFromCollectCompositeFactPattern(final FromCollectCompositeFactPattern pattern) {
+        visit(pattern.getExpression());
+        visit(pattern.getFactPattern());
+        visit(pattern.getRightPattern());
     }
 
-    private void visitFromCompositeFactPattern( final FromCompositeFactPattern pattern ) {
-        visit( pattern.getExpression() );
-        visit( pattern.getFactPattern() );
+    private void visitFromCompositeFactPattern(final FromCompositeFactPattern pattern) {
+        visit(pattern.getExpression());
+        visit(pattern.getFactPattern());
     }
 
-    public void visitRuleModel( final TemplateModel model ) {
+    public void visitRuleModel(final TemplateModel model) {
         //Add Attributes
-        if ( model.attributes != null ) {
-            for ( int i = 0; i < model.attributes.length; i++ ) {
-                RuleAttribute attr = model.attributes[ i ];
-                visit( attr );
+        if (model.attributes != null) {
+            for (int i = 0; i < model.attributes.length; i++) {
+                RuleAttribute attr = model.attributes[i];
+                visit(attr);
             }
         }
         //Add Types and Fields used by LHS
-        if ( model.lhs != null ) {
-            for ( int i = 0; i < model.lhs.length; i++ ) {
-                IPattern pattern = model.lhs[ i ];
-                visit( pattern );
+        if (model.lhs != null) {
+            for (int i = 0; i < model.lhs.length; i++) {
+                IPattern pattern = model.lhs[i];
+                visit(pattern);
             }
         }
         //Add Types and Fields used by RHS
-        if ( model.rhs != null ) {
-            for ( int i = 0; i < model.rhs.length; i++ ) {
-                IAction action = model.rhs[ i ];
-                if ( action instanceof ActionSetField ) {
+        if (model.rhs != null) {
+            for (int i = 0; i < model.rhs.length; i++) {
+                IAction action = model.rhs[i];
+                if (action instanceof ActionSetField) {
                     final ActionSetField asf = (ActionSetField) action;
-                    final String typeName = getTypeNameForBinding( asf.getVariable() );
-                    if ( typeName != null ) {
-                        final String fullyQualifiedClassName = getFullyQualifiedClassName( typeName );
-                        visitActionFieldList( fullyQualifiedClassName,
-                                              asf );
+                    final String typeName = getTypeNameForBinding(asf.getVariable());
+                    if (typeName != null) {
+                        final String fullyQualifiedClassName = getFullyQualifiedClassName(typeName);
+                        visitActionFieldList(fullyQualifiedClassName,
+                                             asf);
                     }
                 } else {
-                    visit( action );
+                    visit(action);
                 }
             }
         }
         //Add rule names
         final String parentRuleName = model.parentName;
-        for ( int i = 0; i < model.getRowsCount(); i++ ) {
+        for (int i = 0; i < model.getRowsCount(); i++) {
             final String ruleName = model.name + "_" + i;
-            addResourceReference(ruleName, ResourceType.RULE);
-            if( parentRuleName != null ) {
-                addResourceReference(parentRuleName, ResourceType.RULE);
+            addResourceReference(ruleName,
+                                 ResourceType.RULE);
+            if (parentRuleName != null) {
+                addResourceReference(parentRuleName,
+                                     ResourceType.RULE);
             }
         }
-
     }
 
-    private String getTypeNameForBinding( final String binding ) {
-        if ( model.getAllLHSVariables().contains( binding ) ) {
-            return model.getLHSBindingType( binding );
-        } else if ( model.getAllRHSVariables().contains( binding ) ) {
-            return model.getRHSBoundFact( binding ).getFactType();
+    private String getTypeNameForBinding(final String binding) {
+        if (model.getAllLHSVariables().contains(binding)) {
+            return model.getLHSBindingType(binding);
+        } else if (model.getAllRHSVariables().contains(binding)) {
+            return model.getRHSBoundFact(binding).getFactType();
         }
         return null;
     }
 
-    private void visitSingleFieldConstraint( final SingleFieldConstraint sfc ) {
-        ResourceReference resRef = addResourceReference(getFullyQualifiedClassName( sfc.getFactType() ), ResourceType.JAVA);
-        resRef.addPartReference(sfc.getFieldName(), PartType.FIELD );
-        addResourceReference( getFullyQualifiedClassName( sfc.getFieldType() ), ResourceType.JAVA );
+    private void visitSingleFieldConstraint(final SingleFieldConstraint sfc) {
+        ResourceReference resRef = addResourceReference(getFullyQualifiedClassName(sfc.getFactType()),
+                                                        ResourceType.JAVA);
+        resRef.addPartReference(sfc.getFieldName(),
+                                PartType.FIELD);
+        addResourceReference(getFullyQualifiedClassName(sfc.getFieldType()),
+                             ResourceType.JAVA);
 
-        if ( sfc.getConnectives() != null ) {
-            for ( int i = 0; i < sfc.getConnectives().length; i++ ) {
-                visit( sfc.getConnectives()[ i ] );
+        if (sfc.getConnectives() != null) {
+            for (int i = 0; i < sfc.getConnectives().length; i++) {
+                visit(sfc.getConnectives()[i]);
             }
         }
     }
 
-    private void visitConnectiveConstraint( final ConnectiveConstraint cc ) {
-        ResourceReference resRef = addResourceReference(getFullyQualifiedClassName(cc.getFactType() ), ResourceType.JAVA);
-        resRef.addPartReference(cc.getFieldName(), PartType.FIELD );
-        addResourceReference( getFullyQualifiedClassName( cc.getFieldType() ), ResourceType.JAVA );
+    private void visitConnectiveConstraint(final ConnectiveConstraint cc) {
+        ResourceReference resRef = addResourceReference(getFullyQualifiedClassName(cc.getFactType()),
+                                                        ResourceType.JAVA);
+        resRef.addPartReference(cc.getFieldName(),
+                                PartType.FIELD);
+        addResourceReference(getFullyQualifiedClassName(cc.getFieldType()),
+                             ResourceType.JAVA);
     }
 
-    private void visitSingleFieldConstraint( final SingleFieldConstraintEBLeftSide sfexp ) {
-        visit( sfexp.getExpressionLeftSide() );
-        visit( sfexp.getExpressionValue() );
-        if ( sfexp.getConnectives() != null ) {
-            for ( int i = 0; i < sfexp.getConnectives().length; i++ ) {
-                visit( sfexp.getConnectives()[ i ] );
+    private void visitSingleFieldConstraint(final SingleFieldConstraintEBLeftSide sfexp) {
+        visit(sfexp.getExpressionLeftSide());
+        visit(sfexp.getExpressionValue());
+        if (sfexp.getConnectives() != null) {
+            for (int i = 0; i < sfexp.getConnectives().length; i++) {
+                visit(sfexp.getConnectives()[i]);
             }
         }
     }
 
-    private void visit( final String fullyQualifiedClassName,
-                        final ActionFieldValue afv ) {
-        ResourceReference resRef = addResourceReference(fullyQualifiedClassName, ResourceType.JAVA);
-        resRef.addPartReference(afv.getField(), PartType.FIELD );
-        addResourceReference( getFullyQualifiedClassName( afv.getType() ), ResourceType.JAVA );
+    private void visit(final String fullyQualifiedClassName,
+                       final ActionFieldValue afv) {
+        ResourceReference resRef = addResourceReference(fullyQualifiedClassName,
+                                                        ResourceType.JAVA);
+        resRef.addPartReference(afv.getField(),
+                                PartType.FIELD);
+        addResourceReference(getFullyQualifiedClassName(afv.getType()),
+                             ResourceType.JAVA);
     }
 
-    private String getFullyQualifiedClassName( final String typeName ) {
-        if ( typeName.contains( "." ) ) {
+    private String getFullyQualifiedClassName(final String typeName) {
+        if (typeName.contains(".")) {
             return typeName;
         }
 
-        for ( Import i : model.getImports().getImports() ) {
-            if ( i.getType().endsWith( typeName ) ) {
+        for (Import i : model.getImports().getImports()) {
+            if (i.getType().endsWith(typeName)) {
                 return i.getType();
             }
         }
         final String packageName = model.getPackageName();
-        return ( !( packageName == null || packageName.isEmpty() ) ? packageName + "." + typeName : typeName );
+        return (!(packageName == null || packageName.isEmpty()) ? packageName + "." + typeName : typeName);
     }
-
 }

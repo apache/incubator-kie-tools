@@ -22,8 +22,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.drools.compiler.compiler.DecisionTableFactory;
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.screens.dtablexls.type.DecisionTableXLSResourceTypeDefinition;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.drools.AbstractDrlFileIndexer;
@@ -41,25 +41,25 @@ public class DecisionTableXLSFileIndexer extends AbstractDrlFileIndexer {
     protected DecisionTableXLSResourceTypeDefinition type;
 
     @Override
-    public boolean supportsPath( final Path path ) {
-        return type.accept( Paths.convert( path ) );
+    public boolean supportsPath(final Path path) {
+        return type.accept(Paths.convert(path));
     }
 
     @Override
-    public DefaultIndexBuilder fillIndexBuilder( final Path path ) throws Exception {
+    public DefaultIndexBuilder fillIndexBuilder(final Path path) throws Exception {
         InputStream inputStream = null;
         try {
-            inputStream = ioService.newInputStream( path,
-                                                    StandardOpenOption.READ );
-            final String drl = DecisionTableFactory.loadFromInputStream( inputStream,
-                                                                         null );
+            inputStream = ioService.newInputStream(path,
+                                                   StandardOpenOption.READ);
+            final String drl = DecisionTableFactory.loadFromInputStream(inputStream,
+                                                                        null);
 
             return fillDrlIndexBuilder(path, drl);
         } finally {
-            if ( inputStream != null ) {
+            if (inputStream != null) {
                 try {
                     inputStream.close();
-                } catch ( IOException e ) {
+                } catch (IOException e) {
                     // no-op
                 }
             }
@@ -67,8 +67,7 @@ public class DecisionTableXLSFileIndexer extends AbstractDrlFileIndexer {
     }
 
     @Override
-    protected ProjectDataModelOracle getProjectDataModelOracle( final Path path ) {
-        return dataModelService.getProjectDataModel( Paths.convert( path ) );
+    protected ProjectDataModelOracle getProjectDataModelOracle(final Path path) {
+        return dataModelService.getProjectDataModel(Paths.convert(path));
     }
-
 }

@@ -19,7 +19,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.appformer.project.datamodel.oracle.DateConverter;
+import org.kie.soup.project.datamodel.oracle.DateConverter;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 
 /**
@@ -32,12 +32,12 @@ public class JVMDateConverter
 
     private static final String DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
 
-    private static final SimpleDateFormat FORMATTER = new SimpleDateFormat( DATE_FORMAT );
+    private static final SimpleDateFormat FORMATTER = new SimpleDateFormat(DATE_FORMAT);
 
     private static DateConverter INSTANCE;
 
     public static synchronized DateConverter getInstance() {
-        if ( INSTANCE == null ) {
+        if (INSTANCE == null) {
             INSTANCE = new JVMDateConverter();
         }
         return INSTANCE;
@@ -46,21 +46,19 @@ public class JVMDateConverter
     private JVMDateConverter() {
     }
 
-    public String format( Date date ) {
-        synchronized ( FORMATTER ) {
-            return FORMATTER.format( date );
+    public String format(Date date) {
+        synchronized (FORMATTER) {
+            return FORMATTER.format(date);
         }
     }
 
-    public Date parse( String text ) {
+    public Date parse(String text) {
         try {
-            synchronized ( FORMATTER ) {
-                return FORMATTER.parse( text );
+            synchronized (FORMATTER) {
+                return FORMATTER.parse(text);
             }
-
-        } catch ( ParseException pe ) {
+        } catch (ParseException pe) {
         }
         return null;
     }
-
 }

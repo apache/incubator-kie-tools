@@ -20,7 +20,7 @@ import java.util.List;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 @Portable
 public class DrlModelContent {
@@ -34,21 +34,21 @@ public class DrlModelContent {
     public DrlModelContent() {
     }
 
-    public DrlModelContent( final String drl,
-                            final Overview overview,
-                            final List<String> fullyQualifiedClassNames,
-                            final List<DSLSentence> dslConditions,
-                            final List<DSLSentence> dslActions ) {
-        this.overview = PortablePreconditions.checkNotNull( "overview",
-                                                            overview);
-        this.drl = PortablePreconditions.checkNotNull( "drl",
-                                                       drl );
-        this.fullyQualifiedClassNames = PortablePreconditions.checkNotNull( "fullyQualifiedClassNames",
-                                                                            fullyQualifiedClassNames );
-        this.dslConditions = PortablePreconditions.checkNotNull( "dslConditions",
-                                                                 dslConditions );
-        this.dslActions = PortablePreconditions.checkNotNull( "dslActions",
-                                                              dslActions );
+    public DrlModelContent(final String drl,
+                           final Overview overview,
+                           final List<String> fullyQualifiedClassNames,
+                           final List<DSLSentence> dslConditions,
+                           final List<DSLSentence> dslActions) {
+        this.overview = PortablePreconditions.checkNotNull("overview",
+                                                           overview);
+        this.drl = PortablePreconditions.checkNotNull("drl",
+                                                      drl);
+        this.fullyQualifiedClassNames = PortablePreconditions.checkNotNull("fullyQualifiedClassNames",
+                                                                           fullyQualifiedClassNames);
+        this.dslConditions = PortablePreconditions.checkNotNull("dslConditions",
+                                                                dslConditions);
+        this.dslActions = PortablePreconditions.checkNotNull("dslActions",
+                                                             dslActions);
     }
 
     public String getDrl() {

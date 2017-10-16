@@ -18,65 +18,64 @@ package org.drools.workbench.services.verifier.webworker.client.testutil;
 
 import java.util.Collection;
 
-import org.appformer.project.datamodel.imports.Import;
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.kie.soup.project.datamodel.imports.Import;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 public class LimitedGuidedDecisionTableBuilder
         extends AbstractDecisionTableBuilder {
 
-    public LimitedGuidedDecisionTableBuilder( final String packageName,
-                                              final Collection<Import> imports,
-                                              final String tableName ) {
-        table.setPackageName( packageName );
-        table.setTableFormat( GuidedDecisionTable52.TableFormat.LIMITED_ENTRY );
-        table.getImports().getImports().addAll( imports );
-        table.setTableName( tableName );
+    public LimitedGuidedDecisionTableBuilder(final String packageName,
+                                             final Collection<Import> imports,
+                                             final String tableName) {
+        table.setPackageName(packageName);
+        table.setTableFormat(GuidedDecisionTable52.TableFormat.LIMITED_ENTRY);
+        table.getImports().getImports().addAll(imports);
+        table.setTableName(tableName);
     }
 
-    public LimitedGuidedDecisionTableBuilder withIntegerColumn( final String boundName,
-                                                                final String factType,
-                                                                final String field,
-                                                                final String operator,
-                                                                final int value ) {
-        final Pattern52 pattern = findPattern( boundName, factType );
+    public LimitedGuidedDecisionTableBuilder withIntegerColumn(final String boundName,
+                                                               final String factType,
+                                                               final String field,
+                                                               final String operator,
+                                                               final int value) {
+        final Pattern52 pattern = findPattern(boundName, factType);
 
         final LimitedEntryConditionCol52 condition = new LimitedEntryConditionCol52();
-        condition.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        condition.setFieldType( DataType.TYPE_NUMERIC_INTEGER );
-        condition.setFactField( field );
-        condition.setHeader( "Some header" );
-        condition.setOperator( operator );
+        condition.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        condition.setFieldType(DataType.TYPE_NUMERIC_INTEGER);
+        condition.setFactField(field);
+        condition.setHeader("Some header");
+        condition.setOperator(operator);
         condition.setValue(
                 new DTCellValue52() {
                     {
-                        setNumericValue( new Integer( value ) );
+                        setNumericValue(new Integer(value));
                     }
-                } );
-        pattern.getChildColumns().add( condition );
+                });
+        pattern.getChildColumns().add(condition);
 
-        addPattern( pattern );
+        addPattern(pattern);
 
         return this;
     }
 
-    public LimitedGuidedDecisionTableBuilder withAction( String boundName,
-                                                         String factField,
-                                                         String typeNumericInteger,
-                                                         DTCellValue52 value ) {
+    public LimitedGuidedDecisionTableBuilder withAction(String boundName,
+                                                        String factField,
+                                                        String typeNumericInteger,
+                                                        DTCellValue52 value) {
         LimitedEntryActionSetFieldCol52 ins = new LimitedEntryActionSetFieldCol52();
-        ins.setBoundName( boundName );
-        ins.setFactField( factField );
-        ins.setValue( value );
-        ins.setType( typeNumericInteger );
-        table.getActionCols().add( ins );
+        ins.setBoundName(boundName);
+        ins.setFactField(factField);
+        ins.setValue(value);
+        ins.setType(typeNumericInteger);
+        table.getActionCols().add(ins);
 
         return this;
     }
-
 }

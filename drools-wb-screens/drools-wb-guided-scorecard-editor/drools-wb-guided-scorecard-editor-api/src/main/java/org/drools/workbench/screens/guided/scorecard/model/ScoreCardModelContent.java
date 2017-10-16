@@ -19,8 +19,8 @@ package org.drools.workbench.screens.guided.scorecard.model;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 @Portable
 public class ScoreCardModelContent {
@@ -32,12 +32,15 @@ public class ScoreCardModelContent {
     public ScoreCardModelContent() {
     }
 
-    public ScoreCardModelContent( final ScoreCardModel model,
-                                  final Overview overview,
-                                  final PackageDataModelOracleBaselinePayload dataModel) {
-        this.model = PortablePreconditions.checkNotNull("model", model);
-        this.overview = PortablePreconditions.checkNotNull("overview", overview);
-        this.dataModel = PortablePreconditions.checkNotNull("dataModel", dataModel);
+    public ScoreCardModelContent(final ScoreCardModel model,
+                                 final Overview overview,
+                                 final PackageDataModelOracleBaselinePayload dataModel) {
+        this.model = PortablePreconditions.checkNotNull("model",
+                                                        model);
+        this.overview = PortablePreconditions.checkNotNull("overview",
+                                                           overview);
+        this.dataModel = PortablePreconditions.checkNotNull("dataModel",
+                                                            dataModel);
     }
 
     public ScoreCardModel getModel() {

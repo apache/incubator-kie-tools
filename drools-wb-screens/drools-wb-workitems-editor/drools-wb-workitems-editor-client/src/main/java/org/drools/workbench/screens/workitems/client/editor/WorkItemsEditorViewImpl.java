@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.workitems.client.editor;
 
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
@@ -31,7 +32,7 @@ import org.gwtbootstrap3.client.ui.Column;
 import org.gwtbootstrap3.client.ui.Row;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 public class WorkItemsEditorViewImpl
         extends KieEditorViewImpl
@@ -41,7 +42,7 @@ public class WorkItemsEditorViewImpl
     //Scroll-bar Height + Container padding * 2
     private static int SCROLL_BAR_SIZE = 32;
     private static int CONTAINER_PADDING = 15;
-    private static int VERTICAL_MARGIN = SCROLL_BAR_SIZE + ( CONTAINER_PADDING * 2 );
+    private static int VERTICAL_MARGIN = SCROLL_BAR_SIZE + (CONTAINER_PADDING * 2);
 
     interface WorkItemsEditorViewBinder
             extends
@@ -49,7 +50,7 @@ public class WorkItemsEditorViewImpl
 
     }
 
-    private static WorkItemsEditorViewBinder uiBinder = GWT.create( WorkItemsEditorViewBinder.class );
+    private static WorkItemsEditorViewBinder uiBinder = GWT.create(WorkItemsEditorViewBinder.class);
 
     @UiField
     Row row;
@@ -64,21 +65,22 @@ public class WorkItemsEditorViewImpl
     WorkItemDefinitionElementsBrowser workItemBrowser;
 
     @Inject
-    public WorkItemsEditorViewImpl( final WorkItemDefinitionElementsBrowser workItemBrowser ) {
-        this.workItemBrowser = checkNotNull( "workItemBrowser", workItemBrowser );
+    public WorkItemsEditorViewImpl(final WorkItemDefinitionElementsBrowser workItemBrowser) {
+        this.workItemBrowser = checkNotNull("workItemBrowser",
+                                            workItemBrowser);
     }
 
     @PostConstruct
     public void bind() {
-        initWidget( uiBinder.createAndBindUi( this ) );
-        this.workItemBrowser.init( this );
+        initWidget(uiBinder.createAndBindUi(this));
+        this.workItemBrowser.init(this);
     }
 
     @Override
-    public void setContent( final String definition,
-                            final List<String> workItemImages ) {
-        workItemWidget.setContent( definition );
-        workItemBrowser.setImages( workItemImages );
+    public void setContent(final String definition,
+                           final List<String> workItemImages) {
+        workItemWidget.setContent(definition);
+        workItemBrowser.setImages(workItemImages);
     }
 
     @Override
@@ -87,22 +89,21 @@ public class WorkItemsEditorViewImpl
     }
 
     @Override
-    public void setReadOnly( final boolean readOnly ) {
-        workItemWidget.setReadOnly( readOnly );
+    public void setReadOnly(final boolean readOnly) {
+        workItemWidget.setReadOnly(readOnly);
     }
 
     @Override
-    public void onElementSelected( final String title,
-                                   final String value ) {
-        workItemWidget.insertAtCursor( value );
+    public void onElementSelected(final String title,
+                                  final String value) {
+        workItemWidget.insertAtCursor(value);
     }
 
     @Override
     public void onResize() {
         final int height = getParent().getOffsetHeight() - VERTICAL_MARGIN;
-        row.setHeight( ( height > 0 ? height : 0 ) + "px" );
-        editorContainer.setHeight( ( ( height > 0 ? height : 0 ) + SCROLL_BAR_SIZE ) + "px" );
+        row.setHeight((height > 0 ? height : 0) + "px");
+        editorContainer.setHeight(((height > 0 ? height : 0) + SCROLL_BAR_SIZE) + "px");
         workItemWidget.onResize();
     }
-
 }

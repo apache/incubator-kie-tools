@@ -18,8 +18,6 @@ package org.drools.workbench.screens.guided.dtable.backend.server.indexing;
 
 import java.util.Collection;
 
-import org.appformer.project.datamodel.imports.Import;
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.ActionSetField;
@@ -38,6 +36,8 @@ import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionVariab
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.kie.soup.project.datamodel.imports.Import;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 public class GuidedDecisionTableFactory {
 

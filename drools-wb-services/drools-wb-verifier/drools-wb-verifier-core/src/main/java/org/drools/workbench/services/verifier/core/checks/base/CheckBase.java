@@ -23,7 +23,7 @@ import org.drools.workbench.services.verifier.api.client.configuration.CheckConf
 import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public abstract class CheckBase
         implements Check {
@@ -32,9 +32,9 @@ public abstract class CheckBase
 
     protected boolean hasIssues = false;
 
-    public CheckBase( final AnalyzerConfiguration configuration ) {
-        this.configuration = PortablePreconditions.checkNotNull( "configuration",
-                                                                 configuration );
+    public CheckBase(final AnalyzerConfiguration configuration) {
+        this.configuration = PortablePreconditions.checkNotNull("configuration",
+                                                                configuration);
     }
 
     @Override
@@ -44,28 +44,28 @@ public abstract class CheckBase
 
     @Override
     public final Issue getIssue() {
-        return makeIssue( resolveSeverity(),
-                          getCheckType() );
+        return makeIssue(resolveSeverity(),
+                         getCheckType());
     }
 
-    protected abstract Issue makeIssue( final Severity severity,
-                                        final CheckType checkType );
+    protected abstract Issue makeIssue(final Severity severity,
+                                       final CheckType checkType);
 
     protected abstract CheckType getCheckType();
 
     protected abstract Severity getDefaultSeverity();
 
     @Override
-    public boolean isActive( final CheckConfiguration checkConfiguration ) {
+    public boolean isActive(final CheckConfiguration checkConfiguration) {
         return checkConfiguration.getCheckConfiguration()
-                .contains( getCheckType() );
+                .contains(getCheckType());
     }
 
     protected Severity resolveSeverity() {
         final Optional<Severity> severityOverwrite = configuration.getCheckConfiguration()
-                .getSeverityOverwrite( getCheckType() );
+                .getSeverityOverwrite(getCheckType());
 
-        if ( severityOverwrite.isPresent() ) {
+        if (severityOverwrite.isPresent()) {
             return severityOverwrite.get();
         } else {
             return getDefaultSeverity();

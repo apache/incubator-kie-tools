@@ -26,52 +26,52 @@ import org.drools.workbench.services.verifier.api.client.reporting.Issues;
 import org.drools.workbench.services.verifier.plugin.client.api.WebWorkerException;
 import org.drools.workbench.services.verifier.plugin.client.api.WebWorkerLogMessage;
 import org.jboss.errai.enterprise.client.jaxrs.MarshallingWrapper;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class Receiver {
 
-    private static final Logger LOGGER = Logger.getLogger( "DTable Analyzer" );
+    private static final Logger LOGGER = Logger.getLogger("DTable Analyzer");
 
     private AnalysisReporter reporter;
 
-    public Receiver( final AnalysisReporter reporter ) {
-        this.reporter = PortablePreconditions.checkNotNull( "reporter",
-                                                            reporter );
+    public Receiver(final AnalysisReporter reporter) {
+        this.reporter = PortablePreconditions.checkNotNull("reporter",
+                                                           reporter);
     }
 
     public void activate() {
         reporter.activate();
     }
 
-    private void received( final String json ) {
+    private void received(final String json) {
 
         try {
 
-            LOGGER.finest( "Receiving: " + json );
+            LOGGER.finest("Receiving: " + json);
 
-            final Object o = MarshallingWrapper.fromJSON( json );
+            final Object o = MarshallingWrapper.fromJSON(json);
 
-            if ( o instanceof WebWorkerLogMessage ) {
-                LOGGER.info( "Web Worker log message: " + ( (WebWorkerLogMessage) o ).getMessage() );
-            } else if ( o instanceof WebWorkerException ) {
-                LOGGER.severe( "Web Worker failed: " + ( (WebWorkerException) o ).getMessage() );
-            } else if ( o instanceof Status ) {
-                reporter.sendStatus( (Status) o );
-            } else if ( o instanceof Issues ) {
-                reporter.sendReport( new HashSet<>( ( (Issues) o ).getSet() ) );
+            if (o instanceof WebWorkerLogMessage) {
+                LOGGER.info("Web Worker log message: " + ((WebWorkerLogMessage) o).getMessage());
+            } else if (o instanceof WebWorkerException) {
+                LOGGER.severe("Web Worker failed: " + ((WebWorkerException) o).getMessage());
+            } else if (o instanceof Status) {
+                reporter.sendStatus((Status) o);
+            } else if (o instanceof Issues) {
+                reporter.sendReport(new HashSet<>(((Issues) o).getSet()));
             }
-        } catch ( Exception e ) {
-            LOGGER.severe( "Could not manage received json: " + e.getMessage()
-                                   + " JSON: " + json );
+        } catch (Exception e) {
+            LOGGER.severe("Could not manage received json: " + e.getMessage()
+                                  + " JSON: " + json);
         }
     }
 
-    public void setUp( final Worker worker ) {
-        worker.setOnMessage( new MessageHandler() {
+    public void setUp(final Worker worker) {
+        worker.setOnMessage(new MessageHandler() {
             @Override
-            public void onMessage( final MessageEvent messageEvent ) {
-                received( messageEvent.getDataAsString() );
+            public void onMessage(final MessageEvent messageEvent) {
+                received(messageEvent.getDataAsString());
             }
-        } );
+        });
     }
 }

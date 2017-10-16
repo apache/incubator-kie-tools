@@ -16,22 +16,22 @@
 package org.drools.workbench.services.verifier.core.checks.base;
 
 import org.drools.workbench.services.verifier.api.client.configuration.RunnerType;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class CheckRunnerFactory {
 
-    public static CheckRunner make( final RunnerType runnerType ) {
+    public static CheckRunner make(final RunnerType runnerType) {
 
-        PortablePreconditions.checkNotNull( "runnerType",
-                                            runnerType );
+        PortablePreconditions.checkNotNull("runnerType",
+                                           runnerType);
 
-        switch ( runnerType ) {
+        switch (runnerType) {
             case GWT:
                 return new GWTCheckRunner();
             case JAVA:
                 return new JavaCheckRunner();
         }
 
-        throw new IllegalArgumentException( "Could not find a runner with the type: " + runnerType );
+        throw new IllegalArgumentException("Could not find a runner with the type: " + runnerType);
     }
 }

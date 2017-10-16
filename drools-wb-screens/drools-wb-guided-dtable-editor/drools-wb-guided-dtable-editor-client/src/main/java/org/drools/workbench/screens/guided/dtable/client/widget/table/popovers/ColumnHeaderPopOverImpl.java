@@ -25,8 +25,8 @@ import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.popovers.definitions.ColumnDefinitionFactory;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
@@ -39,58 +39,58 @@ public class ColumnHeaderPopOverImpl implements ColumnHeaderPopOver {
     private ColumnDefinitionFactory columnDefinitionFactory;
 
     @Inject
-    public ColumnHeaderPopOverImpl( final PopOverView view,
-                                    final ColumnDefinitionFactory columnDefinitionFactory ) {
+    public ColumnHeaderPopOverImpl(final PopOverView view,
+                                   final ColumnDefinitionFactory columnDefinitionFactory) {
         this.view = view;
         this.columnDefinitionFactory = columnDefinitionFactory;
     }
 
     @Override
-    public void show( final GuidedDecisionTableModellerView modellerView,
-                      final GuidedDecisionTableView.Presenter dtPresenter,
-                      final int uiColumnIndex ) {
-        PortablePreconditions.checkNotNull( "modellerView",
-                                            modellerView );
-        PortablePreconditions.checkNotNull( "dtPresenter",
-                                            dtPresenter );
+    public void show(final GuidedDecisionTableModellerView modellerView,
+                     final GuidedDecisionTableView.Presenter dtPresenter,
+                     final int uiColumnIndex) {
+        PortablePreconditions.checkNotNull("modellerView",
+                                           modellerView);
+        PortablePreconditions.checkNotNull("dtPresenter",
+                                           dtPresenter);
 
-        showSource( modellerView,
-                    dtPresenter,
-                    uiColumnIndex );
+        showSource(modellerView,
+                   dtPresenter,
+                   uiColumnIndex);
     }
 
-    private void showSource( final GuidedDecisionTableModellerView modellerView,
-                             final GuidedDecisionTableView.Presenter dtPresenter,
-                             final int uiColumnIndex ) {
-        final BaseColumn column = dtPresenter.getModel().getExpandedColumns().get( uiColumnIndex );
+    private void showSource(final GuidedDecisionTableModellerView modellerView,
+                            final GuidedDecisionTableView.Presenter dtPresenter,
+                            final int uiColumnIndex) {
+        final BaseColumn column = dtPresenter.getModel().getExpandedColumns().get(uiColumnIndex);
 
-        final int screenX = getScreenX( modellerView,
-                                        dtPresenter,
-                                        uiColumnIndex );
-        final int screenY = getScreenY( modellerView,
-                                        dtPresenter );
+        final int screenX = getScreenX(modellerView,
+                                       dtPresenter,
+                                       uiColumnIndex);
+        final int screenY = getScreenY(modellerView,
+                                       dtPresenter);
 
-        view.show( ( Callback<PopOverView.Content> callback ) ->
-                           columnDefinitionFactory.generateColumnDefinition( dtPresenter,
-                                                                             column,
-                                                                             ( String definition ) ->
-                                                                                     callback.callback( new PopOverView.Content() {
-                                                                                         @Override
-                                                                                         public String getContent() {
-                                                                                             return definition;
-                                                                                         }
+        view.show((Callback<PopOverView.Content> callback) ->
+                          columnDefinitionFactory.generateColumnDefinition(dtPresenter,
+                                                                           column,
+                                                                           (String definition) ->
+                                                                                   callback.callback(new PopOverView.Content() {
+                                                                                       @Override
+                                                                                       public String getContent() {
+                                                                                           return definition;
+                                                                                       }
 
-                                                                                         @Override
-                                                                                         public int getX() {
-                                                                                             return screenX;
-                                                                                         }
+                                                                                       @Override
+                                                                                       public int getX() {
+                                                                                           return screenX;
+                                                                                       }
 
-                                                                                         @Override
-                                                                                         public int getY() {
-                                                                                             return screenY;
-                                                                                         }
-                                                                                     } )
-                                                                           ) );
+                                                                                       @Override
+                                                                                       public int getY() {
+                                                                                           return screenY;
+                                                                                       }
+                                                                                   })
+                          ));
     }
 
     @Override
@@ -98,11 +98,11 @@ public class ColumnHeaderPopOverImpl implements ColumnHeaderPopOver {
         view.hide();
     }
 
-    private int getScreenX( final GuidedDecisionTableModellerView modellerView,
-                            final GuidedDecisionTableView.Presenter dtPresenter,
-                            final int uiColumnIndex ) {
+    private int getScreenX(final GuidedDecisionTableModellerView modellerView,
+                           final GuidedDecisionTableView.Presenter dtPresenter,
+                           final int uiColumnIndex) {
         final GridWidget gridWidget = dtPresenter.getView();
-        final GridColumn<?> uiColumn = gridWidget.getModel().getColumns().get( uiColumnIndex );
+        final GridColumn<?> uiColumn = gridWidget.getModel().getColumns().get(uiColumnIndex);
 
         final double gx = gridWidget.getX();
         final GridLayer layer = modellerView.getGridLayerView();
@@ -113,14 +113,14 @@ public class ColumnHeaderPopOverImpl implements ColumnHeaderPopOver {
         final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
         final BaseGridRendererHelper.RenderingInformation ri = rendererHelper.getRenderingInformation();
         final BaseGridRendererHelper.RenderingBlockInformation floatingBlockInformation = ri.getFloatingBlockInformation();
-        final double offsetX = floatingBlockInformation.getColumns().contains( uiColumn ) ? floatingBlockInformation.getX() : 0;
+        final double offsetX = floatingBlockInformation.getColumns().contains(uiColumn) ? floatingBlockInformation.getX() : 0;
 
-        final int screenX = containerX + (int) ( ( gx - vx + offsetX + rendererHelper.getColumnOffset( uiColumn ) + uiColumn.getWidth() / 2 ) * t.getScaleX() );
+        final int screenX = containerX + (int) ((gx - vx + offsetX + rendererHelper.getColumnOffset(uiColumn) + uiColumn.getWidth() / 2) * t.getScaleX());
         return screenX;
     }
 
-    private int getScreenY( final GuidedDecisionTableModellerView modellerView,
-                            final GuidedDecisionTableView.Presenter dtPresenter ) {
+    private int getScreenY(final GuidedDecisionTableModellerView modellerView,
+                           final GuidedDecisionTableView.Presenter dtPresenter) {
         final GridWidget gridWidget = dtPresenter.getView();
 
         final double gy = gridWidget.getY();
@@ -134,8 +134,7 @@ public class ColumnHeaderPopOverImpl implements ColumnHeaderPopOver {
         final double headerRowHeight = gridWidget.getRenderer().getHeaderRowHeight();
         final double offsetY = header == null ? 0 : header.getY();
 
-        final int screenY = containerY + (int) ( ( gy - vy + offsetY + headerHeight - headerRowHeight / 2 ) * t.getScaleX() );
+        final int screenY = containerY + (int) ((gy - vy + offsetY + headerHeight - headerRowHeight / 2) * t.getScaleX());
         return screenY;
     }
-
 }

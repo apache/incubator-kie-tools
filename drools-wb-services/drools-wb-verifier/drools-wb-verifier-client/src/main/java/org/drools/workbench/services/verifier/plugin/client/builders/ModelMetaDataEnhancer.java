@@ -27,7 +27,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.services.verifier.plugin.client.api.HeaderMetaData;
 import org.drools.workbench.services.verifier.plugin.client.api.ModelMetaData;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class ModelMetaDataEnhancer {
 

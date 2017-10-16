@@ -158,6 +158,10 @@
       <artifactId>uberfire-commons</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-commons</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-io</artifactId>
     </dependency>
@@ -285,12 +289,12 @@
 
     <!-- Models held within AppFormer -->
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-project-datamodel-api</artifactId>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-project-datamodel-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-project-datamodel-commons</artifactId>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-project-datamodel-commons</artifactId>
     </dependency>
 
     <!-- Models held within Drools -->
@@ -1073,8 +1077,8 @@
           <runTarget>drools-wb.html</runTarget>
           <hostedWebapp>src/main/webapp</hostedWebapp>
           <compileSourcesArtifacts>
-            <compileSourcesArtifact>org.uberfire:uberfire-project-datamodel-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-project-datamodel-commons</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.soup:kie-soup-project-datamodel-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.soup:kie-soup-project-datamodel-commons</compileSourcesArtifact>
 
             <!-- Guvnor -->
             <compileSourcesArtifact>org.guvnor:guvnor-asset-mgmt-api</compileSourcesArtifact>
@@ -1196,6 +1200,8 @@
             <compileSourcesArtifact>org.uberfire:uberfire-wires-core-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-wires-core-trees</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-wires-core-grids</compileSourcesArtifact>
+
+            <compileSourcesArtifact>org.kie.soup:kie-soup-commons</compileSourcesArtifact>
 
             <!-- UberFire -->
             <compileSourcesArtifact>org.uberfire:uberfire-maven-support</compileSourcesArtifact>

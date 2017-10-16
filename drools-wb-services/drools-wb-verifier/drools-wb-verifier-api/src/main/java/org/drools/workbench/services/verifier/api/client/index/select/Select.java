@@ -28,25 +28,24 @@ import org.drools.workbench.services.verifier.api.client.index.matchers.ToMatche
 import org.drools.workbench.services.verifier.api.client.maps.MultiMap;
 import org.drools.workbench.services.verifier.api.client.maps.MultiMapFactory;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 public class Select<T> {
 
     private final MultiMap<Value, T, List<T>> map;
     private final Matcher matcher;
 
-    public Select( final MultiMap<Value, T, List<T>> map,
-                   final Matcher matcher ) {
-        this.map = checkNotNull( "map",
-                                 map );
-        this.matcher = checkNotNull( "matcher",
-                                     matcher );
+    public Select(final MultiMap<Value, T, List<T>> map,
+                  final Matcher matcher) {
+        this.map = checkNotNull("map",
+                                map);
+        this.matcher = checkNotNull("matcher",
+                                    matcher);
     }
 
     public T first() {
         final Entry<T> entry = firstEntry();
-        if ( entry == null ) {
+        if (entry == null) {
             return null;
         } else {
             return entry.getValue();
@@ -55,16 +54,16 @@ public class Select<T> {
 
     protected Entry<T> firstEntry() {
         final MultiMap<Value, T, List<T>> subMap = asMap();
-        if ( subMap == null ) {
+        if (subMap == null) {
             return null;
         } else {
             try {
                 final Value key = subMap.firstKey();
-                final List<T> list = getT( subMap,
-                                           key );
-                return new Entry( key,
-                                  list.iterator().next() );
-            } catch ( NoSuchElementException e ) {
+                final List<T> list = getT(subMap,
+                                          key);
+                return new Entry(key,
+                                 list.iterator().next());
+            } catch (NoSuchElementException e) {
                 return null;
             }
         }
@@ -72,7 +71,7 @@ public class Select<T> {
 
     public T last() {
         final Entry<T> entry = lastEntry();
-        if ( entry == null ) {
+        if (entry == null) {
             return null;
         } else {
             return entry.getValue();
@@ -81,33 +80,33 @@ public class Select<T> {
 
     protected Entry<T> lastEntry() {
         final MultiMap<Value, T, List<T>> subMap = asMap();
-        if ( subMap == null ) {
+        if (subMap == null) {
             return null;
         } else {
             try {
                 final Value key = subMap.lastKey();
-                final List<T> list = getT( subMap,
-                                           key );
-                return new Entry<T>( key,
-                                     list.get( list.size() - 1 ) );
-            } catch ( NoSuchElementException e ) {
+                final List<T> list = getT(subMap,
+                                          key);
+                return new Entry<T>(key,
+                                    list.get(list.size() - 1));
+            } catch (NoSuchElementException e) {
                 return null;
             }
         }
     }
 
-    private List<T> getT( final MultiMap<Value, T, List<T>> subMap,
-                          final Value key ) {
-        if ( subMap == null || subMap.isEmpty() ) {
+    private List<T> getT(final MultiMap<Value, T, List<T>> subMap,
+                         final Value key) {
+        if (subMap == null || subMap.isEmpty()) {
             return null;
         } else {
-            return subMap.get( key );
+            return subMap.get(key);
         }
     }
 
     public Collection<T> all() {
         final MultiMap<Value, T, List<T>> subMap = asMap();
-        if ( subMap == null ) {
+        if (subMap == null) {
             return new ArrayList<>();
         } else {
             return subMap.allValues();
@@ -115,53 +114,50 @@ public class Select<T> {
     }
 
     public MultiMap<Value, T, List<T>> asMap() {
-        if ( map == null ) {
+        if (map == null) {
             return null;
-        } else if ( map.isEmpty() ) {
+        } else if (map.isEmpty()) {
             return map;
-        } else if ( matcher instanceof FromMatcher ) {
+        } else if (matcher instanceof FromMatcher) {
 
-            final FromMatcher fromMatcher = ( FromMatcher ) matcher;
+            final FromMatcher fromMatcher = (FromMatcher) matcher;
 
             final Value lastKey = map.lastKey();
 
-            if ( lastKey == null ) {
+            if (lastKey == null) {
                 return null;
-            } else if ( fromMatcher.getFrom().compareTo( lastKey ) > 0 ) {
+            } else if (fromMatcher.getFrom().compareTo(lastKey) > 0) {
                 return null;
             }
 
-            return map.subMap( fromMatcher.getFrom(),
-                               fromMatcher.includeValue(),
-                               lastKey,
-                               true );
+            return map.subMap(fromMatcher.getFrom(),
+                              fromMatcher.includeValue(),
+                              lastKey,
+                              true);
+        } else if (matcher instanceof ToMatcher) {
 
-        } else if ( matcher instanceof ToMatcher ) {
+            final ToMatcher toMatcher = (ToMatcher) this.matcher;
+            return map.subMap(map.firstKey(),
+                              true,
+                              toMatcher.getTo(),
+                              false);
+        } else if (matcher instanceof ExactMatcher) {
 
-            final ToMatcher toMatcher = ( ToMatcher ) this.matcher;
-            return map.subMap( map.firstKey(),
-                               true,
-                               toMatcher.getTo(),
-                               false );
-
-        } else if ( matcher instanceof ExactMatcher ) {
-
-            return new ExactMatcherSearch<T>( ( ExactMatcher ) this.matcher,
-                                              this.map ).search();
-
+            return new ExactMatcherSearch<T>((ExactMatcher) this.matcher,
+                                             this.map).search();
         } else {
             final MultiMap<Value, T, List<T>> result = MultiMapFactory.<Value, T>make();
-            MultiMap.merge( result,
-                            map );
+            MultiMap.merge(result,
+                           map);
             return result;
         }
     }
 
     public boolean exists() {
         final MultiMap<Value, T, List<T>> subMap = asMap();
-        if ( subMap == null ) {
+        if (subMap == null) {
             return false;
-        } else if ( subMap.isEmpty() ) {
+        } else if (subMap.isEmpty()) {
             return false;
         } else {
             return true;
@@ -169,11 +165,12 @@ public class Select<T> {
     }
 
     protected class Entry<T> {
-        private final Value key;
-        private final T     value;
 
-        public Entry( final Value key,
-                      final T value ) {
+        private final Value key;
+        private final T value;
+
+        public Entry(final Value key,
+                     final T value) {
             this.key = key;
             this.value = value;
         }

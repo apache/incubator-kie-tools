@@ -18,7 +18,6 @@ package org.drools.workbench.screens.guided.dtable.shared;
 
 import java.util.ArrayList;
 
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.FieldNatureType;
@@ -33,6 +32,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.oracle.DataType;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;

@@ -51,7 +51,7 @@ import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.GenericModalFooter;
 import org.uberfire.mvp.Command;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 public class ParserMessagesPopup extends BaseModal {
 
@@ -61,7 +61,7 @@ public class ParserMessagesPopup extends BaseModal {
 
     }
 
-    private static ParserMessagesBinder uiBinder = GWT.create( ParserMessagesBinder.class );
+    private static ParserMessagesBinder uiBinder = GWT.create(ParserMessagesBinder.class);
 
     private final GenericModalFooter footer = new GenericModalFooter();
 
@@ -75,114 +75,106 @@ public class ParserMessagesPopup extends BaseModal {
 
     private final List<Pair<String, ParserMessage>> errors = new ArrayList<Pair<String, ParserMessage>>();
 
-    public ParserMessagesPopup( final GuidedDecisionTree model ) {
-        this.model = checkNotNull( "model", model );
+    public ParserMessagesPopup(final GuidedDecisionTree model) {
+        this.model = checkNotNull("model",
+                                  model);
 
-        for ( GuidedDecisionTreeParserError error : model.getParserErrors() ) {
-            for ( ParserMessage msg : error.getMessages() ) {
-                errors.add( Pair.newPair( error.getOriginalDrl(), msg ) );
+        for (GuidedDecisionTreeParserError error : model.getParserErrors()) {
+            for (ParserMessage msg : error.getMessages()) {
+                errors.add(Pair.newPair(error.getOriginalDrl(),
+                                        msg));
             }
         }
 
-        setTitle( GuidedDecisionTreeConstants.INSTANCE.popupTitleParserMessages() );
+        setTitle(GuidedDecisionTreeConstants.INSTANCE.popupTitleParserMessages());
         messages = new MessageTableWidget<Pair<String, ParserMessage>>();
-        messages.setToolBarVisible( false );
-        messages.setHeight( "150px" );
+        messages.setToolBarVisible(false);
+        messages.setHeight("150px");
 
-        footer.addButton( GuidedDecisionTreeConstants.INSTANCE.remove(),
-                          new Command() {
-                              @Override
-                              public void execute() {
-                                  model.getParserErrors().clear();
-                                  hide();
-                              }
-                          },
-                          IconType.WARNING,
-                          ButtonType.DANGER );
-        footer.addButton( GuidedDecisionTreeConstants.INSTANCE.ignore(),
-                          new Command() {
-                              @Override
-                              public void execute() {
-                                  hide();
-                              }
-                          },
-                          ButtonType.PRIMARY );
+        footer.addButton(GuidedDecisionTreeConstants.INSTANCE.remove(),
+                         new Command() {
+                             @Override
+                             public void execute() {
+                                 model.getParserErrors().clear();
+                                 hide();
+                             }
+                         },
+                         IconType.WARNING,
+                         ButtonType.DANGER);
+        footer.addButton(GuidedDecisionTreeConstants.INSTANCE.ignore(),
+                         new Command() {
+                             @Override
+                             public void execute() {
+                                 hide();
+                             }
+                         },
+                         ButtonType.PRIMARY);
 
-        setBody( uiBinder.createAndBindUi( this ) );
-        add( footer );
+        setBody(uiBinder.createAndBindUi(this));
+        add(footer);
 
-        messages.addCellPreviewHandler( new CellPreviewEvent.Handler<Pair<String, ParserMessage>>() {
+        messages.addCellPreviewHandler(new CellPreviewEvent.Handler<Pair<String, ParserMessage>>() {
             @Override
-            public void onCellPreview( final CellPreviewEvent<Pair<String, ParserMessage>> event ) {
-                if ( Event.getTypeInt( event.getNativeEvent().getType() ) == Event.ONCLICK ) {
-                    drlPreview.setContent( event.getValue().getK1() );
+            public void onCellPreview(final CellPreviewEvent<Pair<String, ParserMessage>> event) {
+                if (Event.getTypeInt(event.getNativeEvent().getType()) == Event.ONCLICK) {
+                    drlPreview.setContent(event.getValue().getK1());
                 }
             }
-        } );
+        });
 
-        messages.setRowData( errors );
+        messages.setRowData(errors);
 
-        messages.addLevelColumn( 10, new MessageTableWidget.ColumnExtractor<Level>() {
-            @Override
-            public Level getValue( final Object row ) {
-                return Level.ERROR;
-            }
-        } );
+        messages.addLevelColumn(10,
+                                new MessageTableWidget.ColumnExtractor<Level>() {
+                                    @Override
+                                    public Level getValue(final Object row) {
+                                        return Level.ERROR;
+                                    }
+                                });
 
-        messages.addTextColumn( 90, new MessageTableWidget.ColumnExtractor<String>() {
-            @Override
-            public String getValue( final Object row ) {
-                return getMessage( ( (Pair<String, ParserMessage>) row ).getK2() );
-            }
-        } );
+        messages.addTextColumn(90,
+                               new MessageTableWidget.ColumnExtractor<String>() {
+                                   @Override
+                                   public String getValue(final Object row) {
+                                       return getMessage(((Pair<String, ParserMessage>) row).getK2());
+                                   }
+                               });
     }
 
-    private String getMessage( final ParserMessage msg ) {
-        if ( msg instanceof AmbiguousRootParserMessage ) {
+    private String getMessage(final ParserMessage msg) {
+        if (msg instanceof AmbiguousRootParserMessage) {
             final TypeNode tn = model.getRoot();
             final AmbiguousRootParserMessage m = (AmbiguousRootParserMessage) msg;
-            return GuidedDecisionTreeConstants.INSTANCE.parserMessageAmbiguousRootParserMessage( tn.getClassName(),
-                                                                                                 m.getClassName() );
-
-        } else if ( msg instanceof BindingNotFoundParserMessage ) {
+            return GuidedDecisionTreeConstants.INSTANCE.parserMessageAmbiguousRootParserMessage(tn.getClassName(),
+                                                                                                m.getClassName());
+        } else if (msg instanceof BindingNotFoundParserMessage) {
             final BindingNotFoundParserMessage m = (BindingNotFoundParserMessage) msg;
-            return GuidedDecisionTreeConstants.INSTANCE.parserMessageBindingNotFoundParserMessage( m.getBinding() );
-
-        } else if ( msg instanceof DataTypeConversionErrorParserMessage ) {
+            return GuidedDecisionTreeConstants.INSTANCE.parserMessageBindingNotFoundParserMessage(m.getBinding());
+        } else if (msg instanceof DataTypeConversionErrorParserMessage) {
             final DataTypeConversionErrorParserMessage m = (DataTypeConversionErrorParserMessage) msg;
-            return GuidedDecisionTreeConstants.INSTANCE.parserMessageDataTypeConversionErrorParserMessage( m.getValue(),
-                                                                                                           m.getDataTypeClassName() );
-
-        } else if ( msg instanceof DataTypeNotFoundParserMessage ) {
+            return GuidedDecisionTreeConstants.INSTANCE.parserMessageDataTypeConversionErrorParserMessage(m.getValue(),
+                                                                                                          m.getDataTypeClassName());
+        } else if (msg instanceof DataTypeNotFoundParserMessage) {
             final DataTypeNotFoundParserMessage m = (DataTypeNotFoundParserMessage) msg;
-            return GuidedDecisionTreeConstants.INSTANCE.parserMessageDataTypeNotFoundParserMessage( m.getClassName(),
-                                                                                                    m.getFieldName() );
-
-        } else if ( msg instanceof DefaultParserMessage ) {
+            return GuidedDecisionTreeConstants.INSTANCE.parserMessageDataTypeNotFoundParserMessage(m.getClassName(),
+                                                                                                   m.getFieldName());
+        } else if (msg instanceof DefaultParserMessage) {
             final DefaultParserMessage m = (DefaultParserMessage) msg;
-            return GuidedDecisionTreeConstants.INSTANCE.parserMessageDefaultParserMessage( m.getMessage() );
-
-        } else if ( msg instanceof InvalidRootParserMessage ) {
+            return GuidedDecisionTreeConstants.INSTANCE.parserMessageDefaultParserMessage(m.getMessage());
+        } else if (msg instanceof InvalidRootParserMessage) {
             return GuidedDecisionTreeConstants.INSTANCE.parserMessageInvalidRootParserMessage();
-
-        } else if ( msg instanceof UnsupportedFieldConstraintParserMessage ) {
+        } else if (msg instanceof UnsupportedFieldConstraintParserMessage) {
             return GuidedDecisionTreeConstants.INSTANCE.parserMessageUnsupportedFieldConstraintParserMessage();
-
-        } else if ( msg instanceof UnsupportedFieldConstraintTypeParserMessage ) {
+        } else if (msg instanceof UnsupportedFieldConstraintTypeParserMessage) {
             return GuidedDecisionTreeConstants.INSTANCE.parserMessageUnsupportedFieldConstraintTypeParserMessage();
-
-        } else if ( msg instanceof UnsupportedFieldNatureTypeParserMessage ) {
+        } else if (msg instanceof UnsupportedFieldNatureTypeParserMessage) {
             return GuidedDecisionTreeConstants.INSTANCE.parserMessageUnsupportedFieldNatureTypeParserMessage();
-
-        } else if ( msg instanceof UnsupportedIActionParserMessage ) {
+        } else if (msg instanceof UnsupportedIActionParserMessage) {
             return GuidedDecisionTreeConstants.INSTANCE.parserMessageUnsupportedIActionParserMessage();
-
-        } else if ( msg instanceof UnsupportedIPatternParserMessage ) {
+        } else if (msg instanceof UnsupportedIPatternParserMessage) {
             return GuidedDecisionTreeConstants.INSTANCE.parserMessageUnsupportedIPatternParserMessage();
-
         } else {
             return GuidedDecisionTreeConstants.INSTANCE.parserMessageUnknownMessage();
         }
     }
-
 }

@@ -35,7 +35,7 @@ import org.drools.workbench.services.verifier.plugin.client.api.HeaderMetaData;
 import org.drools.workbench.services.verifier.plugin.client.builders.BuildException;
 import org.drools.workbench.services.verifier.plugin.client.builders.BuilderFactory;
 import org.drools.workbench.services.verifier.plugin.client.builders.VerifierColumnUtilities;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class DTableUpdateManager {
 
@@ -46,121 +46,120 @@ public class DTableUpdateManager {
     private final Analyzer analyzer;
     private final AnalyzerConfiguration configuration;
 
-    public DTableUpdateManager( final Index index,
-                                final Analyzer analyzer,
-                                final AnalyzerConfiguration configuration ) {
-        this.index = PortablePreconditions.checkNotNull( "index",
-                                                         index );
-        this.analyzer = PortablePreconditions.checkNotNull( "analyzer",
-                                                            analyzer );
-        this.configuration = PortablePreconditions.checkNotNull( "configuration",
-                                                                 configuration );
+    public DTableUpdateManager(final Index index,
+                               final Analyzer analyzer,
+                               final AnalyzerConfiguration configuration) {
+        this.index = PortablePreconditions.checkNotNull("index",
+                                                        index);
+        this.analyzer = PortablePreconditions.checkNotNull("analyzer",
+                                                           analyzer);
+        this.configuration = PortablePreconditions.checkNotNull("configuration",
+                                                                configuration);
     }
 
-    public void removeRule( final Integer rowDeleted ) {
-        analyzer.removeRule( PortablePreconditions.checkNotNull( "rowDeleted",
-                                                                 rowDeleted ) );
+    public void removeRule(final Integer rowDeleted) {
+        analyzer.removeRule(PortablePreconditions.checkNotNull("rowDeleted",
+                                                               rowDeleted));
     }
 
-    public void update( final GuidedDecisionTable52 model,
-                        final List<Coordinate> coordinates ) throws
-                                                             UpdateException {
-        PortablePreconditions.checkNotNull( "model",
-                                            model );
-        PortablePreconditions.checkNotNull( "coordinates",
-                                            coordinates );
+    public void update(final GuidedDecisionTable52 model,
+                       final List<Coordinate> coordinates) throws
+            UpdateException {
+        PortablePreconditions.checkNotNull("model",
+                                           model);
+        PortablePreconditions.checkNotNull("coordinates",
+                                           coordinates);
 
         final Set<Integer> canBeUpdated = new HashSet<>();
 
-        for ( final Coordinate coordinate : coordinates ) {
-            if ( coordinate.getCol() != ROW_NUMBER_COLUMN
-                    && coordinate.getCol() != DESCRIPTION_COLUMN ) {
+        for (final Coordinate coordinate : coordinates) {
+            if (coordinate.getCol() != ROW_NUMBER_COLUMN
+                    && coordinate.getCol() != DESCRIPTION_COLUMN) {
 
-                if ( getCellUpdateManager( coordinate,
-                                           model ).update() ) {
-                    canBeUpdated.add( coordinate.getRow() );
+                if (getCellUpdateManager(coordinate,
+                                         model).update()) {
+                    canBeUpdated.add(coordinate.getRow());
                 }
-
             }
         }
 
         boolean hadUpdates = !canBeUpdated.isEmpty();
 
-        if ( hadUpdates ) {
-            analyzer.update( canBeUpdated );
+        if (hadUpdates) {
+            analyzer.update(canBeUpdated);
             analyzer.analyze();
         }
     }
 
-    private CellUpdateManagerBase getCellUpdateManager( final Coordinate coordinate,
-                                                        final GuidedDecisionTable52 model ) throws
-                                                                                            UpdateException {
+    private CellUpdateManagerBase getCellUpdateManager(final Coordinate coordinate,
+                                                       final GuidedDecisionTable52 model) throws
+            UpdateException {
         final BaseColumn baseColumn = model.getExpandedColumns()
-                .get( coordinate.getCol() );
+                .get(coordinate.getCol());
 
-        if ( isConditionColumnWithSpecialOperator( baseColumn ) ) {
-            return new NullEqualityOperatorCellUpdateManager( index,
-                                                              model,
-                                                              coordinate );
+        if (isConditionColumnWithSpecialOperator(baseColumn)) {
+            return new NullEqualityOperatorCellUpdateManager(index,
+                                                             model,
+                                                             coordinate);
         } else {
-            return new RegularCellUpdateManager( index,
-                                                 model,
-                                                 coordinate );
+            return new RegularCellUpdateManager(index,
+                                                model,
+                                                coordinate);
         }
     }
 
-    private boolean isConditionColumnWithSpecialOperator( final BaseColumn baseColumn ) {
+    private boolean isConditionColumnWithSpecialOperator(final BaseColumn baseColumn) {
         return baseColumn instanceof ConditionCol52
                 &&
-                NullEqualityOperator.contains( ( (ConditionCol52) baseColumn ).getOperator() );
+                NullEqualityOperator.contains(((ConditionCol52) baseColumn).getOperator());
     }
 
-    public void newColumn( final GuidedDecisionTable52 model,
-                           final HeaderMetaData headerMetaData,
-                           final FactTypes factTypes,
-                           final int columnIndex ) throws
-                                                   BuildException {
+    public void newColumn(final GuidedDecisionTable52 model,
+                          final HeaderMetaData headerMetaData,
+                          final FactTypes factTypes,
+                          final int columnIndex) throws
+            BuildException {
 
-        PortablePreconditions.checkNotNull( "model",
-                                            model );
-        PortablePreconditions.checkNotNull( "headerMetaData",
-                                            headerMetaData );
-        PortablePreconditions.checkNotNull( "fieldTypes",
-                                            factTypes );
-        PortablePreconditions.checkNotNull( "columnIndex",
-                                            columnIndex );
+        PortablePreconditions.checkNotNull("model",
+                                           model);
+        PortablePreconditions.checkNotNull("headerMetaData",
+                                           headerMetaData);
+        PortablePreconditions.checkNotNull("fieldTypes",
+                                           factTypes);
+        PortablePreconditions.checkNotNull("columnIndex",
+                                           columnIndex);
 
-        final BuilderFactory builderFactory = new BuilderFactory( new VerifierColumnUtilities( model,
-                                                                                               headerMetaData,
-                                                                                               factTypes ),
-                                                                  index,
-                                                                  model,
-                                                                  headerMetaData,
-                                                                  configuration );
+        final BuilderFactory builderFactory = new BuilderFactory(new VerifierColumnUtilities(model,
+                                                                                             headerMetaData,
+                                                                                             factTypes),
+                                                                 index,
+                                                                 model,
+                                                                 headerMetaData,
+                                                                 configuration);
         final Column column = builderFactory
                 .getColumnBuilder()
-                .with( columnIndex )
+                .with(columnIndex)
                 .build();
 
-        analyzer.newColumn( column );
+        analyzer.newColumn(column);
 
         int rowIndex = 0;
 
-        for ( final List<DTCellValue52> row : model.getData() ) {
+        for (final List<DTCellValue52> row : model.getData()) {
             final BaseColumn baseColumn = model.getExpandedColumns()
-                    .get( columnIndex );
+                    .get(columnIndex);
 
             final Rule rule = index.getRules()
-                    .where( Rule.index()
-                                    .is( rowIndex ) )
+                    .where(Rule.index()
+                                   .is(rowIndex))
                     .select()
                     .first();
 
             builderFactory.getCellBuilder()
-                    .with( columnIndex )
-                    .with( baseColumn )
-                    .with( rule )
-                    .with( row )
+                    .with(columnIndex)
+                    .with(baseColumn)
+                    .with(rule)
+                    .with(row)
                     .build();
 
             rowIndex++;
@@ -170,46 +169,45 @@ public class DTableUpdateManager {
         analyzer.analyze();
     }
 
-    public void deleteColumns( final int firstColumnIndex,
-                               final int numberOfColumns ) {
+    public void deleteColumns(final int firstColumnIndex,
+                              final int numberOfColumns) {
 
-        PortablePreconditions.checkNotNull( "firstColumnIndex",
-                                            firstColumnIndex );
-        PortablePreconditions.checkNotNull( "numberOfColumns",
-                                            numberOfColumns );
+        PortablePreconditions.checkNotNull("firstColumnIndex",
+                                           firstColumnIndex);
+        PortablePreconditions.checkNotNull("numberOfColumns",
+                                           numberOfColumns);
 
-        analyzer.deleteColumn( firstColumnIndex );
+        analyzer.deleteColumn(firstColumnIndex);
 
         analyzer.resetChecks();
         analyzer.analyze();
     }
 
-    public void makeRule( final GuidedDecisionTable52 model,
-                          final HeaderMetaData headerMetaData,
-                          final FactTypes factTypes,
-                          final int rowIndex ) throws
-                                               BuildException {
+    public void makeRule(final GuidedDecisionTable52 model,
+                         final HeaderMetaData headerMetaData,
+                         final FactTypes factTypes,
+                         final int rowIndex) throws
+            BuildException {
 
-        PortablePreconditions.checkNotNull( "model",
-                                            model );
-        PortablePreconditions.checkNotNull( "fieldTypes",
-                                            factTypes );
-        PortablePreconditions.checkNotNull( "index",
-                                            rowIndex );
+        PortablePreconditions.checkNotNull("model",
+                                           model);
+        PortablePreconditions.checkNotNull("fieldTypes",
+                                           factTypes);
+        PortablePreconditions.checkNotNull("index",
+                                           rowIndex);
 
-        final Rule rule = new BuilderFactory( new VerifierColumnUtilities( model,
-                                                                           headerMetaData,
-                                                                           factTypes ),
-                                              this.index,
-                                              model,
-                                              headerMetaData,
-                                              configuration )
+        final Rule rule = new BuilderFactory(new VerifierColumnUtilities(model,
+                                                                         headerMetaData,
+                                                                         factTypes),
+                                             this.index,
+                                             model,
+                                             headerMetaData,
+                                             configuration)
                 .getRuleBuilder()
-                .with( rowIndex )
+                .with(rowIndex)
                 .build();
 
-        analyzer.newRule( rule );
+        analyzer.newRule(rule);
         analyzer.analyze();
     }
-
 }

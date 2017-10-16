@@ -17,7 +17,7 @@
 package org.drools.workbench.screens.dsltext.model;
 
 import org.guvnor.common.services.shared.metadata.model.Overview;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class DSLTextEditorContent {
 
@@ -28,9 +28,12 @@ public class DSLTextEditorContent {
     public DSLTextEditorContent() {
     }
 
-    public DSLTextEditorContent(String model, Overview overview) {
-        this.model = PortablePreconditions.checkNotNull("model", model);
-        this.overview = PortablePreconditions.checkNotNull("overview", overview);
+    public DSLTextEditorContent(String model,
+                                Overview overview) {
+        this.model = PortablePreconditions.checkNotNull("model",
+                                                        model);
+        this.overview = PortablePreconditions.checkNotNull("overview",
+                                                           overview);
     }
 
     public String getModel() {
@@ -40,5 +43,4 @@ public class DSLTextEditorContent {
     public Overview getOverview() {
         return overview;
     }
-
 }

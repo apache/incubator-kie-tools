@@ -32,9 +32,9 @@ import org.drools.workbench.services.verifier.api.client.relations.IsConflicting
 import org.drools.workbench.services.verifier.api.client.relations.IsRedundant;
 import org.drools.workbench.services.verifier.api.client.relations.IsSubsuming;
 import org.drools.workbench.services.verifier.api.client.relations.RelationResolver;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.services.verifier.core.cache.inspectors.action.ActionsInspectorMultiMap;
 import org.drools.workbench.services.verifier.core.cache.inspectors.condition.ConditionsInspectorMultiMap;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class PatternInspector
         implements HasConflicts,
@@ -52,37 +52,36 @@ public class PatternInspector
     private final InspectorList<FieldInspector> inspectorList;
     private final RelationResolver relationResolver;
 
-    public PatternInspector( final Pattern pattern,
-                             final RuleInspectorUpdater ruleInspectorUpdater,
-                             final AnalyzerConfiguration configuration ) {
-        this.pattern = PortablePreconditions.checkNotNull( "pattern",
-                                                           pattern );
-        this.configuration = PortablePreconditions.checkNotNull( "configuration",
-                                                                 configuration );
+    public PatternInspector(final Pattern pattern,
+                            final RuleInspectorUpdater ruleInspectorUpdater,
+                            final AnalyzerConfiguration configuration) {
+        this.pattern = PortablePreconditions.checkNotNull("pattern",
+                                                          pattern);
+        this.configuration = PortablePreconditions.checkNotNull("configuration",
+                                                                configuration);
 
-        uuidKey = configuration.getUUID( this );
-        inspectorList = new InspectorList<>( configuration );
+        uuidKey = configuration.getUUID(this);
+        inspectorList = new InspectorList<>(configuration);
 
-        relationResolver = new RelationResolver( inspectorList );
+        relationResolver = new RelationResolver(inspectorList);
 
-
-        makeFieldInspectors( pattern.getFields()
-                                     .where( Field.uuid()
-                                                     .any() )
-                                     .select()
-                                     .all(),
-                             ruleInspectorUpdater );
+        makeFieldInspectors(pattern.getFields()
+                                    .where(Field.uuid()
+                                                   .any())
+                                    .select()
+                                    .all(),
+                            ruleInspectorUpdater);
     }
 
-    private void makeFieldInspectors( final Collection<Field> fields,
-                                      final RuleInspectorUpdater ruleInspectorUpdater ) {
+    private void makeFieldInspectors(final Collection<Field> fields,
+                                     final RuleInspectorUpdater ruleInspectorUpdater) {
 
         inspectorList.clear();
 
-        for ( final Field field : fields ) {
-            inspectorList.add( new FieldInspector( field,
-                                                   ruleInspectorUpdater,
-                                                   configuration ) );
+        for (final Field field : fields) {
+            inspectorList.add(new FieldInspector(field,
+                                                 ruleInspectorUpdater,
+                                                 configuration));
         }
     }
 
@@ -91,14 +90,14 @@ public class PatternInspector
     }
 
     @Override
-    public boolean conflicts( final Object other ) {
-        if ( other instanceof PatternInspector ) {
-            if ( pattern.getObjectType()
+    public boolean conflicts(final Object other) {
+        if (other instanceof PatternInspector) {
+            if (pattern.getObjectType()
                     .getType()
-                    .equals( ( (PatternInspector) other ).getPattern()
-                                     .getObjectType()
-                                     .getType() ) ) {
-                return inspectorList.conflicts( ( (PatternInspector) other ).inspectorList );
+                    .equals(((PatternInspector) other).getPattern()
+                                    .getObjectType()
+                                    .getType())) {
+                return inspectorList.conflicts(((PatternInspector) other).inspectorList);
             } else {
                 return false;
             }
@@ -108,14 +107,14 @@ public class PatternInspector
     }
 
     @Override
-    public boolean isRedundant( final Object other ) {
-        if ( other instanceof PatternInspector ) {
-            if ( pattern.getObjectType()
+    public boolean isRedundant(final Object other) {
+        if (other instanceof PatternInspector) {
+            if (pattern.getObjectType()
                     .getType()
-                    .equals( ( (PatternInspector) other ).getPattern()
-                                     .getObjectType()
-                                     .getType() ) ) {
-                return inspectorList.isRedundant( ( (PatternInspector) other ).inspectorList );
+                    .equals(((PatternInspector) other).getPattern()
+                                    .getObjectType()
+                                    .getType())) {
+                return inspectorList.isRedundant(((PatternInspector) other).inspectorList);
             } else {
                 return false;
             }
@@ -125,14 +124,14 @@ public class PatternInspector
     }
 
     @Override
-    public boolean subsumes( final Object other ) {
-        if ( other instanceof PatternInspector ) {
-            if ( pattern.getObjectType()
+    public boolean subsumes(final Object other) {
+        if (other instanceof PatternInspector) {
+            if (pattern.getObjectType()
                     .getType()
-                    .equals( ( (PatternInspector) other ).getPattern()
-                                     .getObjectType()
-                                     .getType() ) ) {
-                return inspectorList.subsumes( ( (PatternInspector) other ).inspectorList );
+                    .equals(((PatternInspector) other).getPattern()
+                                    .getObjectType()
+                                    .getType())) {
+                return inspectorList.subsumes(((PatternInspector) other).inspectorList);
             } else {
                 return false;
             }
@@ -143,27 +142,27 @@ public class PatternInspector
 
     @Override
     public Conflict hasConflicts() {
-        return relationResolver.resolveConflict( inspectorList );
+        return relationResolver.resolveConflict(inspectorList);
     }
 
     public ActionsInspectorMultiMap getActionsInspector() {
-        final ActionsInspectorMultiMap<Comparable> actionsInspector = new ActionsInspectorMultiMap<>( configuration );
+        final ActionsInspectorMultiMap<Comparable> actionsInspector = new ActionsInspectorMultiMap<>(configuration);
 
-        for ( final FieldInspector fieldInspector : inspectorList ) {
-            actionsInspector.addAllValues( fieldInspector.getObjectField(),
-                                           fieldInspector.getActionInspectorList() );
+        for (final FieldInspector fieldInspector : inspectorList) {
+            actionsInspector.addAllValues(fieldInspector.getObjectField(),
+                                          fieldInspector.getActionInspectorList());
         }
 
         return actionsInspector;
     }
 
     public ConditionsInspectorMultiMap getConditionsInspector() {
-        final ConditionsInspectorMultiMap conditionsInspector = new ConditionsInspectorMultiMap( configuration );
+        final ConditionsInspectorMultiMap conditionsInspector = new ConditionsInspectorMultiMap(configuration);
 
-        for ( final FieldInspector fieldInspector : inspectorList ) {
+        for (final FieldInspector fieldInspector : inspectorList) {
             if (!fieldInspector.getConditionInspectorList().isEmpty()) {
-                conditionsInspector.addAllValues( fieldInspector.getObjectField(),
-                                                  fieldInspector.getConditionInspectorList() );
+                conditionsInspector.addAllValues(fieldInspector.getObjectField(),
+                                                 fieldInspector.getConditionInspectorList());
             }
         }
 

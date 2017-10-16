@@ -17,7 +17,7 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel;
 
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.mvp.PlaceRequest;
 
 /**
@@ -30,17 +30,16 @@ public class IssueSelectedEvent {
 
     /**
      * Constructor
-     * @param placeRequest
-     *         The {@link PlaceRequest} for the Decision Table represented by the Analysis Report.
-     * @param issue
-     *         The {@link Issue} selected from the Analysis Report. Cannot be null.
+     *
+     * @param placeRequest The {@link PlaceRequest} for the Decision Table represented by the Analysis Report.
+     * @param issue        The {@link Issue} selected from the Analysis Report. Cannot be null.
      */
-    public IssueSelectedEvent( final PlaceRequest placeRequest,
-                               final Issue issue ) {
-        this.placeRequest = PortablePreconditions.checkNotNull( "placeRequest",
-                                                                placeRequest );
-        this.issue = PortablePreconditions.checkNotNull( "issue",
-                                                         issue );
+    public IssueSelectedEvent(final PlaceRequest placeRequest,
+                              final Issue issue) {
+        this.placeRequest = PortablePreconditions.checkNotNull("placeRequest",
+                                                               placeRequest);
+        this.issue = PortablePreconditions.checkNotNull("issue",
+                                                        issue);
     }
 
     public PlaceRequest getPlaceRequest() {
@@ -50,5 +49,4 @@ public class IssueSelectedEvent {
     public Issue getIssue() {
         return issue;
     }
-
 }

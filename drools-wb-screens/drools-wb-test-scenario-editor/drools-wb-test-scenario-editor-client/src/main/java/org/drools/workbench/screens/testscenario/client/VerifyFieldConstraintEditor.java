@@ -34,8 +34,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.DropDownData;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.drools.workbench.models.testscenarios.shared.FieldData;
@@ -47,6 +45,8 @@ import org.drools.workbench.screens.testscenario.client.resources.images.TestSce
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.DropDownData;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -70,12 +70,12 @@ public class VerifyFieldConstraintEditor extends Composite {
     private ValueChanged callback;
     private ExecutionTrace executionTrace;
 
-    public VerifyFieldConstraintEditor( final String factType,
-                                        final ValueChanged callback,
-                                        final VerifyField field,
-                                        final AsyncPackageDataModelOracle oracle,
-                                        final Scenario scenario,
-                                        final ExecutionTrace executionTrace ) {
+    public VerifyFieldConstraintEditor(final String factType,
+                                       final ValueChanged callback,
+                                       final VerifyField field,
+                                       final AsyncPackageDataModelOracle oracle,
+                                       final Scenario scenario,
+                                       final ExecutionTrace executionTrace) {
         this.field = field;
         this.oracle = oracle;
         this.factType = factType;
@@ -84,205 +84,200 @@ public class VerifyFieldConstraintEditor extends Composite {
         this.executionTrace = executionTrace;
         panel = new SimplePanel();
         refreshEditor();
-        initWidget( panel );
+        initWidget(panel);
     }
 
     private void refreshEditor() {
-        String flType = oracle.getFieldType( factType,
-                                             field.getFieldName() );
+        String flType = oracle.getFieldType(factType,
+                                            field.getFieldName());
         panel.clear();
 
-        if ( flType != null && flType.equals( DataType.TYPE_BOOLEAN ) ) {
-            String[] c = new String[]{ "true", "false" };
-            panel.add( new EnumDropDown( field.getExpected(),
-                                         new DropDownValueChanged() {
-                                             public void valueChanged( String newText,
-                                                                       String newValue ) {
-                                                 callback.valueChanged( newValue );
-                                             }
-                                         },
-                                         DropDownData.create( c ),
-                                         oracle.getResourcePath() ) );
+        if (flType != null && flType.equals(DataType.TYPE_BOOLEAN)) {
+            String[] c = new String[]{"true", "false"};
+            panel.add(new EnumDropDown(field.getExpected(),
+                                       new DropDownValueChanged() {
+                                           public void valueChanged(String newText,
+                                                                    String newValue) {
+                                               callback.valueChanged(newValue);
+                                           }
+                                       },
+                                       DropDownData.create(c),
+                                       oracle.getResourcePath()));
+        } else if (flType != null && flType.equals(DataType.TYPE_DATE)) {
+            FieldDatePicker fieldDatePicker = new FieldDatePicker(new FieldDatePickerViewImpl());
+            fieldDatePicker.setValue(field.getExpected());
 
-        } else if ( flType != null && flType.equals( DataType.TYPE_DATE ) ) {
-            FieldDatePicker fieldDatePicker= new FieldDatePicker( new FieldDatePickerViewImpl() );
-            fieldDatePicker.setValue( field.getExpected() );
-
-            fieldDatePicker.addValueChangeHandler( new ValueChangeHandler<String>() {
+            fieldDatePicker.addValueChangeHandler(new ValueChangeHandler<String>() {
                 @Override
-                public void onValueChange( ValueChangeEvent<String> event ) {
-                    field.setExpected( event.getValue() );
+                public void onValueChange(ValueChangeEvent<String> event) {
+                    field.setExpected(event.getValue());
                 }
-            } );
+            });
 
-            panel.add( fieldDatePicker );
-
+            panel.add(fieldDatePicker);
         } else {
             Map<String, String> currentValueMap = new HashMap<String, String>();
             // TODO fill currentValueMap with values of other VerifyFields (if any)
-            DropDownData dropDownData = oracle.getEnums( factType,
-                                                         field.getFieldName(),
-                                                         currentValueMap );
-            if ( dropDownData != null ) {
+            DropDownData dropDownData = oracle.getEnums(factType,
+                                                        field.getFieldName(),
+                                                        currentValueMap);
+            if (dropDownData != null) {
                 //GUVNOR-1324: Java enums are of type TYPE_COMPARABLE whereas Guvnor enums are not.
                 //The distinction here controls whether the EXPECTED value is handled as a true
                 //Java enum or a literal with a selection list (i.e. Guvnor enum)
-                String dataType = oracle.getFieldType( factType, field.getFieldName() );
-                if ( dataType.equals( DataType.TYPE_COMPARABLE ) ) {
-                    field.setNature( FieldData.TYPE_ENUM );
+                String dataType = oracle.getFieldType(factType, field.getFieldName());
+                if (dataType.equals(DataType.TYPE_COMPARABLE)) {
+                    field.setNature(FieldData.TYPE_ENUM);
                 } else {
-                    field.setNature( FieldData.TYPE_LITERAL );
+                    field.setNature(FieldData.TYPE_LITERAL);
                 }
 
-                panel.add( new EnumDropDown( field.getExpected(),
-                                             new DropDownValueChanged() {
-                                                 public void valueChanged( String newText,
-                                                                           String newValue ) {
-                                                     callback.valueChanged( newValue );
-                                                 }
-                                             },
-                                             dropDownData,
-                                             oracle.getResourcePath() ) );
-
+                panel.add(new EnumDropDown(field.getExpected(),
+                                           new DropDownValueChanged() {
+                                               public void valueChanged(String newText,
+                                                                        String newValue) {
+                                                   callback.valueChanged(newValue);
+                                               }
+                                           },
+                                           dropDownData,
+                                           oracle.getResourcePath()));
             } else {
-                if ( field.getExpected() != null && field.getExpected().length() > 0 && field.getNature() == FieldData.TYPE_UNDEFINED ) {
-                    if ( field.getExpected().charAt( 0 ) == '=' ) {
-                        field.setNature( FieldData.TYPE_VARIABLE );
+                if (field.getExpected() != null && field.getExpected().length() > 0 && field.getNature() == FieldData.TYPE_UNDEFINED) {
+                    if (field.getExpected().charAt(0) == '=') {
+                        field.setNature(FieldData.TYPE_VARIABLE);
                     } else {
-                        field.setNature( FieldData.TYPE_LITERAL );
+                        field.setNature(FieldData.TYPE_LITERAL);
                     }
                 }
-                if ( field.getNature() == FieldData.TYPE_UNDEFINED && isThereABoundVariableToSet() == true ) {
+                if (field.getNature() == FieldData.TYPE_UNDEFINED && isThereABoundVariableToSet() == true) {
                     Image clickme = CommonAltedImages.INSTANCE.Edit();
-                    clickme.addClickHandler( new ClickHandler() {
+                    clickme.addClickHandler(new ClickHandler() {
 
-                        public void onClick( ClickEvent event ) {
-                            showTypeChoice( (Widget) event.getSource(),
-                                            field );
+                        public void onClick(ClickEvent event) {
+                            showTypeChoice((Widget) event.getSource(),
+                                           field);
                         }
-                    } );
-                    panel.add( clickme );
-                } else if ( field.getNature() == FieldData.TYPE_VARIABLE ) {
-                    panel.add( variableEditor() );
+                    });
+                    panel.add(clickme);
+                } else if (field.getNature() == FieldData.TYPE_VARIABLE) {
+                    panel.add(variableEditor());
                 } else {
-                    panel.add( editableTextBox( callback,
-                                                flType,
-                                                field.getFieldName(),
-                                                field.getExpected() ) );
+                    panel.add(editableTextBox(callback,
+                                              flType,
+                                              field.getFieldName(),
+                                              field.getExpected()));
                 }
-
             }
         }
     }
 
     private Widget variableEditor() {
-        List<String> vars = this.scenario.getFactNamesInScope( this.executionTrace,
-                                                               true );
+        List<String> vars = this.scenario.getFactNamesInScope(this.executionTrace,
+                                                              true);
 
         final ListBox box = new ListBox();
 
-        if ( this.field.getExpected() == null ) {
-            box.addItem( CommonConstants.INSTANCE.Choose() );
+        if (this.field.getExpected() == null) {
+            box.addItem(CommonConstants.INSTANCE.Choose());
         }
         int j = 0;
-        for ( int i = 0; i < vars.size(); i++ ) {
-            String var = vars.get( i );
-            FactData f = scenario.getFactTypes().get( var );
-            String fieldType = oracle.getFieldType( this.factType,
-                                                    field.getFieldName() );
-            if ( f.getType().equals( fieldType ) ) {
-                if ( box.getItemCount() == 0 ) {
-                    box.addItem( "..." );
+        for (int i = 0; i < vars.size(); i++) {
+            String var = vars.get(i);
+            FactData f = scenario.getFactTypes().get(var);
+            String fieldType = oracle.getFieldType(this.factType,
+                                                   field.getFieldName());
+            if (f.getType().equals(fieldType)) {
+                if (box.getItemCount() == 0) {
+                    box.addItem("...");
                     j++;
                 }
-                box.addItem( "=" + var );
-                if ( this.field.getExpected() != null && this.field.getExpected().equals( "=" + var ) ) {
-                    box.setSelectedIndex( j );
+                box.addItem("=" + var);
+                if (this.field.getExpected() != null && this.field.getExpected().equals("=" + var)) {
+                    box.setSelectedIndex(j);
                 }
                 j++;
             }
         }
 
-        box.addChangeHandler( new ChangeHandler() {
+        box.addChangeHandler(new ChangeHandler() {
 
-            public void onChange( ChangeEvent event ) {
-                field.setExpected( box.getItemText( box.getSelectedIndex() ) );
+            public void onChange(ChangeEvent event) {
+                field.setExpected(box.getItemText(box.getSelectedIndex()));
             }
-        } );
+        });
 
         return box;
     }
 
-    private static TextBox editableTextBox( final ValueChanged changed,
-                                            final String dataType,
-                                            final String fieldName,
-                                            final String initialValue ) {
-        final TextBox tb = TextBoxFactory.getTextBox( dataType );
-        tb.setText( initialValue );
-        String m = TestScenarioConstants.INSTANCE.ValueFor0( fieldName );
-        tb.setTitle( m );
-        tb.addValueChangeHandler( new ValueChangeHandler<String>() {
+    private static TextBox editableTextBox(final ValueChanged changed,
+                                           final String dataType,
+                                           final String fieldName,
+                                           final String initialValue) {
+        final TextBox tb = TextBoxFactory.getTextBox(dataType);
+        tb.setText(initialValue);
+        String m = TestScenarioConstants.INSTANCE.ValueFor0(fieldName);
+        tb.setTitle(m);
+        tb.addValueChangeHandler(new ValueChangeHandler<String>() {
 
-            public void onValueChange( final ValueChangeEvent<String> event ) {
-                changed.valueChanged( event.getValue() );
+            public void onValueChange(final ValueChangeEvent<String> event) {
+                changed.valueChanged(event.getValue());
             }
-        } );
+        });
 
         return tb;
     }
 
-    private void showTypeChoice( Widget w,
-                                 final VerifyField con ) {
-        final FormStylePopup form = new FormStylePopup( TestScenarioAltedImages.INSTANCE.Wizard(),
-                                                        TestScenarioConstants.INSTANCE.FieldValue() );
+    private void showTypeChoice(Widget w,
+                                final VerifyField con) {
+        final FormStylePopup form = new FormStylePopup(TestScenarioAltedImages.INSTANCE.Wizard(),
+                                                       TestScenarioConstants.INSTANCE.FieldValue());
 
-        Button lit = new Button( TestScenarioConstants.INSTANCE.LiteralValue() );
-        lit.addClickHandler( new ClickHandler() {
+        Button lit = new Button(TestScenarioConstants.INSTANCE.LiteralValue());
+        lit.addClickHandler(new ClickHandler() {
 
-            public void onClick( ClickEvent event ) {
-                con.setNature( FieldData.TYPE_LITERAL );
-                doTypeChosen( form );
+            public void onClick(ClickEvent event) {
+                con.setNature(FieldData.TYPE_LITERAL);
+                doTypeChosen(form);
             }
+        });
+        form.addAttribute(TestScenarioConstants.INSTANCE.LiteralValue() + ":",
+                          widgets(lit,
+                                  new InfoPopup(TestScenarioConstants.INSTANCE.LiteralValue(),
+                                                TestScenarioConstants.INSTANCE.LiteralValTip())));
 
-        } );
-        form.addAttribute( TestScenarioConstants.INSTANCE.LiteralValue() + ":",
-                           widgets( lit,
-                                    new InfoPopup( TestScenarioConstants.INSTANCE.LiteralValue(),
-                                                   TestScenarioConstants.INSTANCE.LiteralValTip() ) ) );
-
-        form.addRow( new HTML( "<hr/>" ) );
-        form.addRow( new SmallLabel( TestScenarioConstants.INSTANCE.AdvancedOptions() ) );
+        form.addRow(new HTML("<hr/>"));
+        form.addRow(new SmallLabel(TestScenarioConstants.INSTANCE.AdvancedOptions()));
 
         // If we are here, then there must be a bound variable compatible with
         // me
 
-        Button variable = new Button( TestScenarioConstants.INSTANCE.BoundVariable() );
-        variable.addClickHandler( new ClickHandler() {
+        Button variable = new Button(TestScenarioConstants.INSTANCE.BoundVariable());
+        variable.addClickHandler(new ClickHandler() {
 
-            public void onClick( ClickEvent event ) {
-                con.setNature( FieldData.TYPE_VARIABLE );
-                doTypeChosen( form );
+            public void onClick(ClickEvent event) {
+                con.setNature(FieldData.TYPE_VARIABLE);
+                doTypeChosen(form);
             }
-        } );
-        form.addAttribute( TestScenarioConstants.INSTANCE.AVariable(),
-                           widgets( variable,
-                                    new InfoPopup( TestScenarioConstants.INSTANCE.ABoundVariable(),
-                                                   TestScenarioConstants.INSTANCE.BoundVariableTip() ) ) );
+        });
+        form.addAttribute(TestScenarioConstants.INSTANCE.AVariable(),
+                          widgets(variable,
+                                  new InfoPopup(TestScenarioConstants.INSTANCE.ABoundVariable(),
+                                                TestScenarioConstants.INSTANCE.BoundVariableTip())));
 
         form.show();
     }
 
     private boolean isThereABoundVariableToSet() {
         boolean retour = false;
-        List<String> vars = this.scenario.getFactNamesInScope( executionTrace,
-                                                               true );
-        if ( vars.size() > 0 ) {
-            for ( int i = 0; i < vars.size(); i++ ) {
-                String var = vars.get( i );
-                FactData f = scenario.getFactTypes().get( var );
-                String fieldType = oracle.getFieldType( this.factType,
-                                                        field.getFieldName() );
-                if ( f.getType().equals( fieldType ) ) {
+        List<String> vars = this.scenario.getFactNamesInScope(executionTrace,
+                                                              true);
+        if (vars.size() > 0) {
+            for (int i = 0; i < vars.size(); i++) {
+                String var = vars.get(i);
+                FactData f = scenario.getFactTypes().get(var);
+                String fieldType = oracle.getFieldType(this.factType,
+                                                       field.getFieldName());
+                if (f.getType().equals(fieldType)) {
                     retour = true;
                     break;
                 }
@@ -291,18 +286,17 @@ public class VerifyFieldConstraintEditor extends Composite {
         return retour;
     }
 
-    private void doTypeChosen( final FormStylePopup form ) {
+    private void doTypeChosen(final FormStylePopup form) {
         refreshEditor();
         form.hide();
     }
 
-    private Panel widgets( final IsWidget left,
-                           final IsWidget right ) {
+    private Panel widgets(final IsWidget left,
+                          final IsWidget right) {
         HorizontalPanel panel = new HorizontalPanel();
-        panel.add( left );
-        panel.add( right );
-        panel.setWidth( "100%" );
+        panel.add(left);
+        panel.add(right);
+        panel.setWidth("100%");
         return panel;
     }
-
 }

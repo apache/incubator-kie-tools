@@ -16,10 +16,10 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table.utilities;
 
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 import static org.junit.Assert.*;
 
@@ -36,75 +36,74 @@ public class CellUtilitiesTest {
     public void testRemoveCommaSeparatedValue() {
         DTCellValue52 dcv;
 
-        dcv = new DTCellValue52( 1 );
-        cellUtilities.removeCommaSeparatedValue( dcv );
-        assertEquals( 1,
-                      dcv.getNumericValue() );
-        assertNull( dcv.getBooleanValue() );
-        assertNull( dcv.getStringValue() );
-        assertNull( dcv.getDateValue() );
-        assertEquals( DataType.DataTypes.NUMERIC_INTEGER,
-                      dcv.getDataType() );
+        dcv = new DTCellValue52(1);
+        cellUtilities.removeCommaSeparatedValue(dcv);
+        assertEquals(1,
+                     dcv.getNumericValue());
+        assertNull(dcv.getBooleanValue());
+        assertNull(dcv.getStringValue());
+        assertNull(dcv.getDateValue());
+        assertEquals(DataType.DataTypes.NUMERIC_INTEGER,
+                     dcv.getDataType());
 
-        dcv = new DTCellValue52( 1L );
-        cellUtilities.removeCommaSeparatedValue( dcv );
-        assertEquals( 1L,
-                      dcv.getNumericValue() );
-        assertNull( dcv.getBooleanValue() );
-        assertNull( dcv.getStringValue() );
-        assertNull( dcv.getDateValue() );
-        assertEquals( DataType.DataTypes.NUMERIC_LONG,
-                      dcv.getDataType() );
+        dcv = new DTCellValue52(1L);
+        cellUtilities.removeCommaSeparatedValue(dcv);
+        assertEquals(1L,
+                     dcv.getNumericValue());
+        assertNull(dcv.getBooleanValue());
+        assertNull(dcv.getStringValue());
+        assertNull(dcv.getDateValue());
+        assertEquals(DataType.DataTypes.NUMERIC_LONG,
+                     dcv.getDataType());
 
-        dcv = new DTCellValue52( 1.0 );
-        cellUtilities.removeCommaSeparatedValue( dcv );
-        assertEquals( 1.0,
-                      dcv.getNumericValue() );
-        assertNull( dcv.getBooleanValue() );
-        assertNull( dcv.getStringValue() );
-        assertNull( dcv.getDateValue() );
-        assertEquals( DataType.DataTypes.NUMERIC_DOUBLE,
-                      dcv.getDataType() );
+        dcv = new DTCellValue52(1.0);
+        cellUtilities.removeCommaSeparatedValue(dcv);
+        assertEquals(1.0,
+                     dcv.getNumericValue());
+        assertNull(dcv.getBooleanValue());
+        assertNull(dcv.getStringValue());
+        assertNull(dcv.getDateValue());
+        assertEquals(DataType.DataTypes.NUMERIC_DOUBLE,
+                     dcv.getDataType());
 
-        dcv = new DTCellValue52( "Fred" );
-        cellUtilities.removeCommaSeparatedValue( dcv );
-        assertEquals( "Fred",
-                      dcv.getStringValue() );
-        assertNull( dcv.getBooleanValue() );
-        assertNull( dcv.getNumericValue() );
-        assertNull( dcv.getDateValue() );
-        assertEquals( DataType.DataTypes.STRING,
-                      dcv.getDataType() );
+        dcv = new DTCellValue52("Fred");
+        cellUtilities.removeCommaSeparatedValue(dcv);
+        assertEquals("Fred",
+                     dcv.getStringValue());
+        assertNull(dcv.getBooleanValue());
+        assertNull(dcv.getNumericValue());
+        assertNull(dcv.getDateValue());
+        assertEquals(DataType.DataTypes.STRING,
+                     dcv.getDataType());
 
-        dcv = new DTCellValue52( "Fred,Ginger" );
-        cellUtilities.removeCommaSeparatedValue( dcv );
-        assertEquals( "Fred",
-                      dcv.getStringValue() );
-        assertNull( dcv.getBooleanValue() );
-        assertNull( dcv.getNumericValue() );
-        assertNull( dcv.getDateValue() );
-        assertEquals( DataType.DataTypes.STRING,
-                      dcv.getDataType() );
+        dcv = new DTCellValue52("Fred,Ginger");
+        cellUtilities.removeCommaSeparatedValue(dcv);
+        assertEquals("Fred",
+                     dcv.getStringValue());
+        assertNull(dcv.getBooleanValue());
+        assertNull(dcv.getNumericValue());
+        assertNull(dcv.getDateValue());
+        assertEquals(DataType.DataTypes.STRING,
+                     dcv.getDataType());
 
-        dcv = new DTCellValue52( ",Ginger" );
-        cellUtilities.removeCommaSeparatedValue( dcv );
-        assertEquals( "",
-                      dcv.getStringValue() );
-        assertNull( dcv.getBooleanValue() );
-        assertNull( dcv.getNumericValue() );
-        assertNull( dcv.getDateValue() );
-        assertEquals( DataType.DataTypes.STRING,
-                      dcv.getDataType() );
+        dcv = new DTCellValue52(",Ginger");
+        cellUtilities.removeCommaSeparatedValue(dcv);
+        assertEquals("",
+                     dcv.getStringValue());
+        assertNull(dcv.getBooleanValue());
+        assertNull(dcv.getNumericValue());
+        assertNull(dcv.getDateValue());
+        assertEquals(DataType.DataTypes.STRING,
+                     dcv.getDataType());
 
-        dcv = new DTCellValue52( "Fred," );
-        cellUtilities.removeCommaSeparatedValue( dcv );
-        assertEquals( "Fred",
-                      dcv.getStringValue() );
-        assertNull( dcv.getBooleanValue() );
-        assertNull( dcv.getNumericValue() );
-        assertNull( dcv.getDateValue() );
-        assertEquals( DataType.DataTypes.STRING,
-                      dcv.getDataType() );
+        dcv = new DTCellValue52("Fred,");
+        cellUtilities.removeCommaSeparatedValue(dcv);
+        assertEquals("Fred",
+                     dcv.getStringValue());
+        assertNull(dcv.getBooleanValue());
+        assertNull(dcv.getNumericValue());
+        assertNull(dcv.getDateValue());
+        assertEquals(DataType.DataTypes.STRING,
+                     dcv.getDataType());
     }
-
 }

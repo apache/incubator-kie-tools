@@ -19,6 +19,7 @@ package org.drools.workbench.screens.enums.backend.server;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -39,6 +40,7 @@ import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.api.builder.KieModule;
 import org.kie.scanner.KieModuleMetaData;
+import org.kie.soup.project.datamodel.commons.util.MVELEvaluator;
 import org.kie.workbench.common.services.backend.builder.service.BuildInfoService;
 import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.DataEnumLoader;
@@ -63,7 +65,7 @@ public class EnumServiceImpl
         implements EnumService {
 
     @Inject
-    @Named( "ioStrategy" )
+    @Named("ioStrategy")
     private IOService ioService;
 
     @Inject
@@ -90,203 +92,200 @@ public class EnumServiceImpl
     @Inject
     private CommentedOptionFactory commentedOptionFactory;
 
+    @Inject
+    private MVELEvaluator evaluator;
+
     private SafeSessionInfo safeSessionInfo;
 
     public EnumServiceImpl() {
     }
 
     @Inject
-    public EnumServiceImpl( final SessionInfo sessionInfo ) {
-        safeSessionInfo = new SafeSessionInfo( sessionInfo );
+    public EnumServiceImpl(final SessionInfo sessionInfo) {
+        safeSessionInfo = new SafeSessionInfo(sessionInfo);
     }
 
     @Override
-    public Path create( final Path context,
-                        final String fileName,
-                        final String content,
-                        final String comment ) {
+    public Path create(final Path context,
+                       final String fileName,
+                       final String content,
+                       final String comment) {
         try {
-            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
-            final Path newPath = Paths.convert( nioPath );
+            final org.uberfire.java.nio.file.Path nioPath = Paths.convert(context).resolve(fileName);
+            final Path newPath = Paths.convert(nioPath);
 
-            if ( ioService.exists( nioPath ) ) {
-                throw new FileAlreadyExistsException( nioPath.toString() );
+            if (ioService.exists(nioPath)) {
+                throw new FileAlreadyExistsException(nioPath.toString());
             }
 
-            ioService.write( nioPath,
-                             content,
-                             commentedOptionFactory.makeCommentedOption( comment ) );
+            ioService.write(nioPath,
+                            content,
+                            commentedOptionFactory.makeCommentedOption(comment));
 
             return newPath;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public String load( final Path path ) {
+    public String load(final Path path) {
         try {
-            final String content = ioService.readAllString( Paths.convert( path ) );
+            final String content = ioService.readAllString(Paths.convert(path));
 
             return content;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public EnumModelContent loadContent( final Path path ) {
-        return super.loadContent( path );
+    public EnumModelContent loadContent(final Path path) {
+        return super.loadContent(path);
     }
 
     @Override
-    protected EnumModelContent constructContent( Path path, Overview overview ) {
+    protected EnumModelContent constructContent(Path path, Overview overview) {
         //Signal opening to interested parties
-        resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                           safeSessionInfo ) );
+        resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
+                                                         safeSessionInfo));
 
-        return new EnumModelContent( new EnumModel( load( path ) ),
-                                     overview );
+        return new EnumModelContent(new EnumModel(load(path)),
+                                    overview);
     }
 
     @Override
-    public Path save( final Path resource,
-                      final String content,
-                      final Metadata metadata,
-                      final String comment ) {
+    public Path save(final Path resource,
+                     final String content,
+                     final Metadata metadata,
+                     final String comment) {
         try {
-            Metadata currentMetadata = metadataService.getMetadata( resource );
-            ioService.write( Paths.convert( resource ),
-                             content,
-                             metadataService.setUpAttributes( resource,
-                                                              metadata ),
-                             commentedOptionFactory.makeCommentedOption( comment ) );
+            Metadata currentMetadata = metadataService.getMetadata(resource);
+            ioService.write(Paths.convert(resource),
+                            content,
+                            metadataService.setUpAttributes(resource,
+                                                            metadata),
+                            commentedOptionFactory.makeCommentedOption(comment));
 
             //Invalidate Package-level DMO cache as Enums have changed.
-            invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );
+            invalidateDMOPackageCache.fire(new InvalidateDMOPackageCacheEvent(resource));
 
-            fireMetadataSocialEvents( resource, currentMetadata, metadata );
+            fireMetadataSocialEvents(resource, currentMetadata, metadata);
             return resource;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public void delete( final Path path,
-                        final String comment ) {
+    public void delete(final Path path,
+                       final String comment) {
         try {
-            deleteService.delete( path,
-                                  comment );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            deleteService.delete(path,
+                                 comment);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Path rename( final Path path,
-                        final String newName,
-                        final String comment ) {
+    public Path rename(final Path path,
+                       final String newName,
+                       final String comment) {
         try {
-            return renameService.rename( path,
-                                         newName,
-                                         comment );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return renameService.rename(path,
+                                        newName,
+                                        comment);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Path copy( final Path path,
-                      final String newName,
-                      final String comment ) {
+    public Path copy(final Path path,
+                     final String newName,
+                     final String comment) {
         try {
-            return copyService.copy( path,
-                                     newName,
-                                     comment );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return copyService.copy(path,
+                                    newName,
+                                    comment);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Path copy( final Path path,
-                      final String newName,
-                      final Path targetDirectory,
-                      final String comment ) {
+    public Path copy(final Path path,
+                     final String newName,
+                     final Path targetDirectory,
+                     final String comment) {
         try {
-            return copyService.copy( path,
-                                     newName,
-                                     targetDirectory,
-                                     comment );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return copyService.copy(path,
+                                    newName,
+                                    targetDirectory,
+                                    comment);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public boolean accepts( final Path path ) {
-        return resourceTypeDefinition.accept( path );
+    public boolean accepts(final Path path) {
+        return resourceTypeDefinition.accept(path);
     }
 
     @Override
-    public List<ValidationMessage> validate( final Path path ) {
+    public List<ValidationMessage> validate(final Path path) {
         try {
-            final String content = ioService.readAllString( Paths.convert( path ) );
-            return validate( path,
-                             content );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            final String content = ioService.readAllString(Paths.convert(path));
+            return validate(path,
+                            content);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public List<ValidationMessage> validate( final Path path,
-                                             final String content ) {
-        return doValidation( path,
-                             content );
+    public List<ValidationMessage> validate(final Path path,
+                                            final String content) {
+        return doValidation(path,
+                            content,
+                            evaluator);
     }
 
-    private List<ValidationMessage> doValidation( final Path path,
-                                                  final String content ) {
+    private List<ValidationMessage> doValidation(final Path path,
+                                                 final String content,
+                                                 final MVELEvaluator evaluator) {
         try {
-            final KieProject project = projectService.resolveProject( path );
-            final KieModule module = buildInfoService.getBuildInfo( project ).getKieModuleIgnoringErrors();
-            final ClassLoader classLoader = KieModuleMetaData.Factory.newKieModuleMetaData( module ).getClassLoader();
-            final DataEnumLoader loader = new DataEnumLoader( content,
-                                                              classLoader );
-            if ( !loader.hasErrors() ) {
+            final KieProject project = projectService.resolveProject(path);
+            final KieModule module = buildInfoService.getBuildInfo(project).getKieModuleIgnoringErrors();
+            final ClassLoader classLoader = KieModuleMetaData.Factory.newKieModuleMetaData(module).getClassLoader();
+            final DataEnumLoader loader = new DataEnumLoader(content,
+                                                             classLoader,
+                                                             evaluator);
+            if (!loader.hasErrors()) {
                 return Collections.emptyList();
             } else {
-                final List<ValidationMessage> validationMessages = new ArrayList<ValidationMessage>();
+                final List<ValidationMessage> validationMessages = new ArrayList<>();
                 final List<String> loaderErrors = loader.getErrors();
 
-                for ( final String message : loaderErrors ) {
-                    validationMessages.add( makeValidationMessages( path,
-                                                                    message ) );
+                for (final String message : loaderErrors) {
+                    validationMessages.add(makeValidationMessages(path,
+                                                                  message));
                 }
                 return validationMessages;
             }
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
-    private ValidationMessage makeValidationMessages( final Path path,
-                                                      final String message ) {
+    private ValidationMessage makeValidationMessages(final Path path,
+                                                     final String message) {
         final ValidationMessage msg = new ValidationMessage();
-        msg.setPath( path );
-        msg.setLevel( Level.ERROR );
-        msg.setText( message );
+        msg.setPath(path);
+        msg.setLevel(Level.ERROR);
+        msg.setText(message);
         return msg;
     }
 }

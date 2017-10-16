@@ -15,125 +15,135 @@
  */
 package org.drools.workbench.screens.guided.scorecard.backend.server.indexing;
 
-import org.appformer.project.datamodel.commons.oracle.ProjectDataModelOracleUtils;
-import org.appformer.project.datamodel.imports.Import;
-import org.appformer.project.datamodel.imports.Imports;
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.guided.scorecard.shared.Characteristic;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
+import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.soup.project.datamodel.commons.oracle.ProjectDataModelOracleUtils;
+import org.kie.soup.project.datamodel.imports.Import;
+import org.kie.soup.project.datamodel.imports.Imports;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.refactoring.ResourceReference;
 import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * Visitor to extract index information from a Guided Score Card Model
  */
 public class GuidedScoreCardIndexVisitor extends ResourceReferenceCollector {
 
-    private static final Logger logger = LoggerFactory.getLogger( GuidedScoreCardIndexVisitor.class );
+    private static final Logger logger = LoggerFactory.getLogger(GuidedScoreCardIndexVisitor.class);
 
     private final ProjectDataModelOracle dmo;
     private final ScoreCardModel model;
 
-    public GuidedScoreCardIndexVisitor( final ProjectDataModelOracle dmo,
-                                        final ScoreCardModel model ) {
-        this.dmo = PortablePreconditions.checkNotNull( "dmo",
-                                                       dmo );
-        this.model = PortablePreconditions.checkNotNull( "model",
-                                                         model );
+    public GuidedScoreCardIndexVisitor(final ProjectDataModelOracle dmo,
+                                       final ScoreCardModel model) {
+        this.dmo = PortablePreconditions.checkNotNull("dmo",
+                                                      dmo);
+        this.model = PortablePreconditions.checkNotNull("model",
+                                                        model);
     }
 
     public void visit() {
         //Add type
         final String typeName = model.getFactName();
-        if ( typeName == null || typeName.isEmpty() ) {
+        if (typeName == null || typeName.isEmpty()) {
             return;
         }
-        final String fullyQualifiedClassName = getFullyQualifiedClassName( typeName );
-        ResourceReference resRef = addResourceReference(fullyQualifiedClassName, ResourceType.JAVA);
+        final String fullyQualifiedClassName = getFullyQualifiedClassName(typeName);
+        ResourceReference resRef = addResourceReference(fullyQualifiedClassName,
+                                                        ResourceType.JAVA);
 
         //Add field
         final String fieldName = model.getFieldName();
-        if ( fieldName == null || fieldName.isEmpty() ) {
+        if (fieldName == null || fieldName.isEmpty()) {
             return;
         }
-        resRef.addPartReference(fieldName, PartType.FIELD);
-        final String fieldFullyQualifiedClassName = getFieldFullyQualifiedClassName( fullyQualifiedClassName, fieldName );
-        addResourceReference(fieldFullyQualifiedClassName, ResourceType.JAVA);
+        resRef.addPartReference(fieldName,
+                                PartType.FIELD);
+        final String fieldFullyQualifiedClassName = getFieldFullyQualifiedClassName(fullyQualifiedClassName,
+                                                                                    fieldName);
+        addResourceReference(fieldFullyQualifiedClassName,
+                             ResourceType.JAVA);
 
         //Add Characteristics
-        for ( Characteristic c : model.getCharacteristics() ) {
-            visit( c );
+        for (Characteristic c : model.getCharacteristics()) {
+            visit(c);
         }
 
         // agenda-group, ruleflow-group
         String agendaGroup = model.getAgendaGroup();
-        if( agendaGroup != null && ! agendaGroup.isEmpty() ) {
-           addSharedReference(agendaGroup, PartType.AGENDA_GROUP);
+        if (agendaGroup != null && !agendaGroup.isEmpty()) {
+            addSharedReference(agendaGroup,
+                               PartType.AGENDA_GROUP);
         }
         String ruleFlowGroup = model.getRuleFlowGroup();
-        if( ruleFlowGroup != null && ! ruleFlowGroup.isEmpty() ) {
-           addSharedReference(ruleFlowGroup, PartType.RULEFLOW_GROUP);
+        if (ruleFlowGroup != null && !ruleFlowGroup.isEmpty()) {
+            addSharedReference(ruleFlowGroup,
+                               PartType.RULEFLOW_GROUP);
         }
 
         Imports imports = model.getImports();
-        if( imports != null ) {
-           visit(imports);
+        if (imports != null) {
+            visit(imports);
         }
     }
 
-    private void visit( final Imports imports ) {
-        for( Import imp : imports.getImports() ) {
-           String impStr = imp.getType();
-           if( ! impStr.endsWith("*") ) {
-               addResourceReference(impStr, ResourceType.JAVA );
-           } else {
-               logger.debug("Wildcard import encountered : '" + impStr + "'");
-           }
+    private void visit(final Imports imports) {
+        for (Import imp : imports.getImports()) {
+            String impStr = imp.getType();
+            if (!impStr.endsWith("*")) {
+                addResourceReference(impStr,
+                                     ResourceType.JAVA);
+            } else {
+                logger.debug("Wildcard import encountered : '" + impStr + "'");
+            }
         }
     }
 
-    private void visit( final Characteristic c ) {
+    private void visit(final Characteristic c) {
         //Add type
         final String typeName = c.getFact();
-        final String fullyQualifiedClassName = getFullyQualifiedClassName( typeName );
-        ResourceReference resRef = addResourceReference(fullyQualifiedClassName, ResourceType.JAVA);
+        final String fullyQualifiedClassName = getFullyQualifiedClassName(typeName);
+        ResourceReference resRef = addResourceReference(fullyQualifiedClassName,
+                                                        ResourceType.JAVA);
 
         //Add field
         final String fieldName = c.getField();
-        final String fieldFullyQualifiedClassName = getFieldFullyQualifiedClassName( fullyQualifiedClassName,
-                                                                                     fieldName );
-        resRef.addPartReference(fieldName, PartType.FIELD);
-        addResourceReference(fieldFullyQualifiedClassName, ResourceType.JAVA);
-
+        final String fieldFullyQualifiedClassName = getFieldFullyQualifiedClassName(fullyQualifiedClassName,
+                                                                                    fieldName);
+        resRef.addPartReference(fieldName,
+                                PartType.FIELD);
+        addResourceReference(fieldFullyQualifiedClassName,
+                             ResourceType.JAVA);
     }
 
-    private String getFullyQualifiedClassName( final String typeName ) {
-        if ( typeName.contains( "." ) ) {
+    private String getFullyQualifiedClassName(final String typeName) {
+        if (typeName.contains(".")) {
             return typeName;
         }
 
-        for ( Import i : model.getImports().getImports() ) {
-            if ( i.getType().endsWith( typeName ) ) {
+        for (Import i : model.getImports().getImports()) {
+            if (i.getType().endsWith(typeName)) {
                 return i.getType();
             }
         }
         final String packageName = model.getPackageName();
-        return ( !( packageName == null || packageName.isEmpty() ) ? packageName + "." + typeName : typeName );
+        return (!(packageName == null || packageName.isEmpty()) ? packageName + "." + typeName : typeName);
     }
 
-    private String getFieldFullyQualifiedClassName( final String fullyQualifiedClassName,
-                                                    final String fieldName ) {
-        String className = ProjectDataModelOracleUtils.getFieldFullyQualifiedClassName(dmo, fullyQualifiedClassName, fieldName);
-        if( className == null ) {
+    private String getFieldFullyQualifiedClassName(final String fullyQualifiedClassName,
+                                                   final String fieldName) {
+        String className = ProjectDataModelOracleUtils.getFieldFullyQualifiedClassName(dmo,
+                                                                                       fullyQualifiedClassName,
+                                                                                       fieldName);
+        if (className == null) {
             className = DataType.TYPE_OBJECT;
         }
         return className;
     }
-
 }

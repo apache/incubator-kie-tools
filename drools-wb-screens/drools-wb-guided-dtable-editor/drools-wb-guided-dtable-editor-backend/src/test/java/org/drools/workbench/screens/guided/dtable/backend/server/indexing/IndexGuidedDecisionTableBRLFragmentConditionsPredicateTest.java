@@ -19,11 +19,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.apache.lucene.search.Query;
-import org.appformer.project.datamodel.imports.Import;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
 import org.junit.Test;
+import org.kie.soup.project.datamodel.imports.Import;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.query.builder.SingleTermQueryBuilder;

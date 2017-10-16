@@ -17,11 +17,12 @@
 package org.drools.workbench.screens.globals.client.editor;
 
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.mvp.Command;
 
 @Dependent
@@ -34,13 +35,13 @@ public class AddGlobalPopup implements AddGlobalPopupView.Presenter {
     private Command cancelCommand;
 
     @Inject
-    public AddGlobalPopup( final AddGlobalPopupView view ) {
+    public AddGlobalPopup(final AddGlobalPopupView view) {
         this.view = view;
     }
 
     @PostConstruct
     public void init() {
-        view.init( this );
+        view.init(this);
     }
 
     public String getAlias() {
@@ -51,18 +52,18 @@ public class AddGlobalPopup implements AddGlobalPopupView.Presenter {
         return view.getSelectedClassName();
     }
 
-    public void show( final Command addCommand,
-                      final Command cancelCommand,
-                      final List<String> fullyQualifiedClassNames ) {
-        this.addCommand = PortablePreconditions.checkNotNull( "addCommand",
-                                                              addCommand );
-        this.cancelCommand = PortablePreconditions.checkNotNull( "cancelCommand",
-                                                                 cancelCommand );
-        PortablePreconditions.checkNotNull( "fullyQualifiedClassNames",
-                                            fullyQualifiedClassNames );
+    public void show(final Command addCommand,
+                     final Command cancelCommand,
+                     final List<String> fullyQualifiedClassNames) {
+        this.addCommand = PortablePreconditions.checkNotNull("addCommand",
+                                                             addCommand);
+        this.cancelCommand = PortablePreconditions.checkNotNull("cancelCommand",
+                                                                cancelCommand);
+        PortablePreconditions.checkNotNull("fullyQualifiedClassNames",
+                                           fullyQualifiedClassNames);
 
         view.clear();
-        view.setClassNames( fullyQualifiedClassNames );
+        view.setClassNames(fullyQualifiedClassNames);
         view.show();
     }
 
@@ -77,7 +78,7 @@ public class AddGlobalPopup implements AddGlobalPopupView.Presenter {
     }
 
     private boolean checkAliasValidationErrors() {
-        if ( aliasValidationErrorsPresent() ) {
+        if (aliasValidationErrorsPresent()) {
             view.showAliasValidationError();
             return true;
         } else {
@@ -88,7 +89,7 @@ public class AddGlobalPopup implements AddGlobalPopupView.Presenter {
     }
 
     private boolean checkClassNameValidationErrors() {
-        if ( classNameValidationErrorsPresent() ) {
+        if (classNameValidationErrorsPresent()) {
             view.showClassNameValidationError();
             return true;
         } else {
@@ -112,7 +113,7 @@ public class AddGlobalPopup implements AddGlobalPopupView.Presenter {
 
     @Override
     public void onAddButtonClicked() {
-        if ( !checkAliasValidationErrors() && !checkClassNameValidationErrors() ) {
+        if (!checkAliasValidationErrors() && !checkClassNameValidationErrors()) {
             addCommand.execute();
             view.hide();
         }

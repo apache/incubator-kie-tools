@@ -16,17 +16,17 @@
 
 package org.drools.workbench.services.verifier.api.client.maps;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
 public class KeyDefinition
         implements Comparable<KeyDefinition> {
 
-    private final String  id;
+    private final String id;
     private boolean updatable;
 
-    private KeyDefinition( final String id ) {
-        this.id = checkNotNull( "id",
-                                id );
+    private KeyDefinition(final String id) {
+        this.id = checkNotNull("id",
+                               id);
     }
 
     public String getId() {
@@ -34,8 +34,8 @@ public class KeyDefinition
     }
 
     @Override
-    public int compareTo( final KeyDefinition other ) {
-        return id.compareTo( other.id );
+    public int compareTo(final KeyDefinition other) {
+        return id.compareTo(other.id);
     }
 
     public static Builder newKeyDefinition() {
@@ -47,20 +47,21 @@ public class KeyDefinition
     }
 
     public static class Builder {
+
         private String id;
 
         private boolean updatable = false;
 
-        public Builder withId( final String id ) {
-            this.id = checkNotNull( "id",
-                                    id );
+        public Builder withId(final String id) {
+            this.id = checkNotNull("id",
+                                   id);
             return this;
         }
 
         public KeyDefinition build() {
-            checkNotNull( "id",
-                          id );
-            final KeyDefinition keyDefinition = new KeyDefinition( id );
+            checkNotNull("id",
+                         id);
+            final KeyDefinition keyDefinition = new KeyDefinition(id);
             keyDefinition.updatable = updatable;
             return keyDefinition;
         }

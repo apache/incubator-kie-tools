@@ -17,8 +17,9 @@ package org.drools.workbench.screens.enums.backend.server.indexing;
 
 import java.util.Map;
 
-import org.appformer.project.datamodel.oracle.ModelField;
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.DataEnumLoader;
 import org.kie.workbench.common.services.refactoring.ResourceReference;
 import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
@@ -26,7 +27,6 @@ import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.java.nio.file.Path;
 
 /**
@@ -34,95 +34,95 @@ import org.uberfire.java.nio.file.Path;
  */
 public class EnumIndexVisitor extends ResourceReferenceCollector {
 
-    private static final Logger logger = LoggerFactory.getLogger( EnumIndexVisitor.class );
+    private static final Logger logger = LoggerFactory.getLogger(EnumIndexVisitor.class);
 
     private final ProjectDataModelOracle dmo;
     private final Path resourcePath;
     private final DataEnumLoader enumLoader;
 
-
-    public EnumIndexVisitor( final ProjectDataModelOracle dmo,
-                             final Path resourcePath,
-                             final DataEnumLoader enumLoader ) {
-        this.dmo = PortablePreconditions.checkNotNull( "dmo",
-                                                       dmo );
-        this.resourcePath = PortablePreconditions.checkNotNull( "resourcePath",
-                                                           resourcePath );
-        this.enumLoader = PortablePreconditions.checkNotNull( "enumLoader",
-                                                              enumLoader );
+    public EnumIndexVisitor(final ProjectDataModelOracle dmo,
+                            final Path resourcePath,
+                            final DataEnumLoader enumLoader) {
+        this.dmo = PortablePreconditions.checkNotNull("dmo",
+                                                      dmo);
+        this.resourcePath = PortablePreconditions.checkNotNull("resourcePath",
+                                                               resourcePath);
+        this.enumLoader = PortablePreconditions.checkNotNull("enumLoader",
+                                                             enumLoader);
     }
 
     public void visit() {
-        if ( enumLoader.hasErrors() ) {
-            logger.error( "Errors when indexing " + resourcePath.toAbsolutePath().toFile().getAbsolutePath());
+        if (enumLoader.hasErrors()) {
+            logger.error("Errors when indexing " + resourcePath.toAbsolutePath().toFile().getAbsolutePath());
             return;
         }
-        for ( Map.Entry<String, String[]> e : enumLoader.getData().entrySet() ) {
+        for (Map.Entry<String, String[]> e : enumLoader.getData().entrySet()) {
             //Add type
-            final String typeName = getTypeName( e.getKey() );
-            final String fullyQualifiedClassName = getFullyQualifiedClassName( typeName );
+            final String typeName = getTypeName(e.getKey());
+            final String fullyQualifiedClassName = getFullyQualifiedClassName(typeName);
 
             //Add field
-            final String fieldName = getFieldName( e.getKey() );
-            final String fieldFullyQualifiedClassName = getFieldFullyQualifiedClassName( fullyQualifiedClassName,
-                                                                                         fieldName );
+            final String fieldName = getFieldName(e.getKey());
+            final String fieldFullyQualifiedClassName = getFieldFullyQualifiedClassName(fullyQualifiedClassName,
+                                                                                        fieldName);
 
             //If either type or field could not be resolved log a warning
-            if ( fullyQualifiedClassName == null ) {
-                logger.warn( "Index entry will not be created for '" + e.getKey() + "'. Unable to determine FQCN for '" + typeName + "'. " );
+            if (fullyQualifiedClassName == null) {
+                logger.warn("Index entry will not be created for '" + e.getKey() + "'. Unable to determine FQCN for '" + typeName + "'. ");
             } else {
-                ResourceReference resRef = addResourceReference(fullyQualifiedClassName, ResourceType.JAVA);
-                if ( fieldFullyQualifiedClassName == null ) {
-                    logger.warn( "Index entry will not be created for '" + e.getKey() + "'. Unable to determine FQCN for '" + typeName + "." + fieldName + "'. " );
+                ResourceReference resRef = addResourceReference(fullyQualifiedClassName,
+                                                                ResourceType.JAVA);
+                if (fieldFullyQualifiedClassName == null) {
+                    logger.warn("Index entry will not be created for '" + e.getKey() + "'. Unable to determine FQCN for '" + typeName + "." + fieldName + "'. ");
                 } else {
-                    resRef.addPartReference(fieldName, PartType.FIELD);
-                    addResourceReference(fieldFullyQualifiedClassName, ResourceType.JAVA);
+                    resRef.addPartReference(fieldName,
+                                            PartType.FIELD);
+                    addResourceReference(fieldFullyQualifiedClassName,
+                                         ResourceType.JAVA);
                 }
-
             }
         }
     }
 
-    private String getTypeName( final String key ) {
-        final int hashIndex = key.indexOf( "#" );
-        return key.substring( 0,
-                              hashIndex );
+    private String getTypeName(final String key) {
+        final int hashIndex = key.indexOf("#");
+        return key.substring(0,
+                             hashIndex);
     }
 
-    private String getFieldName( final String key ) {
-        final int hashIndex = key.indexOf( "#" );
-        return key.substring( hashIndex + 1 );
+    private String getFieldName(final String key) {
+        final int hashIndex = key.indexOf("#");
+        return key.substring(hashIndex + 1);
     }
 
-    private String getFullyQualifiedClassName( final String typeName ) {
-        if ( typeName.contains( "." ) ) {
+    private String getFullyQualifiedClassName(final String typeName) {
+        if (typeName.contains(".")) {
             return typeName;
         }
         //Look-up FQCN in DMO, if not found return null and log a warning
-        for ( Map.Entry<String, ModelField[]> e : dmo.getProjectModelFields().entrySet() ) {
+        for (Map.Entry<String, ModelField[]> e : dmo.getProjectModelFields().entrySet()) {
             String fqcn = e.getKey();
-            if ( e.getKey().contains( "." ) ) {
-                fqcn = fqcn.substring( fqcn.lastIndexOf( "." ) + 1 );
+            if (e.getKey().contains(".")) {
+                fqcn = fqcn.substring(fqcn.lastIndexOf(".") + 1);
             }
-            if ( fqcn.equals( typeName ) ) {
+            if (fqcn.equals(typeName)) {
                 return e.getKey();
             }
         }
         return null;
     }
 
-    private String getFieldFullyQualifiedClassName( final String fullyQualifiedClassName,
-                                                    final String fieldName ) {
+    private String getFieldFullyQualifiedClassName(final String fullyQualifiedClassName,
+                                                   final String fieldName) {
         //Look-up FQCN in DMO, if not found return null and log a warning
-        final ModelField[] mfs = dmo.getProjectModelFields().get( fullyQualifiedClassName );
-        if ( mfs != null ) {
-            for ( ModelField mf : mfs ) {
-                if ( mf.getName().equals( fieldName ) ) {
+        final ModelField[] mfs = dmo.getProjectModelFields().get(fullyQualifiedClassName);
+        if (mfs != null) {
+            for (ModelField mf : mfs) {
+                if (mf.getName().equals(fieldName)) {
                     return mf.getClassName();
                 }
             }
         }
         return null;
     }
-
 }

@@ -18,15 +18,13 @@ package org.drools.workbench.screens.enums.backend.server.indexing;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.screens.enums.type.EnumResourceTypeDefinition;
-import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
+import org.kie.soup.project.datamodel.commons.util.MVELEvaluator;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.DataEnumLoader;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.AbstractFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -35,7 +33,7 @@ import org.uberfire.java.nio.file.Path;
 @ApplicationScoped
 public class EnumFileIndexer extends AbstractFileIndexer {
 
-    private static final Logger logger = LoggerFactory.getLogger( EnumFileIndexer.class );
+    private static final Logger logger = LoggerFactory.getLogger(EnumFileIndexer.class);
 
     @Inject
     private DataModelService dataModelService;
@@ -43,30 +41,37 @@ public class EnumFileIndexer extends AbstractFileIndexer {
     @Inject
     protected EnumResourceTypeDefinition type;
 
-    @Override
-    public boolean supportsPath( final Path path ) {
-        return type.accept( Paths.convert( path ) );
+    private MVELEvaluator mvelEvaluator;
+
+    @Inject
+    public EnumFileIndexer(MVELEvaluator mvelEvaluator) {
+        this.mvelEvaluator = mvelEvaluator;
     }
 
     @Override
-    public DefaultIndexBuilder fillIndexBuilder( final Path path ) throws Exception {
-        final String enumDefinition = ioService.readAllString( path );
-        final DataEnumLoader enumLoader = new DataEnumLoader( enumDefinition );
-        if ( enumLoader.hasErrors() ) {
-            logger.info( "Unable to index '" + path.toUri().toString() + "'. Related errors follow:" );
-            for ( String e : enumLoader.getErrors() ) {
-                logger.info( e );
+    public boolean supportsPath(final Path path) {
+        return type.accept(Paths.convert(path));
+    }
+
+    @Override
+    public DefaultIndexBuilder fillIndexBuilder(final Path path) throws Exception {
+        final String enumDefinition = ioService.readAllString(path);
+        final DataEnumLoader enumLoader = new DataEnumLoader(enumDefinition, mvelEvaluator);
+        if (enumLoader.hasErrors()) {
+            logger.info("Unable to index '" + path.toUri().toString() + "'. Related errors follow:");
+            for (String e : enumLoader.getErrors()) {
+                logger.info(e);
             }
         }
 
-        final ProjectDataModelOracle dmo = getProjectDataModelOracle( path );
+        final ProjectDataModelOracle dmo = getProjectDataModelOracle(path);
 
         final DefaultIndexBuilder builder = getIndexBuilder(path);
-        if( builder == null ) {
+        if (builder == null) {
             return null;
         }
 
-        final EnumIndexVisitor visitor = new EnumIndexVisitor( dmo, path, enumLoader);
+        final EnumIndexVisitor visitor = new EnumIndexVisitor(dmo, path, enumLoader);
         visitor.visit();
         addReferencedResourcesToIndexBuilder(builder, visitor);
 
@@ -74,8 +79,7 @@ public class EnumFileIndexer extends AbstractFileIndexer {
     }
 
     //Delegate resolution of DMO to method to assist testing
-    protected ProjectDataModelOracle getProjectDataModelOracle( final Path path ) {
-        return dataModelService.getProjectDataModel( Paths.convert( path ) );
+    protected ProjectDataModelOracle getProjectDataModelOracle(final Path path) {
+        return dataModelService.getProjectDataModel(Paths.convert(path));
     }
-
 }

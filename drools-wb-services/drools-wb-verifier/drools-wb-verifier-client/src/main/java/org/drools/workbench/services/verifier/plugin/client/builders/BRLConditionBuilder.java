@@ -22,7 +22,7 @@ import org.drools.workbench.services.verifier.api.client.index.BRLCondition;
 import org.drools.workbench.services.verifier.api.client.index.Column;
 import org.drools.workbench.services.verifier.api.client.index.Condition;
 import org.drools.workbench.services.verifier.api.client.index.Index;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class BRLConditionBuilder {
 
@@ -33,57 +33,57 @@ public class BRLConditionBuilder {
     private DTCellValue52 realCellValue;
     private int columnIndex;
 
-    public BRLConditionBuilder( final Index index,
-                                final VerifierColumnUtilities utils,
-                                final AnalyzerConfiguration configuration ) {
-        this.index = PortablePreconditions.checkNotNull( "index",
-                                                         index );
-        this.utils = PortablePreconditions.checkNotNull( "utils",
-                                                         utils );
-        this.configuration = PortablePreconditions.checkNotNull( "configuration",
-                                                                 configuration );
+    public BRLConditionBuilder(final Index index,
+                               final VerifierColumnUtilities utils,
+                               final AnalyzerConfiguration configuration) {
+        this.index = PortablePreconditions.checkNotNull("index",
+                                                        index);
+        this.utils = PortablePreconditions.checkNotNull("utils",
+                                                        utils);
+        this.configuration = PortablePreconditions.checkNotNull("configuration",
+                                                                configuration);
     }
 
     public Condition build() throws
-                             BuildException {
-        PortablePreconditions.checkNotNull( "realCellValue",
-                                            realCellValue );
-        PortablePreconditions.checkNotNull( "columnIndex",
-                                            columnIndex );
+            BuildException {
+        PortablePreconditions.checkNotNull("realCellValue",
+                                           realCellValue);
+        PortablePreconditions.checkNotNull("columnIndex",
+                                           columnIndex);
 
         try {
-            return new BRLCondition( getColumn(),
-                                     new ValuesResolver( utils,
-                                                         columnIndex,
-                                                         conditionColumn,
-                                                         realCellValue ).getValues(),
-                                     configuration );
-        } catch ( final ValueResolveException e ) {
-            throw new BuildException( "Could not build BRLCondition because of: " + e.getMessage() );
+            return new BRLCondition(getColumn(),
+                                    new ValuesResolver(utils,
+                                                       columnIndex,
+                                                       conditionColumn,
+                                                       realCellValue).getValues(),
+                                    configuration);
+        } catch (final ValueResolveException e) {
+            throw new BuildException("Could not build BRLCondition because of: " + e.getMessage());
         }
     }
 
     private Column getColumn() {
 
         return index.getColumns()
-                .where( Column.index()
-                                .is( columnIndex ) )
+                .where(Column.index()
+                               .is(columnIndex))
 
                 .select()
                 .first();
     }
 
-    public BRLConditionBuilder with( final BRLConditionVariableColumn conditionColumn ) {
+    public BRLConditionBuilder with(final BRLConditionVariableColumn conditionColumn) {
         this.conditionColumn = conditionColumn;
         return this;
     }
 
-    public BRLConditionBuilder with( final DTCellValue52 realCellValue ) {
+    public BRLConditionBuilder with(final DTCellValue52 realCellValue) {
         this.realCellValue = realCellValue;
         return this;
     }
 
-    public BRLConditionBuilder with( final int columnIndex ) {
+    public BRLConditionBuilder with(final int columnIndex) {
         this.columnIndex = columnIndex;
         return this;
     }

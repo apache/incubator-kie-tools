@@ -15,7 +15,6 @@
  */
 package org.drools.workbench.services.verifier.api.client.index;
 
-
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.drools.workbench.services.verifier.api.client.index.keys.Key;
 import org.drools.workbench.services.verifier.api.client.index.keys.UUIDKey;
@@ -23,7 +22,7 @@ import org.drools.workbench.services.verifier.api.client.index.matchers.UUIDMatc
 import org.drools.workbench.services.verifier.api.client.maps.KeyDefinition;
 import org.drools.workbench.services.verifier.api.client.maps.util.HasKeys;
 import org.drools.workbench.services.verifier.api.client.relations.HumanReadable;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public abstract class FieldBase
         implements Comparable<FieldBase>,
@@ -31,7 +30,7 @@ public abstract class FieldBase
                    HumanReadable {
 
     private static KeyDefinition NAME = KeyDefinition.newKeyDefinition()
-            .withId( "name" )
+            .withId("name")
             .updatable()
             .build();
 
@@ -40,21 +39,21 @@ public abstract class FieldBase
     private final String fieldType;
     private final String name;
 
-    public FieldBase( final String factType,
-                      final String fieldType,
-                      final String name,
-                      final AnalyzerConfiguration configuration ) {
-        this.factType = PortablePreconditions.checkNotNull( "factType",
-                                                            factType );
-        this.fieldType = PortablePreconditions.checkNotNull( "fieldType",
-                                                             fieldType );
-        this.name = PortablePreconditions.checkNotNull( "name",
-                                                        name );
-        this.uuidKey = configuration.getUUID( this );
+    public FieldBase(final String factType,
+                     final String fieldType,
+                     final String name,
+                     final AnalyzerConfiguration configuration) {
+        this.factType = PortablePreconditions.checkNotNull("factType",
+                                                           factType);
+        this.fieldType = PortablePreconditions.checkNotNull("fieldType",
+                                                            fieldType);
+        this.name = PortablePreconditions.checkNotNull("name",
+                                                       name);
+        this.uuidKey = configuration.getUUID(this);
     }
 
     public static Matchers name() {
-        return new Matchers( NAME );
+        return new Matchers(NAME);
     }
 
     public static Matchers uuid() {
@@ -91,14 +90,14 @@ public abstract class FieldBase
     }
 
     @Override
-    public int compareTo( final FieldBase field ) {
-        if ( factType.equals( field.factType )
-                && name.equals( field.name ) ) {
+    public int compareTo(final FieldBase field) {
+        if (factType.equals(field.factType)
+                && name.equals(field.name)) {
             return 0;
-        } else if ( factType.equals( field.factType ) ) {
-            return name.compareTo( field.name );
+        } else if (factType.equals(field.factType)) {
+            return name.compareTo(field.name);
         } else {
-            return factType.compareTo( field.factType );
+            return factType.compareTo(field.factType);
         }
     }
 
@@ -110,29 +109,28 @@ public abstract class FieldBase
     }
 
     @Override
-    public boolean equals( final Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null || getClass() != o.getClass() ) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
         final FieldBase field = (FieldBase) o;
 
-        if ( !factType.equals( field.factType ) ) {
+        if (!factType.equals(field.factType)) {
             return false;
         }
-        return name.equals( field.name );
-
+        return name.equals(field.name);
     }
 
     @Override
     public Key[] keys() {
         return new Key[]{
                 uuidKey,
-                new Key( NAME,
-                         name )
+                new Key(NAME,
+                        name)
         };
     }
 
@@ -140,5 +138,4 @@ public abstract class FieldBase
     public String toHumanReadableString() {
         return name;
     }
-
 }

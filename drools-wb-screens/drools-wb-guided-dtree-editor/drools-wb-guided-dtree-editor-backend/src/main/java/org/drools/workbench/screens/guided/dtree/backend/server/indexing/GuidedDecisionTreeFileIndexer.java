@@ -18,8 +18,8 @@ package org.drools.workbench.screens.guided.dtree.backend.server.indexing;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.screens.guided.dtree.type.GuidedDTreeResourceTypeDefinition;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.drools.AbstractDrlFileIndexer;
@@ -36,13 +36,13 @@ public class GuidedDecisionTreeFileIndexer extends AbstractDrlFileIndexer {
     protected GuidedDTreeResourceTypeDefinition type;
 
     @Override
-    public boolean supportsPath( final Path path ) {
-        return type.accept( Paths.convert( path ) );
+    public boolean supportsPath(final Path path) {
+        return type.accept(Paths.convert(path));
     }
 
     @Override
-    public DefaultIndexBuilder fillIndexBuilder( final Path path ) throws Exception {
-        final String drl = ioService.readAllString( path );
+    public DefaultIndexBuilder fillIndexBuilder(final Path path) throws Exception {
+        final String drl = ioService.readAllString(path);
 
         return fillDrlIndexBuilder(path, drl);
     }
@@ -52,8 +52,7 @@ public class GuidedDecisionTreeFileIndexer extends AbstractDrlFileIndexer {
      * @see org.kie.workbench.common.services.refactoring.backend.server.indexing.drools.AbstractDrlFileIndexer#getProjectDataModelOracle(org.uberfire.java.nio.file.Path)
      */
     @Override
-    protected ProjectDataModelOracle getProjectDataModelOracle( final Path path ) {
-        return dataModelService.getProjectDataModel( Paths.convert( path ) );
+    protected ProjectDataModelOracle getProjectDataModelOracle(final Path path) {
+        return dataModelService.getProjectDataModel(Paths.convert(path));
     }
-
 }

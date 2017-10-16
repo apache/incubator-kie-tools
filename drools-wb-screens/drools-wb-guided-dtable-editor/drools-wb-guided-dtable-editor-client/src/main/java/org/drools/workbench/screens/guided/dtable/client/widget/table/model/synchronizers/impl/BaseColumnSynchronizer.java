@@ -28,7 +28,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public abstract class BaseColumnSynchronizer<A extends BaseColumnSynchronizer.ColumnMetaData, U extends BaseColumnSynchronizer.ColumnMetaData, D extends BaseColumnSynchronizer.ColumnMetaData> extends BaseSynchronizer<A, U, D> {
 

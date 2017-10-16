@@ -139,12 +139,12 @@
   </auditLog>
   <imports>
     <imports>
-      <org.appformer.project.datamodel.imports.Import>
+      <org.kie.soup.project.datamodel.imports.Import>
         <type>com.redhat.sample.Employee</type>
-      </org.appformer.project.datamodel.imports.Import>
-      <org.appformer.project.datamodel.imports.Import>
+      </org.kie.soup.project.datamodel.imports.Import>
+      <org.kie.soup.project.datamodel.imports.Import>
         <type>com.redhat.sample.Person</type>
-      </org.appformer.project.datamodel.imports.Import>
+      </org.kie.soup.project.datamodel.imports.Import>
     </imports>
   </imports>
   <packageName>example.demoproject</packageName>

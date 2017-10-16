@@ -19,9 +19,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.appformer.project.datamodel.oracle.ModelField;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.services.verifier.plugin.client.api.FactTypes;
+import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
 
@@ -29,27 +29,27 @@ public class FieldTypeProducer {
 
     private AsyncPackageDataModelOracle oracle;
 
-    public FieldTypeProducer( final AsyncPackageDataModelOracle oracle ) {
-        this.oracle = PortablePreconditions.checkNotNull( "oracle",
-                                                          oracle );
+    public FieldTypeProducer(final AsyncPackageDataModelOracle oracle) {
+        this.oracle = PortablePreconditions.checkNotNull("oracle",
+                                                         oracle);
     }
 
     public FactTypes getFactTypes() {
         final FactTypes factTypes = new FactTypes();
 
-        final Map<String, ModelField[]> filteredFactTypes = ( (AsyncPackageDataModelOracleImpl) oracle ).getFilteredFactTypes();
+        final Map<String, ModelField[]> filteredFactTypes = ((AsyncPackageDataModelOracleImpl) oracle).getFilteredFactTypes();
 
-        for ( final String factTypeName : filteredFactTypes.keySet() ) {
+        for (final String factTypeName : filteredFactTypes.keySet()) {
 
             final Set<FactTypes.Field> fields = new HashSet<>();
 
-            for ( final ModelField modelField : filteredFactTypes.get( factTypeName ) ) {
-                fields.add( new FactTypes.Field( modelField.getName(),
-                                                 modelField.getType() ) );
+            for (final ModelField modelField : filteredFactTypes.get(factTypeName)) {
+                fields.add(new FactTypes.Field(modelField.getName(),
+                                               modelField.getType()));
             }
 
-            factTypes.add( new FactTypes.FactType( factTypeName,
-                                                   fields ) );
+            factTypes.add(new FactTypes.FactType(factTypeName,
+                                                 fields));
         }
 
         return factTypes;

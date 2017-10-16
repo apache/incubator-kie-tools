@@ -19,11 +19,11 @@ package org.drools.workbench.services.verifier.webworker.client;
 import java.util.Set;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.*;
 import static org.junit.Assert.assertEquals;

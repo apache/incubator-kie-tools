@@ -18,8 +18,8 @@ package org.drools.workbench.screens.guided.dtree.model;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 @Portable
 public class GuidedDecisionTreeEditorContent {
@@ -31,15 +31,15 @@ public class GuidedDecisionTreeEditorContent {
     public GuidedDecisionTreeEditorContent() {
     }
 
-    public GuidedDecisionTreeEditorContent( final GuidedDecisionTree model,
-                                            final Overview overview,
-                                            final PackageDataModelOracleBaselinePayload dataModel ) {
-        this.overview = PortablePreconditions.checkNotNull( "overview",
-                                                            overview );
-        this.model = PortablePreconditions.checkNotNull( "model",
-                                                         model );
-        this.dataModel = PortablePreconditions.checkNotNull( "dataModel",
-                                                             dataModel );
+    public GuidedDecisionTreeEditorContent(final GuidedDecisionTree model,
+                                           final Overview overview,
+                                           final PackageDataModelOracleBaselinePayload dataModel) {
+        this.overview = PortablePreconditions.checkNotNull("overview",
+                                                           overview);
+        this.model = PortablePreconditions.checkNotNull("model",
+                                                        model);
+        this.dataModel = PortablePreconditions.checkNotNull("dataModel",
+                                                            dataModel);
     }
 
     public GuidedDecisionTree getModel() {
@@ -54,8 +54,7 @@ public class GuidedDecisionTreeEditorContent {
         return overview;
     }
 
-    public void setOverview( Overview overview ) {
+    public void setOverview(Overview overview) {
         this.overview = overview;
     }
-
 }

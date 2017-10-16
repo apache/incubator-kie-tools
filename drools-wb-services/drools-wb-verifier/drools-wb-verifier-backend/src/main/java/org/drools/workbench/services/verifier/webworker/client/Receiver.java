@@ -34,7 +34,7 @@ import org.drools.workbench.services.verifier.plugin.client.api.RequestStatus;
 import org.drools.workbench.services.verifier.plugin.client.api.Update;
 import org.drools.workbench.services.verifier.plugin.client.api.WebWorkerException;
 import org.drools.workbench.services.verifier.plugin.client.builders.BuildException;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class Receiver {
 
@@ -45,117 +45,115 @@ public class Receiver {
     private Index index;
     private AnalyzerConfiguration configuration;
 
-    public Receiver( final Poster poster,
-                     final RunnerType runnerType ) {
-        this.poster = PortablePreconditions.checkNotNull( "poster",
-                                                          poster );
-        this.runnerType = PortablePreconditions.checkNotNull( "runnerType",
-                                                              runnerType );
+    public Receiver(final Poster poster,
+                    final RunnerType runnerType) {
+        this.poster = PortablePreconditions.checkNotNull("poster",
+                                                         poster);
+        this.runnerType = PortablePreconditions.checkNotNull("runnerType",
+                                                             runnerType);
     }
 
-    public void received( final Object o ) {
-        if ( o instanceof Initialize ) {
-            init( (Initialize) o );
-        } else if ( o instanceof RequestStatus ) {
+    public void received(final Object o) {
+        if (o instanceof Initialize) {
+            init((Initialize) o);
+        } else if (o instanceof RequestStatus) {
             requestStatus();
-        } else if ( o instanceof RemoveRule ) {
-            removeRule( (RemoveRule) o );
-        } else if ( o instanceof Update ) {
-            update( (Update) o );
-        } else if ( o instanceof DeleteColumns ) {
-            deleteColumns( (DeleteColumns) o );
-        } else if ( o instanceof MakeRule ) {
-            makeRule( (MakeRule) o );
-        } else if ( o instanceof NewColumn ) {
-            newColumn( (NewColumn) o );
+        } else if (o instanceof RemoveRule) {
+            removeRule((RemoveRule) o);
+        } else if (o instanceof Update) {
+            update((Update) o);
+        } else if (o instanceof DeleteColumns) {
+            deleteColumns((DeleteColumns) o);
+        } else if (o instanceof MakeRule) {
+            makeRule((MakeRule) o);
+        } else if (o instanceof NewColumn) {
+            newColumn((NewColumn) o);
         }
     }
 
-    private void removeRule( final RemoveRule removeRule ) {
+    private void removeRule(final RemoveRule removeRule) {
         try {
-            getUpdateManager().removeRule( removeRule.getDeletedRow() );
-        } catch ( final Exception e ) {
-            poster.post( new WebWorkerException( "Failed to remove a rule: " +
-                                                         e.getMessage() ) );
+            getUpdateManager().removeRule(removeRule.getDeletedRow());
+        } catch (final Exception e) {
+            poster.post(new WebWorkerException("Failed to remove a rule: " +
+                                                       e.getMessage()));
         }
     }
 
-    private void deleteColumns( final DeleteColumns deleteColumns ) {
+    private void deleteColumns(final DeleteColumns deleteColumns) {
         try {
-            getUpdateManager().deleteColumns( deleteColumns.getFirstColumnIndex(),
-                                              deleteColumns.getNumberOfColumns() );
-        } catch ( final Exception e ) {
-            poster.post( new WebWorkerException( "Deleting columns failed: " +
-                                                         e.getMessage() ) );
+            getUpdateManager().deleteColumns(deleteColumns.getFirstColumnIndex(),
+                                             deleteColumns.getNumberOfColumns());
+        } catch (final Exception e) {
+            poster.post(new WebWorkerException("Deleting columns failed: " +
+                                                       e.getMessage()));
         }
-
     }
 
-    private void update( final Update update ) {
+    private void update(final Update update) {
         try {
-            getUpdateManager().update( update.getModel(),
-                                       update.getCoordinates() );
-        } catch ( final UpdateException e ) {
-            poster.post( new WebWorkerException( "Dtable update failed: " +
-                                                         e.getMessage() ) );
+            getUpdateManager().update(update.getModel(),
+                                      update.getCoordinates());
+        } catch (final UpdateException e) {
+            poster.post(new WebWorkerException("Dtable update failed: " +
+                                                       e.getMessage()));
         }
     }
 
     private void requestStatus() {
-        if ( latestReport != null ) {
-            poster.post( latestReport );
+        if (latestReport != null) {
+            poster.post(latestReport);
         }
     }
 
-    private void newColumn( final NewColumn newColumn ) {
+    private void newColumn(final NewColumn newColumn) {
         try {
-            getUpdateManager().newColumn( newColumn.getModel(),
-                                          newColumn.getHeaderMetaData(),
-                                          newColumn.getFactTypes(),
-                                          newColumn.getColumnIndex() );
-        } catch ( final BuildException buildException ) {
-            poster.post( new WebWorkerException( "Adding a new column failed: " +
-                                                         buildException.getMessage() ) );
+            getUpdateManager().newColumn(newColumn.getModel(),
+                                         newColumn.getHeaderMetaData(),
+                                         newColumn.getFactTypes(),
+                                         newColumn.getColumnIndex());
+        } catch (final BuildException buildException) {
+            poster.post(new WebWorkerException("Adding a new column failed: " +
+                                                       buildException.getMessage()));
         }
     }
 
-    private void makeRule( final MakeRule makeRule ) {
+    private void makeRule(final MakeRule makeRule) {
         try {
-            getUpdateManager().makeRule( makeRule.getModel(),
-                                         makeRule.getHeaderMetaData(),
-                                         makeRule.getFactTypes(),
-                                         makeRule.getIndex() );
-        } catch ( final BuildException buildException ) {
-            poster.post( new WebWorkerException( "Rule Creation failed: " +
-                                                         buildException.getMessage() ) );
+            getUpdateManager().makeRule(makeRule.getModel(),
+                                        makeRule.getHeaderMetaData(),
+                                        makeRule.getFactTypes(),
+                                        makeRule.getIndex());
+        } catch (final BuildException buildException) {
+            poster.post(new WebWorkerException("Rule Creation failed: " +
+                                                       buildException.getMessage()));
         }
     }
 
     private DTableUpdateManager getUpdateManager() {
-        return new DTableUpdateManager( index,
-                                        analyzer,
-                                        configuration );
+        return new DTableUpdateManager(index,
+                                       analyzer,
+                                       configuration);
     }
 
-    private void init( final Initialize initialize ) {
+    private void init(final Initialize initialize) {
         try {
             final AnalyzerBuilder analyzerBuilder = new AnalyzerBuilder()
-                    .with( initialize )
+                    .with(initialize)
                     .with(runnerType)
-                    .with( new Reporter() {
+                    .with(new Reporter() {
                         @Override
-                        public void sendReport( final Set<Issue> issues ) {
-                            latestReport = new Issues( initialize.getUuid(),
-                                                       issues );
-                            poster.post( latestReport );
+                        public void sendReport(final Set<Issue> issues) {
+                            latestReport = new Issues(initialize.getUuid(),
+                                                      issues);
+                            poster.post(latestReport);
                         }
 
                         @Override
-                        public void sendStatus( final Status status ) {
-                            poster.post( status );
+                        public void sendStatus(final Status status) {
+                            poster.post(status);
                         }
-                    } );
-
+                    });
 
             analyzer = analyzerBuilder.buildAnalyzer();
             index = analyzerBuilder.getIndex();
@@ -163,10 +161,9 @@ public class Receiver {
 
             analyzer.resetChecks();
             analyzer.analyze();
-
-        } catch ( final BuildException e ) {
-            poster.post( new WebWorkerException( "Initialization failed: " +
-                                                         e.getMessage() ) );
+        } catch (final BuildException e) {
+            poster.post(new WebWorkerException("Initialization failed: " +
+                                                       e.getMessage()));
         }
     }
 }

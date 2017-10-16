@@ -20,11 +20,11 @@ import java.util.Set;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AppendRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.DeleteRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.InsertRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.UpdateColumnDataEvent;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 public class Events {
 
@@ -33,36 +33,36 @@ public class Events {
 
     private Set<HandlerRegistration> eventBusHandlerRegistrations = new HashSet<>();
 
-    public Events( final EventBus eventBus,
-                   final AnalyzerControllerImpl analyzerController ) {
-        this.eventBus = PortablePreconditions.checkNotNull( "eventBus",
-                                                            eventBus );
-        this.analyzerController = PortablePreconditions.checkNotNull( "analyzerController",
-                                                                      analyzerController );
+    public Events(final EventBus eventBus,
+                  final AnalyzerControllerImpl analyzerController) {
+        this.eventBus = PortablePreconditions.checkNotNull("eventBus",
+                                                           eventBus);
+        this.analyzerController = PortablePreconditions.checkNotNull("analyzerController",
+                                                                     analyzerController);
     }
 
     public void setup() {
-        if ( eventBusHandlerRegistrations.isEmpty() ) {
-            eventBusHandlerRegistrations.add( eventBus.addHandler( ValidateEvent.TYPE,
-                                                                   analyzerController ) );
-            eventBusHandlerRegistrations.add( eventBus.addHandler( DeleteRowEvent.TYPE,
-                                                                   analyzerController ) );
-            eventBusHandlerRegistrations.add( eventBus.addHandler( AfterColumnDeleted.TYPE,
-                                                                   analyzerController ) );
-            eventBusHandlerRegistrations.add( eventBus.addHandler( UpdateColumnDataEvent.TYPE,
-                                                                   analyzerController ) );
-            eventBusHandlerRegistrations.add( eventBus.addHandler( AppendRowEvent.TYPE,
-                                                                   analyzerController ) );
-            eventBusHandlerRegistrations.add( eventBus.addHandler( InsertRowEvent.TYPE,
-                                                                   analyzerController ) );
-            eventBusHandlerRegistrations.add( eventBus.addHandler( AfterColumnInserted.TYPE,
-                                                                   analyzerController ) );
+        if (eventBusHandlerRegistrations.isEmpty()) {
+            eventBusHandlerRegistrations.add(eventBus.addHandler(ValidateEvent.TYPE,
+                                                                 analyzerController));
+            eventBusHandlerRegistrations.add(eventBus.addHandler(DeleteRowEvent.TYPE,
+                                                                 analyzerController));
+            eventBusHandlerRegistrations.add(eventBus.addHandler(AfterColumnDeleted.TYPE,
+                                                                 analyzerController));
+            eventBusHandlerRegistrations.add(eventBus.addHandler(UpdateColumnDataEvent.TYPE,
+                                                                 analyzerController));
+            eventBusHandlerRegistrations.add(eventBus.addHandler(AppendRowEvent.TYPE,
+                                                                 analyzerController));
+            eventBusHandlerRegistrations.add(eventBus.addHandler(InsertRowEvent.TYPE,
+                                                                 analyzerController));
+            eventBusHandlerRegistrations.add(eventBus.addHandler(AfterColumnInserted.TYPE,
+                                                                 analyzerController));
         }
     }
 
     public void teardown() {
 
-        for ( final HandlerRegistration handlerRegistration : eventBusHandlerRegistrations ) {
+        for (final HandlerRegistration handlerRegistration : eventBusHandlerRegistrations) {
             handlerRegistration.removeHandler();
         }
 

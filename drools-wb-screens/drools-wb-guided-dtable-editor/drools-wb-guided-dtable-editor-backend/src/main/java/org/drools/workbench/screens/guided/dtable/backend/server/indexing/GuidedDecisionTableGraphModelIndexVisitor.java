@@ -19,10 +19,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.service.PartType;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.metadata.model.KProperty;
 
 /**

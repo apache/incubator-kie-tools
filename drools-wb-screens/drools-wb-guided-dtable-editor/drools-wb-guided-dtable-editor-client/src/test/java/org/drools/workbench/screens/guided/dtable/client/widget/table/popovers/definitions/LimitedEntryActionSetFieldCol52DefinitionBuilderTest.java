@@ -18,7 +18,6 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.popovers.
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
@@ -26,6 +25,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryAction
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.oracle.DataType;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
@@ -36,76 +36,75 @@ public class LimitedEntryActionSetFieldCol52DefinitionBuilderTest extends BaseCo
 
     @Override
     protected ColumnDefinitionBuilder getBuilder() {
-        return new LimitedEntryActionSetFieldCol52DefinitionBuilder( serviceCaller );
+        return new LimitedEntryActionSetFieldCol52DefinitionBuilder(serviceCaller);
     }
 
     @Test
     public void checkColumnType() {
-        assertEquals( LimitedEntryActionSetFieldCol52.class,
-                      builder.getSupportedColumnType() );
+        assertEquals(LimitedEntryActionSetFieldCol52.class,
+                     builder.getSupportedColumnType());
     }
 
     @Test
     public void unknownColumnTypeDoesNotTriggerBuilder() {
         final BaseColumn column = new RowNumberCol52();
-        builder.generateDefinition( dtPresenter,
-                                    column,
-                                    ( String definition ) -> {
-                                        fail( "RowNumberCol52 should not be handled by ActionSetFieldCol52DefinitionBuilder" );
-                                    } );
+        builder.generateDefinition(dtPresenter,
+                                   column,
+                                   (String definition) -> {
+                                       fail("RowNumberCol52 should not be handled by ActionSetFieldCol52DefinitionBuilder");
+                                   });
     }
 
     @Test
     public void simpleActionSetField() {
-        final AtomicBoolean calledBack = new AtomicBoolean( false );
+        final AtomicBoolean calledBack = new AtomicBoolean(false);
 
         setupPatternAndCondition();
 
         final LimitedEntryActionSetFieldCol52 asf = new LimitedEntryActionSetFieldCol52();
-        asf.setBoundName( "$p" );
-        asf.setFactField( "name" );
-        asf.setValue( new DTCellValue52( "Michael" ) );
-        model.getActionCols().add( asf );
+        asf.setBoundName("$p");
+        asf.setFactField("name");
+        asf.setValue(new DTCellValue52("Michael"));
+        model.getActionCols().add(asf);
 
-        when( dmo.getFieldType( eq( "Person" ),
-                                eq( "name" ) ) ).thenReturn( DataType.TYPE_STRING );
+        when(dmo.getFieldType(eq("Person"),
+                              eq("name"))).thenReturn(DataType.TYPE_STRING);
 
-        builder.generateDefinition( dtPresenter,
-                                    asf,
-                                    ( String definition ) -> {
-                                        calledBack.set( true );
-                                        assertEquals( "$p.setName( \"Michael\" );",
-                                                      definition );
-                                    } );
-        assertTrue( calledBack.get() );
+        builder.generateDefinition(dtPresenter,
+                                   asf,
+                                   (String definition) -> {
+                                       calledBack.set(true);
+                                       assertEquals("$p.setName( \"Michael\" );",
+                                                    definition);
+                                   });
+        assertTrue(calledBack.get());
     }
 
     @Test
     public void simpleActionUpdateField() {
-        final AtomicBoolean calledBack = new AtomicBoolean( false );
+        final AtomicBoolean calledBack = new AtomicBoolean(false);
 
         setupLimitedEntryPatternAndCondition();
 
         final LimitedEntryActionSetFieldCol52 asf = new LimitedEntryActionSetFieldCol52();
-        asf.setBoundName( "$p" );
-        asf.setFactField( "name" );
-        asf.setValue( new DTCellValue52( "Michael" ) );
-        asf.setUpdate( true );
-        model.getActionCols().add( asf );
+        asf.setBoundName("$p");
+        asf.setFactField("name");
+        asf.setValue(new DTCellValue52("Michael"));
+        asf.setUpdate(true);
+        model.getActionCols().add(asf);
 
-        when( dmo.getFieldType( eq( "Person" ),
-                                eq( "name" ) ) ).thenReturn( DataType.TYPE_STRING );
+        when(dmo.getFieldType(eq("Person"),
+                              eq("name"))).thenReturn(DataType.TYPE_STRING);
 
-        builder.generateDefinition( dtPresenter,
-                                    asf,
-                                    ( String definition ) -> {
-                                        calledBack.set( true );
-                                        assertEquals( "modify( $p ) {<br/>" +
-                                                              "setName( \"Michael\" )<br/>" +
-                                                              "}",
-                                                      definition );
-                                    } );
-        assertTrue( calledBack.get() );
+        builder.generateDefinition(dtPresenter,
+                                   asf,
+                                   (String definition) -> {
+                                       calledBack.set(true);
+                                       assertEquals("modify( $p ) {<br/>" +
+                                                            "setName( \"Michael\" )<br/>" +
+                                                            "}",
+                                                    definition);
+                                   });
+        assertTrue(calledBack.get());
     }
-
 }

@@ -20,10 +20,10 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReportScreen;
 import org.drools.workbench.services.verifier.plugin.client.api.Initialize;
 import org.drools.workbench.services.verifier.plugin.client.builders.ModelMetaDataEnhancer;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.commons.uuid.UUID;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.mvp.PlaceRequest;
 
 public class DecisionTableAnalyzerBuilder {
@@ -39,82 +39,81 @@ public class DecisionTableAnalyzerBuilder {
     private FieldTypeProducer fieldTypeProducer;
     private Poster poster;
 
-    public DecisionTableAnalyzerBuilder withPlaceRequest( final PlaceRequest placeRequest ) {
+    public DecisionTableAnalyzerBuilder withPlaceRequest(final PlaceRequest placeRequest) {
         this.placeRequest = placeRequest;
         return this;
     }
 
-    public DecisionTableAnalyzerBuilder withOracle( final AsyncPackageDataModelOracle oracle ) {
+    public DecisionTableAnalyzerBuilder withOracle(final AsyncPackageDataModelOracle oracle) {
         this.oracle = oracle;
-        fieldTypeProducer = new FieldTypeProducer( oracle );
+        fieldTypeProducer = new FieldTypeProducer(oracle);
         return this;
     }
 
-    public DecisionTableAnalyzerBuilder withModel( final GuidedDecisionTable52 model ) {
+    public DecisionTableAnalyzerBuilder withModel(final GuidedDecisionTable52 model) {
         this.model = model;
         return this;
     }
 
-    public DecisionTableAnalyzerBuilder withReportScreen( final AnalysisReportScreen analysisReportScreen ) {
+    public DecisionTableAnalyzerBuilder withReportScreen(final AnalysisReportScreen analysisReportScreen) {
         this.analysisReportScreen = analysisReportScreen;
         return this;
     }
 
     public DecisionTableAnalyzer build() {
-        PortablePreconditions.checkNotNull( "placeRequest",
-                                            placeRequest );
-        PortablePreconditions.checkNotNull( "oracle",
-                                            oracle );
-        PortablePreconditions.checkNotNull( "model",
-                                            model );
-        PortablePreconditions.checkNotNull( "analysisReportScreen",
-                                            analysisReportScreen );
+        PortablePreconditions.checkNotNull("placeRequest",
+                                           placeRequest);
+        PortablePreconditions.checkNotNull("oracle",
+                                           oracle);
+        PortablePreconditions.checkNotNull("model",
+                                           model);
+        PortablePreconditions.checkNotNull("analysisReportScreen",
+                                           analysisReportScreen);
         return getDTableAnalyzer();
     }
 
     private VerifierWebWorkerConnectionImpl getWebWorker() {
-        if ( webWorker == null ) {
-            webWorker = new VerifierWebWorkerConnectionImpl( new Initialize( UUID.uuid(),
-                                                                             model,
-                                                                             new ModelMetaDataEnhancer( model ).getHeaderMetaData(),
-                                                                             fieldTypeProducer.getFactTypes(),
-                                                                             ApplicationPreferences.getDroolsDateFormat() ),
-                                                             getPoster(),
-                                                             new Receiver( getAnalysisReporter() ) );
+        if (webWorker == null) {
+            webWorker = new VerifierWebWorkerConnectionImpl(new Initialize(UUID.uuid(),
+                                                                           model,
+                                                                           new ModelMetaDataEnhancer(model).getHeaderMetaData(),
+                                                                           fieldTypeProducer.getFactTypes(),
+                                                                           ApplicationPreferences.getDroolsDateFormat()),
+                                                            getPoster(),
+                                                            new Receiver(getAnalysisReporter()));
         }
         return webWorker;
     }
 
     private Poster getPoster() {
-        if ( poster == null ) {
+        if (poster == null) {
             poster = new Poster();
         }
         return poster;
     }
 
     protected AnalysisReporter getAnalysisReporter() {
-        if ( analysisReporter == null ) {
-            analysisReporter = new AnalysisReporter( placeRequest,
-                                                     analysisReportScreen );
+        if (analysisReporter == null) {
+            analysisReporter = new AnalysisReporter(placeRequest,
+                                                    analysisReportScreen);
         }
         return analysisReporter;
     }
 
     private DTableUpdateManagerImpl getUpdateManager() {
-        if ( this.updateManager == null ) {
-            this.updateManager = new DTableUpdateManagerImpl( getPoster(),
-                                                              fieldTypeProducer );
+        if (this.updateManager == null) {
+            this.updateManager = new DTableUpdateManagerImpl(getPoster(),
+                                                             fieldTypeProducer);
         }
         return this.updateManager;
     }
 
-
     private DecisionTableAnalyzer getDTableAnalyzer() {
-        if ( decisionTableAnalyzer == null ) {
+        if (decisionTableAnalyzer == null) {
             reset();
-            decisionTableAnalyzer = new DecisionTableAnalyzer( model,
-                                                               getUpdateManager(),
-                                                               getWebWorker() );
+            decisionTableAnalyzer = new DecisionTableAnalyzer(model,
+                                                              getUpdateManager(),
+                                                              getWebWorker());
         }
         return decisionTableAnalyzer;
     }

@@ -15,37 +15,35 @@
  */
 package org.drools.workbench.services.verifier.api.client.index;
 
-
 import java.util.ArrayList;
 
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.drools.workbench.services.verifier.api.client.index.keys.Key;
 import org.drools.workbench.services.verifier.api.client.index.keys.Values;
 import org.drools.workbench.services.verifier.api.client.maps.KeyDefinition;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class FieldCondition<T extends Comparable>
         extends Condition {
 
-    private final Field  field;
+    private final Field field;
     private final String operator;
 
-    public FieldCondition( final Field field,
-                           final Column column,
-                           final String operator,
-                           final Values<T> values,
-                           final AnalyzerConfiguration configuration ) {
-        super( column,
-               ConditionSuperType.FIELD_CONDITION,
-               values,
-               configuration );
+    public FieldCondition(final Field field,
+                          final Column column,
+                          final String operator,
+                          final Values<T> values,
+                          final AnalyzerConfiguration configuration) {
+        super(column,
+              ConditionSuperType.FIELD_CONDITION,
+              values,
+              configuration);
 
-        this.field = PortablePreconditions.checkNotNull( "field",
-                                                         field );
-        this.operator = PortablePreconditions.checkNotNull( "operator",
-                                                            operator );
+        this.field = PortablePreconditions.checkNotNull("field",
+                                                        field);
+        this.operator = PortablePreconditions.checkNotNull("operator",
+                                                           operator);
     }
-
 
     public Field getField() {
         return field;
@@ -63,19 +61,19 @@ public class FieldCondition<T extends Comparable>
     @Override
     public Key[] keys() {
         final ArrayList<Key> keys = new ArrayList<>();
-        for ( final Key key : super.keys() ) {
-            keys.add( key );
+        for (final Key key : super.keys()) {
+            keys.add(key);
         }
 
-        return keys.toArray( new Key[keys.size()] );
+        return keys.toArray(new Key[keys.size()]);
     }
 
     public static KeyDefinition[] keyDefinitions() {
         final ArrayList<KeyDefinition> keyDefinitions = new ArrayList<>();
-        for ( final KeyDefinition keyDefinition : Condition.keyDefinitions() ) {
-            keyDefinitions.add( keyDefinition );
+        for (final KeyDefinition keyDefinition : Condition.keyDefinitions()) {
+            keyDefinitions.add(keyDefinition);
         }
 
-        return keyDefinitions.toArray( new KeyDefinition[keyDefinitions.size()] );
+        return keyDefinitions.toArray(new KeyDefinition[keyDefinitions.size()]);
     }
 }

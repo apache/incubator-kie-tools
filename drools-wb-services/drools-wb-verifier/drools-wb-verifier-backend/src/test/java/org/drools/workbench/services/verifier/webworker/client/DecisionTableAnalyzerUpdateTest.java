@@ -17,10 +17,10 @@
 package org.drools.workbench.services.verifier.webworker.client;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 import static org.drools.workbench.services.verifier.webworker.client.testutil.ExtendedGuidedDecisionTableBuilder.*;
 import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.*;
@@ -75,7 +75,7 @@ public class DecisionTableAnalyzerUpdateTest
         assertContains(analyzerProvider.getAnalysisReport(),
                        REDUNDANT_ROWS,
                        Severity.WARNING,
-                       1,2);
+                       1, 2);
 
         setValue(1,
                  2,
@@ -159,7 +159,7 @@ public class DecisionTableAnalyzerUpdateTest
         assertContains(analyzerProvider.getAnalysisReport(),
                        REDUNDANT_ROWS,
                        Severity.WARNING,
-                       1,2);
+                       1, 2);
 
         // REMOVE 2
         removeRow(0);

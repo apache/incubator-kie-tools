@@ -19,7 +19,7 @@ package org.drools.workbench.services.verifier.core.checks.base;
 import java.util.List;
 
 import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspector;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class PairCheckBundle
         extends PriorityListCheck {
@@ -27,15 +27,15 @@ public class PairCheckBundle
     protected final RuleInspector ruleInspector;
     protected final RuleInspector other;
 
-    public PairCheckBundle( final RuleInspector ruleInspector,
-                            final RuleInspector other,
-                            final List<Check> filteredSet ) {
-        super( filteredSet );
+    public PairCheckBundle(final RuleInspector ruleInspector,
+                           final RuleInspector other,
+                           final List<Check> filteredSet) {
+        super(filteredSet);
 
-        this.ruleInspector = PortablePreconditions.checkNotNull( "ruleInspector",
-                                                                 ruleInspector );
-        this.other = PortablePreconditions.checkNotNull( "other",
-                                                         other );
+        this.ruleInspector = PortablePreconditions.checkNotNull("ruleInspector",
+                                                                ruleInspector);
+        this.other = PortablePreconditions.checkNotNull("other",
+                                                        other);
     }
 
     public RuleInspector getRuleInspector() {
@@ -45,5 +45,4 @@ public class PairCheckBundle
     public RuleInspector getOther() {
         return other;
     }
-
 }

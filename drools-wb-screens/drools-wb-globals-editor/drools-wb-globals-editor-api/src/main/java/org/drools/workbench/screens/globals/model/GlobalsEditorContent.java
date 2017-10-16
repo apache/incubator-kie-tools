@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 @Portable
 public class GlobalsEditorContent {
@@ -32,15 +32,15 @@ public class GlobalsEditorContent {
     public GlobalsEditorContent() {
     }
 
-    public GlobalsEditorContent( final GlobalsModel model,
-                                 final Overview overview,
-                                 final List<String> fullyQualifiedClassNames ) {
-        this.model = PortablePreconditions.checkNotNull( "model",
-                                                         model );
-        this.overview = PortablePreconditions.checkNotNull( "overview",
-                                                            overview );
-        this.fullyQualifiedClassNames = PortablePreconditions.checkNotNull( "fullyQualifiedClassNames",
-                                                                            fullyQualifiedClassNames );
+    public GlobalsEditorContent(final GlobalsModel model,
+                                final Overview overview,
+                                final List<String> fullyQualifiedClassNames) {
+        this.model = PortablePreconditions.checkNotNull("model",
+                                                        model);
+        this.overview = PortablePreconditions.checkNotNull("overview",
+                                                           overview);
+        this.fullyQualifiedClassNames = PortablePreconditions.checkNotNull("fullyQualifiedClassNames",
+                                                                           fullyQualifiedClassNames);
     }
 
     public GlobalsModel getModel() {
@@ -54,5 +54,4 @@ public class GlobalsEditorContent {
     public Overview getOverview() {
         return overview;
     }
-
 }

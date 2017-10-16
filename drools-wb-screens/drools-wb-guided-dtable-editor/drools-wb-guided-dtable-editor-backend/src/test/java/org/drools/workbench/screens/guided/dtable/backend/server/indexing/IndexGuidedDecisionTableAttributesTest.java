@@ -20,11 +20,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.apache.lucene.search.Query;
-import org.appformer.project.datamodel.imports.Import;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
 import org.junit.Test;
+import org.kie.soup.project.datamodel.imports.Import;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.query.builder.SingleTermQueryBuilder;
@@ -38,24 +38,24 @@ public class IndexGuidedDecisionTableAttributesTest extends BaseIndexingTest<Gui
     @Test
     public void testIndexGuidedDecisionTableAttributes() throws IOException, InterruptedException {
         //Add test files
-        final Path path = basePath.resolve( "dtable1.gdst" );
-        final GuidedDecisionTable52 model = GuidedDecisionTableFactory.makeTableWithAttributeCol( "org.drools.workbench.screens.guided.dtable.backend.server.indexing",
-                                                                                                  new ArrayList<Import>() {{
-                                                                                                      add( new Import( "org.drools.workbench.screens.guided.dtable.backend.server.indexing.classes.Applicant" ) );
-                                                                                                  }},
-                                                                                                  "dtable1" );
-        final String xml = GuidedDTXMLPersistence.getInstance().marshal( model );
-        ioService().write( path,
-                           xml );
+        final Path path = basePath.resolve("dtable1.gdst");
+        final GuidedDecisionTable52 model = GuidedDecisionTableFactory.makeTableWithAttributeCol("org.drools.workbench.screens.guided.dtable.backend.server.indexing",
+                                                                                                 new ArrayList<Import>() {{
+                                                                                                     add(new Import("org.drools.workbench.screens.guided.dtable.backend.server.indexing.classes.Applicant"));
+                                                                                                 }},
+                                                                                                 "dtable1");
+        final String xml = GuidedDTXMLPersistence.getInstance().marshal(model);
+        ioService().write(path,
+                          xml);
 
-        Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+        Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        final Index index = getConfig().getIndexManager().get( org.uberfire.ext.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
+        final Index index = getConfig().getIndexManager().get(org.uberfire.ext.metadata.io.KObjectUtil.toKCluster(basePath.getFileSystem()));
 
         //Decision Table defining a RuleFlow-Group named myRuleFlowGroup. This should match dtable1.gdst
         //This checks whether there is a Rule Attribute "ruleflow-group" and its Value is "myRuleflowGroup"
         {
-            final Query query = new SingleTermQueryBuilder( new ValueSharedPartIndexTerm( "myRuleFlowGroup", PartType.RULEFLOW_GROUP ) )
+            final Query query = new SingleTermQueryBuilder(new ValueSharedPartIndexTerm("myRuleFlowGroup", PartType.RULEFLOW_GROUP))
                     .build();
             searchFor(index, query, 1, path);
         }
@@ -75,5 +75,4 @@ public class IndexGuidedDecisionTableAttributesTest extends BaseIndexingTest<Gui
     protected String getRepositoryName() {
         return this.getClass().getSimpleName();
     }
-
 }

@@ -19,13 +19,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.appformer.project.datamodel.imports.Import;
-import org.appformer.project.datamodel.imports.Imports;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionInsertNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.Node;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.soup.project.datamodel.imports.Import;
+import org.kie.soup.project.datamodel.imports.Imports;
 
 /**
  * A GuidedDecisionTree Visitor to identify fully qualified class names used by the GuidedDecisionTree
@@ -36,9 +36,9 @@ public class GuidedDecisionTreeModelVisitor {
     private final String packageName;
     private final Imports imports;
 
-    public GuidedDecisionTreeModelVisitor( final GuidedDecisionTree model ) {
-        this.model = PortablePreconditions.checkNotNull( "model",
-                                                         model );
+    public GuidedDecisionTreeModelVisitor(final GuidedDecisionTree model) {
+        this.model = PortablePreconditions.checkNotNull("model",
+                                                        model);
         this.packageName = model.getPackageName();
         this.imports = model.getImports();
     }
@@ -47,51 +47,50 @@ public class GuidedDecisionTreeModelVisitor {
         final Set<String> factTypes = new HashSet<String>();
 
         //Extract Fact Types from model
-        factTypes.addAll( visitNode( model.getRoot() ) );
+        factTypes.addAll(visitNode(model.getRoot()));
 
         //Convert Fact Types into Fully Qualified Class Names
         final Set<String> fullyQualifiedClassNames = new HashSet<String>();
-        for ( String factType : factTypes ) {
-            fullyQualifiedClassNames.add( convertToFullyQualifiedClassName( factType ) );
+        for (String factType : factTypes) {
+            fullyQualifiedClassNames.add(convertToFullyQualifiedClassName(factType));
         }
 
         return fullyQualifiedClassNames;
     }
 
-    private Set<String> visitNode( final Node node ) {
-        if ( node == null ) {
+    private Set<String> visitNode(final Node node) {
+        if (node == null) {
             return Collections.EMPTY_SET;
         }
         final Set<String> factTypes = new HashSet<String>();
-        if ( node instanceof TypeNode ) {
+        if (node instanceof TypeNode) {
             final TypeNode tn = (TypeNode) node;
-            factTypes.add( tn.getClassName() );
-        } else if ( node instanceof ActionInsertNode ) {
+            factTypes.add(tn.getClassName());
+        } else if (node instanceof ActionInsertNode) {
             final ActionInsertNode an = (ActionInsertNode) node;
-            factTypes.add( an.getClassName() );
+            factTypes.add(an.getClassName());
         }
-        for ( Node child : node.getChildren() ) {
-            factTypes.addAll( visitNode( child ) );
+        for (Node child : node.getChildren()) {
+            factTypes.addAll(visitNode(child));
         }
         return factTypes;
     }
 
     //Get the fully qualified class name of the fact type
-    private String convertToFullyQualifiedClassName( final String factType ) {
-        if ( factType.contains( "." ) ) {
+    private String convertToFullyQualifiedClassName(final String factType) {
+        if (factType.contains(".")) {
             return factType;
         }
         String fullyQualifiedClassName = null;
-        for ( Import imp : imports.getImports() ) {
-            if ( imp.getType().endsWith( factType ) ) {
+        for (Import imp : imports.getImports()) {
+            if (imp.getType().endsWith(factType)) {
                 fullyQualifiedClassName = imp.getType();
                 break;
             }
         }
-        if ( fullyQualifiedClassName == null ) {
+        if (fullyQualifiedClassName == null) {
             fullyQualifiedClassName = packageName + "." + factType;
         }
         return fullyQualifiedClassName;
     }
-
 }

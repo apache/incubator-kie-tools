@@ -26,7 +26,6 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.appformer.project.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.workitems.PortableFloatParameterDefinition;
 import org.drools.workbench.models.datamodel.workitems.PortableParameterDefinition;
@@ -56,6 +55,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

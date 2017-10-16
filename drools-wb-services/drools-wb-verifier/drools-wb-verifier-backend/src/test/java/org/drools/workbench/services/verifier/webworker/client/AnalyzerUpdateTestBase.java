@@ -19,7 +19,6 @@ package org.drools.workbench.services.verifier.webworker.client;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
@@ -31,6 +30,7 @@ import org.drools.workbench.services.verifier.plugin.client.builders.BuildExcept
 import org.drools.workbench.services.verifier.plugin.client.builders.ModelMetaDataEnhancer;
 import org.drools.workbench.services.verifier.webworker.client.testutil.AnalyzerProvider;
 import org.junit.Before;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.loadResource;
 

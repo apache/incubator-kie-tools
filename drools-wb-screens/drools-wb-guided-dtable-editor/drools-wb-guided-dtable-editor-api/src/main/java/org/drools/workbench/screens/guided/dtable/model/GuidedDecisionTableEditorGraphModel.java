@@ -21,8 +21,8 @@ import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 @Portable
 public class GuidedDecisionTableEditorGraphModel {
@@ -34,17 +34,17 @@ public class GuidedDecisionTableEditorGraphModel {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null || getClass() != o.getClass() ) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
         GuidedDecisionTableEditorGraphModel that = (GuidedDecisionTableEditorGraphModel) o;
 
-        return entries.equals( that.entries );
+        return entries.equals(that.entries);
     }
 
     @Override
@@ -60,22 +60,22 @@ public class GuidedDecisionTableEditorGraphModel {
         private Double x;
         private Double y;
 
-        public GuidedDecisionTableGraphEntry( final Path pathHead,
-                                              final Path pathVersion ) {
-            this( pathHead,
-                  pathVersion,
-                  null,
-                  null );
+        public GuidedDecisionTableGraphEntry(final Path pathHead,
+                                             final Path pathVersion) {
+            this(pathHead,
+                 pathVersion,
+                 null,
+                 null);
         }
 
-        public GuidedDecisionTableGraphEntry( final @MapsTo("pathHead") Path pathHead,
-                                              final @MapsTo("pathVersion") Path pathVersion,
-                                              final @MapsTo("x") Double x,
-                                              final @MapsTo("y") Double y ) {
-            this.pathHead = PortablePreconditions.checkNotNull( "pathHead",
-                                                                pathHead );
-            this.pathVersion = PortablePreconditions.checkNotNull( "pathVersion",
-                                                                   pathVersion );
+        public GuidedDecisionTableGraphEntry(final @MapsTo("pathHead") Path pathHead,
+                                             final @MapsTo("pathVersion") Path pathVersion,
+                                             final @MapsTo("x") Double x,
+                                             final @MapsTo("y") Double y) {
+            this.pathHead = PortablePreconditions.checkNotNull("pathHead",
+                                                               pathHead);
+            this.pathVersion = PortablePreconditions.checkNotNull("pathVersion",
+                                                                  pathVersion);
             this.x = x;
             this.y = y;
         }
@@ -84,7 +84,7 @@ public class GuidedDecisionTableEditorGraphModel {
             return pathHead;
         }
 
-        public void setPathHead( final Path pathHead ) {
+        public void setPathHead(final Path pathHead) {
             this.pathHead = pathHead;
         }
 
@@ -92,7 +92,7 @@ public class GuidedDecisionTableEditorGraphModel {
             return pathVersion;
         }
 
-        public void setPathVersion( final Path pathVersion ) {
+        public void setPathVersion(final Path pathVersion) {
             this.pathVersion = pathVersion;
         }
 
@@ -105,27 +105,26 @@ public class GuidedDecisionTableEditorGraphModel {
         }
 
         @Override
-        public boolean equals( Object o ) {
-            if ( this == o ) {
+        public boolean equals(Object o) {
+            if (this == o) {
                 return true;
             }
-            if ( o == null || getClass() != o.getClass() ) {
+            if (o == null || getClass() != o.getClass()) {
                 return false;
             }
 
             GuidedDecisionTableGraphEntry that = (GuidedDecisionTableGraphEntry) o;
 
-            if ( !pathHead.equals( that.pathHead ) ) {
+            if (!pathHead.equals(that.pathHead)) {
                 return false;
             }
-            if ( !pathVersion.equals( that.pathVersion ) ) {
+            if (!pathVersion.equals(that.pathVersion)) {
                 return false;
             }
-            if ( x != null ? !x.equals( that.x ) : that.x != null ) {
+            if (x != null ? !x.equals(that.x) : that.x != null) {
                 return false;
             }
-            return !( y != null ? !y.equals( that.y ) : that.y != null );
-
+            return !(y != null ? !y.equals(that.y) : that.y != null);
         }
 
         @Override
@@ -134,12 +133,11 @@ public class GuidedDecisionTableEditorGraphModel {
             result = ~~result;
             result = 31 * result + pathVersion.hashCode();
             result = ~~result;
-            result = 31 * result + ( x != null ? x.hashCode() : 0 );
+            result = 31 * result + (x != null ? x.hashCode() : 0);
             result = ~~result;
-            result = 31 * result + ( y != null ? y.hashCode() : 0 );
+            result = 31 * result + (y != null ? y.hashCode() : 0);
             result = ~~result;
             return result;
         }
     }
-
 }

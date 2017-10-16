@@ -16,16 +16,17 @@
 package org.drools.workbench.screens.guided.dtree.backend.server;
 
 import java.util.Date;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.dtree.backend.GuidedDecisionTreeDRLPersistence;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
 import org.drools.workbench.screens.guided.dtree.type.GuidedDTreeResourceTypeDefinition;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -61,33 +62,32 @@ public class GuidedDecisionTreeEditorCopyHelper implements CopyHelper {
     private CommentedOptionFactory commentedOptionFactory;
 
     @Override
-    public boolean supports( final Path destination ) {
-        return ( resourceType.accept( destination ) );
+    public boolean supports(final Path destination) {
+        return (resourceType.accept(destination));
     }
 
     @Override
-    public void postProcess( final Path source,
-                             final Path destination ) {
+    public void postProcess(final Path source,
+                            final Path destination) {
         //Load existing file
-        final org.uberfire.java.nio.file.Path _destination = Paths.convert( destination );
-        final String drl = ioService.readAllString( Paths.convert( destination ) );
-        final String baseFileName = FileNameUtil.removeExtension( source,
-                                                                  resourceType );
-        final PackageDataModelOracle oracle = dataModelService.getDataModel( source );
+        final org.uberfire.java.nio.file.Path _destination = Paths.convert(destination);
+        final String drl = ioService.readAllString(Paths.convert(destination));
+        final String baseFileName = FileNameUtil.removeExtension(source,
+                                                                 resourceType);
+        final PackageDataModelOracle oracle = dataModelService.getDataModel(source);
 
-        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                   baseFileName,
-                                                                                                   oracle );
+        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal(drl,
+                                                                                                  baseFileName,
+                                                                                                  oracle);
 
         //Update tree name
-        final String treeName = FileNameUtil.removeExtension( destination,
-                                                              resourceType );
-        model.setTreeName( treeName );
+        final String treeName = FileNameUtil.removeExtension(destination,
+                                                             resourceType);
+        model.setTreeName(treeName);
 
         //Save file
-        ioService.write( _destination,
-                         GuidedDecisionTreeDRLPersistence.getInstance().marshal( model ),
-                         commentedOptionFactory.makeCommentedOption( "File [" + source.toURI() + "] copied to [" + destination.toURI() + "]." ) );
+        ioService.write(_destination,
+                        GuidedDecisionTreeDRLPersistence.getInstance().marshal(model),
+                        commentedOptionFactory.makeCommentedOption("File [" + source.toURI() + "] copied to [" + destination.toURI() + "]."));
     }
-
 }

@@ -16,16 +16,17 @@
 package org.drools.workbench.screens.guided.dtable.backend.server.indexing;
 
 import java.util.HashMap;
+
 import javax.enterprise.context.ApplicationScoped;
 
-import org.appformer.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.FieldAccessorsAndMutators;
-import org.appformer.project.datamodel.oracle.ModelField;
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.screens.guided.dtable.backend.server.indexing.classes.Applicant;
 import org.drools.workbench.screens.guided.dtable.backend.server.indexing.classes.Mortgage;
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
+import org.kie.soup.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
+import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.io.IOService;

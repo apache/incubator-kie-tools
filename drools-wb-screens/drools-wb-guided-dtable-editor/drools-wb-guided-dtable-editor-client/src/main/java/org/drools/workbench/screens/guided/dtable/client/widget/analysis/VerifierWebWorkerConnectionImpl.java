@@ -20,12 +20,12 @@ import java.util.logging.Logger;
 import com.google.gwt.webworker.client.Worker;
 import org.drools.workbench.services.verifier.plugin.client.api.Initialize;
 import org.drools.workbench.services.verifier.plugin.client.api.RequestStatus;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class VerifierWebWorkerConnectionImpl
         implements VerifierWebWorkerConnection {
 
-    private static final Logger LOGGER = Logger.getLogger( "DTable Analyzer" );
+    private static final Logger LOGGER = Logger.getLogger("DTable Analyzer");
 
     private Worker worker = null;
 
@@ -33,25 +33,25 @@ public class VerifierWebWorkerConnectionImpl
     private final Receiver receiver;
     private final Initialize initialize;
 
-    public VerifierWebWorkerConnectionImpl( final Initialize initialize,
-                                            final Poster poster,
-                                            final Receiver receiver ) {
+    public VerifierWebWorkerConnectionImpl(final Initialize initialize,
+                                           final Poster poster,
+                                           final Receiver receiver) {
 
-        this.initialize = PortablePreconditions.checkNotNull( "initialize",
-                                                              initialize );
-        this.poster = PortablePreconditions.checkNotNull( "poster",
-                                                          poster );
-        this.receiver = PortablePreconditions.checkNotNull( "receiver",
-                                                            receiver );
+        this.initialize = PortablePreconditions.checkNotNull("initialize",
+                                                             initialize);
+        this.poster = PortablePreconditions.checkNotNull("poster",
+                                                         poster);
+        this.receiver = PortablePreconditions.checkNotNull("receiver",
+                                                           receiver);
 
-        LOGGER.finest( "Created Web Worker" );
+        LOGGER.finest("Created Web Worker");
     }
 
     private void startWorker() {
-        worker = Worker.create( "verifier/verifier.nocache.js" );
+        worker = Worker.create("verifier/verifier.nocache.js");
 
-        poster.setUp( worker );
-        receiver.setUp( worker );
+        poster.setUp(worker);
+        receiver.setUp(worker);
     }
 
     @Override
@@ -59,17 +59,17 @@ public class VerifierWebWorkerConnectionImpl
 
         receiver.activate();
 
-        if ( worker == null ) {
+        if (worker == null) {
             startWorker();
-            poster.post( initialize );
+            poster.post(initialize);
         } else {
-            poster.post( new RequestStatus() );
+            poster.post(new RequestStatus());
         }
     }
 
     @Override
     public void terminate() {
-        if ( worker != null ) {
+        if (worker != null) {
             worker.terminate();
         }
     }

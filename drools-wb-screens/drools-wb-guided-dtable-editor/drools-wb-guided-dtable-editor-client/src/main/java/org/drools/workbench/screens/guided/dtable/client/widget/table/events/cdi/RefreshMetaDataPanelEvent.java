@@ -19,17 +19,19 @@ import java.util.List;
 
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class RefreshMetaDataPanelEvent {
 
     private final GuidedDecisionTableView.Presenter presenter;
     private final List<MetadataCol52> columns;
 
-    public RefreshMetaDataPanelEvent( final GuidedDecisionTableView.Presenter presenter,
-                                      final List<MetadataCol52> columns ) {
-        this.presenter = PortablePreconditions.checkNotNull( "presenter", presenter );
-        this.columns = PortablePreconditions.checkNotNull( "columns", columns );
+    public RefreshMetaDataPanelEvent(final GuidedDecisionTableView.Presenter presenter,
+                                     final List<MetadataCol52> columns) {
+        this.presenter = PortablePreconditions.checkNotNull("presenter",
+                                                            presenter);
+        this.columns = PortablePreconditions.checkNotNull("columns",
+                                                          columns);
     }
 
     public GuidedDecisionTableView.Presenter getPresenter() {
@@ -39,5 +41,4 @@ public class RefreshMetaDataPanelEvent {
     public List<MetadataCol52> getColumns() {
         return columns;
     }
-
 }

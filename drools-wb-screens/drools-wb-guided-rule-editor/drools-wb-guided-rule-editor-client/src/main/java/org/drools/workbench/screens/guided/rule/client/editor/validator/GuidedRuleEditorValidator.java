@@ -18,7 +18,6 @@ package org.drools.workbench.screens.guided.rule.client.editor.validator;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
@@ -30,8 +29,9 @@ import org.drools.workbench.models.datamodel.rule.FromEntryPointFactPattern;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
+import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 public class GuidedRuleEditorValidator {
 
@@ -41,11 +41,11 @@ public class GuidedRuleEditorValidator {
     private final Constants constants;
 
     public GuidedRuleEditorValidator(final RuleModel model,
-            final Constants constants) {
+                                     final Constants constants) {
         this.model = PortablePreconditions.checkNotNull("model",
-                model);
+                                                        model);
         this.constants = PortablePreconditions.checkNotNull("constants",
-                constants);
+                                                            constants);
     }
 
     public boolean isValid() {
@@ -126,14 +126,13 @@ public class GuidedRuleEditorValidator {
 
         if (fromCollectCompositeFactPattern.getRightPattern() == null) {
             reportMandatoryFieldsError();
-        } else if (fromCollectCompositeFactPattern.getFactPattern() == null){
+        } else if (fromCollectCompositeFactPattern.getFactPattern() == null) {
             reportMandatoryFieldsError();
         } else {
             validateIPattern(fromCollectCompositeFactPattern.getRightPattern());
         }
 
         validateIPattern(fromCollectCompositeFactPattern.getFactPattern());
-
     }
 
     private boolean isAccumulateMissing(final FromAccumulateCompositeFactPattern fromAccumulateCompositeFactPattern) {

@@ -18,9 +18,9 @@ package org.drools.workbench.screens.globals.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.appformer.project.datamodel.packages.HasPackageName;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.soup.project.datamodel.packages.HasPackageName;
 
 /**
  * The model for Globals
@@ -36,9 +36,9 @@ public class GlobalsModel implements HasPackageName {
         return globals;
     }
 
-    public void setGlobals( final List<Global> globals ) {
-        this.globals = PortablePreconditions.checkNotNull( "globals",
-                                                           globals );
+    public void setGlobals(final List<Global> globals) {
+        this.globals = PortablePreconditions.checkNotNull("globals",
+                                                          globals);
     }
 
     @Override
@@ -47,26 +47,26 @@ public class GlobalsModel implements HasPackageName {
     }
 
     @Override
-    public void setPackageName( final String packageName ) {
-        this.packageName = PortablePreconditions.checkNotNull( "packageName",
-                                                               packageName );
+    public void setPackageName(final String packageName) {
+        this.packageName = PortablePreconditions.checkNotNull("packageName",
+                                                              packageName);
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof GlobalsModel ) ) {
+        if (!(o instanceof GlobalsModel)) {
             return false;
         }
 
         GlobalsModel that = (GlobalsModel) o;
 
-        if ( !globals.equals( that.globals ) ) {
+        if (!globals.equals(that.globals)) {
             return false;
         }
-        if ( packageName != null ? !packageName.equals( that.packageName ) : that.packageName != null ) {
+        if (packageName != null ? !packageName.equals(that.packageName) : that.packageName != null) {
             return false;
         }
 
@@ -79,5 +79,4 @@ public class GlobalsModel implements HasPackageName {
         result = 31 * result + globals.hashCode();
         return result;
     }
-
 }

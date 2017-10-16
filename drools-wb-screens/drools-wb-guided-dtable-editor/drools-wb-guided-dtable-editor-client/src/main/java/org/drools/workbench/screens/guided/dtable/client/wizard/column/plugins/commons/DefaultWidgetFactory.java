@@ -18,7 +18,6 @@ package org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
@@ -29,6 +28,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDeci
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.CellUtilities;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.commons.HasValueOptionsPage;
+import org.kie.soup.project.datamodel.oracle.DataType;
 
 public class DefaultWidgetFactory<T extends BaseDecisionTableColumnPlugin & HasValueOptionsPage> extends BaseWidgetFactory<T> {
 

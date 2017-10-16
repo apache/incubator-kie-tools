@@ -17,15 +17,16 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.model.con
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.OperatorsOracle;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.OperatorsOracle;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 
@@ -38,64 +39,62 @@ public class BRLConditionVariableColumnConverter extends BaseColumnConverterImpl
     }
 
     @Override
-    public boolean handles( final BaseColumn column ) {
+    public boolean handles(final BaseColumn column) {
         return column instanceof BRLConditionVariableColumn;
     }
 
     @Override
-    public GridColumn<?> convertColumn( final BaseColumn column,
-                                        final GuidedDecisionTablePresenter.Access access,
-                                        final GuidedDecisionTableView gridWidget ) {
-        return convertColumn( (BRLConditionVariableColumn) column,
-                              access,
-                              gridWidget );
+    public GridColumn<?> convertColumn(final BaseColumn column,
+                                       final GuidedDecisionTablePresenter.Access access,
+                                       final GuidedDecisionTableView gridWidget) {
+        return convertColumn((BRLConditionVariableColumn) column,
+                             access,
+                             gridWidget);
     }
 
-    private GridColumn<?> convertColumn( final BRLConditionVariableColumn column,
-                                         final GuidedDecisionTablePresenter.Access access,
-                                         final GuidedDecisionTableView gridWidget ) {
+    private GridColumn<?> convertColumn(final BRLConditionVariableColumn column,
+                                        final GuidedDecisionTablePresenter.Access access,
+                                        final GuidedDecisionTableView gridWidget) {
         //Check if the column has an enumeration
         final String factType = column.getFactType();
         final String factField = column.getFactField();
-        final DataType.DataTypes dataType = columnUtilities.getDataType( column );
-        if ( oracle.hasEnums( factType,
-                              factField ) ) {
-            if ( OperatorsOracle.operatorRequiresList( column.getOperator() ) ) {
-                return newMultipleSelectEnumColumn( factType,
+        final DataType.DataTypes dataType = columnUtilities.getDataType(column);
+        if (oracle.hasEnums(factType,
+                            factField)) {
+            if (OperatorsOracle.operatorRequiresList(column.getOperator())) {
+                return newMultipleSelectEnumColumn(factType,
+                                                   factField,
+                                                   column,
+                                                   access,
+                                                   gridWidget);
+            } else {
+                return newSingleSelectionEnumColumn(factType,
                                                     factField,
+                                                    dataType,
                                                     column,
                                                     access,
-                                                    gridWidget );
-
-            } else {
-                return newSingleSelectionEnumColumn( factType,
-                                                     factField,
-                                                     dataType,
-                                                     column,
-                                                     access,
-                                                     gridWidget );
+                                                    gridWidget);
             }
         }
 
-        return newColumn( column,
-                          access,
-                          gridWidget );
+        return newColumn(column,
+                         access,
+                         gridWidget);
     }
 
     @Override
-    public List<GridColumn.HeaderMetaData> makeHeaderMetaData( final BaseColumn column ) {
+    public List<GridColumn.HeaderMetaData> makeHeaderMetaData(final BaseColumn column) {
         return new ArrayList<GridColumn.HeaderMetaData>() {{
-            add( new BaseHeaderMetaData( column.getHeader(),
-                                         ConditionCol52.class.getName() ) );
-            if ( column instanceof BRLConditionVariableColumn ) {
-                BRLConditionVariableColumn brlConditionColumn = ( BRLConditionVariableColumn ) column;
-                if ( brlConditionColumn.getVarName() != null && ! brlConditionColumn.getVarName().isEmpty() ) {
-                    add( new BaseHeaderMetaData( brlConditionColumn.getVarName(),
-                                                 column.getHeader() )
+            add(new BaseHeaderMetaData(column.getHeader(),
+                                       ConditionCol52.class.getName()));
+            if (column instanceof BRLConditionVariableColumn) {
+                BRLConditionVariableColumn brlConditionColumn = (BRLConditionVariableColumn) column;
+                if (brlConditionColumn.getVarName() != null && !brlConditionColumn.getVarName().isEmpty()) {
+                    add(new BaseHeaderMetaData(brlConditionColumn.getVarName(),
+                                               column.getHeader())
                     );
                 }
             }
         }};
     }
-
 }

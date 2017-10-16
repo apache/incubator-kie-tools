@@ -41,8 +41,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.DropDownData;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
@@ -58,6 +56,8 @@ import org.drools.workbench.screens.guided.rule.client.widget.EnumDropDown;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.DropDownData;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
@@ -74,7 +74,7 @@ public class ActionValueEditor
         extends Composite {
 
     private static final String DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
-    private static final DateTimeFormat DATE_FORMATTER = DateTimeFormat.getFormat( DATE_FORMAT );
+    private static final DateTimeFormat DATE_FORMATTER = DateTimeFormat.getFormat(DATE_FORMAT);
 
     private String factType;
     private ActionFieldValue value;
@@ -89,13 +89,13 @@ public class ActionValueEditor
     private boolean readOnly;
     private Command onChangeCommand;
 
-    public ActionValueEditor( final String factType,
-                              final ActionFieldValue value,
-                              final ActionFieldValue[] values,
-                              final RuleModeller modeller,
-                              final EventBus eventBus,
-                              final String variableType,
-                              final boolean readOnly ) {
+    public ActionValueEditor(final String factType,
+                             final ActionFieldValue value,
+                             final ActionFieldValue[] values,
+                             final RuleModeller modeller,
+                             final EventBus eventBus,
+                             final String variableType,
+                             final boolean readOnly) {
         this.readOnly = readOnly;
         this.root = new SimplePanel();
         this.factType = factType;
@@ -108,7 +108,7 @@ public class ActionValueEditor
         this.variableType = variableType;
 
         refresh();
-        initWidget( root );
+        initWidget(root);
     }
 
     public void refresh() {
@@ -118,79 +118,77 @@ public class ActionValueEditor
         getDropDownData();
 
         //If undefined let the user pick
-        if ( value.getNature() == FieldNatureType.TYPE_UNDEFINED ) {
+        if (value.getNature() == FieldNatureType.TYPE_UNDEFINED) {
 
             //Automatic decisions regarding FieldNature
-            if ( value.getValue() != null && value.getValue().length() > 0 ) {
-                if ( value.getValue().charAt( 0 ) == '=' ) {
-                    value.setNature( FieldNatureType.TYPE_VARIABLE );
+            if (value.getValue() != null && value.getValue().length() > 0) {
+                if (value.getValue().charAt(0) == '=') {
+                    value.setNature(FieldNatureType.TYPE_VARIABLE);
                 } else {
-                    value.setNature( FieldNatureType.TYPE_LITERAL );
+                    value.setNature(FieldNatureType.TYPE_LITERAL);
                 }
             } else {
-                root.add( choice() );
+                root.add(choice());
                 return;
             }
         }
 
         //Template TextBoxes are always Strings as they hold the template key for the actual value
-        if ( value.getNature() == FieldNatureType.TYPE_TEMPLATE ) {
-            Widget box = wrap( templateKeyEditor() );
-            root.add( box );
+        if (value.getNature() == FieldNatureType.TYPE_TEMPLATE) {
+            Widget box = wrap(templateKeyEditor());
+            root.add(box);
             return;
         }
 
         //Variable fields (including bound enumeration fields)
-        if ( value.getNature() == FieldNatureType.TYPE_VARIABLE ) {
-            Widget list = wrap( boundVariable() );
-            root.add( list );
+        if (value.getNature() == FieldNatureType.TYPE_VARIABLE) {
+            Widget list = wrap(boundVariable());
+            root.add(list);
             return;
         }
 
         //Enumerations - since this does not use FieldNature it should follow those that do
-        if ( dropDownData != null && ( dropDownData.getFixedList() != null || dropDownData.getQueryExpression() != null ) ) {
-            Widget list = wrap( enumEditor() );
-            root.add( list );
+        if (dropDownData != null && (dropDownData.getFixedList() != null || dropDownData.getQueryExpression() != null)) {
+            Widget list = wrap(enumEditor());
+            root.add(list);
             return;
         }
 
         //Formula require a 
-        if ( value.getNature() == FieldNatureType.TYPE_FORMULA ) {
-            Widget box = wrap( formulaEditor() );
-            root.add( box );
+        if (value.getNature() == FieldNatureType.TYPE_FORMULA) {
+            Widget box = wrap(formulaEditor());
+            root.add(box);
             return;
         }
 
         //Fall through for all remaining FieldNatures
-        Widget box = wrap( literalEditor() );
-        root.add( box );
-
+        Widget box = wrap(literalEditor());
+        root.add(box);
     }
 
     //Wrap a Constraint Value Editor with an icon to remove the type 
-    private Widget wrap( Widget w ) {
+    private Widget wrap(Widget w) {
         HorizontalPanel wrapper = new HorizontalPanel();
         Image clear = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
-        clear.setAltText( GuidedRuleEditorResources.CONSTANTS.RemoveActionValueDefinition() );
-        clear.setTitle( GuidedRuleEditorResources.CONSTANTS.RemoveActionValueDefinition() );
-        clear.addClickHandler( new ClickHandler() {
+        clear.setAltText(GuidedRuleEditorResources.CONSTANTS.RemoveActionValueDefinition());
+        clear.setTitle(GuidedRuleEditorResources.CONSTANTS.RemoveActionValueDefinition());
+        clear.addClickHandler(new ClickHandler() {
 
-            public void onClick( ClickEvent event ) {
+            public void onClick(ClickEvent event) {
                 //Reset Constraint's value and value type
-                if ( Window.confirm( GuidedRuleEditorResources.CONSTANTS.RemoveActionValueDefinitionQuestion() ) ) {
-                    value.setNature( FieldNatureType.TYPE_UNDEFINED );
-                    value.setValue( null );
+                if (Window.confirm(GuidedRuleEditorResources.CONSTANTS.RemoveActionValueDefinitionQuestion())) {
+                    value.setNature(FieldNatureType.TYPE_UNDEFINED);
+                    value.setValue(null);
                     doTypeChosen();
                 }
             }
+        });
 
-        } );
-
-        wrapper.add( w );
-        if ( !this.readOnly ) {
-            wrapper.add( clear );
-            wrapper.setCellVerticalAlignment( clear,
-                                              HasVerticalAlignment.ALIGN_MIDDLE );
+        wrapper.add(w);
+        if (!this.readOnly) {
+            wrapper.add(clear);
+            wrapper.setCellVerticalAlignment(clear,
+                                             HasVerticalAlignment.ALIGN_MIDDLE);
         }
         return wrapper;
     }
@@ -201,7 +199,7 @@ public class ActionValueEditor
         refresh();
     }
 
-    private void doTypeChosen( FormStylePopup form ) {
+    private void doTypeChosen(FormStylePopup form) {
         doTypeChosen();
         form.hide();
     }
@@ -209,120 +207,119 @@ public class ActionValueEditor
     private Widget boundVariable() {
         // If there is a bound variable that is the same type of the current variable type, then display a list
         ListBox listVariable = new ListBox();
-        listVariable.addItem( GuidedRuleEditorResources.CONSTANTS.Choose() );
+        listVariable.addItem(GuidedRuleEditorResources.CONSTANTS.Choose());
         List<String> bindings = getApplicableBindings();
-        for ( String v : bindings ) {
-            listVariable.addItem( v );
+        for (String v : bindings) {
+            listVariable.addItem(v);
         }
 
         //Pre-select applicable item
-        if ( value.getValue().equals( "=" ) ) {
-            listVariable.setSelectedIndex( 0 );
+        if (value.getValue().equals("=")) {
+            listVariable.setSelectedIndex(0);
         } else {
-            for ( int i = 0; i < listVariable.getItemCount(); i++ ) {
-                if ( listVariable.getItemText( i ).equals( value.getValue().substring( 1 ) ) ) {
-                    listVariable.setSelectedIndex( i );
+            for (int i = 0; i < listVariable.getItemCount(); i++) {
+                if (listVariable.getItemText(i).equals(value.getValue().substring(1))) {
+                    listVariable.setSelectedIndex(i);
                 }
             }
         }
 
         //Add event handler
-        if ( listVariable.getItemCount() > 0 ) {
-            listVariable.addChangeHandler( new ChangeHandler() {
+        if (listVariable.getItemCount() > 0) {
+            listVariable.addChangeHandler(new ChangeHandler() {
 
-                public void onChange( ChangeEvent event ) {
+                public void onChange(ChangeEvent event) {
                     ListBox w = (ListBox) event.getSource();
-                    value.setValue( "=" + w.getValue( w.getSelectedIndex() ) );
+                    value.setValue("=" + w.getValue(w.getSelectedIndex()));
                     executeOnChangeCommand();
                     refresh();
                 }
-            } );
+            });
         }
 
-        if ( this.readOnly ) {
-            return new SmallLabel( listVariable.getItemText( listVariable.getSelectedIndex() ) );
+        if (this.readOnly) {
+            return new SmallLabel(listVariable.getItemText(listVariable.getSelectedIndex()));
         }
 
         return listVariable;
     }
 
     private String assertValue() {
-        if ( value.getValue() == null ) {
+        if (value.getValue() == null) {
             return "";
         }
         return value.getValue();
     }
 
     private Date assertDateValue() {
-        if ( value.getValue() == null ) {
+        if (value.getValue() == null) {
             return null;
         }
         try {
-            return DATE_FORMATTER.parse( value.getValue() );
-
-        } catch ( IllegalArgumentException iae ) {
+            return DATE_FORMATTER.parse(value.getValue());
+        } catch (IllegalArgumentException iae) {
             return null;
         }
     }
 
     private Widget enumEditor() {
-        if ( this.readOnly ) {
-            return new SmallLabel( assertValue() );
+        if (this.readOnly) {
+            return new SmallLabel(assertValue());
         }
 
-        EnumDropDown enumDropDown = new EnumDropDown( value.getValue(),
-                                                      new DropDownValueChanged() {
+        EnumDropDown enumDropDown = new EnumDropDown(value.getValue(),
+                                                     new DropDownValueChanged() {
 
-                                                          public void valueChanged( String newText,
-                                                                                    String newValue ) {
-                                                              value.setValue( newValue );
-                                                              executeOnChangeCommand();
-                                                          }
-                                                      },
-                                                      dropDownData,
-                                                      modeller.getPath() );
+                                                         public void valueChanged(String newText,
+                                                                                  String newValue) {
+                                                             value.setValue(newValue);
+                                                             executeOnChangeCommand();
+                                                         }
+                                                     },
+                                                     dropDownData,
+                                                     modeller.getPath());
 
         return enumDropDown;
     }
 
     private Widget literalEditor() {
-        if ( this.readOnly ) {
-            return new SmallLabel( assertValue() );
+        if (this.readOnly) {
+            return new SmallLabel(assertValue());
         }
 
         //Date picker
-        if ( DataType.TYPE_DATE.equals( value.getType() ) ) {
+        if (DataType.TYPE_DATE.equals(value.getType())) {
 
-            final DatePicker datePicker = new DatePicker( false );
+            final DatePicker datePicker = new DatePicker(false);
 
             // Wire up update handler
-            datePicker.addValueChangeHandler( new ValueChangeHandler<Date>() {
+            datePicker.addValueChangeHandler(new ValueChangeHandler<Date>() {
                 @Override
-                public void onValueChange( ValueChangeEvent<Date> event ) {
+                public void onValueChange(ValueChangeEvent<Date> event) {
                     final Date date = datePicker.getValue();
-                    final String sDate = ( date == null ? null : DATE_FORMATTER.format( datePicker.getValue() ) );
-                    value.setValue( sDate );
+                    final String sDate = (date == null ? null : DATE_FORMATTER.format(datePicker.getValue()));
+                    value.setValue(sDate);
                 }
-            } );
+            });
 
-            datePicker.setFormat( DATE_FORMAT );
-            datePicker.setValue( assertDateValue() );
+            datePicker.setFormat(DATE_FORMAT);
+            datePicker.setValue(assertDateValue());
 
             return datePicker;
         }
 
         //Default editor for all other literals
-        final TextBox box = TextBoxFactory.getTextBox( value.getType() );
-        box.setStyleName( "constraint-value-Editor" );
-        box.addValueChangeHandler( new ValueChangeHandler<String>() {
+        final TextBox box = TextBoxFactory.getTextBox(value.getType());
+        box.setStyleName("constraint-value-Editor");
+        box.addValueChangeHandler(new ValueChangeHandler<String>() {
 
-            public void onValueChange( final ValueChangeEvent<String> event ) {
-                value.setValue( event.getValue() );
+            public void onValueChange(final ValueChangeEvent<String> event) {
+                value.setValue(event.getValue());
                 executeOnChangeCommand();
             }
-        } );
-        box.setText( assertValue() );
-        attachDisplayLengthHandler( box );
+        });
+        box.setText(assertValue());
+        attachDisplayLengthHandler(box);
         return box;
     }
 
@@ -330,146 +327,145 @@ public class ActionValueEditor
      * An editor for Template Keys
      */
     private Widget templateKeyEditor() {
-        if ( this.readOnly ) {
-            return new SmallLabel( assertValue() );
+        if (this.readOnly) {
+            return new SmallLabel(assertValue());
         }
 
         TemplateKeyTextBox box = new TemplateKeyTextBox();
-        box.addValueChangeHandler( new ValueChangeHandler<String>() {
+        box.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             @Override
-            public void onValueChange( ValueChangeEvent<String> event ) {
-                value.setValue( event.getValue() );
+            public void onValueChange(ValueChangeEvent<String> event) {
+                value.setValue(event.getValue());
                 executeOnChangeCommand();
             }
-
-        } );
+        });
         //FireEvents as the box could assume a default value
-        box.setValue( assertValue(),
-                      true );
-        attachDisplayLengthHandler( box );
+        box.setValue(assertValue(),
+                     true);
+        attachDisplayLengthHandler(box);
         return box;
     }
 
     /**
      * An editor for formula
+     *
      * @return
      */
     private Widget formulaEditor() {
-        if ( this.readOnly ) {
-            return new SmallLabel( assertValue() );
+        if (this.readOnly) {
+            return new SmallLabel(assertValue());
         }
 
         final TextBox box = new TextBox();
-        box.addValueChangeHandler( new ValueChangeHandler<String>() {
+        box.addValueChangeHandler(new ValueChangeHandler<String>() {
 
             @Override
-            public void onValueChange( ValueChangeEvent<String> event ) {
-                value.setValue( event.getValue() );
+            public void onValueChange(ValueChangeEvent<String> event) {
+                value.setValue(event.getValue());
                 executeOnChangeCommand();
             }
-
-        } );
+        });
         //FireEvents as the box could assume a default value
-        box.setValue( assertValue(),
-                      true );
-        attachDisplayLengthHandler( box );
+        box.setValue(assertValue(),
+                     true);
+        attachDisplayLengthHandler(box);
         return box;
     }
 
     //Only display the number of characters that have been entered
-    private void attachDisplayLengthHandler( final TextBox box ) {
+    private void attachDisplayLengthHandler(final TextBox box) {
         int length = box.getText().length();
 
-        ( (InputElement) box.getElement().cast() ).setSize( length > 0 ? length : 1 );
-        box.addKeyUpHandler( new KeyUpHandler() {
+        ((InputElement) box.getElement().cast()).setSize(length > 0 ? length : 1);
+        box.addKeyUpHandler(new KeyUpHandler() {
 
-            public void onKeyUp( KeyUpEvent event ) {
+            public void onKeyUp(KeyUpEvent event) {
                 int length = box.getText().length();
-                ( (InputElement) box.getElement().cast() ).setSize( length > 0 ? length : 1 );
+                ((InputElement) box.getElement().cast()).setSize(length > 0 ? length : 1);
             }
-        } );
+        });
     }
 
     private Widget choice() {
-        if ( this.readOnly ) {
+        if (this.readOnly) {
             return new HTML();
         } else {
             Image clickme = GuidedRuleEditorImages508.INSTANCE.Edit();
-            clickme.addClickHandler( new ClickHandler() {
-                public void onClick( ClickEvent event ) {
-                    showTypeChoice( (Widget) event.getSource() );
+            clickme.addClickHandler(new ClickHandler() {
+                public void onClick(ClickEvent event) {
+                    showTypeChoice((Widget) event.getSource());
                 }
-            } );
+            });
             return clickme;
         }
     }
 
-    protected void showTypeChoice( Widget w ) {
-        final FormStylePopup form = new FormStylePopup( GuidedRuleEditorImages508.INSTANCE.Wizard(),
-                                                        GuidedRuleEditorResources.CONSTANTS.FieldValue() );
-        Button lit = new Button( GuidedRuleEditorResources.CONSTANTS.LiteralValue() );
-        lit.addClickHandler( new ClickHandler() {
+    protected void showTypeChoice(Widget w) {
+        final FormStylePopup form = new FormStylePopup(GuidedRuleEditorImages508.INSTANCE.Wizard(),
+                                                       GuidedRuleEditorResources.CONSTANTS.FieldValue());
+        Button lit = new Button(GuidedRuleEditorResources.CONSTANTS.LiteralValue());
+        lit.addClickHandler(new ClickHandler() {
 
-            public void onClick( ClickEvent event ) {
-                value.setNature( FieldNatureType.TYPE_LITERAL );
-                value.setValue( "" );
-                doTypeChosen( form );
+            public void onClick(ClickEvent event) {
+                value.setNature(FieldNatureType.TYPE_LITERAL);
+                value.setValue("");
+                doTypeChosen(form);
             }
-        } );
+        });
 
-        form.addAttribute( GuidedRuleEditorResources.CONSTANTS.LiteralValue() + ":",
-                           widgets( lit,
-                                    new InfoPopup( GuidedRuleEditorResources.CONSTANTS.Literal(),
-                                                   GuidedRuleEditorResources.CONSTANTS.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation() ) ) );
+        form.addAttribute(GuidedRuleEditorResources.CONSTANTS.LiteralValue() + ":",
+                          widgets(lit,
+                                  new InfoPopup(GuidedRuleEditorResources.CONSTANTS.Literal(),
+                                                GuidedRuleEditorResources.CONSTANTS.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation())));
 
-        if ( modeller.isTemplate() ) {
-            Button templateButton = new Button( GuidedRuleEditorResources.CONSTANTS.TemplateKey() );
-            templateButton.addClickHandler( new ClickHandler() {
-                public void onClick( ClickEvent event ) {
-                    value.setNature( FieldNatureType.TYPE_TEMPLATE );
-                    value.setValue( "" );
-                    doTypeChosen( form );
+        if (modeller.isTemplate()) {
+            Button templateButton = new Button(GuidedRuleEditorResources.CONSTANTS.TemplateKey());
+            templateButton.addClickHandler(new ClickHandler() {
+                public void onClick(ClickEvent event) {
+                    value.setNature(FieldNatureType.TYPE_TEMPLATE);
+                    value.setValue("");
+                    doTypeChosen(form);
                 }
-            } );
-            form.addAttribute( GuidedRuleEditorResources.CONSTANTS.TemplateKey() + ":",
-                               widgets( templateButton,
-                                        new InfoPopup( GuidedRuleEditorResources.CONSTANTS.Literal(),
-                                                       GuidedRuleEditorResources.CONSTANTS.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation() ) ) );
+            });
+            form.addAttribute(GuidedRuleEditorResources.CONSTANTS.TemplateKey() + ":",
+                              widgets(templateButton,
+                                      new InfoPopup(GuidedRuleEditorResources.CONSTANTS.Literal(),
+                                                    GuidedRuleEditorResources.CONSTANTS.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation())));
         }
 
-        form.addRow( new HTML( "<hr/>" ) );
-        form.addRow( new SmallLabel( GuidedRuleEditorResources.CONSTANTS.AdvancedSection() ) );
+        form.addRow(new HTML("<hr/>"));
+        form.addRow(new SmallLabel(GuidedRuleEditorResources.CONSTANTS.AdvancedSection()));
 
-        Button formula = new Button( GuidedRuleEditorResources.CONSTANTS.Formula() );
-        formula.addClickHandler( new ClickHandler() {
+        Button formula = new Button(GuidedRuleEditorResources.CONSTANTS.Formula());
+        formula.addClickHandler(new ClickHandler() {
 
-            public void onClick( ClickEvent event ) {
-                value.setNature( FieldNatureType.TYPE_FORMULA );
-                doTypeChosen( form );
+            public void onClick(ClickEvent event) {
+                value.setNature(FieldNatureType.TYPE_FORMULA);
+                doTypeChosen(form);
             }
-        } );
+        });
 
         // If there is a bound Facts or Fields that are of the same type as the current variable type, then show a button
         List<String> bindings = getApplicableBindings();
-        if ( bindings.size() > 0 ) {
-            Button variable = new Button( GuidedRuleEditorResources.CONSTANTS.BoundVariable() );
-            form.addAttribute( GuidedRuleEditorResources.CONSTANTS.BoundVariable() + ":",
-                               variable );
-            variable.addClickHandler( new ClickHandler() {
+        if (bindings.size() > 0) {
+            Button variable = new Button(GuidedRuleEditorResources.CONSTANTS.BoundVariable());
+            form.addAttribute(GuidedRuleEditorResources.CONSTANTS.BoundVariable() + ":",
+                              variable);
+            variable.addClickHandler(new ClickHandler() {
 
-                public void onClick( ClickEvent event ) {
-                    value.setNature( FieldNatureType.TYPE_VARIABLE );
-                    value.setValue( "=" );
-                    doTypeChosen( form );
+                public void onClick(ClickEvent event) {
+                    value.setNature(FieldNatureType.TYPE_VARIABLE);
+                    value.setValue("=");
+                    doTypeChosen(form);
                 }
-            } );
+            });
         }
 
-        form.addAttribute( GuidedRuleEditorResources.CONSTANTS.Formula() + ":",
-                           widgets( formula,
-                                    new InfoPopup( GuidedRuleEditorResources.CONSTANTS.Formula(),
-                                                   GuidedRuleEditorResources.CONSTANTS.FormulaTip() ) ) );
+        form.addAttribute(GuidedRuleEditorResources.CONSTANTS.Formula() + ":",
+                          widgets(formula,
+                                  new InfoPopup(GuidedRuleEditorResources.CONSTANTS.Formula(),
+                                                GuidedRuleEditorResources.CONSTANTS.FormulaTip())));
 
         form.show();
     }
@@ -478,29 +474,29 @@ public class ActionValueEditor
         List<String> bindings = new ArrayList<String>();
 
         //Examine LHS Fact and Field bindings and RHS (new) Fact bindings
-        for ( String v : modeller.getModel().getAllVariables() ) {
+        for (String v : modeller.getModel().getAllVariables()) {
 
             //LHS FactPattern
-            FactPattern fp = modeller.getModel().getLHSBoundFact( v );
-            if ( fp != null ) {
-                if ( isLHSFactTypeEquivalent( v ) ) {
-                    bindings.add( v );
+            FactPattern fp = modeller.getModel().getLHSBoundFact(v);
+            if (fp != null) {
+                if (isLHSFactTypeEquivalent(v)) {
+                    bindings.add(v);
                 }
             }
 
             //LHS FieldConstraint
-            FieldConstraint fc = modeller.getModel().getLHSBoundField( v );
-            if ( fc != null ) {
-                if ( isLHSFieldTypeEquivalent( v ) ) {
-                    bindings.add( v );
+            FieldConstraint fc = modeller.getModel().getLHSBoundField(v);
+            if (fc != null) {
+                if (isLHSFieldTypeEquivalent(v)) {
+                    bindings.add(v);
                 }
             }
 
             //RHS ActionInsertFact
-            ActionInsertFact aif = modeller.getModel().getRHSBoundFact( v );
-            if ( aif != null ) {
-                if ( isRHSFieldTypeEquivalent( v ) ) {
-                    bindings.add( v );
+            ActionInsertFact aif = modeller.getModel().getRHSBoundFact(v);
+            if (aif != null) {
+                if (isRHSFieldTypeEquivalent(v)) {
+                    bindings.add(v);
                 }
             }
         }
@@ -508,100 +504,100 @@ public class ActionValueEditor
         return bindings;
     }
 
-    private boolean isLHSFactTypeEquivalent( String boundVariable ) {
-        String boundFactType = modeller.getModel().getLHSBoundFact( boundVariable ).getFactType();
+    private boolean isLHSFactTypeEquivalent(String boundVariable) {
+        String boundFactType = modeller.getModel().getLHSBoundFact(boundVariable).getFactType();
 
         //If the types are SuggestionCompletionEngine.TYPE_COMPARABLE check the enums are equivalent
-        if ( boundFactType.equals( DataType.TYPE_COMPARABLE ) ) {
-            if ( !this.variableType.equals( DataType.TYPE_COMPARABLE ) ) {
+        if (boundFactType.equals(DataType.TYPE_COMPARABLE)) {
+            if (!this.variableType.equals(DataType.TYPE_COMPARABLE)) {
                 return false;
             }
-            String[] dd = this.modeller.getDataModelOracle().getEnumValues( boundFactType,
-                                                                            this.value.getField() );
-            return isEnumEquivalent( dd );
+            String[] dd = this.modeller.getDataModelOracle().getEnumValues(boundFactType,
+                                                                           this.value.getField());
+            return isEnumEquivalent(dd);
         }
 
         //If the types are identical (and not SuggestionCompletionEngine.TYPE_COMPARABLE) then return true
-        if ( boundFactType.equals( this.variableType ) ) {
+        if (boundFactType.equals(this.variableType)) {
             return true;
         }
         return false;
     }
 
-    private boolean isLHSFieldTypeEquivalent( String boundVariable ) {
-        String boundFieldType = modeller.getModel().getLHSBindingType( boundVariable );
+    private boolean isLHSFieldTypeEquivalent(String boundVariable) {
+        String boundFieldType = modeller.getModel().getLHSBindingType(boundVariable);
 
         //If the fieldTypes are SuggestionCompletionEngine.TYPE_COMPARABLE check the enums are equivalent
-        if ( boundFieldType.equals( DataType.TYPE_COMPARABLE ) ) {
-            if ( !this.variableType.equals( DataType.TYPE_COMPARABLE ) ) {
+        if (boundFieldType.equals(DataType.TYPE_COMPARABLE)) {
+            if (!this.variableType.equals(DataType.TYPE_COMPARABLE)) {
                 return false;
             }
-            SingleFieldConstraint fc = this.modeller.getModel().getLHSBoundField( boundVariable );
+            SingleFieldConstraint fc = this.modeller.getModel().getLHSBoundField(boundVariable);
             String fieldName = fc.getFieldName();
-            String parentFactTypeForBinding = this.modeller.getModel().getLHSParentFactPatternForBinding( boundVariable ).getFactType();
-            String[] dd = this.modeller.getDataModelOracle().getEnumValues( parentFactTypeForBinding,
-                                                                            fieldName );
-            return isEnumEquivalent( dd );
+            String parentFactTypeForBinding = this.modeller.getModel().getLHSParentFactPatternForBinding(boundVariable).getFactType();
+            String[] dd = this.modeller.getDataModelOracle().getEnumValues(parentFactTypeForBinding,
+                                                                           fieldName);
+            return isEnumEquivalent(dd);
         }
 
         //If the fieldTypes are identical (and not SuggestionCompletionEngine.TYPE_COMPARABLE) then return true
-        if ( boundFieldType.equals( this.variableType ) ) {
+        if (boundFieldType.equals(this.variableType)) {
             return true;
         }
         return false;
     }
 
-    private boolean isRHSFieldTypeEquivalent( String boundVariable ) {
-        String boundFactType = modeller.getModel().getRHSBoundFact( boundVariable ).getFactType();
-        if ( boundFactType == null ) {
+    private boolean isRHSFieldTypeEquivalent(String boundVariable) {
+        String boundFactType = modeller.getModel().getRHSBoundFact(boundVariable).getFactType();
+        if (boundFactType == null) {
             return false;
         }
-        if ( this.variableType == null ) {
+        if (this.variableType == null) {
             return false;
         }
 
         //If the types are SuggestionCompletionEngine.TYPE_COMPARABLE check the enums are equivalent
-        if ( boundFactType.equals( DataType.TYPE_COMPARABLE ) ) {
-            if ( !this.variableType.equals( DataType.TYPE_COMPARABLE ) ) {
+        if (boundFactType.equals(DataType.TYPE_COMPARABLE)) {
+            if (!this.variableType.equals(DataType.TYPE_COMPARABLE)) {
                 return false;
             }
-            String[] dd = this.modeller.getDataModelOracle().getEnumValues( boundFactType,
-                                                                            this.value.getField() );
-            return isEnumEquivalent( dd );
+            String[] dd = this.modeller.getDataModelOracle().getEnumValues(boundFactType,
+                                                                           this.value.getField());
+            return isEnumEquivalent(dd);
         }
 
         //If the types are identical (and not SuggestionCompletionEngine.TYPE_COMPARABLE) then return true
-        if ( boundFactType.equals( this.variableType ) ) {
+        if (boundFactType.equals(this.variableType)) {
             return true;
         }
         return false;
     }
 
-    private boolean isEnumEquivalent( String[] values ) {
-        if ( values == null || this.dropDownData.getFixedList() == null ) {
+    private boolean isEnumEquivalent(String[] values) {
+        if (values == null || this.dropDownData.getFixedList() == null) {
             return false;
         }
-        if ( values.length != this.dropDownData.getFixedList().length ) {
+        if (values.length != this.dropDownData.getFixedList().length) {
             return false;
         }
-        for ( int i = 0; i < values.length; i++ ) {
-            if ( !values[ i ].equals( this.dropDownData.getFixedList()[ i ] ) ) {
+        for (int i = 0; i < values.length; i++) {
+            if (!values[i].equals(this.dropDownData.getFixedList()[i])) {
                 return false;
             }
         }
         return true;
     }
 
-    private Widget widgets( Button lit,
-                            InfoPopup popup ) {
+    private Widget widgets(Button lit,
+                           InfoPopup popup) {
         HorizontalPanel h = new HorizontalPanel();
-        h.add( lit );
-        h.add( popup );
+        h.add(lit);
+        h.add(popup);
         return h;
     }
 
     private void executeOnChangeCommand() {
-        if ( this.onChangeCommand != null ) {
+        if (this.onChangeCommand != null) {
             this.onChangeCommand.execute();
         }
     }
@@ -610,28 +606,27 @@ public class ActionValueEditor
         return onChangeCommand;
     }
 
-    public void setOnChangeCommand( Command onChangeCommand ) {
+    public void setOnChangeCommand(Command onChangeCommand) {
         this.onChangeCommand = onChangeCommand;
     }
 
     private DropDownData getDropDownData() {
         //Set applicable flags and reference data depending upon type
-        if ( DataType.TYPE_BOOLEAN.equals( value.getType() ) ) {
-            this.dropDownData = DropDownData.create( new String[]{ "true", "false" } );
+        if (DataType.TYPE_BOOLEAN.equals(value.getType())) {
+            this.dropDownData = DropDownData.create(new String[]{"true", "false"});
         } else {
-            final Map<String, String> currentValueMap = FieldNatureUtil.toMap( this.values );
-            this.dropDownData = oracle.getEnums( factType,
-                                                 value.getField(),
-                                                 currentValueMap );
+            final Map<String, String> currentValueMap = FieldNatureUtil.toMap(this.values);
+            this.dropDownData = oracle.getEnums(factType,
+                                                value.getField(),
+                                                currentValueMap);
         }
         return dropDownData;
     }
 
     //Signal (potential) change in Template variables
     private void executeOnTemplateVariablesChange() {
-        TemplateVariablesChangedEvent tvce = new TemplateVariablesChangedEvent( model );
-        eventBus.fireEventFromSource( tvce,
-                                      model );
+        TemplateVariablesChangedEvent tvce = new TemplateVariablesChangedEvent(model);
+        eventBus.fireEventFromSource(tvce,
+                                     model);
     }
-
 }

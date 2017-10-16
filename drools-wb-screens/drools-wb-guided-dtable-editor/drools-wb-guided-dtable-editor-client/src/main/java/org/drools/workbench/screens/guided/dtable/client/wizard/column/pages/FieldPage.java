@@ -20,11 +20,10 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.appformer.project.datamodel.oracle.FieldAccessorsAndMutators;
-import org.appformer.project.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.commons.HasFieldPage;
@@ -32,6 +31,8 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.com
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.modals.HasList;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.DecisionTableColumnPlugin;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
+import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.UberElement;
@@ -64,7 +65,7 @@ public class FieldPage<T extends HasFieldPage & DecisionTableColumnPlugin> exten
     @Override
     public void isComplete(final Callback<Boolean> callback) {
         boolean isComplete = !nil(plugin().getFactField()) || isConstraintValuePredicate();
-        if(!isComplete) {
+        if (!isComplete) {
             view.showSelectFieldWarning();
         } else {
             view.hideSelectFieldWarning();

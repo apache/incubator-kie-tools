@@ -19,7 +19,6 @@ package org.drools.workbench.screens.guided.dtable.client.editor.menu;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -36,6 +35,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.model.sync
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.oracle.DataType;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -67,282 +67,281 @@ public class RowContextMenuTest {
     @SuppressWarnings("unchecked")
     public void setup() {
         model = new GuidedDecisionTable52();
-        uiModel = new GuidedDecisionTableUiModel( mock( ModelSynchronizer.class ) );
+        uiModel = new GuidedDecisionTableUiModel(mock(ModelSynchronizer.class));
         clipboard = new DefaultClipboard();
 
-        when( dtPresenter.getView() ).thenReturn( dtPresenterView );
-        when( dtPresenter.getModel() ).thenReturn( model );
-        when( dtPresenter.getAccess() ).thenReturn( access );
-        when( dtPresenterView.getModel() ).thenReturn( uiModel );
+        when(dtPresenter.getView()).thenReturn(dtPresenterView);
+        when(dtPresenter.getModel()).thenReturn(model);
+        when(dtPresenter.getAccess()).thenReturn(access);
+        when(dtPresenterView.getModel()).thenReturn(uiModel);
 
-        uiModel.appendColumn( new BaseGridColumn<String>( mock( GridColumn.HeaderMetaData.class ),
-                                                          mock( GridColumnRenderer.class ),
-                                                          100 ) );
-        uiModel.appendColumn( new BaseGridColumn<String>( mock( GridColumn.HeaderMetaData.class ),
-                                                          mock( GridColumnRenderer.class ),
-                                                          100 ) );
-        uiModel.appendColumn( new BaseGridColumn<String>( mock( GridColumn.HeaderMetaData.class ),
-                                                          mock( GridColumnRenderer.class ),
-                                                          100 ) );
-        uiModel.appendRow( new BaseGridRow() );
+        uiModel.appendColumn(new BaseGridColumn<String>(mock(GridColumn.HeaderMetaData.class),
+                                                        mock(GridColumnRenderer.class),
+                                                        100));
+        uiModel.appendColumn(new BaseGridColumn<String>(mock(GridColumn.HeaderMetaData.class),
+                                                        mock(GridColumnRenderer.class),
+                                                        100));
+        uiModel.appendColumn(new BaseGridColumn<String>(mock(GridColumn.HeaderMetaData.class),
+                                                        mock(GridColumnRenderer.class),
+                                                        100));
+        uiModel.appendRow(new BaseGridRow());
 
-        menu = new RowContextMenu( view,
-                                   clipboard );
+        menu = new RowContextMenu(view,
+                                  clipboard);
         menu.setup();
     }
 
     @Test
     public void testOnDecisionTableSelectedEventWithNoSelections() {
-        menu.onDecisionTableSelectedEvent( new DecisionTableSelectedEvent( dtPresenter ) );
+        menu.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
 
-        verify( view,
-                times( 1 ) ).enableCutMenuItem( eq( false ) );
-        verify( view,
-                times( 1 ) ).enableCopyMenuItem( eq( false ) );
-        verify( view,
-                times( 1 ) ).enablePasteMenuItem( eq( false ) );
-        verify( view,
-                times( 1 ) ).enableInsertRowAboveMenuItem( eq( false ) );
-        verify( view,
-                times( 1 ) ).enableInsertRowBelowMenuItem( eq( false ) );
-        verify( view,
-                times( 1 ) ).enableDeleteRowMenuItem( eq( false ) );
+        verify(view,
+               times(1)).enableCutMenuItem(eq(false));
+        verify(view,
+               times(1)).enableCopyMenuItem(eq(false));
+        verify(view,
+               times(1)).enablePasteMenuItem(eq(false));
+        verify(view,
+               times(1)).enableInsertRowAboveMenuItem(eq(false));
+        verify(view,
+               times(1)).enableInsertRowBelowMenuItem(eq(false));
+        verify(view,
+               times(1)).enableDeleteRowMenuItem(eq(false));
     }
 
     @Test
     public void testOnDecisionTableSelectedEventWithSelections() {
-        model.getMetadataCols().add( new MetadataCol52() );
-        model.getData().add( new ArrayList<DTCellValue52>() {{
-            add( new DTCellValue52( 1 ) );
-            add( new DTCellValue52( "descr" ) );
-            add( new DTCellValue52( "md" ) );
-        }} );
+        model.getMetadataCols().add(new MetadataCol52());
+        model.getData().add(new ArrayList<DTCellValue52>() {{
+            add(new DTCellValue52(1));
+            add(new DTCellValue52("descr"));
+            add(new DTCellValue52("md"));
+        }});
 
-        uiModel.selectCell( 0,
-                            2 );
+        uiModel.selectCell(0,
+                           2);
 
-        menu.onDecisionTableSelectedEvent( new DecisionTableSelectedEvent( dtPresenter ) );
+        menu.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
 
-        verify( view,
-                times( 1 ) ).enableCutMenuItem( eq( true ) );
-        verify( view,
-                times( 1 ) ).enableCopyMenuItem( eq( true ) );
-        verify( view,
-                times( 1 ) ).enablePasteMenuItem( eq( false ) );
-        verify( view,
-                times( 1 ) ).enableInsertRowAboveMenuItem( eq( true ) );
-        verify( view,
-                times( 1 ) ).enableInsertRowBelowMenuItem( eq( true ) );
-        verify( view,
-                times( 1 ) ).enableDeleteRowMenuItem( eq( true ) );
+        verify(view,
+               times(1)).enableCutMenuItem(eq(true));
+        verify(view,
+               times(1)).enableCopyMenuItem(eq(true));
+        verify(view,
+               times(1)).enablePasteMenuItem(eq(false));
+        verify(view,
+               times(1)).enableInsertRowAboveMenuItem(eq(true));
+        verify(view,
+               times(1)).enableInsertRowBelowMenuItem(eq(true));
+        verify(view,
+               times(1)).enableDeleteRowMenuItem(eq(true));
     }
 
     @Test
     public void testOnDecisionTableSelectedEventWithSelectionsWithClipboardPopulated() {
-        model.getMetadataCols().add( new MetadataCol52() );
-        model.getData().add( new ArrayList<DTCellValue52>() {{
-            add( new DTCellValue52( 1 ) );
-            add( new DTCellValue52( "descr" ) );
-            add( new DTCellValue52( "md" ) );
-        }} );
+        model.getMetadataCols().add(new MetadataCol52());
+        model.getData().add(new ArrayList<DTCellValue52>() {{
+            add(new DTCellValue52(1));
+            add(new DTCellValue52("descr"));
+            add(new DTCellValue52("md"));
+        }});
 
-        uiModel.selectCell( 0,
-                            2 );
-        clipboard.setData( new HashSet<Clipboard.ClipboardData>() {{
-            add( new DefaultClipboard.ClipboardDataImpl( 0,
-                                                         2,
-                                                         model.getData().get( 0 ).get( 2 ) ) );
-        }} );
+        uiModel.selectCell(0,
+                           2);
+        clipboard.setData(new HashSet<Clipboard.ClipboardData>() {{
+            add(new DefaultClipboard.ClipboardDataImpl(0,
+                                                       2,
+                                                       model.getData().get(0).get(2)));
+        }});
 
-        menu.onDecisionTableSelectedEvent( new DecisionTableSelectedEvent( dtPresenter ) );
+        menu.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
 
-        verify( view,
-                times( 1 ) ).enableCutMenuItem( eq( true ) );
-        verify( view,
-                times( 1 ) ).enableCopyMenuItem( eq( true ) );
-        verify( view,
-                times( 1 ) ).enablePasteMenuItem( eq( true ) );
-        verify( view,
-                times( 1 ) ).enableInsertRowAboveMenuItem( eq( true ) );
-        verify( view,
-                times( 1 ) ).enableInsertRowBelowMenuItem( eq( true ) );
-        verify( view,
-                times( 1 ) ).enableDeleteRowMenuItem( eq( true ) );
+        verify(view,
+               times(1)).enableCutMenuItem(eq(true));
+        verify(view,
+               times(1)).enableCopyMenuItem(eq(true));
+        verify(view,
+               times(1)).enablePasteMenuItem(eq(true));
+        verify(view,
+               times(1)).enableInsertRowAboveMenuItem(eq(true));
+        verify(view,
+               times(1)).enableInsertRowBelowMenuItem(eq(true));
+        verify(view,
+               times(1)).enableDeleteRowMenuItem(eq(true));
     }
 
     @Test
     public void testOnDecisionTableSelectedEventWithMultipleRowsSelected() {
-        model.getData().add( new ArrayList<DTCellValue52>() {{
-            add( new DTCellValue52( 1 ) );
-            add( new DTCellValue52( "descr" ) );
-            add( new DTCellValue52( "md" ) );
-        }} );
-        model.getData().add( new ArrayList<DTCellValue52>() {{
-            add( new DTCellValue52( 1 ) );
-            add( new DTCellValue52( "descr" ) );
-            add( new DTCellValue52( "md" ) );
-        }} );
+        model.getData().add(new ArrayList<DTCellValue52>() {{
+            add(new DTCellValue52(1));
+            add(new DTCellValue52("descr"));
+            add(new DTCellValue52("md"));
+        }});
+        model.getData().add(new ArrayList<DTCellValue52>() {{
+            add(new DTCellValue52(1));
+            add(new DTCellValue52("descr"));
+            add(new DTCellValue52("md"));
+        }});
 
-        uiModel.selectCells( 0,
-                             2,
-                             1,
-                             2 );
+        uiModel.selectCells(0,
+                            2,
+                            1,
+                            2);
 
-        menu.onDecisionTableSelectedEvent( new DecisionTableSelectedEvent( dtPresenter ) );
+        menu.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
 
-        verify( view,
-                times( 1 ) ).enableCutMenuItem( eq( true ) );
-        verify( view,
-                times( 1 ) ).enableCopyMenuItem( eq( true ) );
-        verify( view,
-                times( 1 ) ).enablePasteMenuItem( eq( false ) );
-        verify( view,
-                times( 1 ) ).enableInsertRowAboveMenuItem( eq( false ) );
-        verify( view,
-                times( 1 ) ).enableInsertRowBelowMenuItem( eq( false ) );
-        verify( view,
-                times( 1 ) ).enableDeleteRowMenuItem( eq( true ) );
+        verify(view,
+               times(1)).enableCutMenuItem(eq(true));
+        verify(view,
+               times(1)).enableCopyMenuItem(eq(true));
+        verify(view,
+               times(1)).enablePasteMenuItem(eq(false));
+        verify(view,
+               times(1)).enableInsertRowAboveMenuItem(eq(false));
+        verify(view,
+               times(1)).enableInsertRowBelowMenuItem(eq(false));
+        verify(view,
+               times(1)).enableDeleteRowMenuItem(eq(true));
     }
 
     @Test
     public void testOnDecisionTableSelectionsChangedEventWithNoSelections() {
-        menu.onDecisionTableSelectionsChangedEvent( new DecisionTableSelectionsChangedEvent( dtPresenter ) );
+        menu.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
 
-        verify( view,
-                times( 1 ) ).enableCutMenuItem( eq( false ) );
-        verify( view,
-                times( 1 ) ).enableCopyMenuItem( eq( false ) );
-        verify( view,
-                times( 1 ) ).enablePasteMenuItem( eq( false ) );
-        verify( view,
-                times( 1 ) ).enableInsertRowAboveMenuItem( eq( false ) );
-        verify( view,
-                times( 1 ) ).enableInsertRowBelowMenuItem( eq( false ) );
-        verify( view,
-                times( 1 ) ).enableDeleteRowMenuItem( eq( false ) );
+        verify(view,
+               times(1)).enableCutMenuItem(eq(false));
+        verify(view,
+               times(1)).enableCopyMenuItem(eq(false));
+        verify(view,
+               times(1)).enablePasteMenuItem(eq(false));
+        verify(view,
+               times(1)).enableInsertRowAboveMenuItem(eq(false));
+        verify(view,
+               times(1)).enableInsertRowBelowMenuItem(eq(false));
+        verify(view,
+               times(1)).enableDeleteRowMenuItem(eq(false));
     }
 
     @Test
     public void testOnDecisionTableSelectionsChangedEventWithSelections() {
-        model.getMetadataCols().add( new MetadataCol52() );
-        model.getData().add( new ArrayList<DTCellValue52>() {{
-            add( new DTCellValue52( 1 ) );
-            add( new DTCellValue52( "descr" ) );
-            add( new DTCellValue52( "md" ) );
-        }} );
+        model.getMetadataCols().add(new MetadataCol52());
+        model.getData().add(new ArrayList<DTCellValue52>() {{
+            add(new DTCellValue52(1));
+            add(new DTCellValue52("descr"));
+            add(new DTCellValue52("md"));
+        }});
 
-        uiModel.selectCell( 0,
-                            2 );
+        uiModel.selectCell(0,
+                           2);
 
-        menu.onDecisionTableSelectionsChangedEvent( new DecisionTableSelectionsChangedEvent( dtPresenter ) );
+        menu.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
 
-        verify( view,
-                times( 1 ) ).enableCutMenuItem( eq( true ) );
-        verify( view,
-                times( 1 ) ).enableCopyMenuItem( eq( true ) );
-        verify( view,
-                times( 1 ) ).enablePasteMenuItem( eq( false ) );
-        verify( view,
-                times( 1 ) ).enableInsertRowAboveMenuItem( eq( true ) );
-        verify( view,
-                times( 1 ) ).enableInsertRowBelowMenuItem( eq( true ) );
-        verify( view,
-                times( 1 ) ).enableDeleteRowMenuItem( eq( true ) );
+        verify(view,
+               times(1)).enableCutMenuItem(eq(true));
+        verify(view,
+               times(1)).enableCopyMenuItem(eq(true));
+        verify(view,
+               times(1)).enablePasteMenuItem(eq(false));
+        verify(view,
+               times(1)).enableInsertRowAboveMenuItem(eq(true));
+        verify(view,
+               times(1)).enableInsertRowBelowMenuItem(eq(true));
+        verify(view,
+               times(1)).enableDeleteRowMenuItem(eq(true));
     }
 
     @Test
     public void testOnDecisionTableSelectionsChangedEventWithSelectionsWithClipboardPopulated() {
-        model.getMetadataCols().add( new MetadataCol52() );
-        model.getData().add( new ArrayList<DTCellValue52>() {{
-            add( new DTCellValue52( 1 ) );
-            add( new DTCellValue52( "descr" ) );
-            add( new DTCellValue52( "md" ) );
-        }} );
+        model.getMetadataCols().add(new MetadataCol52());
+        model.getData().add(new ArrayList<DTCellValue52>() {{
+            add(new DTCellValue52(1));
+            add(new DTCellValue52("descr"));
+            add(new DTCellValue52("md"));
+        }});
 
-        uiModel.selectCell( 0,
-                            2 );
-        clipboard.setData( new HashSet<Clipboard.ClipboardData>() {{
-            add( new DefaultClipboard.ClipboardDataImpl( 0,
-                                                         2,
-                                                         model.getData().get( 0 ).get( 2 ) ) );
-        }} );
+        uiModel.selectCell(0,
+                           2);
+        clipboard.setData(new HashSet<Clipboard.ClipboardData>() {{
+            add(new DefaultClipboard.ClipboardDataImpl(0,
+                                                       2,
+                                                       model.getData().get(0).get(2)));
+        }});
 
-        menu.onDecisionTableSelectionsChangedEvent( new DecisionTableSelectionsChangedEvent( dtPresenter ) );
+        menu.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
 
-        verify( view,
-                times( 1 ) ).enableCutMenuItem( eq( true ) );
-        verify( view,
-                times( 1 ) ).enableCopyMenuItem( eq( true ) );
-        verify( view,
-                times( 1 ) ).enablePasteMenuItem( eq( true ) );
-        verify( view,
-                times( 1 ) ).enableInsertRowAboveMenuItem( eq( true ) );
-        verify( view,
-                times( 1 ) ).enableInsertRowBelowMenuItem( eq( true ) );
-        verify( view,
-                times( 1 ) ).enableDeleteRowMenuItem( eq( true ) );
+        verify(view,
+               times(1)).enableCutMenuItem(eq(true));
+        verify(view,
+               times(1)).enableCopyMenuItem(eq(true));
+        verify(view,
+               times(1)).enablePasteMenuItem(eq(true));
+        verify(view,
+               times(1)).enableInsertRowAboveMenuItem(eq(true));
+        verify(view,
+               times(1)).enableInsertRowBelowMenuItem(eq(true));
+        verify(view,
+               times(1)).enableDeleteRowMenuItem(eq(true));
     }
 
     @Test
     public void testOnDecisionTableSelectionsChangedEventWithMultipleRowsSelected() {
-        model.getConditions().add( new Pattern52() {{
-            setFactType( "Fact" );
-            getChildColumns().add( new ConditionCol52() {{
-                setFactType( "Fact" );
-                setFactField( "field1" );
-                setFieldType( DataType.TYPE_STRING );
-                setOperator( "==" );
-            }} );
-        }} );
-        model.getData().add( new ArrayList<DTCellValue52>() {{
-            add( new DTCellValue52( 1 ) );
-            add( new DTCellValue52( "descr" ) );
-            add( new DTCellValue52( "md" ) );
-        }} );
-        model.getData().add( new ArrayList<DTCellValue52>() {{
-            add( new DTCellValue52( 1 ) );
-            add( new DTCellValue52( "descr" ) );
-            add( new DTCellValue52( "md" ) );
-        }} );
+        model.getConditions().add(new Pattern52() {{
+            setFactType("Fact");
+            getChildColumns().add(new ConditionCol52() {{
+                setFactType("Fact");
+                setFactField("field1");
+                setFieldType(DataType.TYPE_STRING);
+                setOperator("==");
+            }});
+        }});
+        model.getData().add(new ArrayList<DTCellValue52>() {{
+            add(new DTCellValue52(1));
+            add(new DTCellValue52("descr"));
+            add(new DTCellValue52("md"));
+        }});
+        model.getData().add(new ArrayList<DTCellValue52>() {{
+            add(new DTCellValue52(1));
+            add(new DTCellValue52("descr"));
+            add(new DTCellValue52("md"));
+        }});
 
-        uiModel.selectCells( 0,
-                             2,
-                             1,
-                             2 );
+        uiModel.selectCells(0,
+                            2,
+                            1,
+                            2);
 
-        menu.onDecisionTableSelectionsChangedEvent( new DecisionTableSelectionsChangedEvent( dtPresenter ) );
+        menu.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
 
-        verify( view,
-                times( 1 ) ).enableCutMenuItem( eq( true ) );
-        verify( view,
-                times( 1 ) ).enableCopyMenuItem( eq( true ) );
-        verify( view,
-                times( 1 ) ).enablePasteMenuItem( eq( false ) );
-        verify( view,
-                times( 1 ) ).enableInsertRowAboveMenuItem( eq( false ) );
-        verify( view,
-                times( 1 ) ).enableInsertRowBelowMenuItem( eq( false ) );
-        verify( view,
-                times( 1 ) ).enableDeleteRowMenuItem( eq( true ) );
+        verify(view,
+               times(1)).enableCutMenuItem(eq(true));
+        verify(view,
+               times(1)).enableCopyMenuItem(eq(true));
+        verify(view,
+               times(1)).enablePasteMenuItem(eq(false));
+        verify(view,
+               times(1)).enableInsertRowAboveMenuItem(eq(false));
+        verify(view,
+               times(1)).enableInsertRowBelowMenuItem(eq(false));
+        verify(view,
+               times(1)).enableDeleteRowMenuItem(eq(true));
     }
 
     @Test
     public void testOnDecisionTableSelectedEventReadOnly() {
-        dtPresenter.getAccess().setReadOnly( true );
-        menu.onDecisionTableSelectedEvent( new DecisionTableSelectedEvent( dtPresenter ) );
+        dtPresenter.getAccess().setReadOnly(true);
+        menu.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
 
-        verify( view,
-                times( 1 ) ).enableCutMenuItem( eq( false ) );
-        verify( view,
-                times( 1 ) ).enableCopyMenuItem( eq( false ) );
-        verify( view,
-                times( 1 ) ).enablePasteMenuItem( eq( false ) );
-        verify( view,
-                times( 1 ) ).enableInsertRowAboveMenuItem( eq( false ) );
-        verify( view,
-                times( 1 ) ).enableInsertRowBelowMenuItem( eq( false ) );
-        verify( view,
-                times( 1 ) ).enableDeleteRowMenuItem( eq( false ) );
+        verify(view,
+               times(1)).enableCutMenuItem(eq(false));
+        verify(view,
+               times(1)).enableCopyMenuItem(eq(false));
+        verify(view,
+               times(1)).enablePasteMenuItem(eq(false));
+        verify(view,
+               times(1)).enableInsertRowAboveMenuItem(eq(false));
+        verify(view,
+               times(1)).enableInsertRowBelowMenuItem(eq(false));
+        verify(view,
+               times(1)).enableDeleteRowMenuItem(eq(false));
     }
-
 }

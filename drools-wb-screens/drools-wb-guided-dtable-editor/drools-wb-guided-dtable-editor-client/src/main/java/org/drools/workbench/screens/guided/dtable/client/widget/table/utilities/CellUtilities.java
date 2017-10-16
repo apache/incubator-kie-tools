@@ -19,9 +19,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.DateConverter;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.DateConverter;
 
 /**
  * Utilities for Cells
@@ -34,6 +34,7 @@ public class CellUtilities {
     /**
      * Override the default, GWT-centric, Date conversion utility class. Only
      * use to hook-in a JVM Compatible implementation for tests
+     *
      * @param dc
      */
     public static void injectDateConvertor(DateConverter dc) {
@@ -46,6 +47,7 @@ public class CellUtilities {
      * associated with the Cell Value can be incorrect for legacy models. For
      * pre-5.2 they will always be String and for pre-5.4 numerical fields are
      * always Numeric
+     *
      * @param dataType
      * @param dcv
      */
@@ -100,6 +102,7 @@ public class CellUtilities {
 
     /**
      * Convert a DTCellValue52 to it's String representation
+     *
      * @param dcv
      * @return
      */
@@ -133,6 +136,7 @@ public class CellUtilities {
 
     /**
      * Remove a comma-separated value, replacing the comma-separated value with the first in the comma-separated list
+     *
      * @param dcv
      */
     public void removeCommaSeparatedValue(DTCellValue52 dcv) {

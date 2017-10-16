@@ -20,7 +20,6 @@ import java.util.HashMap;
 
 import javax.enterprise.event.Event;
 
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.screens.guided.template.model.GuidedTemplateEditorContent;
 import org.drools.workbench.screens.guided.template.type.GuidedRuleTemplateResourceTypeDefinition;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
@@ -28,6 +27,7 @@ import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

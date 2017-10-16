@@ -18,7 +18,6 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.popovers.
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
@@ -28,6 +27,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.oracle.DataType;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
@@ -39,77 +39,76 @@ public class BRLConditionColumnDefinitionBuilderTest extends BaseColumnDefinitio
 
     @Override
     protected ColumnDefinitionBuilder getBuilder() {
-        return new BRLConditionColumnDefinitionBuilder( serviceCaller );
+        return new BRLConditionColumnDefinitionBuilder(serviceCaller);
     }
 
     @Test
     public void checkColumnType() {
-        assertEquals( BRLConditionVariableColumn.class,
-                      builder.getSupportedColumnType() );
+        assertEquals(BRLConditionVariableColumn.class,
+                     builder.getSupportedColumnType());
     }
 
     @Test
     public void unknownColumnTypeDoesNotTriggerBuilder() {
         final BaseColumn column = new RowNumberCol52();
-        builder.generateDefinition( dtPresenter,
-                                    column,
-                                    ( String definition ) -> {
-                                        fail( "RowNumberCol52 should not be handled by ConditionCol52DefinitionBuilder" );
-                                    } );
+        builder.generateDefinition(dtPresenter,
+                                   column,
+                                   (String definition) -> {
+                                       fail("RowNumberCol52 should not be handled by ConditionCol52DefinitionBuilder");
+                                   });
     }
 
     @Test
     public void simpleBRLConditionColumn() {
-        final AtomicBoolean calledBack = new AtomicBoolean( false );
+        final AtomicBoolean calledBack = new AtomicBoolean(false);
 
         setupBRLConditionColumn();
 
-        builder.generateDefinition( dtPresenter,
-                                    model.getExpandedColumns().get( 2 ),
-                                    ( String definition ) -> {
-                                        calledBack.set( true );
-                                        assertEquals( "Person( name == \"x\" )<br/>" +
-                                                              "Smurf( colour == \"x\" )",
-                                                      definition );
-                                    } );
-        assertTrue( calledBack.get() );
+        builder.generateDefinition(dtPresenter,
+                                   model.getExpandedColumns().get(2),
+                                   (String definition) -> {
+                                       calledBack.set(true);
+                                       assertEquals("Person( name == \"x\" )<br/>" +
+                                                            "Smurf( colour == \"x\" )",
+                                                    definition);
+                                   });
+        assertTrue(calledBack.get());
     }
 
     private void setupBRLConditionColumn() {
         final BRLConditionColumn brl = new BRLConditionColumn();
 
         final FactPattern fp1 = new FactPattern();
-        fp1.setFactType( "Person" );
+        fp1.setFactType("Person");
         final SingleFieldConstraint sfc1 = new SingleFieldConstraint();
-        sfc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_TEMPLATE );
-        sfc1.setFactType( "Person" );
-        sfc1.setOperator( "==" );
-        sfc1.setFieldName( "name" );
-        sfc1.setValue( "f1" );
-        fp1.addConstraint( sfc1 );
+        sfc1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        sfc1.setFactType("Person");
+        sfc1.setOperator("==");
+        sfc1.setFieldName("name");
+        sfc1.setValue("f1");
+        fp1.addConstraint(sfc1);
 
         final FactPattern fp2 = new FactPattern();
-        fp2.setFactType( "Smurf" );
+        fp2.setFactType("Smurf");
         final SingleFieldConstraint sfc2 = new SingleFieldConstraint();
-        sfc2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_TEMPLATE );
-        sfc2.setFactType( "Smurf" );
-        sfc2.setOperator( "==" );
-        sfc2.setFieldName( "colour" );
-        sfc2.setValue( "f2" );
-        fp2.addConstraint( sfc2 );
+        sfc2.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        sfc2.setFactType("Smurf");
+        sfc2.setOperator("==");
+        sfc2.setFieldName("colour");
+        sfc2.setValue("f2");
+        fp2.addConstraint(sfc2);
 
-        brl.getDefinition().add( fp1 );
-        brl.getDefinition().add( fp2 );
-        brl.getChildColumns().add( new BRLConditionVariableColumn( "f1",
-                                                                   DataType.TYPE_STRING ) );
-        brl.getChildColumns().add( new BRLConditionVariableColumn( "f2",
-                                                                   DataType.TYPE_STRING ) );
-        model.getConditions().add( brl );
+        brl.getDefinition().add(fp1);
+        brl.getDefinition().add(fp2);
+        brl.getChildColumns().add(new BRLConditionVariableColumn("f1",
+                                                                 DataType.TYPE_STRING));
+        brl.getChildColumns().add(new BRLConditionVariableColumn("f2",
+                                                                 DataType.TYPE_STRING));
+        model.getConditions().add(brl);
 
-        when( dmo.getFieldType( eq( "Person" ),
-                                eq( "name" ) ) ).thenReturn( DataType.TYPE_STRING );
-        when( dmo.getFieldType( eq( "Smurf" ),
-                                eq( "colour" ) ) ).thenReturn( DataType.TYPE_STRING );
+        when(dmo.getFieldType(eq("Person"),
+                              eq("name"))).thenReturn(DataType.TYPE_STRING);
+        when(dmo.getFieldType(eq("Smurf"),
+                              eq("colour"))).thenReturn(DataType.TYPE_STRING);
     }
-
 }

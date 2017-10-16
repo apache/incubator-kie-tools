@@ -15,9 +15,8 @@
  */
 package org.drools.workbench.services.verifier.api.client.index;
 
-
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class Field
         extends FieldBase {
@@ -26,17 +25,17 @@ public class Field
     private final Conditions conditions = new Conditions();
     private final Actions actions = new Actions();
 
-    public Field( final ObjectField objectField,
-                  final String factType,
-                  final String fieldType,
-                  final String name,
-                  final AnalyzerConfiguration configuration ) {
-        super( factType,
-               fieldType,
-               name,
-               configuration );
-        this.objectField = PortablePreconditions.checkNotNull( "objectField",
-                                                               objectField );
+    public Field(final ObjectField objectField,
+                 final String factType,
+                 final String fieldType,
+                 final String name,
+                 final AnalyzerConfiguration configuration) {
+        super(factType,
+              fieldType,
+              name,
+              configuration);
+        this.objectField = PortablePreconditions.checkNotNull("objectField",
+                                                              objectField);
     }
 
     public ObjectField getObjectField() {
@@ -51,9 +50,8 @@ public class Field
         return actions;
     }
 
-    public void remove( final Column column ) {
-        this.conditions.remove( column );
-        this.actions.remove( column );
+    public void remove(final Column column) {
+        this.conditions.remove(column);
+        this.actions.remove(column);
     }
-
 }

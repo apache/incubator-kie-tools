@@ -20,17 +20,19 @@ import java.util.List;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class RefreshConditionsPanelEvent {
 
     private final GuidedDecisionTableView.Presenter presenter;
     private final List<CompositeColumn<? extends BaseColumn>> columns;
 
-    public RefreshConditionsPanelEvent( final GuidedDecisionTableView.Presenter presenter,
-                                        final List<CompositeColumn<? extends BaseColumn>> columns ) {
-        this.presenter = PortablePreconditions.checkNotNull( "presenter", presenter );
-        this.columns = PortablePreconditions.checkNotNull( "columns", columns );
+    public RefreshConditionsPanelEvent(final GuidedDecisionTableView.Presenter presenter,
+                                       final List<CompositeColumn<? extends BaseColumn>> columns) {
+        this.presenter = PortablePreconditions.checkNotNull("presenter",
+                                                            presenter);
+        this.columns = PortablePreconditions.checkNotNull("columns",
+                                                          columns);
     }
 
     public GuidedDecisionTableView.Presenter getPresenter() {
@@ -40,5 +42,4 @@ public class RefreshConditionsPanelEvent {
     public List<CompositeColumn<? extends BaseColumn>> getColumns() {
         return columns;
     }
-
 }

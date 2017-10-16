@@ -210,12 +210,12 @@
   </actionCols>
   <imports>
     <imports>
-      <org.appformer.project.datamodel.imports.Import>
+      <org.kie.soup.project.datamodel.imports.Import>
         <type>lvgi.lvgirules.model.MotorPremiumRates</type>
-      </org.appformer.project.datamodel.imports.Import>
-      <org.appformer.project.datamodel.imports.Import>
+      </org.kie.soup.project.datamodel.imports.Import>
+      <org.kie.soup.project.datamodel.imports.Import>
         <type>lvgi.lvgirules.model.MotorPremiumRatesResponse</type>
-      </org.appformer.project.datamodel.imports.Import>
+      </org.kie.soup.project.datamodel.imports.Import>
     </imports>
   </imports>
   <packageName>org.kie.example.project1</packageName>

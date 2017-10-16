@@ -20,11 +20,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.apache.lucene.search.Query;
-import org.appformer.project.datamodel.imports.Import;
 import org.drools.workbench.models.testscenarios.backend.util.ScenarioXMLPersistence;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.type.TestScenarioResourceTypeDefinition;
 import org.junit.Test;
+import org.kie.soup.project.datamodel.imports.Import;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.query.builder.SingleTermQueryBuilder;
@@ -40,90 +40,90 @@ public class IndexTestScenarioTest extends BaseIndexingTest<TestScenarioResource
     @Test
     public void testIndexTestScenario() throws IOException, InterruptedException {
         //Add test files
-        final Path path1 = basePath.resolve( "scenario1.scenario" );
-        final Scenario model1 = TestScenarioFactory.makeTestScenarioWithVerifyFact( "org.drools.workbench.screens.testscenario.backend.server.indexing",
-                                                                                    new ArrayList<Import>() {{
-                                                                                        add( new Import( "org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Applicant" ) );
-                                                                                        add( new Import( "org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Mortgage" ) );
-                                                                                    }},
-                                                                                    "scenario1" );
-        final String xml1 = ScenarioXMLPersistence.getInstance().marshal( model1 );
-        ioService().write( path1,
-                           xml1 );
+        final Path path1 = basePath.resolve("scenario1.scenario");
+        final Scenario model1 = TestScenarioFactory.makeTestScenarioWithVerifyFact("org.drools.workbench.screens.testscenario.backend.server.indexing",
+                                                                                   new ArrayList<Import>() {{
+                                                                                       add(new Import("org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Applicant"));
+                                                                                       add(new Import("org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Mortgage"));
+                                                                                   }},
+                                                                                   "scenario1");
+        final String xml1 = ScenarioXMLPersistence.getInstance().marshal(model1);
+        ioService().write(path1,
+                          xml1);
 
-        final Path path2 = basePath.resolve( "scenario2.scenario" );
-        final Scenario model2 = TestScenarioFactory.makeTestScenarioWithoutVerifyFact( "org.drools.workbench.screens.testscenario.backend.server.indexing",
-                                                                                       new ArrayList<Import>() {{
-                                                                                           add( new Import( "org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Applicant" ) );
-                                                                                           add( new Import( "org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Mortgage" ) );
-                                                                                       }},
-                                                                                       "scenario2" );
-        final String xml2 = ScenarioXMLPersistence.getInstance().marshal( model2 );
-        ioService().write( path2,
-                           xml2 );
+        final Path path2 = basePath.resolve("scenario2.scenario");
+        final Scenario model2 = TestScenarioFactory.makeTestScenarioWithoutVerifyFact("org.drools.workbench.screens.testscenario.backend.server.indexing",
+                                                                                      new ArrayList<Import>() {{
+                                                                                          add(new Import("org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Applicant"));
+                                                                                          add(new Import("org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Mortgage"));
+                                                                                      }},
+                                                                                      "scenario2");
+        final String xml2 = ScenarioXMLPersistence.getInstance().marshal(model2);
+        ioService().write(path2,
+                          xml2);
 
-        final Path path3 = basePath.resolve( "scenario3.scenario" );
-        final Scenario model3 = TestScenarioFactory.makeTestScenarioWithVerifyRuleFired( "org.drools.workbench.screens.testscenario.backend.server.indexing",
-                                                                                         new ArrayList<Import>() {{
-                                                                                             add( new Import( "org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Applicant" ) );
-                                                                                             add( new Import( "org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Mortgage" ) );
-                                                                                         }},
-                                                                                         "scenario3" );
-        final String xml3 = ScenarioXMLPersistence.getInstance().marshal( model3 );
-        ioService().write( path3,
-                           xml3 );
+        final Path path3 = basePath.resolve("scenario3.scenario");
+        final Scenario model3 = TestScenarioFactory.makeTestScenarioWithVerifyRuleFired("org.drools.workbench.screens.testscenario.backend.server.indexing",
+                                                                                        new ArrayList<Import>() {{
+                                                                                            add(new Import("org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Applicant"));
+                                                                                            add(new Import("org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Mortgage"));
+                                                                                        }},
+                                                                                        "scenario3");
+        final String xml3 = ScenarioXMLPersistence.getInstance().marshal(model3);
+        ioService().write(path3,
+                          xml3);
 
-        final Path path4 = basePath.resolve( "scenario4.scenario" );
+        final Path path4 = basePath.resolve("scenario4.scenario");
         final Scenario model4 = TestScenarioFactory.makeTestScenarioWithGlobalVerifyGlobal("org.drools.workbench.screens.testscenario.backend.server.indexing",
                                                                                            new ArrayList<Import>() {{
                                                                                                add(new Import("java.util.Date"));
                                                                                            }},
                                                                                            "scenario1");
-        final String xml4 = ScenarioXMLPersistence.getInstance().marshal( model4 );
-        ioService().write( path4,
-                           xml4 );
+        final String xml4 = ScenarioXMLPersistence.getInstance().marshal(model4);
+        ioService().write(path4,
+                          xml4);
 
-        Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+        Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        final Index index = getConfig().getIndexManager().get( org.uberfire.ext.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
+        final Index index = getConfig().getIndexManager().get(org.uberfire.ext.metadata.io.KObjectUtil.toKCluster(basePath.getFileSystem()));
 
         //Test Scenarios using org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Applicant
         {
-            final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Applicant", ResourceType.JAVA ) )
+            final Query query = new SingleTermQueryBuilder(new ValueReferenceIndexTerm("org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Applicant", ResourceType.JAVA))
                     .build();
             searchFor(index, query, 2, path1, path2);
         }
 
         //Test Scenarios using org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Mortgage
         {
-            final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Mortgage", ResourceType.JAVA ) )
+            final Query query = new SingleTermQueryBuilder(new ValueReferenceIndexTerm("org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Mortgage", ResourceType.JAVA))
                     .build();
             searchFor(index, query, 1, path1);
         }
 
         //Test Scenarios using org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Mortgage#amount
         {
-            final Query query = new SingleTermQueryBuilder( new ValuePartReferenceIndexTerm( "org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Mortgage", "amount", PartType.FIELD ) )
+            final Query query = new SingleTermQueryBuilder(new ValuePartReferenceIndexTerm("org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Mortgage", "amount", PartType.FIELD))
                     .build();
             searchFor(index, query, 1, path1);
         }
 
         //Test Scenarios using java.lang.Integer
         {
-            final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "java.lang.Integer", ResourceType.JAVA ) )
+            final Query query = new SingleTermQueryBuilder(new ValueReferenceIndexTerm("java.lang.Integer", ResourceType.JAVA))
                     .build();
             searchFor(index, query, 3, path1, path2);
         }
 
         //Test Scenarios expecting rule "test" to fire
         {
-            final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "test", ResourceType.RULE ) )
+            final Query query = new SingleTermQueryBuilder(new ValueReferenceIndexTerm("test", ResourceType.RULE))
                     .build();
             searchFor(index, query, 1, path3);
         }
 
         {
-            final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "java.util.Date", ResourceType.JAVA ) )
+            final Query query = new SingleTermQueryBuilder(new ValueReferenceIndexTerm("java.util.Date", ResourceType.JAVA))
                     .build();
             searchFor(index, query, 1, path4);
         }
@@ -143,5 +143,4 @@ public class IndexTestScenarioTest extends BaseIndexingTest<TestScenarioResource
     protected String getRepositoryName() {
         return this.getClass().getSimpleName();
     }
-
 }

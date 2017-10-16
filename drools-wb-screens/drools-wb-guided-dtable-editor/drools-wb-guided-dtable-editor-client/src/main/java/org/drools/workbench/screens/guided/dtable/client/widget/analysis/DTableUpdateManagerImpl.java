@@ -26,8 +26,7 @@ import org.drools.workbench.services.verifier.plugin.client.api.NewColumn;
 import org.drools.workbench.services.verifier.plugin.client.api.RemoveRule;
 import org.drools.workbench.services.verifier.plugin.client.api.Update;
 import org.drools.workbench.services.verifier.plugin.client.builders.ModelMetaDataEnhancer;
-import org.uberfire.commons.validation.PortablePreconditions;
-
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class DTableUpdateManagerImpl
         implements DTableUpdateManager {
@@ -35,49 +34,48 @@ public class DTableUpdateManagerImpl
     private Poster poster;
     private FieldTypeProducer fieldTypeProducer;
 
-    public DTableUpdateManagerImpl( final Poster poster,
-                                    final FieldTypeProducer fieldTypeProducer ) {
-        this.poster = PortablePreconditions.checkNotNull( "poster",
-                                                          poster );
-        this.fieldTypeProducer = PortablePreconditions.checkNotNull( "fieldTypeProducer",
-                                                                     fieldTypeProducer );
+    public DTableUpdateManagerImpl(final Poster poster,
+                                   final FieldTypeProducer fieldTypeProducer) {
+        this.poster = PortablePreconditions.checkNotNull("poster",
+                                                         poster);
+        this.fieldTypeProducer = PortablePreconditions.checkNotNull("fieldTypeProducer",
+                                                                    fieldTypeProducer);
     }
 
     @Override
-    public void update( final GuidedDecisionTable52 model,
-                        final List<Coordinate> coordinates ) {
-        poster.post( new Update( model,
-                                 coordinates ) );
+    public void update(final GuidedDecisionTable52 model,
+                       final List<Coordinate> coordinates) {
+        poster.post(new Update(model,
+                               coordinates));
     }
 
     @Override
-    public void newColumn( final GuidedDecisionTable52 model,
-                           final int columnIndex ) {
-        poster.post( new NewColumn( model,
-                                    new ModelMetaDataEnhancer( model ).getHeaderMetaData(),
-                                    fieldTypeProducer.getFactTypes(),
-                                    columnIndex ) );
+    public void newColumn(final GuidedDecisionTable52 model,
+                          final int columnIndex) {
+        poster.post(new NewColumn(model,
+                                  new ModelMetaDataEnhancer(model).getHeaderMetaData(),
+                                  fieldTypeProducer.getFactTypes(),
+                                  columnIndex));
     }
 
     @Override
-    public void deleteColumns( final int firstColumnIndex,
-                               final int numberOfColumns ) {
-        poster.post( new DeleteColumns( firstColumnIndex,
-                                        numberOfColumns ) );
+    public void deleteColumns(final int firstColumnIndex,
+                              final int numberOfColumns) {
+        poster.post(new DeleteColumns(firstColumnIndex,
+                                      numberOfColumns));
     }
 
     @Override
-    public void removeRule( final Integer rowDeleted ) {
-        poster.post( new RemoveRule( rowDeleted ) );
+    public void removeRule(final Integer rowDeleted) {
+        poster.post(new RemoveRule(rowDeleted));
     }
 
     @Override
-    public void makeRule( final GuidedDecisionTable52 model,
-                          final int index ) {
-        poster.post( new MakeRule( model,
-                                   new ModelMetaDataEnhancer( model ).getHeaderMetaData(),
-                                   fieldTypeProducer.getFactTypes(),
-                                   index ) );
+    public void makeRule(final GuidedDecisionTable52 model,
+                         final int index) {
+        poster.post(new MakeRule(model,
+                                 new ModelMetaDataEnhancer(model).getHeaderMetaData(),
+                                 fieldTypeProducer.getFactTypes(),
+                                 index));
     }
-
 }

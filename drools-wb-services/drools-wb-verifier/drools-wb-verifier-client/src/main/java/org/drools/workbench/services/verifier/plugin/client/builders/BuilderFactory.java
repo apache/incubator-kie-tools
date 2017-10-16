@@ -15,11 +15,11 @@
  */
 package org.drools.workbench.services.verifier.plugin.client.builders;
 
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.drools.workbench.services.verifier.api.client.index.Index;
 import org.drools.workbench.services.verifier.plugin.client.api.HeaderMetaData;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class BuilderFactory {
 
@@ -29,67 +29,67 @@ public class BuilderFactory {
     private HeaderMetaData headerMetaData;
     private final AnalyzerConfiguration configuration;
 
-    public BuilderFactory( final VerifierColumnUtilities utils,
-                           final Index index,
-                           final GuidedDecisionTable52 model,
-                           final HeaderMetaData headerMetaData,
-                           final AnalyzerConfiguration configuration ) {
+    public BuilderFactory(final VerifierColumnUtilities utils,
+                          final Index index,
+                          final GuidedDecisionTable52 model,
+                          final HeaderMetaData headerMetaData,
+                          final AnalyzerConfiguration configuration) {
 
-        this.utils = PortablePreconditions.checkNotNull( "utils",
-                                                         utils );
-        this.index = PortablePreconditions.checkNotNull( "index",
-                                                         index );
-        this.model = PortablePreconditions.checkNotNull( "model",
-                                                         model );
-        this.headerMetaData = PortablePreconditions.checkNotNull( "headerMetaData",
-                                                                  headerMetaData );
-        this.configuration = PortablePreconditions.checkNotNull( "configuration",
-                                                                 configuration );
+        this.utils = PortablePreconditions.checkNotNull("utils",
+                                                        utils);
+        this.index = PortablePreconditions.checkNotNull("index",
+                                                        index);
+        this.model = PortablePreconditions.checkNotNull("model",
+                                                        model);
+        this.headerMetaData = PortablePreconditions.checkNotNull("headerMetaData",
+                                                                 headerMetaData);
+        this.configuration = PortablePreconditions.checkNotNull("configuration",
+                                                                configuration);
     }
 
     public CellBuilder getCellBuilder() {
-        return new CellBuilder( this );
+        return new CellBuilder(this);
     }
 
     public RuleBuilder getRuleBuilder() {
-        return new RuleBuilder( this,
-                                model,
-                                configuration );
+        return new RuleBuilder(this,
+                               model,
+                               configuration);
     }
 
     public ColumnBuilder getColumnBuilder() {
-        return new ColumnBuilder( configuration );
+        return new ColumnBuilder(configuration);
     }
 
     public ActionBuilder getActionBuilder() {
-        return new ActionBuilder( this,
-                                  index,
-                                  configuration );
+        return new ActionBuilder(this,
+                                 index,
+                                 configuration);
     }
 
     public BRLConditionBuilder getBRLConditionBuilder() {
-        return new BRLConditionBuilder( index,
-                                        utils,
-                                        configuration );
+        return new BRLConditionBuilder(index,
+                                       utils,
+                                       configuration);
     }
 
     public FieldConditionBuilder getFieldConditionsBuilder() {
-        return new FieldConditionBuilder( this,
-                                          index,
-                                          utils,
-                                          configuration );
+        return new FieldConditionBuilder(this,
+                                         index,
+                                         utils,
+                                         configuration);
     }
 
     public PatternResolver getPatternResolver() {
-        return new PatternResolver( index,
-                                    headerMetaData,
-                                    configuration );
+        return new PatternResolver(index,
+                                   headerMetaData,
+                                   configuration);
     }
 
     public FieldResolver getFieldResolver() {
-        return new FieldResolver( this,
-                                  headerMetaData,
-                                  configuration );
+        return new FieldResolver(this,
+                                 headerMetaData,
+                                 configuration);
     }
 
     public ConditionBuilder getConditionBuilder() {

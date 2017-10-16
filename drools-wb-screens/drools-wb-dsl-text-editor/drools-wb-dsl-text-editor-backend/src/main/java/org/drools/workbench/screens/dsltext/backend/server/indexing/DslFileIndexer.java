@@ -18,16 +18,17 @@ package org.drools.workbench.screens.dsltext.backend.server.indexing;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.drools.compiler.lang.dsl.DSLMapping;
 import org.drools.compiler.lang.dsl.DSLMappingEntry;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.screens.dsltext.type.DSLResourceTypeDefinition;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.refactoring.IndexElementsGenerator;
 import org.kie.workbench.common.services.refactoring.Resource;
@@ -110,7 +111,7 @@ public class DslFileIndexer extends AbstractDrlFileIndexer {
         }
 
         // responsible for basic index info: project name, branch, etc
-        return new DefaultIndexBuilder( Paths.convert(path).getFileName(), project, pkg ) {
+        return new DefaultIndexBuilder(Paths.convert(path).getFileName(), project, pkg) {
             @Override
             public DefaultIndexBuilder addGenerator(final IndexElementsGenerator generator) {
                 // Don't include the rule created to parse DSL

@@ -21,10 +21,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.appformer.project.datamodel.oracle.FieldAccessorsAndMutators;
-import org.appformer.project.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.rule.ActionFieldList;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
+import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
+import org.kie.soup.project.datamodel.oracle.ModelField;
 
 /**
  * Utilities for ModelFields
@@ -33,8 +33,9 @@ public final class ModelFieldUtil {
 
     /**
      * Returns an array of ModelFields not consumed by the ActionFieldList; i.e. an array of available ModelFields.
+     *
      * @param fieldCompletions The complete collection of ModelFields
-     * @param afl The model of ModelFields already used
+     * @param afl              The model of ModelFields already used
      * @return An array of unused ModelFields
      */
     public static ModelField[] getAvailableFieldCompletions(final ModelField[] fieldCompletions,

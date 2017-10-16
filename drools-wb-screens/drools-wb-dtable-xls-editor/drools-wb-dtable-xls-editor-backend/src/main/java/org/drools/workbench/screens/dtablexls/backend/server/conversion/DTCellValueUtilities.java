@@ -21,8 +21,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
+import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 
 /**
@@ -41,7 +41,8 @@ public class DTCellValueUtilities {
 
         /**
          * Called when a conversion error occurred.
-         * @param value The value being converted.
+         *
+         * @param value    The value being converted.
          * @param dataType The target data-type to which the value is being converted.
          */
         void onConversionError(final String value,
@@ -54,6 +55,7 @@ public class DTCellValueUtilities {
      * associated with the Cell Value can be incorrect for legacy models. For
      * pre-5.2 they will always be String and for pre-5.4 numerical fields are
      * always Numeric
+     *
      * @param type
      * @param dcv
      */

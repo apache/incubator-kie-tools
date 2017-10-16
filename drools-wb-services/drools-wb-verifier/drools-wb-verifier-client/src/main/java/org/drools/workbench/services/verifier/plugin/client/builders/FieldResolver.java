@@ -25,7 +25,7 @@ import org.drools.workbench.services.verifier.api.client.index.Field;
 import org.drools.workbench.services.verifier.api.client.index.Pattern;
 import org.drools.workbench.services.verifier.api.client.index.Rule;
 import org.drools.workbench.services.verifier.plugin.client.api.HeaderMetaData;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class FieldResolver {
 
@@ -37,47 +37,46 @@ public class FieldResolver {
     private Pattern pattern;
     private int columnIndex;
 
-
-    public FieldResolver( final BuilderFactory builderFactory,
-                          final HeaderMetaData headerMetaData,
-                          final AnalyzerConfiguration configuration ) {
-        this.builderFactory = PortablePreconditions.checkNotNull( "builderFactory",
-                                                                  builderFactory );
-        this.headerMetaData = PortablePreconditions.checkNotNull( "headerMetaData",
-                                                                  headerMetaData );
-        this.configuration = PortablePreconditions.checkNotNull( "configuration",
-                                                                 configuration );
+    public FieldResolver(final BuilderFactory builderFactory,
+                         final HeaderMetaData headerMetaData,
+                         final AnalyzerConfiguration configuration) {
+        this.builderFactory = PortablePreconditions.checkNotNull("builderFactory",
+                                                                 builderFactory);
+        this.headerMetaData = PortablePreconditions.checkNotNull("headerMetaData",
+                                                                 headerMetaData);
+        this.configuration = PortablePreconditions.checkNotNull("configuration",
+                                                                configuration);
     }
 
-    public Field resolveField( final Pattern pattern,
-                               final String fieldType,
-                               final String factField,
-                               final AnalyzerConfiguration configuration ) {
+    public Field resolveField(final Pattern pattern,
+                              final String fieldType,
+                              final String factField,
+                              final AnalyzerConfiguration configuration) {
 
-        PortablePreconditions.checkNotNull( "pattern",
-                                            pattern );
-        PortablePreconditions.checkNotNull( "fieldType",
-                                            fieldType );
-        PortablePreconditions.checkNotNull( "factField",
-                                            factField );
+        PortablePreconditions.checkNotNull("pattern",
+                                           pattern);
+        PortablePreconditions.checkNotNull("fieldType",
+                                           fieldType);
+        PortablePreconditions.checkNotNull("factField",
+                                           factField);
 
         final Field first = pattern.getFields()
-                .where( Field.name()
-                                .is( factField ) )
+                .where(Field.name()
+                               .is(factField))
                 .select()
                 .first();
 
-        if ( first == null ) {
-            final Field field = new Field( Utils.resolveObjectField( pattern.getObjectType(),
-                                                                     fieldType,
-                                                                     factField,
-                                                                     configuration ),
-                                           pattern.getName(),
-                                           fieldType,
-                                           factField,
-                                           configuration );
+        if (first == null) {
+            final Field field = new Field(Utils.resolveObjectField(pattern.getObjectType(),
+                                                                   fieldType,
+                                                                   factField,
+                                                                   configuration),
+                                          pattern.getName(),
+                                          fieldType,
+                                          factField,
+                                          configuration);
             pattern.getFields()
-                    .add( field );
+                    .add(field);
             return field;
         } else {
             return first;
@@ -85,30 +84,30 @@ public class FieldResolver {
     }
 
     public Field resolve() throws
-                           BuildException {
-        if ( rule != null ) {
-            return resolveField( getPattern(),
-                                 getType(),
-                                 getFactField(),
-                                 configuration );
+            BuildException {
+        if (rule != null) {
+            return resolveField(getPattern(),
+                                getType(),
+                                getFactField(),
+                                configuration);
         } else {
-            return resolveField( pattern,
-                                 getType(),
-                                 getFactField(),
-                                 configuration );
+            return resolveField(pattern,
+                                getType(),
+                                getFactField(),
+                                configuration);
         }
     }
 
     private Pattern getPattern() {
-        if ( pattern != null ) {
+        if (pattern != null) {
             return pattern;
         } else {
 
             final PatternResolver patternResolver = builderFactory.getPatternResolver()
-                    .with( rule )
-                    .with( columnIndex );
+                    .with(rule)
+                    .with(columnIndex);
 
-            if ( baseColumn instanceof ActionCol52 ) {
+            if (baseColumn instanceof ActionCol52) {
                 return patternResolver
                         .with( columnIndex )
                         .resolve();
@@ -120,46 +119,45 @@ public class FieldResolver {
     }
 
     private String getFactField() {
-        if ( baseColumn instanceof ConditionCol52 ) {
-            return ( (ConditionCol52) baseColumn ).getFactField();
-        } else if ( baseColumn instanceof ActionSetFieldCol52 ) {
-            return ( (ActionSetFieldCol52) baseColumn ).getFactField();
-        } else if ( baseColumn instanceof ActionInsertFactCol52 ) {
-            return ( (ActionInsertFactCol52) baseColumn ).getFactField();
+        if (baseColumn instanceof ConditionCol52) {
+            return ((ConditionCol52) baseColumn).getFactField();
+        } else if (baseColumn instanceof ActionSetFieldCol52) {
+            return ((ActionSetFieldCol52) baseColumn).getFactField();
+        } else if (baseColumn instanceof ActionInsertFactCol52) {
+            return ((ActionInsertFactCol52) baseColumn).getFactField();
         } else {
             return null;
         }
     }
 
     private String getType() {
-        if ( baseColumn instanceof ConditionCol52 ) {
-            return ( (ConditionCol52) baseColumn ).getFieldType();
-        } else if ( baseColumn instanceof ActionSetFieldCol52 ) {
-            return ( (ActionSetFieldCol52) baseColumn ).getType();
-        } else if ( baseColumn instanceof ActionInsertFactCol52 ) {
-            return ( (ActionInsertFactCol52) baseColumn ).getType();
+        if (baseColumn instanceof ConditionCol52) {
+            return ((ConditionCol52) baseColumn).getFieldType();
+        } else if (baseColumn instanceof ActionSetFieldCol52) {
+            return ((ActionSetFieldCol52) baseColumn).getType();
+        } else if (baseColumn instanceof ActionInsertFactCol52) {
+            return ((ActionInsertFactCol52) baseColumn).getType();
         } else {
             return null;
         }
     }
 
-
-    public FieldResolver with( final BaseColumn actionCol52 ) {
+    public FieldResolver with(final BaseColumn actionCol52) {
         this.baseColumn = actionCol52;
         return this;
     }
 
-    public FieldResolver with( final Rule rule ) {
+    public FieldResolver with(final Rule rule) {
         this.rule = rule;
         return this;
     }
 
-    public FieldResolver with( final Pattern pattern ) {
+    public FieldResolver with(final Pattern pattern) {
         this.pattern = pattern;
         return this;
     }
 
-    public FieldResolver with( final int columnIndex ) {
+    public FieldResolver with(final int columnIndex) {
         this.columnIndex = columnIndex;
         return this;
     }

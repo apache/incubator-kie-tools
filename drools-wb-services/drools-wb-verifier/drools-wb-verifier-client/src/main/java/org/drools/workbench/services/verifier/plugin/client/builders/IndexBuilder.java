@@ -15,12 +15,12 @@
  */
 package org.drools.workbench.services.verifier.plugin.client.builders;
 
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.drools.workbench.services.verifier.api.client.index.Index;
 import org.drools.workbench.services.verifier.api.client.index.IndexImpl;
 import org.drools.workbench.services.verifier.plugin.client.api.HeaderMetaData;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class IndexBuilder {
 
@@ -28,25 +28,24 @@ public class IndexBuilder {
     private final GuidedDecisionTable52 model;
     private final BuilderFactory builderFactory;
 
-    public IndexBuilder( final GuidedDecisionTable52 model,
-                         final HeaderMetaData headerMetaData,
-                         final VerifierColumnUtilities utils,
-                         final AnalyzerConfiguration configuration ) {
+    public IndexBuilder(final GuidedDecisionTable52 model,
+                        final HeaderMetaData headerMetaData,
+                        final VerifierColumnUtilities utils,
+                        final AnalyzerConfiguration configuration) {
         this.index = new IndexImpl();
 
+        this.model = PortablePreconditions.checkNotNull("model",
+                                                        model);
 
-        this.model = PortablePreconditions.checkNotNull( "model",
-                                                         model );
-
-        this.builderFactory = new BuilderFactory( utils,
-                                                  index,
-                                                  model,
-                                                  headerMetaData,
-                                                  configuration );
+        this.builderFactory = new BuilderFactory(utils,
+                                                 index,
+                                                 model,
+                                                 headerMetaData,
+                                                 configuration);
     }
 
     public Index build() throws
-                         BuildException {
+            BuildException {
 
         buildColumns();
         buildRules();
@@ -55,27 +54,26 @@ public class IndexBuilder {
     }
 
     private void buildColumns() {
-        for ( int columnIndex = 0; columnIndex < model.getExpandedColumns()
-                .size(); columnIndex++ ) {
+        for (int columnIndex = 0; columnIndex < model.getExpandedColumns()
+                .size(); columnIndex++) {
             this.index.getColumns()
-                    .add( builderFactory.getColumnBuilder()
-                                  .with( columnIndex )
-                                  .build() );
+                    .add(builderFactory.getColumnBuilder()
+                                 .with(columnIndex)
+                                 .build());
         }
     }
 
     private void buildRules() throws
-                              BuildException {
+            BuildException {
 
         int size = model.getData()
                 .size();
 
-        for ( int index = 0; index < size; index++ ) {
+        for (int index = 0; index < size; index++) {
             this.index.getRules()
-                    .add( builderFactory.getRuleBuilder()
-                                  .with( index )
-                                  .build() );
+                    .add(builderFactory.getRuleBuilder()
+                                 .with(index)
+                                 .build());
         }
     }
-
 }

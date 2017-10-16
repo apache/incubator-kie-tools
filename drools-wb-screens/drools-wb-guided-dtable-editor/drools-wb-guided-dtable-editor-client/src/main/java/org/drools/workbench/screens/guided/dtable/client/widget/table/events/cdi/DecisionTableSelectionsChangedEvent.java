@@ -16,18 +16,18 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class DecisionTableSelectionsChangedEvent {
 
     private final GuidedDecisionTableView.Presenter presenter;
 
-    public DecisionTableSelectionsChangedEvent( final GuidedDecisionTableView.Presenter presenter ) {
-        this.presenter = PortablePreconditions.checkNotNull( "presenter", presenter );
+    public DecisionTableSelectionsChangedEvent(final GuidedDecisionTableView.Presenter presenter) {
+        this.presenter = PortablePreconditions.checkNotNull("presenter",
+                                                            presenter);
     }
 
     public GuidedDecisionTableView.Presenter getPresenter() {
         return presenter;
     }
-
 }

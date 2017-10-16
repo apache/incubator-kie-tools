@@ -20,13 +20,12 @@ import java.util.Arrays;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
@@ -37,6 +36,8 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.widget.DTCellValueWidgetFactory;
 import org.drools.workbench.screens.guided.dtable.client.wizard.table.pages.events.ActionInsertFactFieldsDefinedEvent;
 import org.drools.workbench.screens.guided.dtable.client.wizard.table.pages.events.DuplicatePatternsEvent;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.kie.workbench.common.widgets.client.datamodel.ImportAddedEvent;
 import org.kie.workbench.common.widgets.client.datamodel.ImportRemovedEvent;
 import org.kie.workbench.common.widgets.client.widget.HumanReadableDataTypes;
@@ -81,50 +82,50 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
 
     @Override
     public void initialise() {
-        view.init( this );
-        view.setValidator( getValidator() );
+        view.init(this);
+        view.setValidator(getValidator());
 
         patternToActionsMap.clear();
 
         //Set-up validator for the pattern-to-action mapping voodoo
-        getValidator().setPatternToActionInsertFactFieldsMap( patternToActionsMap );
+        getValidator().setPatternToActionInsertFactFieldsMap(patternToActionsMap);
 
         //Set-up a factory for value editors
-        view.setDTCellValueWidgetFactory( DTCellValueWidgetFactory.getInstance( model,
-                                                                                oracle,
-                                                                                false,
-                                                                                allowEmptyValues() ) );
+        view.setDTCellValueWidgetFactory(DTCellValueWidgetFactory.getInstance(model,
+                                                                              oracle,
+                                                                              false,
+                                                                              allowEmptyValues()));
 
         //Available types
-        final List<String> availableTypes = Arrays.asList( oracle.getFactTypes() );
-        view.setAvailableFactTypes( availableTypes );
+        final List<String> availableTypes = Arrays.asList(oracle.getFactTypes());
+        view.setAvailableFactTypes(availableTypes);
 
         //Existing ActionInsertFactCols (should be empty for a new Decision Table)
-        for ( ActionCol52 a : model.getActionCols() ) {
-            if ( a instanceof ActionInsertFactCol52 ) {
+        for (ActionCol52 a : model.getActionCols()) {
+            if (a instanceof ActionInsertFactCol52) {
                 final ActionInsertFactCol52 aif = (ActionInsertFactCol52) a;
-                final ActionInsertFactFieldsPattern p = lookupExistingInsertFactPattern( aif.getBoundName() );
-                final List<ActionInsertFactCol52> actions = patternToActionsMap.get( p );
-                getValidator().addActionPattern( p );
-                actions.add( aif );
+                final ActionInsertFactFieldsPattern p = lookupExistingInsertFactPattern(aif.getBoundName());
+                final List<ActionInsertFactCol52> actions = patternToActionsMap.get(p);
+                getValidator().addActionPattern(p);
+                actions.add(aif);
             }
         }
-        view.setChosenPatterns( new ArrayList<ActionInsertFactFieldsPattern>() );
-        view.setAvailableFields( new ArrayList<AvailableField>() );
-        view.setChosenFields( new ArrayList<ActionInsertFactCol52>() );
+        view.setChosenPatterns(new ArrayList<ActionInsertFactFieldsPattern>());
+        view.setAvailableFields(new ArrayList<AvailableField>());
+        view.setChosenFields(new ArrayList<ActionInsertFactCol52>());
 
-        content.setWidget( view );
+        content.setWidget(view);
     }
 
-    private ActionInsertFactFieldsPattern lookupExistingInsertFactPattern( final String boundName ) {
-        for ( ActionInsertFactFieldsPattern p : patternToActionsMap.keySet() ) {
-            if ( p.getBoundName().equals( boundName ) ) {
+    private ActionInsertFactFieldsPattern lookupExistingInsertFactPattern(final String boundName) {
+        for (ActionInsertFactFieldsPattern p : patternToActionsMap.keySet()) {
+            if (p.getBoundName().equals(boundName)) {
                 return p;
             }
         }
         final ActionInsertFactFieldsPattern p = new ActionInsertFactFieldsPattern();
-        patternToActionsMap.put( p,
-                                 new ArrayList<ActionInsertFactCol52>() );
+        patternToActionsMap.put(p,
+                                new ArrayList<ActionInsertFactCol52>());
         return p;
     }
 
@@ -134,19 +135,19 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
     }
 
     @Override
-    public void isComplete( final Callback<Boolean> callback ) {
+    public void isComplete(final Callback<Boolean> callback) {
         //Do all Patterns have unique bindings?
         final boolean arePatternBindingsUnique = getValidator().arePatternBindingsUnique();
 
         //Signal duplicates to other pages
-        final DuplicatePatternsEvent event = new DuplicatePatternsEvent( arePatternBindingsUnique );
-        duplicatePatternsEvent.fire( event );
+        final DuplicatePatternsEvent event = new DuplicatePatternsEvent(arePatternBindingsUnique);
+        duplicatePatternsEvent.fire(event);
 
         //Are all Actions defined?
         boolean areActionInsertFieldsDefined = true;
-        for ( List<ActionInsertFactCol52> actions : patternToActionsMap.values() ) {
-            for ( ActionInsertFactCol52 a : actions ) {
-                if ( !getValidator().isActionValid( a ) ) {
+        for (List<ActionInsertFactCol52> actions : patternToActionsMap.values()) {
+            for (ActionInsertFactCol52 a : actions) {
+                if (!getValidator().isActionValid(a)) {
                     areActionInsertFieldsDefined = false;
                     break;
                 }
@@ -154,98 +155,97 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
         }
 
         //Signal Action Insert Fact Fields to other pages
-        final ActionInsertFactFieldsDefinedEvent eventFactFields = new ActionInsertFactFieldsDefinedEvent( areActionInsertFieldsDefined );
-        actionInsertFactFieldsDefinedEvent.fire( eventFactFields );
+        final ActionInsertFactFieldsDefinedEvent eventFactFields = new ActionInsertFactFieldsDefinedEvent(areActionInsertFieldsDefined);
+        actionInsertFactFieldsDefinedEvent.fire(eventFactFields);
 
-        callback.callback( arePatternBindingsUnique && areActionInsertFieldsDefined );
+        callback.callback(arePatternBindingsUnique && areActionInsertFieldsDefined);
     }
 
-    public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
-        if ( !event.getDataModelOracle().equals( this.oracle ) ) {
+    public void handleImportAddedEvent(@Observes ImportAddedEvent event) {
+        if (!event.getDataModelOracle().equals(this.oracle)) {
             return;
         }
-        final List<String> availableTypes = Arrays.asList( oracle.getFactTypes() );
-        view.setAvailableFactTypes( availableTypes );
+        final List<String> availableTypes = Arrays.asList(oracle.getFactTypes());
+        view.setAvailableFactTypes(availableTypes);
     }
 
-    public void handleImportRemovedEvent( @Observes ImportRemovedEvent event ) {
-        if ( !event.getDataModelOracle().equals( this.oracle ) ) {
+    public void handleImportRemovedEvent(@Observes ImportRemovedEvent event) {
+        if (!event.getDataModelOracle().equals(this.oracle)) {
             return;
         }
-        final List<String> availableTypes = Arrays.asList( oracle.getFactTypes() );
-        view.setAvailableFactTypes( availableTypes );
+        final List<String> availableTypes = Arrays.asList(oracle.getFactTypes());
+        view.setAvailableFactTypes(availableTypes);
     }
 
-    public void onDuplicatePatterns( final @Observes DuplicatePatternsEvent event ) {
-        view.setArePatternBindingsUnique( event.getArePatternBindingsUnique() );
+    public void onDuplicatePatterns(final @Observes DuplicatePatternsEvent event) {
+        view.setArePatternBindingsUnique(event.getArePatternBindingsUnique());
     }
 
-    public void onActionInsertFactFieldsDefined( final @Observes ActionInsertFactFieldsDefinedEvent event ) {
-        view.setAreActionInsertFactFieldsDefined( event.getAreActionInsertFactFieldsDefined() );
-    }
-
-    @Override
-    public void addPattern( final ActionInsertFactFieldsPattern pattern ) {
-        patternToActionsMap.put( pattern,
-                                 new ArrayList<ActionInsertFactCol52>() );
-        getValidator().addActionPattern( pattern );
+    public void onActionInsertFactFieldsDefined(final @Observes ActionInsertFactFieldsDefinedEvent event) {
+        view.setAreActionInsertFactFieldsDefined(event.getAreActionInsertFactFieldsDefined());
     }
 
     @Override
-    public void removePattern( final ActionInsertFactFieldsPattern pattern ) {
-        patternToActionsMap.remove( pattern );
-        getValidator().removeActionPattern( pattern );
+    public void addPattern(final ActionInsertFactFieldsPattern pattern) {
+        patternToActionsMap.put(pattern,
+                                new ArrayList<ActionInsertFactCol52>());
+        getValidator().addActionPattern(pattern);
     }
 
     @Override
-    public void selectPattern( final ActionInsertFactFieldsPattern pattern ) {
+    public void removePattern(final ActionInsertFactFieldsPattern pattern) {
+        patternToActionsMap.remove(pattern);
+        getValidator().removeActionPattern(pattern);
+    }
+
+    @Override
+    public void selectPattern(final ActionInsertFactFieldsPattern pattern) {
 
         //Add fields available
         final String type = pattern.getFactType();
 
-        oracle.getFieldCompletions( type,
-                                    new Callback<ModelField[]>() {
-                                        @Override
-                                        public void callback( final ModelField[] fields ) {
-                                            final List<AvailableField> availableFields = new ArrayList<AvailableField>();
-                                            for ( ModelField modelField : fields ) {
-                                                final String fieldName = modelField.getName();
-                                                final String fieldType = oracle.getFieldType( type,
-                                                                                              fieldName );
-                                                final String fieldDisplayType = HumanReadableDataTypes.getUserFriendlyTypeName( fieldType );
-                                                final AvailableField field = new AvailableField( fieldName,
-                                                                                                 fieldType,
-                                                                                                 fieldDisplayType,
-                                                                                                 BaseSingleFieldConstraint.TYPE_LITERAL );
-                                                availableFields.add( field );
-                                            }
-                                            view.setAvailableFields( availableFields );
+        oracle.getFieldCompletions(type,
+                                   new Callback<ModelField[]>() {
+                                       @Override
+                                       public void callback(final ModelField[] fields) {
+                                           final List<AvailableField> availableFields = new ArrayList<AvailableField>();
+                                           for (ModelField modelField : fields) {
+                                               final String fieldName = modelField.getName();
+                                               final String fieldType = oracle.getFieldType(type,
+                                                                                            fieldName);
+                                               final String fieldDisplayType = HumanReadableDataTypes.getUserFriendlyTypeName(fieldType);
+                                               final AvailableField field = new AvailableField(fieldName,
+                                                                                               fieldType,
+                                                                                               fieldDisplayType,
+                                                                                               BaseSingleFieldConstraint.TYPE_LITERAL);
+                                               availableFields.add(field);
+                                           }
+                                           view.setAvailableFields(availableFields);
 
-                                            //Set fields already chosen
-                                            List<ActionInsertFactCol52> actionsForPattern = patternToActionsMap.get( pattern );
-                                            if ( actionsForPattern == null ) {
-                                                actionsForPattern = new ArrayList<ActionInsertFactCol52>();
-                                                patternToActionsMap.put( pattern,
-                                                                         actionsForPattern );
-                                            }
-                                            view.setChosenFields( actionsForPattern );
-                                        }
-                                    } );
-
+                                           //Set fields already chosen
+                                           List<ActionInsertFactCol52> actionsForPattern = patternToActionsMap.get(pattern);
+                                           if (actionsForPattern == null) {
+                                               actionsForPattern = new ArrayList<ActionInsertFactCol52>();
+                                               patternToActionsMap.put(pattern,
+                                                                       actionsForPattern);
+                                           }
+                                           view.setChosenFields(actionsForPattern);
+                                       }
+                                   });
     }
 
     @Override
-    public void makeResult( final GuidedDecisionTable52 model ) {
+    public void makeResult(final GuidedDecisionTable52 model) {
         //Copy actions to decision table model
         int fi = 1;
-        for ( Map.Entry<ActionInsertFactFieldsPattern, List<ActionInsertFactCol52>> ps : patternToActionsMap.entrySet() ) {
+        for (Map.Entry<ActionInsertFactFieldsPattern, List<ActionInsertFactCol52>> ps : patternToActionsMap.entrySet()) {
             final ActionInsertFactFieldsPattern p = ps.getKey();
-            if ( !getValidator().isPatternValid( p ) ) {
-                String binding = NEW_FACT_PREFIX + ( fi++ );
-                p.setBoundName( binding );
-                while ( !getValidator().isPatternBindingUnique( p ) ) {
-                    binding = NEW_FACT_PREFIX + ( fi++ );
-                    p.setBoundName( binding );
+            if (!getValidator().isPatternValid(p)) {
+                String binding = NEW_FACT_PREFIX + (fi++);
+                p.setBoundName(binding);
+                while (!getValidator().isPatternBindingUnique(p)) {
+                    binding = NEW_FACT_PREFIX + (fi++);
+                    p.setBoundName(binding);
                 }
             }
 
@@ -253,14 +253,13 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
             final String boundName = p.getBoundName();
             final boolean isLogicalInsert = p.isInsertedLogically();
 
-            for ( ActionInsertFactCol52 aif : ps.getValue() ) {
-                aif.setFactType( factType );
-                aif.setBoundName( boundName );
-                aif.setInsertLogical( isLogicalInsert );
-                model.getActionCols().add( aif );
+            for (ActionInsertFactCol52 aif : ps.getValue()) {
+                aif.setFactType(factType);
+                aif.setBoundName(boundName);
+                aif.setInsertLogical(isLogicalInsert);
+                model.getActionCols().add(aif);
             }
         }
-
     }
 
     @Override
@@ -269,38 +268,38 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
     }
 
     @Override
-    public boolean hasEnums( final ActionInsertFactCol52 selectedAction ) {
-        for ( Map.Entry<ActionInsertFactFieldsPattern, List<ActionInsertFactCol52>> e : this.patternToActionsMap.entrySet() ) {
-            if ( e.getValue().contains( selectedAction ) ) {
+    public boolean hasEnums(final ActionInsertFactCol52 selectedAction) {
+        for (Map.Entry<ActionInsertFactFieldsPattern, List<ActionInsertFactCol52>> e : this.patternToActionsMap.entrySet()) {
+            if (e.getValue().contains(selectedAction)) {
                 final String factType = e.getKey().getFactType();
                 final String factField = selectedAction.getFactField();
-                return this.oracle.hasEnums( factType,
-                                             factField );
+                return this.oracle.hasEnums(factType,
+                                            factField);
             }
         }
         return false;
     }
 
     @Override
-    public void assertDefaultValue( final ActionInsertFactCol52 selectedAction ) {
-        final List<String> valueList = Arrays.asList( columnUtilities.getValueList( selectedAction ) );
-        if ( valueList.size() > 0 ) {
-            final String defaultValue = cellUtilities.asString( selectedAction.getDefaultValue() );
-            if ( !valueList.contains( defaultValue ) ) {
+    public void assertDefaultValue(final ActionInsertFactCol52 selectedAction) {
+        final List<String> valueList = Arrays.asList(columnUtilities.getValueList(selectedAction));
+        if (valueList.size() > 0) {
+            final String defaultValue = cellUtilities.asString(selectedAction.getDefaultValue());
+            if (!valueList.contains(defaultValue)) {
                 selectedAction.getDefaultValue().clearValues();
             }
         } else {
             //Ensure the Default Value has been updated to represent the column's data-type.
             final DTCellValue52 defaultValue = selectedAction.getDefaultValue();
-            final DataType.DataTypes dataType = columnUtilities.getDataType( selectedAction );
-            cellUtilities.convertDTCellValueType( dataType,
-                                                  defaultValue );
+            final DataType.DataTypes dataType = columnUtilities.getDataType(selectedAction);
+            cellUtilities.convertDTCellValueType(dataType,
+                                                 defaultValue);
         }
     }
 
     @Override
     public void stateChanged() {
-        final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( this );
-        wizardPageStatusChangeEvent.fire( event );
+        final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent(this);
+        wizardPageStatusChangeEvent.fire(event);
     }
 }

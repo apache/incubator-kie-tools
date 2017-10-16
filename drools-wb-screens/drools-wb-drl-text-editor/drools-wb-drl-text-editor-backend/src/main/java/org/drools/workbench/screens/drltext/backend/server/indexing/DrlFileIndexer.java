@@ -18,8 +18,8 @@ package org.drools.workbench.screens.drltext.backend.server.indexing;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.screens.drltext.type.DRLResourceTypeDefinition;
+import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.drools.AbstractDrlFileIndexer;
@@ -36,20 +36,19 @@ public class DrlFileIndexer extends AbstractDrlFileIndexer {
     protected DRLResourceTypeDefinition drlType;
 
     @Override
-    public boolean supportsPath( final Path path ) {
-        return drlType.accept( Paths.convert( path ) );
+    public boolean supportsPath(final Path path) {
+        return drlType.accept(Paths.convert(path));
     }
 
     @Override
-    public DefaultIndexBuilder fillIndexBuilder( final Path path ) throws Exception {
-        final String drl = ioService.readAllString( path );
+    public DefaultIndexBuilder fillIndexBuilder(final Path path) throws Exception {
+        final String drl = ioService.readAllString(path);
 
         return fillDrlIndexBuilder(path, drl);
     }
 
     @Override
-    protected ProjectDataModelOracle getProjectDataModelOracle( Path path ) {
-        return dataModelService.getProjectDataModel( Paths.convert( path ) );
+    protected ProjectDataModelOracle getProjectDataModelOracle(Path path) {
+        return dataModelService.getProjectDataModel(Paths.convert(path));
     }
-
 }

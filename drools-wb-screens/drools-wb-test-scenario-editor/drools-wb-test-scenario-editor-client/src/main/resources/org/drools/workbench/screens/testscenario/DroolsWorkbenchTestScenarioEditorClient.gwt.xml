@@ -26,7 +26,7 @@
 
   <inherits name="org.uberfire.ext.editor.commons.UberfireCommonsEditorClient"/>
 
-  <inherits name="org.appformer.project.datamodel.AFProjectDataModelAPI"/>
+  <inherits name="org.kie.soup.project.datamodel.ProjectDataModelAPI"/>
   <inherits name='org.drools.workbench.screens.testscenario.DroolsWorkbenchTestScenarioEditorAPI'/>
   <inherits name="org.drools.workbench.models.datamodel.DroolsWorkbenchDataModelAPI"/>
   <inherits name="org.drools.workbench.screens.guided.rule.DroolsWorkbenchGuidedRuleEditorClient"/>

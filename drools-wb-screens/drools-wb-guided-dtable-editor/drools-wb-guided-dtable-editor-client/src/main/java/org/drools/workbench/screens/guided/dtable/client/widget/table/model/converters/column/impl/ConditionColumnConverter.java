@@ -17,15 +17,16 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.model.con
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.OperatorsOracle;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.OperatorsOracle;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 
@@ -33,91 +34,89 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 public class ConditionColumnConverter extends BaseColumnConverterImpl {
 
     @Override
-    public boolean handles( final BaseColumn column ) {
+    public boolean handles(final BaseColumn column) {
         return column instanceof ConditionCol52;
     }
 
     @Override
-    public GridColumn<?> convertColumn( final BaseColumn column,
-                                        final GuidedDecisionTablePresenter.Access access,
-                                        final GuidedDecisionTableView gridWidget ) {
-        return convertColumn( (ConditionCol52) column,
-                              access,
-                              gridWidget );
+    public GridColumn<?> convertColumn(final BaseColumn column,
+                                       final GuidedDecisionTablePresenter.Access access,
+                                       final GuidedDecisionTableView gridWidget) {
+        return convertColumn((ConditionCol52) column,
+                             access,
+                             gridWidget);
     }
 
-    private GridColumn<?> convertColumn( final ConditionCol52 column,
-                                         final GuidedDecisionTablePresenter.Access access,
-                                         final GuidedDecisionTableView gridWidget ) {
+    private GridColumn<?> convertColumn(final ConditionCol52 column,
+                                        final GuidedDecisionTablePresenter.Access access,
+                                        final GuidedDecisionTableView gridWidget) {
         //Operators "is null" and "is not null" require a boolean cell
-        if ( column.getOperator() != null && ( column.getOperator().equals( "== null" ) || column.getOperator().equals( "!= null" ) ) ) {
-            return newBooleanColumn( makeHeaderMetaData( column ),
-                                     Math.max( column.getWidth(),
-                                               DEFAULT_COLUMN_WIDTH ),
-                                     true,
-                                     !column.isHideColumn(),
-                                     access,
-                                     gridWidget );
+        if (column.getOperator() != null && (column.getOperator().equals("== null") || column.getOperator().equals("!= null"))) {
+            return newBooleanColumn(makeHeaderMetaData(column),
+                                    Math.max(column.getWidth(),
+                                             DEFAULT_COLUMN_WIDTH),
+                                    true,
+                                    !column.isHideColumn(),
+                                    access,
+                                    gridWidget);
         }
 
         //Check if the column has a "Value List" or an enumeration. Value List takes precedence
-        final String factType = model.getPattern( column ).getFactType();
+        final String factType = model.getPattern(column).getFactType();
         final String factField = column.getFactField();
-        final DataType.DataTypes dataType = columnUtilities.getDataType( column );
-        if ( columnUtilities.hasValueList( column ) ) {
-            return newValueListColumn( column,
-                                       access,
-                                       gridWidget );
-
-        } else if ( oracle.hasEnums( factType,
-                                     factField ) ) {
-            if ( OperatorsOracle.operatorRequiresList( column.getOperator() ) ) {
-                return newMultipleSelectEnumColumn( factType,
+        final DataType.DataTypes dataType = columnUtilities.getDataType(column);
+        if (columnUtilities.hasValueList(column)) {
+            return newValueListColumn(column,
+                                      access,
+                                      gridWidget);
+        } else if (oracle.hasEnums(factType,
+                                   factField)) {
+            if (OperatorsOracle.operatorRequiresList(column.getOperator())) {
+                return newMultipleSelectEnumColumn(factType,
+                                                   factField,
+                                                   column,
+                                                   access,
+                                                   gridWidget);
+            } else {
+                return newSingleSelectionEnumColumn(factType,
                                                     factField,
+                                                    dataType,
                                                     column,
                                                     access,
-                                                    gridWidget );
-            } else {
-                return newSingleSelectionEnumColumn( factType,
-                                                     factField,
-                                                     dataType,
-                                                     column,
-                                                     access,
-                                                     gridWidget );
+                                                    gridWidget);
             }
         }
 
-        return newColumn( column,
-                          access,
-                          gridWidget );
+        return newColumn(column,
+                         access,
+                         gridWidget);
     }
 
     @Override
-    public List<GridColumn.HeaderMetaData> makeHeaderMetaData( final BaseColumn column ) {
-        final String patternHeader = getPatternHeader( column );
-        final String conditionHeader = getConditionHeader( column );
+    public List<GridColumn.HeaderMetaData> makeHeaderMetaData(final BaseColumn column) {
+        final String patternHeader = getPatternHeader(column);
+        final String conditionHeader = getConditionHeader(column);
         return new ArrayList<GridColumn.HeaderMetaData>() {{
-            add( new BaseHeaderMetaData( patternHeader,
-                                         ConditionCol52.class.getName() ) );
-            add( new BaseHeaderMetaData( conditionHeader,
-                                         patternHeader ) );
+            add(new BaseHeaderMetaData(patternHeader,
+                                       ConditionCol52.class.getName()));
+            add(new BaseHeaderMetaData(conditionHeader,
+                                       patternHeader));
         }};
     }
 
-    private String getPatternHeader( final BaseColumn column ) {
-        final Pattern52 pattern = model.getPattern( (ConditionCol52) column );
+    private String getPatternHeader(final BaseColumn column) {
+        final Pattern52 pattern = model.getPattern((ConditionCol52) column);
         final StringBuilder sb = new StringBuilder();
-        if( pattern.isNegated() ) {
+        if (pattern.isNegated()) {
             sb.append("not ");
-        } else if ( !( pattern.getBoundName() == null || pattern.getBoundName().isEmpty() ) ) {
-            sb.append( pattern.getBoundName() ).append( " : " );
+        } else if (!(pattern.getBoundName() == null || pattern.getBoundName().isEmpty())) {
+            sb.append(pattern.getBoundName()).append(" : ");
         }
-        sb.append( pattern.getFactType() );
+        sb.append(pattern.getFactType());
         return sb.toString();
     }
 
-    private String getConditionHeader( final BaseColumn column ) {
+    private String getConditionHeader(final BaseColumn column) {
         return column.getHeader();
     }
-
 }

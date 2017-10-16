@@ -22,7 +22,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.services.verifier.plugin.client.Logger;
 import org.drools.workbench.services.verifier.plugin.client.api.FactTypes;
 import org.drools.workbench.services.verifier.plugin.client.api.HeaderMetaData;
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class VerifierColumnUtilities
         extends ColumnUtilitiesBase {

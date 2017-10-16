@@ -28,8 +28,8 @@ import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.services.verifier.api.client.index.BRLAction;
 import org.drools.workbench.services.verifier.plugin.client.DTableUpdateManager;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 public class DecisionTableAnalyzer {
 
@@ -39,98 +39,99 @@ public class DecisionTableAnalyzer {
     private final GuidedDecisionTable52 model;
     private final EventManager eventManager = new EventManager();
 
-    public DecisionTableAnalyzer( final GuidedDecisionTable52 model,
-                                  final DTableUpdateManager updateManager,
-                                  final VerifierWebWorkerConnection connection ) {
-        this.model = PortablePreconditions.checkNotNull( "model",
-                                                         model );
-        this.updateManager = PortablePreconditions.checkNotNull( "updateManager",
-                                                                 updateManager );
-        this.analyzer = PortablePreconditions.checkNotNull( "connection",
-                                                            connection );
+    public DecisionTableAnalyzer(final GuidedDecisionTable52 model,
+                                 final DTableUpdateManager updateManager,
+                                 final VerifierWebWorkerConnection connection) {
+        this.model = PortablePreconditions.checkNotNull("model",
+                                                        model);
+        this.updateManager = PortablePreconditions.checkNotNull("updateManager",
+                                                                updateManager);
+        this.analyzer = PortablePreconditions.checkNotNull("connection",
+                                                           connection);
     }
 
-    public void analyze( final List<Coordinate> updates ) {
-        updateManager.update( model,
-                              convert( updates ) );
+    public void analyze(final List<Coordinate> updates) {
+        updateManager.update(model,
+                             convert(updates));
     }
 
-    private List<org.drools.workbench.services.verifier.plugin.client.Coordinate> convert( final List<Coordinate> updates ) {
+    private List<org.drools.workbench.services.verifier.plugin.client.Coordinate> convert(final List<Coordinate> updates) {
         final ArrayList<org.drools.workbench.services.verifier.plugin.client.Coordinate> result = new ArrayList<>();
 
-        for ( final Coordinate coordinate : updates ) {
-            result.add( new org.drools.workbench.services.verifier.plugin.client.Coordinate( coordinate.getRow(),
-                                                                                             coordinate.getCol() ) );
+        for (final Coordinate coordinate : updates) {
+            result.add(new org.drools.workbench.services.verifier.plugin.client.Coordinate(coordinate.getRow(),
+                                                                                           coordinate.getCol()));
         }
 
         return result;
     }
 
-    public void deleteColumns( final int firstColumnIndex,
-                               final int numberOfColumns ) {
-        updateManager.deleteColumns( firstColumnIndex,
-                                     numberOfColumns );
+    public void deleteColumns(final int firstColumnIndex,
+                              final int numberOfColumns) {
+        updateManager.deleteColumns(firstColumnIndex,
+                                    numberOfColumns);
     }
 
-    public void insertColumn( final BaseColumn baseColumn ) {
-        updateManager.newColumn( model,
-                                 getColumnIndex( baseColumn ) );
+    public void insertColumn(final BaseColumn baseColumn) {
+        updateManager.newColumn(model,
+                                getColumnIndex(baseColumn));
     }
 
-    private int getColumnIndex( final BaseColumn baseColumn ) {
+    private int getColumnIndex(final BaseColumn baseColumn) {
         List<BaseColumn> cols = model.getExpandedColumns();
         final int indexOf = cols
-                .indexOf( baseColumn );
-        if ( indexOf < 0 ) {
-            if ( baseColumn instanceof BRLConditionColumn ) {
+                .indexOf(baseColumn);
+        if (indexOf < 0) {
+            if (baseColumn instanceof BRLConditionColumn) {
 
-                for ( final BaseColumn column : model.getExpandedColumns() ) {
-                    if ( column instanceof BRLConditionVariableColumn ) {
-                        if ( ( (BRLConditionColumn) baseColumn ).getChildColumns()
-                                .contains( column ) ) {
+                for (final BaseColumn column : model.getExpandedColumns()) {
+                    if (column instanceof BRLConditionVariableColumn) {
+                        if (((BRLConditionColumn) baseColumn).getChildColumns()
+                                .contains(column)) {
                             return model.getExpandedColumns()
-                                    .indexOf( column );
+                                    .indexOf(column);
                         }
                     }
                 }
 
-                throw new IllegalArgumentException( "Could not find BRLConditionColumn: " + baseColumn.toString() );
-            } if ( baseColumn instanceof BRLActionColumn) {
+                throw new IllegalArgumentException("Could not find BRLConditionColumn: " + baseColumn.toString());
+            }
+            if (baseColumn instanceof BRLActionColumn) {
 
-                for ( final BaseColumn column : model.getExpandedColumns() ) {
-                    if ( column instanceof BRLActionVariableColumn) {
-                        if ( ( (BRLActionColumn) baseColumn ).getChildColumns()
-                                .contains( column ) ) {
+                for (final BaseColumn column : model.getExpandedColumns()) {
+                    if (column instanceof BRLActionVariableColumn) {
+                        if (((BRLActionColumn) baseColumn).getChildColumns()
+                                .contains(column)) {
                             return model.getExpandedColumns()
-                                    .indexOf( column );
+                                    .indexOf(column);
                         }
                     }
                 }
 
-                throw new IllegalArgumentException( "Could not find BRLActionColumn: " + baseColumn.toString() );
-            } else if ( baseColumn instanceof BRLVariableColumn ) {
+                throw new IllegalArgumentException("Could not find BRLActionColumn: " + baseColumn.toString());
+            } else if (baseColumn instanceof BRLVariableColumn) {
                 return model.getExpandedColumns()
-                        .indexOf( model.getBRLColumn( (BRLVariableColumn) baseColumn ) );
+                        .indexOf(model.getBRLColumn((BRLVariableColumn) baseColumn));
             } else {
-                throw new IllegalArgumentException( "Could not find baseColumn: " + baseColumn.toString() );
+                throw new IllegalArgumentException("Could not find baseColumn: " + baseColumn.toString());
             }
         } else {
             return indexOf;
         }
     }
 
-    public void updateColumns( final int amountOfRows ) {
-        if ( eventManager.rowDeleted != null ) {
-            updateManager.removeRule(eventManager.rowDeleted );
+    public void updateColumns(final int amountOfRows) {
+        if (eventManager.rowDeleted != null) {
+            updateManager.removeRule(eventManager.rowDeleted);
         } else {
-            updateManager.makeRule( model,
-                                    eventManager.getNewIndex() );
+            updateManager.makeRule(model,
+                                   eventManager.getNewIndex());
         }
 
         eventManager.clear();
     }
 
-    public void deleteRow( final int index ) {
+    public void deleteRow(final int index) {
         eventManager.rowDeleted = index;
     }
 
@@ -138,7 +139,7 @@ public class DecisionTableAnalyzer {
         eventManager.rowAppended = true;
     }
 
-    public void insertRow( final int index ) {
+    public void insertRow(final int index) {
         eventManager.rowInserted = index;
     }
 
@@ -164,14 +165,14 @@ public class DecisionTableAnalyzer {
         }
 
         int getNewIndex() {
-            if ( eventManager.rowAppended ) {
+            if (eventManager.rowAppended) {
                 return model.getData()
                         .size() - 1;
-            } else if ( eventManager.rowInserted != null ) {
+            } else if (eventManager.rowInserted != null) {
                 return eventManager.rowInserted;
             }
 
-            throw new IllegalStateException( "There are no active updates" );
+            throw new IllegalStateException("There are no active updates");
         }
     }
 }
