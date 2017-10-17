@@ -106,6 +106,11 @@ public class CopyPopUpView implements CopyPopUpPresenter.View,
         return null;
     }
 
+    @Override
+    public void handleCopyNotAllowed() {
+        showError(translate(Constants.CopyPopUpView_CopyNotAllowed));
+    }
+
     private void modalSetup() {
         this.modal = new CommonModalBuilder()
                 .addHeader(translate(Constants.CopyPopUpView_MakeACopy))

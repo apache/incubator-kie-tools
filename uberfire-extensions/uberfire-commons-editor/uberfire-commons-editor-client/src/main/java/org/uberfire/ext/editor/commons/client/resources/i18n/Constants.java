@@ -39,6 +39,12 @@ public class Constants {
     public static final String DeletePopUpView_Cancel = "DeletePopUpView.Cancel";
 
     @TranslationKey(defaultValue = "")
+    public static final String DeletePopUpView_DeleteNotAllowed = "DeletePopUpView.DeleteNotAllowed";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DeletePopUpView_UnexpectedError = "DeletePopUpView.UnexpectedError";
+
+    @TranslationKey(defaultValue = "")
     public static final String RestorePopUpView_ConfirmRestore = "RestorePopUpView.ConfirmRestore";
 
     @TranslationKey(defaultValue = "")
@@ -63,6 +69,9 @@ public class Constants {
     public static final String CopyPopUpView_NewName = "CopyPopUpView.NewName";
 
     @TranslationKey(defaultValue = "")
+    public static final String CopyPopUpView_CopyNotAllowed = "CopyPopUpView.CopyNotAllowed";
+
+    @TranslationKey(defaultValue = "")
     public static final String RenamePopUpView_RenameAsset = "RenamePopUpView.RenameAsset";
 
     @TranslationKey(defaultValue = "")
@@ -76,6 +85,9 @@ public class Constants {
 
     @TranslationKey(defaultValue = "")
     public static final String RenamePopUpView_FileAlreadyExists = "RenamePopUpView.FileAlreadyExists";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RenamePopUpView_RenameNotAllowed = "RenamePopUpView.RenameNotAllowed";
 
     @TranslationKey(defaultValue = "")
     public static final String ToggleCommentView_EnterComment = "ToggleCommentView.EnterComment";

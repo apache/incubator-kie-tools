@@ -36,8 +36,16 @@ public interface BasicFileMenuBuilder extends HasLockSyncMenuStateHelper {
     BasicFileMenuBuilder addDelete(final Path path,
                                    final Caller<? extends SupportsDelete> deleteCaller);
 
+    BasicFileMenuBuilder addDelete(final Path path,
+                                   final Caller<? extends SupportsDelete> deleteCaller,
+                                   final Validator validator);
+
     BasicFileMenuBuilder addDelete(final PathProvider provider,
                                    final Caller<? extends SupportsDelete> deleteCaller);
+
+    BasicFileMenuBuilder addDelete(final PathProvider provider,
+                                   final Caller<? extends SupportsDelete> deleteCaller,
+                                   final Validator validator);
 
     BasicFileMenuBuilder addDelete(final Command command);
 

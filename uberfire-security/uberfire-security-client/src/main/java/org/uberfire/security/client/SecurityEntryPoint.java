@@ -17,15 +17,19 @@
 package org.uberfire.security.client;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.backend.authz.AuthorizationService;
+import org.uberfire.backend.events.AuthorizationPolicySavedEvent;
 import org.uberfire.security.authz.AuthorizationPolicy;
 import org.uberfire.security.authz.PermissionManager;
 
 @EntryPoint
+@ApplicationScoped
 public class SecurityEntryPoint {
 
     @Inject
@@ -41,5 +45,10 @@ public class SecurityEntryPoint {
                     permissionManager.setAuthorizationPolicy(p);
                 }
         ).loadPolicy();
+    }
+
+    public void onPolicySaved(@Observes AuthorizationPolicySavedEvent event) {
+        AuthorizationPolicy policy = event.getPolicy();
+        permissionManager.setAuthorizationPolicy(policy);
     }
 }

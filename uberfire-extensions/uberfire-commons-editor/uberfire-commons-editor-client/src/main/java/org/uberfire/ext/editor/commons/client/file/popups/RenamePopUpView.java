@@ -107,6 +107,11 @@ public class RenamePopUpView implements RenamePopUpPresenter.View,
         originalFileName = fileName;
     }
 
+    @Override
+    public void handleRenameNotAllowed() {
+        showError(translate(Constants.RenamePopUpView_RenameNotAllowed));
+    }
+
     @EventHandler("newNameTextBox")
     public void onNewFileNameChange(KeyUpEvent event) {
         disableRenameButtonIfNewNameIsNotNew();

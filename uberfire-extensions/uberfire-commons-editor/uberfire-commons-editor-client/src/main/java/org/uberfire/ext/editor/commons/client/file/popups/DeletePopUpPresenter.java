@@ -22,6 +22,9 @@ import javax.inject.Inject;
 
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.editor.commons.client.file.popups.commons.ToggleCommentPresenter;
+import org.uberfire.ext.editor.commons.client.validation.ValidationErrorReason;
+import org.uberfire.ext.editor.commons.client.validation.Validator;
+import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
@@ -29,6 +32,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 @Dependent
 public class DeletePopUpPresenter {
 
+    private Validator validator;
     private ParameterizedCommand<String> command;
     private View view;
     private ToggleCommentPresenter toggleCommentPresenter;
@@ -46,12 +50,23 @@ public class DeletePopUpPresenter {
     }
 
     public void show(final ParameterizedCommand<String> command) {
+        show(null,
+             command);
+    }
+
+    public void show(final Validator validator,
+                     final ParameterizedCommand<String> command) {
+        this.validator = validator == null ? defaultValidator() : validator;
         this.command = command;
         view.show();
     }
 
     public void cancel() {
         view.hide();
+    }
+
+    Validator getValidator() {
+        return validator;
     }
 
     public ParameterizedCommand<String> getCommand() {
@@ -61,8 +76,37 @@ public class DeletePopUpPresenter {
     public void delete() {
         checkNotNull("command",
                      command);
-        command.execute(toggleCommentPresenter.getComment());
-        view.hide();
+
+        validator.validate(null,
+                           validatorCallback(toggleCommentPresenter.getComment()));
+    }
+
+    private ValidatorWithReasonCallback validatorCallback(final String comment) {
+        return new ValidatorWithReasonCallback() {
+            @Override
+            public void onFailure(final String reason) {
+                if (ValidationErrorReason.NOT_ALLOWED.name().equals(reason)) {
+                    view.handleDeleteNotAllowed();
+                } else {
+                    view.handleUnexpectedError();
+                }
+            }
+
+            @Override
+            public void onSuccess() {
+                command.execute(comment);
+                view.hide();
+            }
+
+            @Override
+            public void onFailure() {
+                view.handleUnexpectedError();
+            }
+        };
+    }
+
+    private Validator defaultValidator() {
+        return (value, callback) -> callback.onSuccess();
     }
 
     public void setPrompt(final String prompt) {
@@ -84,5 +128,9 @@ public class DeletePopUpPresenter {
         void hide();
 
         void setPrompt(final String prompt);
+
+        void handleDeleteNotAllowed();
+
+        void handleUnexpectedError();
     }
 }

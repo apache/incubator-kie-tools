@@ -24,6 +24,7 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Paragraph;
+import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -48,6 +49,14 @@ public class DeletePopUpView implements DeletePopUpPresenter.View,
     Paragraph bodyText;
 
     @Inject
+    @DataField("error")
+    Div error;
+
+    @Inject
+    @DataField("errorMessage")
+    Span errorMessage;
+
+    @Inject
     private TranslationService translationService;
 
     private DeletePopUpPresenter presenter;
@@ -63,6 +72,7 @@ public class DeletePopUpView implements DeletePopUpPresenter.View,
 
     @Override
     public void show() {
+        errorSetup();
         modal.show();
     }
 
@@ -74,6 +84,16 @@ public class DeletePopUpView implements DeletePopUpPresenter.View,
     @Override
     public void setPrompt(final String prompt) {
         bodyText.setTextContent(prompt);
+    }
+
+    @Override
+    public void handleDeleteNotAllowed() {
+        showError(translate(Constants.DeletePopUpView_DeleteNotAllowed));
+    }
+
+    @Override
+    public void handleUnexpectedError() {
+        showError(translate(Constants.DeletePopUpView_UnexpectedError));
     }
 
     private void modalSetup() {
@@ -114,5 +134,14 @@ public class DeletePopUpView implements DeletePopUpPresenter.View,
 
     private ToggleCommentPresenter toggleCommentPresenter() {
         return presenter.getToggleCommentPresenter();
+    }
+
+    private void showError(final String errorMessage) {
+        this.errorMessage.setTextContent(errorMessage);
+        this.error.setHidden(false);
+    }
+
+    private void errorSetup() {
+        this.error.setHidden(true);
     }
 }

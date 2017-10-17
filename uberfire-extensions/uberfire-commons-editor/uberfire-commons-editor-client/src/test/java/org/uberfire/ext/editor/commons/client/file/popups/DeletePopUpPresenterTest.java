@@ -22,6 +22,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.editor.commons.client.file.popups.commons.ToggleCommentPresenter;
+import org.uberfire.ext.editor.commons.client.validation.ValidationErrorReason;
+import org.uberfire.ext.editor.commons.client.validation.Validator;
+import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.junit.Assert.*;
@@ -32,6 +35,9 @@ public class DeletePopUpPresenterTest {
 
     @Mock
     DeletePopUpPresenter.View view;
+
+    @Mock
+    Validator validator;
 
     @Mock
     ParameterizedCommand<String> command;
@@ -55,9 +61,12 @@ public class DeletePopUpPresenterTest {
 
     @Test
     public void testShow() throws Exception {
-        presenter.show(command);
+        presenter.show(validator,
+                       command);
 
         verify(view).show();
+        assertEquals(validator,
+                     presenter.getValidator());
         assertEquals(command,
                      presenter.getCommand());
     }
@@ -66,16 +75,44 @@ public class DeletePopUpPresenterTest {
     public void testDeleteWithCommand() throws Exception {
         when(toggleCommentPresenter.getComment()).thenReturn("test");
 
-        presenter.show(command);
+        presenter.show((value, callback) -> callback.onSuccess(),
+                       command);
         presenter.delete();
 
         verify(command).execute("test");
         verify(view).hide();
     }
 
+    @Test
+    public void testDeleteWithValidationFailed() throws Exception {
+        when(toggleCommentPresenter.getComment()).thenReturn("test");
+
+        presenter.show((value, callback) -> callback.onFailure(),
+                       command);
+        presenter.delete();
+
+        verify(command,
+               never()).execute("test");
+        verify(view).handleUnexpectedError();
+    }
+
+    @Test
+    public void testNotAllowedDelete() throws Exception {
+        when(toggleCommentPresenter.getComment()).thenReturn("test");
+
+        presenter.show((value, callback) -> ((ValidatorWithReasonCallback) callback).onFailure(ValidationErrorReason.NOT_ALLOWED.name()),
+                       command);
+        presenter.delete();
+
+        verify(command,
+               never()).execute("test");
+        verify(view).handleDeleteNotAllowed();
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void testDeleteWithoutCommand() throws Exception {
-        presenter.show(null);
+        presenter.show(null,
+                       null);
         presenter.delete();
     }
 

@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -107,27 +106,47 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
     @Override
     public BasicFileMenuBuilder addDelete(final Path path,
                                           final Caller<? extends SupportsDelete> deleteCaller) {
+        return addDelete(path,
+                         deleteCaller,
+                         null);
+    }
+
+    @Override
+    public BasicFileMenuBuilder addDelete(final Path path,
+                                          final Caller<? extends SupportsDelete> deleteCaller,
+                                          final Validator validator) {
         return addDelete(() -> {
-            deletePopUpPresenter.show((String comment) -> {
-                busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Deleting());
-                deleteCaller.call(getDeleteSuccessCallback(),
-                                  new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).delete(path,
-                                                                                                      comment);
-            });
+            deletePopUpPresenter.show(validator,
+                                      (String comment) -> {
+                                          busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Deleting());
+                                          deleteCaller.call(getDeleteSuccessCallback(),
+                                                            new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).delete(path,
+                                                                                                                                comment);
+                                      });
         });
     }
 
     @Override
     public BasicFileMenuBuilder addDelete(final PathProvider provider,
                                           final Caller<? extends SupportsDelete> deleteCaller) {
+        return addDelete(provider,
+                         deleteCaller,
+                         null);
+    }
+
+    @Override
+    public BasicFileMenuBuilder addDelete(final PathProvider provider,
+                                          final Caller<? extends SupportsDelete> deleteCaller,
+                                          final Validator validator) {
         return addDelete(() -> {
             final Path path = provider.getPath();
-            deletePopUpPresenter.show((String comment) -> {
-                busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Deleting());
-                deleteCaller.call(getDeleteSuccessCallback(),
-                                  new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).delete(path,
-                                                                                                      comment);
-            });
+            deletePopUpPresenter.show(validator,
+                                      (String comment) -> {
+                                          busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Deleting());
+                                          deleteCaller.call(getDeleteSuccessCallback(),
+                                                            new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).delete(path,
+                                                                                                                                comment);
+                                      });
         });
     }
 

@@ -115,6 +115,8 @@ public class CopyPopUpPresenter {
             public void onFailure(final String reason) {
                 if (ValidationErrorReason.DUPLICATED_NAME.name().equals(reason)) {
                     view.handleDuplicatedFileName();
+                } else if (ValidationErrorReason.NOT_ALLOWED.name().equals(reason)) {
+                    view.handleCopyNotAllowed();
                 } else {
                     view.handleInvalidFileName();
                 }
@@ -158,5 +160,7 @@ public class CopyPopUpPresenter {
         Path getTargetPath();
 
         String getPackageName();
+
+        void handleCopyNotAllowed();
     }
 }

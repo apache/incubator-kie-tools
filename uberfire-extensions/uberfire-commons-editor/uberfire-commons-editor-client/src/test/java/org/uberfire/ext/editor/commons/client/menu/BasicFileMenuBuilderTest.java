@@ -104,6 +104,37 @@ public class BasicFileMenuBuilderTest {
 
     @Test
     public void testDelete() {
+        builder.addDelete(mockPath,
+                          deleteCaller);
+
+        final Menus menus = builder.build();
+        final MenuItem mi = menus.getItems().get(0);
+        final MenuItemCommand mic = (MenuItemCommand) mi;
+
+        mic.getCommand().execute();
+
+        verify(deletePopUpPresenter).show(eq(null),
+                                          any());
+    }
+
+    @Test
+    public void testDeleteWithValidator() {
+        builder.addDelete(mockPath,
+                          deleteCaller,
+                          validator);
+
+        final Menus menus = builder.build();
+        final MenuItem mi = menus.getItems().get(0);
+        final MenuItemCommand mic = (MenuItemCommand) mi;
+
+        mic.getCommand().execute();
+
+        verify(deletePopUpPresenter).show(eq(validator),
+                                          any());
+    }
+
+    @Test
+    public void testDeleteWithProvider() {
         builder.addDelete(provider,
                           deleteCaller);
 
@@ -118,6 +149,29 @@ public class BasicFileMenuBuilderTest {
 
         verify(provider,
                times(1)).getPath();
+        verify(deletePopUpPresenter).show(eq(null),
+                                          any());
+    }
+
+    @Test
+    public void testDeleteWithProviderAndValidator() {
+        builder.addDelete(provider,
+                          deleteCaller,
+                          validator);
+
+        final Menus menus = builder.build();
+        final MenuItem mi = menus.getItems().get(0);
+        final MenuItemCommand mic = (MenuItemCommand) mi;
+
+        verify(provider,
+               never()).getPath();
+
+        mic.getCommand().execute();
+
+        verify(provider,
+               times(1)).getPath();
+        verify(deletePopUpPresenter).show(eq(validator),
+                                          any());
     }
 
     @Test

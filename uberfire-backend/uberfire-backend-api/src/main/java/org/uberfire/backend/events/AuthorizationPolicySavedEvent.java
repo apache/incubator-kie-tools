@@ -15,6 +15,8 @@
  */
 package org.uberfire.backend.events;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
+import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.authz.AuthorizationPolicyStorage;
 import org.uberfire.security.authz.AuthorizationPolicy;
 
@@ -22,6 +24,7 @@ import org.uberfire.security.authz.AuthorizationPolicy;
  * Event fired just after the security policy is saved. See
  * {@link AuthorizationPolicyStorage#savePolicy(AuthorizationPolicy)}
  */
+@Portable
 public class AuthorizationPolicySavedEvent {
 
     private AuthorizationPolicy policy;
@@ -29,7 +32,7 @@ public class AuthorizationPolicySavedEvent {
     public AuthorizationPolicySavedEvent() {
     }
 
-    public AuthorizationPolicySavedEvent(AuthorizationPolicy policy) {
+    public AuthorizationPolicySavedEvent(@MapsTo("policy") AuthorizationPolicy policy) {
         this.policy = policy;
     }
 
