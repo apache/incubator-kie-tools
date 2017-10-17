@@ -324,9 +324,7 @@ public class FormEditorPresenter extends KieEditor {
     }
 
     protected void loadAvailableFields() {
-        FormModel model = editorHelper.getFormDefinition().getModel();
-
-        LayoutDragComponentGroup group = new LayoutDragComponentGroup(model.getName());
+        LayoutDragComponentGroup group = new LayoutDragComponentGroup(translationService.getTranslation(FormEditorConstants.FormEditorPresenterModelFields));
 
         editorHelper.getAvailableFields().values().forEach(fieldDefinition -> {
             EditorFieldLayoutComponent layoutFieldComponent = editorFieldLayoutComponents.get();
@@ -357,7 +355,7 @@ public class FormEditorPresenter extends KieEditor {
     }
 
     protected void removeAllDraggableGroupComponent(Collection<FieldDefinition> fields) {
-        String groupId = getFormDefinition().getModel().getName();
+        String groupId = translationService.getTranslation(FormEditorConstants.FormEditorPresenterModelFields);
         Iterator<FieldDefinition> it = fields.iterator();
         while (it.hasNext()) {
             FieldDefinition field = it.next();
@@ -370,6 +368,8 @@ public class FormEditorPresenter extends KieEditor {
     }
 
     protected void addAllDraggableGroupComponent(Collection<FieldDefinition> fields) {
+        String groupId = translationService.getTranslation(FormEditorConstants.FormEditorPresenterModelFields);
+
         Iterator<FieldDefinition> it = fields.iterator();
         while (it.hasNext()) {
             FieldDefinition field = it.next();
@@ -378,7 +378,7 @@ public class FormEditorPresenter extends KieEditor {
             if (layoutFieldComponent != null) {
                 layoutFieldComponent.init(editorHelper.getRenderingContext(),
                                           field);
-                layoutEditor.addDraggableComponentToGroup(getFormDefinition().getModel().getName(),
+                layoutEditor.addDraggableComponentToGroup(groupId,
                                                           field.getId(),
                                                           layoutFieldComponent);
             }

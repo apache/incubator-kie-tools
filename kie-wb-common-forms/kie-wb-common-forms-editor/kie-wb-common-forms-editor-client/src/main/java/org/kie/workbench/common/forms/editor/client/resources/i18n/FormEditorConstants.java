@@ -42,8 +42,10 @@ public interface FormEditorConstants {
     String FormEditorPresenterFormUsages = "FormEditorPresenter.formUsages";
 
     @TranslationKey(defaultValue = "")
-    String FormEditorPresenterComponentsPalette = "FormEditorPresenter.componentsPalette";
+    String FormEditorPresenterModelFields = "FormEditorPresenter.modelFields";
 
+    @TranslationKey(defaultValue = "")
+    String FormEditorPresenterComponentsPalette = "FormEditorPresenter.componentsPalette";
 
     @TranslationKey(defaultValue = "")
     String FormEditorViewImplDataObjects = "FormEditorViewImpl.dataObjects";
@@ -101,9 +103,6 @@ public interface FormEditorConstants {
 
     @TranslationKey(defaultValue = "")
     String FieldPropertiesRendererViewImplFieldBinding = "FieldPropertiesRendererViewImpl.fieldBinding";
-
-    @TranslationKey(defaultValue = "")
-    String DefaultFormModelLabel = "DefaultFormModel.label";
 
     @TranslationKey(defaultValue = "Notification")
     String ChangesNotificationDisplayerTitle = "ChangesNotificationDisplayer.title";
