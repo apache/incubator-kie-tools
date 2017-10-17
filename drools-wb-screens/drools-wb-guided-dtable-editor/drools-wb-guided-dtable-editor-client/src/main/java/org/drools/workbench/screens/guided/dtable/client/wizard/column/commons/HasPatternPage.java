@@ -30,5 +30,7 @@ public interface HasPatternPage {
 
     String getEntryPointName();
 
+    String getPatternPageDescription();
+
     Set<PatternWrapper> getPatterns();
 }

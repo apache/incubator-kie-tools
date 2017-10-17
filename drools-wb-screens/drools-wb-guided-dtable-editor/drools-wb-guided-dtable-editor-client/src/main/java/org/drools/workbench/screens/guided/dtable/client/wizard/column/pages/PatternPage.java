@@ -98,10 +98,15 @@ public class PatternPage<T extends HasPatternPage & DecisionTableColumnPlugin> e
 
         setupPattern();
         setupEntryPoint();
+        setPatternPageDescription();
     }
 
     private void setupEntryPoint() {
         view.setupEntryPointName(getEntryPointName());
+    }
+
+    private void setPatternPageDescription() {
+        view.setPatternPageDescription(getPatternPageDescription());
     }
 
     void setupPattern() {
@@ -210,6 +215,10 @@ public class PatternPage<T extends HasPatternPage & DecisionTableColumnPlugin> e
         return plugin().getEntryPointName();
     }
 
+    String getPatternPageDescription() {
+        return plugin().getPatternPageDescription();
+    }
+
     void setEntryPoint() {
         plugin().setEntryPointName(view.getEntryPointName());
     }
@@ -238,6 +247,8 @@ public class PatternPage<T extends HasPatternPage & DecisionTableColumnPlugin> e
         void hidePatternListWhenItIsEmpty();
 
         void selectPattern(String currentPatternValue);
+
+        void setPatternPageDescription(final String description);
 
         void showPatternWarning();
 

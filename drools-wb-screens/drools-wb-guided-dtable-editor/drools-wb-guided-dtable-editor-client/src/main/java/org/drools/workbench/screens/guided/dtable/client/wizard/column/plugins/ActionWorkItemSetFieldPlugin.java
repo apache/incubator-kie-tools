@@ -405,6 +405,11 @@ public class ActionWorkItemSetFieldPlugin extends BaseDecisionTableColumnPlugin 
     }
 
     @Override
+    public String getPatternPageDescription() {
+        return translate(GuidedDecisionTableErraiConstants.PatternPageView_PatternPageDescriptionActions);
+    }
+
+    @Override
     public void setEntryPointName(final String entryPointName) {
         // empty
     }

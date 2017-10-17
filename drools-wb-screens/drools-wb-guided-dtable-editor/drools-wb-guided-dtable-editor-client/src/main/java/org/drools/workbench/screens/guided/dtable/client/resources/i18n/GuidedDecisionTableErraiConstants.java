@@ -153,6 +153,12 @@ public class GuidedDecisionTableErraiConstants {
     public static final String PatternPageView_SelectPattern = "PatternPageView.SelectPattern";
 
     @TranslationKey(defaultValue = "")
+    public static final String PatternPageView_PatternPageDescriptionConditions = "PatternPageView.PatternPageDescriptionConditions";
+
+    @TranslationKey(defaultValue = "")
+    public static final String PatternPageView_PatternPageDescriptionActions = "PatternPageView.PatternPageDescriptionActions";
+
+    @TranslationKey(defaultValue = "")
     public static final String PatternPageView_EntryPointDescription = "PatternPageView.EntryPointDescription";
 
     @TranslationKey(defaultValue = "")

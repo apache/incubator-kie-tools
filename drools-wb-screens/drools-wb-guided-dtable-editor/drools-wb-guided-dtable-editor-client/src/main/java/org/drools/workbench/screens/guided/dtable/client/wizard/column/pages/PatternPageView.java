@@ -30,6 +30,7 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.commons.HasPatternPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTablePopoverUtils;
 import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -45,7 +46,9 @@ public class PatternPageView implements IsElement,
 
     private PatternPage<? extends HasPatternPage> page;
 
-    @Inject
+    @DataField("patternPageDescription")
+    private Span patternPageDescription;
+
     @DataField("patternWarning")
     private Div patternWarning;
 
@@ -66,12 +69,16 @@ public class PatternPageView implements IsElement,
     private DecisionTablePopoverUtils popoverUtils;
 
     @Inject
-    public PatternPageView(final ListBox patternList,
+    public PatternPageView(final Span patternPageDescription,
+                           final Div patternWarning,
+                           final ListBox patternList,
                            final TextBox entryPointName,
                            final Button createANewFactPattern,
                            final Div entryPointContainer,
                            final TranslationService translationService,
                            final DecisionTablePopoverUtils popoverUtils) {
+        this.patternPageDescription = patternPageDescription;
+        this.patternWarning = patternWarning;
         this.patternList = patternList;
         this.entryPointName = entryPointName;
         this.createANewFactPattern = createANewFactPattern;
@@ -159,6 +166,11 @@ public class PatternPageView implements IsElement,
                         final String itemKey) {
         patternList.addItem(itemName,
                             itemKey);
+    }
+
+    @Override
+    public void setPatternPageDescription(final String description) {
+        this.patternPageDescription.setInnerHTML(description);
     }
 
     @Override

@@ -71,7 +71,17 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
 
     @Override
     public void isComplete(final Callback<Boolean> callback) {
-        callback.callback(plugin().isValueOptionsPageCompleted());
+        boolean isFieldBindingValid = plugin().isFieldBindingValid();
+        boolean isValueOptionPageComplete = plugin().isValueOptionsPageCompleted();
+        boolean isComplete = isValueOptionPageComplete && isFieldBindingValid;
+
+        if (!isFieldBindingValid) {
+            view.showFieldBindingWarning();
+        } else {
+            view.hideFieldBindingWarning();
+        }
+
+        callback.callback(isComplete);
     }
 
     @Override
@@ -384,5 +394,9 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
         void hideCepOperators();
 
         void setupCepOperators(IsWidget widget);
+
+        void showFieldBindingWarning();
+
+        void hideFieldBindingWarning();
     }
 }

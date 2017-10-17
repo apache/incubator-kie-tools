@@ -30,6 +30,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.models.guided.dtable.shared.model.adaptors.FactPatternPattern52Adaptor;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
@@ -58,6 +59,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doReturn;
@@ -722,24 +724,127 @@ public class ConditionColumnPluginTest {
             setFactType("FactType");
             setBoundName("$fact");
         }};
-        final BRLConditionColumn brlColumn = new BRLConditionColumn();
-        brlColumn.setDefinition(Collections.singletonList(new FactPattern("AnotherFact") {{
-            setBoundName("$another");
-        }}));
 
-        doReturn(Arrays.asList(pattern,
-                               brlColumn)).when(model).getConditions();
+        doReturn(Collections.singletonList(pattern)).when(model).getConditions();
+        doReturn(pattern).when(model).getConditionPattern(eq("$fact"));
 
         final Set<PatternWrapper> patterns = plugin.getPatterns();
 
-        assertEquals(2,
+        assertEquals(1,
                      patterns.size());
         assertTrue(patterns.contains(new PatternWrapper("FactType",
                                                         "$fact",
                                                         false)));
-        assertTrue(patterns.contains(new PatternWrapper("AnotherFact",
-                                                        "$another",
+    }
+
+    @Test
+    public void testGetPatternsWithBRLCondition() throws Exception {
+        final Pattern52 pattern = new Pattern52() {{
+            setFactType("FactType");
+            setBoundName("$fact");
+        }};
+        final BRLConditionColumn brlColumn = new BRLConditionColumn();
+        final FactPattern fp = new FactPattern("AnotherFact") {{
+            setBoundName("$another");
+        }};
+        brlColumn.setDefinition(Collections.singletonList(fp));
+
+        doReturn(Arrays.asList(pattern,
+                               brlColumn)).when(model).getConditions();
+        doReturn(pattern).when(model).getConditionPattern(eq("$fact"));
+        doReturn(new FactPatternPattern52Adaptor(fp)).when(model).getConditionPattern(eq("$another"));
+
+        final Set<PatternWrapper> patterns = plugin.getPatterns();
+
+        assertEquals(1,
+                     patterns.size());
+        assertTrue(patterns.contains(new PatternWrapper("FactType",
+                                                        "$fact",
                                                         false)));
+    }
+
+    @Test
+    public void testSetBinding() {
+        plugin.setBinding("$a");
+
+        verify(plugin).fireChangeEvent(eq(valueOptionsPage));
+    }
+
+    @Test
+    public void testIsFieldBindingValidWhenNotBindable() {
+        doReturn(false).when(plugin).isBindable();
+
+        assertTrue(plugin.isFieldBindingValid());
+    }
+
+    @Test
+    public void testIsFieldBindingValidWhenBindableNewColumnNoExistingBindings() {
+        doReturn(true).when(plugin).isBindable();
+        doReturn(true).when(plugin).isNewColumn();
+
+        assertTrue(plugin.isFieldBindingValid());
+    }
+
+    @Test
+    public void testIsFieldBindingValidWhenBindableNewColumnWithExistingBindingsNoClash() {
+        doReturn(true).when(plugin).isBindable();
+        doReturn(true).when(plugin).isNewColumn();
+        doReturn("$n").when(plugin).getBinding();
+
+        doReturn(Collections.singletonList(mockFactPattern("$a"))).when(model).getConditions();
+
+        assertTrue(plugin.isFieldBindingValid());
+    }
+
+    @Test
+    public void testIsFieldBindingValidWhenBindableNewColumnWithExistingBindingsWithClash() {
+        doReturn(true).when(plugin).isBindable();
+        doReturn(true).when(plugin).isNewColumn();
+        doReturn("$n").when(plugin).getBinding();
+
+        doReturn(Collections.singletonList(mockFactPattern("$n"))).when(model).getConditions();
+
+        assertFalse(plugin.isFieldBindingValid());
+    }
+
+    @Test
+    public void testIsFieldBindingValidWhenBindableEditColumnWithExistingBindingsNoClash() {
+        final ConditionCol52 originalColumn = mock(ConditionCol52.class);
+        doReturn(originalColumn).when(plugin).originalCondition();
+        doReturn(true).when(plugin).isBindable();
+        doReturn(false).when(plugin).isNewColumn();
+        doReturn("$n").when(plugin).getBinding();
+        doReturn("$n").when(originalColumn).getBinding();
+
+        assertTrue(plugin.isFieldBindingValid());
+    }
+
+    @Test
+    public void testIsFieldBindingValidWhenBindableEditColumnWithExistingBindingsWithClash() {
+        final ConditionCol52 originalColumn = mock(ConditionCol52.class);
+        doReturn(originalColumn).when(plugin).originalCondition();
+        doReturn(true).when(plugin).isBindable();
+        doReturn(false).when(plugin).isNewColumn();
+        doReturn("$a").when(plugin).getBinding();
+        doReturn("$n").when(originalColumn).getBinding();
+
+        doReturn(Collections.singletonList(mockFactPattern("$a"))).when(model).getConditions();
+
+        assertFalse(plugin.isFieldBindingValid());
+    }
+
+    @Test
+    public void testIsFieldBindingValidWhenNullBinding() {
+        doReturn(true).when(plugin).isBindable();
+        doReturn(null).when(plugin).getBinding();
+
+        assertTrue(plugin.isFieldBindingValid());
+    }
+
+    private Pattern52 mockFactPattern(final String binding) {
+        final Pattern52 p = new Pattern52();
+        p.setBoundName(binding);
+        return p;
     }
 
     private ConditionCol52 makeConditionCol52(final int constraintValueType,

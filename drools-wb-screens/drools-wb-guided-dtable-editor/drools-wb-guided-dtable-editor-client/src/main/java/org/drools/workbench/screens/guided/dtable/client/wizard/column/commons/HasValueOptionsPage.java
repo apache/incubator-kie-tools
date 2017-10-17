@@ -25,6 +25,8 @@ public interface HasValueOptionsPage {
 
     Boolean isValueOptionsPageCompleted();
 
+    Boolean isFieldBindingValid();
+
     int constraintValue();
 
     String getFactType();

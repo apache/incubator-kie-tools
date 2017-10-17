@@ -69,6 +69,9 @@ public class ValueOptionsPageView implements IsElement,
     @DataField("bindingContainer")
     private Div bindingContainer;
 
+    @DataField("fieldBindingWarning")
+    private Div fieldBindingWarning;
+
     private ValueOptionsPage<?> page;
 
     private TranslationService translationService;
@@ -86,6 +89,7 @@ public class ValueOptionsPageView implements IsElement,
                                 final Div defaultValueContainer,
                                 final Div limitedValueContainer,
                                 final Div bindingContainer,
+                                final Div fieldBindingWarning,
                                 final TranslationService translationService,
                                 final DecisionTablePopoverUtils popoverUtils) {
         this.valueListGroupContainer = valueListGroupContainer;
@@ -98,6 +102,7 @@ public class ValueOptionsPageView implements IsElement,
         this.defaultValueContainer = defaultValueContainer;
         this.limitedValueContainer = limitedValueContainer;
         this.bindingContainer = bindingContainer;
+        this.fieldBindingWarning = fieldBindingWarning;
         this.translationService = translationService;
         this.popoverUtils = popoverUtils;
     }
@@ -185,6 +190,16 @@ public class ValueOptionsPageView implements IsElement,
     @Override
     public void hideCepOperators() {
         cepWindowOperatorsGroupContainer.setHidden(true);
+    }
+
+    @Override
+    public void showFieldBindingWarning() {
+        fieldBindingWarning.setHidden(false);
+    }
+
+    @Override
+    public void hideFieldBindingWarning() {
+        fieldBindingWarning.setHidden(true);
     }
 
     private String translate(final String key,

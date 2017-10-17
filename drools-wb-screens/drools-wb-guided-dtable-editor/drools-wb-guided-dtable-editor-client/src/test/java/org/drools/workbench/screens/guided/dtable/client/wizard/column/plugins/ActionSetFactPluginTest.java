@@ -799,6 +799,11 @@ public class ActionSetFactPluginTest {
         assertFalse(plugin.isNewFactPattern());
     }
 
+    @Test
+    public void testIsFieldBindingValid() {
+        assertTrue(plugin.isFieldBindingValid());
+    }
+
     private void mockPatterns() {
         final GuidedDecisionTable52 model = mock(GuidedDecisionTable52.class);
         final List<CompositeColumn<?>> patterns = Collections.singletonList(fakePattern());

@@ -41,8 +41,16 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ValueOptionsPageTest {
@@ -359,8 +367,29 @@ public class ValueOptionsPageTest {
 
     @Test
     public void testIsCompleteWhenValueOptionsPageIsCompleted() throws Exception {
+        when(plugin.isFieldBindingValid()).thenReturn(true);
         when(plugin.isValueOptionsPageCompleted()).thenReturn(true);
 
         page.isComplete(Assert::assertTrue);
+    }
+
+    @Test
+    public void testIsCompleteWhenValueOptionsPageIsCompletedWithValidBinding() throws Exception {
+        when(plugin.isFieldBindingValid()).thenReturn(true);
+        when(plugin.isValueOptionsPageCompleted()).thenReturn(true);
+
+        page.isComplete(Assert::assertTrue);
+
+        verify(view).hideFieldBindingWarning();
+    }
+
+    @Test
+    public void testIsCompleteWhenValueOptionsPageIsCompletedWithInvalidBinding() throws Exception {
+        when(plugin.isFieldBindingValid()).thenReturn(false);
+        when(plugin.isValueOptionsPageCompleted()).thenReturn(true);
+
+        page.isComplete(Assert::assertFalse);
+
+        verify(view).showFieldBindingWarning();
     }
 }

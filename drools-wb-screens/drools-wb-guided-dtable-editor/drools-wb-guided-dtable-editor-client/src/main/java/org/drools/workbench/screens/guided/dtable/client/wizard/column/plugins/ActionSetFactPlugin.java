@@ -199,6 +199,11 @@ public class ActionSetFactPlugin extends BaseDecisionTableColumnPlugin implement
     }
 
     @Override
+    public Boolean isFieldBindingValid() {
+        return Boolean.TRUE;
+    }
+
+    @Override
     public PatternWrapper patternWrapper() {
         return Optional.ofNullable(patternWrapper).orElse(new PatternWrapper());
     }
@@ -217,6 +222,11 @@ public class ActionSetFactPlugin extends BaseDecisionTableColumnPlugin implement
     @Override
     public String getEntryPointName() {
         return "";
+    }
+
+    @Override
+    public String getPatternPageDescription() {
+        return translate(GuidedDecisionTableErraiConstants.PatternPageView_PatternPageDescriptionActions);
     }
 
     @Override
