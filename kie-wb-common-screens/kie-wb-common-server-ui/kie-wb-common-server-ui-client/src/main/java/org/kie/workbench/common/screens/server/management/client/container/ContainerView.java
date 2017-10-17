@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.server.management.client.container;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -75,19 +76,19 @@ public class ContainerView extends Composite
     Button refreshContainer;
 
     @DataField("status-tab")
-    Element statusTab = DOM.createElement( "li" );
+    Element statusTab = DOM.createElement("li");
 
     @DataField("status-tab-link")
     Element statusTabLink = DOM.createAnchor();
 
     @DataField("rules-tab")
-    Element rulesTab = DOM.createElement( "li" );
+    Element rulesTab = DOM.createElement("li");
 
     @DataField("rules-tab-link")
     Element rulesTabLink = DOM.createAnchor();
 
     @DataField("process-tab")
-    Element processTab = DOM.createElement( "li" );
+    Element processTab = DOM.createElement("li");
 
     @DataField("process-tab-link")
     Element processTabLink = DOM.createAnchor();
@@ -114,137 +115,153 @@ public class ContainerView extends Composite
     Div processContent;
 
     @Inject
-    public ContainerView( final TranslationService translationService ) {
+    public ContainerView(final TranslationService translationService) {
         super();
         this.translationService = translationService;
     }
 
+    @PostConstruct
+    public void initPopovers() {
+        setupTooltip(containerName,
+                     translationService.getTranslation(Constants.ContainerView_Alias));
+    }
+
     @Override
-    public void init( final ContainerPresenter presenter ) {
+    public void init(final ContainerPresenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
     public void clear() {
-        this.containerName.setInnerText( "" );
-        this.artifactId.setText( "" );
-        this.groupId.setText( "" );
+        this.containerName.setInnerText("");
+        this.artifactId.setText("");
+        this.groupId.setText("");
     }
 
     @Override
     public void disableRemoveButton() {
-        removeContainer.setEnabled( false );
+        removeContainer.setEnabled(false);
     }
 
     @Override
     public void enableRemoveButton() {
-        removeContainer.setEnabled( true );
+        removeContainer.setEnabled(true);
     }
 
     @Override
-    public void setContainerName( final String containerName ) {
-        this.containerName.setInnerText( containerName );
+    public void setContainerName(final String containerName) {
+        this.containerName.setInnerText(containerName);
     }
 
     @Override
-    public void setGroupIp( final String groupIp ) {
-        this.groupId.setText( groupIp );
+    public void setGroupIp(final String groupIp) {
+        this.groupId.setText(groupIp);
     }
 
     @Override
-    public void setArtifactId( final String artifactId ) {
-        this.artifactId.setText( artifactId );
+    public void setArtifactId(final String artifactId) {
+        this.artifactId.setText(artifactId);
     }
 
     @Override
-    public void setStatus( final IsWidget view ) {
+    public void setStatus(final IsWidget view) {
         statusContent.clear();
-        statusContent.add( view );
+        statusContent.add(view);
     }
 
     @Override
-    public void setProcessConfig( final ContainerProcessConfigPresenter.View view ) {
+    public void setProcessConfig(final ContainerProcessConfigPresenter.View view) {
         processContent.clear();
-        processContent.add( view );
+        processContent.add(view);
     }
 
     @Override
-    public void setRulesConfig( final ContainerRulesConfigPresenter.View view ) {
+    public void setRulesConfig(final ContainerRulesConfigPresenter.View view) {
         rulesContent.clear();
-        rulesContent.add( view );
+        rulesContent.add(view);
     }
 
     @Override
-    public void setContainerStartState( final State state ) {
-        containerStop.setEnabled( state.equals( State.ENABLED ) );
-        containerStop.setActive( !state.equals( State.ENABLED ) );
+    public void setContainerStartState(final State state) {
+        containerStop.setEnabled(state.equals(State.ENABLED));
+        containerStop.setActive(!state.equals(State.ENABLED));
     }
 
     @Override
-    public void confirmRemove( final Command command ) {
-        final YesNoCancelPopup result = YesNoCancelPopup.newYesNoCancelPopup( getConfirmRemovePopupTitle(),
-                                                                              getConfirmRemovePopupMessage(),
-                                                                              command,
-                                                                              new Command() {
-                                                                                  @Override
-                                                                                  public void execute() {
-                                                                                  }
-                                                                              }, null );
+    public void confirmRemove(final Command command) {
+        final YesNoCancelPopup result = YesNoCancelPopup.newYesNoCancelPopup(getConfirmRemovePopupTitle(),
+                                                                             getConfirmRemovePopupMessage(),
+                                                                             command,
+                                                                             new Command() {
+                                                                                 @Override
+                                                                                 public void execute() {
+                                                                                 }
+                                                                             }, null);
         result.clearScrollHeight();
         result.show();
     }
 
     @Override
-    public void setContainerStopState( final State state ) {
-        containerStart.setEnabled( state.equals( State.ENABLED ) );
-        containerStart.setActive( !state.equals( State.ENABLED ) );
+    public void setContainerStopState(final State state) {
+        containerStart.setEnabled(state.equals(State.ENABLED));
+        containerStart.setActive(!state.equals(State.ENABLED));
     }
 
     @EventHandler("refresh-container")
-    public void refresh( final ClickEvent event ) {
+    public void refresh(final ClickEvent event) {
         presenter.refresh();
     }
 
     @EventHandler("remove-container")
-    public void removeContainer( final ClickEvent event ) {
+    public void removeContainer(final ClickEvent event) {
         presenter.removeContainer();
     }
 
     @EventHandler("container-config-start")
-    public void startContainer( final ClickEvent event ) {
+    public void startContainer(final ClickEvent event) {
         presenter.startContainer();
     }
 
     @EventHandler("container-config-stop")
-    public void stopContainer( final ClickEvent event ) {
+    public void stopContainer(final ClickEvent event) {
         presenter.stopContainer();
     }
 
     @Override
     public String getRemoveContainerSuccessMessage() {
-        return translationService.format( Constants.ContainerView_RemoveContainerSuccessMessage );
+        return translationService.format(Constants.ContainerView_RemoveContainerSuccessMessage);
     }
 
     @Override
     public String getRemoveContainerErrorMessage() {
-        return translationService.format( Constants.ContainerView_RemoveContainerErrorMessage );
+        return translationService.format(Constants.ContainerView_RemoveContainerErrorMessage);
     }
 
     @Override
     public String getStopContainerErrorMessage() {
-        return translationService.format( Constants.ContainerView_StopContainerErrorMessage );
+        return translationService.format(Constants.ContainerView_StopContainerErrorMessage);
     }
 
     @Override
     public String getStartContainerErrorMessage() {
-        return translationService.format( Constants.ContainerView_StartContainerErrorMessage );
+        return translationService.format(Constants.ContainerView_StartContainerErrorMessage);
     }
 
     private String getConfirmRemovePopupMessage() {
-        return translationService.format( Constants.ContainerView_ConfirmRemovePopupMessage );
+        return translationService.format(Constants.ContainerView_ConfirmRemovePopupMessage);
     }
 
     private String getConfirmRemovePopupTitle() {
-        return translationService.format( Constants.ContainerView_ConfirmRemovePopupTitle );
+        return translationService.format(Constants.ContainerView_ConfirmRemovePopupTitle);
     }
+
+    private native void setupTooltip(final Element e,
+                                     final String title) /*-{
+        $wnd.jQuery(e).tooltip({
+            container: 'body',
+            placement: 'bottom',
+            title: title,
+            trigger: 'hover'
+        });
+    }-*/;
 }
