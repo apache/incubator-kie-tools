@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
@@ -27,7 +28,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -506,19 +506,6 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
                         )
                 );
         getConditionsPanel().renderColumns(columnGroups);
-    }
-
-    private Widget deleteAnchor(final ClickHandler clickHandler) {
-        return anchor(GuidedDecisionTableConstants.INSTANCE.Delete(),
-                      clickHandler);
-    }
-
-    private Anchor anchor(final String text,
-                          final ClickHandler clickHandler) {
-        return new Anchor() {{
-            setText(text);
-            addClickHandler(clickHandler);
-        }};
     }
 
     @Override

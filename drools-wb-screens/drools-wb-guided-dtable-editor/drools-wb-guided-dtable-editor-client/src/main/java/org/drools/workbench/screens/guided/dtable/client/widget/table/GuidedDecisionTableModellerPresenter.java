@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -364,10 +365,12 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
     public void onDecisionTableSelected(final @Observes DecisionTableSelectedEvent event) {
         final Optional<GuidedDecisionTableView.Presenter> dtPresenter = event.getPresenter();
         if (!dtPresenter.isPresent()) {
+            activeDecisionTable = null;
             return;
         }
         final GuidedDecisionTableView.Presenter presenter = dtPresenter.get();
         if (!isDecisionTableAvailable(presenter)) {
+            activeDecisionTable = null;
             return;
         }
         if (presenter.equals(getActiveDecisionTable())) {
@@ -384,7 +387,7 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
         wizard.start();
     }
 
-    private void doDecisionTableSelected(final GuidedDecisionTableView.Presenter dtPresenter) {
+    void doDecisionTableSelected(final GuidedDecisionTableView.Presenter dtPresenter) {
         //Store selected decision table
         activeDecisionTable = dtPresenter;
 

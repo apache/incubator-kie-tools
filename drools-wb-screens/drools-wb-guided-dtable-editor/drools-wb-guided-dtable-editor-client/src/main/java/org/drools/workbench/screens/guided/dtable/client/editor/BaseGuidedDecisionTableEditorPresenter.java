@@ -19,6 +19,7 @@ package org.drools.workbench.screens.guided.dtable.client.editor;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
 import javax.enterprise.event.Event;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -318,10 +319,9 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
     }
 
     void openOtherDecisionTable() {
+        decisionTableSelectedEvent.fire(DecisionTableSelectedEvent.NONE);
         final Set<GuidedDecisionTableView.Presenter> availableDecisionTables = modeller.getAvailableDecisionTables();
-        if (availableDecisionTables == null || availableDecisionTables.isEmpty()) {
-            decisionTableSelectedEvent.fire(DecisionTableSelectedEvent.NONE);
-        } else {
+        if (!(availableDecisionTables == null || availableDecisionTables.isEmpty())) {
             final GuidedDecisionTableView.Presenter dtPresenter = availableDecisionTables.iterator().next();
             decisionTableSelectedEvent.fire(new DecisionTableSelectedEvent(dtPresenter));
         }

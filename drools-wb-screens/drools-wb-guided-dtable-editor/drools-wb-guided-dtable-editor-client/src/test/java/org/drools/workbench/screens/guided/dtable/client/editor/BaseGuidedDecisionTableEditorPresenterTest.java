@@ -39,9 +39,19 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTablePresenterTest<BaseGuidedDecisionTableEditorPresenter> {
@@ -394,12 +404,15 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
         verify(placeManager,
                never()).forceClosePlace(any(PlaceRequest.class));
         verify(decisionTableSelectedEvent,
-               times(1)).fire(dtSelectedEventCaptor.capture());
+               times(2)).fire(dtSelectedEventCaptor.capture());
 
-        final DecisionTableSelectedEvent dtSelectedEvent = dtSelectedEventCaptor.getValue();
-        assertNotNull(dtSelectedEvent);
-        assertTrue(dtSelectedEvent.getPresenter().isPresent());
-        assertEquals(dtSelectedEvent.getPresenter().get(),
+        final List<DecisionTableSelectedEvent> dtSelectedEvents = dtSelectedEventCaptor.getAllValues();
+        assertNotNull(dtSelectedEvents);
+        assertEquals(2,
+                     dtSelectedEvents.size());
+        assertFalse(dtSelectedEvents.get(0).getPresenter().isPresent());
+        assertTrue(dtSelectedEvents.get(1).getPresenter().isPresent());
+        assertEquals(dtSelectedEvents.get(1).getPresenter().get(),
                      remainingDtPresenter);
     }
 
