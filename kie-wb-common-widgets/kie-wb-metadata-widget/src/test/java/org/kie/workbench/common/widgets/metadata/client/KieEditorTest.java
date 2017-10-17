@@ -24,13 +24,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilderImpl;
+import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
-import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
+import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.mockito.Matchers.any;
@@ -55,23 +57,41 @@ public class KieEditorTest {
     @Mock
     protected ProjectContext workbenchContext;
 
+    @Mock
+    protected EventSourceMock<NotificationEvent> notification;
+
+    @Mock
+    protected KieEditorWrapperView kieView;
+
+    @Spy
+    @InjectMocks
+    protected AssetUpdateValidator assetUpdateValidator;
+
     protected KieEditor presenter;
 
     @Before
     public void setup() {
-        presenter = new KieEditor() {
+        presenter = spy(new KieEditor() {
             {
                 fileMenuBuilder = KieEditorTest.this.fileMenuBuilder;
                 projectController = KieEditorTest.this.projectController;
                 workbenchContext = KieEditorTest.this.workbenchContext;
                 versionRecordManager = KieEditorTest.this.versionRecordManager;
+                assetUpdateValidator = KieEditorTest.this.assetUpdateValidator;
+                notification = KieEditorTest.this.notification;
+                kieView = KieEditorTest.this.kieView;
             }
 
             @Override
             protected void loadContent() {
 
             }
-        };
+
+            @Override
+            protected void onSave() {
+
+            }
+        });
     }
 
     @Test
@@ -83,10 +103,11 @@ public class KieEditorTest {
 
         verify(fileMenuBuilder).addSave(any(MenuItem.class));
         verify(fileMenuBuilder).addCopy(any(Path.class),
-                                        any(DefaultFileNameValidator.class));
+                                        any(AssetUpdateValidator.class));
         verify(fileMenuBuilder).addRename(any(Path.class),
-                                          any(DefaultFileNameValidator.class));
-        verify(fileMenuBuilder).addDelete(any(Path.class));
+                                          any(AssetUpdateValidator.class));
+        verify(fileMenuBuilder).addDelete(any(Path.class),
+                                          any(AssetUpdateValidator.class));
     }
 
     @Test
@@ -100,11 +121,36 @@ public class KieEditorTest {
                never()).addSave(any(MenuItem.class));
         verify(fileMenuBuilder,
                never()).addCopy(any(Path.class),
-                                any(DefaultFileNameValidator.class));
+                                any(AssetUpdateValidator.class));
         verify(fileMenuBuilder,
                never()).addRename(any(Path.class),
-                                  any(DefaultFileNameValidator.class));
+                                  any(AssetUpdateValidator.class));
         verify(fileMenuBuilder,
-               never()).addDelete(any(Path.class));
+               never()).addDelete(any(Path.class),
+                                  any(AssetUpdateValidator.class));
+    }
+
+    @Test
+    public void validSaveActionTest() {
+        doReturn(mock(Project.class)).when(workbenchContext).getActiveProject();
+        doReturn(true).when(projectController).canUpdateProject(any());
+
+        presenter.saveAction();
+
+        verify(presenter).onSave();
+    }
+
+    @Test
+    public void notAllowedSaveActionTest() {
+        doReturn(mock(Project.class)).when(workbenchContext).getActiveProject();
+        doReturn(false).when(projectController).canUpdateProject(any());
+        doReturn("not-allowed").when(kieView).getNotAllowedSavingMessage();
+
+        presenter.saveAction();
+
+        verify(notification).fire(new NotificationEvent("not-allowed",
+                                                        NotificationEvent.NotificationType.ERROR));
+        verify(presenter,
+               never()).onSave();
     }
 }

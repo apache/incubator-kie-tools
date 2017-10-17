@@ -237,9 +237,9 @@ public class FormEditorPresenter extends KieEditor {
     protected void makeMenuBar() {
         if (canUpdateProject()) {
             fileMenuBuilder
-                    .addSave(versionRecordManager.newSaveMenuItem(() -> onSave()))
+                    .addSave(versionRecordManager.newSaveMenuItem(() -> saveAction()))
                     .addCopy(versionRecordManager.getCurrentPath(),
-                             fileNameValidator)
+                             assetUpdateValidator)
                     .addRename(this::safeRename)
                     .addDelete(this::safeDelete);
         }
@@ -266,19 +266,21 @@ public class FormEditorPresenter extends KieEditor {
     }
 
     public void rename(boolean save) {
-        if(save) {
+        if (save) {
             synchronizeFormLayout();
         }
         renamePopUpPresenter.show(versionRecordManager.getPathToLatest(),
-                                  fileNameValidator,
+                                  assetUpdateValidator,
                                   getRenameCommand(save));
     }
 
     protected CommandWithFileNameAndCommitMessage getRenameCommand(boolean save) {
-        return details -> renameCommand(details, save);
+        return details -> renameCommand(details,
+                                        save);
     }
 
-    protected void renameCommand(FileNameAndCommitMessage details, boolean save) {
+    protected void renameCommand(FileNameAndCommitMessage details,
+                                 boolean save) {
         view.showBusyIndicator(org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Renaming());
 
         editorService.call(getRenameSuccessCallback(renamePopUpPresenter.getView()),
@@ -410,15 +412,16 @@ public class FormEditorPresenter extends KieEditor {
     }
 
     private void onDelete(ObservablePath pathToLatest) {
-        deletePopUpPresenter.show(comment -> {
-            view.showBusyIndicator(org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Deleting());
-            editorService.call(response -> {
-                view.hideBusyIndicator();
-                notification.fire(new NotificationEvent(org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemDeletedSuccessfully(),
-                                                        NotificationEvent.NotificationType.SUCCESS));
-            }).delete(pathToLatest,
-                      comment);
-        });
+        deletePopUpPresenter.show(assetUpdateValidator,
+                                  comment -> {
+                                      view.showBusyIndicator(org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Deleting());
+                                      editorService.call(response -> {
+                                          view.hideBusyIndicator();
+                                          notification.fire(new NotificationEvent(org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemDeletedSuccessfully(),
+                                                                                  NotificationEvent.NotificationType.SUCCESS));
+                                      }).delete(pathToLatest,
+                                                comment);
+                                  });
     }
 
     @OnMayClose

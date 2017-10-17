@@ -83,10 +83,11 @@ public class GuvnorDefaultEditorPresenter
         if (canUpdateProject()) {
             fileMenuBuilder
                     .addCopy(versionRecordManager.getCurrentPath(),
-                             fileNameValidator)
+                             assetUpdateValidator)
                     .addRename(versionRecordManager.getCurrentPath(),
-                               fileNameValidator)
-                    .addDelete(versionRecordManager.getCurrentPath());
+                               assetUpdateValidator)
+                    .addDelete(versionRecordManager.getCurrentPath(),
+                               assetUpdateValidator);
         }
 
         fileMenuBuilder

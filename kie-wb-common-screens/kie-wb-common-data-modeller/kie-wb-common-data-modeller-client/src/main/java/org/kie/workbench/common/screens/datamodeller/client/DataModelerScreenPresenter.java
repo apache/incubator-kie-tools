@@ -36,7 +36,6 @@ import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerW
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchFocusEvent;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
-import org.kie.workbench.common.screens.datamodeller.client.validation.JavaFileNameValidator;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelSaved;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelStatusChangeEvent;
@@ -68,6 +67,7 @@ import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
+import org.kie.workbench.common.widgets.metadata.client.validation.JavaAssetUpdateValidator;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -167,7 +167,7 @@ public class DataModelerScreenPresenter
     protected Caller<ValidationService> validationService;
 
     @Inject
-    protected JavaFileNameValidator javaFileNameValidator;
+    protected JavaAssetUpdateValidator javaAssetUpdateValidator;
 
     @Inject
     protected JavaResourceType resourceType;
@@ -344,15 +344,13 @@ public class DataModelerScreenPresenter
     }
 
     private void showDeletePopup(final Path path) {
-        deletePopUpPresenter.show(new ParameterizedCommand<String>() {
-            @Override
-            public void execute(final String comment) {
-                view.showBusyIndicator(org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Deleting());
-                modelerService.call(getDeleteSuccessCallback(),
-                                    new DataModelerErrorCallback(Constants.INSTANCE.modelEditor_deleting_error())).delete(path,
-                                                                                                                          comment);
-            }
-        });
+        deletePopUpPresenter.show(javaAssetUpdateValidator,
+                                  comment -> {
+                                      view.showBusyIndicator(org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Deleting());
+                                      modelerService.call(getDeleteSuccessCallback(),
+                                                          new DataModelerErrorCallback(Constants.INSTANCE.modelEditor_deleting_error())).delete(path,
+                                                                                                                                                comment);
+                                  });
     }
 
     void onCopy() {
@@ -371,7 +369,7 @@ public class DataModelerScreenPresenter
 
     private void showCopyPopup() {
         copyPopUpPresenter.show(versionRecordManager.getCurrentPath(),
-                                javaFileNameValidator,
+                                javaAssetUpdateValidator,
                                 details -> {
                                     view.showBusyIndicator(org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Copying());
                                     modelerService.call(getCopySuccessCallback(copyPopUpPresenter.getView()),
@@ -900,7 +898,7 @@ public class DataModelerScreenPresenter
         }
 
         renamePopUpPresenter.show(versionRecordManager.getPathToLatest(),
-                                  javaFileNameValidator,
+                                  javaAssetUpdateValidator,
                                   new CommandWithFileNameAndCommitMessage() {
                                       @Override
                                       public void execute(final FileNameAndCommitMessage details) {
@@ -1231,7 +1229,7 @@ public class DataModelerScreenPresenter
                     .addSave(versionRecordManager.newSaveMenuItem(new Command() {
                         @Override
                         public void execute() {
-                            onSave();
+                            saveAction();
                         }
                     }))
                     .addCopy(new Command() {

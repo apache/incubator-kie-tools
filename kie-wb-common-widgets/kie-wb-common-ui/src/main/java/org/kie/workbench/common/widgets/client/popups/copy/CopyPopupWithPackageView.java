@@ -90,7 +90,7 @@ public class CopyPopupWithPackageView implements CopyPopUpPresenter.View,
     Button copyButton;
 
     @Override
-    public void init( CopyPopUpPresenter presenter ) {
+    public void init(CopyPopUpPresenter presenter) {
         this.presenter = presenter;
         modalSetup();
         setupComment();
@@ -111,27 +111,29 @@ public class CopyPopupWithPackageView implements CopyPopUpPresenter.View,
 
     @Override
     public void handleDuplicatedFileName() {
-        showError( translate( Constants.CopyPopUpView_FileAlreadyExists, newNameTextBox.getValue() ) );
+        showError(translate(Constants.CopyPopUpView_FileAlreadyExists,
+                            newNameTextBox.getValue()));
     }
 
     @Override
     public void handleInvalidFileName() {
-        showError( translate( Constants.CopyPopUpView_InvalidFileName, newNameTextBox.getValue() ) );
+        showError(translate(Constants.CopyPopUpView_InvalidFileName,
+                            newNameTextBox.getValue()));
     }
 
     @Override
     public Path getTargetPath() {
-        if ( thereIsAnActiveProject() ) {
+        if (thereIsAnActiveProject()) {
             final String path = presenter.getPath().toURI();
             final Package selectedPackage = packageListBox.getSelectedPackage();
 
-            if ( path.contains( ProjectResourcePaths.MAIN_RESOURCES_PATH ) ) {
+            if (path.contains(ProjectResourcePaths.MAIN_RESOURCES_PATH)) {
                 return selectedPackage.getPackageMainResourcesPath();
-            } else if ( path.contains( ProjectResourcePaths.MAIN_SRC_PATH ) ) {
+            } else if (path.contains(ProjectResourcePaths.MAIN_SRC_PATH)) {
                 return selectedPackage.getPackageMainSrcPath();
-            } else if ( path.contains( ProjectResourcePaths.TEST_RESOURCES_PATH ) ) {
+            } else if (path.contains(ProjectResourcePaths.TEST_RESOURCES_PATH)) {
                 return selectedPackage.getPackageTestResourcesPath();
-            } else if ( path.contains( ProjectResourcePaths.TEST_SRC_PATH ) ) {
+            } else if (path.contains(ProjectResourcePaths.TEST_SRC_PATH)) {
                 return selectedPackage.getPackageTestSrcPath();
             }
         }
@@ -141,65 +143,76 @@ public class CopyPopupWithPackageView implements CopyPopUpPresenter.View,
 
     @Override
     public String getPackageName() {
-        if ( packageListBox.getSelectedPackage() != null ) {
+        if (packageListBox.getSelectedPackage() != null) {
             return packageListBox.getSelectedPackage().getPackageName();
         }
 
         return null;
     }
 
+    @Override
+    public void handleCopyNotAllowed() {
+        showError(translate(Constants.CopyPopUpView_CopyNotAllowed));
+    }
+
     private void modalSetup() {
-        this.newNameLabel.setText( translate( Constants.CopyPopUpView_NewName ) );
+        this.newNameLabel.setText(translate(Constants.CopyPopUpView_NewName));
         this.modal = new CommonModalBuilder()
-                .addHeader( translate( Constants.CopyPopUpView_MakeACopy ) )
-                .addBody( body )
-                .addFooter( footer() )
+                .addHeader(translate(Constants.CopyPopUpView_MakeACopy))
+                .addBody(body)
+                .addFooter(footer())
                 .build();
     }
 
     private ModalFooter footer() {
         GenericModalFooter footer = new GenericModalFooter();
-        footer.addButton( translate( Constants.CopyPopUpView_Cancel ), cancelCommand(), ButtonType.DEFAULT );
-        footer.add( copyButton() );
+        footer.addButton(translate(Constants.CopyPopUpView_Cancel),
+                         cancelCommand(),
+                         ButtonType.DEFAULT);
+        footer.add(copyButton());
         return footer;
     }
 
     Button copyButton() {
-        if ( copyButton == null ) {
-            copyButton = button( translate( Constants.CopyPopUpView_MakeACopy ), copyCommand(), ButtonType.PRIMARY );
+        if (copyButton == null) {
+            copyButton = button(translate(Constants.CopyPopUpView_MakeACopy),
+                                copyCommand(),
+                                ButtonType.PRIMARY);
         }
 
         return copyButton;
     }
 
-    Button button( final String text,
-                   final Command command,
-                   final ButtonType type ) {
-        Button button = new Button( text, event -> command.execute() );
-        button.setType( type );
+    Button button(final String text,
+                  final Command command,
+                  final ButtonType type) {
+        Button button = new Button(text,
+                                   event -> command.execute());
+        button.setType(type);
         return button;
     }
 
-    private String translate( final String key,
-                              Object... args ) {
-        return translationService.format( key, args );
+    private String translate(final String key,
+                             Object... args) {
+        return translationService.format(key,
+                                         args);
     }
 
     private Command copyCommand() {
-        return () -> presenter.copy( newNameTextBox.getValue() );
+        return () -> presenter.copy(newNameTextBox.getValue());
     }
 
     private void newNameTextBoxSetup() {
-        newNameTextBox.setValue( "" );
+        newNameTextBox.setValue("");
     }
 
     private void errorSetup() {
-        this.error.setHidden( true );
+        this.error.setHidden(true);
     }
 
-    private void showError( String errorMessage ) {
-        this.errorMessage.setTextContent( errorMessage );
-        this.error.setHidden( false );
+    private void showError(String errorMessage) {
+        this.errorMessage.setTextContent(errorMessage);
+        this.error.setHidden(false);
     }
 
     private Command cancelCommand() {
@@ -209,25 +222,27 @@ public class CopyPopupWithPackageView implements CopyPopUpPresenter.View,
     void packageListBoxSetup() {
         final String path = presenter.getPath().toURI();
 
-        if ( thereIsAnActiveProject() && isAProjectResource( path ) ) {
-            copyButton().setEnabled( false );
-            packageListBox.setContext( context, true, () -> copyButton.setEnabled( true ) );
+        if (thereIsAnActiveProject() && isAProjectResource(path)) {
+            copyButton().setEnabled(false);
+            packageListBox.setContext(context,
+                                      true,
+                                      () -> copyButton.setEnabled(true));
         }
     }
 
     private void setupComment() {
-        body.appendChild( toggleCommentPresenter().getViewElement() );
+        body.appendChild(toggleCommentPresenter().getViewElement());
     }
 
     private ToggleCommentPresenter toggleCommentPresenter() {
         return presenter.getToggleCommentPresenter();
     }
 
-    boolean isAProjectResource( final String path ) {
-        return path.contains( ProjectResourcePaths.MAIN_RESOURCES_PATH )
-                || path.contains( ProjectResourcePaths.MAIN_SRC_PATH )
-                || path.contains( ProjectResourcePaths.TEST_RESOURCES_PATH )
-                || path.contains( ProjectResourcePaths.TEST_SRC_PATH );
+    boolean isAProjectResource(final String path) {
+        return path.contains(ProjectResourcePaths.MAIN_RESOURCES_PATH)
+                || path.contains(ProjectResourcePaths.MAIN_SRC_PATH)
+                || path.contains(ProjectResourcePaths.TEST_RESOURCES_PATH)
+                || path.contains(ProjectResourcePaths.TEST_SRC_PATH);
     }
 
     boolean thereIsAnActiveProject() {

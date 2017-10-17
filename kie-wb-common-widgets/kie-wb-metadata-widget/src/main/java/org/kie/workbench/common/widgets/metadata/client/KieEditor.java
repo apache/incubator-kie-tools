@@ -32,6 +32,7 @@ import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.source.ViewDRLSourceWidget;
+import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.workbench.type.ClientResourceType;
@@ -42,7 +43,10 @@ import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
+import org.uberfire.ext.editor.commons.client.validation.ValidationErrorReason;
+import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 public abstract class KieEditor
@@ -75,6 +79,9 @@ public abstract class KieEditor
 
     @Inject
     protected ProjectController projectController;
+
+    @Inject
+    protected AssetUpdateValidator assetUpdateValidator;
 
     protected Metadata metadata;
 
@@ -239,17 +246,52 @@ public abstract class KieEditor
     protected void makeMenuBar() {
         if (canUpdateProject()) {
             fileMenuBuilder
-                    .addSave(versionRecordManager.newSaveMenuItem(this::onSave))
+                    .addSave(versionRecordManager.newSaveMenuItem(this::saveAction))
                     .addCopy(versionRecordManager.getCurrentPath(),
-                             fileNameValidator)
+                             assetUpdateValidator)
                     .addRename(versionRecordManager.getPathToLatest(),
-                               fileNameValidator)
-                    .addDelete(versionRecordManager.getPathToLatest());
+                               assetUpdateValidator)
+                    .addDelete(versionRecordManager.getPathToLatest(),
+                               assetUpdateValidator);
         }
 
         fileMenuBuilder
                 .addValidate(onValidate())
                 .addNewTopLevelMenu(versionRecordManager.buildMenu());
+    }
+
+    protected void saveAction() {
+        assetUpdateValidator.validate(null,
+                                      new ValidatorWithReasonCallback() {
+                                          @Override
+                                          public void onFailure(final String reason) {
+                                              if (ValidationErrorReason.NOT_ALLOWED.name().equals(reason)) {
+                                                  showError(kieView.getNotAllowedSavingMessage());
+                                              } else {
+                                                  showError(kieView.getUnexpectedErrorWhileSavingMessage());
+                                              }
+                                          }
+
+                                          @Override
+                                          public void onSuccess() {
+                                              onSave();
+                                          }
+
+                                          @Override
+                                          public void onFailure() {
+                                              showError(kieView.getUnexpectedErrorWhileSavingMessage());
+                                          }
+                                      });
+    }
+
+    @Override
+    protected void onSave() {
+        super.onSave();
+    }
+
+    private void showError(final String error) {
+        notification.fire(new NotificationEvent(error,
+                                                NotificationEvent.NotificationType.ERROR));
     }
 
     protected boolean canUpdateProject() {

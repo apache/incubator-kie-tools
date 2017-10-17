@@ -31,9 +31,7 @@ import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
-public class
-        FileMenuBuilderImpl
-        implements FileMenuBuilder {
+public class FileMenuBuilderImpl implements FileMenuBuilder {
 
     @Inject
     private BasicFileMenuBuilder menuBuilder;
@@ -53,123 +51,155 @@ public class
     }
 
     @Override
-    public FileMenuBuilder addSave( final MenuItem menuItem ) {
-        menuBuilder.addSave( menuItem );
+    public FileMenuBuilder addSave(final MenuItem menuItem) {
+        menuBuilder.addSave(menuItem);
         return this;
     }
 
     @Override
-    public FileMenuBuilder addSave( final Command command ) {
-        menuBuilder.addSave( command );
+    public FileMenuBuilder addSave(final Command command) {
+        menuBuilder.addSave(command);
         return this;
     }
 
     @Override
-    public FileMenuBuilder addDelete( final Command command ) {
-        menuBuilder.addDelete( command );
+    public FileMenuBuilder addDelete(final Command command) {
+        menuBuilder.addDelete(command);
         return this;
     }
 
     @Override
-    public FileMenuBuilder addRename( final Command command ) {
-        menuBuilder.addRename( command );
+    public FileMenuBuilder addRename(final Command command) {
+        menuBuilder.addRename(command);
         return this;
     }
 
     @Override
-    public FileMenuBuilder addCopy( final Command command ) {
-        menuBuilder.addCopy( command );
+    public FileMenuBuilder addCopy(final Command command) {
+        menuBuilder.addCopy(command);
         return this;
     }
 
     @Override
-    public FileMenuBuilder addValidate( final Command command ) {
-        menuBuilder.addValidate( command );
+    public FileMenuBuilder addValidate(final Command command) {
+        menuBuilder.addValidate(command);
         return this;
     }
 
     @Override
-    public FileMenuBuilder addRestoreVersion( final Path path ) {
-        menuBuilder.addRestoreVersion( path );
+    public FileMenuBuilder addRestoreVersion(final Path path) {
+        menuBuilder.addRestoreVersion(path);
         return this;
     }
 
     @Override
-    public FileMenuBuilder addCommand( final String caption,
-                                       final Command command ) {
-        menuBuilder.addCommand( caption, command );
+    public FileMenuBuilder addCommand(final String caption,
+                                      final Command command) {
+        menuBuilder.addCommand(caption,
+                               command);
         return this;
     }
 
     @Override
-    public FileMenuBuilder addNewTopLevelMenu( final MenuItem menu ) {
-        menuBuilder.addNewTopLevelMenu( menu );
+    public FileMenuBuilder addNewTopLevelMenu(final MenuItem menu) {
+        menuBuilder.addNewTopLevelMenu(menu);
         return this;
     }
 
     @Override
-    public FileMenuBuilderImpl addDelete( final Path path ) {
-        menuBuilder.addDelete( path, deleteService );
-
-        return this;
-    }
-
-    @Override
-    public FileMenuBuilder addDelete( final BasicFileMenuBuilder.PathProvider provider ) {
-        menuBuilder.addDelete( provider, deleteService );
+    public FileMenuBuilderImpl addDelete(final Path path) {
+        menuBuilder.addDelete(path,
+                              deleteService);
 
         return this;
     }
 
     @Override
-    public FileMenuBuilderImpl addRename( final Path path ) {
-        menuBuilder.addRename( path, renameService );
+    public FileMenuBuilderImpl addDelete(final Path path,
+                                         final Validator validator) {
+        menuBuilder.addDelete(path,
+                              deleteService,
+                              validator);
 
         return this;
     }
 
     @Override
-    public FileMenuBuilderImpl addRename( final Path path,
-                                          final Validator validator ) {
-        menuBuilder.addRename( path, validator, renameService );
+    public FileMenuBuilder addDelete(final BasicFileMenuBuilder.PathProvider provider) {
+        menuBuilder.addDelete(provider,
+                              deleteService);
 
         return this;
     }
 
     @Override
-    public FileMenuBuilder addRename( final BasicFileMenuBuilder.PathProvider provider,
-                                      final Validator validator ) {
-        menuBuilder.addRename( provider, validator, renameService );
+    public FileMenuBuilder addDelete(final BasicFileMenuBuilder.PathProvider provider,
+                                     final Validator validator) {
+        menuBuilder.addDelete(provider,
+                              deleteService,
+                              validator);
 
         return this;
     }
 
     @Override
-    public FileMenuBuilderImpl addCopy( final Path path ) {
-        menuBuilder.addCopy( path, copyService );
+    public FileMenuBuilderImpl addRename(final Path path) {
+        menuBuilder.addRename(path,
+                              renameService);
 
         return this;
     }
 
     @Override
-    public FileMenuBuilderImpl addCopy( final Path path,
-                                        final Validator validator ) {
-        menuBuilder.addCopy( path, validator, copyService );
+    public FileMenuBuilderImpl addRename(final Path path,
+                                         final Validator validator) {
+        menuBuilder.addRename(path,
+                              validator,
+                              renameService);
 
         return this;
     }
 
     @Override
-    public FileMenuBuilder addCopy( final BasicFileMenuBuilder.PathProvider provider,
-                                    final Validator validator ) {
-        menuBuilder.addCopy( provider, validator, copyService );
+    public FileMenuBuilder addRename(final BasicFileMenuBuilder.PathProvider provider,
+                                     final Validator validator) {
+        menuBuilder.addRename(provider,
+                              validator,
+                              renameService);
 
         return this;
     }
 
     @Override
-    public void setLockSyncMenuStateHelper( final LockSyncMenuStateHelper lockSyncMenuStateHelper ) {
-        menuBuilder.setLockSyncMenuStateHelper( lockSyncMenuStateHelper );
+    public FileMenuBuilderImpl addCopy(final Path path) {
+        menuBuilder.addCopy(path,
+                            copyService);
+
+        return this;
     }
 
+    @Override
+    public FileMenuBuilderImpl addCopy(final Path path,
+                                       final Validator validator) {
+        menuBuilder.addCopy(path,
+                            validator,
+                            copyService);
+
+        return this;
+    }
+
+    @Override
+    public FileMenuBuilder addCopy(final BasicFileMenuBuilder.PathProvider provider,
+                                   final Validator validator) {
+        menuBuilder.addCopy(provider,
+                            validator,
+                            copyService);
+
+        return this;
+    }
+
+    @Override
+    public void setLockSyncMenuStateHelper(final LockSyncMenuStateHelper lockSyncMenuStateHelper) {
+        menuBuilder.setLockSyncMenuStateHelper(lockSyncMenuStateHelper);
+    }
 }

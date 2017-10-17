@@ -27,7 +27,9 @@ import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilderImpl;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.menu.RegisteredDocumentsMenuBuilder;
+import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -83,6 +85,10 @@ abstract class KieMultipleDocumentEditorTestBase {
 
     @Mock
     protected DefaultFileNameValidator fileNameValidator;
+
+    @Spy
+    @InjectMocks
+    protected AssetUpdateValidator assetUpdateValidator;
 
     @Mock
     protected MenuItem saveMenuItem;
@@ -170,6 +176,7 @@ abstract class KieMultipleDocumentEditorTestBase {
         wrapped.setRegisteredDocumentsMenuBuilder(registeredDocumentsMenuBuilder);
         wrapped.setFileMenuBuilder(fileMenuBuilder);
         wrapped.setFileNameValidator(fileNameValidator);
+        wrapped.setAssetUpdateValidator(assetUpdateValidator);
 
         this.editor = spy(wrapped);
 

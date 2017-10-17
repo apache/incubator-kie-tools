@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.datamodeller.client.validation;
+package org.kie.workbench.common.widgets.metadata.client.validation;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.uberfire.ext.editor.commons.client.validation.Validator;
-import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
+import org.uberfire.ext.editor.commons.client.validation.Validator;
+import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
 
 @ApplicationScoped
 public class JavaFileNameValidator implements Validator {
@@ -32,17 +32,17 @@ public class JavaFileNameValidator implements Validator {
     private Caller<ValidationService> validationService;
 
     @Override
-    public void validate( final String value,
-            final ValidatorCallback callback ) {
-        validationService.call( new RemoteCallback<Boolean>() {
+    public void validate(final String value,
+                         final ValidatorCallback callback) {
+        validationService.call(new RemoteCallback<Boolean>() {
             @Override
-            public void callback( final Boolean response ) {
-                if ( Boolean.TRUE.equals( response ) ) {
+            public void callback(final Boolean response) {
+                if (Boolean.TRUE.equals(response)) {
                     callback.onSuccess();
                 } else {
                     callback.onFailure();
                 }
             }
-        } ).isJavaFileNameValid( value );
+        }).isJavaFileNameValid(value);
     }
 }

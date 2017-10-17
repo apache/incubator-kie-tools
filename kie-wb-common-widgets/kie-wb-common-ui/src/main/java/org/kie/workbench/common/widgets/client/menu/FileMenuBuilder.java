@@ -25,45 +25,50 @@ import org.uberfire.workbench.model.menu.Menus;
 
 public interface FileMenuBuilder extends HasLockSyncMenuStateHelper {
 
-    FileMenuBuilder addSave( final MenuItem menuItem );
+    FileMenuBuilder addSave(final MenuItem menuItem);
 
-    FileMenuBuilder addSave( final Command command );
+    FileMenuBuilder addSave(final Command command);
 
-    FileMenuBuilder addNewTopLevelMenu( final MenuItem menu );
+    FileMenuBuilder addNewTopLevelMenu(final MenuItem menu);
 
-    FileMenuBuilder addDelete( final Command command );
+    FileMenuBuilder addDelete(final Command command);
 
-    FileMenuBuilder addDelete( final Path path );
+    FileMenuBuilder addDelete(final Path path);
 
-    FileMenuBuilder addDelete( final BasicFileMenuBuilder.PathProvider provider );
+    FileMenuBuilder addDelete(final Path path,
+                              final Validator validator);
 
-    FileMenuBuilder addRename( final Command command );
+    FileMenuBuilder addDelete(final BasicFileMenuBuilder.PathProvider provider);
 
-    FileMenuBuilder addRename( final Path path );
+    FileMenuBuilder addDelete(final BasicFileMenuBuilder.PathProvider provider,
+                              final Validator validator);
 
-    FileMenuBuilder addRename( final Path path,
-                               final Validator validator );
+    FileMenuBuilder addRename(final Command command);
 
-    FileMenuBuilder addRename( final BasicFileMenuBuilder.PathProvider provider,
-                               final Validator validator );
+    FileMenuBuilder addRename(final Path path);
 
-    FileMenuBuilder addCopy( final Command command );
+    FileMenuBuilder addRename(final Path path,
+                              final Validator validator);
 
-    FileMenuBuilder addCopy( final Path path );
+    FileMenuBuilder addRename(final BasicFileMenuBuilder.PathProvider provider,
+                              final Validator validator);
 
-    FileMenuBuilder addCopy( final Path path,
-                             final Validator validator );
+    FileMenuBuilder addCopy(final Command command);
 
-    FileMenuBuilder addCopy( final BasicFileMenuBuilder.PathProvider provider,
-                             final Validator validator );
+    FileMenuBuilder addCopy(final Path path);
 
-    FileMenuBuilder addValidate( final Command command );
+    FileMenuBuilder addCopy(final Path path,
+                            final Validator validator);
 
-    FileMenuBuilder addRestoreVersion( final Path path );
+    FileMenuBuilder addCopy(final BasicFileMenuBuilder.PathProvider provider,
+                            final Validator validator);
 
-    FileMenuBuilder addCommand( final String caption,
-                                final Command command );
+    FileMenuBuilder addValidate(final Command command);
+
+    FileMenuBuilder addRestoreVersion(final Path path);
+
+    FileMenuBuilder addCommand(final String caption,
+                               final Command command);
 
     Menus build();
-
 }

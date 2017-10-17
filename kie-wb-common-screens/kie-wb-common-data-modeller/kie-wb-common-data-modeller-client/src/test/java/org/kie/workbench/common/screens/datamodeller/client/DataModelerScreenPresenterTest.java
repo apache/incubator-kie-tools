@@ -25,12 +25,11 @@ import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
 import org.guvnor.messageconsole.events.UnpublishMessagesEvent;
 import org.junit.Test;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchFocusEvent;
-import org.kie.workbench.common.screens.datamodeller.client.validation.JavaFileNameValidator;
 import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.widgets.metadata.client.validation.JavaAssetUpdateValidator;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
-import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -378,7 +377,8 @@ public class DataModelerScreenPresenterTest
                                         any());
         verify(validationService).validateForDelete(any(),
                                                     any());
-        verify(deletePopUpPresenter).show(any());
+        verify(deletePopUpPresenter).show(any(JavaAssetUpdateValidator.class),
+                                          any());
     }
 
     @Test
@@ -394,8 +394,10 @@ public class DataModelerScreenPresenterTest
                                                 any(),
                                                 any());
 
-        verify(renamePopUpPresenter, never()).show(any(Path.class), any(Validator.class), any(CommandWithFileNameAndCommitMessage.class));
-
+        verify(renamePopUpPresenter,
+               never()).show(any(Path.class),
+                             any(JavaAssetUpdateValidator.class),
+                             any(CommandWithFileNameAndCommitMessage.class));
     }
 
     @Test
@@ -406,14 +408,17 @@ public class DataModelerScreenPresenterTest
 
         presenter.onSafeRename();
 
-        verify(showAssetUsages, never()).showAssetUsages(anyString(),
-                                                any(),
-                                                anyString(),
-                                                any(),
-                                                any(),
-                                                any());
+        verify(showAssetUsages,
+               never()).showAssetUsages(anyString(),
+                                        any(),
+                                        anyString(),
+                                        any(),
+                                        any(),
+                                        any());
 
-        verify(renamePopUpPresenter).show(any(Path.class), any(Validator.class), any(CommandWithFileNameAndCommitMessage.class));
+        verify(renamePopUpPresenter).show(any(Path.class),
+                                          any(JavaAssetUpdateValidator.class),
+                                          any(CommandWithFileNameAndCommitMessage.class));
     }
 
     @Test
@@ -435,7 +440,7 @@ public class DataModelerScreenPresenterTest
 
         verify(renamePopUpPresenter,
                times(1)).show(any(Path.class),
-                              any(JavaFileNameValidator.class),
+                              any(JavaAssetUpdateValidator.class),
                               any(CommandWithFileNameAndCommitMessage.class));
         verify(validationPopup,
                never()).showSaveValidationMessages(any(Command.class),
@@ -462,7 +467,7 @@ public class DataModelerScreenPresenterTest
 
         verify(renamePopUpPresenter,
                never()).show(any(Path.class),
-                             any(JavaFileNameValidator.class),
+                             any(JavaAssetUpdateValidator.class),
                              any(CommandWithFileNameAndCommitMessage.class));
         verify(validationPopup,
                times(1)).showSaveValidationMessages(any(Command.class),
@@ -480,7 +485,7 @@ public class DataModelerScreenPresenterTest
 
         verify(copyPopUpPresenter,
                times(1)).show(any(Path.class),
-                              any(JavaFileNameValidator.class),
+                              any(JavaAssetUpdateValidator.class),
                               any(CommandWithFileNameAndCommitMessage.class));
         verify(validationPopup,
                never()).showCopyValidationMessages(any(Command.class),
@@ -498,7 +503,7 @@ public class DataModelerScreenPresenterTest
 
         verify(copyPopUpPresenter,
                never()).show(any(Path.class),
-                             any(JavaFileNameValidator.class),
+                             any(JavaAssetUpdateValidator.class),
                              any(CommandWithFileNameAndCommitMessage.class));
         verify(validationPopup,
                times(1)).showCopyValidationMessages(any(Command.class),

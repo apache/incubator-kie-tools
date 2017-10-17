@@ -36,7 +36,6 @@ public interface KieEditorWrapperView
         void onEditTabUnselected();
 
         void onOverviewSelected();
-
     }
 
     void setPresenter(KieEditorWrapperPresenter presenter);
@@ -68,4 +67,7 @@ public interface KieEditorWrapperView
 
     void addSourcePage(ViewDRLSourceWidget sourceWidget);
 
+    String getNotAllowedSavingMessage();
+
+    String getUnexpectedErrorWhileSavingMessage();
 }

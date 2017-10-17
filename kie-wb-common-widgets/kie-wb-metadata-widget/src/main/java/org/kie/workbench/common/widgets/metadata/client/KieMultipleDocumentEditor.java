@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -44,6 +43,7 @@ import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.source.ViewDRLSourceWidget;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.menu.RegisteredDocumentsMenuBuilder;
+import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
@@ -54,6 +54,8 @@ import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
+import org.uberfire.ext.editor.commons.client.validation.ValidationErrorReason;
+import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 import org.uberfire.ext.editor.commons.version.events.RestoreEvent;
 import org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup;
 import org.uberfire.mvp.Command;
@@ -73,7 +75,6 @@ import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopu
  * {@link KieDocument} documents are first registered and then activated. Registration ensures the document
  * is configured for optimistic concurrent lock handling. Activation updates the content of the editor to
  * reflect the active document.
- *
  * @param <D> Document type
  */
 public abstract class KieMultipleDocumentEditor<D extends KieDocument> implements KieMultipleDocumentEditorPresenter<D> {
@@ -91,7 +92,9 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     protected VersionRecordManager versionRecordManager;
     protected RegisteredDocumentsMenuBuilder registeredDocumentsMenuBuilder;
     protected DefaultFileNameValidator fileNameValidator;
+    protected AssetUpdateValidator assetUpdateValidator;
     protected ProjectController projectController;
+    protected Event<NotificationEvent> notification;
 
     //Constructed
     protected BaseEditorView editorView;
@@ -197,8 +200,18 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     }
 
     @Inject
+    protected void setAssetUpdateValidator(final AssetUpdateValidator assetUpdateValidator) {
+        this.assetUpdateValidator = assetUpdateValidator;
+    }
+
+    @Inject
     protected void setProjectController(final ProjectController projectController) {
         this.projectController = projectController;
+    }
+
+    @Inject
+    protected void setNotification(final Event<NotificationEvent> notification) {
+        this.notification = notification;
     }
 
     @Override
@@ -467,10 +480,11 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
             fileMenuBuilder
                     .addSave(getSaveMenuItem())
                     .addCopy(() -> getActiveDocument().getCurrentPath(),
-                             fileNameValidator)
+                             assetUpdateValidator)
                     .addRename(() -> getActiveDocument().getLatestPath(),
-                               fileNameValidator)
-                    .addDelete(() -> getActiveDocument().getLatestPath());
+                               assetUpdateValidator)
+                    .addDelete(() -> getActiveDocument().getLatestPath(),
+                               assetUpdateValidator);
         }
 
         this.menus = fileMenuBuilder
@@ -487,19 +501,46 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
 
     /**
      * Get the MenuItem that should be used for "Save".
-     *
      * @return
      */
     protected MenuItem getSaveMenuItem() {
         if (saveMenuItem == null) {
-            saveMenuItem = versionRecordManager.newSaveMenuItem(this::doSave);
+            saveMenuItem = versionRecordManager.newSaveMenuItem(this::saveAction);
         }
         return saveMenuItem;
     }
 
+    protected void saveAction() {
+        assetUpdateValidator.validate(null,
+                                      new ValidatorWithReasonCallback() {
+                                          @Override
+                                          public void onFailure(final String reason) {
+                                              if (ValidationErrorReason.NOT_ALLOWED.name().equals(reason)) {
+                                                  showError(kieEditorWrapperView.getNotAllowedSavingMessage());
+                                              } else {
+                                                  showError(kieEditorWrapperView.getUnexpectedErrorWhileSavingMessage());
+                                              }
+                                          }
+
+                                          @Override
+                                          public void onSuccess() {
+                                              doSave();
+                                          }
+
+                                          @Override
+                                          public void onFailure() {
+                                              showError(kieEditorWrapperView.getUnexpectedErrorWhileSavingMessage());
+                                          }
+                                      });
+    }
+
+    private void showError(final String error) {
+        notification.fire(new NotificationEvent(error,
+                                                NotificationEvent.NotificationType.ERROR));
+    }
+
     /**
      * Get the MenuItem that should be used for listing "(Registered) documents".
-     *
      * @return
      */
     protected MenuItem getRegisteredDocumentsMenuItem() {
@@ -512,7 +553,6 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
 
     /**
      * Get the MenuItem that should be used for "VersionRecordManager" drop-down.
-     *
      * @return
      */
     protected MenuItem getVersionManagerMenuItem() {
@@ -552,7 +592,6 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
      * is detected a {@link ConcurrentChangePopup} is shown allowing the user to choose whether to abort the
      * save, force the save or refresh the view with the latest version. If no concurrent update is detected
      * the document is persisted.
-     *
      * @param document
      */
     protected void doSaveCheckForAndHandleConcurrentUpdate(final D document) {
@@ -629,7 +668,6 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
      * Enable/disable all menus associated with the MDI container, consisting of "Save", "Copy",
      * "Rename", "Delete", "Validate" and "VersionRecordManager" drop-down. Subclasses can override
      * this to customize their Menus.
-     *
      * @param enabled
      */
     protected void enableMenus(final boolean enabled) {
@@ -648,7 +686,6 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
 
     /**
      * Enable/disable a single menu associated with the MDI container.
-     *
      * @param enabled
      */
     protected void enableMenuItem(final boolean enabled,
@@ -674,7 +711,6 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
 
     /**
      * Default callback for when loading a document fails.
-     *
      * @return
      */
     protected CommandDrivenErrorCallback getNoSuchFileExceptionErrorCallback() {
@@ -700,7 +736,6 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
 
     /**
      * Default callback for when retrieval of a document's source fails.
-     *
      * @return
      */
     protected CommandDrivenErrorCallback getCouldNotGenerateSourceErrorCallback() {
@@ -715,7 +750,6 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     /**
      * Default callback for when a document has been saved. This should be used by implementations
      * of {@link #onSave(KieDocument, String)} to ensure the "isDirty" mechanism is correctly updated.
-     *
      * @param document
      * @param currentHashCode
      * @return
