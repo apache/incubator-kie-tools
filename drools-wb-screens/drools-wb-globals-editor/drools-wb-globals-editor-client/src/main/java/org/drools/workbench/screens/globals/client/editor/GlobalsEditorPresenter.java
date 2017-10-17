@@ -92,11 +92,11 @@ public class GlobalsEditorPresenter
     protected void makeMenuBar() {
         if (canUpdateProject()) {
             fileMenuBuilder
-                    .addSave(versionRecordManager.newSaveMenuItem(this::onSave))
+                    .addSave(versionRecordManager.newSaveMenuItem(this::saveAction))
                     .addCopy(versionRecordManager.getCurrentPath(),
-                             fileNameValidator)
+                             assetUpdateValidator)
                     .addRename(versionRecordManager.getPathToLatest(),
-                               fileNameValidator)
+                               assetUpdateValidator)
                     .addDelete(this::onDelete);
         }
 
@@ -206,12 +206,13 @@ public class GlobalsEditorPresenter
     }
 
     private void showDeletePopup(final Path path) {
-        deletePopUpPresenter.show(comment -> {
-            view.showBusyIndicator(CommonConstants.INSTANCE.Deleting());
-            globalsEditorService.call(getDeleteSuccessCallback(),
-                                      new HasBusyIndicatorDefaultErrorCallback(view)).delete(path,
-                                                                                             "delete");
-        });
+        deletePopUpPresenter.show(assetUpdateValidator,
+                                  comment -> {
+                                      view.showBusyIndicator(CommonConstants.INSTANCE.Deleting());
+                                      globalsEditorService.call(getDeleteSuccessCallback(),
+                                                                new HasBusyIndicatorDefaultErrorCallback(view)).delete(path,
+                                                                                                                       "delete");
+                                  });
     }
 
     private RemoteCallback<Path> getDeleteSuccessCallback() {

@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import javax.enterprise.event.Event;
 
 import com.google.gwt.core.client.Scheduler;
@@ -30,15 +29,15 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableGraphResourceType;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter.Access.LockedBy;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter.Access.LockedBy;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.wizard.NewGuidedDecisionTableWizardHelper;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphContent;
-import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel.GuidedDecisionTableGraphEntry;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel;
+import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel.GuidedDecisionTableGraphEntry;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableGraphEditorService;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
@@ -56,8 +55,8 @@ import org.kie.workbench.common.widgets.metadata.client.KieDocument;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.uberfire.backend.vfs.ObservablePath.OnConcurrentUpdateEvent;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.backend.vfs.ObservablePath.OnConcurrentUpdateEvent;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.backend.vfs.impl.ObservablePathImpl;
@@ -308,12 +307,13 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                times(1)).addSave(any(MenuItem.class));
         verify(fileMenuBuilder,
                times(1)).addCopy(any(BasicFileMenuBuilder.PathProvider.class),
-                                 eq(fileNameValidator));
+                                 eq(assetUpdateValidator));
         verify(fileMenuBuilder,
                times(1)).addRename(any(BasicFileMenuBuilder.PathProvider.class),
-                                   eq(fileNameValidator));
+                                   eq(assetUpdateValidator));
         verify(fileMenuBuilder,
-               times(1)).addDelete(any(BasicFileMenuBuilder.PathProvider.class));
+               times(1)).addDelete(any(BasicFileMenuBuilder.PathProvider.class),
+                                   eq(assetUpdateValidator));
         verify(fileMenuBuilder,
                times(1)).addValidate(any(Command.class));
         verify(fileMenuBuilder,
@@ -342,12 +342,13 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                never()).addSave(any(MenuItem.class));
         verify(fileMenuBuilder,
                never()).addCopy(any(BasicFileMenuBuilder.PathProvider.class),
-                                eq(fileNameValidator));
+                                eq(assetUpdateValidator));
         verify(fileMenuBuilder,
                never()).addRename(any(BasicFileMenuBuilder.PathProvider.class),
-                                  eq(fileNameValidator));
+                                  eq(assetUpdateValidator));
         verify(fileMenuBuilder,
-               never()).addDelete(any(BasicFileMenuBuilder.PathProvider.class));
+               never()).addDelete(any(BasicFileMenuBuilder.PathProvider.class),
+                                  eq(assetUpdateValidator));
     }
 
     @Test

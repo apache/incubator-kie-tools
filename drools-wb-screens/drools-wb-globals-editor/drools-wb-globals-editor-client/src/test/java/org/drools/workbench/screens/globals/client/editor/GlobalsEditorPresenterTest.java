@@ -37,6 +37,7 @@ import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilderImpl;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
+import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -47,7 +48,6 @@ import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
-import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -99,6 +99,9 @@ public class GlobalsEditorPresenterTest {
     @Mock
     private ProjectContext workbenchContext;
 
+    @Mock
+    private AssetUpdateValidator assetUpdateValidator;
+
     private GlobalsEditorPresenter presenter;
 
     @Before
@@ -117,6 +120,7 @@ public class GlobalsEditorPresenterTest {
                 projectController = GlobalsEditorPresenterTest.this.projectController;
                 workbenchContext = GlobalsEditorPresenterTest.this.workbenchContext;
                 versionRecordManager = GlobalsEditorPresenterTest.this.versionRecordManager;
+                assetUpdateValidator = GlobalsEditorPresenterTest.this.assetUpdateValidator;
             }
         };
     }
@@ -190,7 +194,8 @@ public class GlobalsEditorPresenterTest {
         verify(validationService,
                times(1)).validateForDelete(any(Path.class));
         verify(deletePopUpPresenter,
-               times(1)).show(any(ParameterizedCommand.class));
+               times(1)).show(eq(assetUpdateValidator),
+                              any(ParameterizedCommand.class));
     }
 
     @Test
@@ -216,9 +221,9 @@ public class GlobalsEditorPresenterTest {
 
         verify(fileMenuBuilder).addSave(any(MenuItem.class));
         verify(fileMenuBuilder).addCopy(any(Path.class),
-                                        any(DefaultFileNameValidator.class));
+                                        any(AssetUpdateValidator.class));
         verify(fileMenuBuilder).addRename(any(Path.class),
-                                          any(DefaultFileNameValidator.class));
+                                          any(AssetUpdateValidator.class));
         verify(fileMenuBuilder).addDelete(any(Command.class));
     }
 
@@ -233,10 +238,10 @@ public class GlobalsEditorPresenterTest {
                never()).addSave(any(MenuItem.class));
         verify(fileMenuBuilder,
                never()).addCopy(any(Path.class),
-                                any(DefaultFileNameValidator.class));
+                                any(AssetUpdateValidator.class));
         verify(fileMenuBuilder,
                never()).addRename(any(Path.class),
-                                  any(DefaultFileNameValidator.class));
+                                  any(AssetUpdateValidator.class));
         verify(fileMenuBuilder,
                never()).addDelete(any(Command.class));
     }

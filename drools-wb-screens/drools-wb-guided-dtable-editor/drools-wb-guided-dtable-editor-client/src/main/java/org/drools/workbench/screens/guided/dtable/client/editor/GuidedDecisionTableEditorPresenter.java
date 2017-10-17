@@ -193,10 +193,11 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
             fileMenuBuilder
                     .addSave(getSaveMenuItem())
                     .addCopy(() -> getActiveDocument().getCurrentPath(),
-                             fileNameValidator)
+                             assetUpdateValidator)
                     .addRename(() -> getActiveDocument().getLatestPath(),
-                               fileNameValidator)
-                    .addDelete(() -> getActiveDocument().getLatestPath());
+                               assetUpdateValidator)
+                    .addDelete(() -> getActiveDocument().getLatestPath(),
+                               assetUpdateValidator);
         }
 
         this.menus = fileMenuBuilder

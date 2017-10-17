@@ -220,10 +220,11 @@ public class DecisionTableXLSEditorPresenter
         if (canUpdateProject()) {
             fileMenuBuilder
                     .addCopy(versionRecordManager.getCurrentPath(),
-                             fileNameValidator)
+                             assetUpdateValidator)
                     .addRename(versionRecordManager.getPathToLatest(),
-                               fileNameValidator)
-                    .addDelete(versionRecordManager.getPathToLatest());
+                               assetUpdateValidator)
+                    .addDelete(versionRecordManager.getPathToLatest(),
+                               assetUpdateValidator);
         }
 
         fileMenuBuilder

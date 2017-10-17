@@ -49,6 +49,7 @@ import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieMultipleDocumentEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.menu.RegisteredDocumentsMenuBuilder;
+import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -209,6 +210,9 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
     protected DefaultFileNameValidator fileNameValidator;
 
     @Mock
+    protected AssetUpdateValidator assetUpdateValidator;
+
+    @Mock
     protected SyncBeanManager beanManager;
 
     @Mock
@@ -243,6 +247,7 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
         wrapped.setRegisteredDocumentsMenuBuilder(registeredDocumentsMenuBuilder);
         wrapped.setFileMenuBuilder(fileMenuBuilder);
         wrapped.setFileNameValidator(fileNameValidator);
+        wrapped.setAssetUpdateValidator(assetUpdateValidator);
 
         this.presenter = spy(wrapped);
 

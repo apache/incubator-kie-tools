@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -37,8 +36,8 @@ import org.drools.workbench.screens.guided.dtable.client.editor.menu.RadarMenuBu
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.ViewMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableGraphResourceType;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter.Access;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter.Access;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.wizard.NewGuidedDecisionTableWizardHelper;
@@ -367,10 +366,11 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
             fileMenuBuilder
                     .addSave(getSaveMenuItem())
                     .addCopy(versionRecordManager::getCurrentPath,
-                             fileNameValidator)
+                             assetUpdateValidator)
                     .addRename(versionRecordManager::getPathToLatest,
-                               fileNameValidator)
-                    .addDelete(versionRecordManager::getPathToLatest);
+                               assetUpdateValidator)
+                    .addDelete(versionRecordManager::getPathToLatest,
+                               assetUpdateValidator);
         }
 
         this.menus = fileMenuBuilder

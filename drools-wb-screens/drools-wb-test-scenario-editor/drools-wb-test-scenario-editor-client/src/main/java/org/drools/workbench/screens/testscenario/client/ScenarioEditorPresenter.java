@@ -223,17 +223,13 @@ public class ScenarioEditorPresenter
     protected void makeMenuBar() {
         if (canUpdateProject()) {
             fileMenuBuilder
-                    .addSave(new Command() {
-                        @Override
-                        public void execute() {
-                            onSave();
-                        }
-                    })
+                    .addSave(this::saveAction)
                     .addCopy(versionRecordManager.getCurrentPath(),
-                             fileNameValidator)
+                             assetUpdateValidator)
                     .addRename(versionRecordManager.getPathToLatest(),
-                               fileNameValidator)
-                    .addDelete(versionRecordManager.getPathToLatest());
+                               assetUpdateValidator)
+                    .addDelete(versionRecordManager.getPathToLatest(),
+                               assetUpdateValidator);
         }
 
         fileMenuBuilder

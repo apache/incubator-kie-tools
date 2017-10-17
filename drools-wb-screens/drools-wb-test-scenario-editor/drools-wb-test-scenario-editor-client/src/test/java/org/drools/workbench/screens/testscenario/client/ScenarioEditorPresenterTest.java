@@ -18,7 +18,6 @@ package org.drools.workbench.screens.testscenario.client;
 
 import java.lang.annotation.Annotation;
 import java.util.Collections;
-
 import javax.enterprise.event.Event;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -46,6 +45,7 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilderImpl;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
+import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -59,7 +59,6 @@ import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
-import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
@@ -312,10 +311,11 @@ public class ScenarioEditorPresenterTest {
 
         verify(fileMenuBuilder).addSave(any(Command.class));
         verify(fileMenuBuilder).addCopy(any(Path.class),
-                                        any(DefaultFileNameValidator.class));
+                                        any(AssetUpdateValidator.class));
         verify(fileMenuBuilder).addRename(any(Path.class),
-                                          any(DefaultFileNameValidator.class));
-        verify(fileMenuBuilder).addDelete(any(Path.class));
+                                          any(AssetUpdateValidator.class));
+        verify(fileMenuBuilder).addDelete(any(Path.class),
+                                          any(AssetUpdateValidator.class));
     }
 
     @Test
@@ -329,12 +329,13 @@ public class ScenarioEditorPresenterTest {
                never()).addSave(any(Command.class));
         verify(fileMenuBuilder,
                never()).addCopy(any(Path.class),
-                                any(DefaultFileNameValidator.class));
+                                any(AssetUpdateValidator.class));
         verify(fileMenuBuilder,
                never()).addRename(any(Path.class),
-                                  any(DefaultFileNameValidator.class));
+                                  any(AssetUpdateValidator.class));
         verify(fileMenuBuilder,
-               never()).addDelete(any(Path.class));
+               never()).addDelete(any(Path.class),
+                                  any(AssetUpdateValidator.class));
     }
 
     private Event<NotificationEvent> makeNotificationEvent() {
