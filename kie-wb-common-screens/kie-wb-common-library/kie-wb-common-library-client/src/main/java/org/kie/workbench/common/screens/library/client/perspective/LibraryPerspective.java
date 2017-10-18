@@ -68,7 +68,11 @@ public class LibraryPerspective {
     public void onOpen() {
         Command callback = null;
         if (refresh) {
-            callback = () -> libraryPlaces.goToLibrary();
+            callback = () -> {
+                if (getRootPanel() != null) {
+                    libraryPlaces.goToLibrary();
+                }
+            };
         }
         libraryPlaces.refresh(callback);
     }
@@ -79,6 +83,10 @@ public class LibraryPerspective {
     }
 
     public PanelDefinition getRootPanel() {
+        if (perspectiveDefinition == null) {
+            return null;
+        }
+
         return perspectiveDefinition.getRoot();
     }
 }

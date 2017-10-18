@@ -20,7 +20,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
+import org.uberfire.mvp.Command;
+import org.uberfire.workbench.model.PanelDefinition;
 
 import static org.mockito.Mockito.*;
 
@@ -30,18 +34,41 @@ public class LibraryPerspectiveTest {
     @Mock
     private LibraryPlaces libraryPlaces;
 
+    @Captor
+    private ArgumentCaptor<Command> commandCaptor;
+
     private LibraryPerspective perspective;
 
     @Before
     public void setup() {
-        perspective = new LibraryPerspective(libraryPlaces);
+        perspective = spy(new LibraryPerspective(libraryPlaces));
     }
 
     @Test
-    public void libraryRefreshesPlacesOnStartupTest() {
+    public void libraryRefreshesPlacesOnOpenWithRootPanelTest() {
+        doReturn(mock(PanelDefinition.class)).when(perspective).getRootPanel();
+
         perspective.onOpen();
 
-        verify(libraryPlaces).refresh(any());
+        verify(libraryPlaces).refresh(commandCaptor.capture());
+
+        commandCaptor.getValue().execute();
+
+        verify(libraryPlaces).goToLibrary();
+    }
+
+    @Test
+    public void libraryDoesNotLoadOnOpenWithoutRootPanelTest() {
+        doReturn(null).when(perspective).getRootPanel();
+
+        perspective.onOpen();
+
+        verify(libraryPlaces).refresh(commandCaptor.capture());
+
+        commandCaptor.getValue().execute();
+
+        verify(libraryPlaces,
+               never()).goToLibrary();
     }
 
     @Test
