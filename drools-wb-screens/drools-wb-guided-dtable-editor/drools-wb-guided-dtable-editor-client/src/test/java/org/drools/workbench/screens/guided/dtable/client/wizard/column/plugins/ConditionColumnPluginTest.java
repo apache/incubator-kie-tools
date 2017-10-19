@@ -26,6 +26,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -54,21 +55,9 @@ import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 import org.uberfire.mocks.EventSourceMock;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ConditionColumnPluginTest {
@@ -839,6 +828,50 @@ public class ConditionColumnPluginTest {
         doReturn(null).when(plugin).getBinding();
 
         assertTrue(plugin.isFieldBindingValid());
+    }
+
+    @Test
+    public void testIsFieldBindingValidWhenPluginBindingAndFactPatternBoundNameHaveTheSameValue() {
+
+        final PatternWrapper patternWrapper = mock(PatternWrapper.class);
+        final FactPattern factPattern = new FactPattern() {{
+            setBoundName("$fact");
+        }};
+
+        doReturn(BaseSingleFieldConstraint.TYPE_LITERAL).when(plugin).constraintValue();
+        doReturn(factPattern).when(patternWrapper).makeFactPattern();
+        doReturn(patternWrapper).when(plugin).patternWrapper();
+        doReturn("$fact").when(plugin).getBinding();
+
+        assertFalse(plugin.isFieldBindingValid());
+    }
+
+    @Test
+    public void testMakeBRLRuleModel() {
+
+        final String factType = "FactType";
+        final String boundName1 = "$fact1";
+        final String boundName2 = "$fact2";
+        final Pattern52 pattern = new Pattern52() {{
+            setFactType(factType);
+            setBoundName(boundName1);
+        }};
+        final FactPattern factPattern = new FactPattern() {{
+            setFactType(factType);
+            setBoundName(boundName2);
+        }};
+        final PatternWrapper patternWrapper = mock(PatternWrapper.class);
+
+        doReturn(factPattern).when(patternWrapper).makeFactPattern();
+        doReturn(patternWrapper).when(plugin).patternWrapper();
+        doReturn(Collections.singletonList(pattern)).when(model).getConditions();
+        doReturn(pattern).when(model).getConditionPattern(boundName1);
+
+        final BRLRuleModel brlRuleModel = plugin.makeBRLRuleModel();
+        final List<String> expectedVariables = Arrays.asList(boundName1, boundName2);
+        final List<String> actualVariables = brlRuleModel.getAllVariables();
+
+        assertEquals(expectedVariables, actualVariables);
     }
 
     private Pattern52 mockFactPattern(final String binding) {

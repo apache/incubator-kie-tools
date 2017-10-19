@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons;
 
+import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 
 import static org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTableColumnViewUtils.nil;
@@ -119,6 +120,16 @@ public class PatternWrapper {
 
     public String getBoundName() {
         return boundName;
+    }
+
+    public FactPattern makeFactPattern() {
+
+        final FactPattern factPattern = new FactPattern();
+
+        factPattern.setBoundName(getBoundName());
+        factPattern.setFactType(getFactType());
+
+        return factPattern;
     }
 
     @Override

@@ -238,7 +238,7 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
         final BindingTextBox bindingTextBox = new BindingTextBox();
 
         bindingTextBox.setText(plugin().getBinding());
-        bindingTextBox.addChangeHandler(event -> {
+        bindingTextBox.addKeyUpHandler(event -> {
             plugin().setBinding(bindingTextBox.getText());
         });
 

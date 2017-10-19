@@ -30,6 +30,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
@@ -271,7 +272,7 @@ public class ConditionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
     @Override
     public Set<PatternWrapper> getPatterns() {
         final Set<PatternWrapper> patterns = new HashSet<>();
-        final BRLRuleModel brlRuleModel = new BRLRuleModel(getPresenter().getModel());
+        final BRLRuleModel brlRuleModel = makeBRLRuleModel();
         final List<String> variables = brlRuleModel.getLHSPatternVariables();
         variables.forEach(var -> {
             final Pattern52 pattern = getPresenter().getModel().getConditionPattern(var);
@@ -508,8 +509,18 @@ public class ConditionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
             }
         }
 
-        final BRLRuleModel brlRuleModel = new BRLRuleModel(getPresenter().getModel());
-        return !brlRuleModel.isVariableNameUsed(binding);
+        return !makeBRLRuleModel().isVariableNameUsed(binding);
+    }
+
+    BRLRuleModel makeBRLRuleModel() {
+
+        final GuidedDecisionTable52 model = getPresenter().getModel();
+        final BRLRuleModel brlRuleModel = new BRLRuleModel(model);
+        final FactPattern pat = patternWrapper().makeFactPattern();
+
+        brlRuleModel.addLhsItem(pat);
+
+        return brlRuleModel;
     }
 
     public String getFactType() {
