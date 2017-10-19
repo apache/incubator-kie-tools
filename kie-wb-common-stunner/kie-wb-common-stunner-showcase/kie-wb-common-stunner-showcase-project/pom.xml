@@ -892,6 +892,18 @@
       <artifactId>kie-soup-project-datamodel-api</artifactId>
     </dependency>
 
+    <!-- Necessary to inject MVELEvaluator dependency -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-cdi</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.drools</groupId>
+          <artifactId>drools-compiler</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-default-editor-api</artifactId>
