@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -34,6 +35,7 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
+import org.kie.internal.xstream.XStreamUtils;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemOperation;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
@@ -82,9 +84,7 @@ public class ExplorerServiceHelper {
 
     public ExplorerServiceHelper() {
         //WELD proxy support
-        xs = new XStream();
-        String[] voidDeny = {"void.class", "Void.class"};
-        xs.denyTypes(voidDeny);
+        xs = XStreamUtils.createTrustingXStream();
     }
 
     @Inject

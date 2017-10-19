@@ -20,12 +20,14 @@ import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.thoughtworks.xstream.XStream;
+import org.kie.internal.xstream.XStreamUtils;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.server.controller.api.model.spec.ServerTemplateKey;
 import org.kie.server.controller.api.storage.KieServerTemplateStorage;
@@ -49,9 +51,7 @@ public class ServerTemplateVFSStorage implements KieServerTemplateStorage {
 
     //enable proxy
     public ServerTemplateVFSStorage() {
-        xs = new XStream();
-        String[] voidDeny = {"void.class", "Void.class"};
-        xs.denyTypes(voidDeny);
+        xs = XStreamUtils.createTrustingXStream();
     }
 
     @Inject

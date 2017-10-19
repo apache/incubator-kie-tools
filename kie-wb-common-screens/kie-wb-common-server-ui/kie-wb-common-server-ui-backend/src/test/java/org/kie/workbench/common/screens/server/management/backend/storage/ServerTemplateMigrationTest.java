@@ -27,13 +27,11 @@ import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.internal.xstream.XStreamUtils;
 import org.kie.server.api.model.KieContainerStatus;
 import org.kie.server.api.model.ReleaseId;
 import org.kie.server.controller.api.model.runtime.ServerInstanceKey;
-import org.kie.server.controller.api.model.spec.Capability;
 import org.kie.server.controller.api.model.spec.ContainerSpec;
-import org.kie.server.controller.api.model.spec.ProcessConfig;
-import org.kie.server.controller.api.model.spec.RuleConfig;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.workbench.common.screens.server.management.backend.storage.migration.ServerTemplateMigration;
 import org.uberfire.io.IOService;
@@ -41,7 +39,9 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.mocks.FileSystemTestingUtils;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class ServerTemplateMigrationTest {
 
@@ -54,9 +54,7 @@ public class ServerTemplateMigrationTest {
 
     @Before
     public void setup() throws IOException {
-        String[] voidDeny = {"void.class", "Void.class"};
-        xstream = new XStream();
-        xstream.denyTypes(voidDeny);
+        xstream = XStreamUtils.createTrustingXStream();
 
         fileSystemTestingUtils.setup();
 

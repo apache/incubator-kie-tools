@@ -18,6 +18,8 @@ package org.kie.workbench.common.services.backend.kmodule;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import org.guvnor.common.services.project.model.WorkItemHandlerModel;
+import org.kie.internal.xstream.XStreamUtils;
 import org.kie.workbench.common.services.backend.kmodule.converters.ClockTypeConverter;
 import org.kie.workbench.common.services.backend.kmodule.converters.KBaseConverter;
 import org.kie.workbench.common.services.backend.kmodule.converters.KModuleConverter;
@@ -31,7 +33,6 @@ import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.kie.workbench.common.services.shared.kmodule.KSessionModel;
 import org.kie.workbench.common.services.shared.kmodule.ListenerModel;
 import org.kie.workbench.common.services.shared.kmodule.QualifierModel;
-import org.guvnor.common.services.project.model.WorkItemHandlerModel;
 
 public class KModuleContentHandler {
 
@@ -44,9 +45,7 @@ public class KModuleContentHandler {
     }
 
     private XStream createXStream() {
-        XStream xStream = new XStream(new DomDriver());
-        String[] voidDeny = {"void.class", "Void.class"};
-        xStream.denyTypes(voidDeny);
+        XStream xStream = XStreamUtils.createTrustingXStream(new DomDriver());
 
         xStream.registerConverter(new KModuleConverter());
         xStream.registerConverter(new KBaseConverter());

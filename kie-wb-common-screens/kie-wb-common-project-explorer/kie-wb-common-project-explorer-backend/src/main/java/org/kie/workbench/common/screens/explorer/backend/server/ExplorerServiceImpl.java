@@ -40,6 +40,7 @@ import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.kie.internal.xstream.XStreamUtils;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
@@ -149,9 +150,7 @@ public class ExplorerServiceImpl
 
     // Boilerplate sacrifice for Weld
     public ExplorerServiceImpl() {
-        xs = new XStream();
-        String[] voidDeny = {"void.class", "Void.class"};
-        xs.denyTypes(voidDeny);
+        xs = XStreamUtils.createTrustingXStream();
     }
 
     public ExplorerServiceImpl(final IOService ioService,
