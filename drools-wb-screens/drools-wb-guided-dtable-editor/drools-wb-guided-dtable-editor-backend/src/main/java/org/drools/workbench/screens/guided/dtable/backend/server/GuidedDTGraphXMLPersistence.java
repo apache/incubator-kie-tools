@@ -19,6 +19,7 @@ package org.drools.workbench.screens.guided.dtable.backend.server;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel;
+import org.kie.internal.xstream.XStreamUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +32,7 @@ public class GuidedDTGraphXMLPersistence {
     private XStream xt;
 
     private GuidedDTGraphXMLPersistence() {
-        xt = new XStream( new DomDriver() );
+        xt = XStreamUtils.createTrustingXStream(new DomDriver());
         xt.alias( "graph",
                   GuidedDecisionTableEditorGraphModel.class );
         xt.alias( "entry",
