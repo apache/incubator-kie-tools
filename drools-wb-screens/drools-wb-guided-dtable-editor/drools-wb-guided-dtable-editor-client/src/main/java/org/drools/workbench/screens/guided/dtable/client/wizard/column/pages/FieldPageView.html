@@ -16,21 +16,23 @@
 
 <div>
     <div>
-        <div class="alert alert-info">
+        <div data-field="fieldListDescription" class="alert alert-info">
             <span class="pficon pficon-info"></span>
             <b><span data-i18n-key="Select"></span></b>
             <hr/>
-            <span data-i18n-key="FieldPageDescription"></span>
+            <span data-i18n-key="SelectFieldPageDescription"></span>
+        </div>
+
+        <div data-field="predicateFieldDescription" class="alert alert-info">
+            <span class="pficon pficon-info"></span>
+            <b><span data-i18n-key="Set"></span></b>
+            <hr/>
+            <span data-i18n-key="TextFieldPageDescription"></span>
         </div>
 
         <div data-field="patternWarning" class="alert alert-warning">
             <span class="pficon pficon-warning-triangle-o"></span>
             <span data-i18n-key="SetThePatternFirst"></span>
-        </div>
-
-        <div data-field="info" class="alert alert-info">
-            <span class="pficon pficon-info"></span>
-            <span data-i18n-key="YouDontNeedToSetTheFact"></span>
         </div>
 
         <div data-field="fieldWarning" class="alert alert-warning">
@@ -41,7 +43,8 @@
         <label class="col-sm-4 form-control-label" data-i18n-key="Field"></label>
 
         <div class="col-sm-8">
-            <select class="form-control" data-field="fieldsList" title=""></select>
+            <select class="form-control" data-field="fieldList" title=""></select>
+            <input type="text" class="form-control" data-field="fieldTextBox"/>
         </div>
     </div>
 </div>

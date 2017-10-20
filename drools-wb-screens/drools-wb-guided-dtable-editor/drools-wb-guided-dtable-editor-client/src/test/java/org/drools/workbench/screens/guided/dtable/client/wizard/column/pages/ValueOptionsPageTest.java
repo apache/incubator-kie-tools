@@ -21,6 +21,7 @@ import java.util.HashMap;
 import com.google.gwt.junit.GWTMockUtilities;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -41,16 +42,8 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doCallRealMethod;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ValueOptionsPageTest {
@@ -325,6 +318,40 @@ public class ValueOptionsPageTest {
         verify(view).disableValueList();
         verify(oracle).hasEnums("factType",
                                 "factField");
+    }
+
+    @Test
+    public void testPrepareView() {
+
+        page.prepareView();
+
+        verify(page).markAsViewed();
+        verify(page).setupValueList();
+        verify(page).setupCepOperators();
+        verify(page).setupDefaultValue();
+        verify(page).setupLimitedValue();
+        verify(page).setupBinding();
+        verify(page).setupPredicateBindingInfoBox();
+    }
+
+    @Test
+    public void testSetupPredicateBindingInfoBoxWhenConstraintValueIsPredicate() {
+
+        doReturn(BaseSingleFieldConstraint.TYPE_PREDICATE).when(page).constraintValue();
+
+        page.setupPredicateBindingInfoBox();
+
+        verify(view).showPredicateBindingInfo();
+    }
+
+    @Test
+    public void testSetupPredicateBindingInfoBoxWhenConstraintValueIsNotPredicate() {
+
+        doReturn(BaseSingleFieldConstraint.TYPE_LITERAL).when(page).constraintValue();
+
+        page.setupPredicateBindingInfoBox();
+
+        verify(view).hidePredicateBindingInfo();
     }
 
     @Test

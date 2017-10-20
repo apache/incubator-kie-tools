@@ -20,6 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.CEPWindow;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
@@ -94,6 +95,18 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
         setupDefaultValue();
         setupLimitedValue();
         setupBinding();
+        setupPredicateBindingInfoBox();
+    }
+
+    void setupPredicateBindingInfoBox() {
+
+        final boolean isConstraintValuePredicate = constraintValue() == BaseSingleFieldConstraint.TYPE_PREDICATE;
+
+        if (isConstraintValuePredicate) {
+            view.showPredicateBindingInfo();
+        } else {
+            view.hidePredicateBindingInfo();
+        }
     }
 
     void setupValueList() {
@@ -111,7 +124,7 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
         }
     }
 
-    private void setupCepOperators() {
+    void setupCepOperators() {
         if (!isCepOperatorsEnabled()) {
             view.hideCepOperators();
             return;
@@ -126,7 +139,7 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
         });
     }
 
-    private void setupDefaultValue() {
+    void setupDefaultValue() {
         if (!isDefaultValueEnabled()) {
             view.hideDefaultValue();
             return;
@@ -139,7 +152,7 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
         }
     }
 
-    private void setupLimitedValue() {
+    void setupLimitedValue() {
         if (!isLimitedValueEnabled()) {
             view.hideLimitedValue();
             return;
@@ -152,7 +165,7 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
         }
     }
 
-    private void setupBinding() {
+    void setupBinding() {
         if (!isBindingEnabled()) {
             view.hideBinding();
             return;
@@ -365,8 +378,12 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
         setupDefaultValue();
     }
 
-    private void markAsViewed() {
+    void markAsViewed() {
         plugin().setValueOptionsPageAsCompleted();
+    }
+
+    public int constraintValue() {
+        return plugin().constraintValue();
     }
 
     public interface View extends UberElement<ValueOptionsPage> {
@@ -398,5 +415,9 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
         void showFieldBindingWarning();
 
         void hideFieldBindingWarning();
+
+        void showPredicateBindingInfo();
+
+        void hidePredicateBindingInfo();
     }
 }

@@ -112,11 +112,15 @@ public class OperatorPage extends BaseDecisionTableColumnPage<ConditionColumnPlu
     }
 
     void operatorDropdown(final Consumer<IsWidget> widgetSupplier) {
-        if (hasFactField()) {
+        if (canOperatorBeSet()) {
             cepOperatorsDropdown(widgetSupplier);
         } else {
             emptyOperatorsDropdown(widgetSupplier);
         }
+    }
+
+    boolean canOperatorBeSet() {
+        return hasFactField() && !isConstraintValuePredicate();
     }
 
     boolean isConstraintValuePredicate() {

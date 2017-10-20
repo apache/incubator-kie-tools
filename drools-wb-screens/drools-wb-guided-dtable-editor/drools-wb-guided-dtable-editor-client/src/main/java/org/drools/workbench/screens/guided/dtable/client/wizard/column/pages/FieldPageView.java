@@ -20,7 +20,9 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextBox;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ui.client.local.api.IsElement;
@@ -38,8 +40,17 @@ public class FieldPageView implements IsElement,
 
     private FieldPage<?> page;
 
-    @DataField("fieldsList")
-    private ListBox fieldsList;
+    @DataField("fieldList")
+    private ListBox fieldList;
+
+    @DataField("fieldTextBox")
+    private TextBox fieldTextBox;
+
+    @DataField("fieldListDescription")
+    private Div fieldListDescription;
+
+    @DataField("predicateFieldDescription")
+    private Div predicateFieldDescription;
 
     @DataField("patternWarning")
     private Div patternWarning;
@@ -48,20 +59,21 @@ public class FieldPageView implements IsElement,
     @DataField("fieldWarning")
     private Div fieldWarning;
 
-    @DataField("info")
-    private Div info;
-
     private TranslationService translationService;
 
     @Inject
-    public FieldPageView(final ListBox fieldsList,
+    public FieldPageView(final ListBox fieldList,
+                         final TextBox fieldTextBox,
                          final Div patternWarning,
-                         final Div info,
-                         final TranslationService translationService) {
-        this.fieldsList = fieldsList;
+                         final TranslationService translationService,
+                         final Div fieldListDescription,
+                         final Div predicateFieldDescription) {
+        this.fieldList = fieldList;
+        this.fieldTextBox = fieldTextBox;
         this.patternWarning = patternWarning;
-        this.info = info;
         this.translationService = translationService;
+        this.fieldListDescription = fieldListDescription;
+        this.predicateFieldDescription = predicateFieldDescription;
     }
 
     @Override
@@ -69,38 +81,42 @@ public class FieldPageView implements IsElement,
         this.page = page;
     }
 
-    @EventHandler("fieldsList")
-    public void onFieldSelected(final ChangeEvent event) {
-        page.setEditingCol(fieldsList.getSelectedValue());
+    @EventHandler("fieldList")
+    public void onFieldListSelected(final ChangeEvent event) {
+        page.setEditingCol(fieldList.getSelectedValue());
+    }
+
+    @EventHandler("fieldTextBox")
+    public void onFieldTextBoxChange(final KeyUpEvent event) {
+        page.setEditingCol(fieldTextBox.getText());
     }
 
     @Override
-    public void showPredicateWarning() {
-        info.setHidden(false);
-        patternWarning.setHidden(true);
-        fieldsList.setEnabled(false);
+    public void patternWarningToggle(final boolean isVisible) {
+        patternWarning.setHidden(!isVisible);
+        fieldTextBox.setEnabled(!isVisible);
+        fieldList.setEnabled(!isVisible);
     }
 
     @Override
-    public void showPatternWarningWhenItIsNotDefined(final boolean hasPattern) {
-        info.setHidden(true);
-        patternWarning.setHidden(hasPattern);
-        fieldsList.setEnabled(hasPattern);
-    }
+    public void setupEmptyFieldList() {
 
-    @Override
-    public void setupFieldList() {
         final String selectField = translate(GuidedDecisionTableErraiConstants.FieldPageView_SelectField);
+        final String item = "-- " + selectField + " --";
+        final String blankValue = "";
 
-        fieldsList.clear();
-        fieldsList.addItem("-- " + selectField + " --",
-                           "");
+        fieldList.clear();
+        fieldList.addItem(item, blankValue);
     }
 
     @Override
     public void selectField(final String factField) {
-        fieldsList.setSelectedIndex(getCurrentIndexFromList(factField,
-                                                            fieldsList));
+        fieldList.setSelectedIndex(getCurrentIndexFromList(factField, fieldList));
+    }
+
+    @Override
+    public void setField(final String factField) {
+        fieldTextBox.setText(factField);
     }
 
     private String translate(final String key,
@@ -112,8 +128,8 @@ public class FieldPageView implements IsElement,
     @Override
     public void addItem(final String itemName,
                         final String itemKey) {
-        fieldsList.addItem(itemName,
-                           itemKey);
+        fieldList.addItem(itemName,
+                          itemKey);
     }
 
     @Override
@@ -124,5 +140,24 @@ public class FieldPageView implements IsElement,
     @Override
     public void hideSelectFieldWarning() {
         fieldWarning.setHidden(true);
+    }
+
+    @Override
+    public void enableListFieldView() {
+        toggleViewElements(false);
+    }
+
+    @Override
+    public void enablePredicateFieldView() {
+        toggleViewElements(true);
+    }
+
+    private void toggleViewElements(final boolean showPredicateElements) {
+
+        fieldTextBox.setVisible(showPredicateElements);
+        predicateFieldDescription.setHidden(!showPredicateElements);
+
+        fieldList.setVisible(!showPredicateElements);
+        fieldListDescription.setHidden(showPredicateElements);
     }
 }

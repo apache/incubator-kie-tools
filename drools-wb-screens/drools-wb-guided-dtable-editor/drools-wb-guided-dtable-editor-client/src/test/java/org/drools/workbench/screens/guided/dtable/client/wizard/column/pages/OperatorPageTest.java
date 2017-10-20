@@ -402,6 +402,40 @@ public class OperatorPageTest {
         assertNotNull(listBox);
     }
 
+    @Test
+    public void testCanOperatorBeSetWhenFactTypeIsNil() {
+
+        final String factField = "";
+
+        doReturn(factField).when(plugin).getFactField();
+
+        assertFalse(page.canOperatorBeSet());
+    }
+
+    @Test
+    public void testCanOperatorBeSetWhenFactTypeIsNotNilAndConstraintValueIsPredicate() {
+
+        final String factField = "factField";
+        final int constraintValue = BaseSingleFieldConstraint.TYPE_PREDICATE;
+
+        doReturn(factField).when(plugin).getFactField();
+        doReturn(constraintValue).when(plugin).constraintValue();
+
+        assertFalse(page.canOperatorBeSet());
+    }
+
+    @Test
+    public void testCanOperatorBeSetWhenFactTypeIsNotNilAndConstraintValueIsNotPredicate() {
+
+        final String factField = "factField";
+        final int constraintValue = BaseSingleFieldConstraint.TYPE_LITERAL;
+
+        doReturn(factField).when(plugin).getFactField();
+        doReturn(constraintValue).when(plugin).constraintValue();
+
+        assertTrue(page.canOperatorBeSet());
+    }
+
     private void spyOperatorsDropdown() {
         doNothing().when(listBox).setSelectedIndex(anyInt());
 

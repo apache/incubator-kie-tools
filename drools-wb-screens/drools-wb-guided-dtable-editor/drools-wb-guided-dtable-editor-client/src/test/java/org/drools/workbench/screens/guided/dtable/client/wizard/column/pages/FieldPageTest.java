@@ -49,9 +49,9 @@ import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 import org.uberfire.mocks.EventSourceMock;
 
+import static org.drools.workbench.screens.guided.rule.client.util.ModelFieldUtil.modelField;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static org.drools.workbench.screens.guided.rule.client.util.ModelFieldUtil.modelField;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class FieldPageTest {
@@ -87,7 +87,7 @@ public class FieldPageTest {
     private CalculationTypePage calculationTypePage;
 
     @Mock
-    private FieldPage fieldPage;
+    private FieldPage<ConditionColumnPlugin> fieldPage;
 
     @Mock
     private OperatorPage operatorPage;
@@ -96,7 +96,7 @@ public class FieldPageTest {
     private AdditionalInfoPage<ConditionColumnPlugin> additionalInfoPage;
 
     @Mock
-    private ValueOptionsPage valueOptionsPage;
+    private ValueOptionsPage<ConditionColumnPlugin> valueOptionsPage;
 
     @Mock
     private TranslationService translationService;
@@ -374,22 +374,59 @@ public class FieldPageTest {
     }
 
     @Test
-    public void testSetupField() {
+    public void testSetupFieldWhenConstraintValueIsNotPredicate() {
         final String factField = "factField";
 
+        doReturn(false).when(page).isConstraintValuePredicate();
         doReturn(factField).when(page).getFactField();
 
-        doNothing().when(page).forEachFactField(this.consumer.capture());
+        doNothing().when(page).forEachFactField(consumer.capture());
 
         page.setupField();
 
-        final Consumer<String> consumer = this.consumer.getValue();
+        consumer.getValue().accept(factField);
 
-        consumer.accept(factField);
-
-        verify(view).addItem(factField,
-                             factField);
-        verify(view).setupFieldList();
+        verify(view).enableListFieldView();
+        verify(view).addItem(factField, factField);
+        verify(view).setupEmptyFieldList();
         verify(view).selectField(factField);
+    }
+
+    @Test
+    public void testSetupFieldWhenConstraintValueIsPredicate() {
+
+        final String factField = "factField";
+
+        doReturn(true).when(page).isConstraintValuePredicate();
+        doReturn(factField).when(page).getFactField();
+
+        page.setupField();
+
+        view.enablePredicateFieldView();
+        view.setField(factField);
+    }
+
+    @Test
+    public void testSetupPatternWarningMessagesWhenFactTypeIsNotNil() {
+
+        final String factType = "factType";
+
+        doReturn(factType).when(page).factType();
+
+        page.setupPatternWarningMessages();
+
+        verify(view).patternWarningToggle(false);
+    }
+
+    @Test
+    public void testSetupPatternWarningMessagesWhenFactTypeIsNil() {
+
+        final String factType = "";
+
+        doReturn(factType).when(page).factType();
+
+        page.setupPatternWarningMessages();
+
+        verify(view).patternWarningToggle(true);
     }
 }

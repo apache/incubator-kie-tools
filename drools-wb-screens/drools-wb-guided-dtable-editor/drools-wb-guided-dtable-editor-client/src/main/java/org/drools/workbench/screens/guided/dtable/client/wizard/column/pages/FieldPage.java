@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -77,23 +76,36 @@ public class FieldPage<T extends HasFieldPage & DecisionTableColumnPlugin> exten
     public void prepareView() {
         view.init(this);
 
-        setupWarningMessages();
+        setupPatternWarningMessages();
         setupField();
     }
 
     void setupField() {
-        view.setupFieldList();
-        forEachFactField((field) -> view.addItem(field,
-                                                 field));
+        if (isConstraintValuePredicate()) {
+            setupPredicateFieldView();
+        } else {
+            setupListFieldView();
+        }
+    }
+
+    private void setupPredicateFieldView() {
+        view.enablePredicateFieldView();
+        view.setField(getFactField());
+    }
+
+    private void setupListFieldView() {
+        view.enableListFieldView();
+        view.setupEmptyFieldList();
+
+        forEachFactField((field) -> view.addItem(field, field));
+
         view.selectField(getFactField());
     }
 
-    private void setupWarningMessages() {
-        if (isConstraintValuePredicate()) {
-            view.showPredicateWarning();
-        } else {
-            view.showPatternWarningWhenItIsNotDefined(hasEditingPattern());
-        }
+    void setupPatternWarningMessages() {
+        final boolean showWarningMessage = !hasEditingPattern();
+
+        view.patternWarningToggle(showWarningMessage);
     }
 
     void setEditingCol(final String selectedValue) {
@@ -110,7 +122,7 @@ public class FieldPage<T extends HasFieldPage & DecisionTableColumnPlugin> exten
         }
     }
 
-    public FieldAccessorsAndMutators getAccessor() {
+    private FieldAccessorsAndMutators getAccessor() {
         return plugin().getAccessor();
     }
 
@@ -145,7 +157,7 @@ public class FieldPage<T extends HasFieldPage & DecisionTableColumnPlugin> exten
         return !nil(factType());
     }
 
-    private String factType() {
+    String factType() {
         return plugin().patternWrapper().getFactType();
     }
 
@@ -163,16 +175,20 @@ public class FieldPage<T extends HasFieldPage & DecisionTableColumnPlugin> exten
     public interface View extends HasList,
                                   UberElement<FieldPage> {
 
-        void showPredicateWarning();
+        void patternWarningToggle(final boolean isVisible);
 
-        void showPatternWarningWhenItIsNotDefined(final boolean hasEditingPattern);
-
-        void setupFieldList();
+        void setupEmptyFieldList();
 
         void selectField(final String factField);
+
+        void setField(final String factField);
 
         void showSelectFieldWarning();
 
         void hideSelectFieldWarning();
+
+        void enableListFieldView();
+
+        void enablePredicateFieldView();
     }
 }
