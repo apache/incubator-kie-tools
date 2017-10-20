@@ -33,6 +33,8 @@ public class Attribute
 
     public static final Attribute           CORNER_RADIUS                    = new Attribute("cornerRadius", MESSAGES.cornerRadiusLabel(), MESSAGES.cornerRadiusDescription(), AttributeType.NUMBER_TYPE, true);
 
+    public static final Attribute           SIZE_CONSTRAINTS                 = new Attribute("sizeConstraints", MESSAGES.sizeConstraintsLabel(), MESSAGES.sizeConstraintsDescription(), AttributeType.NUMBER_TYPE, true);
+
     public static final Attribute           FILL                             = new Attribute("fill", MESSAGES.fillLabel(), MESSAGES.fillDescription(), AttributeType.FILL_TYPE, true);
 
     public static final Attribute           STROKE                           = new Attribute("stroke", MESSAGES.strokeLabel(), MESSAGES.strokeDescription(), AttributeType.STROKE_TYPE, true);

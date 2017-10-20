@@ -24,6 +24,7 @@ import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
 import com.ait.lienzo.client.core.event.ImmediateAttributesChangedBatcher;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilter.FilterConvolveMatrix;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.core.types.DragBounds.DragBoundsJSO;
@@ -645,6 +646,19 @@ public class Attributes
         put(Attribute.CORNER_RADIUS.getProperty(), cornerRadius);
     }
 
+    public final void setSizeConstraints(final BoundingBox boundingBox)
+    {
+        if (null != boundingBox)
+        {
+            put(Attribute.SIZE_CONSTRAINTS.getProperty(), boundingBox.getJSO());
+        }
+        else
+        {
+            remove(Attribute.SIZE_CONSTRAINTS.getProperty());
+        }
+    }
+
+
     public final void setAlpha(double alpha)
     {
         if (alpha < 0)
@@ -1053,6 +1067,19 @@ public class Attributes
     public final double getCornerRadius()
     {
         return getDouble(Attribute.CORNER_RADIUS.getProperty());
+    }
+
+    public final BoundingBox getSizeConstraints()
+    {
+        final JavaScriptObject sizeConstraints = getObject(Attribute.SIZE_CONSTRAINTS.getProperty());
+
+        if (null != sizeConstraints)
+        {
+            final BoundingBox.BoundingBoxJSO bbjso = sizeConstraints.cast();
+
+            return new BoundingBox(bbjso);
+        }
+        return null;
     }
 
     public final double getWidth()
@@ -1667,12 +1694,12 @@ public class Attributes
     {
         return hasExtraStrokeAttributes(m_jso);
     }
-    
+
     public final boolean hasShadow()
     {
         return hasShadow(m_jso);
     }
-    
+
     public final boolean hasFill()
     {
         return hasFill(m_jso);
@@ -1680,26 +1707,26 @@ public class Attributes
 
     private static final native boolean hasAnyTransformAttributes(NObjectJSO jso)
     /*-{
-		return ((jso.x !== undefined) || (jso.y !== undefined)
-				|| (jso.rotation !== undefined) || (jso.scale !== undefined) || (jso.shear !== undefined));
+        return ((jso.x !== undefined) || (jso.y !== undefined)
+        || (jso.rotation !== undefined) || (jso.scale !== undefined) || (jso.shear !== undefined));
     }-*/;
 
     private static final native boolean hasComplexTransformAttributes(NObjectJSO jso)
     /*-{
-		return ((jso.rotation !== undefined) || (jso.scale !== undefined) || (jso.shear !== undefined));
+        return ((jso.rotation !== undefined) || (jso.scale !== undefined) || (jso.shear !== undefined));
     }-*/;
 
     private static final native boolean hasExtraStrokeAttributes(NObjectJSO jso)
     /*-{
-		return ((jso.dashArray !== undefined) || (jso.lineJoin !== undefined)
-				|| (jso.lineCap !== undefined) || (jso.miterLimit !== undefined));
+        return ((jso.dashArray !== undefined) || (jso.lineJoin !== undefined)
+        || (jso.lineCap !== undefined) || (jso.miterLimit !== undefined));
     }-*/;
-    
+
     private static final native boolean hasShadow(NObjectJSO jso)
     /*-{
         return !!jso.shadow;
     }-*/;
-    
+
     private static final native boolean hasFill(NObjectJSO jso)
     /*-{
         return !!jso.fill;
