@@ -46,7 +46,6 @@ public class AdditionalInfoPageView implements IsElement,
     @DataField("warningMessage")
     private Span warningMessage;
 
-    @Inject
     @DataField("headerFormItem")
     private Div headerFormItem;
 
@@ -88,12 +87,14 @@ public class AdditionalInfoPageView implements IsElement,
     public AdditionalInfoPageView(final TranslationService translationService,
                                   final DecisionTablePopoverUtils popoverUtils,
                                   final Input header,
+                                  final Div headerFormItem,
                                   final Input hideColumn,
                                   final Input updateEngineWithChanges,
                                   final Input logicallyInsert) {
         this.translationService = translationService;
         this.popoverUtils = popoverUtils;
         this.header = header;
+        this.headerFormItem = headerFormItem;
         this.hideColumn = hideColumn;
         this.updateEngineWithChanges = updateEngineWithChanges;
         this.logicallyInsert = logicallyInsert;
@@ -170,7 +171,7 @@ public class AdditionalInfoPageView implements IsElement,
 
     @Override
     public void showHeader() {
-        header.setValue(page.getHeader());
+        header.setValue(page.getHeader() != null ? page.getHeader() : "");
 
         headerFormItem.setHidden(false);
     }

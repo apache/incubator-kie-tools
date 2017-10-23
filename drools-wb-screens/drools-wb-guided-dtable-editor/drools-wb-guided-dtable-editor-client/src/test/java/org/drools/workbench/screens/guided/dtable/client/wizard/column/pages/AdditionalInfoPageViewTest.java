@@ -19,6 +19,7 @@ package org.drools.workbench.screens.guided.dtable.client.wizard.column.pages;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTablePopoverUtils;
+import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Input;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
@@ -28,7 +29,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
@@ -41,14 +41,21 @@ public class AdditionalInfoPageViewTest {
     public static final String UPDATE_ENGINE_TRANSLATION = "update engine translation";
     public static final String LOGICALLY_INSERT_TRANSLATION = "logically insert translation";
     public static final String HEADER_TRANSLATION = "header translation";
+
     @Mock
     private Input input;
+
+    @Mock
+    private Div headerFormItem;
 
     @Mock
     private TranslationService translationService;
 
     @Mock
     private DecisionTablePopoverUtils popoverUtils;
+
+    @Mock
+    private AdditionalInfoPage page;
 
     @Spy
     @InjectMocks
@@ -71,6 +78,8 @@ public class AdditionalInfoPageViewTest {
         doReturn(LOGICALLY_INSERT_TRANSLATION)
                 .when(translationService)
                 .format(GuidedDecisionTableErraiConstants.AdditionalInfoPage_LogicalInsertDescription);
+
+        view.init(page);
     }
 
     @Test
@@ -85,5 +94,24 @@ public class AdditionalInfoPageViewTest {
         verify(popoverUtils).setupAndRegisterPopover(eq(input), eq(HIDE_TRANSLATION));
         verify(popoverUtils).setupAndRegisterPopover(eq(input), eq(UPDATE_ENGINE_TRANSLATION));
         verify(popoverUtils).setupAndRegisterPopover(eq(input), eq(LOGICALLY_INSERT_TRANSLATION));
+    }
+
+    @Test
+    public void testShowHeaderEmpty() throws Exception {
+        view.showHeader();
+
+        verify(input).setValue("");
+        verify(headerFormItem).setHidden(false);
+    }
+
+    @Test
+    public void testShowHeaderNotEmpty() throws Exception {
+        final String headerContent = "header content";
+        doReturn(headerContent).when(page).getHeader();
+
+        view.showHeader();
+
+        verify(input).setValue(headerContent);
+        verify(headerFormItem).setHidden(false);
     }
 }
