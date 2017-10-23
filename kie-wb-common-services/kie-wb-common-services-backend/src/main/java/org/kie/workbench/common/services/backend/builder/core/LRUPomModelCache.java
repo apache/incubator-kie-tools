@@ -43,7 +43,7 @@ public class LRUPomModelCache extends LRUCache<Project, PomModel> {
 
         if (event.getResourcePath() != null
                 && event.getProject() != null
-                && observablePOMFile.accept(event.getResourcePath().getFileName())) {
+                && observablePOMFile.accept(event.getResourcePath())) {
             invalidateCache(event.getProject());
         }
     }

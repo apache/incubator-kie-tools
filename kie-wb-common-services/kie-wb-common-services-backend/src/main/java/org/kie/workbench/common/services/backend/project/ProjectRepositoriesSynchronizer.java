@@ -77,14 +77,14 @@ public class ProjectRepositoriesSynchronizer {
     }
 
     public void onResourceUpdated(@Observes final ResourceUpdatedEvent event) {
-        if (observablePOMFile.accept(event.getPath().getFileName())) {
+        if (observablePOMFile.accept(event.getPath())) {
             syncProjectRepositories(event.getPath());
         }
     }
 
     public void onBatchResourceChanges(@Observes final ResourceBatchChangesEvent resourceBatchChangesEvent) {
         for (final Map.Entry<org.uberfire.backend.vfs.Path, Collection<ResourceChange>> entry : resourceBatchChangesEvent.getBatch().entrySet()) {
-            if (observablePOMFile.accept(entry.getKey().getFileName()) && isUpdate(entry.getValue())) {
+            if (observablePOMFile.accept(entry.getKey()) && isUpdate(entry.getValue())) {
                 syncProjectRepositories(entry.getKey());
                 break;
             }

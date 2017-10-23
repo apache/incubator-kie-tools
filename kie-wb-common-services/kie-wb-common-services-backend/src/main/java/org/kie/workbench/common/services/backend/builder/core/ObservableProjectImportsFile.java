@@ -16,14 +16,18 @@
 package org.kie.workbench.common.services.backend.builder.core;
 
 import org.guvnor.common.services.builder.ResourceChangeObservableFile;
+import org.uberfire.backend.vfs.Path;
 
 /**
  * Changes to project.imports invalidates the DMO cache
  */
 public class ObservableProjectImportsFile implements ResourceChangeObservableFile {
 
-    public boolean accept( final String fileName ) {
-        return fileName.equals( "project.imports" );
-    }
+    static final String FILENAME = "project.imports";
 
+    @Override
+    public boolean accept(final Path path) {
+        final String fileName = path.getFileName();
+        return fileName.equals(FILENAME);
+    }
 }
