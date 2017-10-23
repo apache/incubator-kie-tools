@@ -78,6 +78,6 @@ public class DecisionTablePopoverUtilsTest {
 
         popoverUtils.destroyPopovers();
 
-        assertTrue(popoverUtils.getPopoverElementRegistrations().isEmpty());
+        assertTrue(popoverUtils.getPopoverHTMLElementRegistrations().isEmpty());
     }
 }

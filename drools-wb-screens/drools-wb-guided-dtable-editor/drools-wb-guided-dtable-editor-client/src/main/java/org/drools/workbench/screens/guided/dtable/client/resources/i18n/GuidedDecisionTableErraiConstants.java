@@ -84,6 +84,9 @@ public class GuidedDecisionTableErraiConstants {
     public static final String AdditionalInfoPage_AdditionalInfo = "AdditionalInfoPage.AdditionalInfo";
 
     @TranslationKey(defaultValue = "")
+    public static final String AdditionalInfoPage_HeaderColumnDescription = "AdditionalInfoPage.HeaderColumnDescription";
+
+    @TranslationKey(defaultValue = "")
     public static final String AdditionalInfoPage_HideColumnDescription = "AdditionalInfoPage.HideColumnDescription";
 
     @TranslationKey(defaultValue = "")

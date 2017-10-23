@@ -24,7 +24,6 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTablePopoverUtils;
-import org.gwtbootstrap3.client.ui.TextBox;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Input;
 import org.jboss.errai.common.client.dom.Span;
@@ -63,19 +62,15 @@ public class AdditionalInfoPageView implements IsElement,
     @DataField("logicallyInsertFormItem")
     private Div logicallyInsertFormItem;
 
-    @Inject
     @DataField("header")
-    private TextBox header;
+    private Input header;
 
-    @Inject
     @DataField("hideColumn")
     private Input hideColumn;
 
-    @Inject
     @DataField("updateEngineWithChanges")
     private Input updateEngineWithChanges;
 
-    @Inject
     @DataField("logicallyInsert")
     private Input logicallyInsert;
 
@@ -91,26 +86,48 @@ public class AdditionalInfoPageView implements IsElement,
 
     @Inject
     public AdditionalInfoPageView(final TranslationService translationService,
-                                  final DecisionTablePopoverUtils popoverUtils) {
+                                  final DecisionTablePopoverUtils popoverUtils,
+                                  final Input header,
+                                  final Input hideColumn,
+                                  final Input updateEngineWithChanges,
+                                  final Input logicallyInsert) {
         this.translationService = translationService;
         this.popoverUtils = popoverUtils;
+        this.header = header;
+        this.hideColumn = hideColumn;
+        this.updateEngineWithChanges = updateEngineWithChanges;
+        this.logicallyInsert = logicallyInsert;
     }
 
     @PostConstruct
     public void initPopovers() {
+        header.setAttribute("type",
+                            "textbox");
+        header.setAttribute("data-toggle",
+                            "popover");
+        header.setAttribute("class",
+                            "form-control");
         hideColumn.setAttribute("type",
                                 "checkbox");
         hideColumn.setAttribute("data-toggle",
                                 "popover");
+        hideColumn.setAttribute("class",
+                                "form-control");
         logicallyInsert.setAttribute("type",
                                      "checkbox");
         logicallyInsert.setAttribute("data-toggle",
                                      "popover");
+        logicallyInsert.setAttribute("class",
+                                     "form-control");
         updateEngineWithChanges.setAttribute("type",
                                              "checkbox");
         updateEngineWithChanges.setAttribute("data-toggle",
                                              "popover");
+        updateEngineWithChanges.setAttribute("class",
+                                             "form-control");
 
+        popoverUtils.setupAndRegisterPopover(header,
+                                             translate(GuidedDecisionTableErraiConstants.AdditionalInfoPage_HeaderColumnDescription));
         popoverUtils.setupAndRegisterPopover(hideColumn,
                                              translate(GuidedDecisionTableErraiConstants.AdditionalInfoPage_HideColumnDescription));
         popoverUtils.setupAndRegisterPopover(logicallyInsert,
@@ -121,7 +138,7 @@ public class AdditionalInfoPageView implements IsElement,
 
     @EventHandler("header")
     public void onSelectHeader(final KeyUpEvent event) {
-        page.setHeader(header.getText());
+        page.setHeader(header.getValue());
     }
 
     @EventHandler("hideColumn")
@@ -153,7 +170,7 @@ public class AdditionalInfoPageView implements IsElement,
 
     @Override
     public void showHeader() {
-        header.setText(page.getHeader());
+        header.setValue(page.getHeader());
 
         headerFormItem.setHidden(false);
     }
