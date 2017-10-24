@@ -27,10 +27,11 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDeci
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiModel;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.cell.GridWidgetCellFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.GridWidgetColumnFactory;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.CellUtilities;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 
-import static org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.Synchronizer.*;
+import static org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.Synchronizer.MetaData;
 
 public interface Synchronizer<A extends MetaData, U extends MetaData, D extends MetaData, MC extends MetaData, MR extends MetaData> {
 
@@ -40,40 +41,39 @@ public interface Synchronizer<A extends MetaData, U extends MetaData, D extends 
 
     int priority();
 
-    void initialise( final GuidedDecisionTable52 model,
-                     final GuidedDecisionTableUiModel uiModel,
-                     final CellUtilities cellUtilities,
-                     final ColumnUtilities columnUtilities,
-                     final GridWidgetCellFactory gridWidgetCellFactory,
-                     final GridWidgetColumnFactory gridWidgetColumnFactory,
-                     final GuidedDecisionTableView view,
-                     final BRLRuleModel rm,
-                     final EventBus eventBus,
-                     final GuidedDecisionTablePresenter.Access access );
+    void initialise(final GuidedDecisionTable52 model,
+                    final GuidedDecisionTableUiModel uiModel,
+                    final CellUtilities cellUtilities,
+                    final ColumnUtilities columnUtilities,
+                    final GridWidgetCellFactory gridWidgetCellFactory,
+                    final GridWidgetColumnFactory gridWidgetColumnFactory,
+                    final GuidedDecisionTableView view,
+                    final BRLRuleModel rm,
+                    final EventBus eventBus,
+                    final GuidedDecisionTablePresenter.Access access);
 
-    boolean handlesAppend( final MetaData metaData ) throws ModelSynchronizer.MoveColumnVetoException;
+    boolean handlesAppend(final MetaData metaData) throws VetoException;
 
-    void append( final A metaData ) throws ModelSynchronizer.MoveColumnVetoException;
+    void append(final A metaData) throws VetoException;
 
-    boolean handlesInsert( final MetaData metaData ) throws ModelSynchronizer.MoveColumnVetoException;
+    boolean handlesInsert(final MetaData metaData) throws VetoException;
 
-    void insert( final A metaData ) throws ModelSynchronizer.MoveColumnVetoException;
+    void insert(final A metaData) throws VetoException;
 
-    boolean handlesUpdate( final MetaData metaData ) throws ModelSynchronizer.MoveColumnVetoException;
+    boolean handlesUpdate(final MetaData metaData) throws VetoException;
 
-    List<BaseColumnFieldDiff> update( final U originalMetaData,
-                                      final U editedMetaData ) throws ModelSynchronizer.MoveColumnVetoException;
+    List<BaseColumnFieldDiff> update(final U originalMetaData,
+                                     final U editedMetaData) throws VetoException;
 
-    boolean handlesDelete( final MetaData metaData ) throws ModelSynchronizer.MoveColumnVetoException;
+    boolean handlesDelete(final MetaData metaData) throws VetoException;
 
-    void delete( final D metaData ) throws ModelSynchronizer.MoveColumnVetoException;
+    void delete(final D metaData) throws VetoException;
 
-    boolean handlesMoveColumnsTo( final List<? extends MetaData> metaData ) throws ModelSynchronizer.MoveColumnVetoException;
+    boolean handlesMoveColumnsTo(final List<? extends MetaData> metaData) throws VetoException;
 
-    void moveColumnsTo( final List<MC> metaData ) throws ModelSynchronizer.MoveColumnVetoException;
+    void moveColumnsTo(final List<MC> metaData) throws VetoException;
 
-    boolean handlesMoveRowsTo( final List<? extends MetaData> metaData ) throws ModelSynchronizer.MoveColumnVetoException;
+    boolean handlesMoveRowsTo(final List<? extends MetaData> metaData) throws VetoException;
 
-    void moveRowsTo( final List<MR> metaData ) throws ModelSynchronizer.MoveColumnVetoException;
-
+    void moveRowsTo(final List<MR> metaData) throws VetoException;
 }

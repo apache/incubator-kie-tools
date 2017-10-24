@@ -43,6 +43,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLActionColumn;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.commons.HasAdditionalInfoPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.commons.HasRuleModellerPage;
@@ -149,8 +150,13 @@ public class BRLActionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
         if (isNewColumn()) {
             presenter.appendColumn(editingCol());
         } else {
-            presenter.updateColumn(originalCol(),
-                                   editingCol());
+            try {
+                presenter.updateColumn(originalCol(),
+                                       editingCol());
+            } catch (ModelSynchronizer.VetoException veto) {
+                wizard.showGenericVetoError();
+                return false;
+            }
         }
 
         return true;

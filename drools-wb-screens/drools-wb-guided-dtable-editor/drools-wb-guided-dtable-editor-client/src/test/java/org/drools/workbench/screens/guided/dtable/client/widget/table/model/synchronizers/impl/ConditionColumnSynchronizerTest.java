@@ -17,18 +17,28 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.DescriptionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BooleanUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.IntegerUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.StringUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiCell;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoDeletePatternInUseException;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoUpdatePatternInUseException;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.ModelField;
@@ -36,9 +46,14 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 import static org.drools.workbench.screens.guided.rule.client.util.ModelFieldUtil.modelField;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
@@ -91,22 +106,45 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         return condition;
     }
 
-    private Pattern52 boundApplicantPattern(String boundName) {
+    private Pattern52 boundApplicantPattern(final String boundName) {
         Pattern52 pattern = new Pattern52();
         pattern.setBoundName(boundName);
         pattern.setFactType("Applicant");
         return pattern;
     }
 
-    private Pattern52 boundAddressPattern(String boundName) {
+    private Pattern52 boundAddressPattern(final String boundName) {
         Pattern52 pattern = new Pattern52();
         pattern.setBoundName(boundName);
         pattern.setFactType("Address");
         return pattern;
     }
 
+    private ActionCol52 actionUpdatePattern(final String boundName) {
+        final ActionSetFieldCol52 action = new ActionSetFieldCol52();
+        action.setBoundName(boundName);
+        action.setFactField("age");
+        action.setHeader("action1");
+        return action;
+    }
+
+    private BRLActionColumn actionCallMethod(final String boundName) {
+        final ActionCallMethod action = new ActionCallMethod();
+        action.setVariable(boundName);
+        action.setMethodName("toString()");
+
+        final BRLActionColumn brl = new BRLActionColumn();
+        brl.setHeader("brl-action");
+        brl.setDefinition(Collections.singletonList(action));
+        brl.getChildColumns().add(new BRLActionVariableColumn() {{
+            setHeader("brl-action-v0");
+        }});
+
+        return brl;
+    }
+
     @Test
-    public void testOtherwise() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testOtherwise() throws VetoException {
         //Single Pattern, single Condition
         final Pattern52 pattern = boundApplicantPattern("$a");
 
@@ -132,7 +170,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testAppend1() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testAppend1() throws VetoException {
         //Single Pattern, single Condition
         final Pattern52 pattern = boundApplicantPattern("$a");
 
@@ -154,7 +192,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testAppend2() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testAppend2() throws VetoException {
         //Single Pattern, multiple Conditions
         final Pattern52 pattern = boundApplicantPattern("$a");
 
@@ -191,7 +229,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testAppend3() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testAppend3() throws VetoException {
         //Multiple Patterns, multiple Conditions
         final Pattern52 pattern1 = boundApplicantPattern("$a");
 
@@ -236,7 +274,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testAppendNegated() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testAppendNegated() throws VetoException {
         final Pattern52 pattern = new Pattern52();
         pattern.setNegated(true);
         pattern.setFactType("Applicant");
@@ -276,7 +314,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testAppendBoolean() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testAppendBoolean() throws VetoException {
         //Single Pattern, single Condition
         final Pattern52 pattern = boundApplicantPattern("$a");
 
@@ -310,7 +348,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testUpdate1() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testUpdate1() throws VetoException {
         //Single Pattern, single Condition
         final Pattern52 pattern = spy(boundApplicantPattern("$a"));
 
@@ -355,7 +393,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testUpdate2() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testUpdate2() throws VetoException {
         //Single Pattern, multiple Conditions
         final Pattern52 pattern = spy(boundApplicantPattern("$a"));
 
@@ -403,7 +441,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testUpdate3() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testUpdate3() throws VetoException {
         //Multiple Patterns, multiple Conditions
         final Pattern52 pattern1 = spy(boundApplicantPattern("$a"));
 
@@ -455,7 +493,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testUpdate4() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testUpdate4() throws VetoException {
         //Multiple Patterns, multiple Conditions
         final Pattern52 pattern1 = spy(boundApplicantPattern("$a"));
 
@@ -500,7 +538,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testUpdate5() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testUpdate5() throws VetoException {
         final Pattern52 pattern1 = spy(boundApplicantPattern("$a"));
 
         final ConditionCol52 condition1 = spy(ageEqualsCondition());
@@ -543,7 +581,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testUpdate6() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testUpdate6() throws VetoException {
         //Single Pattern, single Condition
         final Pattern52 pattern = spy(boundApplicantPattern("$a"));
 
@@ -584,7 +622,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testUpdateToNegated() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testUpdateToNegated() throws VetoException {
         final Pattern52 pattern = spy(boundApplicantPattern("$a"));
 
         final ConditionCol52 condition = spy(ageEqualsCondition());
@@ -613,7 +651,79 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void checkAddToValueListPreservesData() throws ModelSynchronizer.MoveColumnVetoException {
+    public void checkConditionCannotBeUpdatedWhenBindingIsUsedInAction() throws VetoException {
+        final Pattern52 pattern = boundApplicantPattern("$a");
+        final ConditionCol52 condition = ageEqualsCondition();
+        final ActionCol52 action = actionUpdatePattern("$a");
+
+        modelSynchronizer.appendColumn(pattern,
+                                       condition);
+        modelSynchronizer.appendColumn(action);
+
+        try {
+            final Pattern52 editedPattern = boundApplicantPattern("$a2");
+            final ConditionCol52 editedCondition = nameEqualsCondition();
+            modelSynchronizer.updateColumn(pattern,
+                                           condition,
+                                           editedPattern,
+                                           editedCondition);
+
+            fail("Update of the column should have been vetoed.");
+        } catch (VetoUpdatePatternInUseException veto) {
+            //This is expected
+        } catch (VetoException veto) {
+            fail("VetoUpdatePatternInUseException was expected.");
+        }
+
+        assertEquals(4,
+                     model.getExpandedColumns().size());
+        assertTrue(model.getExpandedColumns().get(0) instanceof RowNumberCol52);
+        assertTrue(model.getExpandedColumns().get(1) instanceof DescriptionCol52);
+        assertEquals(condition,
+                     model.getExpandedColumns().get(2));
+        assertEquals(action,
+                     model.getExpandedColumns().get(3));
+    }
+
+    @Test
+    public void checkConditionCannotBeUpdatedWhenFieldBindingIsUsedInAction() throws VetoException {
+        final Pattern52 pattern = boundApplicantPattern("$a");
+        final ConditionCol52 condition = ageEqualsCondition();
+        condition.setBinding("$age");
+        final BRLActionColumn action = actionCallMethod("$age");
+
+        modelSynchronizer.appendColumn(pattern,
+                                       condition);
+        modelSynchronizer.appendColumn(action);
+
+        try {
+            final Pattern52 editedPattern = boundApplicantPattern("$a");
+            final ConditionCol52 editedCondition = ageEqualsCondition();
+            editedCondition.setBinding("$age2");
+            modelSynchronizer.updateColumn(pattern,
+                                           condition,
+                                           editedPattern,
+                                           editedCondition);
+
+            fail("Update of the column should have been vetoed.");
+        } catch (VetoUpdatePatternInUseException veto) {
+            //This is expected
+        } catch (VetoException veto) {
+            fail("VetoUpdatePatternInUseException was expected.");
+        }
+
+        assertEquals(4,
+                     model.getExpandedColumns().size());
+        assertTrue(model.getExpandedColumns().get(0) instanceof RowNumberCol52);
+        assertTrue(model.getExpandedColumns().get(1) instanceof DescriptionCol52);
+        assertEquals(condition,
+                     model.getExpandedColumns().get(2));
+        assertEquals(action.getChildColumns().get(0),
+                     model.getExpandedColumns().get(3));
+    }
+
+    @Test
+    public void checkAddToValueListPreservesData() throws VetoException {
         //Single Pattern, single Condition
         final Pattern52 pattern = spy(boundApplicantPattern("$a"));
 
@@ -670,7 +780,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void checkRemoveFromValueListClearsData() throws ModelSynchronizer.MoveColumnVetoException {
+    public void checkRemoveFromValueListClearsData() throws VetoException {
         //Single Pattern, single Condition
         final Pattern52 pattern = spy(boundApplicantPattern("$a"));
 
@@ -723,7 +833,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testDelete1() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testDelete1() throws VetoException {
         //Single Pattern, single Condition
         final Pattern52 pattern = boundApplicantPattern("$a");
 
@@ -753,7 +863,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testDelete2() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testDelete2() throws VetoException {
         //Single Pattern, multiple Conditions
         final Pattern52 pattern = boundApplicantPattern("$a");
 
@@ -789,7 +899,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testDelete3() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testDelete3() throws VetoException {
         //Multiple Patterns, multiple Conditions
         final Pattern52 pattern1 = boundApplicantPattern("$a");
 
@@ -836,7 +946,113 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testMoveLeftNegatedPattern() throws ModelSynchronizer.MoveColumnVetoException {
+    public void checkConditionCannotBeDeletedWithSingleChildColumnWithAction() throws VetoException {
+        final Pattern52 pattern = boundApplicantPattern("$a");
+        final ConditionCol52 condition = ageEqualsCondition();
+        final ActionCol52 action = actionUpdatePattern("$a");
+
+        modelSynchronizer.appendColumn(pattern,
+                                       condition);
+        modelSynchronizer.appendColumn(action);
+
+        try {
+            modelSynchronizer.deleteColumn(condition);
+
+            fail("Deletion of the column should have been vetoed.");
+        } catch (VetoDeletePatternInUseException veto) {
+            //This is expected
+        } catch (VetoException veto) {
+            fail("VetoDeletePatternInUseException was expected.");
+        }
+
+        assertEquals(4,
+                     model.getExpandedColumns().size());
+        assertTrue(model.getExpandedColumns().get(0) instanceof RowNumberCol52);
+        assertTrue(model.getExpandedColumns().get(1) instanceof DescriptionCol52);
+        assertEquals(condition,
+                     model.getExpandedColumns().get(2));
+        assertEquals(action,
+                     model.getExpandedColumns().get(3));
+    }
+
+    @Test
+    public void checkConditionCannotBeDeletedWhenFieldBindingIsUsedInAction() throws VetoException {
+        final Pattern52 pattern = boundApplicantPattern("$a");
+        final ConditionCol52 condition = ageEqualsCondition();
+        condition.setBinding("$age");
+        final BRLActionColumn action = actionCallMethod("$age");
+
+        modelSynchronizer.appendColumn(pattern,
+                                       condition);
+        modelSynchronizer.appendColumn(action);
+
+        try {
+            modelSynchronizer.deleteColumn(condition);
+
+            fail("Deletion of the column should have been vetoed.");
+        } catch (VetoDeletePatternInUseException veto) {
+            //This is expected
+        } catch (VetoException veto) {
+            fail("VetoDeletePatternInUseException was expected.");
+        }
+
+        assertEquals(4,
+                     model.getExpandedColumns().size());
+        assertTrue(model.getExpandedColumns().get(0) instanceof RowNumberCol52);
+        assertTrue(model.getExpandedColumns().get(1) instanceof DescriptionCol52);
+        assertEquals(condition,
+                     model.getExpandedColumns().get(2));
+        assertEquals(action.getChildColumns().get(0),
+                     model.getExpandedColumns().get(3));
+    }
+
+    @Test
+    public void checkConditionCanBeDeletedWithSingleChildColumnWithNoAction() throws VetoException {
+        final Pattern52 pattern = boundApplicantPattern("$a");
+        final ConditionCol52 condition = ageEqualsCondition();
+
+        modelSynchronizer.appendColumn(pattern,
+                                       condition);
+
+        try {
+            modelSynchronizer.deleteColumn(condition);
+        } catch (VetoException veto) {
+            fail("Deletion should have been permitted.");
+        }
+
+        assertEquals(2,
+                     model.getExpandedColumns().size());
+        assertTrue(model.getExpandedColumns().get(0) instanceof RowNumberCol52);
+        assertTrue(model.getExpandedColumns().get(1) instanceof DescriptionCol52);
+    }
+
+    @Test
+    public void checkConditionCanBeDeletedWithMultipleChildColumns() throws VetoException {
+        final Pattern52 pattern = boundApplicantPattern("$a");
+        final ConditionCol52 condition1 = ageEqualsCondition();
+        final ConditionCol52 condition2 = nameEqualsCondition();
+
+        modelSynchronizer.appendColumn(pattern,
+                                       condition1);
+        modelSynchronizer.appendColumn(pattern,
+                                       condition2);
+
+        try {
+            modelSynchronizer.deleteColumn(condition2);
+        } catch (VetoException veto) {
+            fail("Deletion should have been permitted.");
+        }
+
+        assertEquals(3,
+                     model.getExpandedColumns().size());
+        assertTrue(model.getExpandedColumns().get(0) instanceof RowNumberCol52);
+        assertTrue(model.getExpandedColumns().get(1) instanceof DescriptionCol52);
+        assertEquals(condition1,
+                     model.getExpandedColumns().get(2));
+    }
+
+    @Test
+    public void testMoveLeftNegatedPattern() throws VetoException {
         final Pattern52 pattern = new Pattern52();
         pattern.setNegated(true);
         pattern.setFactType("Applicant");
@@ -925,7 +1141,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testMoveColumnTo_MoveLeft() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnTo_MoveLeft() throws VetoException {
         final Pattern52 pattern = boundApplicantPattern("$a");
 
         final ConditionCol52 column1 = ageEqualsCondition();
@@ -1012,7 +1228,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testMoveColumnTo_MoveRight() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnTo_MoveRight() throws VetoException {
         final Pattern52 pattern = boundApplicantPattern("$a");
 
         final ConditionCol52 column1 = ageEqualsCondition();
@@ -1099,7 +1315,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testMoveColumnTo_OutOfBounds_OutOfConditions() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnTo_OutOfBounds_OutOfConditions() throws VetoException {
         final Pattern52 pattern = boundApplicantPattern("$a");
 
         final ConditionCol52 column1 = ageEqualsCondition();
@@ -1186,7 +1402,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testMoveColumnTo_OutOfBounds_OutOfPattern() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnTo_OutOfBounds_OutOfPattern() throws VetoException {
         final Pattern52 pattern1 = boundApplicantPattern("$a");
 
         final ConditionCol52 column1p1 = ageEqualsCondition();
@@ -1310,7 +1526,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testMoveColumnTo_SingleColumnPattern() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnTo_SingleColumnPattern() throws VetoException {
         final Pattern52 pattern1 = boundApplicantPattern("$a");
 
         final ConditionCol52 column1p1 = ageEqualsCondition();
@@ -1402,7 +1618,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testMoveColumnsTo_MoveLeft() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnsTo_MoveLeft() throws VetoException {
         final Pattern52 pattern1 = boundApplicantPattern("$a");
 
         final ConditionCol52 column1p1 = ageEqualsCondition();
@@ -1567,7 +1783,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testMoveColumnsTo_MoveLeft_MidPoint() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnsTo_MoveLeft_MidPoint() throws VetoException {
         final Pattern52 pattern1 = boundApplicantPattern("$a");
 
         final ConditionCol52 column1p1 = ageEqualsCondition();
@@ -1807,7 +2023,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testMoveColumnsTo_MoveRight() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnsTo_MoveRight() throws VetoException {
         final Pattern52 pattern1 = boundApplicantPattern("$a");
 
         final ConditionCol52 column1p1 = ageEqualsCondition();
@@ -1974,7 +2190,7 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testMoveColumnsTo_MoveRight_MidPoint() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnsTo_MoveRight_MidPoint() throws VetoException {
         final Pattern52 pattern1 = boundApplicantPattern("$a");
 
         final ConditionCol52 column1p1 = ageEqualsCondition();

@@ -80,7 +80,6 @@ public class AttributeColumnConfigRowTest {
     @Mock
     CheckBox hideColumnCheckBox;
 
-
     @Before
     public void setUp() throws Exception {
         columnConfigRow = new AttributeColumnConfigRow();
@@ -100,12 +99,12 @@ public class AttributeColumnConfigRowTest {
     public void testInit() throws Exception {
         columnConfigRow.init(attributeColumn, presenter);
 
-        verify(view).setVerticalAlignment( HasVerticalAlignment.ALIGN_MIDDLE );
+        verify(view).setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
         verify(view).addColumnLabel(attributeColumn);
     }
 
     @Test
-    public void testInitUseRowNumberCheckBox() {
+    public void testInitUseRowNumberCheckBox() throws Exception {
         when(useRowNumberCheckBox.getValue()).thenReturn(true);
         columnConfigRow.init(attributeColumn, presenter);
         verify(view).addUseRowNumberCheckBox(eq(attributeColumn), eq(true), clickCaptor.capture());

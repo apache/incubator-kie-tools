@@ -31,12 +31,13 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.model.Guid
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.cell.GridWidgetCellFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.GridWidgetColumnFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.Synchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.CellUtilities;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 import org.kie.soup.project.datamodel.oracle.DataType;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public abstract class BaseSynchronizer<A extends Synchronizer.MetaData, U extends Synchronizer.MetaData, D extends Synchronizer.MetaData> implements Synchronizer<A, U, D, BaseSynchronizer.MoveColumnToMetaData, BaseSynchronizer.MoveRowToMetaData> {
 
@@ -170,13 +171,13 @@ public abstract class BaseSynchronizer<A extends Synchronizer.MetaData, U extend
     }
 
     @Override
-    public boolean handlesMoveRowsTo(final List<? extends MetaData> metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    public boolean handlesMoveRowsTo(final List<? extends MetaData> metaData) throws VetoException {
         return false;
     }
 
     @Override
-    public void moveRowsTo(final List<MoveRowToMetaData> metaData) throws ModelSynchronizer.MoveColumnVetoException {
-        throw new ModelSynchronizer.MoveColumnVetoException();
+    public void moveRowsTo(final List<MoveRowToMetaData> metaData) throws VetoException {
+        throw new ModelSynchronizer.MoveVetoException();
     }
 
     protected void moveModelData(final int tgtColumnIndex,

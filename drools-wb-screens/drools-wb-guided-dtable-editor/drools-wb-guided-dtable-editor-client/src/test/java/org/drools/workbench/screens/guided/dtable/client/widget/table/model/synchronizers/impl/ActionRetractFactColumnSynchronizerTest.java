@@ -22,18 +22,20 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactC
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseSingletonDOMElementUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BoundFactUiColumn;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.junit.Test;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 public class ActionRetractFactColumnSynchronizerTest extends BaseSynchronizerTest {
 
     @Test
-    public void testAppend() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testAppend() throws VetoException {
         final ActionRetractFactCol52 column = new ActionRetractFactCol52();
         column.setHeader("col1");
 
@@ -50,7 +52,7 @@ public class ActionRetractFactColumnSynchronizerTest extends BaseSynchronizerTes
     }
 
     @Test
-    public void testUpdate() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testUpdate() throws VetoException {
         final ActionRetractFactCol52 column = spy(new ActionRetractFactCol52());
         column.setHeader("col1");
 
@@ -80,7 +82,7 @@ public class ActionRetractFactColumnSynchronizerTest extends BaseSynchronizerTes
     }
 
     @Test
-    public void testDelete() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testDelete() throws VetoException {
         final ActionRetractFactCol52 column = new ActionRetractFactCol52();
         column.setHeader("col1");
 
@@ -99,7 +101,7 @@ public class ActionRetractFactColumnSynchronizerTest extends BaseSynchronizerTes
     }
 
     @Test
-    public void testMoveColumnTo_MoveLeft() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnTo_MoveLeft() throws VetoException {
         final ActionRetractFactCol52 column1 = new ActionRetractFactCol52();
         column1.setHeader("retract1");
         final ActionRetractFactCol52 column2 = new ActionRetractFactCol52();
@@ -181,7 +183,7 @@ public class ActionRetractFactColumnSynchronizerTest extends BaseSynchronizerTes
     }
 
     @Test
-    public void testMoveColumnTo_MoveRight() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnTo_MoveRight() throws VetoException {
         final ActionRetractFactCol52 column1 = new ActionRetractFactCol52();
         column1.setHeader("retract1");
         final ActionRetractFactCol52 column2 = new ActionRetractFactCol52();
@@ -263,7 +265,7 @@ public class ActionRetractFactColumnSynchronizerTest extends BaseSynchronizerTes
     }
 
     @Test
-    public void testMoveColumnTo_OutOfBounds() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnTo_OutOfBounds() throws VetoException {
         final ActionRetractFactCol52 column1 = new ActionRetractFactCol52();
         column1.setHeader("retract1");
         final ActionRetractFactCol52 column2 = new ActionRetractFactCol52();

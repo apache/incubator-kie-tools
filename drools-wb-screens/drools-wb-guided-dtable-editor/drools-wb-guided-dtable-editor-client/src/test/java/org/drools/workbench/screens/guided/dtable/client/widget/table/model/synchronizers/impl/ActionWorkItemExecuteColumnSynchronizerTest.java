@@ -23,7 +23,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol5
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseMultipleDOMElementUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BooleanUiColumn;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.ModelField;
@@ -53,7 +53,7 @@ public class ActionWorkItemExecuteColumnSynchronizerTest extends BaseSynchronize
     }
 
     @Test
-    public void testAppend() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testAppend() throws VetoException {
         final ActionWorkItemCol52 column = new ActionWorkItemCol52();
         column.setHeader("col1");
 
@@ -70,7 +70,7 @@ public class ActionWorkItemExecuteColumnSynchronizerTest extends BaseSynchronize
     }
 
     @Test
-    public void testUpdate() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testUpdate() throws VetoException {
         final ActionWorkItemCol52 column = spy(new ActionWorkItemCol52());
         column.setHeader("col1");
 
@@ -100,7 +100,7 @@ public class ActionWorkItemExecuteColumnSynchronizerTest extends BaseSynchronize
     }
 
     @Test
-    public void testDelete() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testDelete() throws VetoException {
         final ActionWorkItemCol52 column = new ActionWorkItemCol52();
         column.setHeader("col1");
 
@@ -119,7 +119,7 @@ public class ActionWorkItemExecuteColumnSynchronizerTest extends BaseSynchronize
     }
 
     @Test
-    public void testMoveColumnTo_MoveLeft() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnTo_MoveLeft() throws VetoException {
         final ActionWorkItemCol52 column1 = new ActionWorkItemCol52();
         column1.setHeader("wid1");
         final ActionWorkItemCol52 column2 = new ActionWorkItemCol52();
@@ -201,7 +201,7 @@ public class ActionWorkItemExecuteColumnSynchronizerTest extends BaseSynchronize
     }
 
     @Test
-    public void testMoveColumnTo_MoveRight() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnTo_MoveRight() throws VetoException {
         final ActionWorkItemCol52 column1 = new ActionWorkItemCol52();
         column1.setHeader("wid1");
         final ActionWorkItemCol52 column2 = new ActionWorkItemCol52();
@@ -283,7 +283,7 @@ public class ActionWorkItemExecuteColumnSynchronizerTest extends BaseSynchronize
     }
 
     @Test
-    public void testMoveColumnTo_OutOfBounds() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnTo_OutOfBounds() throws VetoException {
         final ActionWorkItemCol52 column1 = new ActionWorkItemCol52();
         column1.setHeader("wid1");
         final ActionWorkItemCol52 column2 = new ActionWorkItemCol52();

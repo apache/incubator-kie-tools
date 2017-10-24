@@ -33,6 +33,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLCon
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoUpdatePatternInUseException;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.AdditionalInfoPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.RuleModellerPage;
@@ -46,8 +47,20 @@ import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 import org.uberfire.mocks.EventSourceMock;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 @WithClassesToStub(BRLRuleModel.class)
@@ -171,6 +184,17 @@ public class BRLConditionColumnPluginTest {
                                        editingCol);
         verify(translationService,
                never()).format(any());
+    }
+
+    @Test
+    public void testGenerateColumnWhenColumnIsNotNewAndVetoed() throws Exception {
+        doReturn(false).when(plugin).isNewColumn();
+        doThrow(VetoUpdatePatternInUseException.class).when(presenter).updateColumn(any(BRLConditionColumn.class),
+                                                                                    any(BRLConditionColumn.class));
+
+        assertFalse(plugin.generateColumn());
+
+        verify(wizard).showPatternInUseError();
     }
 
     @Test

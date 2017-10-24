@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.enterprise.context.Dependent;
 
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
@@ -29,6 +30,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 
 @Dependent
 public class BRLActionColumnSynchronizer extends BaseColumnSynchronizer<BaseColumnSynchronizer.ColumnMetaData, BaseColumnSynchronizer.ColumnMetaData, BaseColumnSynchronizer.ColumnMetaData> {
@@ -39,12 +41,12 @@ public class BRLActionColumnSynchronizer extends BaseColumnSynchronizer<BaseColu
     }
 
     @Override
-    public boolean handlesAppend(final MetaData metaData) {
+    public boolean handlesAppend(final MetaData metaData) throws VetoException {
         return handlesUpdate(metaData);
     }
 
     @Override
-    public void append(final ColumnMetaData metaData) {
+    public void append(final ColumnMetaData metaData) throws VetoException {
         //Check operation is supported
         if (!handlesAppend(metaData)) {
             return;
@@ -58,7 +60,7 @@ public class BRLActionColumnSynchronizer extends BaseColumnSynchronizer<BaseColu
     }
 
     @Override
-    public boolean handlesUpdate(final MetaData metaData) {
+    public boolean handlesUpdate(final MetaData metaData) throws VetoException {
         if (!(metaData instanceof ColumnMetaData)) {
             return false;
         }
@@ -67,7 +69,7 @@ public class BRLActionColumnSynchronizer extends BaseColumnSynchronizer<BaseColu
 
     @Override
     public List<BaseColumnFieldDiff> update(final ColumnMetaData originalMetaData,
-                                            final ColumnMetaData editedMetaData) {
+                                            final ColumnMetaData editedMetaData) throws VetoException {
         //Check operation is supported
         if (!(handlesUpdate(originalMetaData) && handlesUpdate(editedMetaData))) {
             return Collections.emptyList();
@@ -112,7 +114,7 @@ public class BRLActionColumnSynchronizer extends BaseColumnSynchronizer<BaseColu
     }
 
     @Override
-    public boolean handlesDelete(final MetaData metaData) {
+    public boolean handlesDelete(final MetaData metaData) throws VetoException {
         if (!(metaData instanceof ColumnMetaData)) {
             return false;
         }
@@ -120,7 +122,7 @@ public class BRLActionColumnSynchronizer extends BaseColumnSynchronizer<BaseColu
     }
 
     @Override
-    public void delete(final ColumnMetaData metaData) {
+    public void delete(final ColumnMetaData metaData) throws VetoException {
         //Check operation is supported
         if (!handlesDelete(metaData)) {
             return;
@@ -137,7 +139,7 @@ public class BRLActionColumnSynchronizer extends BaseColumnSynchronizer<BaseColu
     }
 
     @Override
-    public boolean handlesMoveColumnsTo(final List<? extends MetaData> metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    public boolean handlesMoveColumnsTo(final List<? extends MetaData> metaData) throws VetoException {
         return isBRLFragment(metaData);
     }
 
@@ -155,7 +157,7 @@ public class BRLActionColumnSynchronizer extends BaseColumnSynchronizer<BaseColu
     }
 
     @Override
-    public void moveColumnsTo(final List<MoveColumnToMetaData> metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    public void moveColumnsTo(final List<MoveColumnToMetaData> metaData) throws VetoException {
         //Check operation is supported
         if (!handlesMoveColumnsTo(metaData)) {
             return;
@@ -163,24 +165,24 @@ public class BRLActionColumnSynchronizer extends BaseColumnSynchronizer<BaseColu
         if (isBRLFragment(metaData)) {
             doMoveBRLFragment(metaData);
         } else {
-            throw new ModelSynchronizer.MoveColumnVetoException();
+            throw new ModelSynchronizer.MoveVetoException();
         }
     }
 
-    private void doMoveBRLFragment(final List<MoveColumnToMetaData> metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    private void doMoveBRLFragment(final List<MoveColumnToMetaData> metaData) throws VetoException {
         final MoveColumnToMetaData md = metaData.get(0);
         final BRLActionVariableColumn srcModelColumn = (BRLActionVariableColumn) md.getColumn();
         final BRLActionColumn srcModelBRLFragment = model.getBRLColumn(srcModelColumn);
         if (srcModelBRLFragment == null) {
-            throw new ModelSynchronizer.MoveColumnVetoException();
+            throw new ModelSynchronizer.MoveVetoException();
         }
         final List<BRLActionVariableColumn> srcModelBRLFragmentColumns = srcModelBRLFragment.getChildColumns();
         final int srcModelBRLFragmentColumnsCount = srcModelBRLFragmentColumns.size();
         if (srcModelBRLFragmentColumnsCount == 0) {
-            throw new ModelSynchronizer.MoveColumnVetoException();
+            throw new ModelSynchronizer.MoveVetoException();
         }
         if (srcModelBRLFragmentColumnsCount != metaData.size()) {
-            throw new ModelSynchronizer.MoveColumnVetoException();
+            throw new ModelSynchronizer.MoveVetoException();
         }
 
         final int tgtColumnIndex = md.getTargetColumnIndex();

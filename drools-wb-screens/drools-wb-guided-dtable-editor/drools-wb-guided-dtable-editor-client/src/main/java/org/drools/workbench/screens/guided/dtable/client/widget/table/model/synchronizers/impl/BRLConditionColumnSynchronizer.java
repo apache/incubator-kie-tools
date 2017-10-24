@@ -19,18 +19,25 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.model.syn
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import javax.enterprise.context.Dependent;
 
+import org.drools.workbench.models.datamodel.rule.IPattern;
+import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
-import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.gwt.BoundFactsChangedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoDeletePatternInUseException;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoUpdatePatternInUseException;
 
 @Dependent
 public class BRLConditionColumnSynchronizer extends BaseColumnSynchronizer<BaseColumnSynchronizer.ColumnMetaData, BaseColumnSynchronizer.ColumnMetaData, BaseColumnSynchronizer.ColumnMetaData> {
@@ -41,12 +48,12 @@ public class BRLConditionColumnSynchronizer extends BaseColumnSynchronizer<BaseC
     }
 
     @Override
-    public boolean handlesAppend(final MetaData metaData) {
+    public boolean handlesAppend(final MetaData metaData) throws VetoException {
         return handlesUpdate(metaData);
     }
 
     @Override
-    public void append(final ColumnMetaData metaData) {
+    public void append(final ColumnMetaData metaData) throws VetoException {
         //Check operation is supported
         if (!handlesAppend(metaData)) {
             return;
@@ -60,7 +67,7 @@ public class BRLConditionColumnSynchronizer extends BaseColumnSynchronizer<BaseC
     }
 
     @Override
-    public boolean handlesUpdate(final MetaData metaData) {
+    public boolean handlesUpdate(final MetaData metaData) throws VetoException {
         if (!(metaData instanceof ColumnMetaData)) {
             return false;
         }
@@ -69,22 +76,32 @@ public class BRLConditionColumnSynchronizer extends BaseColumnSynchronizer<BaseC
 
     @Override
     public List<BaseColumnFieldDiff> update(final ColumnMetaData originalMetaData,
-                                            final ColumnMetaData editedMetaData) {
+                                            final ColumnMetaData editedMetaData) throws VetoException {
         //Check operation is supported
         if (!(handlesUpdate(originalMetaData) && handlesUpdate(editedMetaData))) {
             return Collections.emptyList();
         }
 
+        //Check whether any discarded bindings were used. If so veto the update.
         final BRLConditionColumn originalColumn = (BRLConditionColumn) originalMetaData.getColumn();
         final BRLConditionColumn editedColumn = (BRLConditionColumn) editedMetaData.getColumn();
+
+        final Set<String> originalBindings = getPatternBindings(originalColumn);
+        final Set<String> editedBindings = getPatternBindings(editedColumn);
+        originalBindings.removeAll(editedBindings);
+        for (String binding : originalBindings) {
+            if (rm.isBoundFactUsed(binding)) {
+                throw new VetoUpdatePatternInUseException();
+            }
+        }
 
         final List<BaseColumnFieldDiff> diffs = originalColumn.diff(editedColumn);
 
         //Copy existing data for re-use if applicable
-        final Map<String, List<DTCellValue52>> originalColumnsData = new HashMap<String, List<DTCellValue52>>();
+        final Map<String, List<DTCellValue52>> originalColumnsData = new HashMap<>();
         for (BRLConditionVariableColumn variable : originalColumn.getChildColumns()) {
             int iColumnIndex = model.getExpandedColumns().indexOf(variable);
-            final List<DTCellValue52> originalColumnData = new ArrayList<DTCellValue52>();
+            final List<DTCellValue52> originalColumnData = new ArrayList<>();
             final String key = makeUpdateBRLConditionColumnKey(variable);
             for (List<DTCellValue52> row : model.getData()) {
                 originalColumnData.add(row.get(iColumnIndex));
@@ -118,7 +135,7 @@ public class BRLConditionColumnSynchronizer extends BaseColumnSynchronizer<BaseC
     }
 
     @Override
-    public boolean handlesDelete(final MetaData metaData) {
+    public boolean handlesDelete(final MetaData metaData) throws VetoException {
         if (!(metaData instanceof ColumnMetaData)) {
             return false;
         }
@@ -126,13 +143,22 @@ public class BRLConditionColumnSynchronizer extends BaseColumnSynchronizer<BaseC
     }
 
     @Override
-    public void delete(final ColumnMetaData metaData) {
+    public void delete(final ColumnMetaData metaData) throws VetoException {
         //Check operation is supported
         if (!handlesDelete(metaData)) {
             return;
         }
 
         final BRLConditionColumn column = (BRLConditionColumn) metaData.getColumn();
+
+        //If Pattern has been updated and there was only one child column then original Pattern will be deleted
+        final Set<String> bindings = getPatternBindings(column);
+        for (String binding : bindings) {
+            if (rm.isBoundFactUsed(binding)) {
+                throw new VetoDeletePatternInUseException();
+            }
+        }
+
         if (column.getChildColumns().size() > 0) {
             final int iFirstColumnIndex = model.getExpandedColumns().indexOf(column.getChildColumns().get(0));
             for (int iColumnIndex = 0; iColumnIndex < column.getChildColumns().size(); iColumnIndex++) {
@@ -143,7 +169,7 @@ public class BRLConditionColumnSynchronizer extends BaseColumnSynchronizer<BaseC
     }
 
     @Override
-    public boolean handlesMoveColumnsTo(final List<? extends MetaData> metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    public boolean handlesMoveColumnsTo(final List<? extends MetaData> metaData) throws VetoException {
         return isBRLFragment(metaData);
     }
 
@@ -161,7 +187,7 @@ public class BRLConditionColumnSynchronizer extends BaseColumnSynchronizer<BaseC
     }
 
     @Override
-    public void moveColumnsTo(final List<MoveColumnToMetaData> metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    public void moveColumnsTo(final List<MoveColumnToMetaData> metaData) throws VetoException {
         //Check operation is supported
         if (!handlesMoveColumnsTo(metaData)) {
             return;
@@ -169,24 +195,24 @@ public class BRLConditionColumnSynchronizer extends BaseColumnSynchronizer<BaseC
         if (isBRLFragment(metaData)) {
             doMoveBRLFragment(metaData);
         } else {
-            throw new ModelSynchronizer.MoveColumnVetoException();
+            throw new ModelSynchronizer.MoveVetoException();
         }
     }
 
-    private void doMoveBRLFragment(final List<MoveColumnToMetaData> metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    private void doMoveBRLFragment(final List<MoveColumnToMetaData> metaData) throws VetoException {
         final MoveColumnToMetaData md = metaData.get(0);
         final BRLConditionVariableColumn srcModelColumn = (BRLConditionVariableColumn) md.getColumn();
         final BRLConditionColumn srcModelBRLFragment = model.getBRLColumn(srcModelColumn);
         if (srcModelBRLFragment == null) {
-            throw new ModelSynchronizer.MoveColumnVetoException();
+            throw new ModelSynchronizer.MoveVetoException();
         }
         final List<BRLConditionVariableColumn> srcModelBRLFragmentColumns = srcModelBRLFragment.getChildColumns();
         final int srcModelPatternConditionColumnCount = srcModelBRLFragmentColumns.size();
         if (srcModelPatternConditionColumnCount == 0) {
-            throw new ModelSynchronizer.MoveColumnVetoException();
+            throw new ModelSynchronizer.MoveVetoException();
         }
         if (srcModelPatternConditionColumnCount != metaData.size()) {
-            throw new ModelSynchronizer.MoveColumnVetoException();
+            throw new ModelSynchronizer.MoveVetoException();
         }
 
         final int tgtColumnIndex = md.getTargetColumnIndex();
@@ -205,5 +231,14 @@ public class BRLConditionColumnSynchronizer extends BaseColumnSynchronizer<BaseC
     private String makeUpdateBRLConditionColumnKey(final BRLConditionVariableColumn variable) {
         StringBuilder key = new StringBuilder(variable.getVarName()).append(":").append(variable.getFieldType()).append(":").append(variable.getFactField()).append(":").append(variable.getFactType());
         return key.toString();
+    }
+
+    private Set<String> getPatternBindings(final BRLConditionColumn column) {
+        final Set<String> bindings = new HashSet<>();
+        final List<IPattern> definition = column.getDefinition();
+        final RuleModel rm = new RuleModel();
+        rm.lhs = definition.toArray(new IPattern[definition.size()]);
+        bindings.addAll(rm.getLHSVariables(true, true));
+        return bindings;
     }
 }

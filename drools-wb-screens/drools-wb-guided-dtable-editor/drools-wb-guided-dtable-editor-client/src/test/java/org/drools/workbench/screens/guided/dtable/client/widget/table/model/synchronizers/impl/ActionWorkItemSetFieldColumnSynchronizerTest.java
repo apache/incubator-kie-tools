@@ -28,7 +28,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseMultipleDOMElementUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BooleanUiColumn;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.oracle.DataType;
@@ -48,7 +48,7 @@ public class ActionWorkItemSetFieldColumnSynchronizerTest extends BaseSynchroniz
     private static final String WORK_ITEM_NAME = "WorkItemDefinition";
 
     @Before
-    public void setupWorkItemExecution() throws ModelSynchronizer.MoveColumnVetoException {
+    public void setupWorkItemExecution() throws VetoException {
         final ActionWorkItemCol52 column = new ActionWorkItemCol52();
         final PortableWorkDefinition pwd = new PortableWorkDefinition();
         pwd.setName(WORK_ITEM_NAME);
@@ -74,7 +74,7 @@ public class ActionWorkItemSetFieldColumnSynchronizerTest extends BaseSynchroniz
     }
 
     @Test
-    public void testAppend() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testAppend() throws VetoException {
         final ActionWorkItemSetFieldCol52 column = new ActionWorkItemSetFieldCol52();
         column.setWorkItemName(WORK_ITEM_NAME);
         column.setHeader("col1");
@@ -92,7 +92,7 @@ public class ActionWorkItemSetFieldColumnSynchronizerTest extends BaseSynchroniz
     }
 
     @Test
-    public void testAppendMultipleColumns() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testAppendMultipleColumns() throws VetoException {
         final ActionWorkItemSetFieldCol52 column1 = new ActionWorkItemSetFieldCol52();
         column1.setWorkItemName(WORK_ITEM_NAME);
         column1.setHeader("col1");
@@ -123,7 +123,7 @@ public class ActionWorkItemSetFieldColumnSynchronizerTest extends BaseSynchroniz
     }
 
     @Test
-    public void testUpdate() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testUpdate() throws VetoException {
         final ActionWorkItemSetFieldCol52 column = spy(new ActionWorkItemSetFieldCol52());
         column.setWorkItemName(WORK_ITEM_NAME);
         column.setHeader("col1");
@@ -155,7 +155,7 @@ public class ActionWorkItemSetFieldColumnSynchronizerTest extends BaseSynchroniz
     }
 
     @Test
-    public void testDelete() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testDelete() throws VetoException {
         final ActionWorkItemSetFieldCol52 column = new ActionWorkItemSetFieldCol52();
         column.setWorkItemName(WORK_ITEM_NAME);
         column.setHeader("col1");
@@ -176,7 +176,7 @@ public class ActionWorkItemSetFieldColumnSynchronizerTest extends BaseSynchroniz
     }
 
     @Test
-    public void testMoveColumnTo_MoveLeft() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnTo_MoveLeft() throws VetoException {
         //Add a Pattern to be updated
         final Pattern52 pattern = new Pattern52();
         pattern.setBoundName("$a");
@@ -278,7 +278,7 @@ public class ActionWorkItemSetFieldColumnSynchronizerTest extends BaseSynchroniz
     }
 
     @Test
-    public void testMoveColumnTo_MoveRight() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnTo_MoveRight() throws VetoException {
         //Add a Pattern to be updated
         final Pattern52 pattern = new Pattern52();
         pattern.setBoundName("$a");
@@ -380,7 +380,7 @@ public class ActionWorkItemSetFieldColumnSynchronizerTest extends BaseSynchroniz
     }
 
     @Test
-    public void testMoveColumnTo_OutOfBounds() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnTo_OutOfBounds() throws VetoException {
         //Add a Pattern to be updated
         final Pattern52 pattern = new Pattern52();
         pattern.setBoundName("$a");

@@ -45,7 +45,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.lockmanage
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.GridWidgetColumnFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.GridWidgetColumnFactoryImpl;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.MoveColumnVetoException;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.EnumLoaderUtilities;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.guvnor.common.services.shared.metadata.model.Overview;
@@ -53,7 +53,6 @@ import org.gwtbootstrap3.client.ui.html.Text;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
@@ -67,10 +66,14 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @WithClassesToStub({Text.class, DateTimeFormat.class})
 @RunWith(GwtMockitoTestRunner.class)
@@ -132,7 +135,7 @@ public class GuidedDecisionTablePresenter_AuditLogTest {
     private List<BaseColumnFieldDiff> diffs;
 
     @Before
-    public void setup() throws MoveColumnVetoException {
+    public void setup() throws VetoException {
         setupPresenter();
 
         for (Entry<String, Boolean> entry : model.getAuditLog().getAuditLogFilter().getAcceptedTypes().entrySet()) {
@@ -214,7 +217,7 @@ public class GuidedDecisionTablePresenter_AuditLogTest {
     }
 
     @Test
-    public void updateColumnAddsToLog() throws MoveColumnVetoException {
+    public void updateColumnAddsToLog() throws VetoException {
         dtPresenter.updateColumn(new ActionCol52(),
                                  new ActionCol52());
         dtPresenter.updateColumn(new AttributeCol52(),

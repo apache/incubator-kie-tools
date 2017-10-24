@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
 import javax.enterprise.context.Dependent;
 
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
@@ -35,6 +36,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemSetF
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.BaseColumnSynchronizer.ColumnMetaData;
 
@@ -42,31 +44,31 @@ import static org.drools.workbench.screens.guided.dtable.client.widget.table.mod
 public class ActionColumnSynchronizer extends BaseColumnSynchronizer<ColumnMetaData, ColumnMetaData, ColumnMetaData> {
 
     @Override
-    public boolean handlesAppend(final MetaData metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    public boolean handlesAppend(final MetaData metaData) throws VetoException {
         //All sub-classes of ActionCol52 have their appends synchronized by specialised synchronizers
         return false;
     }
 
     @Override
-    public void append(final ColumnMetaData metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    public void append(final ColumnMetaData metaData) throws VetoException {
         //All sub-classes of ActionCol52 have their appends synchronized by specialised synchronizers
     }
 
     @Override
-    public boolean handlesUpdate(final MetaData metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    public boolean handlesUpdate(final MetaData metaData) throws VetoException {
         //All sub-classes of ActionCol52 have their updates synchronized by specialised synchronizers
         return false;
     }
 
     @Override
     public List<BaseColumnFieldDiff> update(final ColumnMetaData originalMetaData,
-                                            final ColumnMetaData editedMetaData) throws ModelSynchronizer.MoveColumnVetoException {
+                                            final ColumnMetaData editedMetaData) throws VetoException {
         //All sub-classes of ActionCol52 have their updates synchronized by specialised synchronizers
         return Collections.emptyList();
     }
 
     @Override
-    public boolean handlesDelete(final MetaData metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    public boolean handlesDelete(final MetaData metaData) throws VetoException {
         if (!(metaData instanceof ColumnMetaData)) {
             return false;
         }
@@ -74,7 +76,7 @@ public class ActionColumnSynchronizer extends BaseColumnSynchronizer<ColumnMetaD
     }
 
     @Override
-    public void delete(final ColumnMetaData metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    public void delete(final ColumnMetaData metaData) throws VetoException {
         //Check operation is supported
         if (!handlesDelete(metaData)) {
             return;
@@ -87,13 +89,13 @@ public class ActionColumnSynchronizer extends BaseColumnSynchronizer<ColumnMetaD
     }
 
     @Override
-    public boolean handlesMoveColumnsTo(final List<? extends MetaData> metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    public boolean handlesMoveColumnsTo(final List<? extends MetaData> metaData) throws VetoException {
         //All sub-classes of ActionCol52 have their updates synchronized by specialised synchronizers
         return false;
     }
 
     @Override
-    public void moveColumnsTo(final List<MoveColumnToMetaData> metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    public void moveColumnsTo(final List<MoveColumnToMetaData> metaData) throws VetoException {
         //Check operation is supported
         if (!handlesMoveColumnsTo(metaData)) {
             return;
@@ -157,7 +159,7 @@ public class ActionColumnSynchronizer extends BaseColumnSynchronizer<ColumnMetaD
         return result.get();
     }
 
-    protected void doMoveActionFragment(final List<MoveColumnToMetaData> metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    protected void doMoveActionFragment(final List<MoveColumnToMetaData> metaData) throws VetoException {
         final MoveColumnToMetaData md = metaData.get(0);
         final BaseColumn firstColumnInFragment = md.getColumn();
         final BaseColumn lastColumnInFragment = metaData.get(metaData.size() - 1).getColumn();
@@ -172,10 +174,10 @@ public class ActionColumnSynchronizer extends BaseColumnSynchronizer<ColumnMetaD
 
         final int srcModelFragmentColumnsCount = srcModelFragmentColumns.size();
         if (srcModelFragmentColumnsCount == 0) {
-            throw new ModelSynchronizer.MoveColumnVetoException();
+            throw new ModelSynchronizer.MoveVetoException();
         }
         if (srcModelFragmentColumnsCount != metaData.size()) {
-            throw new ModelSynchronizer.MoveColumnVetoException();
+            throw new ModelSynchronizer.MoveVetoException();
         }
 
         final int tgtColumnIndex = md.getTargetColumnIndex();

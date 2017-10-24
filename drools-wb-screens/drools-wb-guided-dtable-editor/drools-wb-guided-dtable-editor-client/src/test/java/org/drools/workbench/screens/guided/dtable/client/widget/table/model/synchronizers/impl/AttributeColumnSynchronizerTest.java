@@ -28,7 +28,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.Bo
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.IntegerUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.SalienceUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.StringUiColumn;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.BaseSynchronizer.MoveColumnToMetaData;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
 import org.junit.Test;
@@ -46,7 +46,7 @@ import static org.mockito.Mockito.when;
 public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
 
     @Test
-    public void testAppend() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testAppend() throws VetoException {
         final AttributeCol52 column = new AttributeCol52();
         column.setAttribute(RuleAttributeWidget.SALIENCE_ATTR);
 
@@ -67,7 +67,7 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testUpdate1() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testUpdate1() throws VetoException {
         final AttributeCol52 column = spy(new AttributeCol52());
         column.setAttribute(RuleAttributeWidget.SALIENCE_ATTR);
 
@@ -96,7 +96,7 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testUpdate2() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testUpdate2() throws VetoException {
         final AttributeCol52 column = spy(new AttributeCol52());
         column.setAttribute(RuleAttributeWidget.SALIENCE_ATTR);
 
@@ -128,7 +128,7 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testUpdateSalienceRowNumber() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testUpdateSalienceRowNumber() throws VetoException {
         modelSynchronizer.appendRow();
         modelSynchronizer.appendRow();
 
@@ -196,7 +196,7 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testDelete() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testDelete() throws VetoException {
         final AttributeCol52 column = new AttributeCol52();
         column.setAttribute(RuleAttributeWidget.SALIENCE_ATTR);
 
@@ -215,7 +215,7 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testMoveColumnTo_MoveLeft() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnTo_MoveLeft() throws VetoException {
         final AttributeCol52 column1 = new AttributeCol52();
         column1.setAttribute(RuleAttributeWidget.SALIENCE_ATTR);
         final AttributeCol52 column2 = new AttributeCol52();
@@ -297,7 +297,7 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testMoveColumnTo_MoveRight() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnTo_MoveRight() throws VetoException {
         final AttributeCol52 column1 = new AttributeCol52();
         column1.setAttribute(RuleAttributeWidget.SALIENCE_ATTR);
         final AttributeCol52 column2 = new AttributeCol52();
@@ -379,7 +379,7 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testMoveColumnTo_OutOfBounds() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnTo_OutOfBounds() throws VetoException {
         final AttributeCol52 column1 = new AttributeCol52();
         column1.setAttribute(RuleAttributeWidget.SALIENCE_ATTR);
         final AttributeCol52 column2 = new AttributeCol52();
@@ -461,7 +461,7 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testMoveColumnsTo_MoveLeft() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnsTo_MoveLeft() throws VetoException {
         final AttributeCol52 column1 = new AttributeCol52();
         column1.setAttribute(RuleAttributeWidget.SALIENCE_ATTR);
         final AttributeCol52 column2 = new AttributeCol52();
@@ -515,7 +515,7 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testMoveColumnsTo_MoveRight() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnsTo_MoveRight() throws VetoException {
         final AttributeCol52 column1 = new AttributeCol52();
         column1.setAttribute(RuleAttributeWidget.SALIENCE_ATTR);
         final AttributeCol52 column2 = new AttributeCol52();
@@ -568,14 +568,14 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void checkHandlesMoveColumnsToWithEmptyMetadata() throws ModelSynchronizer.MoveColumnVetoException {
+    public void checkHandlesMoveColumnsToWithEmptyMetadata() throws VetoException {
         final AttributeColumnSynchronizer synchronizer = new AttributeColumnSynchronizer();
 
         assertFalse(synchronizer.handlesMoveColumnsTo(Collections.emptyList()));
     }
 
     @Test
-    public void checkHandlesMoveColumnsToWithMultipleMetadata() throws ModelSynchronizer.MoveColumnVetoException {
+    public void checkHandlesMoveColumnsToWithMultipleMetadata() throws VetoException {
         final MoveColumnToMetaData md0 = mock(MoveColumnToMetaData.class);
         final MoveColumnToMetaData md1 = mock(MoveColumnToMetaData.class);
         final AttributeColumnSynchronizer synchronizer = new AttributeColumnSynchronizer();
@@ -587,7 +587,7 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void checkHandlesMoveColumnsToWithSingleMetadata() throws ModelSynchronizer.MoveColumnVetoException {
+    public void checkHandlesMoveColumnsToWithSingleMetadata() throws VetoException {
         final MoveColumnToMetaData md0 = mock(MoveColumnToMetaData.class);
         final AttributeColumnSynchronizer synchronizer = new AttributeColumnSynchronizer();
         when(md0.getColumn()).thenReturn(mock(AttributeCol52.class));

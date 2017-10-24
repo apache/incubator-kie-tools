@@ -25,13 +25,17 @@ import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class GuidedDecisionTablePresenter_ReadOnlyTest extends BaseGuidedDecisionTablePresenterTest {
@@ -43,7 +47,7 @@ public class GuidedDecisionTablePresenter_ReadOnlyTest extends BaseGuidedDecisio
     }
 
     @Test
-    public void appendAttributeColumn() throws ModelSynchronizer.MoveColumnVetoException {
+    public void appendAttributeColumn() throws VetoException {
         dtPresenter.appendColumn(mock(AttributeCol52.class));
 
         verify(synchronizer,
@@ -51,7 +55,7 @@ public class GuidedDecisionTablePresenter_ReadOnlyTest extends BaseGuidedDecisio
     }
 
     @Test
-    public void appendMetadataColumn() throws ModelSynchronizer.MoveColumnVetoException {
+    public void appendMetadataColumn() throws VetoException {
         dtPresenter.appendColumn(mock(MetadataCol52.class));
 
         verify(synchronizer,
@@ -59,7 +63,7 @@ public class GuidedDecisionTablePresenter_ReadOnlyTest extends BaseGuidedDecisio
     }
 
     @Test
-    public void appendPatternAndConditionColumn() throws ModelSynchronizer.MoveColumnVetoException {
+    public void appendPatternAndConditionColumn() throws VetoException {
         dtPresenter.appendColumn(mock(Pattern52.class),
                                  mock(ConditionCol52.class));
 
@@ -69,7 +73,7 @@ public class GuidedDecisionTablePresenter_ReadOnlyTest extends BaseGuidedDecisio
     }
 
     @Test
-    public void appendConditionColumn() throws ModelSynchronizer.MoveColumnVetoException {
+    public void appendConditionColumn() throws VetoException {
         dtPresenter.appendColumn(mock(ConditionCol52.class));
 
         verify(synchronizer,
@@ -77,7 +81,7 @@ public class GuidedDecisionTablePresenter_ReadOnlyTest extends BaseGuidedDecisio
     }
 
     @Test
-    public void appendActionColumn() throws ModelSynchronizer.MoveColumnVetoException {
+    public void appendActionColumn() throws VetoException {
         dtPresenter.appendColumn(mock(ActionCol52.class));
 
         verify(synchronizer,
@@ -85,7 +89,7 @@ public class GuidedDecisionTablePresenter_ReadOnlyTest extends BaseGuidedDecisio
     }
 
     @Test
-    public void appendRow() throws ModelSynchronizer.MoveColumnVetoException {
+    public void appendRow() throws VetoException {
         dtPresenter.onAppendRow();
 
         verify(synchronizer,
@@ -93,7 +97,7 @@ public class GuidedDecisionTablePresenter_ReadOnlyTest extends BaseGuidedDecisio
     }
 
     @Test
-    public void deleteAttributeColumn() throws ModelSynchronizer.MoveColumnVetoException {
+    public void deleteAttributeColumn() throws VetoException {
         dtPresenter.deleteColumn(mock(AttributeCol52.class));
 
         verify(synchronizer,
@@ -101,7 +105,7 @@ public class GuidedDecisionTablePresenter_ReadOnlyTest extends BaseGuidedDecisio
     }
 
     @Test
-    public void deleteMetadataColumn() throws ModelSynchronizer.MoveColumnVetoException {
+    public void deleteMetadataColumn() throws VetoException {
         dtPresenter.deleteColumn(mock(MetadataCol52.class));
 
         verify(synchronizer,
@@ -109,7 +113,7 @@ public class GuidedDecisionTablePresenter_ReadOnlyTest extends BaseGuidedDecisio
     }
 
     @Test
-    public void deleteConditionColumn() throws ModelSynchronizer.MoveColumnVetoException {
+    public void deleteConditionColumn() throws VetoException {
         dtPresenter.deleteColumn(mock(ConditionCol52.class));
 
         verify(synchronizer,
@@ -117,7 +121,7 @@ public class GuidedDecisionTablePresenter_ReadOnlyTest extends BaseGuidedDecisio
     }
 
     @Test
-    public void deleteActionColumn() throws ModelSynchronizer.MoveColumnVetoException {
+    public void deleteActionColumn() throws VetoException {
         dtPresenter.deleteColumn(mock(ActionCol52.class));
 
         verify(synchronizer,
@@ -125,7 +129,7 @@ public class GuidedDecisionTablePresenter_ReadOnlyTest extends BaseGuidedDecisio
     }
 
     @Test
-    public void updateAttributeColumn() throws ModelSynchronizer.MoveColumnVetoException {
+    public void updateAttributeColumn() throws VetoException {
         dtPresenter.updateColumn(mock(AttributeCol52.class),
                                  mock(AttributeCol52.class));
 
@@ -135,7 +139,7 @@ public class GuidedDecisionTablePresenter_ReadOnlyTest extends BaseGuidedDecisio
     }
 
     @Test
-    public void updateMetadataColumn() throws ModelSynchronizer.MoveColumnVetoException {
+    public void updateMetadataColumn() throws VetoException {
         dtPresenter.updateColumn(mock(MetadataCol52.class),
                                  mock(MetadataCol52.class));
 
@@ -145,7 +149,7 @@ public class GuidedDecisionTablePresenter_ReadOnlyTest extends BaseGuidedDecisio
     }
 
     @Test
-    public void updatePatternAndConditionColumn() throws ModelSynchronizer.MoveColumnVetoException {
+    public void updatePatternAndConditionColumn() throws VetoException {
         dtPresenter.updateColumn(mock(Pattern52.class),
                                  mock(ConditionCol52.class),
                                  mock(Pattern52.class),
@@ -159,7 +163,7 @@ public class GuidedDecisionTablePresenter_ReadOnlyTest extends BaseGuidedDecisio
     }
 
     @Test
-    public void updateConditionColumn() throws ModelSynchronizer.MoveColumnVetoException {
+    public void updateConditionColumn() throws VetoException {
         dtPresenter.updateColumn(mock(ConditionCol52.class),
                                  mock(ConditionCol52.class));
 
@@ -169,7 +173,7 @@ public class GuidedDecisionTablePresenter_ReadOnlyTest extends BaseGuidedDecisio
     }
 
     @Test
-    public void updateActionColumn() throws ModelSynchronizer.MoveColumnVetoException {
+    public void updateActionColumn() throws VetoException {
         dtPresenter.updateColumn(mock(ActionCol52.class),
                                  mock(ActionCol52.class));
 
@@ -268,7 +272,7 @@ public class GuidedDecisionTablePresenter_ReadOnlyTest extends BaseGuidedDecisio
     }
 
     @Test
-    public void onDeleteSelectedColumns() throws ModelSynchronizer.MoveColumnVetoException {
+    public void onDeleteSelectedColumns() throws VetoException {
         dtPresenter.onDeleteSelectedColumns();
 
         verify(synchronizer,
@@ -276,7 +280,7 @@ public class GuidedDecisionTablePresenter_ReadOnlyTest extends BaseGuidedDecisio
     }
 
     @Test
-    public void onDeleteSelectedRows() throws ModelSynchronizer.MoveColumnVetoException {
+    public void onDeleteSelectedRows() throws VetoException {
         dtPresenter.onDeleteSelectedRows();
 
         verify(synchronizer,
@@ -284,7 +288,7 @@ public class GuidedDecisionTablePresenter_ReadOnlyTest extends BaseGuidedDecisio
     }
 
     @Test
-    public void onInsertRowAbove() throws ModelSynchronizer.MoveColumnVetoException {
+    public void onInsertRowAbove() throws VetoException {
         dtPresenter.onInsertRowAbove();
 
         verify(synchronizer,
@@ -292,7 +296,7 @@ public class GuidedDecisionTablePresenter_ReadOnlyTest extends BaseGuidedDecisio
     }
 
     @Test
-    public void onInsertRowBelow() throws ModelSynchronizer.MoveColumnVetoException {
+    public void onInsertRowBelow() throws VetoException {
         dtPresenter.onInsertRowBelow();
 
         verify(synchronizer,
@@ -300,7 +304,7 @@ public class GuidedDecisionTablePresenter_ReadOnlyTest extends BaseGuidedDecisio
     }
 
     @Test
-    public void onOtherwiseCell() throws ModelSynchronizer.MoveColumnVetoException {
+    public void onOtherwiseCell() throws VetoException {
         dtPresenter.onOtherwiseCell();
 
         verify(synchronizer,

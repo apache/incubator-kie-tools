@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.model.syn
 
 import java.util.Collections;
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
@@ -25,7 +26,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol5
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiffImpl;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 
 @Dependent
 public class ActionWorkItemExecuteColumnSynchronizer extends ActionColumnSynchronizer {
@@ -36,12 +37,12 @@ public class ActionWorkItemExecuteColumnSynchronizer extends ActionColumnSynchro
     }
 
     @Override
-    public boolean handlesAppend(final MetaData metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    public boolean handlesAppend(final MetaData metaData) throws VetoException {
         return handlesUpdate(metaData);
     }
 
     @Override
-    public void append(final ColumnMetaData metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    public void append(final ColumnMetaData metaData) throws VetoException {
         if (!handlesAppend(metaData)) {
             return;
         }
@@ -52,7 +53,7 @@ public class ActionWorkItemExecuteColumnSynchronizer extends ActionColumnSynchro
     }
 
     @Override
-    public boolean handlesUpdate(final MetaData metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    public boolean handlesUpdate(final MetaData metaData) throws VetoException {
         if (!(metaData instanceof ColumnMetaData)) {
             return false;
         }
@@ -61,7 +62,7 @@ public class ActionWorkItemExecuteColumnSynchronizer extends ActionColumnSynchro
 
     @Override
     public List<BaseColumnFieldDiff> update(final ColumnMetaData originalMetaData,
-                                            final ColumnMetaData editedMetaData) throws ModelSynchronizer.MoveColumnVetoException {
+                                            final ColumnMetaData editedMetaData) throws VetoException {
         //Check operation is supported
         if (!(handlesUpdate(originalMetaData) && handlesUpdate(editedMetaData))) {
             return Collections.emptyList();
@@ -103,7 +104,7 @@ public class ActionWorkItemExecuteColumnSynchronizer extends ActionColumnSynchro
     }
 
     @Override
-    public boolean handlesMoveColumnsTo(final List<? extends MetaData> metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    public boolean handlesMoveColumnsTo(final List<? extends MetaData> metaData) throws VetoException {
         return isWorkItemFragment(metaData) && isWorkItemFragmentBeforeInsertFactCol(metaData);
     }
 

@@ -44,6 +44,8 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.models.guided.dtable.shared.model.adaptors.FactPatternPattern52Adaptor;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoUpdatePatternInUseException;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.CellUtilities;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
@@ -162,7 +164,15 @@ public class ConditionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
     @Override
     public Boolean generateColumn() {
         prepareValues();
-        appendColumn();
+        try {
+            appendColumn();
+        } catch (VetoUpdatePatternInUseException veto) {
+            wizard.showPatternInUseError();
+            return false;
+        } catch (VetoException veto) {
+            wizard.showGenericVetoError();
+            return false;
+        }
 
         return true;
     }
@@ -172,7 +182,7 @@ public class ConditionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
         return Type.BASIC;
     }
 
-    void appendColumn() {
+    void appendColumn() throws VetoException {
         if (isNewColumn()) {
             presenter.appendColumn(editingPattern(),
                                    editingCol());

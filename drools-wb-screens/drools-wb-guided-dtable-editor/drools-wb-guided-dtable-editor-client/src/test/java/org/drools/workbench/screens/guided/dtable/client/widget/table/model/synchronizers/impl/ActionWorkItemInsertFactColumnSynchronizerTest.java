@@ -27,21 +27,23 @@ import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDif
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseMultipleDOMElementUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BooleanUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.StringUiColumn;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 public class ActionWorkItemInsertFactColumnSynchronizerTest extends BaseSynchronizerTest {
 
     private static final String WORK_ITEM_NAME = "WorkItemDefinition";
 
     @Before
-    public void setupWorkItemExecution() throws ModelSynchronizer.MoveColumnVetoException {
+    public void setupWorkItemExecution() throws VetoException {
         final ActionWorkItemCol52 column = new ActionWorkItemCol52();
         final PortableWorkDefinition pwd = new PortableWorkDefinition();
         pwd.setName(WORK_ITEM_NAME);
@@ -52,7 +54,7 @@ public class ActionWorkItemInsertFactColumnSynchronizerTest extends BaseSynchron
     }
 
     @Test
-    public void testAppend() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testAppend() throws VetoException {
         final ActionWorkItemInsertFactCol52 column = new ActionWorkItemInsertFactCol52();
         column.setWorkItemName(WORK_ITEM_NAME);
         column.setHeader("col1");
@@ -70,7 +72,7 @@ public class ActionWorkItemInsertFactColumnSynchronizerTest extends BaseSynchron
     }
 
     @Test
-    public void testAppendMultipleColumns() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testAppendMultipleColumns() throws VetoException {
         final ActionWorkItemInsertFactCol52 column1 = new ActionWorkItemInsertFactCol52();
         column1.setWorkItemName(WORK_ITEM_NAME);
         column1.setHeader("col1");
@@ -101,7 +103,7 @@ public class ActionWorkItemInsertFactColumnSynchronizerTest extends BaseSynchron
     }
 
     @Test
-    public void testUpdate() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testUpdate() throws VetoException {
         final ActionWorkItemInsertFactCol52 column = spy(new ActionWorkItemInsertFactCol52());
         column.setWorkItemName(WORK_ITEM_NAME);
         column.setHeader("col1");
@@ -133,7 +135,7 @@ public class ActionWorkItemInsertFactColumnSynchronizerTest extends BaseSynchron
     }
 
     @Test
-    public void testDelete() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testDelete() throws VetoException {
         final ActionWorkItemInsertFactCol52 column = new ActionWorkItemInsertFactCol52();
         column.setWorkItemName(WORK_ITEM_NAME);
         column.setHeader("col1");
@@ -153,7 +155,7 @@ public class ActionWorkItemInsertFactColumnSynchronizerTest extends BaseSynchron
     }
 
     @Test
-    public void testMoveColumnTo_MoveLeft() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnTo_MoveLeft() throws VetoException {
         final ActionWorkItemInsertFactCol52 column1 = new ActionWorkItemInsertFactCol52();
         column1.setWorkItemName(WORK_ITEM_NAME);
         column1.setBoundName("$a");
@@ -243,7 +245,7 @@ public class ActionWorkItemInsertFactColumnSynchronizerTest extends BaseSynchron
     }
 
     @Test
-    public void testMoveColumnTo_MoveRight() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnTo_MoveRight() throws VetoException {
         final ActionWorkItemInsertFactCol52 column1 = new ActionWorkItemInsertFactCol52();
         column1.setWorkItemName(WORK_ITEM_NAME);
         column1.setBoundName("$a");
@@ -333,7 +335,7 @@ public class ActionWorkItemInsertFactColumnSynchronizerTest extends BaseSynchron
     }
 
     @Test
-    public void testMoveColumnTo_OutOfBounds() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnTo_OutOfBounds() throws VetoException {
         final ActionWorkItemInsertFactCol52 column1 = new ActionWorkItemInsertFactCol52();
         column1.setWorkItemName(WORK_ITEM_NAME);
         column1.setBoundName("$a");
@@ -424,7 +426,7 @@ public class ActionWorkItemInsertFactColumnSynchronizerTest extends BaseSynchron
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testMoveColumnTo_MoveWorkItemInsertFactColRight_WithFollowingInsertFactCol() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnTo_MoveWorkItemInsertFactColRight_WithFollowingInsertFactCol() throws VetoException {
         final ActionWorkItemInsertFactCol52 column1 = new ActionWorkItemInsertFactCol52();
         column1.setWorkItemName(WORK_ITEM_NAME);
         column1.setBoundName("$a");
@@ -468,7 +470,7 @@ public class ActionWorkItemInsertFactColumnSynchronizerTest extends BaseSynchron
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testMoveColumnTo_MoveInsertFactColLeft_WithPrecedingWorkItemInsertFactCol() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnTo_MoveInsertFactColLeft_WithPrecedingWorkItemInsertFactCol() throws VetoException {
         final ActionWorkItemInsertFactCol52 column1 = new ActionWorkItemInsertFactCol52();
         column1.setWorkItemName(WORK_ITEM_NAME);
         column1.setBoundName("$a");

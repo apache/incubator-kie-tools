@@ -31,6 +31,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDif
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiffImpl;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 
 @Dependent
 public class ActionInsertFactColumnSynchronizer extends ActionColumnSynchronizer {
@@ -41,12 +42,12 @@ public class ActionInsertFactColumnSynchronizer extends ActionColumnSynchronizer
     }
 
     @Override
-    public boolean handlesAppend(final MetaData metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    public boolean handlesAppend(final MetaData metaData) throws VetoException {
         return handlesUpdate(metaData);
     }
 
     @Override
-    public void append(final ColumnMetaData metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    public void append(final ColumnMetaData metaData) throws VetoException {
         if (!handlesAppend(metaData)) {
             return;
         }
@@ -64,7 +65,7 @@ public class ActionInsertFactColumnSynchronizer extends ActionColumnSynchronizer
     }
 
     @Override
-    public boolean handlesUpdate(final MetaData metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    public boolean handlesUpdate(final MetaData metaData) throws VetoException {
         if (!(metaData instanceof ColumnMetaData)) {
             return false;
         }
@@ -73,7 +74,7 @@ public class ActionInsertFactColumnSynchronizer extends ActionColumnSynchronizer
 
     @Override
     public List<BaseColumnFieldDiff> update(final ColumnMetaData originalMetaData,
-                                            final ColumnMetaData editedMetaData) throws ModelSynchronizer.MoveColumnVetoException {
+                                            final ColumnMetaData editedMetaData) throws VetoException {
         //Check operation is supported
         if (!(handlesUpdate(originalMetaData) && handlesUpdate(editedMetaData))) {
             return Collections.emptyList();
@@ -151,7 +152,7 @@ public class ActionInsertFactColumnSynchronizer extends ActionColumnSynchronizer
     }
 
     @Override
-    public boolean handlesMoveColumnsTo(final List<? extends MetaData> metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    public boolean handlesMoveColumnsTo(final List<? extends MetaData> metaData) throws ModelSynchronizer.MoveVetoException {
         final boolean isActionInsetFactFragment = isActionInsertFactFragment(metaData);
         if (!isActionInsetFactFragment) {
             return false;

@@ -34,6 +34,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.models.guided.dtable.shared.model.adaptors.FactPatternPattern52Adaptor;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoUpdatePatternInUseException;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.AdditionalInfoPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.CalculationTypePage;
@@ -55,9 +56,22 @@ import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 import org.uberfire.mocks.EventSourceMock;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ConditionColumnPluginTest {
@@ -227,6 +241,37 @@ public class ConditionColumnPluginTest {
         assertTrue(result);
         verify(plugin).prepareValues();
         verify(plugin).appendColumn();
+    }
+
+    @Test
+    public void testGenerateColumnWhenColumnIsNotNewAndVetoed() throws Exception {
+        final ConditionCol52 originalColumn = mock(ConditionCol52.class);
+        final ConditionCol52 editingColumn = mock(ConditionCol52.class);
+        final Pattern52 originalPattern = mock(Pattern52.class);
+        final Pattern52 editingPattern = mock(Pattern52.class);
+
+        doReturn(false).when(plugin).isNewColumn();
+
+        doReturn(originalColumn).when(plugin).originalCondition();
+        doReturn(editingColumn).when(plugin).editingCol();
+        doReturn(originalPattern).when(plugin).getOriginalPattern52();
+        doReturn(editingPattern).when(plugin).editingPattern();
+
+        doReturn(false).when(plugin).isNewColumn();
+        doReturn(oracle).when(presenter).getDataModelOracle();
+        doReturn(false).when(oracle).hasEnums(any(),
+                                              any());
+
+        doThrow(VetoUpdatePatternInUseException.class).when(presenter).updateColumn(any(Pattern52.class),
+                                                                                    any(ConditionCol52.class),
+                                                                                    any(Pattern52.class),
+                                                                                    any(ConditionCol52.class));
+
+        plugin.setupDefaultValues();
+
+        assertFalse(plugin.generateColumn());
+
+        verify(wizard).showPatternInUseError();
     }
 
     @Test
@@ -606,11 +651,6 @@ public class ConditionColumnPluginTest {
                      clone);
         assertNotSame(dcv,
                       clone);
-    }
-
-    @Test
-    public void testCloneWhenColumnIsALimitedEntryConditionCol52() {
-
     }
 
     @Test

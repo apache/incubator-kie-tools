@@ -26,6 +26,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
@@ -53,12 +54,12 @@ public abstract class BaseColumnSynchronizer<A extends BaseColumnSynchronizer.Co
     }
 
     @Override
-    public boolean handlesInsert(final MetaData metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    public boolean handlesInsert(final MetaData metaData) throws VetoException {
         return false;
     }
 
     @Override
-    public void insert(final A metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    public void insert(final A metaData) throws VetoException {
         //Do nothing. Not implemented for columns. All operations are handled by Append.
     }
 
@@ -195,7 +196,7 @@ public abstract class BaseColumnSynchronizer<A extends BaseColumnSynchronizer.Co
         }
     }
 
-    protected int findTargetPatternIndex(final MoveColumnToMetaData md) throws ModelSynchronizer.MoveColumnVetoException {
+    protected int findTargetPatternIndex(final MoveColumnToMetaData md) throws ModelSynchronizer.MoveVetoException {
         int tgtPatternIndex = -1;
         final int tgtColumnIndex = md.getTargetColumnIndex();
         final List<BaseColumn> allModelColumns = model.getExpandedColumns();
@@ -217,12 +218,12 @@ public abstract class BaseColumnSynchronizer<A extends BaseColumnSynchronizer.Co
         }
 
         if (tgtPatternIndex < 0) {
-            throw new ModelSynchronizer.MoveColumnVetoException();
+            throw new ModelSynchronizer.MoveVetoException();
         }
         return tgtPatternIndex;
     }
 
-    protected int findTargetActionIndex(final MoveColumnToMetaData md) throws ModelSynchronizer.MoveColumnVetoException {
+    protected int findTargetActionIndex(final MoveColumnToMetaData md) throws ModelSynchronizer.MoveVetoException {
         int tgtActionIndex = -1;
         final int tgtColumnIndex = md.getTargetColumnIndex();
         final List<BaseColumn> allModelColumns = model.getExpandedColumns();
@@ -244,7 +245,7 @@ public abstract class BaseColumnSynchronizer<A extends BaseColumnSynchronizer.Co
         }
 
         if (tgtActionIndex < 0) {
-            throw new ModelSynchronizer.MoveColumnVetoException();
+            throw new ModelSynchronizer.MoveVetoException();
         }
         return tgtActionIndex;
     }

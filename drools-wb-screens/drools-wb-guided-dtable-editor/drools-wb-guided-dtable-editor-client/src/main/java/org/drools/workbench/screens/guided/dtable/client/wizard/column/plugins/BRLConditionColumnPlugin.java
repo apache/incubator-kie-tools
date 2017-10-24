@@ -44,11 +44,13 @@ import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52;
-import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52.TableFormat;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52.TableFormat;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLConditionColumn;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.RuleModelCloneVisitor;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoUpdatePatternInUseException;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.commons.HasAdditionalInfoPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.commons.HasRuleModellerPage;
@@ -132,8 +134,16 @@ public class BRLConditionColumnPlugin extends BaseDecisionTableColumnPlugin impl
         if (isNewColumn()) {
             presenter.appendColumn(editingCol());
         } else {
-            presenter.updateColumn(getOriginalColumn(),
-                                   editingCol());
+            try {
+                presenter.updateColumn(getOriginalColumn(),
+                                       editingCol());
+            } catch (VetoUpdatePatternInUseException veto) {
+                wizard.showPatternInUseError();
+                return false;
+            } catch (VetoException veto) {
+                wizard.showGenericVetoError();
+                return false;
+            }
         }
 
         return true;

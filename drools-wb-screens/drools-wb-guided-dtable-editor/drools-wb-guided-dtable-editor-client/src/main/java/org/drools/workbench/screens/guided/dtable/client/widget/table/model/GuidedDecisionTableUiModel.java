@@ -19,6 +19,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.model;
 import java.util.List;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -72,7 +73,7 @@ public class GuidedDecisionTableUiModel extends BaseGridData {
                                        columns);
             super.moveColumnsTo(index,
                                 columns);
-        } catch (ModelSynchronizer.MoveColumnVetoException ignore) {
+        } catch (VetoException ignore) {
             //Do nothing. The move has been vetoed.
         }
     }
@@ -86,7 +87,7 @@ public class GuidedDecisionTableUiModel extends BaseGridData {
             super.moveRowsTo(index,
                              rows);
             synchronizer.updateSystemControlledColumnValues();
-        } catch (ModelSynchronizer.MoveColumnVetoException ignore) {
+        } catch (VetoException ignore) {
             //Do nothing. The move has been vetoed.
         }
     }

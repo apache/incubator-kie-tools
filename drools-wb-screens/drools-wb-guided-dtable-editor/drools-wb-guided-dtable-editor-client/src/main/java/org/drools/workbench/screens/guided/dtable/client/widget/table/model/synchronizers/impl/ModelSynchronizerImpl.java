@@ -60,12 +60,12 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.BaseColumnSynchronizer.MetaData;
-import static org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.ConditionColumnSynchronizer.*;
 import static org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.ConditionColumnSynchronizer.MoveColumnToMetaData;
 import static org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.ConditionColumnSynchronizer.MoveColumnToMetaDataImpl;
 import static org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.ConditionColumnSynchronizer.MoveRowToMetaData;
 import static org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.ConditionColumnSynchronizer.MoveRowToMetaDataImpl;
-import static org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.DependentEnumsUtilities.*;
+import static org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.ConditionColumnSynchronizer.PatternConditionMetaData;
+import static org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.DependentEnumsUtilities.Context;
 
 /**
  * Handles synchronization of Model and UI-Model
@@ -207,7 +207,7 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void appendColumn(final BaseColumn column) throws MoveColumnVetoException {
+    public void appendColumn(final BaseColumn column) throws VetoException {
         final MetaData metaData = new BaseColumnSynchronizer.ColumnMetaDataImpl(column);
         for (Synchronizer synchronizer : synchronizers) {
             if (synchronizer.handlesAppend(metaData)) {
@@ -222,7 +222,7 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
     @Override
     @SuppressWarnings("unchecked")
     public void appendColumn(final Pattern52 pattern,
-                             final ConditionCol52 column) throws MoveColumnVetoException {
+                             final ConditionCol52 column) throws VetoException {
         final PatternConditionMetaData metaData = new PatternConditionMetaData(pattern,
                                                                                column);
         for (Synchronizer synchronizer : synchronizers) {
@@ -236,7 +236,7 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void deleteColumn(final BaseColumn column) throws MoveColumnVetoException {
+    public void deleteColumn(final BaseColumn column) throws VetoException {
         final int columnIndex = model.getExpandedColumns().indexOf(column);
         final MetaData metaData = new BaseColumnSynchronizer.ColumnMetaDataImpl(column);
         for (Synchronizer synchronizer : synchronizers) {
@@ -253,7 +253,7 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
     public List<BaseColumnFieldDiff> updateColumn(final Pattern52 originalPattern,
                                                   final ConditionCol52 originalColumn,
                                                   final Pattern52 editedPattern,
-                                                  final ConditionCol52 editedColumn) throws MoveColumnVetoException {
+                                                  final ConditionCol52 editedColumn) throws VetoException {
         final PatternConditionMetaData originalMetaData = new PatternConditionMetaData(originalPattern,
                                                                                        originalColumn);
 
@@ -271,7 +271,7 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
     @Override
     @SuppressWarnings("unchecked")
     public List<BaseColumnFieldDiff> updateColumn(final BaseColumn originalColumn,
-                                                  final BaseColumn editedColumn) throws MoveColumnVetoException {
+                                                  final BaseColumn editedColumn) throws VetoException {
         final MetaData originalMetaData = new BaseColumnSynchronizer.ColumnMetaDataImpl(originalColumn);
         final MetaData editedMetaData = new BaseColumnSynchronizer.ColumnMetaDataImpl(editedColumn);
         for (Synchronizer synchronizer : synchronizers) {
@@ -293,7 +293,7 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void appendRow() throws MoveColumnVetoException {
+    public void appendRow() throws VetoException {
         final MetaData metaData = new RowSynchronizer.RowMetaDataImpl();
         for (Synchronizer synchronizer : synchronizers) {
             if (synchronizer.handlesAppend(metaData)) {
@@ -307,7 +307,7 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
     }
 
     @Override
-    public void insertRow(final int rowIndex) throws MoveColumnVetoException {
+    public void insertRow(final int rowIndex) throws VetoException {
         final MetaData metaData = new RowSynchronizer.RowMetaDataImpl(rowIndex);
         for (Synchronizer synchronizer : synchronizers) {
             if (synchronizer.handlesInsert(metaData)) {
@@ -322,7 +322,7 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void deleteRow(final int rowIndex) throws MoveColumnVetoException {
+    public void deleteRow(final int rowIndex) throws VetoException {
         final MetaData metaData = new RowSynchronizer.RowMetaDataImpl(rowIndex);
         for (Synchronizer synchronizer : synchronizers) {
             if (synchronizer.handlesDelete(metaData)) {
@@ -338,10 +338,10 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
     @Override
     @SuppressWarnings("unchecked")
     public void moveColumnTo(final int targetColumnIndex,
-                             final GridColumn<?> column) throws MoveColumnVetoException {
+                             final GridColumn<?> column) throws VetoException {
         final int sourceColumnIndex = uiModel.getColumns().indexOf(column);
         if (sourceColumnIndex == targetColumnIndex) {
-            throw new MoveColumnVetoException();
+            throw new MoveVetoException();
         }
 
         final BaseColumn modelColumn = model.getExpandedColumns().get(sourceColumnIndex);
@@ -361,7 +361,7 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
         }
 
         if (handlers.isEmpty()) {
-            throw new MoveColumnVetoException();
+            throw new MoveVetoException();
         }
 
         for (Synchronizer synchronizer : handlers) {
@@ -372,14 +372,14 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
     @Override
     @SuppressWarnings("unchecked")
     public void moveColumnsTo(final int targetColumnIndex,
-                              final List<GridColumn<?>> columns) throws MoveColumnVetoException {
+                              final List<GridColumn<?>> columns) throws VetoException {
         //Generate meta-data to handle moves
         final List<MoveColumnToMetaData> metaData = new ArrayList<MoveColumnToMetaData>();
         for (int index = 0; index < columns.size(); index++) {
             final GridColumn<?> column = columns.get(index);
             final int sourceColumnIndex = uiModel.getColumns().indexOf(column);
             if (sourceColumnIndex == targetColumnIndex) {
-                throw new MoveColumnVetoException();
+                throw new MoveVetoException();
             }
 
             final BaseColumn modelColumn = model.getExpandedColumns().get(sourceColumnIndex);
@@ -397,7 +397,7 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
         }
 
         if (handler == null) {
-            throw new MoveColumnVetoException();
+            throw new MoveVetoException();
         }
 
         handler.moveColumnsTo(metaData);
@@ -406,14 +406,14 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
     @Override
     @SuppressWarnings("unchecked")
     public void moveRowsTo(final int targetRowIndex,
-                           final List<GridRow> rows) throws MoveColumnVetoException {
+                           final List<GridRow> rows) throws VetoException {
         //Generate meta-data to handle moves
         final List<MoveRowToMetaData> metaData = new ArrayList<MoveRowToMetaData>();
         for (int index = 0; index < rows.size(); index++) {
             final GridRow row = rows.get(index);
             final int sourceRowIndex = uiModel.getRows().indexOf(row);
             if (sourceRowIndex == targetRowIndex) {
-                throw new MoveColumnVetoException();
+                throw new MoveVetoException();
             }
 
             final List<DTCellValue52> modelRow = model.getData().get(sourceRowIndex);
@@ -430,7 +430,7 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
         }
 
         if (handlers.isEmpty()) {
-            throw new MoveColumnVetoException();
+            throw new MoveVetoException();
         }
 
         for (Synchronizer synchronizer : handlers) {

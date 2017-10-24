@@ -36,6 +36,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.EditMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.InsertMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.ViewMenuBuilder;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.DependentEnumsUtilities;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.guvnor.common.services.shared.metadata.model.Overview;
@@ -125,8 +126,6 @@ public interface GuidedDecisionTableView extends GridWidget,
 
         List<String> getLHSBoundFacts();
 
-        boolean canConditionBeDeleted(final ConditionCol52 col);
-
         Map<String, String> getValueListLookups(final BaseColumn column);
 
         void getEnumLookups(final String factType,
@@ -156,30 +155,30 @@ public interface GuidedDecisionTableView extends GridWidget,
 
         void appendColumn(final ActionCol52 column);
 
-        void deleteColumn(final AttributeCol52 column);
+        void deleteColumn(final AttributeCol52 column) throws VetoException;
 
-        void deleteColumn(final MetadataCol52 column);
+        void deleteColumn(final MetadataCol52 column) throws VetoException;
 
-        void deleteColumn(final ConditionCol52 column);
+        void deleteColumn(final ConditionCol52 column) throws VetoException;
 
-        void deleteColumn(final ActionCol52 column);
+        void deleteColumn(final ActionCol52 column) throws VetoException;
 
         void updateColumn(final AttributeCol52 originalColumn,
-                          final AttributeCol52 editedColumn);
+                          final AttributeCol52 editedColumn) throws VetoException;
 
         void updateColumn(final MetadataCol52 originalColumn,
-                          final MetadataCol52 editedColumn);
+                          final MetadataCol52 editedColumn) throws VetoException;
 
         void updateColumn(final Pattern52 originalPattern,
                           final ConditionCol52 originalColumn,
                           final Pattern52 editedPattern,
-                          final ConditionCol52 editedColumn);
+                          final ConditionCol52 editedColumn) throws VetoException;
 
         void updateColumn(final ConditionCol52 originalColumn,
-                          final ConditionCol52 editedColumn);
+                          final ConditionCol52 editedColumn) throws VetoException;
 
         void updateColumn(final ActionCol52 originalColumn,
-                          final ActionCol52 editedColumn);
+                          final ActionCol52 editedColumn) throws VetoException;
 
         void link(final Set<GuidedDecisionTableView.Presenter> dtPresenters);
 

@@ -17,19 +17,30 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
+import org.drools.workbench.models.datamodel.rule.FactPattern;
+import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDiff;
 import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.DescriptionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.IntegerUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.LongUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.StringUiColumn;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoDeletePatternInUseException;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoUpdatePatternInUseException;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.ModelField;
@@ -37,9 +48,12 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 import static org.drools.workbench.screens.guided.rule.client.util.ModelFieldUtil.modelField;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
@@ -72,7 +86,7 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testAppend1() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testAppend1() throws VetoException {
         //Single Column, single variable
         final BRLConditionColumn column = new BRLConditionColumn();
         final BRLConditionVariableColumn columnV0 = new BRLConditionVariableColumn("$age",
@@ -100,7 +114,7 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testAppend2() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testAppend2() throws VetoException {
         //Single Column, multiple variables
         final BRLConditionColumn column = new BRLConditionColumn();
         final BRLConditionVariableColumn columnV0 = new BRLConditionVariableColumn("$age",
@@ -141,7 +155,7 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testUpdate1() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testUpdate1() throws VetoException {
         //Single Column, single variable
         final BRLConditionColumn column = spy(new BRLConditionColumn());
         final BRLConditionVariableColumn columnV0 = new BRLConditionVariableColumn("$age",
@@ -204,7 +218,7 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testUpdate2() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testUpdate2() throws VetoException {
         //Single Column, multiple variables
         final BRLConditionColumn column = spy(new BRLConditionColumn());
         final BRLConditionVariableColumn columnV0 = new BRLConditionVariableColumn("$age",
@@ -267,7 +281,7 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testUpdate3() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testUpdate3() throws VetoException {
         //Single Column, multiple variables
         final BRLConditionColumn column = spy(new BRLConditionColumn());
         final BRLConditionVariableColumn columnV0 = new BRLConditionVariableColumn("$age",
@@ -333,7 +347,135 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testDelete() throws ModelSynchronizer.MoveColumnVetoException {
+    public void checkBRLFragmentConditionCannotBeUpdatedWhenBindingIsUsedInAction() throws VetoException {
+        final BRLConditionColumn column = new BRLConditionColumn();
+        column.setDefinition(Collections.singletonList(new FactPattern("Applicant") {{
+            setBoundName("$a");
+        }}));
+        final BRLConditionVariableColumn columnV0 = new BRLConditionVariableColumn("$age",
+                                                                                   DataType.TYPE_NUMERIC_INTEGER,
+                                                                                   "Applicant",
+                                                                                   "age");
+        column.getChildColumns().add(columnV0);
+        column.setHeader("col1");
+        columnV0.setHeader("col1v0");
+
+        modelSynchronizer.appendColumn(column);
+
+        final ActionSetFieldCol52 action = new ActionSetFieldCol52() {{
+            setBoundName("$a");
+            setFactField("age");
+            setHeader("action1");
+        }};
+
+        modelSynchronizer.appendColumn(action);
+
+        try {
+            final BRLConditionColumn editedColumn = new BRLConditionColumn();
+            editedColumn.setDefinition(Collections.singletonList(new FactPattern("Applicant") {{
+                setBoundName("$a2");
+            }}));
+            final BRLConditionVariableColumn editedColumnV0 = new BRLConditionVariableColumn("$age",
+                                                                                             DataType.TYPE_NUMERIC_INTEGER,
+                                                                                             "Applicant",
+                                                                                             "age");
+            editedColumn.getChildColumns().add(editedColumnV0);
+            editedColumn.setHeader("col1");
+            editedColumnV0.setHeader("col1v0");
+
+            modelSynchronizer.updateColumn(column,
+                                           editedColumn);
+
+            fail("Deletion of the column should have been vetoed.");
+        } catch (VetoUpdatePatternInUseException veto) {
+            //This is expected
+        } catch (VetoException veto) {
+            fail("VetoUpdatePatternInUseException was expected.");
+        }
+
+        assertEquals(4,
+                     model.getExpandedColumns().size());
+        assertTrue(model.getExpandedColumns().get(0) instanceof RowNumberCol52);
+        assertTrue(model.getExpandedColumns().get(1) instanceof DescriptionCol52);
+        assertEquals(columnV0,
+                     model.getExpandedColumns().get(2));
+        assertEquals(action,
+                     model.getExpandedColumns().get(3));
+    }
+
+    @Test
+    public void checkBRLFragmentConditionCannotBeUpdatedWhenFieldBindingIsUsedInAction() throws VetoException {
+        final BRLConditionColumn column = new BRLConditionColumn();
+        column.setDefinition(Collections.singletonList(new FactPattern("Applicant") {{
+            setBoundName("$a");
+            addConstraint(new SingleFieldConstraint("age") {{
+                setBoundName("$age");
+            }});
+        }}));
+
+        final BRLConditionVariableColumn columnV0 = new BRLConditionVariableColumn("$age",
+                                                                                   DataType.TYPE_NUMERIC_INTEGER,
+                                                                                   "Applicant",
+                                                                                   "age");
+        column.getChildColumns().add(columnV0);
+        column.setHeader("col1");
+        columnV0.setHeader("col1v0");
+
+        modelSynchronizer.appendColumn(column);
+
+        final BRLActionColumn action = new BRLActionColumn();
+        action.setDefinition(Collections.singletonList(new ActionCallMethod() {{
+            setVariable("$age");
+            setMethodName("toString()");
+        }}));
+        final BRLActionVariableColumn columnV1 = new BRLActionVariableColumn("$age",
+                                                                             DataType.TYPE_NUMERIC_INTEGER,
+                                                                             "Applicant",
+                                                                             "age");
+        action.getChildColumns().add(columnV1);
+        action.setHeader("col2");
+        columnV1.setHeader("col2v0");
+
+        modelSynchronizer.appendColumn(action);
+
+        try {
+            final BRLConditionColumn editedColumn = new BRLConditionColumn();
+            editedColumn.setDefinition(Collections.singletonList(new FactPattern("Applicant") {{
+                setBoundName("$a");
+                addConstraint(new SingleFieldConstraint("age") {{
+                    setBoundName("$age2");
+                }});
+            }}));
+            final BRLConditionVariableColumn editedColumnV0 = new BRLConditionVariableColumn("$age",
+                                                                                             DataType.TYPE_NUMERIC_INTEGER,
+                                                                                             "Applicant",
+                                                                                             "age");
+            editedColumn.getChildColumns().add(editedColumnV0);
+            editedColumn.setHeader("col1");
+            editedColumnV0.setHeader("col1v0");
+
+            modelSynchronizer.updateColumn(column,
+                                           editedColumn);
+
+            fail("Deletion of the column should have been vetoed.");
+        } catch (VetoUpdatePatternInUseException veto) {
+            //This is expected
+        } catch (VetoException veto) {
+            fail("VetoUpdatePatternInUseException was expected.");
+        }
+
+        assertEquals(4,
+                     model.getExpandedColumns().size());
+        assertTrue(model.getExpandedColumns().get(0) instanceof RowNumberCol52);
+        assertTrue(model.getExpandedColumns().get(1) instanceof DescriptionCol52);
+        assertEquals(columnV0,
+                     model.getExpandedColumns().get(2));
+        assertEquals(action.getChildColumns().get(0),
+                     model.getExpandedColumns().get(3));
+    }
+
+    @Test
+    public void testDelete() throws VetoException {
         final BRLConditionColumn column = new BRLConditionColumn();
         final BRLConditionVariableColumn columnV0 = new BRLConditionVariableColumn("$age",
                                                                                    DataType.TYPE_NUMERIC_INTEGER,
@@ -371,7 +513,137 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testMoveBRLConditionVariableColumnTo() throws ModelSynchronizer.MoveColumnVetoException {
+    public void checkBRLFragmentConditionCannotBeDeletedWithAction() throws VetoException {
+        final BRLConditionColumn column = new BRLConditionColumn();
+        column.setDefinition(Collections.singletonList(new FactPattern("Applicant") {{
+            setBoundName("$a");
+        }}));
+        final BRLConditionVariableColumn columnV0 = new BRLConditionVariableColumn("$age",
+                                                                                   DataType.TYPE_NUMERIC_INTEGER,
+                                                                                   "Applicant",
+                                                                                   "age");
+        column.getChildColumns().add(columnV0);
+        column.setHeader("col1");
+        columnV0.setHeader("col1v0");
+
+        modelSynchronizer.appendColumn(column);
+
+        final ActionSetFieldCol52 action = new ActionSetFieldCol52() {{
+            setBoundName("$a");
+            setFactField("age");
+            setHeader("action1");
+        }};
+
+        modelSynchronizer.appendColumn(action);
+
+        try {
+            modelSynchronizer.deleteColumn(column);
+
+            fail("Deletion of the column should have been vetoed.");
+        } catch (VetoDeletePatternInUseException veto) {
+            //This is expected
+        } catch (VetoException veto) {
+            fail("VetoDeletePatternInUseException was expected.");
+        }
+
+        assertEquals(4,
+                     model.getExpandedColumns().size());
+        assertTrue(model.getExpandedColumns().get(0) instanceof RowNumberCol52);
+        assertTrue(model.getExpandedColumns().get(1) instanceof DescriptionCol52);
+        assertEquals(columnV0,
+                     model.getExpandedColumns().get(2));
+        assertEquals(action,
+                     model.getExpandedColumns().get(3));
+    }
+
+    @Test
+    public void checkBRLFragmentConditionCannotBeDeletedWhenFieldBindingIsUsedInAction() throws VetoException {
+        final BRLConditionColumn column = new BRLConditionColumn();
+        column.setDefinition(Collections.singletonList(new FactPattern("Applicant") {{
+            setBoundName("$a");
+            addConstraint(new SingleFieldConstraint("age") {{
+                setBoundName("$age");
+            }});
+        }}));
+
+        final BRLConditionVariableColumn columnV0 = new BRLConditionVariableColumn("$age",
+                                                                                   DataType.TYPE_NUMERIC_INTEGER,
+                                                                                   "Applicant",
+                                                                                   "age");
+        column.getChildColumns().add(columnV0);
+        column.setHeader("col1");
+        columnV0.setHeader("col1v0");
+
+        modelSynchronizer.appendColumn(column);
+
+        final BRLActionColumn action = new BRLActionColumn();
+        action.setDefinition(Collections.singletonList(new ActionCallMethod() {{
+            setVariable("$age");
+            setMethodName("toString()");
+        }}));
+        final BRLActionVariableColumn columnV1 = new BRLActionVariableColumn("$age",
+                                                                             DataType.TYPE_NUMERIC_INTEGER,
+                                                                             "Applicant",
+                                                                             "age");
+        action.getChildColumns().add(columnV1);
+        action.setHeader("col2");
+        columnV1.setHeader("col2v0");
+
+        modelSynchronizer.appendColumn(action);
+
+        try {
+            modelSynchronizer.deleteColumn(column);
+
+            fail("Deletion of the column should have been vetoed.");
+        } catch (VetoDeletePatternInUseException veto) {
+            //This is expected
+        } catch (VetoException veto) {
+            fail("VetoDeletePatternInUseException was expected.");
+        }
+
+        assertEquals(4,
+                     model.getExpandedColumns().size());
+        assertTrue(model.getExpandedColumns().get(0) instanceof RowNumberCol52);
+        assertTrue(model.getExpandedColumns().get(1) instanceof DescriptionCol52);
+        assertEquals(columnV0,
+                     model.getExpandedColumns().get(2));
+        assertEquals(action.getChildColumns().get(0),
+                     model.getExpandedColumns().get(3));
+    }
+
+    @Test
+    public void checkBRLFragmentConditionCanBeDeletedWithNoAction() throws VetoException {
+        final BRLConditionColumn column = new BRLConditionColumn();
+        final BRLConditionVariableColumn columnV0 = new BRLConditionVariableColumn("$age",
+                                                                                   DataType.TYPE_NUMERIC_INTEGER,
+                                                                                   "Applicant",
+                                                                                   "age");
+        final BRLConditionVariableColumn columnV1 = new BRLConditionVariableColumn("$name",
+                                                                                   DataType.TYPE_STRING,
+                                                                                   "Applicant",
+                                                                                   "name");
+        column.getChildColumns().add(columnV0);
+        column.getChildColumns().add(columnV1);
+        column.setHeader("col1");
+        columnV0.setHeader("col1v0");
+        columnV1.setHeader("col1v1");
+
+        modelSynchronizer.appendColumn(column);
+
+        try {
+            modelSynchronizer.deleteColumn(column);
+        } catch (VetoException veto) {
+            fail("Deletion should have been permitted.");
+        }
+
+        assertEquals(2,
+                     model.getExpandedColumns().size());
+        assertTrue(model.getExpandedColumns().get(0) instanceof RowNumberCol52);
+        assertTrue(model.getExpandedColumns().get(1) instanceof DescriptionCol52);
+    }
+
+    @Test
+    public void testMoveBRLConditionVariableColumnTo() throws VetoException {
         final CompositeColumn<BRLConditionVariableColumn> column1 = new BRLConditionColumn();
         final BRLConditionVariableColumn column1v0 = new BRLConditionVariableColumn("$age",
                                                                                     DataType.TYPE_NUMERIC_INTEGER,
@@ -491,7 +763,7 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testMoveBRLConditionBlockTo() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveBRLConditionBlockTo() throws VetoException {
         final CompositeColumn<BRLConditionVariableColumn> column1 = new BRLConditionColumn();
         final BRLConditionVariableColumn column1v0 = new BRLConditionVariableColumn("$age",
                                                                                     DataType.TYPE_NUMERIC_INTEGER,
@@ -617,7 +889,7 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testMovePatternBefore() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMovePatternBefore() throws VetoException {
         final CompositeColumn<BRLConditionVariableColumn> column1 = new BRLConditionColumn();
         final BRLConditionVariableColumn column1v0 = new BRLConditionVariableColumn("$age",
                                                                                     DataType.TYPE_NUMERIC_INTEGER,
@@ -741,7 +1013,7 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testMovePatternAfter() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMovePatternAfter() throws VetoException {
         final Pattern52 column1 = new Pattern52();
         column1.setFactType("Address");
         final ConditionCol52 column1v0 = new ConditionCol52();

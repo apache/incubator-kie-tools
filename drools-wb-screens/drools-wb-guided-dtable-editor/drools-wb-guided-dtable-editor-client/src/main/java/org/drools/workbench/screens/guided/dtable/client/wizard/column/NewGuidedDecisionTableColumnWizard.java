@@ -33,6 +33,7 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.com
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.DecisionTableColumnPlugin;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.uberfire.client.callbacks.Callback;
+import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 import org.uberfire.ext.widgets.core.client.wizards.AbstractWizard;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardView;
@@ -200,14 +201,6 @@ public class NewGuidedDecisionTableColumnWizard extends AbstractWizard {
         super.close();
     }
 
-    private WizardView getView() {
-        return view;
-    }
-
-    public void goTo(final int index) {
-        getView().selectPage(index);
-    }
-
     public void init(final GuidedDecisionTableView.Presenter presenter) {
         this.presenter = presenter;
     }
@@ -222,6 +215,14 @@ public class NewGuidedDecisionTableColumnWizard extends AbstractWizard {
 
     public GuidedDecisionTableView.Presenter getPresenter() {
         return presenter;
+    }
+
+    public void showGenericVetoError() {
+        ErrorPopup.showMessage(translate(GuidedDecisionTableErraiConstants.NewGuidedDecisionTableColumnWizard_GenericVetoError));
+    }
+
+    public void showPatternInUseError() {
+        ErrorPopup.showMessage(translate(GuidedDecisionTableErraiConstants.NewGuidedDecisionTableColumnWizard_UpdatePatternInUseVetoError));
     }
 
     private String translate(final String key,

@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.model.syn
 
 import java.util.Collections;
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
@@ -27,6 +28,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDif
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLActionColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.BaseColumnSynchronizer.ColumnMetaData;
 
@@ -39,12 +41,12 @@ public class LimitedEntryBRLActionColumnSynchronizer extends BaseColumnSynchroni
     }
 
     @Override
-    public boolean handlesAppend(final MetaData metaData) {
+    public boolean handlesAppend(final MetaData metaData) throws VetoException {
         return handlesUpdate(metaData);
     }
 
     @Override
-    public void append(final ColumnMetaData metaData) {
+    public void append(final ColumnMetaData metaData) throws VetoException {
         //Check operation is supported
         if (!handlesAppend(metaData)) {
             return;
@@ -56,7 +58,7 @@ public class LimitedEntryBRLActionColumnSynchronizer extends BaseColumnSynchroni
     }
 
     @Override
-    public boolean handlesUpdate(final MetaData metaData) {
+    public boolean handlesUpdate(final MetaData metaData) throws VetoException {
         if (!(metaData instanceof ColumnMetaData)) {
             return false;
         }
@@ -65,7 +67,7 @@ public class LimitedEntryBRLActionColumnSynchronizer extends BaseColumnSynchroni
 
     @Override
     public List<BaseColumnFieldDiff> update(final ColumnMetaData originalMetaData,
-                                            final ColumnMetaData editedMetaData) {
+                                            final ColumnMetaData editedMetaData) throws VetoException {
         //Check operation is supported
         if (!(handlesUpdate(originalMetaData) && handlesUpdate(editedMetaData))) {
             return Collections.emptyList();
@@ -99,7 +101,7 @@ public class LimitedEntryBRLActionColumnSynchronizer extends BaseColumnSynchroni
     }
 
     @Override
-    public boolean handlesDelete(final MetaData metaData) {
+    public boolean handlesDelete(final MetaData metaData) throws VetoException {
         if (!(metaData instanceof ColumnMetaData)) {
             return false;
         }
@@ -107,7 +109,7 @@ public class LimitedEntryBRLActionColumnSynchronizer extends BaseColumnSynchroni
     }
 
     @Override
-    public void delete(final ColumnMetaData metaData) {
+    public void delete(final ColumnMetaData metaData) throws VetoException {
         //Check operation is supported
         if (!handlesDelete(metaData)) {
             return;
@@ -120,7 +122,7 @@ public class LimitedEntryBRLActionColumnSynchronizer extends BaseColumnSynchroni
     }
 
     @Override
-    public boolean handlesMoveColumnsTo(final List<? extends MetaData> metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    public boolean handlesMoveColumnsTo(final List<? extends MetaData> metaData) throws VetoException {
         for (MetaData md : metaData) {
             if (!(md instanceof MoveColumnToMetaData)) {
                 return false;
@@ -134,7 +136,7 @@ public class LimitedEntryBRLActionColumnSynchronizer extends BaseColumnSynchroni
     }
 
     @Override
-    public void moveColumnsTo(final List<MoveColumnToMetaData> metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    public void moveColumnsTo(final List<MoveColumnToMetaData> metaData) throws VetoException {
         //Check operation is supported
         if (!handlesMoveColumnsTo(metaData)) {
             return;
@@ -146,7 +148,7 @@ public class LimitedEntryBRLActionColumnSynchronizer extends BaseColumnSynchroni
         final List<ActionCol52> modelActionColumns = model.getActionCols();
         final int modelActionColumnCount = modelActionColumns.size();
         if (modelActionColumnCount == 0) {
-            throw new ModelSynchronizer.MoveColumnVetoException();
+            throw new ModelSynchronizer.MoveVetoException();
         }
 
         final List<BaseColumn> allModelColumns = model.getExpandedColumns();
@@ -156,7 +158,7 @@ public class LimitedEntryBRLActionColumnSynchronizer extends BaseColumnSynchroni
         final int targetColumnIndex = md.getTargetColumnIndex();
         final int sourceColumnIndex = md.getSourceColumnIndex();
         if (targetColumnIndex < minColumnIndex || targetColumnIndex > maxColumnIndex) {
-            throw new ModelSynchronizer.MoveColumnVetoException();
+            throw new ModelSynchronizer.MoveVetoException();
         }
 
         moveModelData(targetColumnIndex,

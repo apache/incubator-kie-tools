@@ -36,6 +36,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.AdditionalInfoPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.FieldPage;
@@ -66,6 +67,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -158,6 +160,17 @@ public class ActionSetFactPluginTest {
 
         assertTrue(success);
         verify(presenter).appendColumn(actionCol52);
+    }
+
+    @Test
+    public void testGenerateColumnWhenColumnIsNotNewAndVetoed() throws Exception {
+        doReturn(false).when(plugin).isNewColumn();
+        doThrow(VetoException.class).when(presenter).updateColumn(any(ActionCol52.class),
+                                                                  any(ActionCol52.class));
+
+        assertFalse(plugin.generateColumn());
+
+        verify(wizard).showGenericVetoError();
     }
 
     @Test

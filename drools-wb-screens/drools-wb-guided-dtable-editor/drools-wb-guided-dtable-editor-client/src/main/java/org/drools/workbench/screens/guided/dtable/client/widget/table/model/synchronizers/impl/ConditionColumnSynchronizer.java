@@ -36,6 +36,9 @@ import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.gwt.BoundFactsChangedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoDeletePatternInUseException;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoUpdatePatternInUseException;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.soup.project.datamodel.oracle.OperatorsOracle;
@@ -62,12 +65,12 @@ public class ConditionColumnSynchronizer extends BaseColumnSynchronizer<PatternC
     }
 
     @Override
-    public boolean handlesAppend(final MetaData metaData) {
+    public boolean handlesAppend(final MetaData metaData) throws VetoException {
         return handlesUpdate(metaData);
     }
 
     @Override
-    public void append(final PatternConditionMetaData metaData) {
+    public void append(final PatternConditionMetaData metaData) throws VetoException {
         //Check operation is supported
         if (!handlesAppend(metaData)) {
             return;
@@ -90,13 +93,13 @@ public class ConditionColumnSynchronizer extends BaseColumnSynchronizer<PatternC
     }
 
     @Override
-    public boolean handlesUpdate(final MetaData metaData) {
+    public boolean handlesUpdate(final MetaData metaData) throws VetoException {
         return metaData instanceof PatternConditionMetaData;
     }
 
     @Override
     public List<BaseColumnFieldDiff> update(final PatternConditionMetaData originalMetaData,
-                                            final PatternConditionMetaData editedMetaData) {
+                                            final PatternConditionMetaData editedMetaData) throws VetoException {
         //Check operation is supported
         if (!(handlesUpdate(originalMetaData) && handlesUpdate(editedMetaData))) {
             return Collections.emptyList();
@@ -123,6 +126,22 @@ public class ConditionColumnSynchronizer extends BaseColumnSynchronizer<PatternC
         final boolean isNewPattern = isNewPattern(editedPattern);
         final boolean isUpdatedPattern = BaseColumnFieldDiffImpl.hasChanged(Pattern52.FIELD_BOUND_NAME,
                                                                             diffs);
+        final boolean isUpdatedCondition = BaseColumnFieldDiffImpl.hasChanged(ConditionCol52.FIELD_BINDING,
+                                                                              diffs);
+
+        //Check if pattern change can be applied to model
+        if (isUpdatedCondition) {
+            if (!isPotentialConditionDeletionSafe(originalColumn)) {
+                throw new VetoUpdatePatternInUseException();
+            }
+        }
+        if (isUpdatedPattern) {
+            if (!isPotentialPatternDeletionSafe(originalPattern)) {
+                throw new VetoUpdatePatternInUseException();
+            }
+        }
+
+        //Perform update
         if (isNewPattern || isUpdatedPattern) {
             append(editedMetaData);
             copyColumnData(originalColumn,
@@ -172,7 +191,7 @@ public class ConditionColumnSynchronizer extends BaseColumnSynchronizer<PatternC
     }
 
     @Override
-    public boolean handlesDelete(final MetaData metaData) {
+    public boolean handlesDelete(final MetaData metaData) throws VetoException {
         if (!(metaData instanceof ColumnMetaData)) {
             return false;
         }
@@ -180,7 +199,7 @@ public class ConditionColumnSynchronizer extends BaseColumnSynchronizer<PatternC
     }
 
     @Override
-    public void delete(final ColumnMetaData metaData) {
+    public void delete(final ColumnMetaData metaData) throws VetoException {
         //Check operation is supported
         if (!handlesDelete(metaData)) {
             return;
@@ -189,6 +208,16 @@ public class ConditionColumnSynchronizer extends BaseColumnSynchronizer<PatternC
         final ConditionCol52 column = (ConditionCol52) metaData.getColumn();
         final int columnIndex = model.getExpandedColumns().indexOf(column);
         final Pattern52 pattern = model.getPattern(column);
+
+        //Check if pattern change can be applied to model
+        if (!isPotentialConditionDeletionSafe(column)) {
+            throw new VetoDeletePatternInUseException();
+        }
+        if (!isPotentialPatternDeletionSafe(pattern)) {
+            throw new VetoDeletePatternInUseException();
+        }
+
+        //Perform deletion
         pattern.getChildColumns().remove(column);
 
         //Remove pattern if it contains zero conditions
@@ -204,7 +233,7 @@ public class ConditionColumnSynchronizer extends BaseColumnSynchronizer<PatternC
     }
 
     @Override
-    public boolean handlesMoveColumnsTo(final List<? extends MetaData> metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    public boolean handlesMoveColumnsTo(final List<? extends MetaData> metaData) throws VetoException {
         for (MetaData md : metaData) {
             if (!(md instanceof MoveColumnToMetaData)) {
                 return false;
@@ -220,7 +249,7 @@ public class ConditionColumnSynchronizer extends BaseColumnSynchronizer<PatternC
     }
 
     @Override
-    public void moveColumnsTo(final List<MoveColumnToMetaData> metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    public void moveColumnsTo(final List<MoveColumnToMetaData> metaData) throws VetoException {
         //Check operation is supported
         if (!handlesMoveColumnsTo(metaData)) {
             return;
@@ -230,7 +259,7 @@ public class ConditionColumnSynchronizer extends BaseColumnSynchronizer<PatternC
         } else if (isSingleCondition(metaData)) {
             doMoveSingleCondition(metaData.get(0));
         } else {
-            throw new ModelSynchronizer.MoveColumnVetoException();
+            throw new ModelSynchronizer.MoveVetoException();
         }
     }
 
@@ -262,20 +291,20 @@ public class ConditionColumnSynchronizer extends BaseColumnSynchronizer<PatternC
         return metaData.get(0).getColumn() instanceof ConditionCol52;
     }
 
-    private void doMovePattern(final List<MoveColumnToMetaData> metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    private void doMovePattern(final List<MoveColumnToMetaData> metaData) throws VetoException {
         final MoveColumnToMetaData md = metaData.get(0);
         final ConditionCol52 srcModelColumn = (ConditionCol52) md.getColumn();
         final Pattern52 srcModelPattern = model.getPattern(srcModelColumn);
         if (srcModelPattern == null) {
-            throw new ModelSynchronizer.MoveColumnVetoException();
+            throw new ModelSynchronizer.MoveVetoException();
         }
         final List<ConditionCol52> srcModelPatternConditionColumns = srcModelPattern.getChildColumns();
         final int srcModelPatternConditionColumnCount = srcModelPatternConditionColumns.size();
         if (srcModelPatternConditionColumnCount == 0) {
-            throw new ModelSynchronizer.MoveColumnVetoException();
+            throw new ModelSynchronizer.MoveVetoException();
         }
         if (srcModelPatternConditionColumnCount != metaData.size()) {
-            throw new ModelSynchronizer.MoveColumnVetoException();
+            throw new ModelSynchronizer.MoveVetoException();
         }
 
         final int tgtColumnIndex = md.getTargetColumnIndex();
@@ -292,17 +321,17 @@ public class ConditionColumnSynchronizer extends BaseColumnSynchronizer<PatternC
     }
 
     //Move a single Condition column; it must remain within the bounds of it's parent Pattern's columns
-    private void doMoveSingleCondition(final MoveColumnToMetaData metaData) throws ModelSynchronizer.MoveColumnVetoException {
+    private void doMoveSingleCondition(final MoveColumnToMetaData metaData) throws VetoException {
         final ConditionCol52 modelColumn = (ConditionCol52) metaData.getColumn();
         final Pattern52 modelPattern = model.getPattern(modelColumn);
         if (modelPattern == null) {
-            throw new ModelSynchronizer.MoveColumnVetoException();
+            throw new ModelSynchronizer.MoveVetoException();
         }
 
         final List<ConditionCol52> modelPatternConditionColumns = modelPattern.getChildColumns();
         final int modelPatternConditionColumnCount = modelPatternConditionColumns.size();
         if (modelPatternConditionColumnCount == 0) {
-            throw new ModelSynchronizer.MoveColumnVetoException();
+            throw new ModelSynchronizer.MoveVetoException();
         }
 
         final List<BaseColumn> allModelColumns = model.getExpandedColumns();
@@ -312,7 +341,7 @@ public class ConditionColumnSynchronizer extends BaseColumnSynchronizer<PatternC
         final int targetColumnIndex = metaData.getTargetColumnIndex();
         final int sourceColumnIndex = metaData.getSourceColumnIndex();
         if (targetColumnIndex < minColumnIndex || targetColumnIndex > maxColumnIndex) {
-            throw new ModelSynchronizer.MoveColumnVetoException();
+            throw new ModelSynchronizer.MoveVetoException();
         }
 
         moveModelData(targetColumnIndex,
@@ -446,5 +475,23 @@ public class ConditionColumnSynchronizer extends BaseColumnSynchronizer<PatternC
         if (originalColumn instanceof LimitedEntryCol && editedColumn instanceof LimitedEntryCol) {
             ((LimitedEntryCol) originalColumn).setValue(((LimitedEntryCol) editedColumn).getValue());
         }
+    }
+
+    private boolean isPotentialConditionDeletionSafe(final ConditionCol52 condition) {
+        final String binding = condition.getBinding();
+        if (!(binding == null || binding.isEmpty())) {
+            return !rm.isBoundFactUsed(binding);
+        }
+        return true;
+    }
+
+    private boolean isPotentialPatternDeletionSafe(final Pattern52 pattern) {
+        if (pattern.getChildColumns().size() == 1) {
+            final String binding = pattern.getBoundName();
+            if (!(binding == null || binding.isEmpty())) {
+                return !rm.isBoundFactUsed(binding);
+            }
+        }
+        return true;
     }
 }

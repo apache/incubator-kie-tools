@@ -27,7 +27,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.BaseColumnFieldDif
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.IntegerUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.LongUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.StringUiColumn;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.ModelField;
@@ -35,9 +35,11 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 import static org.drools.workbench.screens.guided.rule.client.util.ModelFieldUtil.modelField;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 public class BRLActionColumnSynchronizerTest extends BaseSynchronizerTest {
 
@@ -70,7 +72,7 @@ public class BRLActionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testAppend1() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testAppend1() throws VetoException {
         //Single Column, single variable
         final BRLActionColumn column = new BRLActionColumn();
         final BRLActionVariableColumn columnV0 = new BRLActionVariableColumn("$age",
@@ -94,7 +96,7 @@ public class BRLActionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testAppend2() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testAppend2() throws VetoException {
         //Single Column, multiple variables
         final BRLActionColumn column = new BRLActionColumn();
         final BRLActionVariableColumn columnV0 = new BRLActionVariableColumn("$age",
@@ -134,7 +136,7 @@ public class BRLActionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testUpdate1() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testUpdate1() throws VetoException {
         //Single Column, single variable
         final BRLActionColumn column = spy(new BRLActionColumn());
         final BRLActionVariableColumn columnV0 = new BRLActionVariableColumn("$age",
@@ -190,7 +192,7 @@ public class BRLActionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testUpdate2() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testUpdate2() throws VetoException {
         //Single Column, multiple variables
         final BRLActionColumn column = spy(new BRLActionColumn());
         final BRLActionVariableColumn columnV0 = new BRLActionVariableColumn("$age",
@@ -253,7 +255,7 @@ public class BRLActionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testUpdate3() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testUpdate3() throws VetoException {
         //Single Column, multiple variables
         final BRLActionColumn column = spy(new BRLActionColumn());
         final BRLActionVariableColumn columnV0 = new BRLActionVariableColumn("$age",
@@ -316,7 +318,7 @@ public class BRLActionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testDelete() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testDelete() throws VetoException {
         final BRLActionColumn column = new BRLActionColumn();
         final BRLActionVariableColumn columnV0 = new BRLActionVariableColumn("$age",
                                                                              DataType.TYPE_NUMERIC_INTEGER,
@@ -354,7 +356,7 @@ public class BRLActionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testMoveBRLActionVariableColumnTo() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveBRLActionVariableColumnTo() throws VetoException {
         final BRLActionColumn column1 = new BRLActionColumn();
         final BRLActionVariableColumn column1v0 = new BRLActionVariableColumn("$age",
                                                                               DataType.TYPE_NUMERIC_INTEGER,
@@ -474,7 +476,7 @@ public class BRLActionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testMoveBRLActionBlockTo() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveBRLActionBlockTo() throws VetoException {
         final BRLActionColumn column1 = new BRLActionColumn();
         final BRLActionVariableColumn column1v0 = new BRLActionVariableColumn("$age",
                                                                               DataType.TYPE_NUMERIC_INTEGER,
@@ -596,7 +598,7 @@ public class BRLActionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testMoveActionBefore() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveActionBefore() throws VetoException {
         final BRLActionColumn column1 = new BRLActionColumn();
         final BRLActionVariableColumn column1v0 = new BRLActionVariableColumn("$age",
                                                                               DataType.TYPE_NUMERIC_INTEGER,
@@ -715,7 +717,7 @@ public class BRLActionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
-    public void testMoveActionAfter() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveActionAfter() throws VetoException {
         final ActionInsertFactCol52 column1 = new ActionInsertFactCol52();
         column1.setHeader("country");
         column1.setBoundName("$a");

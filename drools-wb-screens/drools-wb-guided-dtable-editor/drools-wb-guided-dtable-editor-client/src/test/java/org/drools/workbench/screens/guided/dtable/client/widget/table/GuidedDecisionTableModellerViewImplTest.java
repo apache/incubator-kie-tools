@@ -63,9 +63,11 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.co
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control.AttributeColumnConfigRowView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control.ColumnLabelWidget;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control.ColumnManagementView;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control.DeleteColumnManagementAnchorWidget;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Icon;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -81,8 +83,21 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedM
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.anyDouble;
+import static org.mockito.Mockito.anyMap;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 @WithClassesToStub({ColumnLabelWidget.class, GridLienzoPanel.class, DefaultGridLayer.class, GridWidget.class, RestrictedMousePanMediator.class})
@@ -131,10 +146,10 @@ public class GuidedDecisionTableModellerViewImplTest {
     private ColumnManagementView columnManagementView;
 
     @Mock
-    private VerticalPanel actionsConfigWidget;
+    private ColumnManagementView actionsConfigWidget;
 
     @Mock
-    private VerticalPanel conditionsConfigWidget;
+    private ColumnManagementView conditionsConfigWidget;
 
     @Captor
     private ArgumentCaptor<Map<String, List<BaseColumn>>> capturedGroups;
@@ -142,11 +157,22 @@ public class GuidedDecisionTableModellerViewImplTest {
     @Mock
     private ManagedInstance<AttributeColumnConfigRow> attributeColumnConfigRows;
 
+    @Mock
+    private ManagedInstance<DeleteColumnManagementAnchorWidget> deleteColumnManagementAnchorWidgets;
+
+    @Mock
+    private TranslationService translationService;
+
     private GuidedDecisionTableModellerViewImpl view;
 
     @Before
     public void setup() {
-        view = spy(new GuidedDecisionTableModellerViewImplFake());
+        view = spy(new GuidedDecisionTableModellerViewImplFake(actionsConfigWidget,
+                                                               conditionsConfigWidget,
+                                                               attributeColumnConfigRows,
+                                                               deleteColumnManagementAnchorWidgets,
+                                                               accordion,
+                                                               translationService));
 
         ApplicationPreferences.setUp(new HashMap<String, String>() {{
             put(ApplicationPreferences.DATE_FORMAT,
@@ -737,7 +763,18 @@ public class GuidedDecisionTableModellerViewImplTest {
 
     class GuidedDecisionTableModellerViewImplFake extends GuidedDecisionTableModellerViewImpl {
 
-        public GuidedDecisionTableModellerViewImplFake() {
+        public GuidedDecisionTableModellerViewImplFake(final ColumnManagementView actionsPanel,
+                                                       final ColumnManagementView conditionsPanel,
+                                                       final ManagedInstance<AttributeColumnConfigRow> attributeColumnConfigRows,
+                                                       final ManagedInstance<DeleteColumnManagementAnchorWidget> deleteColumnManagementAnchorWidgets,
+                                                       final GuidedDecisionTableAccordion guidedDecisionTableAccordion,
+                                                       final TranslationService translationService) {
+            super(actionsPanel,
+                  conditionsPanel,
+                  attributeColumnConfigRows,
+                  deleteColumnManagementAnchorWidgets,
+                  guidedDecisionTableAccordion,
+                  translationService);
             this.gridPanel = mockGridPanel;
             this.pinnedModeIndicator = GuidedDecisionTableModellerViewImplTest.this.pinnedModeIndicator;
             doReturn(mock(AttributeColumnConfigRow.class)).when(attributeColumnConfigRows).get();

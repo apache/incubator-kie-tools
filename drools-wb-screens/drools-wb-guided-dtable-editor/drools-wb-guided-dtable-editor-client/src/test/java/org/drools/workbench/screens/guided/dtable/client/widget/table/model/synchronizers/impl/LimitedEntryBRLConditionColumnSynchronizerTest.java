@@ -24,18 +24,21 @@ import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLConditionColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseMultipleDOMElementUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BooleanUiColumn;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.junit.Test;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class LimitedEntryBRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
     @Test
-    public void testAppend() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testAppend() throws VetoException {
         final LimitedEntryBRLConditionColumn column = new LimitedEntryBRLConditionColumn();
         column.setHeader("col1");
 
@@ -52,7 +55,7 @@ public class LimitedEntryBRLConditionColumnSynchronizerTest extends BaseSynchron
     }
 
     @Test
-    public void testUpdate() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testUpdate() throws VetoException {
         final LimitedEntryBRLConditionColumn column = new LimitedEntryBRLConditionColumn();
         column.setHeader("col1");
 
@@ -78,7 +81,7 @@ public class LimitedEntryBRLConditionColumnSynchronizerTest extends BaseSynchron
     }
 
     @Test
-    public void testDelete() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testDelete() throws VetoException {
         final LimitedEntryBRLConditionColumn column = new LimitedEntryBRLConditionColumn();
         column.setHeader("col1");
 
@@ -97,7 +100,7 @@ public class LimitedEntryBRLConditionColumnSynchronizerTest extends BaseSynchron
     }
 
     @Test
-    public void testMoveColumnTo_MoveLeft() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnTo_MoveLeft() throws VetoException {
         final CompositeColumn<BRLConditionVariableColumn> column1 = new LimitedEntryBRLConditionColumn();
         column1.setHeader("age");
         final CompositeColumn<BRLConditionVariableColumn> column2 = new LimitedEntryBRLConditionColumn();
@@ -179,7 +182,7 @@ public class LimitedEntryBRLConditionColumnSynchronizerTest extends BaseSynchron
     }
 
     @Test
-    public void testMoveColumnTo_MoveRight() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnTo_MoveRight() throws VetoException {
         final CompositeColumn<BRLConditionVariableColumn> column1 = new LimitedEntryBRLConditionColumn();
         column1.setHeader("age");
         final CompositeColumn<BRLConditionVariableColumn> column2 = new LimitedEntryBRLConditionColumn();
@@ -261,7 +264,7 @@ public class LimitedEntryBRLConditionColumnSynchronizerTest extends BaseSynchron
     }
 
     @Test
-    public void testMoveColumnTo_OutOfBounds() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testMoveColumnTo_OutOfBounds() throws VetoException {
         final CompositeColumn<BRLConditionVariableColumn> column1 = new LimitedEntryBRLConditionColumn();
         column1.setHeader("age");
         final CompositeColumn<BRLConditionVariableColumn> column2 = new LimitedEntryBRLConditionColumn();
@@ -343,14 +346,14 @@ public class LimitedEntryBRLConditionColumnSynchronizerTest extends BaseSynchron
     }
 
     @Test
-    public void checkHandlesMoveColumnsToWithEmptyMetadata() throws ModelSynchronizer.MoveColumnVetoException {
+    public void checkHandlesMoveColumnsToWithEmptyMetadata() throws VetoException {
         final LimitedEntryBRLConditionColumnSynchronizer synchronizer = new LimitedEntryBRLConditionColumnSynchronizer();
 
         assertFalse(synchronizer.handlesMoveColumnsTo(Collections.emptyList()));
     }
 
     @Test
-    public void checkHandlesMoveColumnsToWithMultipleMetadata() throws ModelSynchronizer.MoveColumnVetoException {
+    public void checkHandlesMoveColumnsToWithMultipleMetadata() throws VetoException {
         final BaseSynchronizer.MoveColumnToMetaData md0 = mock(BaseSynchronizer.MoveColumnToMetaData.class);
         final BaseSynchronizer.MoveColumnToMetaData md1 = mock(BaseSynchronizer.MoveColumnToMetaData.class);
         final LimitedEntryBRLConditionColumnSynchronizer synchronizer = new LimitedEntryBRLConditionColumnSynchronizer();
@@ -364,7 +367,7 @@ public class LimitedEntryBRLConditionColumnSynchronizerTest extends BaseSynchron
     }
 
     @Test
-    public void checkHandlesMoveColumnsToWithSingleMetadata() throws ModelSynchronizer.MoveColumnVetoException {
+    public void checkHandlesMoveColumnsToWithSingleMetadata() throws VetoException {
         final BaseSynchronizer.MoveColumnToMetaData md0 = mock(BaseSynchronizer.MoveColumnToMetaData.class);
         final LimitedEntryBRLConditionColumnSynchronizer synchronizer = new LimitedEntryBRLConditionColumnSynchronizer();
         when(md0.getColumn()).thenReturn(mock(LimitedEntryBRLConditionColumn.class));

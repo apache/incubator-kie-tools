@@ -26,6 +26,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryActionRetractFactCol52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.AdditionalInfoPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.PatternToDeletePage;
@@ -39,11 +40,23 @@ import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 import org.uberfire.mocks.EventSourceMock;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ActionRetractFactPluginTest {
+
+    @Mock
+    private NewGuidedDecisionTableColumnWizard wizard;
 
     @Mock
     private PatternToDeletePage patternToDeletePage;
@@ -81,8 +94,6 @@ public class ActionRetractFactPluginTest {
 
     @Test
     public void testInit() throws Exception {
-        final NewGuidedDecisionTableColumnWizard wizard = mock(NewGuidedDecisionTableColumnWizard.class);
-
         model.setTableFormat(GuidedDecisionTable52.TableFormat.LIMITED_ENTRY);
         doReturn(model).when(presenter).getModel();
         doReturn(presenter).when(wizard).getPresenter();
@@ -143,6 +154,17 @@ public class ActionRetractFactPluginTest {
 
         verify(presenter).updateColumn(originalCol,
                                        editingCol);
+    }
+
+    @Test
+    public void testGenerateColumnWhenColumnIsNotNewAndVetoed() throws Exception {
+        doReturn(false).when(plugin).isNewColumn();
+        doThrow(VetoException.class).when(presenter).updateColumn(any(ActionCol52.class),
+                                                                  any(ActionCol52.class));
+
+        assertFalse(plugin.generateColumn());
+
+        verify(wizard).showGenericVetoError();
     }
 
     @Test

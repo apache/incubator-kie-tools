@@ -19,89 +19,91 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.model.syn
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.junit.Test;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.mvp.ParameterizedCommand;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class ModelSynchronizerTest extends BaseSynchronizerTest {
 
     @Test
-    public void testSetCells() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testSetCells() throws VetoException {
         modelSynchronizer.appendRow();
 
-        uiModel.setCell( 0,
-                         1,
-                         new BaseGridCellValue<String>( "value" ) );
+        uiModel.setCell(0,
+                        1,
+                        new BaseGridCellValue<String>("value"));
 
-        assertEquals( "value",
-                      model.getData().get( 0 ).get( 1 ).getStringValue() );
-        assertEquals( "value",
-                      uiModel.getCell( 0,
-                                       1 ).getValue().getValue() );
+        assertEquals("value",
+                     model.getData().get(0).get(1).getStringValue());
+        assertEquals("value",
+                     uiModel.getCell(0,
+                                     1).getValue().getValue());
     }
 
     @Test
-    public void testDeleteCells() throws ModelSynchronizer.MoveColumnVetoException {
+    public void testDeleteCells() throws VetoException {
         modelSynchronizer.appendRow();
 
-        uiModel.setCell( 0,
-                         1,
-                         new BaseGridCellValue<String>( "value" ) );
-        assertEquals( "value",
-                      model.getData().get( 0 ).get( 1 ).getStringValue() );
-        assertEquals( "value",
-                      uiModel.getCell( 0,
-                                       1 ).getValue().getValue() );
+        uiModel.setCell(0,
+                        1,
+                        new BaseGridCellValue<String>("value"));
+        assertEquals("value",
+                     model.getData().get(0).get(1).getStringValue());
+        assertEquals("value",
+                     uiModel.getCell(0,
+                                     1).getValue().getValue());
 
-        uiModel.deleteCell( 0,
-                            1 );
+        uiModel.deleteCell(0,
+                           1);
 
-        assertNull( model.getData().get( 0 ).get( 1 ).getStringValue() );
-        assertNull( uiModel.getCell( 0,
-                                     1 ) );
+        assertNull(model.getData().get(0).get(1).getStringValue());
+        assertNull(uiModel.getCell(0,
+                                   1));
     }
 
     @Test
-    public void testInitialisationOfBooleanCellsWithDefaultValue() throws ModelSynchronizer.MoveColumnVetoException {
-        setupBooleanColumn( ( c ) -> c.setDefaultValue( new DTCellValue52( true ) ) );
+    public void testInitialisationOfBooleanCellsWithDefaultValue() throws VetoException {
+        setupBooleanColumn((c) -> c.setDefaultValue(new DTCellValue52(true)));
 
         modelSynchronizer.appendRow();
 
-        assertTrue( model.getData().get( 0 ).get( 2 ).getBooleanValue() );
-        assertTrue( (Boolean) uiModel.getCell( 0,
-                                               2 ).getValue().getValue() );
+        assertTrue(model.getData().get(0).get(2).getBooleanValue());
+        assertTrue((Boolean) uiModel.getCell(0,
+                                             2).getValue().getValue());
     }
 
     @Test
-    public void testInitialisationOfBooleanCellsWithNullDefaultValue() throws ModelSynchronizer.MoveColumnVetoException {
-        setupBooleanColumn( ( c ) -> c.setDefaultValue( new DTCellValue52( (Boolean) null ) ) );
+    public void testInitialisationOfBooleanCellsWithNullDefaultValue() throws VetoException {
+        setupBooleanColumn((c) -> c.setDefaultValue(new DTCellValue52((Boolean) null)));
 
         modelSynchronizer.appendRow();
 
-        assertFalse( model.getData().get( 0 ).get( 2 ).getBooleanValue() );
-        assertFalse( (Boolean) uiModel.getCell( 0,
-                                                2 ).getValue().getValue() );
+        assertFalse(model.getData().get(0).get(2).getBooleanValue());
+        assertFalse((Boolean) uiModel.getCell(0,
+                                              2).getValue().getValue());
     }
 
     @Test
-    public void testInitialisationOfBooleanCellsWithoutDefaultValue() throws ModelSynchronizer.MoveColumnVetoException {
-        setupBooleanColumn( ( c ) -> {/*Nothing*/ } );
+    public void testInitialisationOfBooleanCellsWithoutDefaultValue() throws VetoException {
+        setupBooleanColumn((c) -> {/*Nothing*/ });
 
         modelSynchronizer.appendRow();
 
-        assertFalse( model.getData().get( 0 ).get( 2 ).getBooleanValue() );
-        assertFalse( (Boolean) uiModel.getCell( 0,
-                                                2 ).getValue().getValue() );
+        assertFalse(model.getData().get(0).get(2).getBooleanValue());
+        assertFalse((Boolean) uiModel.getCell(0,
+                                              2).getValue().getValue());
     }
 
-    private void setupBooleanColumn( final ParameterizedCommand<AttributeCol52> cmdInit ) throws ModelSynchronizer.MoveColumnVetoException {
+    private void setupBooleanColumn(final ParameterizedCommand<AttributeCol52> cmdInit) throws VetoException {
         final AttributeCol52 booleanColumn = new AttributeCol52();
-        booleanColumn.setAttribute( GuidedDecisionTable52.ENABLED_ATTR );
-        cmdInit.execute( booleanColumn );
-        modelSynchronizer.appendColumn( booleanColumn );
+        booleanColumn.setAttribute(GuidedDecisionTable52.ENABLED_ATTR);
+        cmdInit.execute(booleanColumn);
+        modelSynchronizer.appendColumn(booleanColumn);
     }
-
 }

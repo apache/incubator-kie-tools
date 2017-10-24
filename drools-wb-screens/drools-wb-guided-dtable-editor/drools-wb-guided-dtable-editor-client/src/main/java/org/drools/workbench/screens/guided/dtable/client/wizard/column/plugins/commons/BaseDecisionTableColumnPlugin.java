@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons;
 
 import java.util.Optional;
+
 import javax.enterprise.event.Event;
 
 import org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52;
@@ -98,13 +99,13 @@ public abstract class BaseDecisionTableColumnPlugin implements DecisionTableColu
                                          args);
     }
 
-    private void setupFinishCommand() {
-        wizard.setFinishCommand(this::generateColumn);
-    }
-
     private void setupCommands() {
         setupFinishCommand();
         setupCloseCommand();
+    }
+
+    private void setupFinishCommand() {
+        wizard.setFinishCommand(this::generateColumn);
     }
 
     private void setupCloseCommand() {

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -29,6 +30,7 @@ import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.commons.HasAdditionalInfoPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.commons.HasWorkItemPage;
@@ -255,12 +257,16 @@ public class ActionWorkItemPlugin extends BaseDecisionTableColumnPlugin implemen
 
     @Override
     public Boolean generateColumn() {
-
         if (isNewColumn()) {
             presenter.appendColumn(editingCol());
         } else {
-            presenter.updateColumn(originalCol(),
-                                   editingCol());
+            try {
+                presenter.updateColumn(originalCol(),
+                                       editingCol());
+            } catch (ModelSynchronizer.VetoException veto) {
+                wizard.showGenericVetoError();
+                return false;
+            }
         }
 
         return true;

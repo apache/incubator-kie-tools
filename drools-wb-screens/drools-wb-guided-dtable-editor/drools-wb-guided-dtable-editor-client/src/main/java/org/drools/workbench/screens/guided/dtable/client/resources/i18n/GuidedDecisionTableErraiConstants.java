@@ -210,6 +210,15 @@ public class GuidedDecisionTableErraiConstants {
     public static final String NewGuidedDecisionTableColumnWizard_EditColumn = "NewGuidedDecisionTableColumnWizard.EditColumn";
 
     @TranslationKey(defaultValue = "")
+    public static final String NewGuidedDecisionTableColumnWizard_GenericVetoError = "NewGuidedDecisionTableColumnWizard.GenericVetoError";
+
+    @TranslationKey(defaultValue = "")
+    public static final String NewGuidedDecisionTableColumnWizard_UpdatePatternInUseVetoError = "NewGuidedDecisionTableColumnWizard.UpdatePatternInUseVetoError";
+
+    @TranslationKey(defaultValue = "")
+    public static final String NewGuidedDecisionTableColumnWizard_DeletePatternInUseVetoError0 = "NewGuidedDecisionTableColumnWizard.DeletePatternInUseVetoError0";
+
+    @TranslationKey(defaultValue = "")
     public static final String NewPatternView_CreateANewFact = "NewPatternView.CreateANewFact";
 
     @TranslationKey(defaultValue = "")

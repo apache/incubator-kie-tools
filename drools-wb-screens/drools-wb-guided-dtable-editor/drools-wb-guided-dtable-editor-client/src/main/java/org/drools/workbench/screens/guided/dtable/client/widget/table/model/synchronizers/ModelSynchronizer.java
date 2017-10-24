@@ -43,64 +43,75 @@ import org.uberfire.ext.wires.core.grids.client.model.GridRow;
  */
 public interface ModelSynchronizer {
 
-    class MoveColumnVetoException extends Exception {
+    class VetoException extends Exception {
 
     }
 
-    void setSynchronizers( final List<Synchronizer<? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData>> synchronizers );
+    class VetoDeletePatternInUseException extends VetoException {
 
-    void initialise( final GuidedDecisionTable52 model,
-                     final GuidedDecisionTableUiModel uiModel,
-                     final CellUtilities cellUtilities,
-                     final ColumnUtilities columnUtilities,
-                     final DependentEnumsUtilities dependentEnumsUtilities,
-                     final GridWidgetCellFactory gridWidgetCellFactory,
-                     final GridWidgetColumnFactory gridWidgetColumnFactory,
-                     final GuidedDecisionTableView view,
-                     final BRLRuleModel rm,
-                     final EventBus eventBus,
-                     final GuidedDecisionTablePresenter.Access access );
+    }
 
-    void setCell( final GridData.Range rowRange,
-                  final int columnIndex,
-                  final GridCellValue<?> value );
+    class VetoUpdatePatternInUseException extends VetoException {
 
-    void deleteCell( final GridData.Range rowRange,
-                     final int columnIndex );
+    }
 
-    void appendColumn( final BaseColumn column ) throws MoveColumnVetoException;
+    class MoveVetoException extends VetoException {
 
-    void appendColumn( final Pattern52 pattern,
-                       final ConditionCol52 column ) throws MoveColumnVetoException;
+    }
 
-    void deleteColumn( final BaseColumn column ) throws MoveColumnVetoException;
+    void setSynchronizers(final List<Synchronizer<? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData, ? extends Synchronizer.MetaData>> synchronizers);
 
-    List<BaseColumnFieldDiff> updateColumn( final Pattern52 originalPattern,
-                                            final ConditionCol52 originalColumn,
-                                            final Pattern52 editedPattern,
-                                            final ConditionCol52 editedColumn ) throws MoveColumnVetoException;
+    void initialise(final GuidedDecisionTable52 model,
+                    final GuidedDecisionTableUiModel uiModel,
+                    final CellUtilities cellUtilities,
+                    final ColumnUtilities columnUtilities,
+                    final DependentEnumsUtilities dependentEnumsUtilities,
+                    final GridWidgetCellFactory gridWidgetCellFactory,
+                    final GridWidgetColumnFactory gridWidgetColumnFactory,
+                    final GuidedDecisionTableView view,
+                    final BRLRuleModel rm,
+                    final EventBus eventBus,
+                    final GuidedDecisionTablePresenter.Access access);
 
-    List<BaseColumnFieldDiff> updateColumn( final BaseColumn originalColumn,
-                                            final BaseColumn editedColumn ) throws MoveColumnVetoException;
+    void setCell(final GridData.Range rowRange,
+                 final int columnIndex,
+                 final GridCellValue<?> value);
 
-    void moveColumnTo( final int targetColumnIndex,
-                       final GridColumn<?> column ) throws MoveColumnVetoException;
+    void deleteCell(final GridData.Range rowRange,
+                    final int columnIndex);
 
-    void moveColumnsTo( final int targetColumnIndex,
-                        final List<GridColumn<?>> columns ) throws MoveColumnVetoException;
+    void appendColumn(final BaseColumn column) throws VetoException;
 
-    void moveRowsTo( final int targetRowIndex,
-                     final List<GridRow> rows ) throws MoveColumnVetoException;
+    void appendColumn(final Pattern52 pattern,
+                      final ConditionCol52 column) throws VetoException;
 
-    void appendRow() throws MoveColumnVetoException;
+    void deleteColumn(final BaseColumn column) throws VetoException;
 
-    void insertRow( final int rowIndex ) throws MoveColumnVetoException;
+    List<BaseColumnFieldDiff> updateColumn(final Pattern52 originalPattern,
+                                           final ConditionCol52 originalColumn,
+                                           final Pattern52 editedPattern,
+                                           final ConditionCol52 editedColumn) throws VetoException;
 
-    void deleteRow( final int rowIndex ) throws MoveColumnVetoException;
+    List<BaseColumnFieldDiff> updateColumn(final BaseColumn originalColumn,
+                                           final BaseColumn editedColumn) throws VetoException;
+
+    void moveColumnTo(final int targetColumnIndex,
+                      final GridColumn<?> column) throws VetoException;
+
+    void moveColumnsTo(final int targetColumnIndex,
+                       final List<GridColumn<?>> columns) throws VetoException;
+
+    void moveRowsTo(final int targetRowIndex,
+                    final List<GridRow> rows) throws VetoException;
+
+    void appendRow() throws VetoException;
+
+    void insertRow(final int rowIndex) throws VetoException;
+
+    void deleteRow(final int rowIndex) throws VetoException;
 
     void updateSystemControlledColumnValues();
 
-    void setCellOtherwiseState( final int rowIndex,
-                                final int columnIndex );
-
+    void setCellOtherwiseState(final int rowIndex,
+                               final int columnIndex);
 }

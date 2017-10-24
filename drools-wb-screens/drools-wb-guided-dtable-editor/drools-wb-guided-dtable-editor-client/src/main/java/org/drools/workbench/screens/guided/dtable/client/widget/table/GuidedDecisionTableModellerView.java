@@ -29,6 +29,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.InsertMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.ViewMenuBuilder;
@@ -93,6 +94,12 @@ public interface GuidedDecisionTableModellerView extends UberView<GuidedDecision
     Bounds getBounds();
 
     void setPinnedModeIndicatorVisibility(final boolean visible);
+
+    void showGenericVetoMessage();
+
+    void showUnableToDeleteColumnMessage(final ConditionCol52 column);
+
+    void showUnableToDeleteColumnMessage(final ActionCol52 column);
 
     interface Presenter extends GridPinnedModeManager,
                                 ViewMenuBuilder.SupportsZoom,

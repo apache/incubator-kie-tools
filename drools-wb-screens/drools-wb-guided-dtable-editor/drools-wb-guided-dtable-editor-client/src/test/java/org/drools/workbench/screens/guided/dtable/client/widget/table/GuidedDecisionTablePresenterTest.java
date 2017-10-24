@@ -30,11 +30,8 @@ import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.google.gwt.user.client.Command;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.kie.soup.project.datamodel.oracle.DataType;
-import org.kie.soup.project.datamodel.oracle.DropDownData;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
-import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FieldNatureType;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
@@ -52,7 +49,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshActionsPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshAttributesPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshConditionsPanelEvent;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.DependentEnumsUtilities;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableLinkManager.LinkFoundCallback;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
@@ -83,8 +80,23 @@ import org.uberfire.mvp.PlaceRequest;
 import static org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter.Access.LockedBy.CURRENT_USER;
 import static org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter.Access.LockedBy.NOBODY;
 import static org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter.Access.LockedBy.OTHER_USER;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePresenterTest {
@@ -875,87 +887,6 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
-    public void canConditionBeDeletedWithSingleChildColumnWithAction() {
-        final Pattern52 pattern = new Pattern52();
-        pattern.setFactType("FactType1");
-        pattern.setBoundName("$fact");
-        final ConditionCol52 condition1 = new ConditionCol52();
-        condition1.setFactField("field1");
-        pattern.getChildColumns().add(condition1);
-
-        dtPresenter.getModel().getConditions().add(pattern);
-
-        final ActionInsertFactCol52 action = new ActionInsertFactCol52();
-        action.setFactType("FactType1");
-        action.setBoundName("$fact");
-        action.setFactField("field");
-
-        dtPresenter.getModel().getActionCols().add(action);
-
-        assertFalse(dtPresenter.canConditionBeDeleted(condition1));
-    }
-
-    @Test
-    public void canConditionBeDeletedWithSingleChildColumnWithNoAction() {
-        final Pattern52 pattern = new Pattern52();
-        pattern.setFactType("FactType1");
-        final ConditionCol52 condition1 = new ConditionCol52();
-        condition1.setFactField("field1");
-        pattern.getChildColumns().add(condition1);
-
-        dtPresenter.getModel().getConditions().add(pattern);
-
-        assertTrue(dtPresenter.canConditionBeDeleted(condition1));
-    }
-
-    @Test
-    public void canConditionBeDeletedWithMultipleChildColumns() {
-        final Pattern52 pattern = new Pattern52();
-        pattern.setFactType("FactType1");
-        final ConditionCol52 condition1 = new ConditionCol52();
-        condition1.setFactField("field1");
-        pattern.getChildColumns().add(condition1);
-        final ConditionCol52 condition2 = new ConditionCol52();
-        condition2.setFactField("field2");
-        pattern.getChildColumns().add(condition2);
-
-        dtPresenter.getModel().getConditions().add(pattern);
-
-        assertTrue(dtPresenter.canConditionBeDeleted(condition1));
-    }
-
-    @Test
-    public void canBRLFragmentConditionBeDeletedWithAction() {
-        final FactPattern fp = new FactPattern("FactType1");
-        fp.setBoundName("$fact");
-        final BRLConditionColumn column = new BRLConditionColumn();
-        column.getDefinition().add(fp);
-
-        dtPresenter.getModel().getConditions().add(column);
-
-        final ActionInsertFactCol52 action = new ActionInsertFactCol52();
-        action.setFactType("FactType1");
-        action.setBoundName("$fact");
-        action.setFactField("field");
-
-        dtPresenter.getModel().getActionCols().add(action);
-
-        assertFalse(dtPresenter.canConditionBeDeleted(column));
-    }
-
-    @Test
-    public void canBRLFragmentConditionBeDeletedWithNoAction() {
-        final FactPattern fp = new FactPattern("FactType1");
-        fp.setBoundName("$fact");
-        final BRLConditionColumn column = new BRLConditionColumn();
-        column.getDefinition().add(fp);
-
-        dtPresenter.getModel().getConditions().add(column);
-
-        assertTrue(dtPresenter.canConditionBeDeleted(column));
-    }
-
-    @Test
     public void getValueListLookups() {
         final AttributeCol52 attribute = new AttributeCol52();
         attribute.setAttribute(RuleAttributeWidget.ENABLED_ATTR);
@@ -1081,7 +1012,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
-    public void appendPatternAndConditionColumn() throws ModelSynchronizer.MoveColumnVetoException {
+    public void appendPatternAndConditionColumn() throws VetoException {
         reset(modellerPresenter);
 
         final Pattern52 pattern = new Pattern52();
@@ -1103,7 +1034,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
-    public void appendConditionColumn() throws ModelSynchronizer.MoveColumnVetoException {
+    public void appendConditionColumn() throws VetoException {
         reset(modellerPresenter);
 
         final ConditionCol52 condition = new ConditionCol52();
@@ -1121,7 +1052,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
-    public void appendActionColumn() throws ModelSynchronizer.MoveColumnVetoException {
+    public void appendActionColumn() throws VetoException {
         reset(modellerPresenter);
 
         final ActionInsertFactCol52 action = new ActionInsertFactCol52();
@@ -1142,7 +1073,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
-    public void appendRow() throws ModelSynchronizer.MoveColumnVetoException {
+    public void appendRow() throws VetoException {
         reset(synchronizer,
               modellerPresenter);
 
@@ -1155,7 +1086,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
-    public void deleteConditionColumn() throws ModelSynchronizer.MoveColumnVetoException {
+    public void deleteConditionColumn() throws VetoException {
         final Pattern52 pattern = new Pattern52();
         pattern.setFactType("FactType");
         final ConditionCol52 condition = new ConditionCol52();
@@ -1175,7 +1106,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
-    public void deleteActionColumn() throws ModelSynchronizer.MoveColumnVetoException {
+    public void deleteActionColumn() throws VetoException {
         final ActionInsertFactCol52 column = new ActionInsertFactCol52();
         column.setFactType("FactType");
         column.setFactField("field");
@@ -1214,7 +1145,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
-    public void updatePatternAndConditionColumn() throws ModelSynchronizer.MoveColumnVetoException {
+    public void updatePatternAndConditionColumn() throws VetoException {
         final Pattern52 pattern = new Pattern52();
         pattern.setFactType("FactType");
         pattern.setBoundName("$f");
@@ -1247,7 +1178,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
-    public void updateConditionColumn() throws ModelSynchronizer.MoveColumnVetoException {
+    public void updateConditionColumn() throws VetoException {
         final Pattern52 pattern = new Pattern52();
         pattern.setFactType("FactType");
         final ConditionCol52 condition = new ConditionCol52();
@@ -1272,7 +1203,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
-    public void updateActionColumn() throws ModelSynchronizer.MoveColumnVetoException {
+    public void updateActionColumn() throws VetoException {
         final ActionInsertFactCol52 column = new ActionInsertFactCol52();
         column.setFactType("FactType");
         column.setFactField("field");
@@ -1466,7 +1397,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
-    public void onDeleteSelectedColumnsWithSelections() throws ModelSynchronizer.MoveColumnVetoException {
+    public void onDeleteSelectedColumnsWithSelections() throws VetoException {
         final AttributeCol52 column = new AttributeCol52() {
 
             {
@@ -1486,7 +1417,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
-    public void onDeleteSelectedColumnsWithoutSelections() throws ModelSynchronizer.MoveColumnVetoException {
+    public void onDeleteSelectedColumnsWithoutSelections() throws VetoException {
         dtPresenter.onDeleteSelectedColumns();
 
         verify(synchronizer,
@@ -1494,7 +1425,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
-    public void onDeleteSelectedRowsWithSelections() throws ModelSynchronizer.MoveColumnVetoException {
+    public void onDeleteSelectedRowsWithSelections() throws VetoException {
         final GridData uiModel = dtPresenter.getUiModel();
         uiModel.selectCell(0,
                            0);
@@ -1512,7 +1443,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
-    public void onDeleteSelectedRowsWithNoSelections() throws ModelSynchronizer.MoveColumnVetoException {
+    public void onDeleteSelectedRowsWithNoSelections() throws VetoException {
         dtPresenter.onDeleteSelectedRows();
 
         verify(synchronizer,
@@ -1520,7 +1451,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
-    public void onInsertRowAboveNoRowSelected() throws ModelSynchronizer.MoveColumnVetoException {
+    public void onInsertRowAboveNoRowSelected() throws VetoException {
         dtPresenter.onInsertRowAbove();
 
         verify(synchronizer,
@@ -1528,7 +1459,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
-    public void onInsertRowAboveSingleRowSelected() throws ModelSynchronizer.MoveColumnVetoException {
+    public void onInsertRowAboveSingleRowSelected() throws VetoException {
         final GridData uiModel = dtPresenter.getUiModel();
         uiModel.selectCell(0,
                            0);
@@ -1540,7 +1471,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
-    public void onInsertRowAboveMultipleRowsSelected() throws ModelSynchronizer.MoveColumnVetoException {
+    public void onInsertRowAboveMultipleRowsSelected() throws VetoException {
         final GridData uiModel = dtPresenter.getUiModel();
         uiModel.selectCell(0,
                            0);
@@ -1554,7 +1485,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
-    public void onInsertRowBelowNoRowSelected() throws ModelSynchronizer.MoveColumnVetoException {
+    public void onInsertRowBelowNoRowSelected() throws VetoException {
         dtPresenter.onInsertRowBelow();
 
         verify(synchronizer,
@@ -1562,7 +1493,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
-    public void onInsertRowBelowSingleRowSelected() throws ModelSynchronizer.MoveColumnVetoException {
+    public void onInsertRowBelowSingleRowSelected() throws VetoException {
         final GridData uiModel = dtPresenter.getUiModel();
         uiModel.selectCell(0,
                            0);
@@ -1574,7 +1505,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
-    public void onInsertRowBelowMultipleRowsSelected() throws ModelSynchronizer.MoveColumnVetoException {
+    public void onInsertRowBelowMultipleRowsSelected() throws VetoException {
         final GridData uiModel = dtPresenter.getUiModel();
         uiModel.selectCell(0,
                            0);
@@ -1588,7 +1519,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
-    public void onOtherwiseCellNoCellSelected() throws ModelSynchronizer.MoveColumnVetoException {
+    public void onOtherwiseCellNoCellSelected() throws VetoException {
         dtPresenter.onOtherwiseCell();
 
         verify(synchronizer,
@@ -1597,7 +1528,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
-    public void onOtherwiseCellSingleCellSelected() throws ModelSynchronizer.MoveColumnVetoException {
+    public void onOtherwiseCellSingleCellSelected() throws VetoException {
         final GridData uiModel = dtPresenter.getUiModel();
         uiModel.selectCell(0,
                            0);
@@ -1610,7 +1541,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
-    public void onOtherwiseCellMultipleCellsSelected() throws ModelSynchronizer.MoveColumnVetoException {
+    public void onOtherwiseCellMultipleCellsSelected() throws VetoException {
         final GridData uiModel = dtPresenter.getUiModel();
         uiModel.selectCell(0,
                            0);
