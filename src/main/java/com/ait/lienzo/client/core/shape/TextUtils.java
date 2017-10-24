@@ -64,7 +64,7 @@ public class TextUtils
 		return [ top - base, bot - base ];
     }-*/;
 
-    static final NFastDoubleArrayJSO getTextOffsets(final String font, final TextBaseLine baseline)
+    public static final NFastDoubleArrayJSO getTextOffsets(final String font, final TextBaseLine baseline)
     {
         FORBOUNDS.getContext().setTextFont(font);
 
@@ -99,7 +99,7 @@ public class TextUtils
         return getTextOffsets(ctxt.getImageData(0, 0, w, h).getData(), w, h, m * 2);
     }
 
-    static BoundingBox getBoundingBox(final String text, final double size, final String style, final String family, final TextUnit unit, final TextBaseLine baseline, final TextAlign align)
+    public static BoundingBox getBoundingBox(final String text, final double size, final String style, final String family, final TextUnit unit, final TextBaseLine baseline, final TextAlign align)
     {
         if ((null == text) || (text.isEmpty()) || (false == (size > 0)))
         {
@@ -146,12 +146,12 @@ public class TextUtils
         return bbox;
     }
 
-    static String getFontString(final double size, final TextUnit unit, final String style, final String family)
+    public static String getFontString(final double size, final TextUnit unit, final String style, final String family)
     {
         return style + " " + size + unit.toString() + " " + family;
     }
 
-    static String padString(String string, int targetSize, char padChar, TextAlign where) {
+    public static String padString(String string, int targetSize, char padChar, TextAlign where) {
         if (string.length() >= targetSize) {
             return string;
         }

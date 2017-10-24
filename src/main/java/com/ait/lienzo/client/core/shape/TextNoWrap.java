@@ -114,7 +114,7 @@ public class TextNoWrap implements ITextWrapper {
     @Override
     public void drawString(final Context2D context,
                            final Attributes attr,
-                           final Text.DrawString drawCommand) {
+                           final IDrawString drawCommand) {
         drawCommand.draw(context,
                          attr.getText(),
                          0,
