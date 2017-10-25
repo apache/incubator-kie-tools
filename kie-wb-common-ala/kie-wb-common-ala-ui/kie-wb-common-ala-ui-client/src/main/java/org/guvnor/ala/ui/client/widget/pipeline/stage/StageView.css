@@ -1,0 +1,28 @@
+.pipeline-stage {
+    width: 120px;
+    height: 60px;
+    background: #393f44;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    display: table-cell;
+    vertical-align: middle;
+    padding: 10px;
+    border: 4px solid;
+}
+
+.pipeline-stage span {
+    color: white;
+}
+
+@keyframes border-pulsate {
+    0% {
+        border-color: #cc0000;
+    }
+    50% {
+        border-color: rgba(0, 255, 255, 0);
+    }
+    100% {
+        border-color: #cc0000;
+    }
+}

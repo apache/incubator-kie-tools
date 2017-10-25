@@ -1,0 +1,259 @@
+{
+    "kind": "Template",
+    "apiVersion": "v1",
+    "metadata": {
+        "annotations": {
+            "description": "Application template for Red Hat JBoss BPM Suite 7.0 Execution Server applications.",
+            "iconClass": "icon-jboss",
+            "tags": "bpmsuite,jboss,xpaas",
+            "version": "1.4.0",
+            "openshift.io/display-name": "Red Hat JBoss BPM Suite 7.0 Execution Server (Ephemeral with https)"
+        },
+        "name": "bpmsuite70-execserv"
+    },
+    "labels": {
+        "template": "bpmsuite70-execserv",
+        "xpaas": "1.4.0"
+    },
+    "message": "A new BPMS application (using MySQL) has been created in your project. Please be sure to create the \"bpmsuite-service-account\" service account and the secret named \"${HTTPS_SECRET}\" containing the ${HTTPS_KEYSTORE} file used for serving secure content.",
+    "parameters": [
+      {
+        "displayName": "PARAM0 display name",
+        "description": "PARAM0 description",
+        "name": "PARAM0",
+        "value": "PARAM0 value",
+        "required": true
+      },
+      {
+        "displayName": "PARAM1 display name",
+        "description": "PARAM1 description",
+        "name": "PARAM1",
+        "value": "PARAM1 value",
+        "required": false
+      },
+      {
+        "displayName": "PARAM2 display name",
+        "description": "PARAM2 description",
+        "name": "PARAM2",
+        "value": "PARAM2 value",
+        "required": true
+      },
+      {
+        "displayName": "PARAM3 display name",
+        "description": "PARAM3 description",
+        "name": "PARAM3",
+        "value": "PARAM3 value",
+        "required": false
+      },
+      {
+        "displayName": "PARAM4 display name",
+        "description": "PARAM4 description",
+        "name": "PARAM4",
+        "value": "PARAM4 value",
+        "required": true
+      }
+    ],
+    "objects": [
+        {
+            "kind": "Service",
+            "apiVersion": "v1",
+            "spec": {
+                "ports": [
+                    {
+                        "port": 8080,
+                        "targetPort": 8080
+                    }
+                ],
+                "selector": {
+                    "deploymentConfig": "${APPLICATION_NAME}-execserv"
+                }
+            },
+            "metadata": {
+                "name": "${APPLICATION_NAME}-execserv",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                },
+                "annotations": {
+                    "description": "The execution server web server's http port."
+                }
+            }
+        },
+        {
+            "kind": "Service",
+            "apiVersion": "v1",
+            "spec": {
+                "ports": [
+                    {
+                        "port": 8443,
+                        "targetPort": 8443
+                    }
+                ],
+                "selector": {
+                    "deploymentConfig": "${APPLICATION_NAME}-execserv"
+                }
+            },
+            "metadata": {
+                "name": "secure-${APPLICATION_NAME}-execserv",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                },
+                "annotations": {
+                    "description": "The execution server web server's https port."
+                }
+            }
+        },
+        {
+            "kind": "Route",
+            "apiVersion": "v1",
+            "id": "${APPLICATION_NAME}-execserv-http",
+            "metadata": {
+                "name": "${APPLICATION_NAME}-execserv",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                },
+                "annotations": {
+                    "description": "Route for execution server's http service."
+                }
+            },
+            "spec": {
+                "host": "${EXECUTION_SERVER_HOSTNAME_HTTP}",
+                "to": {
+                    "name": "${APPLICATION_NAME}-execserv"
+                }
+            }
+        },
+        {
+            "kind": "Route",
+            "apiVersion": "v1",
+            "id": "${APPLICATION_NAME}-execserv-https",
+            "metadata": {
+                "name": "secure-${APPLICATION_NAME}-execserv",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                },
+                "annotations": {
+                    "description": "Route for execution server's https service."
+                }
+            },
+            "spec": {
+                "host": "${EXECUTION_SERVER_HOSTNAME_HTTPS}",
+                "to": {
+                    "name": "secure-${APPLICATION_NAME}-execserv"
+                },
+                "tls": {
+                    "termination": "passthrough"
+                }
+            }
+        },
+        {
+            "kind": "DeploymentConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APPLICATION_NAME}-execserv",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                }
+            },
+            "spec": {
+                "strategy": {
+                    "type": "Recreate"
+                },
+                "triggers": [
+                    {
+                        "type": "ImageChange",
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "${APPLICATION_NAME}-execserv"
+                            ],
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "namespace": "${IMAGE_STREAM_NAMESPACE}",
+                                "name": "jboss-bpmsuite70-executionserver-openshift:1.0"
+                            }
+                        }
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ],
+                "replicas": 1,
+                "selector": {
+                    "deploymentConfig": "${APPLICATION_NAME}-execserv"
+                },
+                "template": {
+                    "metadata": {
+                        "name": "${APPLICATION_NAME}-execserv",
+                        "labels": {
+                            "deploymentConfig": "${APPLICATION_NAME}-execserv",
+                            "application": "${APPLICATION_NAME}"
+                        }
+                    },
+                    "spec": {
+                        "serviceAccountName": "bpmsuite-service-account",
+                        "terminationGracePeriodSeconds": 60,
+                        "containers": [
+                            {
+                                "name": "${APPLICATION_NAME}-execserv",
+                                "image": "jboss-bpmsuite70-executionserver-openshift",
+                                "imagePullPolicy": "Always",
+                                "volumeMounts": [
+                                    {
+                                        "name": "bpmsuite-keystore-volume",
+                                        "mountPath": "/etc/bpmsuite-secret-volume",
+                                        "readOnly": true
+                                    }
+                                ],
+                                "livenessProbe": {
+                                    "exec": {
+                                        "command": [
+                                            "/bin/bash",
+                                            "-c",
+                                            "/opt/eap/bin/livenessProbe.sh"
+                                        ]
+                                    }
+                                },
+                                "readinessProbe": {
+                                    "exec": {
+                                        "command": [
+                                            "/bin/bash",
+                                            "-c",
+                                            "/opt/eap/bin/readinessProbe.sh"
+                                        ]
+                                    }
+                                },
+                                "ports": [
+                                    {
+                                        "name": "jolokia",
+                                        "containerPort": 8778,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "name": "http",
+                                        "containerPort": 8080,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "name": "https",
+                                        "containerPort": 8443,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "env": [
+                                ]
+                            }
+                        ],
+                        "volumes": [
+                            {
+                                "name": "bpmsuite-keystore-volume",
+                                "secret": {
+                                    "secretName": "${HTTPS_SECRET}"
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}

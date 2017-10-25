@@ -1,0 +1,1 @@
+{"org.guvnor.ala.wildfly.model.WildflyProviderImpl":{"id":"NAME","config":{"org.guvnor.ala.wildfly.config.impl.WildflyProviderConfigImpl":{"name":"NAME","host":"HOST","port":"PORT","managementPort":"MANAGEMENT_PORT","user":"USER","password":"PASSWORD"}},"providerType":{"org.guvnor.ala.wildfly.model.WildflyProviderType":{"providerTypeName":"wildfly","version":"10.0.0.Final"}}}}

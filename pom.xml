@@ -23,6 +23,7 @@
     <module>kie-wb-common-forms</module>
     <module>kie-wb-common-stunner</module>
     <module>kie-wb-common-dmn</module>
+    <module>kie-wb-common-ala</module>
   </modules>
 
   <properties>
@@ -110,13 +111,6 @@
       <dependency>
         <groupId>org.kie.uberfire</groupId>
         <artifactId>kie-uberfire-extensions-bom</artifactId>
-        <version>${version.org.kie}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.guvnor</groupId>
-        <artifactId>guvnor-bom</artifactId>
         <version>${version.org.kie}</version>
         <type>pom</type>
         <scope>import</scope>

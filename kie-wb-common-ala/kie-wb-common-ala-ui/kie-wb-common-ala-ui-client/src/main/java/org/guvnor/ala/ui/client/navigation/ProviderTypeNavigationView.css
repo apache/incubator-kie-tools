@@ -1,0 +1,21 @@
+.navigation-area {
+    margin-left: -40px !important;
+    margin-right: -40px !important;
+}
+
+.new-provider-type {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 16px;
+}
+
+.provider-type-navigation .list-group-item.active {
+    color: #ffffff;
+    background-color: #0088ce;
+}
+
+.provider-type-navigation a.list-group-item {
+    background-color: transparent;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+}

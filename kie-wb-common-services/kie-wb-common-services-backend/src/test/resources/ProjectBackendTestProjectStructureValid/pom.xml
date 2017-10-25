@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.kie.example</groupId>
-  <artifactId>guvnor-m2repo-dependency-example1</artifactId>
+  <artifactId>uberfire-m2repo-dependency-example1</artifactId>
   <version>1.0</version>
 
     

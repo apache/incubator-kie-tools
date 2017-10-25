@@ -1,0 +1,194 @@
+{
+    "kind": "List",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "bpmsuite-image-streams",
+        "annotations": {
+            "description": "ImageStream definitions for JBoss Middleware products."
+        }
+    },
+    "items": [
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "jboss-bpmsuite70-businesscentral-openshift",
+                "annotations": {
+                    "openshift.io/image.insecureRepository": "true",
+                    "openshift.io/display-name": "Red Hat JBoss BPM Suite 7.0 Business Central"
+                }
+            },
+            "spec": {
+                "tags": [
+                    {
+                        "name": "1.0",
+                        "annotations": {
+                            "description": "Red Hat JBoss BPM Suite 7.0 Business Central image.",
+                            "iconClass": "icon-jboss",
+                            "tags": "bpmsuite,xpaas",
+                            "supports":"bpmsuite:7.0,xpaas:1.4",
+                            "version": "1.0"
+                        },
+                        "from": {
+                            "kind": "DockerImage",
+                            "name": "docker-registry.engineering.redhat.com/jboss-bpmsuite-7/bpmsuite70-businesscentral-openshift:1.0"
+                        },
+                        "importPolicy": {
+                            "insecure": "true"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "jboss-bpmsuite70-businesscentral-monitoring-openshift",
+                "annotations": {
+                    "openshift.io/image.insecureRepository": "true",
+                    "openshift.io/display-name": "Red Hat JBoss BPM Suite 7.0 Business Central Monitoring"
+                }
+            },
+            "spec": {
+                "tags": [
+                    {
+                        "name": "1.0",
+                        "annotations": {
+                            "description": "Red Hat JBoss BPM Suite 7.0 Business Central Monitoring image.",
+                            "iconClass": "icon-jboss",
+                            "tags": "bpmsuite,xpaas",
+                            "supports":"bpmsuite:7.0,xpaas:1.4",
+                            "version": "1.0"
+                        },
+                        "from": {
+                            "kind": "DockerImage",
+                            "name": "docker-registry.engineering.redhat.com/jboss-bpmsuite-7/bpmsuite70-businesscentral-monitoring-openshift:1.0"
+                        },
+                        "importPolicy": {
+                            "insecure": "true"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "jboss-bpmsuite70-executionserver-openshift",
+                "annotations": {
+                    "openshift.io/image.insecureRepository": "true",
+                    "openshift.io/display-name": "Red Hat JBoss BPM Suite 7.0 Execution Server"
+                }
+            },
+            "spec": {
+                "tags": [
+                    {
+                        "name": "1.0",
+                        "annotations": {
+                            "description": "Red Hat JBoss BPM Suite 7.0 Execution Server image.",
+                            "iconClass": "icon-jboss",
+                            "tags": "bpmsuite,xpaas",
+                            "supports":"bpmsuite:7.0,xpaas:1.4",
+                            "version": "1.0"
+                        },
+                        "from": {
+                            "kind": "DockerImage",
+                            "name": "docker-registry.engineering.redhat.com/jboss-bpmsuite-7/bpmsuite70-executionserver-openshift:1.0"
+                        },
+                        "importPolicy": {
+                            "insecure": "true"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "jboss-bpmsuite70-smartrouter-openshift",
+                "annotations": {
+                    "openshift.io/image.insecureRepository": "true",
+                    "openshift.io/display-name": "Red Hat JBoss BPM Suite 7.0 Smart Router"
+                }
+            },
+            "spec": {
+                "tags": [
+                    {
+                        "name": "1.0",
+                        "annotations": {
+                            "description": "Red Hat JBoss BPM Suite 7.0 Smart Router image.",
+                            "iconClass": "icon-jboss",
+                            "tags": "bpmsuite,xpaas",
+                            "supports":"bpmsuite:7.0,xpaas:1.4",
+                            "version": "1.0"
+                        },
+                        "from": {
+                            "kind": "DockerImage",
+                            "name": "docker-registry.engineering.redhat.com/jboss-bpmsuite-7/bpmsuite70-smartrouter-openshift:1.0"
+                        },
+                        "importPolicy": {
+                            "insecure": "true"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "jboss-bpmsuite70-standalonecontroller-openshift",
+                "annotations": {
+                    "openshift.io/image.insecureRepository": "true",
+                    "openshift.io/display-name": "Red Hat JBoss BPM Suite 7.0 Standalone Controller"
+                }
+            },
+            "spec": {
+                "tags": [
+                    {
+                        "name": "1.0",
+                        "annotations": {
+                            "description": "Red Hat JBoss BPM Suite 7.0 Standalone Controller image.",
+                            "iconClass": "icon-jboss",
+                            "tags": "bpmsuite,xpaas",
+                            "supports":"bpmsuite:7.0,xpaas:1.4",
+                            "version": "1.0"
+                        },
+                        "from": {
+                            "kind": "DockerImage",
+                            "name": "docker-registry.engineering.redhat.com/jboss-bpmsuite-7/bpmsuite70-standalonecontroller-openshift:1.0"
+                        },
+                        "importPolicy": {
+                            "insecure": "true"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "nexus"
+            },
+            "spec": {
+                "dockerImageRepository": "registry.hub.docker.com/sonatype/nexus",
+                "tags": [
+                    {
+                        "name": "latest",
+                        "annotations": {
+                            "description": "Nexus",
+                            "iconClass": "icon-jboss",
+                            "tags": "nexus",
+                            "supports":"xpaas:1.4",
+                            "version": "latest"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

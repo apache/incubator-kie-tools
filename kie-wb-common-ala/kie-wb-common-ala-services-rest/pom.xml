@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.kie.workbench</groupId>
+    <artifactId>kie-wb-common-ala</artifactId>
+    <version>7.5.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>kie-wb-common-ala-services-rest</artifactId>
+  <name>KIE Workbench Common ALA :: Services REST Impl</name>
+  <packaging>jar</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-common-ala-spi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-common-ala-services-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-commons</artifactId>
+    </dependency>
+    <!-- Registry Local Mock Implementation -->
+
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jaxrs</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!--     Build Local Aether Implementation -->
+    <dependency>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-common-ala-build-maven</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>aopalliance</groupId>
+          <artifactId>aopalliance</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+
+    <!--Source Github  Implementation-->
+    <dependency>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-common-ala-source-git</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!--Providers-->
+    <dependency>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-common-ala-docker-provider</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.ws.rs</groupId>
+          <artifactId>javax.ws.rs-api</artifactId>
+        </exclusion>
+      </exclusions>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-common-ala-openshift-provider</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.ws.rs</groupId>
+          <artifactId>javax.ws.rs-api</artifactId>
+        </exclusion>
+      </exclusions>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-common-ala-wildfly-provider</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.ws.rs</groupId>
+          <artifactId>javax.ws.rs-api</artifactId>
+        </exclusion>
+      </exclusions>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpcore</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.weld.se</groupId>
+      <artifactId>weld-se-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.container</groupId>
+      <artifactId>arquillian-weld-se-embedded-1.1</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+</project>

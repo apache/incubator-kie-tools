@@ -126,8 +126,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-project-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-project-api</artifactId>
       <exclusions>
         <exclusion>
           <groupId>org.uberfire</groupId>

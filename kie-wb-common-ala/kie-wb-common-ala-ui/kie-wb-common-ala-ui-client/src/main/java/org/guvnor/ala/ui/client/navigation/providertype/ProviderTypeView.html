@@ -1,0 +1,43 @@
+<div class="container-fluid" style="padding-top: 12px;">
+    <div class="row">
+        <h5 class="pull-left"><strong id="current-provider-type-name" data-role="dummy">Provider Type X</strong></h5>
+        <div class="btn-group pull-right" style="padding-top: 6px;">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-cog"></i> <span class="caret"></span></button>
+            <ul class="dropdown-menu" role="menu">
+                <li>
+                    <a href="#" id="remove-current-provider-type"><i class="fa fa-trash"></i>&nbsp;&nbsp;<span data-i18n-key="Disable"></span></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row navigation-area">
+        <div class="panel-group" id="provider-type-accordion" style="padding-top:15px;">
+            <div>
+                <h4 class="panel-title">
+                    <a href="#" data-parent="#provider-type-accordion" data-toggle="collapse" data-target="#provider-type-containers" aria-expanded="true" data-i18n-key="Providers"></a>
+                </h4>
+                <div class="panel-collapse collapse in" id="provider-type-containers" aria-expanded="true">
+                    <div class="panel-body container-nav">
+                        <div class="new-provider-type">
+                            <a href="#" id="add-new-provider">
+                                <i class="fa fa-plus"></i>
+                                <span data-i18n-key="AddProvider"></span>
+                            </a>
+                        </div>
+                        <div class="server-navigation list-group" id="provider-list-group">
+                            <a href="#" class="list-group-item">
+                                <i class="fa fa-fw fa-folder-o"></i>
+                                Provider A
+                            </a>
+                            <a href="#" class="list-group-item active">
+                                <i class="fa fa-fw fa-folder-o"></i>
+                                Provider B
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

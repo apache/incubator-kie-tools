@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <parent>
+    <groupId>org.kie.workbench</groupId>
+    <artifactId>kie-wb-common-ala-ui</artifactId>
+    <version>7.5.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>kie-wb-common-ala-ui-backend</artifactId>
+
+  <name>KIE Workbench Common ALA :: UI - Backend</name>
+  <description>KIE Workbench Common ALA :: UI - Backend</description>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-bus</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-security-server</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-commons</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-security-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-preferences-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-preferences-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-services-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-structure-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-structure-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-project-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-project-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-common-ala-spi</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-common-ala-services-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-common-ala-services-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-common-ala-ui-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-testing-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-common-ala-ui-api</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-common-ala-spi</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+</project>

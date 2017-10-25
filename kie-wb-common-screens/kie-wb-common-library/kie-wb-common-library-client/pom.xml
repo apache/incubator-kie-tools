@@ -26,28 +26,28 @@
     </dependency>
 
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-asset-mgmt-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-asset-mgmt-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-structure-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-structure-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-structure-client</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-structure-client</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-project-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-project-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-project-client</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-project-client</artifactId>
     </dependency>
 
     <dependency>

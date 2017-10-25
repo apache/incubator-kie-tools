@@ -44,12 +44,12 @@
       <artifactId>uberfire-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-structure-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-structure-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-project-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-project-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -60,8 +60,8 @@
       <artifactId>uberfire-preferences-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-structure-backend</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-structure-backend</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>

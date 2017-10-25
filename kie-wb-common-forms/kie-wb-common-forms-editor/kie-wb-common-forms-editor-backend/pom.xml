@@ -66,8 +66,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-project-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-project-api</artifactId>
     </dependency>
 
     <dependency>
@@ -76,8 +76,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-services-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-services-api</artifactId>
     </dependency>
 
     <dependency>

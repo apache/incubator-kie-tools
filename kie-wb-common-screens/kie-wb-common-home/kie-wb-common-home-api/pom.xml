@@ -17,8 +17,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-structure-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-structure-api</artifactId>
     </dependency>
 
     <dependency>

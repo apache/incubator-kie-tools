@@ -56,8 +56,8 @@
       <artifactId>errai-bus</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-project-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-project-api</artifactId>
       <exclusions>
         <exclusion>
           <groupId>org.uberfire</groupId>
@@ -66,12 +66,12 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-services-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-services-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-services-backend</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-services-backend</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
@@ -130,8 +130,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-project-backend</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-project-backend</artifactId>
     </dependency>
 
     <dependency>
@@ -151,8 +151,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-project-builder</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-project-builder</artifactId>
     </dependency>
 
     <dependency>
@@ -195,14 +195,14 @@
     </dependency>
 
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-structure-backend</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-structure-backend</artifactId>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-test-utils</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-test-utils</artifactId>
       <scope>test</scope>
     </dependency>
 

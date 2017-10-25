@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.kie.workbench</groupId>
+    <artifactId>kie-wb-common-ala</artifactId>
+    <version>7.5.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>kie-wb-common-ala-docker-provider</artifactId>
+  <name>KIE Workbench Common ALA :: Docker Provider</name>
+  <packaging>jar</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-common-ala-spi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-common-ala-services-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-common-ala-build-maven</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>aopalliance</groupId>
+          <artifactId>aopalliance</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-common-ala-source-git</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-commons</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.spotify</groupId>
+      <artifactId>docker-client</artifactId>
+      <classifier>shaded</classifier>
+      <exclusions>
+        <!-- These dependencies are bundled in the shaded jar and thus need to be excluded to avoid duplicated classes.
+             The shaded jar should be replaced by the standard one, but the issue is that docker-client depends
+             on jersey and our modules on resteasy which is causing conflicts. -->
+        <exclusion>
+          <groupId>org.glassfish.jersey.connectors</groupId>
+          <artifactId>jersey-apache-connector</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.glassfish.hk2</groupId>
+          <artifactId>hk2-locator</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.glassfish.jersey.core</groupId>
+          <artifactId>jersey-common</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.glassfish.hk2.external</groupId>
+          <artifactId>aopalliance-repackaged</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.glassfish.hk2</groupId>
+          <artifactId>hk2-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.glassfish.jersey.ext</groupId>
+          <artifactId>jersey-entity-filtering</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.ow2.asm</groupId>
+          <artifactId>asm-analysis</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.ow2.asm</groupId>
+          <artifactId>asm</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.ow2.asm</groupId>
+          <artifactId>asm-tree</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.ow2.asm</groupId>
+          <artifactId>asm-util</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.ow2.asm</groupId>
+          <artifactId>asm-commons</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.datatype</groupId>
+          <artifactId>jackson-datatype-guava</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.jaxrs</groupId>
+          <artifactId>jackson-jaxrs-json-provider</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.module</groupId>
+          <artifactId>jackson-module-jaxb-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.github.jnr</groupId>
+          <artifactId>jnr-enxio</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.github.jnr</groupId>
+          <artifactId>jffi</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.github.jnr</groupId>
+          <artifactId>jnr-ffi</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.github.jnr</groupId>
+          <artifactId>jnr-constants</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.github.jnr</groupId>
+          <artifactId>jnr-unixsocket</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.github.jnr</groupId>
+          <artifactId>jnr-posix</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.github.jnr</groupId>
+          <artifactId>jnr-x86asm</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.glassfish.jersey.core</groupId>
+          <artifactId>jersey-client</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.glassfish.hk2.external</groupId>
+          <artifactId>aopalliance-repackaged</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.glassfish.hk2.external</groupId>
+          <artifactId>javax.inject</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.glassfish.jersey.media</groupId>
+          <artifactId>jersey-media-json-jackson</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.annotation</groupId>
+          <artifactId>javax.annotation-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.weld.se</groupId>
+      <artifactId>weld-se-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-common-ala-spi</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

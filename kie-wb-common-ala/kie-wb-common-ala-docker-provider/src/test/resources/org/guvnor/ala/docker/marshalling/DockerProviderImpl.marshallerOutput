@@ -1,0 +1,1 @@
+{"org.guvnor.ala.docker.model.DockerProviderImpl":{"id":"NAME","config":{"org.guvnor.ala.docker.config.impl.DockerProviderConfigImpl":{"name":"NAME","hostIp":"HOST_IP"}},"providerType":{"org.guvnor.ala.docker.model.DockerProviderType":{"providerTypeName":"docker","version":"1.9.1"}}}}

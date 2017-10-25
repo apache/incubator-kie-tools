@@ -1,0 +1,55 @@
+{
+  "org.guvnor.ala.openshift.model.OpenShiftProviderImpl": {
+    "id": "PROVIDER_ID",
+    "config": {
+      "org.guvnor.ala.openshift.config.impl.OpenShiftProviderConfigImpl": {
+        "name": null,
+        "allProxy": null,
+        "httpProxy": null,
+        "httpsProxy": null,
+        "kubernetesApiVersion": null,
+        "kubernetesAuthBasicPassword": null,
+        "kubernetesAuthBasicUsername": null,
+        "kubernetesAuthToken": null,
+        "kubernetesCertsCaData": null,
+        "kubernetesCertsCaFile": null,
+        "kubernetesCertsClientData": null,
+        "kubernetesCertsClientFile": null,
+        "kubernetesCertsClientKeyAlgo": null,
+        "kubernetesCertsClientKeyData": null,
+        "kubernetesCertsClientKeyFile": null,
+        "kubernetesCertsClientKeyPassphrase": null,
+        "kubernetesConnectionTimeout": null,
+        "kubernetesKeystoreFile": null,
+        "kubernetesKeystorePassphrase": null,
+        "kubernetesLoggingInterval": null,
+        "kubernetesMaster": null,
+        "kubernetesNamespace": null,
+        "kubernetesOapiVersion": null,
+        "kubernetesRequestTimeout": null,
+        "kubernetesRollingTimeout": null,
+        "kubernetesScaleTimeout": null,
+        "kubernetesTlsVersions": null,
+        "kubernetesTrustCertificates": null,
+        "kubernetesTruststoreFile": null,
+        "kubernetesTruststorePassphrase": null,
+        "kubernetesUserAgent": null,
+        "kubernetesWatchReconnectInterval": null,
+        "kubernetesWatchReconnectLimit": null,
+        "kubernetesWebsocketPingInterval": null,
+        "kubernetesWebsocketTimeout": null,
+        "noProxy": null,
+        "openshiftBuildTimeout": null,
+        "openshiftUrl": null,
+        "proxyPassword": null,
+        "proxyUsername": null
+      }
+    },
+    "providerType": {
+      "org.guvnor.ala.openshift.model.OpenShiftProviderType": {
+        "providerTypeName": "openshift",
+        "version": "3.6"
+      }
+    }
+  }
+}

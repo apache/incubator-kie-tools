@@ -1,0 +1,50 @@
+<div class="container-fluid" style="padding-left: 0;padding-right: 0;">
+    <div class="row" style="padding-left: 20px;padding-right: 20px;">
+        <h3 class="pull-left">
+            <span data-field="provider-name">Provider A</span>
+        </h3>
+        <div class="pull-right">
+            <button type="button" class="btn btn-primary" style="margin-top: 15px;" data-field="deploy">
+                <i class="pficon pficon-build"></i>&nbsp;&nbsp;<span data-i18n-key="Deploy">Deploy</span>
+            </button>
+
+            <button type="button" class="btn btn-default" style="margin-top: 15px;" data-field="refresh-provider">
+                <i class="fa fa-refresh"></i>&nbsp;&nbsp;<span data-i18n-key="Refresh">Refresh</span>
+            </button>
+
+            <button type="button" class="btn btn-danger" style="margin-top: 15px;" data-field="remove-provider">
+                <i class="fa fa-trash"></i>&nbsp;&nbsp;<span data-i18n-key="Remove">Remove</span>
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tabbable uf-tabbar-panel">
+                <ul class="nav nav-tabs uf-tabbar-panel-nav-tabs nav-tabs-pf">
+                    <li class="uf-dropdown-tab-list-item active" data-field="status-tab">
+                        <a href="javascript:;" data-toggle="tab" data-target="#status-pane" data-field="status-tab-link" data-i18n-key="Status"></a>
+                    </li>
+
+                    <li class="uf-dropdown-tab-list-item" data-field="config-tab">
+                        <a href="javascript:;" data-toggle="tab" data-target="#config-pane" data-field="config-tab-link" data-i18n-key="Config"></a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="status-pane">
+                        <div class="row" style="margin-top: 0;">
+                            <div class="col-md-12" data-field="status-content">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane" id="config-pane">
+                        <div class="row" style="margin-top: 20px;">
+                            <div class="col-md-offset-1 col-md-8" data-field="config-content">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -641,67 +641,67 @@
 
     <!-- Guvnor -->
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-project-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-project-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-services-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-services-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-structure-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-structure-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-structure-client</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-structure-client</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-workingset-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-workingset-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-workingset-client</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-workingset-client</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-project-builder</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-project-builder</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-message-console-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-message-console-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-message-console-backend</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-message-console-backend</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-message-console-client</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-message-console-client</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-asset-mgmt-client</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-asset-mgmt-client</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-asset-mgmt-backend</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-asset-mgmt-backend</artifactId>
     </dependency>
 
     <!-- Lienzo. -->
@@ -1253,19 +1253,19 @@
             <!-- Drools & Guvnor. -->
             <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-datamodel-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-workbench-models-datamodel-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.guvnor:guvnor-asset-mgmt-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.guvnor:guvnor-asset-mgmt-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.guvnor:guvnor-structure-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.guvnor:guvnor-structure-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.guvnor:guvnor-m2repo-editor-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.guvnor:guvnor-m2repo-editor-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.guvnor:guvnor-workingset-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.guvnor:guvnor-workingset-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.guvnor:guvnor-services-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.guvnor:guvnor-project-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.guvnor:guvnor-project-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.guvnor:guvnor-message-console-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.guvnor:guvnor-message-console-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-asset-mgmt-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-asset-mgmt-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-structure-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-structure-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-m2repo-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-m2repo-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-workingset-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-workingset-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-services-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-project-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-project-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-message-console-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-message-console-client</compileSourcesArtifact>
 
             <!-- KIE Workbench services and screens. -->
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-project-editor-api</compileSourcesArtifact>
