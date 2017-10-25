@@ -122,7 +122,8 @@ public class FieldPropertiesRendererTest {
         renderer.onClose();
 
         List<FieldDefinition> fields = helper.getCurrentRenderingContext().getRootForm().getFields();
-        assertTrue(fields.contains(renderer.fieldCopy));
+        assertFalse(fields.contains(renderer.fieldCopy));
+
         verify(helper,
                times(1)).onPressOk(renderer.fieldCopy);
     }

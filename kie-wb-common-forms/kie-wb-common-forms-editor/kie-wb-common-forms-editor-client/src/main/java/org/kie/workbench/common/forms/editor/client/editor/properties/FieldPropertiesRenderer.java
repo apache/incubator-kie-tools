@@ -129,11 +129,6 @@ public class FieldPropertiesRenderer implements IsWidget {
     }
 
     private void doAcceptChanges() {
-        // apply the changes to the current field
-        List<FieldDefinition> fields = helper.getCurrentRenderingContext().getRootForm().getFields();
-        fields.remove(helper.getCurrentField());
-        fields.add(fieldCopy);
-
         helper.onPressOk(fieldCopy);
     }
 

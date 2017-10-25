@@ -217,16 +217,21 @@ public class FormEditorHelperTest {
 
     @Test
     public void testGetFormFieldAvailable() {
-        FieldDefinition resultField = formEditorHelper.getAvailableFields().values().stream().filter( fieldDefinition -> fieldDefinition.getBinding().equals(nameField.getBinding())).findFirst().get();
+        FieldDefinition resultField = formEditorHelper.getAvailableFields().values().stream().filter(fieldDefinition -> fieldDefinition.getBinding().equals(nameField.getBinding())).findFirst().get();
 
         formEditorHelper.saveFormField(nameField,
                                        resultField);
 
         Assertions.assertThat(resultField)
                 .isNotNull()
-                .isEqualToComparingOnlyGivenFields(nameField, "name", "binding", "standaloneClassName");
+                .isEqualToComparingOnlyGivenFields(nameField,
+                                                   "name",
+                                                   "binding",
+                                                   "standaloneClassName");
 
         Assertions.assertThat(content.getDefinition().getFieldById(resultField.getId())).isNotNull();
+
+        Assertions.assertThat(content.getDefinition().getFields()).contains(resultField).doesNotContain(nameField);
 
         Assertions.assertThat(formEditorHelper.getAvailableFields().size()).isEqualTo(employeeFields.size() - 1);
     }
@@ -390,7 +395,10 @@ public class FormEditorHelperTest {
 
         Assertions.assertThat(result)
                 .isNotNull()
-                .isEqualToComparingOnlyGivenFields(expectedField, "name", "binding", "standaloneClassName");
+                .isEqualToComparingOnlyGivenFields(expectedField,
+                                                   "name",
+                                                   "binding",
+                                                   "standaloneClassName");
     }
 
     @Test
