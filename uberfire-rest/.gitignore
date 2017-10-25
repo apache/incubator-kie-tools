@@ -1,0 +1,18 @@
+# Build directories
+target/
+local/
+bin/
+
+# Dotfiles
+/.*
+/**/.*
+!.gitignore
+
+# Ignore Netbeans, IntelliJ and Eclipse setup/project files
+nbproject/
+*.ipr
+*.iws
+*.iml
+.project
+.settings/
+.classpath

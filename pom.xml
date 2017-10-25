@@ -50,7 +50,8 @@
 
   <properties>
     <uberfire.version>${project.version}</uberfire.version>
-    <version.org.kie.soup>7.5.0-SNAPSHOT</version.org.kie.soup>
+    <version.org.kie>7.5.0-SNAPSHOT</version.org.kie>
+    <version.org.kie.soup>${version.org.kie}</version.org.kie.soup>
     <!-- Exception as it is needed for gwt-maven-plugin version-->
     <version.com.google.gwt>2.8.1</version.com.google.gwt>
     <version.com.allen-sauer.gwt.dnd>3.3.3</version.com.allen-sauer.gwt.dnd>
@@ -99,7 +100,9 @@
          directly should help to avoid some of the issues with deploying artifacts. -->
     <jboss.releases.repo.url>https://origin-repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
     <jboss.snapshots.repo.url>https://origin-repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
-
+    <version.org.uberfire.latestFinal.release>1.4.0.Final</version.org.uberfire.latestFinal.release>
+    <revapi.oldUberFireVersion>${version.org.uberfire.latestFinal.release}</revapi.oldUberFireVersion>
+    <revapi.newUberFireVersion>${project.version}</revapi.newUberFireVersion>
   </properties>
 
   <repositories>
@@ -644,6 +647,63 @@
               <hideExternal>true</hideExternal>
             </configuration>
           </plugin>
+          <!-- Copied from kie-parent -->
+          <plugin>
+            <groupId>org.revapi</groupId>
+            <artifactId>revapi-maven-plugin</artifactId>
+            <version>0.8.1</version>
+            <dependencies>
+              <dependency>
+                <groupId>org.revapi</groupId>
+                <artifactId>revapi-java</artifactId>
+                <version>0.13.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <oldArtifacts>
+                <artifact>${project.groupId}:${project.artifactId}:${revapi.oldUberFireVersion}</artifact>
+              </oldArtifacts>
+              <newArtifacts>
+                <artifact>${project.groupId}:${project.artifactId}:${revapi.newUberFireVersion}</artifact>
+              </newArtifacts>
+              <!-- By default revapi will check the oldArtifact against the currently executed build -->
+              <analysisConfigurationFiles>
+                <configurationFile>
+                  <path>src/build/revapi-config.json</path>
+                  <roots>
+                    <root>filters</root>
+                    <root>ignores</root>
+                  </roots>
+                </configurationFile>
+              </analysisConfigurationFiles>
+              <!-- By default, revapi will only fail the build if there are potentially breaking or breaking changes. However, in the report
+                   we want even non breaking changes to be present. -->
+              <reportSeverity>nonBreaking</reportSeverity>
+              <failSeverity>potentiallyBreaking</failSeverity>
+            </configuration>
+            <!-- Running two executions is a workaround to make sure we get a HTML report in case revapi finds
+                 some incompatible changes. The "check" goal will simply fail the whole build before it could get
+                 to the report. To make sure we always get a HTML report, the "report" goal needs to be executed
+                 before the "check" goal.
+                 Once https://github.com/revapi/revapi/issues/11 is fixed it should be possible to use single execution. -->
+            <executions>
+              <execution>
+                <id>check</id>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+                <phase>verify</phase>
+              </execution>
+              <execution>
+                <!-- report can be found in ${build.directory}/site/revapi-report.html -->
+                <id>report</id>
+                <goals>
+                  <goal>report</goal>
+                </goals>
+                <phase>package</phase>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
       </build>
     </profile>
@@ -667,6 +727,16 @@
     <module>uberfire-packaging</module>
     <module>uberfire-preferences</module>
     <module>uberfire-extensions</module>
+    <module>uberfire-asset-mgmt</module>
+    <module>uberfire-m2repo-editor</module>
+    <module>uberfire-message-console</module>
+    <module>uberfire-organizationalunit-manager</module>
+    <module>uberfire-project</module>
+    <module>uberfire-rest</module>
+    <module>uberfire-services</module>
+    <module>uberfire-structure</module>
+    <module>uberfire-test-utils</module>
+    <module>uberfire-workingset</module>
     <module>uberfire-showcase</module>
   </modules>
 
@@ -872,6 +942,12 @@
         <groupId>org.wildfly.security</groupId>
         <artifactId>wildfly-elytron</artifactId>
         <version>${version.org.wildfly.security}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-internal</artifactId>
+        <version>${version.org.kie}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

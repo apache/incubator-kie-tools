@@ -1,0 +1,65 @@
+.navigator {
+    width: 100%;
+    margin: 0;
+    margin-bottom: 15px;
+    border-left: none;
+    border-right: none;
+}
+
+.navigator td {
+    color: #484848;
+    border-bottom: 1px solid #eee;
+    padding: 7px 3px;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.navigator td:first-child {
+    border-left: 0;
+}
+
+.navigator-message {
+    color: #484848;
+    border-bottom: 1px solid #eee;
+    padding: 7px 3px;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.message {
+    color: rgb(51, 51, 51);
+    font-family: Helvetica, arial, freesans, clean, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    height: auto;
+    line-height: 19px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.message-left {
+    float: none;
+    width: auto;
+}
+
+.message-right {
+    float: right;
+}
+
+.author-date-container {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.date {
+    color: rgb(136, 136, 136);
+}
+
+.author {
+    color: rgb(68, 68, 68);
+}
+
+.tree-nav {
+    padding: 10px 15px 15px 15px;
+    border: 1px solid #eee;
+}
