@@ -16,7 +16,8 @@
 
 package org.uberfire.security.impl.authz;
 
-import java.util.HashSet;
+import java.util.Arrays;
+import java.util.Collections;
 
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.GroupImpl;
@@ -33,8 +34,9 @@ import org.uberfire.security.authz.Permission;
 import org.uberfire.security.authz.PermissionCollection;
 import org.uberfire.security.authz.VotingStrategy;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultPermissionManagerTest {
@@ -54,12 +56,24 @@ public class DefaultPermissionManagerTest {
     }
 
     @Test
-    public void testResolvePermissionsPriority() {
+    public void testResolvePermissionsCustomDeniedOverDefaultGranted() {
 
         final VotingStrategy priority = VotingStrategy.PRIORITY;
-        final User user = makeUser("director", new RoleImpl("business-user"));
+        final Role businessUserRole = new RoleImpl("business-user");
+        final Group directorGroup = new GroupImpl("director");
 
-        mockAuthorizationPolicy(user);
+        // Users have a group with their names by default
+        final User user = makeUser("director", directorGroup, businessUserRole);
+
+        mockDefaultPermissions(authorizationPolicy,
+                               makeGrantedPermissionCollection());
+        mockRolePermissions(authorizationPolicy,
+                            makeDeniedPermissionCollection(),
+                            businessUserRole,
+                            0);
+        mockDefaultGroupPermissions(authorizationPolicy,
+                                    makeGrantedPermissionCollection(),
+                                    directorGroup);
 
         final PermissionCollection resolvedPermission = defaultPermissionManager.resolvePermissions(user, priority);
         final Permission permission = resolvedPermission.get(PERMISSION_NAME);
@@ -67,16 +81,129 @@ public class DefaultPermissionManagerTest {
         assertEquals(AuthorizationResult.ACCESS_DENIED, permission.getResult());
     }
 
-    private void mockAuthorizationPolicy(final User user) {
-        mockDefaultPermissions(authorizationPolicy);
-        mockRolePermissions(authorizationPolicy, user);
-        mockGroupPermissions(authorizationPolicy, user);
+    @Test
+    public void testResolvePermissionsCustomGrantedOverDefaultDenied() {
+
+        final VotingStrategy priority = VotingStrategy.PRIORITY;
+        final Role businessUserRole = new RoleImpl("business-user");
+        final Group directorGroup = new GroupImpl("director");
+
+        // Users have a group with their names by default
+        final User user = makeUser("director", directorGroup, businessUserRole);
+
+        mockDefaultPermissions(authorizationPolicy,
+                               makeDeniedPermissionCollection());
+        mockRolePermissions(authorizationPolicy,
+                            makeGrantedPermissionCollection(),
+                            businessUserRole,
+                            0);
+        mockDefaultGroupPermissions(authorizationPolicy,
+                                    makeDeniedPermissionCollection(),
+                                    directorGroup);
+
+        final PermissionCollection resolvedPermission = defaultPermissionManager.resolvePermissions(user, priority);
+        final Permission permission = resolvedPermission.get(PERMISSION_NAME);
+
+        assertEquals(AuthorizationResult.ACCESS_GRANTED, permission.getResult());
     }
 
-    private void mockGroupPermissions(final DefaultAuthorizationPolicy authorizationPolicy,
-                                      final User user) {
+    @Test
+    public void testResolvePermissionsTwoCustomRolesGranted() {
 
-        final Group group = user.getGroups().iterator().next();
+        final VotingStrategy priority = VotingStrategy.PRIORITY;
+        final Role businessUserRole = new RoleImpl("business-user");
+        final Role managerRole = new RoleImpl("manager");
+        final Group directorGroup = new GroupImpl("director");
+
+        // Users have a group with their names by default
+        final User user = makeUser("director", directorGroup, businessUserRole, managerRole);
+
+        mockDefaultPermissions(authorizationPolicy,
+                               makeDeniedPermissionCollection());
+        mockRolePermissions(authorizationPolicy,
+                            makeDeniedPermissionCollection(),
+                            businessUserRole,
+                            0);
+        mockRolePermissions(authorizationPolicy,
+                            makeGrantedPermissionCollection(),
+                            managerRole,
+                            1);
+        mockDefaultGroupPermissions(authorizationPolicy,
+                                    makeDeniedPermissionCollection(),
+                                    directorGroup);
+
+        final PermissionCollection resolvedPermission = defaultPermissionManager.resolvePermissions(user, priority);
+        final Permission permission = resolvedPermission.get(PERMISSION_NAME);
+
+        assertEquals(AuthorizationResult.ACCESS_GRANTED, permission.getResult());
+    }
+
+    @Test
+    public void testResolvePermissionsTwoCustomRolesDenied() {
+
+        final VotingStrategy priority = VotingStrategy.PRIORITY;
+        final Role businessUserRole = new RoleImpl("business-user");
+        final Role managerRole = new RoleImpl("manager");
+        final Group directorGroup = new GroupImpl("director");
+
+        // Users have a group with their names by default
+        final User user = makeUser("director", directorGroup, businessUserRole, managerRole);
+
+        mockDefaultPermissions(authorizationPolicy,
+                               makeDeniedPermissionCollection());
+        mockRolePermissions(authorizationPolicy,
+                            makeDeniedPermissionCollection(),
+                            businessUserRole,
+                            1);
+        mockRolePermissions(authorizationPolicy,
+                            makeGrantedPermissionCollection(),
+                            managerRole,
+                            0);
+        mockDefaultGroupPermissions(authorizationPolicy,
+                                    makeDeniedPermissionCollection(),
+                                    directorGroup);
+
+        final PermissionCollection resolvedPermission = defaultPermissionManager.resolvePermissions(user, priority);
+        final Permission permission = resolvedPermission.get(PERMISSION_NAME);
+
+        assertEquals(AuthorizationResult.ACCESS_DENIED, permission.getResult());
+    }
+
+    @Test
+    public void testResolvePermissionsTwoCustomRolesSamePriority() {
+
+        final VotingStrategy priority = VotingStrategy.PRIORITY;
+        final Role businessUserRole = new RoleImpl("business-user");
+        final Role managerRole = new RoleImpl("manager");
+        final Group directorGroup = new GroupImpl("director");
+
+        // Users have a group with their names by default
+        final User user = makeUser("director", directorGroup, businessUserRole, managerRole);
+
+        mockDefaultPermissions(authorizationPolicy,
+                               makeDeniedPermissionCollection());
+        mockRolePermissions(authorizationPolicy,
+                            makeDeniedPermissionCollection(),
+                            businessUserRole,
+                            0);
+        mockRolePermissions(authorizationPolicy,
+                            makeGrantedPermissionCollection(),
+                            managerRole,
+                            0);
+        mockDefaultGroupPermissions(authorizationPolicy,
+                                    makeDeniedPermissionCollection(),
+                                    directorGroup);
+
+        final PermissionCollection resolvedPermission = defaultPermissionManager.resolvePermissions(user, priority);
+        final Permission permission = resolvedPermission.get(PERMISSION_NAME);
+
+        assertEquals(AuthorizationResult.ACCESS_GRANTED, permission.getResult());
+    }
+
+    private void mockDefaultGroupPermissions(final DefaultAuthorizationPolicy authorizationPolicy,
+                                             final DefaultPermissionCollection permissionCollection,
+                                             final Group group) {
+
         final DefaultAuthorizationEntry groupAuthorizationEntry = new DefaultAuthorizationEntry() {{
             setGroup(group);
             // Simulating a priority with the default value
@@ -84,41 +211,36 @@ public class DefaultPermissionManagerTest {
 
         authorizationPolicy.registerAuthzEntry(groupAuthorizationEntry);
 
-        doReturn(makeGrantedPermission()).when(authorizationPolicy).getPermissions(group);
+        doReturn(permissionCollection).when(authorizationPolicy).getPermissions(group);
     }
 
     private void mockRolePermissions(final DefaultAuthorizationPolicy authorizationPolicy,
-                                     final User user) {
+                                     final DefaultPermissionCollection permissionCollection,
+                                     final Role role,
+                                     final int priority) {
 
-        final Role role = user.getRoles().iterator().next();
         final DefaultAuthorizationEntry roleAuthorizationEntry = new DefaultAuthorizationEntry() {{
             setRole(role);
 
             // Simulating a priority set by the user
-            setPriority(0);
+            setPriority(priority);
         }};
 
         authorizationPolicy.registerAuthzEntry(roleAuthorizationEntry);
 
-        doReturn(makeDeniedPermissionCollection()).when(authorizationPolicy).getPermissions(role);
+        doReturn(permissionCollection).when(authorizationPolicy).getPermissions(role);
     }
 
-    private void mockDefaultPermissions(final DefaultAuthorizationPolicy authorizationPolicy) {
-        doReturn(makeGrantedPermission()).when(authorizationPolicy).getPermissions();
+    private void mockDefaultPermissions(final DefaultAuthorizationPolicy authorizationPolicy,
+                                        final DefaultPermissionCollection permissionCollection) {
+        doReturn(permissionCollection).when(authorizationPolicy).getPermissions();
     }
 
     private UserImpl makeUser(final String name,
-                              final Role role) {
+                              final Group group,
+                              final Role... roles) {
 
-        final HashSet<Role> roles = new HashSet<Role>() {{
-            add(role);
-        }};
-        final HashSet<Group> groups = new HashSet<Group>() {{
-            // Users have a group with their names by default
-            add(new GroupImpl(name));
-        }};
-
-        return new UserImpl(name, roles, groups);
+        return new UserImpl(name, Arrays.asList(roles), Collections.singletonList(group));
     }
 
     private DefaultPermissionCollection makeDeniedPermissionCollection() {
@@ -127,7 +249,7 @@ public class DefaultPermissionManagerTest {
         }};
     }
 
-    private DefaultPermissionCollection makeGrantedPermission() {
+    private DefaultPermissionCollection makeGrantedPermissionCollection() {
         return new DefaultPermissionCollection() {{
             add(makePermissionGranted());
         }};
