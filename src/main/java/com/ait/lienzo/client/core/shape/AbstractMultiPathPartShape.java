@@ -54,6 +54,9 @@ import com.ait.lienzo.client.core.types.PathPartEntryJSO;
 import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.lienzo.client.core.util.Geometry;
+import com.ait.lienzo.client.widget.DragConstraintEnforcer;
+import com.ait.lienzo.client.widget.DragContext;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.DragMode;
 import com.ait.lienzo.shared.core.types.ShapeType;
@@ -66,6 +69,7 @@ import com.google.gwt.json.client.JSONObject;
 public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPartShape<T>> extends Shape<T>
 {
     private final NFastArrayList<PathPartList> m_points = new NFastArrayList<PathPartList>();
+    private NFastArrayList<PathPartList> m_cornerPoints = new NFastArrayList<PathPartList>();
 
     protected AbstractMultiPathPartShape(final ShapeType type)
     {
@@ -80,7 +84,13 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
     @Override
     public BoundingBox getBoundingBox()
     {
-        final int size = m_points.size();
+        NFastArrayList<PathPartList> points = m_points;
+
+        if (getCornerRadius() > 0)
+        {
+            points = m_cornerPoints;
+        }
+        final int size = points.size();
 
         if (size < 1)
         {
@@ -90,7 +100,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
         for (int i = 0; i < size; i++)
         {
-            bbox.add(m_points.get(i).getBoundingBox());
+            bbox.add(points.get(i).getBoundingBox());
         }
         return bbox;
     }
@@ -114,6 +124,31 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
         return cast();
     }
 
+    @Override
+    protected boolean prepare(Context2D context, Attributes attr, double alpha)
+    {
+        double radius = getCornerRadius();
+
+        if (radius != 0)
+        {
+            m_cornerPoints = new NFastArrayList<PathPartList>();
+
+            for (int i = 0; i < m_points.size(); i++)
+            {
+                PathPartList baseList = m_points.get(i);
+
+                Point2DArray basePoints = baseList.getPoints();
+
+                PathPartList cornerList = new PathPartList();
+
+                Geometry.drawArcJoinedLines(cornerList, baseList, basePoints, radius);
+
+                m_cornerPoints.add(cornerList);
+            }
+        }
+        return true;
+    }
+
     protected final void add(final PathPartList list)
     {
         m_points.add(list);
@@ -122,6 +157,18 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
     public final NFastArrayList<PathPartList> getPathPartListArray()
     {
         return m_points;
+    }
+
+    public final NFastArrayList<PathPartList> getActualPathPartListArray()
+    {
+        if (getCornerRadius() > 0)
+        {
+            return m_cornerPoints;
+        }
+        else
+        {
+            return m_points;
+        }
     }
 
     @Override
@@ -137,7 +184,13 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
         }
         if (prepare(context, attr, alpha))
         {
-            final int size = m_points.size();
+            NFastArrayList<PathPartList> points = m_points;
+
+            if (getCornerRadius() > 0)
+            {
+                points = m_cornerPoints;
+            }
+            final int size = points.size();
 
             if (size < 1)
             {
@@ -147,7 +200,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             {
                 setAppliedShadow(false);
 
-                final PathPartList list = m_points.get(i);
+                final PathPartList list = points.get(i);
 
                 if (list.size() > 1)
                 {
@@ -161,6 +214,28 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
                 }
             }
         }
+    }
+
+    public BoundingBox getSizeConstraints()
+    {
+        return  getAttributes().getSizeConstraints();
+    }
+
+    public T setSizeConstraints(final BoundingBox sizeConstraints)
+    {
+        getAttributes().setSizeConstraints(sizeConstraints);
+        return refresh();
+    }
+
+    public double getCornerRadius()
+    {
+        return getAttributes().getCornerRadius();
+    }
+
+    public T setCornerRadius(final double radius)
+    {
+        getAttributes().setCornerRadius(radius);
+        return refresh();
     }
 
     @Override
@@ -669,11 +744,11 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
         {
             ResizeHandleDragHandler topRightHandler = new ResizeHandleDragHandler(m_shape, m_listOfPaths, m_chlist, m_prim, this);
 
-            register(m_prim.addNodeDragMoveHandler(topRightHandler));
-
-            register(m_prim.addNodeDragStartHandler(topRightHandler));
+            m_prim.setDragConstraints(topRightHandler);
 
             register(m_prim.addNodeDragEndHandler(topRightHandler));
+
+
         }
 
         public int getPosition()
@@ -825,7 +900,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
         }
     }
 
-    public static class ResizeHandleDragHandler implements NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
+    public static class ResizeHandleDragHandler implements DragConstraintEnforcer, NodeDragEndHandler
     {
         private final Shape<?>                      m_shape;
 
@@ -865,7 +940,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
         }
 
         @Override
-        public void onNodeDragStart(NodeDragStartEvent event)
+        public void startDrag(DragContext dragContext)
         {
             BoundingBox box = m_shape.getBoundingBox();
 
@@ -997,13 +1072,14 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
         }
 
         @Override
-        public void onNodeDragMove(NodeDragMoveEvent event)
+        public boolean adjust(Point2D dxy)
         {
             if ((m_handle.isActive()) && (m_chlist.isActive()))
             {
-                double dx = event.getDragContext().getDistanceAdjusted().getX();
-
-                double dy = event.getDragContext().getDistanceAdjusted().getY();
+                if (!adjustPrimitive(dxy))
+                {
+                    return false;
+                }
 
                 for (PathPartList list : m_listOfPaths)
                 {
@@ -1020,25 +1096,29 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
                             {
                                 NFastDoubleArrayJSO doubles = m_entries.get(i);
                                 double x = doubles.get(0);
-                                double newX = m_handle.getX(m_boxStartX, m_boxStartY, m_boxStartWidth, m_boxStartHeight, x, dx);
+                                double newX = m_handle.getX(m_boxStartX, m_boxStartY, m_boxStartWidth, m_boxStartHeight, x, dxy.getX());
 
                                 double y = doubles.get(1);
-                                double newY = m_handle.getY(m_boxStartX, m_boxStartY, m_boxStartWidth, m_boxStartHeight, y, dy);
+                                double newY = m_handle.getY(m_boxStartX, m_boxStartY, m_boxStartWidth, m_boxStartHeight, y, dxy.getY());
 
                                 points.set(0, newX);
                                 points.set(1, newY);
+
                                 break;
                             }
                         }
                     }
                     list.resetBoundingBox();
                 }
-                m_handle.updateOtherHandles(dx, dy, m_offsetX, m_offsetY, m_boxStartX, m_boxStartY, m_boxStartWidth, m_boxStartHeight);
+
+                m_handle.updateOtherHandles(dxy.getX(), dxy.getY(), m_offsetX, m_offsetY, m_boxStartX, m_boxStartY, m_boxStartWidth, m_boxStartHeight);
 
                 m_shape.refresh();
 
                 m_shape.getLayer().batch();
             }
+
+            return true;
         }
 
         @Override
@@ -1082,6 +1162,118 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
                     }
                 }
             }
+        }
+
+        public boolean adjustPrimitive(Point2D dxy)
+        {
+            BoundingBox sizeConstraints = m_shape.getAttributes().getSizeConstraints();
+
+            if (sizeConstraints == null)
+            {
+                return true;
+            }
+
+            double minWidth = sizeConstraints.getMinX();
+
+            double maxWidth = sizeConstraints.getMaxX();
+
+            double minHeight = sizeConstraints.getMinY();
+
+            double maxHeight = sizeConstraints.getMaxY();
+
+            Point2D adjustedDelta = adjustForPosition(dxy);
+
+            double adjustedX = adjustedDelta.getX();
+
+            double adjustedY = adjustedDelta.getY();
+
+            double width = m_boxStartWidth + adjustedX;
+
+            double height = m_boxStartHeight + adjustedY;
+
+            boolean needsAdjustment = false;
+
+            if (width < minWidth)
+            {
+                double difference = width - minWidth;
+
+                adjustedDelta.setX(adjustedX - difference);
+            }
+            else
+            {
+                needsAdjustment = true;
+            }
+
+            if (width > maxWidth)
+            {
+                double difference = width - maxWidth;
+
+                adjustedDelta.setX(adjustedX - difference);
+            }
+            else
+            {
+                needsAdjustment = true;
+            }
+
+            if (height < minHeight)
+            {
+                double difference = height - minHeight;
+
+                adjustedDelta.setY(adjustedY - difference);
+            }
+            else
+            {
+                needsAdjustment = true;
+            }
+
+            if (height > maxHeight)
+            {
+                double difference = height - maxHeight;
+
+                adjustedDelta.setY(adjustedY - difference);
+            }
+            else
+            {
+                needsAdjustment = true;
+            }
+
+            adjustedDelta = adjustForPosition(adjustedDelta);
+
+            dxy.setX(adjustedDelta.getX());
+
+            dxy.setY(adjustedDelta.getY());
+
+            return needsAdjustment;
+        }
+
+        private Point2D adjustForPosition(Point2D dxy)
+        {
+            Point2D adjustedDXY = dxy.copy();
+
+            double x = adjustedDXY.getX();
+
+            double y = adjustedDXY.getY();
+
+            switch (m_handle.getPosition())
+            {
+                case 0: //tl
+                    x *= -1;
+                    y *= -1;
+                    break;
+                case 1: //tr
+                    y *= -1;
+                    break;
+                case 2: //br
+                    break;
+                case 3: //bl
+                    x *= -1;
+                    break;
+            }
+
+            adjustedDXY.setX(x);
+            adjustedDXY.setY(y);
+
+            return adjustedDXY;
         }
     }
 }

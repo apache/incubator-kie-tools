@@ -193,7 +193,7 @@ public class WiresShapeControlImpl implements WiresShapeControl
             intersectPoints = getIntersections(linePoints, path, intersectPoints, absLoc);
 
             if ( (c.getHeadConnection().getMagnet() != null && c.getHeadConnection().getMagnet().getMagnets().getWiresShape() == m_shape) ||
-                 (c.getTailConnection().getMagnet() != null && c.getTailConnection().getMagnet().getMagnets().getWiresShape() == m_shape) )
+                    (c.getTailConnection().getMagnet() != null && c.getTailConnection().getMagnet().getMagnets().getWiresShape() == m_shape) )
             {
                 // don't split yourself
                 return accept;
@@ -361,7 +361,7 @@ public class WiresShapeControlImpl implements WiresShapeControl
 
     private Point2DArray getIntersections(Point2DArray linePoints, MultiPath path, Point2DArray intersectPoints, Point2D absLoc)
     {
-        for (PathPartList pathPartList : path.getPathPartListArray())
+        for (PathPartList pathPartList : path.getActualPathPartListArray())
         {
             intersectPoints = getPoint2Ds(linePoints, intersectPoints, absLoc, pathPartList);
         }
@@ -438,7 +438,7 @@ public class WiresShapeControlImpl implements WiresShapeControl
 
     public static void updateNestedShapes(WiresShape shape)
     {
-	shape.shapeMoved();
+        shape.shapeMoved();
     }
 
     public static void updateSpecialConnections(WiresConnector[] connectors,

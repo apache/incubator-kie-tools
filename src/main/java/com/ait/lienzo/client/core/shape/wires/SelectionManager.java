@@ -901,7 +901,7 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
                         xfrm.transform(p, p);
                     }
 
-                    intersections = Geometry.getIntersectPolyLinePath(transformedPoints, connector.getHead().getPathPartListArray().get(0), true);
+                    intersections = Geometry.getIntersectPolyLinePath(transformedPoints, connector.getHead().getActualPathPartListArray().get(0), true);
                     if (intersections!=null && intersections.size()> 0)
                     {
                         addConnector(connector, externallyConnected, box, nodeBox);
@@ -923,7 +923,7 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
                             xfrm.transform(p, p);
                         }
 
-                        intersections = Geometry.getIntersectPolyLinePath(transformedPoints, connector.getTail().getPathPartListArray().get(0), true);
+                        intersections = Geometry.getIntersectPolyLinePath(transformedPoints, connector.getTail().getActualPathPartListArray().get(0), true);
                         if (intersections!=null && intersections.size()> 0)
                         {
                             addConnector(connector, externallyConnected, box, nodeBox);
@@ -1058,7 +1058,7 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
                 if ( shape.getMagnets() != null)
                 {
                     shape.getMagnets().onNodeDragStart(event); // Must do magnets first, to avoid attribute change updates being processed.
-                                                               // Don't need to do this for nested objects, as those just move with their containers, without attribute changes
+                    // Don't need to do this for nested objects, as those just move with their containers, without attribute changes
                 }
                 m_shapeStartLocations.push(shape.getX(), shape.getY());
 

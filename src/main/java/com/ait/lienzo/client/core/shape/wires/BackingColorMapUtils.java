@@ -78,7 +78,7 @@ public class BackingColorMapUtils
 
     public static void drawShapeToBacking(Context2D ctx, MultiPath multiPath, String color, double strokeWidth, boolean fill)
     {
-        NFastArrayList<PathPartList> listOfPaths = multiPath.getPathPartListArray();
+        NFastArrayList<PathPartList> listOfPaths = multiPath.getActualPathPartListArray();
 
         for (int k = 0; k < listOfPaths.size(); k++)
         {
@@ -135,7 +135,7 @@ public class BackingColorMapUtils
                         ctx.arcTo(x0, y0, x1, y1, r);
 
                     }
-                        break;
+                    break;
                 }
             }
 

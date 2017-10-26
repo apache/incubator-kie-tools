@@ -25,7 +25,6 @@ import com.ait.lienzo.client.core.shape.AbstractMultiPathPartShape;
 import com.ait.lienzo.client.core.shape.BezierCurve;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
-import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.QuadraticCurve;
 import com.ait.lienzo.client.core.shape.wires.WiresConnection;
 import com.ait.lienzo.client.core.types.BoundingBox;
@@ -763,6 +762,71 @@ public final class Geometry
         }
     }
 
+    public static final void drawArcJoinedLines(final PathPartList list, final PathPartList baseList, final Point2DArray basePoints, final double radius)
+    {
+        final int pointsSize = basePoints.size();
+
+        final boolean closed = isClosed(baseList);
+
+        for (int i = 0; i < pointsSize; i++)
+        {
+            final PathPartEntryJSO entry = baseList.get(i);
+
+            final PathPartEntryJSO nextEntry = baseList.get(i + 1);
+
+            Point2D p0 = basePoints.get(i - 1);
+
+            final Point2D p2 = basePoints.get(i);
+
+            Point2D p4 = basePoints.get(i + 1);
+
+            if (closed)
+            {
+                if (i == 0)
+                {
+                    p0 = basePoints.get(pointsSize - 1);
+                }
+                if (i == pointsSize - 1)
+                {
+                    p4 = basePoints.get(0);
+                }
+            }
+            else
+            {
+                if (i == 0 || i == pointsSize - 1)
+                {
+                    p0 = null;
+
+                    p4 = null;
+                }
+            }
+            boolean applyArcToList = false;
+
+            if (isCorner(entry, nextEntry))
+            {
+                if (p0 != null && p4 != null)
+                {
+                    if (!Geometry.collinear(p0, p2, p4))
+                    {
+                        applyArcToList = true;
+                    }
+                }
+            }
+            if (applyArcToList)
+            {
+                drawLines(list, p0, p2, p4, radius);
+            }
+            else
+            {
+                list.push(entry.copy());
+            }
+        }
+        if (closed)
+        {
+            list.Z();
+        }
+    }
+
     private static final double closingArc(final PathPartList list, final Point2D p0, final Point2D p2, final Point2D p4, final Point2D plast, final Point2D p0new, final double radius)
     {
         final Point2D p1 = new Point2D();
@@ -792,8 +856,14 @@ public final class Geometry
 
         radius = adjustStartEndOffsets(p0, p2, p4, radius, p1, p3);
 
-        list.L(p1.getX(), p1.getY());
-
+        if (list.size() == 0)
+        {
+            list.M(p1.getX(), p1.getY());
+        }
+        else
+        {
+            list.L(p1.getX(), p1.getY());
+        }
         list.A(p2.getX(), p2.getY(), p3.getX(), p3.getY(), radius);
     }
 
@@ -853,6 +923,51 @@ public final class Geometry
         final double radius = Math.min(p2.sub(p0).getLength(), p2.sub(p4).getLength()) / 2;// it must be half, as there may be another radius on the other side, and they should not cross over.
 
         return ((offset > radius) ? radius : offset);
+    }
+
+    private static final boolean isCorner(PathPartEntryJSO e1, PathPartEntryJSO e2)
+    {
+        if ((e1 == null) || (e2 == null))
+        {
+            return true;
+        }
+        final int c1 = e1.getCommand();
+
+        final int c2 = e2.getCommand();
+
+        if ((c1 == PathPartEntryJSO.MOVETO_ABSOLUTE) && (c2 == PathPartEntryJSO.LINETO_ABSOLUTE))
+        {
+            return true;
+        }
+        if ((c1 == PathPartEntryJSO.LINETO_ABSOLUTE) && (c2 == PathPartEntryJSO.LINETO_ABSOLUTE))
+        {
+            return true;
+        }
+        if ((c1 == PathPartEntryJSO.LINETO_ABSOLUTE) && (c2 == PathPartEntryJSO.CLOSE_PATH_PART))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    private static final boolean isClosed(PathPartList list)
+    {
+        final int listSize = list.size();
+
+        if (listSize <= 2)
+        {
+            return false;
+        }
+        final PathPartEntryJSO part = list.get(listSize - 1);
+
+        if (part.getCommand() == PathPartEntryJSO.CLOSE_PATH_PART)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public static final Point2D intersectLineLine(final Point2D a0, final Point2D a1, final Point2D b0, final Point2D b1)
@@ -1082,7 +1197,7 @@ public final class Geometry
         @SuppressWarnings("unchecked")
         final Set<Point2D>[] intersections = new Set[cardinals.size()];
 
-        final NFastArrayList<PathPartList> paths = shape.getPathPartListArray();
+        final NFastArrayList<PathPartList> paths = shape.getActualPathPartListArray();
 
         final int size = paths.size();
 
@@ -1287,7 +1402,7 @@ public final class Geometry
                     }
                     segmentStart = end;
                 }
-                    break;
+                break;
             }
         }
         if (addCenter)

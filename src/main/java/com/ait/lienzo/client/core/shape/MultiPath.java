@@ -17,7 +17,6 @@
 package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.Attribute;
-import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.PathPartList;
@@ -41,22 +40,22 @@ public class MultiPath extends AbstractMultiPathPartShape<MultiPath>
     public MultiPath(String path)
     {
         super(ShapeType.MULTI_PATH);
-        
+
         PathPartList list = getOrIncrementList();
-        
+
         SVGPath.parse(list, path);
     }
 
     public MultiPath(String[] paths)
     {
         super(ShapeType.MULTI_PATH);
-        
+
         for (String path : paths)
         {
             PathPartList list = getOrIncrementList();
-            
+
             SVGPath.parse(list, path);
-            
+
             list.close();
         }
     }
@@ -186,14 +185,14 @@ public class MultiPath extends AbstractMultiPathPartShape<MultiPath>
     public final MultiPath circle(final double radius)
     {
         getOrIncrementList().circle(radius);
-        
+
         return this;
     }
 
     public final MultiPath rect(final double x, final double y, final double w, final double h)
     {
         getOrIncrementList().rect(x, y, w, h);
-        
+
         return this;
     }
 
@@ -206,12 +205,6 @@ public class MultiPath extends AbstractMultiPathPartShape<MultiPath>
             list.get(list.size() - 1).close();
         }
         return this;
-    }
-
-    @Override
-    protected boolean prepare(Context2D context, Attributes attr, double alpha)
-    {
-        return true;
     }
 
     @Override
