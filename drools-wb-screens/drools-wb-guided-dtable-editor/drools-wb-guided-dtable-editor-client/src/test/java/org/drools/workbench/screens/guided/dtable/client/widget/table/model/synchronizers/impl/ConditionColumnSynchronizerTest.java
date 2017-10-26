@@ -47,13 +47,8 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
 import static org.drools.workbench.screens.guided.rule.client.util.ModelFieldUtil.modelField;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
@@ -619,6 +614,55 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
                      uiModel.getColumns().get(2).getHeaderMetaData().get(0).getTitle());
         assertEquals(editedCondition.getHeader(),
                      uiModel.getColumns().get(2).getHeaderMetaData().get(1).getTitle());
+    }
+
+    @Test
+    public void testUpdate7() throws VetoException {
+        //Single Pattern (updated), single Condition
+
+        final String boundName = "$a";
+        final Pattern52 pattern = spy(boundApplicantPattern(boundName));
+        final Pattern52 editedPattern = boundApplicantPattern(boundName);
+        final ConditionCol52 condition = spy(ageEqualsCondition());
+        final ConditionCol52 editedCondition = nameEqualsCondition();
+        final String entryPoint = "entryPoint";
+
+        modelSynchronizer.appendColumn(pattern, condition);
+
+        editedPattern.setEntryPointName(entryPoint);
+        editedCondition.setWidth(condition.getWidth());
+
+        final List<BaseColumnFieldDiff> diffs = modelSynchronizer.updateColumn(pattern,
+                                                                               condition,
+                                                                               editedPattern,
+                                                                               editedCondition);
+        assertEquals(3, diffs.size());
+
+        verify(pattern).diff(editedPattern);
+        verify(condition).diff(editedCondition);
+        verify(pattern).setEntryPointName(entryPoint);
+
+        assertEquals("entryPointName", diffs.get(0).getFieldName());
+        assertEquals("header", diffs.get(1).getFieldName());
+        assertEquals("factField", diffs.get(2).getFieldName());
+
+        assertEquals(3, model.getExpandedColumns().size());
+        assertEquals(1, model.getConditions().size());
+        assertEquals(1, model.getConditionPattern(boundName).getChildColumns().size());
+
+        assertEquals(3, uiModel.getColumns().size());
+
+        assertTrue(uiModel.getColumns().get(2) instanceof StringUiColumn);
+
+        final String expectedTitle = editedPattern.getBoundName() + " : " + editedPattern.getFactType();
+        final String actualTitle = uiModel.getColumns().get(2).getHeaderMetaData().get(0).getTitle();
+
+        assertEquals(expectedTitle, actualTitle);
+
+        final String expectedHeader = editedCondition.getHeader();
+        final String actualHeader = uiModel.getColumns().get(2).getHeaderMetaData().get(1).getTitle();
+
+        assertEquals(expectedHeader, actualHeader);
     }
 
     @Test
