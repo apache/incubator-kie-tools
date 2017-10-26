@@ -403,11 +403,6 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
     }
 
     @Override
-    public void setEnableColumnCreation(final boolean enabled) {
-        addColumn.setEnabled(enabled);
-    }
-
-    @Override
     public void refreshRuleInheritance(final String selectedParentRuleName,
                                        final Collection<String> availableParentRuleNames) {
         ruleSelector.setRuleName(selectedParentRuleName);

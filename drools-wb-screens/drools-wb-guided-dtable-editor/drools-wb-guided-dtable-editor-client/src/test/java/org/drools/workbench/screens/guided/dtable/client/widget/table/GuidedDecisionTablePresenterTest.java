@@ -1621,17 +1621,23 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
     }
 
     @Test
-    public void testInitialiseAccess() {
+    public void testInitialiseAccessReadOnlyTableWithEditableColumns() {
+        testInitialiseAccess(true, true);
+    }
 
-        final GuidedDecisionTablePresenter.Access access = mock(GuidedDecisionTablePresenter.Access.class);
+    @Test
+    public void testInitialiseAccessReadOnlyTableWithoutEditableColumns() {
+        testInitialiseAccess(true, false);
+    }
 
-        doReturn(access).when(dtPresenter).getAccess();
-        doReturn(true).when(dtPresenter).canEditColumns();
+    @Test
+    public void testInitialiseAccessEditableTableWithEditableColumns() {
+        testInitialiseAccess(false, true);
+    }
 
-        dtPresenter.initialiseAccess(true);
-
-        verify(access).setReadOnly(true);
-        verify(access).setHasEditableColumns(true);
+    @Test
+    public void testInitialiseAccessEditableTableWithoutEditableColumns() {
+        testInitialiseAccess(false, false);
     }
 
     @Test
@@ -1658,6 +1664,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         final boolean hasEditableColumns = dtPresenter.hasEditableColumns();
 
         assertTrue(hasEditableColumns);
+        verify(access).hasEditableColumns();
     }
 
     /*
@@ -1677,5 +1684,17 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         dtSelectionsChangedEvents.stream().map(DecisionTableSelectionsChangedEvent::getPresenter).forEach(p -> assertEquals("Invalid DecisionTableSelectionsChangedEvent detected.",
                                                                                                                             p,
                                                                                                                             dtPresenter));
+    }
+
+    private void testInitialiseAccess(final boolean readOnly, final boolean canEditColumns) {
+        final GuidedDecisionTablePresenter.Access access = mock(GuidedDecisionTablePresenter.Access.class);
+
+        doReturn(access).when(dtPresenter).getAccess();
+        doReturn(canEditColumns).when(dtPresenter).canEditColumns();
+
+        dtPresenter.initialiseAccess(readOnly);
+
+        verify(access).setReadOnly(readOnly);
+        verify(access).setHasEditableColumns(canEditColumns);
     }
 }

@@ -230,7 +230,7 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
     @Override
     public void removeDecisionTable(final GuidedDecisionTableView.Presenter dtPresenter) {
         final Command afterRemovalCommand = () -> {
-            view.setEnableColumnCreation(false);
+            view.disableColumnOperationsMenu();
             view.refreshAttributeWidget(Collections.emptyList());
             view.refreshMetaDataWidget(Collections.emptyList());
             view.refreshConditionsWidget(Collections.emptyList());
@@ -428,8 +428,12 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
 
     void refreshDefinitionsPanel(final GuidedDecisionTableView.Presenter dtPresenter) {
         final GuidedDecisionTable52 model = dtPresenter.getModel();
-
-        view.setEnableColumnCreation(isColumnCreationEnabled(dtPresenter));
+        final boolean isColumnCreationEnabled = isColumnCreationEnabled(dtPresenter);
+        if (isColumnCreationEnabled) {
+            view.enableColumnOperationsMenu();
+        } else {
+            view.disableColumnOperationsMenu();
+        }
         view.refreshAttributeWidget(model.getAttributeCols());
         view.refreshMetaDataWidget(model.getMetadataCols());
         view.refreshConditionsWidget(model.getConditions());

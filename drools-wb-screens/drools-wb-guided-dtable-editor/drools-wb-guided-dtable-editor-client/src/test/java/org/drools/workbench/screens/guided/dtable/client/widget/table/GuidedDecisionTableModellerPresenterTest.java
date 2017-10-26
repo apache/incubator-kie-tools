@@ -305,7 +305,7 @@ public class GuidedDecisionTableModellerPresenterTest {
         afterRemovalCommand.execute();
 
         verify(view,
-               times(1)).setEnableColumnCreation(eq(false));
+               times(1)).disableColumnOperationsMenu();
         verify(view,
                times(1)).refreshAttributeWidget(eq(Collections.emptyList()));
         verify(view,
@@ -897,7 +897,6 @@ public class GuidedDecisionTableModellerPresenterTest {
     @Test
     public void testIsColumnCreationEnabledWhenGuidedDecisionTableIsEditableAndHasEditableColumns() {
 
-        doReturn(model).when(dtablePresenter).getModel();
         doReturn(false).when(dtablePresenter).isReadOnly();
         doReturn(true).when(dtablePresenter).hasEditableColumns();
 
@@ -909,7 +908,6 @@ public class GuidedDecisionTableModellerPresenterTest {
     @Test
     public void testIsColumnCreationEnabledWhenGuidedDecisionTableDoesNotHaveEditableColumns() {
 
-        doReturn(model).when(dtablePresenter).getModel();
         doReturn(false).when(dtablePresenter).isReadOnly();
         doReturn(false).when(dtablePresenter).hasEditableColumns();
 
@@ -921,7 +919,6 @@ public class GuidedDecisionTableModellerPresenterTest {
     @Test
     public void testIsColumnCreationEnabledWhenGuidedDecisionTableIsNotEditable() {
 
-        doReturn(model).when(dtablePresenter).getModel();
         doReturn(true).when(dtablePresenter).isReadOnly();
         doReturn(true).when(dtablePresenter).hasEditableColumns();
 
@@ -933,7 +930,6 @@ public class GuidedDecisionTableModellerPresenterTest {
     @Test
     public void testIsColumnCreationEnabledWhenGuidedDecisionTableIsNotEditableNeitherHasEditableColumns() {
 
-        doReturn(model).when(dtablePresenter).getModel();
         doReturn(true).when(dtablePresenter).isReadOnly();
         doReturn(false).when(dtablePresenter).hasEditableColumns();
 
@@ -943,19 +939,13 @@ public class GuidedDecisionTableModellerPresenterTest {
     }
 
     @Test
-    public void testRefreshDefinitionsPanel() {
+    public void testRefreshDefinitionsPanelColumnCreationEnabled() {
+        testRefreshDefinitionsPanel(true);
+    }
 
-        doReturn(model).when(dtablePresenter).getModel();
-        doReturn(true).when(presenter).isColumnCreationEnabled(dtablePresenter);
-
-        presenter.refreshDefinitionsPanel(dtablePresenter);
-
-        verify(view).setEnableColumnCreation(true);
-        verify(view).refreshAttributeWidget(model.getAttributeCols());
-        verify(view).refreshMetaDataWidget(model.getMetadataCols());
-        verify(view).refreshConditionsWidget(model.getConditions());
-        verify(view).refreshActionsWidget(model.getActionCols());
-        verify(view).refreshColumnsNote(dtablePresenter.hasColumnDefinitions());
+    @Test
+    public void testRefreshDefinitionsPanelColumnCreationDisabled() {
+        testRefreshDefinitionsPanel(false);
     }
 
     @Test
@@ -978,5 +968,26 @@ public class GuidedDecisionTableModellerPresenterTest {
         final boolean isEnabled = presenter.isColumnCreationEnabledToActiveDecisionTable();
 
         assertTrue(isEnabled);
+    }
+
+    private void testRefreshDefinitionsPanel(final boolean columnCreationEnabled) {
+        doReturn(model).when(dtablePresenter).getModel();
+        doReturn(columnCreationEnabled).when(presenter).isColumnCreationEnabled(dtablePresenter);
+
+        presenter.refreshDefinitionsPanel(dtablePresenter);
+
+        if (columnCreationEnabled) {
+            verify(view).enableColumnOperationsMenu();
+            verify(view, never()).disableColumnOperationsMenu();
+        } else {
+            verify(view, never()).enableColumnOperationsMenu();
+            verify(view).disableColumnOperationsMenu();
+        }
+
+        verify(view).refreshAttributeWidget(model.getAttributeCols());
+        verify(view).refreshMetaDataWidget(model.getMetadataCols());
+        verify(view).refreshConditionsWidget(model.getConditions());
+        verify(view).refreshActionsWidget(model.getActionCols());
+        verify(view).refreshColumnsNote(dtablePresenter.hasColumnDefinitions());
     }
 }

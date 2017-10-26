@@ -70,8 +70,6 @@ public interface GuidedDecisionTableModellerView extends UberView<GuidedDecision
     void removeDecisionTable(final GuidedDecisionTableView gridWidget,
                              final Command afterRemovalCommand);
 
-    void setEnableColumnCreation(final boolean enabled);
-
     void refreshRuleInheritance(final String selectedParentRuleName,
                                 final Collection<String> availableParentRuleNames);
 
