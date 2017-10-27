@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
 <config xmlns="http://zanata.org/namespace/config/">
-  <url>https://translate.jboss.org/</url>
+  <url>https://vendors.zanata.redhat.com/</url>
   <project>kie-wb-common</project>
-  <project-version>8.0.0</project-version>
+  <project-version>7.5.0</project-version>
   <project-type>utf8properties</project-type>
 
   <locales>
