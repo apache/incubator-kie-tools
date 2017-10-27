@@ -20,7 +20,7 @@ import javax.enterprise.context.Dependent;
 
 import com.thoughtworks.xstream.XStream;
 import org.guvnor.common.services.project.model.ProjectRepositories;
-import org.kie.internal.xstream.XStreamUtils;
+import org.kie.soup.commons.xstream.XStreamUtils;
 
 @Dependent
 public class ProjectRepositoriesContentHandler {

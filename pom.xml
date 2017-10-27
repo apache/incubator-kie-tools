@@ -757,7 +757,7 @@
 
       <dependency>
         <groupId>org.kie.soup</groupId>
-        <artifactId>kie-soup-commons</artifactId>
+        <artifactId>kie-soup-bom</artifactId>
         <version>${version.org.kie.soup}</version>
         <type>pom</type>
         <scope>import</scope>
@@ -942,12 +942,6 @@
         <groupId>org.wildfly.security</groupId>
         <artifactId>wildfly-elytron</artifactId>
         <version>${version.org.wildfly.security}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-internal</artifactId>
-        <version>${version.org.kie}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

@@ -120,10 +120,9 @@
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
     </dependency>
-
     <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-internal</artifactId>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-commons</artifactId>
     </dependency>
 
     <!-- Weld Modules. For tests only -->
