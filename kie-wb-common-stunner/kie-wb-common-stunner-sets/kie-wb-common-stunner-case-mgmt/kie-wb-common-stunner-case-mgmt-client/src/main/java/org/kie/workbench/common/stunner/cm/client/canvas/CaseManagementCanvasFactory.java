@@ -35,6 +35,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
@@ -57,12 +58,14 @@ public class CaseManagementCanvasFactory
     private final ManagedInstance<EdgeBuilderControl> edgeBuilderControls;
     private final ManagedInstance<ZoomControl> zoomControls;
     private final ManagedInstance<PanControl> panControls;
+    private final ManagedInstance<KeyboardControl> keyboardControls;
     private final ManagedInstance<AbstractCanvas> canvasInstances;
     private final ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances;
     private final WiresControlFactory caseManagementControlFactory;
 
     protected CaseManagementCanvasFactory() {
         this(null,
+             null,
              null,
              null,
              null,
@@ -88,6 +91,7 @@ public class CaseManagementCanvasFactory
                                        final ManagedInstance<EdgeBuilderControl> edgeBuilderControls,
                                        final ManagedInstance<ZoomControl> zoomControls,
                                        final ManagedInstance<PanControl> panControls,
+                                       final ManagedInstance<KeyboardControl> keyboardControls,
                                        final @CaseManagementEditor ManagedInstance<AbstractCanvas> canvasInstances,
                                        final @CaseManagementEditor ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances,
                                        final @CaseManagementEditor WiresControlFactory caseManagementControlFactory) {
@@ -101,6 +105,7 @@ public class CaseManagementCanvasFactory
         this.edgeBuilderControls = edgeBuilderControls;
         this.zoomControls = zoomControls;
         this.panControls = panControls;
+        this.keyboardControls = keyboardControls;
         this.canvasInstances = canvasInstances;
         this.canvasHandlerInstances = canvasHandlerInstances;
         this.caseManagementControlFactory = caseManagementControlFactory;
@@ -128,7 +133,9 @@ public class CaseManagementCanvasFactory
                 .register(ZoomControl.class,
                           zoomControls)
                 .register(PanControl.class,
-                          panControls);
+                          panControls)
+                .register(KeyboardControl.class,
+                          keyboardControls);
     }
 
     @Override

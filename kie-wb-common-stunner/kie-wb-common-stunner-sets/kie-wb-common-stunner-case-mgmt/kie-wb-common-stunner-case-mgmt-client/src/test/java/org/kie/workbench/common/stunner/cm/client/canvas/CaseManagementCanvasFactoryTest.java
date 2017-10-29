@@ -44,6 +44,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControlImpl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
@@ -66,6 +68,7 @@ public class CaseManagementCanvasFactoryTest {
     private ManagedInstance<EdgeBuilderControl> edgeBuilderControls;
     private ManagedInstance<ZoomControl> zoomControls;
     private ManagedInstance<PanControl> panControls;
+    private ManagedInstance<KeyboardControl> keyboardControls;
     private ManagedInstance<AbstractCanvas> canvasInstances;
     private ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances;
 
@@ -94,6 +97,7 @@ public class CaseManagementCanvasFactoryTest {
         this.edgeBuilderControls = mockManagedInstance(EdgeBuilderControlImpl.class);
         this.zoomControls = mockManagedInstance(ZoomWheelControlImpl.class);
         this.panControls = mockManagedInstance(PanControlImpl.class);
+        this.keyboardControls = mockManagedInstance(KeyboardControlImpl.class);
         this.canvasInstances = mockManagedInstance(CaseManagementCanvasPresenter.class,
                                                    (c) -> when(c.getWiresManager()).thenReturn(wiresManager));
         this.canvasHandlerInstances = mockManagedInstance(CaseManagementCanvasHandler.class);
@@ -108,6 +112,7 @@ public class CaseManagementCanvasFactoryTest {
                                                        edgeBuilderControls,
                                                        zoomControls,
                                                        panControls,
+                                                       keyboardControls,
                                                        canvasInstances,
                                                        canvasHandlerInstances,
                                                        caseManagementControlFactory);
