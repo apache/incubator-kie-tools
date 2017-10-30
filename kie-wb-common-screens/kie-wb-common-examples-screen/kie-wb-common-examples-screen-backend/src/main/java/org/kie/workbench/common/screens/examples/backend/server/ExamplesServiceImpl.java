@@ -48,6 +48,7 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
@@ -278,6 +279,9 @@ public class ExamplesServiceImpl implements ExamplesService {
                                                                                   entry.getValue()));
             }
 
+            repositoryConfig.addConfigItem(configurationFactory.newConfigItem(EnvironmentParameters.AVOID_INDEX,
+                                                                              "true"));
+
             repository = repositoryFactory.newRepository(repositoryConfig);
             clonedRepositories.add(repository);
             return repository;
@@ -337,7 +341,7 @@ public class ExamplesServiceImpl implements ExamplesService {
 
     private List<String> getTags(final Project project) {
         List<String> tags = metadataService.getTags(project.getPomXMLPath());
-        tags.sort((t1, t2) -> t1.compareTo(t2));
+        tags.sort(String::compareTo);
         return tags;
     }
 
