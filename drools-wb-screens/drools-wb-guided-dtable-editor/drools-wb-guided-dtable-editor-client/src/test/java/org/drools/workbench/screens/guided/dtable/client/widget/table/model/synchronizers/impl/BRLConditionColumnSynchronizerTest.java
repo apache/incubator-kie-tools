@@ -347,6 +347,67 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
     }
 
     @Test
+    public void checkBRLFragmentConditionCanBeUpdatedWithNewConstraintOnBoundPatternUsedInAction() throws VetoException {
+        final BRLConditionColumn column = new BRLConditionColumn();
+        column.setDefinition(Collections.singletonList(new FactPattern("Applicant") {{
+            setBoundName("$a");
+        }}));
+        final BRLConditionVariableColumn columnV0 = new BRLConditionVariableColumn("$age",
+                                                                                   DataType.TYPE_NUMERIC_INTEGER,
+                                                                                   "Applicant",
+                                                                                   "age");
+        column.getChildColumns().add(columnV0);
+        column.setHeader("col1");
+        columnV0.setHeader("col1v0");
+
+        modelSynchronizer.appendColumn(column);
+
+        final ActionSetFieldCol52 action = new ActionSetFieldCol52() {{
+            setBoundName("$a");
+            setFactField("age");
+            setHeader("action1");
+        }};
+
+        modelSynchronizer.appendColumn(action);
+
+        try {
+            final BRLConditionColumn editedColumn = new BRLConditionColumn();
+            editedColumn.setDefinition(Collections.singletonList(new FactPattern("Applicant") {{
+                setBoundName("$a");
+            }}));
+            final BRLConditionVariableColumn editedColumnV0 = new BRLConditionVariableColumn("$age",
+                                                                                             DataType.TYPE_NUMERIC_INTEGER,
+                                                                                             "Applicant",
+                                                                                             "age");
+            final BRLConditionVariableColumn editedColumnV1 = new BRLConditionVariableColumn("$name",
+                                                                                             DataType.TYPE_STRING,
+                                                                                             "Applicant",
+                                                                                             "name");
+            editedColumn.getChildColumns().add(editedColumnV0);
+            editedColumn.getChildColumns().add(editedColumnV1);
+            editedColumn.setHeader("col1");
+            editedColumnV0.setHeader("col1v0");
+            editedColumnV1.setHeader("col1v1");
+
+            modelSynchronizer.updateColumn(column,
+                                           editedColumn);
+
+            assertEquals(5,
+                         model.getExpandedColumns().size());
+            assertTrue(model.getExpandedColumns().get(0) instanceof RowNumberCol52);
+            assertTrue(model.getExpandedColumns().get(1) instanceof DescriptionCol52);
+            assertEquals(editedColumnV0,
+                         model.getExpandedColumns().get(2));
+            assertEquals(editedColumnV1,
+                         model.getExpandedColumns().get(3));
+            assertEquals(action,
+                         model.getExpandedColumns().get(4));
+        } catch (VetoException veto) {
+            fail("VetoUpdatePatternInUseException was not expected.");
+        }
+    }
+
+    @Test
     public void checkBRLFragmentConditionCannotBeUpdatedWhenBindingIsUsedInAction() throws VetoException {
         final BRLConditionColumn column = new BRLConditionColumn();
         column.setDefinition(Collections.singletonList(new FactPattern("Applicant") {{
