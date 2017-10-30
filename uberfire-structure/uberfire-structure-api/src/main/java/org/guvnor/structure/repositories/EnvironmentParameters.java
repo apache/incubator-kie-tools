@@ -34,4 +34,6 @@ public class EnvironmentParameters {
     public static final String PASSWORD = "crypt:password";
 
     public static final String INIT = "init";
+
+    public static final String AVOID_INDEX = "avoid_index";
 }

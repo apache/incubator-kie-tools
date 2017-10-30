@@ -173,7 +173,7 @@ public class GitRepositoryBuilder {
         URI uri = path.toUri();
         String gitBranch = uri.getAuthority();
 
-        if (gitBranch.indexOf("@") != -1) {
+        if (gitBranch.contains("@")) {
             return gitBranch.split("@")[0];
         }
 

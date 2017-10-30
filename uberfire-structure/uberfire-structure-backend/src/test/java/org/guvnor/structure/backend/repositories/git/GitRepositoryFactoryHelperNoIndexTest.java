@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,14 +30,19 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.Path;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyMap;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-public class GitRepositoryFactoryHelperTest {
+public class GitRepositoryFactoryHelperNoIndexTest {
 
-    private IOService ioService;
+    private IOService indexed;
     private IOService notIndexed;
     private GitRepositoryFactoryHelper helper;
     private FileSystem fileSystem;
@@ -45,21 +50,21 @@ public class GitRepositoryFactoryHelperTest {
 
     @Before
     public void setUp() throws Exception {
-        ioService = mock(IOService.class);
+        indexed = mock(IOService.class);
         notIndexed = mock(IOService.class);
-        helper = new GitRepositoryFactoryHelper(ioService, notIndexed);
+        helper = new GitRepositoryFactoryHelper(indexed, notIndexed);
 
         fileSystem = mock(FileSystem.class);
         when(
-                ioService.newFileSystem(any(URI.class),
-                                        anyMap())
+                notIndexed.newFileSystem(any(URI.class),
+                                         anyMap())
         ).thenReturn(
                 fileSystem
         );
 
         when(
-                notIndexed.newFileSystem(any(URI.class),
-                                        anyMap())
+                indexed.newFileSystem(any(URI.class),
+                                      anyMap())
         ).thenThrow(new RuntimeException());
 
         rootDirectories = new ArrayList<Path>();
@@ -89,16 +94,16 @@ public class GitRepositoryFactoryHelperTest {
         configItem.setValue(false);
         configGroup.setConfigItem(configItem);
 
-        when(ioService.newFileSystem(any(URI.class),
-                                     anyMap()))
+        when(notIndexed.newFileSystem(any(URI.class),
+                                      anyMap()))
                 .thenThrow(FileSystemAlreadyExistsException.class);
-        when(ioService.getFileSystem(any(URI.class))).thenReturn(fileSystem);
+        when(notIndexed.getFileSystem(any(URI.class))).thenReturn(fileSystem);
 
         helper.newRepository(configGroup);
 
-        verify(ioService,
+        verify(notIndexed,
                never()).delete(any(Path.class));
-        verify(ioService,
+        verify(notIndexed,
                times(1)).newFileSystem(any(URI.class),
                                        anyMap());
     }
@@ -116,17 +121,17 @@ public class GitRepositoryFactoryHelperTest {
         configItem.setValue(true);
         configGroup.setConfigItem(configItem);
 
-        when(ioService.newFileSystem(any(URI.class),
-                                     anyMap()))
+        when(notIndexed.newFileSystem(any(URI.class),
+                                      anyMap()))
                 .thenThrow(FileSystemAlreadyExistsException.class)
                 .thenReturn(fileSystem);
-        when(ioService.getFileSystem(any(URI.class))).thenReturn(fileSystem);
+        when(notIndexed.getFileSystem(any(URI.class))).thenReturn(fileSystem);
 
         helper.newRepository(configGroup);
 
-        verify(ioService,
+        verify(notIndexed,
                times(1)).delete(any(Path.class));
-        verify(ioService,
+        verify(notIndexed,
                times(2)).newFileSystem(any(URI.class),
                                        anyMap());
     }
@@ -157,9 +162,17 @@ public class GitRepositoryFactoryHelperTest {
 
     private ConfigGroup getConfigGroup() {
         ConfigGroup repoConfig = new ConfigGroup();
-        ConfigItem configItem = new ConfigItem();
-        configItem.setName(EnvironmentParameters.SCHEME);
-        repoConfig.addConfigItem(configItem);
+        {
+            ConfigItem configItem = new ConfigItem();
+            configItem.setName(EnvironmentParameters.SCHEME);
+            repoConfig.addConfigItem(configItem);
+        }
+        {
+            ConfigItem<String> configItem = new ConfigItem<>();
+            configItem.setName(EnvironmentParameters.AVOID_INDEX);
+            configItem.setValue("true");
+            repoConfig.addConfigItem(configItem);
+        }
         return repoConfig;
     }
 }

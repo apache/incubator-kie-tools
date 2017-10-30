@@ -33,7 +33,9 @@ import static org.kie.soup.commons.validation.Preconditions.checkNotNull;
 @ApplicationScoped
 public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
 
-    private IOService ioService;
+    private IOService indexedIOService;
+
+    private IOService notIndexedIOService;
 
     @Inject
     private PasswordService secureService;
@@ -42,8 +44,10 @@ public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
     }
 
     @Inject
-    public GitRepositoryFactoryHelper(@Named("ioStrategy") IOService ioService) {
-        this.ioService = ioService;
+    public GitRepositoryFactoryHelper(@Named("ioStrategy") IOService indexedIOService,
+                                      @Named("configIO") IOService notIndexedIOService) {
+        this.indexedIOService = indexedIOService;
+        this.notIndexedIOService = notIndexedIOService;
     }
 
     @Override
@@ -61,7 +65,14 @@ public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
 
         validate(repoConfig);
 
-        return new GitRepositoryBuilder(ioService,
+        ConfigItem<String> sValue = repoConfig.getConfigItem(EnvironmentParameters.AVOID_INDEX);
+
+        if (sValue != null && Boolean.valueOf(sValue.getValue())) {
+            return new GitRepositoryBuilder(notIndexedIOService,
+                                            secureService).build(repoConfig);
+        }
+
+        return new GitRepositoryBuilder(indexedIOService,
                                         secureService).build(repoConfig);
     }
 
