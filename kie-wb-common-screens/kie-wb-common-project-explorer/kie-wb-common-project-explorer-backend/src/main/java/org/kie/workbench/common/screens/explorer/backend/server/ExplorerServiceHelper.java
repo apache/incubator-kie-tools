@@ -35,7 +35,7 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
-import org.kie.internal.xstream.XStreamUtils;
+import org.kie.soup.commons.xstream.XStreamUtils;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemOperation;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;

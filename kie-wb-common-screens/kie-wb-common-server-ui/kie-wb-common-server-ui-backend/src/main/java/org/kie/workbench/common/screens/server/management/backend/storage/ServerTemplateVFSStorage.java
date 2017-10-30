@@ -27,10 +27,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.thoughtworks.xstream.XStream;
-import org.kie.internal.xstream.XStreamUtils;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.server.controller.api.model.spec.ServerTemplateKey;
 import org.kie.server.controller.api.storage.KieServerTemplateStorage;
+import org.kie.soup.commons.xstream.XStreamUtils;
 import org.kie.workbench.common.screens.server.management.backend.storage.migration.ServerTemplateMigration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
