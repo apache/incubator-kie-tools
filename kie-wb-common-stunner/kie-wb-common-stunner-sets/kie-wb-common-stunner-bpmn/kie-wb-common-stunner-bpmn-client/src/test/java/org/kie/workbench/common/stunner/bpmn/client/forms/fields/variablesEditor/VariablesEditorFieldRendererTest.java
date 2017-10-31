@@ -22,10 +22,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.VariableRow;
+import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -48,9 +56,44 @@ public class VariablesEditorFieldRendererTest {
     @Mock
     private VariableListItemWidgetView variableListItemWidgetView;
 
+    @Mock
+    private AbstractClientSessionManager abstractClientSessionManager;
+
+    @Mock
+    private BPMNProcessVariableDeleteHandler deleteHandler;
+
+    @Mock
+    private Graph graph;
+
+    @Mock
+    private VariableRow variableRow;
+
+    @Mock
+    private AbstractCanvasHandler canvasHandler;
+
+    @Mock
+    private Diagram diagram;
+
+    @Mock
+    private AbstractClientFullSession clientFullSession;
+
+    @Mock
+    private Iterable nodes;
+
     @Spy
     @InjectMocks
-    private VariablesEditorFieldRenderer variablesEditor = new VariablesEditorFieldRenderer(variablesEditorWidgetView);
+    private VariablesEditorFieldRenderer variablesEditor = new VariablesEditorFieldRenderer(variablesEditorWidgetView,
+                                                                                            abstractClientSessionManager,
+                                                                                            deleteHandler);
+
+    private VariablesEditorFieldRenderer variablesEditorRemove;
+
+    @Before
+    public void setup() {
+        variablesEditorRemove = new VariablesEditorFieldRenderer(variablesEditorWidgetView,
+                                                                 abstractClientSessionManager,
+                                                                 deleteHandler);
+    }
 
     @Test
     public void testAddVariable() {
@@ -75,14 +118,24 @@ public class VariablesEditorFieldRendererTest {
     public void testRemoveVariable() {
         when(variablesEditorWidgetView.getVariableWidget(anyInt())).thenReturn(variableListItemWidgetView);
         when(variablesEditorWidgetView.getVariableRowsCount()).thenReturn(1);
-        variablesEditor.addVariable();
-        variablesEditor.addVariable();
-        variablesEditor.removeVariable(null);
+        when(variableRow.getName()).thenReturn("variableName");
+        when(abstractClientSessionManager.getCurrentSession()).thenReturn(clientFullSession);
+        when(abstractClientSessionManager.getCurrentSession().getCanvasHandler()).thenReturn(canvasHandler);
+        when(abstractClientSessionManager.getCurrentSession().getCanvasHandler().getDiagram()).thenReturn(diagram);
+        when(abstractClientSessionManager.getCurrentSession().getCanvasHandler().getDiagram().getGraph()).thenReturn(graph);
+        final List nodes = new ArrayList<>();
+        final Node node = new NodeImpl<>("node1");
+        nodes.add(node);
+        when(graph.nodes()).thenReturn(nodes);
+        when(deleteHandler.isVariableBoundToNodes(graph, variableRow.getName())).thenReturn(true);
+        variablesEditorRemove.addVariable();
+        variablesEditorRemove.addVariable();
+        variablesEditorRemove.removeVariable(variableRow);
         verify(variablesEditorWidgetView,
                times(3)).getVariableRows();
         verify(variablesEditorWidgetView,
                times(1)).doSave();
-        variablesEditor.removeVariable(null);
+        variablesEditorRemove.removeVariable(variableRow);
         verify(variablesEditorWidgetView,
                times(4)).getVariableRows();
         verify(variablesEditorWidgetView,

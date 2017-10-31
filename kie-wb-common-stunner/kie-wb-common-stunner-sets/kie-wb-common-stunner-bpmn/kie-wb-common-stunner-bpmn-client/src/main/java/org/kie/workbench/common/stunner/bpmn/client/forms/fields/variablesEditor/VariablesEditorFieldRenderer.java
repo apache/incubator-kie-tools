@@ -26,33 +26,41 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
+import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.VariableRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.forms.model.VariablesEditorFieldDefinition;
+import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
+import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 
 @Dependent
 public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorFieldDefinition>
         implements VariablesEditorWidgetView.Presenter {
 
-    private VariablesEditorWidgetView view;
-
-    private Variable.VariableType variableType = Variable.VariableType.PROCESS;
-
-    private List<String> dataTypes = new ArrayList<String>();
-
-    private List<String> dataTypeDisplayNames = new ArrayList<String>();
-
+    private final AbstractClientSessionManager sessionManager;
+    private final BPMNProcessVariableDeleteHandler deleteHandler;
     Map<String, String> mapDataTypeNamesToDisplayNames = null;
-
     Map<String, String> mapDataTypeDisplayNamesToNames = null;
-
     ListBoxValues dataTypeListBoxValues;
+    private VariablesEditorWidgetView view;
+    private Variable.VariableType variableType = Variable.VariableType.PROCESS;
+    private List<String> dataTypes = new ArrayList<String>();
+    private List<String> dataTypeDisplayNames = new ArrayList<String>();
+    private Graph graph;
 
     @Inject
-    public VariablesEditorFieldRenderer(final VariablesEditorWidgetView variablesEditor) {
+    private ErrorPopupPresenter errorPopupPresenter;
+
+    @Inject
+    public VariablesEditorFieldRenderer(final VariablesEditorWidgetView variablesEditor,
+                                        AbstractClientSessionManager sessionManager,
+                                        final BPMNProcessVariableDeleteHandler deleteHandler) {
         this.view = variablesEditor;
+        this.sessionManager = sessionManager;
+        this.deleteHandler = deleteHandler;
     }
 
     @Override
@@ -63,6 +71,7 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
     @Override
     public void initInputWidget() {
         view.init(this);
+        graph = sessionManager.getCurrentSession().getCanvasHandler().getDiagram().getGraph();
     }
 
     @Override
@@ -205,8 +214,14 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
     }
 
     public void removeVariable(final VariableRow variableRow) {
-        view.getVariableRows().remove(variableRow);
-        doSave();
+
+        if (deleteHandler.isVariableBoundToNodes(graph,
+                                                 variableRow.getName())) {
+            errorPopupPresenter.showMessage(StunnerFormsClientFieldsConstants.INSTANCE.DeleteDiagramVariableError());
+        } else {
+            view.getVariableRows().remove(variableRow);
+            doSave();
+        }
     }
 
     @Override
