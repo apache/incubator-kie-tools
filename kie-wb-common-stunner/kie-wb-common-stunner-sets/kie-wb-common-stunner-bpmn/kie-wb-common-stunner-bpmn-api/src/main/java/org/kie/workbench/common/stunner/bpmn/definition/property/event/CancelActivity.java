@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kie.workbench.common.stunner.bpmn.definition.property.event;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldReadOnly;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.LabelMode;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
@@ -30,41 +33,42 @@ import org.kie.workbench.common.stunner.core.definition.annotation.property.Read
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Type;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
-import org.kie.workbench.common.stunner.core.definition.property.type.StringType;
+import org.kie.workbench.common.stunner.core.definition.property.type.BooleanType;
 
 @Portable
 @Bindable
 @Property
-@FieldDefinition
-public class SignalRef implements BPMNProperty {
+@FieldDefinition(labelMode = LabelMode.OVERRIDE_I18N_KEY)
+public class CancelActivity implements BPMNProperty {
 
     @Caption
-    public static final transient String caption = "SignalRef";
+    @FieldLabel
+    public static final transient String caption = "CancelActivity";
 
     @Description
-    public static final transient String description = "Signal Reference";
+    public static final transient String description = "Cancel Activity";
 
     @ReadOnly
     @FieldReadOnly
-    private Boolean readOnly = false;
+    public Boolean readOnly = false;
 
     @Optional
     public static final Boolean optional = false;
 
     @Type
-    public static final PropertyType type = new StringType();
+    public static final PropertyType type = new BooleanType();
 
     @DefaultValue
-    public static final transient String defaultValue = "";
+    public static final Boolean defaultValue = true;
 
     @Value
     @FieldValue
-    private String value = defaultValue;
+    private Boolean value = defaultValue;
 
-    public SignalRef() {
+    public CancelActivity() {
     }
 
-    public SignalRef(final String value) {
+    public CancelActivity(final Boolean value) {
         this.value = value;
     }
 
@@ -88,15 +92,15 @@ public class SignalRef implements BPMNProperty {
         return type;
     }
 
-    public String getDefaultValue() {
+    public Boolean getDefaultValue() {
         return defaultValue;
     }
 
-    public String getValue() {
+    public Boolean getValue() {
         return value;
     }
 
-    public void setValue(final String value) {
+    public void setValue(final Boolean value) {
         this.value = value;
     }
 
@@ -107,8 +111,8 @@ public class SignalRef implements BPMNProperty {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof SignalRef) {
-            SignalRef other = (SignalRef) o;
+        if (o instanceof CancelActivity) {
+            CancelActivity other = (CancelActivity) o;
             return (null != value) ? value.equals(other.value) : null == other.value;
         }
         return false;

@@ -76,6 +76,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
@@ -89,7 +90,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.Assignme
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.IsInterrupting;
-import org.kie.workbench.common.stunner.bpmn.definition.property.event.SignalRef;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.SignalRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ReusableSubprocessTaskExecutionSet;
@@ -170,6 +171,7 @@ public class BPMNDiagramMarshallerTest {
     private static final String BPMN_STARTEVENTASSIGNMENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startEventAssignments.bpmn";
     private static final String BPMN_STARTTIMEREVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startTimerEvent.bpmn";
     private static final String BPMN_STARTSIGNALEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startSignalEvent.bpmn";
+    private static final String BPMN_INTERMEDIATE_SIGNAL_EVENTCATCHING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateSignalEventCatching.bpmn";
     private static final String BPMN_INTERMEDIATE_TIMER_EVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateTimerEvent.bpmn";
     private static final String BPMN_ENDEVENTASSIGNMENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endEventAssignments.bpmn";
     private static final String BPMN_PROCESSPROPERTIES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/processProperties.bpmn";
@@ -537,7 +539,7 @@ public class BPMNDiagramMarshallerTest {
                      diagram.getMetadata().getTitle());
         Node<? extends Definition, ?> startTimerEventNode = diagram.getGraph().getNode("_49ADC988-B63D-4AEB-B811-67969F305FD0");
         StartTimerEvent startTimerEvent = (StartTimerEvent) startTimerEventNode.getContent().getDefinition();
-        IsInterrupting isInterrupting = startTimerEvent.getIsInterrupting();
+        IsInterrupting isInterrupting = startTimerEvent.getExecutionSet().getIsInterrupting();
         assertEquals(false,
                      isInterrupting.getValue());
     }
@@ -580,6 +582,33 @@ public class BPMNDiagramMarshallerTest {
                      intermediateTimerEvent.getExecutionSet().getTimeDate().getValue());
         assertEquals("abc",
                      intermediateTimerEvent.getExecutionSet().getTimeDuration().getValue());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnmarshallIntermediateSignalEventCatching() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_INTERMEDIATE_SIGNAL_EVENTCATCHING);
+        assertDiagram(diagram,
+                      2);
+        assertEquals("intermediateSignalCatching",
+                     diagram.getMetadata().getTitle());
+        Node<? extends Definition, ?> intermediateEventNode = diagram.getGraph().getNode("_2C9B14A3-F663-476D-9FDF-31590D3A9CC5");
+        IntermediateSignalEventCatching intermediateSignalEventCatching = (IntermediateSignalEventCatching) intermediateEventNode.getContent().getDefinition();
+        assertNotNull(intermediateSignalEventCatching.getGeneral());
+        assertEquals("MySignalCatchingEvent",
+                     intermediateSignalEventCatching.getGeneral().getName().getValue());
+        assertEquals("MySignalCatchingEventDocumentation",
+                     intermediateSignalEventCatching.getGeneral().getDocumentation().getValue());
+        assertNotNull(intermediateSignalEventCatching.getExecutionSet());
+        assertEquals(true,
+                     intermediateSignalEventCatching.getExecutionSet().getCancelActivity().getValue());
+        assertEquals("MySignal",
+                     intermediateSignalEventCatching.getExecutionSet().getSignalRef().getValue());
+
+        DataIOSet dataIOSet = intermediateSignalEventCatching.getDataIOSet();
+        AssignmentsInfo assignmentsInfo = dataIOSet.getAssignmentsinfo();
+        assertEquals("||output1_:String||[dout]output1_->var1",
+                     assignmentsInfo.getValue());
     }
 
     @Test
@@ -1632,6 +1661,23 @@ public class BPMNDiagramMarshallerTest {
     }
 
     @Test
+    public void testMarshallIntermediateSignalEventCatching() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_INTERMEDIATE_SIGNAL_EVENTCATCHING);
+        String result = tested.marshall(diagram);
+        assertDiagram(result,
+                      1,
+                      1,
+                      0);
+
+        assertTrue(result.contains("<bpmn2:intermediateCatchEvent"));
+        assertTrue(result.contains(" name=\"MySignalCatchingEvent\""));
+        assertTrue(result.contains("<bpmn2:signalEventDefinition"));
+        assertTrue(result.contains(" signalRef=\"_3b677877-9be0-3fe7-bfc4-94a862fdc919\""));
+        assertTrue(result.contains("<bpmn2:signal"));
+        assertTrue(result.contains("name=\"MySignal\""));
+    }
+
+    @Test
     public void testMarshallStartEventAssignments() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_STARTEVENTASSIGNMENTS);
         String result = tested.marshall(diagram);
@@ -1696,7 +1742,9 @@ public class BPMNDiagramMarshallerTest {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_EMBEDDED_SUBPROCESS);
         assertDiagram(diagram,
                       10);
-        assertDocumentation(diagram,"_C3EBE7F1-8E57-4BB1-B380-40BB02E9464E", "Subprocess  Documentation Value");
+        assertDocumentation(diagram,
+                            "_C3EBE7F1-8E57-4BB1-B380-40BB02E9464E",
+                            "Subprocess  Documentation Value");
 
         String result = tested.marshall(diagram);
         assertDiagram(result,
@@ -1822,8 +1870,8 @@ public class BPMNDiagramMarshallerTest {
                       5);
         assertTrue(result.contains("language=\"http://www.javascript.com/javascript\"><![CDATA[age >= 10;]]></bpmn2:conditionExpression>"));
         assertTrue(result.contains("language=\"http://www.java.com/java\"><![CDATA[age\n" +
-                                       "<\n" +
-                                       "10;]]></bpmn2:conditionExpression>"));
+                                           "<\n" +
+                                           "10;]]></bpmn2:conditionExpression>"));
     }
 
     private void assertConditionLanguage(Diagram<Graph, Metadata> diagram,
@@ -1831,19 +1879,19 @@ public class BPMNDiagramMarshallerTest {
                                          String value) {
         List<Node> nodes = getNodes(diagram);
         Optional<SequenceFlow> sequenceFlow =
-            Stream.concat(nodes.stream().flatMap(node -> {
-                              List<Edge> d = node.getInEdges();
-                              return d.stream();
-                          }),
-                          nodes.stream().flatMap(node -> {
-                              List<Edge> d = node.getOutEdges();
-                              return d.stream();
-                          }))
-                .filter(edge -> edge.getUUID().equals(id))
-                .map(node -> (View) node.getContent())
-                .filter(view -> view.getDefinition() instanceof SequenceFlow)
-                .map(view -> ((SequenceFlow) view.getDefinition()))
-                .findFirst();
+                Stream.concat(nodes.stream().flatMap(node -> {
+                                  List<Edge> d = node.getInEdges();
+                                  return d.stream();
+                              }),
+                              nodes.stream().flatMap(node -> {
+                                  List<Edge> d = node.getOutEdges();
+                                  return d.stream();
+                              }))
+                        .filter(edge -> edge.getUUID().equals(id))
+                        .map(node -> (View) node.getContent())
+                        .filter(view -> view.getDefinition() instanceof SequenceFlow)
+                        .map(view -> ((SequenceFlow) view.getDefinition()))
+                        .findFirst();
 
         String conditionLanguage = (sequenceFlow.isPresent() ? sequenceFlow.get().getExecutionSet().getConditionExpressionLanguage().getValue() : null);
         assertEquals(value,
@@ -1971,7 +2019,7 @@ public class BPMNDiagramMarshallerTest {
     private void assertDiagram(Diagram<Graph, Metadata> diagram,
                                int nodesSize) {
         assertEquals(nodesSize,
-                getNodes(diagram).size());
+                     getNodes(diagram).size());
     }
 
     private List<Node> getNodes(Diagram<Graph, Metadata> diagram) {
@@ -1983,7 +2031,9 @@ public class BPMNDiagramMarshallerTest {
         return nodes;
     }
 
-    private void assertDocumentation(Diagram<Graph, Metadata> diagram, String id, String value) {
+    private void assertDocumentation(Diagram<Graph, Metadata> diagram,
+                                     String id,
+                                     String value) {
         Optional<BPMNDefinition> documentation = getNodes(diagram).stream()
                 .filter(node -> node.getContent() instanceof View && node.getUUID().equals(id))
                 .map(node -> (View) node.getContent())
@@ -1991,7 +2041,8 @@ public class BPMNDiagramMarshallerTest {
                 .map(view -> (BPMNDefinition) view.getDefinition())
                 .findFirst();
         String documentationValue = (documentation.isPresent() ? documentation.get().getGeneral().getDocumentation().getValue() : null);
-        assertEquals(value, documentationValue);
+        assertEquals(value,
+                     documentationValue);
     }
 
     private Diagram<Graph, Metadata> unmarshall(String fileName) throws Exception {
@@ -2226,6 +2277,4 @@ public class BPMNDiagramMarshallerTest {
         }
         return null;
     }
-
-
 }

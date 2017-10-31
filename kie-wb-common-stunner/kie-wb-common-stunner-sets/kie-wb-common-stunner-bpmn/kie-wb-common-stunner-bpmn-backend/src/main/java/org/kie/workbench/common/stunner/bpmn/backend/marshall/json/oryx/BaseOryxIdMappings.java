@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
@@ -44,12 +45,13 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.Prio
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.AdHoc;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.ProcessInstanceDescription;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.CancelActivity;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.IsInterrupting;
-import org.kie.workbench.common.stunner.bpmn.definition.property.event.SignalRef;
-import org.kie.workbench.common.stunner.bpmn.definition.property.event.TimeCycle;
-import org.kie.workbench.common.stunner.bpmn.definition.property.event.TimeCycleLanguage;
-import org.kie.workbench.common.stunner.bpmn.definition.property.event.TimeDate;
-import org.kie.workbench.common.stunner.bpmn.definition.property.event.TimeDuration;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.SignalRef;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimeCycle;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimeCycleLanguage;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimeDate;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimeDuration;
 import org.kie.workbench.common.stunner.bpmn.definition.property.gateway.DefaultRoute;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.DistributionType;
@@ -183,6 +185,8 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
                 "isinterrupting");
             put(SignalRef.class,
                 "signalref");
+            put(CancelActivity.class,
+                "boundarycancelactivity");
 
             // Simulation properties
             put(TimeUnit.class,
@@ -269,6 +273,12 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
                 intermediateTimerEventPropertiesMap);
             intermediateTimerEventPropertiesMap.put(AssignmentsInfo.class,
                                                     "assignmentsinfo");
+
+            Map<Class<?>, String> intermediateSignalEventCatchingPropertiesMap = new HashMap<Class<?>, String>();
+            put(IntermediateSignalEventCatching.class,
+                intermediateSignalEventCatchingPropertiesMap);
+            intermediateSignalEventCatchingPropertiesMap.put(AssignmentsInfo.class,
+                                                             "assignmentsinfo");
 
             Map<Class<?>, String> endEventPropertiesMap = new HashMap<Class<?>, String>();
             put(EndNoneEvent.class,

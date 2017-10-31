@@ -24,16 +24,15 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radius;
-import org.kie.workbench.common.stunner.bpmn.definition.property.event.SignalEventExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.InterruptingSignalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.CatchEventAttributes;
+import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationAttributeSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
@@ -47,7 +46,6 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Definition(graphFactory = NodeFactory.class, builder = StartSignalEvent.StartSignalEventBuilder.class)
 @Morph(base = BaseStartEvent.class)
 @FormDefinition(
-        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
         startElement = "general",
         policy = FieldPolicy.ONLY_MARKED
 )
@@ -57,15 +55,13 @@ public class StartSignalEvent extends BaseStartEvent {
     public static final transient String title = "Start Signal Event";
 
     @Description
-    public static final transient String description = "Start Signal event";
+    public static final transient String description = "A process instance is started based on signalling across " +
+            "different processes. (One signal thrown can be caught multiple times)";
 
     @PropertySet
-    @FormField(
-            labelKey = "executionSet",
-            afterElement = "general"
-    )
+    @FormField(afterElement = "general")
     @Valid
-    protected SignalEventExecutionSet executionSet;
+    protected InterruptingSignalEventExecutionSet executionSet;
 
     @NonPortable
     public static class StartSignalEventBuilder extends BaseStartEventBuilder<StartSignalEvent> {
@@ -73,14 +69,14 @@ public class StartSignalEvent extends BaseStartEvent {
         @Override
         public StartSignalEvent build() {
             return new StartSignalEvent(new BPMNGeneralSet(""),
-                                        new SignalEventExecutionSet(),
                                         new DataIOSet(),
                                         new BackgroundSet(BG_COLOR,
                                                           BORDER_COLOR,
                                                           BORDER_SIZE),
                                         new FontSet(),
-                                        new CatchEventAttributes(),
-                                        new CircleDimensionSet(new Radius(RADIUS)));
+                                        new CircleDimensionSet(new Radius(RADIUS)),
+                                        new SimulationAttributeSet(),
+                                        new InterruptingSignalEventExecutionSet());
         }
     }
 
@@ -88,18 +84,18 @@ public class StartSignalEvent extends BaseStartEvent {
     }
 
     public StartSignalEvent(final @MapsTo("general") BPMNGeneralSet general,
-                            final @MapsTo("executionSet") SignalEventExecutionSet executionSet,
                             final @MapsTo("dataIOSet") DataIOSet dataIOSet,
                             final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                             final @MapsTo("fontSet") FontSet fontSet,
-                            final @MapsTo("catchEventAttributes") CatchEventAttributes catchEventAttributes,
-                            final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet) {
+                            final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet,
+                            final @MapsTo("simulationSet") SimulationAttributeSet simulationSet,
+                            final @MapsTo("executionSet") InterruptingSignalEventExecutionSet executionSet) {
         super(general,
               dataIOSet,
               backgroundSet,
               fontSet,
-              catchEventAttributes,
-              dimensionsSet);
+              dimensionsSet,
+              simulationSet);
         this.executionSet = executionSet;
     }
 
@@ -112,11 +108,11 @@ public class StartSignalEvent extends BaseStartEvent {
         return description;
     }
 
-    public SignalEventExecutionSet getExecutionSet() {
+    public InterruptingSignalEventExecutionSet getExecutionSet() {
         return executionSet;
     }
 
-    public void setExecutionSet(final SignalEventExecutionSet executionSet) {
+    public void setExecutionSet(final InterruptingSignalEventExecutionSet executionSet) {
         this.executionSet = executionSet;
     }
 

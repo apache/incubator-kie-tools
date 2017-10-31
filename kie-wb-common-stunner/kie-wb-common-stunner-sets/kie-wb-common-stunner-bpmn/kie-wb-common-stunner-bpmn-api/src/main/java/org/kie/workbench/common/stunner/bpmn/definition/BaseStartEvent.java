@@ -21,7 +21,6 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
@@ -30,7 +29,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSe
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.CatchEventAttributes;
+import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationAttributeSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
@@ -38,10 +37,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBa
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
-@MorphBase(defaultType = StartNoneEvent.class
-        /* TODO: Disabled morphing from start to end events for M1
-        targets = { BaseEndEvent.class } */
-)
+@MorphBase(defaultType = StartNoneEvent.class)
 public abstract class BaseStartEvent implements BPMNDefinition,
                                                 DataIOModel {
 
@@ -54,10 +50,7 @@ public abstract class BaseStartEvent implements BPMNDefinition,
     protected BPMNGeneralSet general;
 
     @PropertySet
-    @FormField(
-            afterElement = "general",
-            labelKey = "dataIOSet"
-    )
+    @FormField(afterElement = "executionSet")
     @Valid
     protected DataIOSet dataIOSet;
 
@@ -69,10 +62,10 @@ public abstract class BaseStartEvent implements BPMNDefinition,
     protected FontSet fontSet;
 
     @PropertySet
-    protected CatchEventAttributes catchEventAttributes;
+    private CircleDimensionSet dimensionsSet;
 
     @PropertySet
-    private CircleDimensionSet dimensionsSet;
+    private SimulationAttributeSet simulationSet;
 
     @Labels
     protected final Set<String> labels = new HashSet<String>() {{
@@ -100,18 +93,18 @@ public abstract class BaseStartEvent implements BPMNDefinition,
     public BaseStartEvent() {
     }
 
-    public BaseStartEvent(final @MapsTo("general") BPMNGeneralSet general,
-                          final @MapsTo("dataIOSet") DataIOSet dataIOSet,
-                          final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
-                          final @MapsTo("fontSet") FontSet fontSet,
-                          final @MapsTo("catchEventAttributes") CatchEventAttributes catchEventAttributes,
-                          final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet) {
+    public BaseStartEvent(final BPMNGeneralSet general,
+                          final DataIOSet dataIOSet,
+                          final BackgroundSet backgroundSet,
+                          final FontSet fontSet,
+                          final CircleDimensionSet dimensionsSet,
+                          final SimulationAttributeSet simulationSet) {
         this.general = general;
         this.dataIOSet = dataIOSet;
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
-        this.catchEventAttributes = catchEventAttributes;
         this.dimensionsSet = dimensionsSet;
+        this.simulationSet = simulationSet;
     }
 
     @Override
@@ -158,10 +151,6 @@ public abstract class BaseStartEvent implements BPMNDefinition,
         return fontSet;
     }
 
-    public CatchEventAttributes getCatchEventAttributes() {
-        return catchEventAttributes;
-    }
-
     public void setGeneral(final BPMNGeneralSet general) {
         this.general = general;
     }
@@ -178,10 +167,6 @@ public abstract class BaseStartEvent implements BPMNDefinition,
         this.fontSet = fontSet;
     }
 
-    public void setCatchEventAttributes(final CatchEventAttributes catchEventAttributes) {
-        this.catchEventAttributes = catchEventAttributes;
-    }
-
     public CircleDimensionSet getDimensionsSet() {
         return dimensionsSet;
     }
@@ -190,14 +175,22 @@ public abstract class BaseStartEvent implements BPMNDefinition,
         this.dimensionsSet = dimensionsSet;
     }
 
+    public SimulationAttributeSet getSimulationSet() {
+        return simulationSet;
+    }
+
+    public void setSimulationSet(SimulationAttributeSet simulationSet) {
+        this.simulationSet = simulationSet;
+    }
+
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(general.hashCode(),
                                          dataIOSet.hashCode(),
                                          backgroundSet.hashCode(),
                                          fontSet.hashCode(),
-                                         catchEventAttributes.hashCode(),
-                                         dimensionsSet.hashCode());
+                                         dimensionsSet.hashCode(),
+                                         simulationSet.hashCode());
     }
 
     @Override
@@ -208,8 +201,8 @@ public abstract class BaseStartEvent implements BPMNDefinition,
                     dataIOSet.equals(other.dataIOSet) &&
                     backgroundSet.equals(other.backgroundSet) &&
                     fontSet.equals(other.fontSet) &&
-                    catchEventAttributes.equals(other.catchEventAttributes) &&
-                    dimensionsSet.equals(other.dimensionsSet);
+                    dimensionsSet.equals(other.dimensionsSet) &&
+                    simulationSet.equals(other.simulationSet);
         }
         return false;
     }

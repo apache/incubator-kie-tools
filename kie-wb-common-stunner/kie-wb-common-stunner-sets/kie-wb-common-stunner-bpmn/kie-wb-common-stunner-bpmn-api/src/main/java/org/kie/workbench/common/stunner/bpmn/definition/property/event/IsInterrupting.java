@@ -19,8 +19,10 @@ package org.kie.workbench.common.stunner.bpmn.definition.property.event;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldReadOnly;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.LabelMode;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
@@ -36,10 +38,11 @@ import org.kie.workbench.common.stunner.core.definition.property.type.BooleanTyp
 @Portable
 @Bindable
 @Property
-@FieldDefinition
+@FieldDefinition(labelMode = LabelMode.OVERRIDE_I18N_KEY)
 public class IsInterrupting implements BPMNProperty {
 
     @Caption
+    @FieldLabel
     public static final transient String caption = "IsInterrupting";
 
     @Description

@@ -28,7 +28,7 @@ import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radius;
-import org.kie.workbench.common.stunner.bpmn.definition.property.event.IntermediateTimerEventExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.CancellingTimerEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
@@ -42,12 +42,12 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Portable
 @Bindable
 @Definition(graphFactory = NodeFactory.class, builder = IntermediateTimerEvent.IntermediateTimerEventBuilder.class)
-@Morph(base = BaseIntermediateEvent.class)
+@Morph(base = BaseCatchingIntermediateEvent.class)
 @FormDefinition(
         startElement = "general",
         policy = FieldPolicy.ONLY_MARKED
 )
-public class IntermediateTimerEvent extends BaseIntermediateEvent {
+public class IntermediateTimerEvent extends BaseCatchingIntermediateEvent {
 
     @Title
     public static final transient String title = "Intermediate Timer Event";
@@ -57,25 +57,22 @@ public class IntermediateTimerEvent extends BaseIntermediateEvent {
             "is reached or a particular duration is over.";
 
     @PropertySet
-    @FormField(
-            labelKey = "executionSet",
-            afterElement = "general"
-    )
+    @FormField(afterElement = "general")
     @Valid
-    protected IntermediateTimerEventExecutionSet executionSet;
+    protected CancellingTimerEventExecutionSet executionSet;
 
     @NonPortable
-    public static class IntermediateTimerEventBuilder extends BaseIntermediateEventBuilder<IntermediateTimerEvent> {
+    public static class IntermediateTimerEventBuilder extends BaseCatchingIntermediateEvenBuilder<IntermediateTimerEvent> {
 
         @Override
         public IntermediateTimerEvent build() {
             return new IntermediateTimerEvent(new BPMNGeneralSet(""),
-                                              new IntermediateTimerEventExecutionSet(),
                                               new BackgroundSet(BG_COLOR,
                                                                 BORDER_COLOR,
                                                                 BORDER_SIZE),
                                               new FontSet(),
-                                              new CircleDimensionSet(new Radius(RADIUS)));
+                                              new CircleDimensionSet(new Radius(RADIUS)),
+                                              new CancellingTimerEventExecutionSet());
         }
     }
 
@@ -83,10 +80,10 @@ public class IntermediateTimerEvent extends BaseIntermediateEvent {
     }
 
     public IntermediateTimerEvent(final @MapsTo("general") BPMNGeneralSet general,
-                                  final @MapsTo("executionSet") IntermediateTimerEventExecutionSet executionSet,
                                   final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                                   final @MapsTo("fontSet") FontSet fontSet,
-                                  final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet) {
+                                  final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet,
+                                  final @MapsTo("executionSet") CancellingTimerEventExecutionSet executionSet) {
         super(general,
               backgroundSet,
               fontSet,
@@ -103,12 +100,17 @@ public class IntermediateTimerEvent extends BaseIntermediateEvent {
         return description;
     }
 
-    public IntermediateTimerEventExecutionSet getExecutionSet() {
+    public CancellingTimerEventExecutionSet getExecutionSet() {
         return executionSet;
     }
 
-    public void setExecutionSet(IntermediateTimerEventExecutionSet executionSet) {
+    public void setExecutionSet(CancellingTimerEventExecutionSet executionSet) {
         this.executionSet = executionSet;
+    }
+
+    @Override
+    public boolean hasOutputVars() {
+        return false;
     }
 
     @Override

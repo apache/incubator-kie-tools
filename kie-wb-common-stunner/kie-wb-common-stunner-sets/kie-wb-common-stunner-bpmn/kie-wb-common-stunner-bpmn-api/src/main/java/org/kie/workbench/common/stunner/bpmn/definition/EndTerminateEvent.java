@@ -28,7 +28,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Circ
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radius;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.ThrowEventAttributes;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
@@ -63,7 +62,6 @@ public class EndTerminateEvent extends BaseEndEvent {
                                                            BORDER_COLOR,
                                                            BORDER_SIZE),
                                          new FontSet(),
-                                         new ThrowEventAttributes(),
                                          new CircleDimensionSet(new Radius(RADIUS)));
         }
     }
@@ -75,13 +73,11 @@ public class EndTerminateEvent extends BaseEndEvent {
                              final @MapsTo("dataIOSet") DataIOSet dataIOSet,
                              final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                              final @MapsTo("fontSet") FontSet fontSet,
-                             final @MapsTo("throwEventAttributes") ThrowEventAttributes throwEventAttributes,
                              final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet) {
         super(general,
               dataIOSet,
               backgroundSet,
               fontSet,
-              throwEventAttributes,
               dimensionsSet);
     }
 

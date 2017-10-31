@@ -21,7 +21,6 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
@@ -29,7 +28,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSe
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.ThrowEventAttributes;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
@@ -37,10 +35,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBa
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
-@MorphBase(defaultType = EndNoneEvent.class
-        /* TODO: Disabled morphing from end to start events for M1
-        targets = { BaseStartEvent.class } */
-)
+@MorphBase(defaultType = EndNoneEvent.class)
 public abstract class BaseEndEvent implements BPMNDefinition,
                                               DataIOModel {
 
@@ -62,9 +57,6 @@ public abstract class BaseEndEvent implements BPMNDefinition,
     @PropertySet
     @Valid
     protected BackgroundSet backgroundSet;
-
-    @PropertySet
-    protected ThrowEventAttributes throwEventAttributes;
 
     @PropertySet
     protected FontSet fontSet;
@@ -96,17 +88,15 @@ public abstract class BaseEndEvent implements BPMNDefinition,
     public BaseEndEvent() {
     }
 
-    public BaseEndEvent(final @MapsTo("general") BPMNGeneralSet general,
-                        final @MapsTo("dataIOSet") DataIOSet dataIOSet,
-                        final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
-                        final @MapsTo("fontSet") FontSet fontSet,
-                        final @MapsTo("throwEventAttributes") ThrowEventAttributes throwEventAttributes,
-                        final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet) {
+    public BaseEndEvent(final BPMNGeneralSet general,
+                        final DataIOSet dataIOSet,
+                        final BackgroundSet backgroundSet,
+                        final FontSet fontSet,
+                        final CircleDimensionSet dimensionsSet) {
         this.general = general;
         this.dataIOSet = dataIOSet;
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
-        this.throwEventAttributes = throwEventAttributes;
         this.dimensionsSet = dimensionsSet;
     }
 
@@ -154,10 +144,6 @@ public abstract class BaseEndEvent implements BPMNDefinition,
         return fontSet;
     }
 
-    public ThrowEventAttributes getThrowEventAttributes() {
-        return throwEventAttributes;
-    }
-
     public void setGeneral(final BPMNGeneralSet general) {
         this.general = general;
     }
@@ -168,10 +154,6 @@ public abstract class BaseEndEvent implements BPMNDefinition,
 
     public void setBackgroundSet(final BackgroundSet backgroundSet) {
         this.backgroundSet = backgroundSet;
-    }
-
-    public void setThrowEventAttributes(final ThrowEventAttributes throwEventAttributes) {
-        this.throwEventAttributes = throwEventAttributes;
     }
 
     public void setFontSet(final FontSet fontSet) {
@@ -191,7 +173,6 @@ public abstract class BaseEndEvent implements BPMNDefinition,
         return HashUtil.combineHashCodes(general.hashCode(),
                                          dataIOSet.hashCode(),
                                          backgroundSet.hashCode(),
-                                         throwEventAttributes.hashCode(),
                                          fontSet.hashCode(),
                                          dimensionsSet.hashCode());
     }
@@ -203,7 +184,6 @@ public abstract class BaseEndEvent implements BPMNDefinition,
             return general.equals(other.general) &&
                     dataIOSet.equals(other.dataIOSet) &&
                     backgroundSet.equals(other.backgroundSet) &&
-                    throwEventAttributes.equals(other.throwEventAttributes) &&
                     fontSet.equals(other.fontSet) &&
                     dimensionsSet.equals(other.dimensionsSet);
         }

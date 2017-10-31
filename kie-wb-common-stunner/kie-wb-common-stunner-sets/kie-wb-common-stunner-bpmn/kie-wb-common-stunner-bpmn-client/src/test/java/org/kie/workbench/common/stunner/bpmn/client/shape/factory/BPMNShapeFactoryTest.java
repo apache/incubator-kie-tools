@@ -23,9 +23,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.BPMNDiagramShapeDef;
+import org.kie.workbench.common.stunner.bpmn.client.shape.def.CatchingIntermediateEventShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.EndEventShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.GatewayShapeDef;
-import org.kie.workbench.common.stunner.bpmn.client.shape.def.IntermediateEventShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.LaneShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.SequenceFlowConnectorDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.StartEventShapeDef;
@@ -38,6 +38,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
@@ -161,7 +162,11 @@ public class BPMNShapeFactoryTest {
                                   factoryArgumentCaptor.capture());
         verify(delegateShapeFactory,
                times(1)).delegate(eq(IntermediateTimerEvent.class),
-                                  any(IntermediateEventShapeDef.class),
+                                  any(CatchingIntermediateEventShapeDef.class),
+                                  factoryArgumentCaptor.capture());
+        verify(delegateShapeFactory,
+               times(1)).delegate(eq(IntermediateSignalEventCatching.class),
+                                  any(CatchingIntermediateEventShapeDef.class),
                                   factoryArgumentCaptor.capture());
         verify(delegateShapeFactory,
                times(1)).delegate(eq(SequenceFlow.class),
@@ -173,7 +178,7 @@ public class BPMNShapeFactoryTest {
         final long basicFactoryCallCount = factoryArgumentCaptor.getAllValues().stream()
                 .filter(this::isBasicShapeFactory)
                 .count();
-        assertEquals(16,
+        assertEquals(17,
                      svgFactoryCallCount,
                      0);
         assertEquals(1,

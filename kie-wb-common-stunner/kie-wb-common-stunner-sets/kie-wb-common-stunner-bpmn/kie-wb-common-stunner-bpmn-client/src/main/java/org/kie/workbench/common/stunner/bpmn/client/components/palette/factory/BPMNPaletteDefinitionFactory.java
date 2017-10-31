@@ -26,15 +26,16 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseCatchingIntermediateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseEndEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseGateway;
-import org.kie.workbench.common.stunner.bpmn.definition.BaseIntermediateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseStartEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
 import org.kie.workbench.common.stunner.bpmn.definition.Categories;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
@@ -54,101 +55,112 @@ import org.kie.workbench.common.stunner.core.i18n.AbstractTranslationService;
 @Dependent
 public class BPMNPaletteDefinitionFactory extends BindableDefSetPaletteDefinitionFactory<DefinitionSetPalette, BS3PaletteWidget<DefinitionSetPalette>> {
 
-  private final AbstractTranslationService translationService;
+    private final AbstractTranslationService translationService;
 
-  private static final Map<String, Class<?>> CAT_DEF_IDS = new HashMap<String, Class<?>>(1) {{
-    put(Categories.ACTIVITIES,
-        NoneTask.class);
-    put(Categories.CONNECTING_OBJECTS,
-        SequenceFlow.class);
-    put(Categories.EVENTS,
-        StartNoneEvent.class);
-    put(Categories.EVENTS,
-        StartSignalEvent.class);
-    put(Categories.EVENTS,
-        StartTimerEvent.class);
-    put(Categories.EVENTS,
-        EndNoneEvent.class);
-    put(Categories.EVENTS,
-        EndTerminateEvent.class);
-    put(Categories.EVENTS,
-        IntermediateTimerEvent.class);
-    put(Categories.GATEWAYS,
-        ParallelGateway.class);
-    put(Categories.CONTAINERS,
-        Lane.class);
-  }};
-  private final Map<String, String> CAT_TITLES = new HashMap<String, String>(6);
-  private static final Map<String, String> MORPH_GROUP_TITLES = new HashMap<String, String>(6);
+    private static final Map<String, Class<?>> CAT_DEF_IDS = new HashMap<String, Class<?>>(1) {{
+        put(Categories.ACTIVITIES,
+            NoneTask.class);
+        put(Categories.CONNECTING_OBJECTS,
+            SequenceFlow.class);
+        put(Categories.EVENTS,
+            StartNoneEvent.class);
+        put(Categories.EVENTS,
+            StartSignalEvent.class);
+        put(Categories.EVENTS,
+            StartTimerEvent.class);
+        put(Categories.EVENTS,
+            EndNoneEvent.class);
+        put(Categories.EVENTS,
+            EndTerminateEvent.class);
+        put(Categories.EVENTS,
+            IntermediateTimerEvent.class);
+        put(Categories.EVENTS,
+            IntermediateSignalEventCatching.class);
+        put(Categories.GATEWAYS,
+            ParallelGateway.class);
+        put(Categories.CONTAINERS,
+            Lane.class);
+    }};
+    private final Map<String, String> CAT_TITLES = new HashMap<String, String>(6);
+    private static final Map<String, String> MORPH_GROUP_TITLES = new HashMap<String, String>(6);
 
+    @Inject
+    public BPMNPaletteDefinitionFactory(final ShapeManager shapeManager,
+                                        final DefinitionSetPaletteBuilder paletteBuilder,
+                                        final AbstractTranslationService translationService,
+                                        final ManagedInstance<BS3PaletteWidget<DefinitionSetPalette>> palette) {
+        super(shapeManager,
+              paletteBuilder,
+              palette);
+        this.translationService = translationService;
+    }
 
-  @Inject
-  public BPMNPaletteDefinitionFactory(final ShapeManager shapeManager,
-                                      final DefinitionSetPaletteBuilder paletteBuilder,
-                                      final AbstractTranslationService translationService,
-                                      final ManagedInstance<BS3PaletteWidget<DefinitionSetPalette>> palette) {
-    super(shapeManager,
-          paletteBuilder,
-          palette);
-    this.translationService = translationService;
-  }
+    @PostConstruct
+    public void init() {
+        CAT_TITLES.put(Categories.ACTIVITIES,
+                       translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.category.activities"));
+        CAT_TITLES.put(Categories.CONNECTING_OBJECTS,
+                       translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.category.connectingObjects"));
+        CAT_TITLES.put(Categories.EVENTS,
+                       translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.category.events"));
+        CAT_TITLES.put(Categories.GATEWAYS,
+                       translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.category.gateways"));
+        CAT_TITLES.put(Categories.CONTAINERS,
+                       translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.category.containers"));
+        MORPH_GROUP_TITLES.put(BaseTask.class.getName(),
+                               translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.definition.morph.base.tasks"));
+        MORPH_GROUP_TITLES.put(BaseStartEvent.class.getName(),
+                               translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.definition.morph.base.start"));
+        MORPH_GROUP_TITLES.put(BaseEndEvent.class.getName(),
+                               translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.definition.morph.base.end"));
+        MORPH_GROUP_TITLES.put(BaseCatchingIntermediateEvent.class.getName(),
+                               translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.definition.morph.base.catchingIntermediate"));
+        MORPH_GROUP_TITLES.put(BaseSubprocess.class.getName(),
+                               translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.definition.morph.base.subprocess"));
+        MORPH_GROUP_TITLES.put(BaseGateway.class.getName(),
+                               translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.definition.morph.base.gateways"));
+    }
 
-  @PostConstruct
-  public void init() {
-    CAT_TITLES.put(Categories.ACTIVITIES, translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.category.activities"));
-    CAT_TITLES.put(Categories.CONNECTING_OBJECTS, translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.category.connectingObjects"));
-    CAT_TITLES.put(Categories.EVENTS, translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.category.events"));
-    CAT_TITLES.put(Categories.GATEWAYS, translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.category.gateways"));
-    CAT_TITLES.put(Categories.CONTAINERS, translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.category.containers"));
-    MORPH_GROUP_TITLES.put(BaseTask.class.getName(), translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.definition.morph.base.tasks"));
-    MORPH_GROUP_TITLES.put(BaseStartEvent.class.getName(), translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.definition.morph.base.start"));
-    MORPH_GROUP_TITLES.put(BaseEndEvent.class.getName(), translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.definition.morph.base.end"));
-    MORPH_GROUP_TITLES.put(BaseIntermediateEvent.class.getName(), translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.definition.morph.base.intermediate"));
-    MORPH_GROUP_TITLES.put(BaseSubprocess.class.getName(), translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.definition.morph.base.subprocess"));
-    MORPH_GROUP_TITLES.put(BaseGateway.class.getName(), translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.definition.morph.base.gateways"));
-  }
+    @Override
+    protected void configureBuilder() {
+        super.configureBuilder();
+        // Exclude BPMN Diagram from palette model.
+        excludeDefinition(BPMNDiagramImpl.class);
+        // Exclude the none task from palette, it will be available by dragging from the main Activities category.
+        excludeDefinition(NoneTask.class);
+        // TODO: Exclude connectors category from being present on the palette model - Dropping connectors from palette produces an error right now, must fix it on lienzo side.
+        excludeCategory(Categories.CONNECTING_OBJECTS);
+    }
 
-  @Override
-  protected void configureBuilder() {
-    super.configureBuilder();
-    // Exclude BPMN Diagram from palette model.
-    excludeDefinition(BPMNDiagramImpl.class);
-    // Exclude the none task from palette, it will be available by dragging from the main Activities category.
-    excludeDefinition(NoneTask.class);
-    // TODO: Exclude connectors category from being present on the palette model - Dropping connectors from palette produces an error right now, must fix it on lienzo side.
-    excludeCategory(Categories.CONNECTING_OBJECTS);
-  }
+    @Override
+    protected String getCategoryTitle(final String id) {
+        return CAT_TITLES.get(id);
+    }
 
-  @Override
-  protected String getCategoryTitle(final String id) {
-    return CAT_TITLES.get(id);
-  }
+    @Override
+    protected Class<?> getCategoryTargetDefinitionId(final String id) {
+        return CAT_DEF_IDS.get(id);
+    }
 
-  @Override
-  protected Class<?> getCategoryTargetDefinitionId(final String id) {
-    return CAT_DEF_IDS.get(id);
-  }
+    @Override
+    protected String getCategoryDescription(final String id) {
+        return CAT_TITLES.get(id);
+    }
 
-  @Override
-  protected String getCategoryDescription(final String id) {
-    return CAT_TITLES.get(id);
-  }
+    @Override
+    protected String getMorphGroupTitle(final String morphBaseId,
+                                        final Object definition) {
+        return MORPH_GROUP_TITLES.get(morphBaseId);
+    }
 
-  @Override
-  protected String getMorphGroupTitle(final String morphBaseId,
-                                      final Object definition) {
-    return MORPH_GROUP_TITLES.get(morphBaseId);
-  }
+    @Override
+    protected String getMorphGroupDescription(final String morphBaseId,
+                                              final Object definition) {
+        return MORPH_GROUP_TITLES.get(morphBaseId);
+    }
 
-  @Override
-  protected String getMorphGroupDescription(final String morphBaseId,
-                                            final Object definition) {
-    return MORPH_GROUP_TITLES.get(morphBaseId);
-  }
-
-  @Override
-  protected Class<?> getDefinitionSetType() {
-    return BPMNDefinitionSet.class;
-  }
-
+    @Override
+    protected Class<?> getDefinitionSetType() {
+        return BPMNDefinitionSet.class;
+    }
 }

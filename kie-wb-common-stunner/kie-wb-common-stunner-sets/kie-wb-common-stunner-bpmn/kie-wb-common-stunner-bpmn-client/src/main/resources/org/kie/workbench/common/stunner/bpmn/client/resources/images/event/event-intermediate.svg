@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <svg id="eventIntermediate" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
 		 xmlns:stunner="http://www.kie.org/2017/stunner"
-	 x="0" y="0" width="30px" height="30px" viewBox="-1.25 -1.25 32.5 32.5"
+		 x="0" y="0" width="30px" height="30px" viewBox="-1.25 -1.25 32.5 32.5"
 		 style="enable-background:new 0 0 32 32;" xml:space="preserve">
-<circle cx="15px" cy="15px" r="15px" style="fill:none; stroke: black; stroke-width: 2.5;"/>
-<circle stunner:layout="CENTER" cx="15px" cy="15px" r="12px" style="fill:none; stroke: black; stroke-width: 1.5;"/>
-<g stunner:layout="CENTER" transform="translate(3.7,3.7) scale(0.05,0.05)" style="opacity:1">
-	<use xlink:href="event-timer.svg#eventTimer"/>
-</g>
+	<circle cx="15px" cy="15px" r="15px" style="fill:none; stroke: black; stroke-width: 2.5;"/>
+	<circle stunner:layout="CENTER" cx="15px" cy="15px" r="12px" style="fill:none; stroke: black; stroke-width: 1.5;"/>
+	<g stunner:layout="CENTER" transform="translate(3.7,3.7) scale(0.05,0.05)" style="opacity:1">
+		<use xlink:href="event-timer.svg#eventTimer"/>
+	</g>
+	<g stunner:layout="CENTER" transform="translate(3.7,3.7) scale(0.05,0.05)" style="opacity:1">
+		<use xlink:href="event-signal.svg#eventSignal"/>
+	</g>
 </svg>

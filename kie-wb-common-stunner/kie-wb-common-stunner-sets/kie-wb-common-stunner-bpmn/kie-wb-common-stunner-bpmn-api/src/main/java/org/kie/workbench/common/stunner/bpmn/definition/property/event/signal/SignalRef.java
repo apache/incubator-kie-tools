@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.stunner.bpmn.definition.property.event;
+package org.kie.workbench.common.stunner.bpmn.definition.property.event.signal;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -38,14 +38,14 @@ import org.kie.workbench.common.stunner.core.definition.property.type.StringType
 @Bindable
 @Property
 @FieldDefinition(labelMode = LabelMode.OVERRIDE_I18N_KEY)
-public class TimeCycle implements BPMNProperty {
+public class SignalRef implements BPMNProperty {
 
     @Caption
     @FieldLabel
-    public static final transient String caption = "Time Cycle";
+    public static final transient String caption = "SignalRef";
 
     @Description
-    public static final transient String description = "The time cycle";
+    public static final transient String description = "Signal Reference";
 
     @ReadOnly
     @FieldReadOnly
@@ -64,10 +64,10 @@ public class TimeCycle implements BPMNProperty {
     @FieldValue
     private String value = defaultValue;
 
-    public TimeCycle() {
+    public SignalRef() {
     }
 
-    public TimeCycle(final String value) {
+    public SignalRef(final String value) {
         this.value = value;
     }
 
@@ -110,8 +110,8 @@ public class TimeCycle implements BPMNProperty {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof TimeCycle) {
-            TimeCycle other = (TimeCycle) o;
+        if (o instanceof SignalRef) {
+            SignalRef other = (SignalRef) o;
             return (null != value) ? value.equals(other.value) : null == other.value;
         }
         return false;

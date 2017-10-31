@@ -21,7 +21,6 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
@@ -37,8 +36,9 @@ import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @MorphBase(defaultType = IntermediateTimerEvent.class)
-public abstract class BaseIntermediateEvent implements BPMNDefinition,
-                                                       DataIOModel {
+public abstract class BaseCatchingIntermediateEvent
+        implements BPMNDefinition,
+                   DataIOModel {
 
     @Category
     public static final transient String category = Categories.EVENTS;
@@ -74,8 +74,21 @@ public abstract class BaseIntermediateEvent implements BPMNDefinition,
         add("cm_nop");
     }};
 
+    public BaseCatchingIntermediateEvent() {
+    }
+
+    public BaseCatchingIntermediateEvent(final BPMNGeneralSet general,
+                                         final BackgroundSet backgroundSet,
+                                         final FontSet fontSet,
+                                         final CircleDimensionSet dimensionsSet) {
+        this.general = general;
+        this.backgroundSet = backgroundSet;
+        this.fontSet = fontSet;
+        this.dimensionsSet = dimensionsSet;
+    }
+
     @NonPortable
-    static abstract class BaseIntermediateEventBuilder<T extends BaseIntermediateEvent> implements Builder<T> {
+    static abstract class BaseCatchingIntermediateEvenBuilder<T extends BaseCatchingIntermediateEvent> implements Builder<T> {
 
         public static final String BG_COLOR = "#f5deb3";
         public static final Double BORDER_SIZE = 1.5d;
@@ -83,32 +96,19 @@ public abstract class BaseIntermediateEvent implements BPMNDefinition,
         public static final Double RADIUS = 14d;
     }
 
-    public BaseIntermediateEvent() {
-    }
-
-    public BaseIntermediateEvent(final @MapsTo("general") BPMNGeneralSet general,
-                                 final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
-                                 final @MapsTo("fontSet") FontSet fontSet,
-                                 final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet) {
-        this.general = general;
-        this.backgroundSet = backgroundSet;
-        this.fontSet = fontSet;
-        this.dimensionsSet = dimensionsSet;
-    }
-
     @Override
     public boolean hasInputVars() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean isSingleInputVar() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean hasOutputVars() {
-        return true;
+        return false;
     }
 
     @Override
@@ -166,8 +166,8 @@ public abstract class BaseIntermediateEvent implements BPMNDefinition,
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof BaseIntermediateEvent) {
-            BaseIntermediateEvent other = (BaseIntermediateEvent) o;
+        if (o instanceof BaseCatchingIntermediateEvent) {
+            BaseCatchingIntermediateEvent other = (BaseCatchingIntermediateEvent) o;
             return general.equals(other.general) &&
                     backgroundSet.equals(other.backgroundSet) &&
                     fontSet.equals(other.fontSet) &&

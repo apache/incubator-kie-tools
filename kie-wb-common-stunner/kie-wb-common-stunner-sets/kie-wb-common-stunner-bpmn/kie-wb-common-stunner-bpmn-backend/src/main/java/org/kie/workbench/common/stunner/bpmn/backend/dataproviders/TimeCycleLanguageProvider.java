@@ -36,9 +36,9 @@ public class TimeCycleLanguageProvider implements SelectorDataProvider {
     public SelectorData getSelectorData(final FormRenderingContext context) {
         Map<Object, String> values = new TreeMap<>();
 
-        values.put("None",
+        values.put("none",
                    "None");
-        values.put("Cron",
+        values.put("cron",
                    "Cron");
 
         return new SelectorData(values,

@@ -21,9 +21,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.BPMNDiagramShapeDef;
+import org.kie.workbench.common.stunner.bpmn.client.shape.def.CatchingIntermediateEventShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.EndEventShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.GatewayShapeDef;
-import org.kie.workbench.common.stunner.bpmn.client.shape.def.IntermediateEventShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.LaneShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.SequenceFlowConnectorDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.StartEventShapeDef;
@@ -36,6 +36,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
@@ -127,7 +128,10 @@ public class BPMNShapeFactory
                           new EndEventShapeDef(),
                           () -> svgShapeFactory)
                 .delegate(IntermediateTimerEvent.class,
-                          new IntermediateEventShapeDef(),
+                          new CatchingIntermediateEventShapeDef(),
+                          () -> svgShapeFactory)
+                .delegate(IntermediateSignalEventCatching.class,
+                          new CatchingIntermediateEventShapeDef(),
                           () -> svgShapeFactory)
                 .delegate(SequenceFlow.class,
                           new SequenceFlowConnectorDef(),

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.stunner.bpmn.definition.property.event;
+package org.kie.workbench.common.stunner.bpmn.definition.property.event.timer;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -38,14 +38,14 @@ import org.kie.workbench.common.stunner.core.definition.property.type.StringType
 @Bindable
 @Property
 @FieldDefinition(labelMode = LabelMode.OVERRIDE_I18N_KEY)
-public class TimeCycleLanguage implements BPMNProperty {
+public class TimeDate implements BPMNProperty {
 
     @Caption
     @FieldLabel
-    public static final transient String caption = "Time Cycle Language";
+    public static final transient String caption = "Time Date";
 
     @Description
-    public static final transient String description = "The time cycle language";
+    public static final transient String description = "The time date";
 
     @ReadOnly
     @FieldReadOnly
@@ -64,10 +64,10 @@ public class TimeCycleLanguage implements BPMNProperty {
     @FieldValue
     private String value = defaultValue;
 
-    public TimeCycleLanguage() {
+    public TimeDate() {
     }
 
-    public TimeCycleLanguage(final String value) {
+    public TimeDate(final String value) {
         this.value = value;
     }
 
@@ -110,8 +110,8 @@ public class TimeCycleLanguage implements BPMNProperty {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof TimeCycleLanguage) {
-            TimeCycleLanguage other = (TimeCycleLanguage) o;
+        if (o instanceof TimeDate) {
+            TimeDate other = (TimeDate) o;
             return (null != value) ? value.equals(other.value) : null == other.value;
         }
         return false;

@@ -170,6 +170,8 @@
     cursor: default;
     font-size: 12px;
     padding-left: calc(18px);
+    padding-right: 1em;
+    white-space: nowrap;
     text-transform: uppercase;
 }
 

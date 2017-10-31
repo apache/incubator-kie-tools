@@ -24,21 +24,17 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.type.CheckBoxFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radius;
-import org.kie.workbench.common.stunner.bpmn.definition.property.event.IntermediateTimerEventExecutionSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.event.IsInterrupting;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.InterruptingTimerEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.CatchEventAttributes;
+import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationAttributeSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
-import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
@@ -50,7 +46,6 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Definition(graphFactory = NodeFactory.class, builder = StartTimerEvent.StartTimerEventBuilder.class)
 @Morph(base = BaseStartEvent.class)
 @FormDefinition(
-        i18n = @I18nSettings(keyPreffix = "BPMNProperties"),
         startElement = "general",
         policy = FieldPolicy.ONLY_MARKED
 )
@@ -60,24 +55,13 @@ public class StartTimerEvent extends BaseStartEvent {
     public static final transient String title = "Start Timer Event";
 
     @Description
-    public static final transient String description = "Start Timer event";
+    public static final transient String description = "A process instance is started on cyclic timer events, points in " +
+            "time, after time spans or timeouts.";
 
     @PropertySet
-    @FormField(
-            labelKey = "executionSet",
-            afterElement = "general"
-    )
+    @FormField(afterElement = "general")
     @Valid
-    protected IntermediateTimerEventExecutionSet executionSet;
-
-    @Property
-    @FormField(
-            type = CheckBoxFieldType.class,
-            labelKey = "isInterrupting",
-            afterElement = "executionSet"
-    )
-    @Valid
-    protected IsInterrupting isInterrupting;
+    protected InterruptingTimerEventExecutionSet executionSet;
 
     @NonPortable
     public static class StartTimerEventBuilder extends BaseStartEventBuilder<StartTimerEvent> {
@@ -85,15 +69,14 @@ public class StartTimerEvent extends BaseStartEvent {
         @Override
         public StartTimerEvent build() {
             return new StartTimerEvent(new BPMNGeneralSet(""),
-                                       new IntermediateTimerEventExecutionSet(),
-                                       new IsInterrupting(true),
                                        new DataIOSet(),
                                        new BackgroundSet(BG_COLOR,
                                                          BORDER_COLOR,
                                                          BORDER_SIZE),
                                        new FontSet(),
-                                       new CatchEventAttributes(),
-                                       new CircleDimensionSet(new Radius(RADIUS)));
+                                       new CircleDimensionSet(new Radius(RADIUS)),
+                                       new SimulationAttributeSet(),
+                                       new InterruptingTimerEventExecutionSet());
         }
     }
 
@@ -101,21 +84,19 @@ public class StartTimerEvent extends BaseStartEvent {
     }
 
     public StartTimerEvent(final @MapsTo("general") BPMNGeneralSet general,
-                           final @MapsTo("executionSet") IntermediateTimerEventExecutionSet executionSet,
-                           final @MapsTo("isInterrupting") IsInterrupting isInterrupting,
                            final @MapsTo("dataIOSet") DataIOSet dataIOSet,
                            final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                            final @MapsTo("fontSet") FontSet fontSet,
-                           final @MapsTo("catchEventAttributes") CatchEventAttributes catchEventAttributes,
-                           final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet) {
+                           final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet,
+                           final @MapsTo("simulationSet") SimulationAttributeSet simulationSet,
+                           final @MapsTo("executionSet") InterruptingTimerEventExecutionSet executionSet) {
         super(general,
               dataIOSet,
               backgroundSet,
               fontSet,
-              catchEventAttributes,
-              dimensionsSet);
+              dimensionsSet,
+              simulationSet);
         this.executionSet = executionSet;
-        this.isInterrupting = isInterrupting;
     }
 
     @Override
@@ -127,27 +108,18 @@ public class StartTimerEvent extends BaseStartEvent {
         return description;
     }
 
-    public IntermediateTimerEventExecutionSet getExecutionSet() {
+    public InterruptingTimerEventExecutionSet getExecutionSet() {
         return executionSet;
     }
 
-    public IsInterrupting getIsInterrupting() {
-        return isInterrupting;
-    }
-
-    public void setExecutionSet(final IntermediateTimerEventExecutionSet executionSet) {
+    public void setExecutionSet(final InterruptingTimerEventExecutionSet executionSet) {
         this.executionSet = executionSet;
-    }
-
-    public void setIsInterrupting(final IsInterrupting isInterrupting) {
-        this.isInterrupting = isInterrupting;
     }
 
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
-                                         executionSet.hashCode(),
-                                         isInterrupting.hashCode());
+                                         executionSet.hashCode());
     }
 
     @Override
@@ -155,8 +127,7 @@ public class StartTimerEvent extends BaseStartEvent {
         if (o instanceof StartTimerEvent) {
             StartTimerEvent other = (StartTimerEvent) o;
             return super.equals(other) &&
-                    executionSet.equals(other.executionSet) &&
-                    isInterrupting.equals(other.isInterrupting);
+                    executionSet.equals(other.executionSet);
         }
         return false;
     }

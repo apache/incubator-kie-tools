@@ -28,7 +28,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Circ
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radius;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.ThrowEventAttributes;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
@@ -49,7 +48,7 @@ public class EndNoneEvent extends BaseEndEvent {
     public static final transient String title = "End Event";
 
     @Description
-    public static final transient String description = "Untyped end event";
+    public static final transient String description = "The untyped end event typically marks the standard end of a process.";
 
     @NonPortable
     public static class EndNoneEventBuilder extends BaseEndEventBuilder<EndNoneEvent> {
@@ -62,7 +61,6 @@ public class EndNoneEvent extends BaseEndEvent {
                                                       BORDER_COLOR,
                                                       BORDER_SIZE),
                                     new FontSet(),
-                                    new ThrowEventAttributes(),
                                     new CircleDimensionSet(new Radius(RADIUS)));
         }
     }
@@ -74,13 +72,11 @@ public class EndNoneEvent extends BaseEndEvent {
                         final @MapsTo("dataIOSet") DataIOSet dataIOSet,
                         final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                         final @MapsTo("fontSet") FontSet fontSet,
-                        final @MapsTo("throwEventAttributes") ThrowEventAttributes throwEventAttributes,
                         final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet) {
         super(general,
               dataIOSet,
               backgroundSet,
               fontSet,
-              throwEventAttributes,
               dimensionsSet);
     }
 

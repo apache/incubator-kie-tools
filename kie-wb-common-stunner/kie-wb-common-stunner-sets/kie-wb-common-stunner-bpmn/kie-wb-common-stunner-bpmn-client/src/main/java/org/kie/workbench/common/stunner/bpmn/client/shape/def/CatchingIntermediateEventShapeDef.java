@@ -20,111 +20,116 @@ import java.util.Map;
 
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNImageResources;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
-import org.kie.workbench.common.stunner.bpmn.definition.BaseIntermediateEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseCatchingIntermediateEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
-public class IntermediateEventShapeDef
-        implements BPMNSvgShapeDef<BaseIntermediateEvent> {
+public class CatchingIntermediateEventShapeDef
+        implements BPMNSvgShapeDef<BaseCatchingIntermediateEvent> {
 
-    public final static Map<Class<? extends BaseIntermediateEvent>, String> VIEWS = new HashMap<Class<? extends BaseIntermediateEvent>, String>(1) {{
+    public final static Map<Class<? extends BaseCatchingIntermediateEvent>, String> VIEWS = new HashMap<Class<? extends BaseCatchingIntermediateEvent>, String>(2) {{
         put(IntermediateTimerEvent.class,
             BPMNSVGViewFactory.VIEW_EVENT_TIMER);
+        put(IntermediateSignalEventCatching.class,
+            BPMNSVGViewFactory.VIEW_EVENT_SIGNAL);
     }};
 
     private static final SvgDataUriGlyph.Builder GLYPH_BUILDER =
             SvgDataUriGlyph.Builder.create()
                     .setUri(BPMNImageResources.INSTANCE.eventIntermediate().getSafeUri())
                     .addUri(BPMNSVGViewFactory.VIEW_EVENT_TIMER,
-                            BPMNImageResources.INSTANCE.eventTimer().getSafeUri());
+                            BPMNImageResources.INSTANCE.eventTimer().getSafeUri())
+                    .addUri(BPMNSVGViewFactory.VIEW_EVENT_SIGNAL,
+                            BPMNImageResources.INSTANCE.eventSignal().getSafeUri());
 
     @Override
-    public double getAlpha(final BaseIntermediateEvent element) {
+    public double getAlpha(final BaseCatchingIntermediateEvent element) {
         return 1d;
     }
 
     @Override
-    public String getBackgroundColor(final BaseIntermediateEvent element) {
+    public String getBackgroundColor(final BaseCatchingIntermediateEvent element) {
         return element.getBackgroundSet().getBgColor().getValue();
     }
 
     @Override
-    public double getBackgroundAlpha(final BaseIntermediateEvent element) {
+    public double getBackgroundAlpha(final BaseCatchingIntermediateEvent element) {
         return 1;
     }
 
     @Override
-    public String getBorderColor(final BaseIntermediateEvent element) {
+    public String getBorderColor(final BaseCatchingIntermediateEvent element) {
         return element.getBackgroundSet().getBorderColor().getValue();
     }
 
     @Override
-    public double getBorderSize(final BaseIntermediateEvent element) {
+    public double getBorderSize(final BaseCatchingIntermediateEvent element) {
         return element.getBackgroundSet().getBorderSize().getValue();
     }
 
     @Override
-    public double getBorderAlpha(final BaseIntermediateEvent element) {
+    public double getBorderAlpha(final BaseCatchingIntermediateEvent element) {
         return 1;
     }
 
     @Override
-    public String getFontFamily(final BaseIntermediateEvent element) {
+    public String getFontFamily(final BaseCatchingIntermediateEvent element) {
         return element.getFontSet().getFontFamily().getValue();
     }
 
     @Override
-    public String getFontColor(final BaseIntermediateEvent element) {
+    public String getFontColor(final BaseCatchingIntermediateEvent element) {
         return element.getFontSet().getFontColor().getValue();
     }
 
     @Override
-    public String getFontBorderColor(final BaseIntermediateEvent element) {
+    public String getFontBorderColor(final BaseCatchingIntermediateEvent element) {
         return element.getFontSet().getFontBorderColor().getValue();
     }
 
     @Override
-    public double getFontSize(final BaseIntermediateEvent element) {
+    public double getFontSize(final BaseCatchingIntermediateEvent element) {
         return element.getFontSet().getFontSize().getValue();
     }
 
     @Override
-    public double getFontBorderSize(final BaseIntermediateEvent element) {
+    public double getFontBorderSize(final BaseCatchingIntermediateEvent element) {
         return element.getFontSet().getFontBorderSize().getValue();
     }
 
     @Override
-    public HasTitle.Position getFontPosition(final BaseIntermediateEvent element) {
+    public HasTitle.Position getFontPosition(final BaseCatchingIntermediateEvent element) {
         return HasTitle.Position.BOTTOM;
     }
 
     @Override
-    public double getFontRotation(final BaseIntermediateEvent element) {
+    public double getFontRotation(final BaseCatchingIntermediateEvent element) {
         return 0;
     }
 
     @Override
-    public double getWidth(final BaseIntermediateEvent element) {
+    public double getWidth(final BaseCatchingIntermediateEvent element) {
         return element.getDimensionsSet().getRadius().getValue() * 2;
     }
 
     @Override
-    public double getHeight(final BaseIntermediateEvent element) {
+    public double getHeight(final BaseCatchingIntermediateEvent element) {
         return element.getDimensionsSet().getRadius().getValue() * 2;
     }
 
     @Override
     public boolean isSVGViewVisible(final String viewName,
-                                    final BaseIntermediateEvent element) {
+                                    final BaseCatchingIntermediateEvent element) {
         return viewName.equals(VIEWS.get(element.getClass()));
     }
 
     @Override
     public SVGShapeView<?> newViewInstance(final BPMNSVGViewFactory factory,
-                                           final BaseIntermediateEvent intermediateTimerEvent) {
+                                           final BaseCatchingIntermediateEvent intermediateTimerEvent) {
         return factory.eventIntermediate(getWidth(intermediateTimerEvent),
                                          getHeight(intermediateTimerEvent),
                                          false);
@@ -136,7 +141,7 @@ public class IntermediateEventShapeDef
     }
 
     @Override
-    public Glyph getGlyph(final Class<? extends BaseIntermediateEvent> type) {
+    public Glyph getGlyph(final Class<? extends BaseCatchingIntermediateEvent> type) {
         return GLYPH_BUILDER.build(VIEWS.get(type));
     }
 }

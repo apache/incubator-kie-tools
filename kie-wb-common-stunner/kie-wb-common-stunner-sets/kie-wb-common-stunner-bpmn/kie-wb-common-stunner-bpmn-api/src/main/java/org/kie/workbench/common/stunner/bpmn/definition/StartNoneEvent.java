@@ -16,24 +16,30 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radius;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.none.InterruptingNoneEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.CatchEventAttributes;
+import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationAttributeSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
+import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
@@ -51,6 +57,11 @@ public class StartNoneEvent extends BaseStartEvent {
     @Description
     public static final transient String description = "Untyped start event";
 
+    @PropertySet
+    @FormField(afterElement = "general")
+    @Valid
+    protected InterruptingNoneEventExecutionSet executionSet;
+
     @NonPortable
     public static class StartNoneEventBuilder extends BaseStartEventBuilder<StartNoneEvent> {
 
@@ -62,8 +73,9 @@ public class StartNoneEvent extends BaseStartEvent {
                                                         BORDER_COLOR,
                                                         BORDER_SIZE),
                                       new FontSet(),
-                                      new CatchEventAttributes(),
-                                      new CircleDimensionSet(new Radius(RADIUS)));
+                                      new CircleDimensionSet(new Radius(RADIUS)),
+                                      new SimulationAttributeSet(),
+                                      new InterruptingNoneEventExecutionSet());
         }
     }
 
@@ -74,14 +86,16 @@ public class StartNoneEvent extends BaseStartEvent {
                           final @MapsTo("dataIOSet") DataIOSet dataIOSet,
                           final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                           final @MapsTo("fontSet") FontSet fontSet,
-                          final @MapsTo("catchEventAttributes") CatchEventAttributes catchEventAttributes,
-                          final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet) {
+                          final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet,
+                          final @MapsTo("simulationSet") SimulationAttributeSet simulationSet,
+                          final @MapsTo("executionSet") InterruptingNoneEventExecutionSet executionSet) {
         super(general,
               dataIOSet,
               backgroundSet,
               fontSet,
-              catchEventAttributes,
-              dimensionsSet);
+              dimensionsSet,
+              simulationSet);
+        this.executionSet = executionSet;
     }
 
     @Override
@@ -91,5 +105,36 @@ public class StartNoneEvent extends BaseStartEvent {
 
     public String getDescription() {
         return description;
+    }
+
+    public InterruptingNoneEventExecutionSet getExecutionSet() {
+        return executionSet;
+    }
+
+    public void setExecutionSet(InterruptingNoneEventExecutionSet executionSet) {
+        this.executionSet = executionSet;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof StartNoneEvent)) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+
+        StartNoneEvent that = (StartNoneEvent) o;
+
+        return executionSet.equals(that.executionSet);
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(super.hashCode(),
+                                         executionSet.hashCode());
     }
 }

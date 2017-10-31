@@ -29,7 +29,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Portable
 @Bindable
 @PropertySet
-public class CatchEventAttributes implements BPMNPropertySet {
+public class SimulationAttributeSet implements BPMNPropertySet {
 
     @Name
     @FieldLabel
@@ -53,7 +53,7 @@ public class CatchEventAttributes implements BPMNPropertySet {
     @Property
     private DistributionType distributionType;
 
-    public CatchEventAttributes() {
+    public SimulationAttributeSet() {
         this(new Min(),
              new Max(),
              new Mean(),
@@ -62,12 +62,12 @@ public class CatchEventAttributes implements BPMNPropertySet {
              new DistributionType());
     }
 
-    public CatchEventAttributes(final @MapsTo("min") Min min,
-                                final @MapsTo("max") Max max,
-                                final @MapsTo("mean") Mean mean,
-                                final @MapsTo("timeUnit") TimeUnit timeUnit,
-                                final @MapsTo("standardDeviation") StandardDeviation standardDeviation,
-                                final @MapsTo("distributionType") DistributionType distributionType) {
+    public SimulationAttributeSet(final @MapsTo("min") Min min,
+                                  final @MapsTo("max") Max max,
+                                  final @MapsTo("mean") Mean mean,
+                                  final @MapsTo("timeUnit") TimeUnit timeUnit,
+                                  final @MapsTo("standardDeviation") StandardDeviation standardDeviation,
+                                  final @MapsTo("distributionType") DistributionType distributionType) {
         this.min = min;
         this.max = max;
         this.mean = mean;
@@ -76,12 +76,12 @@ public class CatchEventAttributes implements BPMNPropertySet {
         this.distributionType = distributionType;
     }
 
-    public CatchEventAttributes(final Double min,
-                                final Double max,
-                                final Double mean,
-                                final String timeUnit,
-                                final Double standardDeviation,
-                                final String distributionType) {
+    public SimulationAttributeSet(final Double min,
+                                  final Double max,
+                                  final Double mean,
+                                  final String timeUnit,
+                                  final Double standardDeviation,
+                                  final String distributionType) {
         this.min = new Min(min);
         this.max = new Max(max);
         this.mean = new Mean(mean);
@@ -154,8 +154,8 @@ public class CatchEventAttributes implements BPMNPropertySet {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof CatchEventAttributes) {
-            CatchEventAttributes other = (CatchEventAttributes) o;
+        if (o instanceof SimulationAttributeSet) {
+            SimulationAttributeSet other = (SimulationAttributeSet) o;
             return min.equals(other.min) &&
                     max.equals(other.max) &&
                     mean.equals(other.mean) &&
