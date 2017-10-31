@@ -29,6 +29,10 @@
   <description>Kie Workbench - Common - DMN - Backend</description>
   <packaging>jar</packaging>
 
+  <properties>
+    <java.module.name>org.kie.wb.common.dmn.backend</java.module.name>
+  </properties>
+
   <dependencies>
 
     <dependency>

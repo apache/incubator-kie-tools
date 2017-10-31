@@ -15,6 +15,10 @@
   <name>Kie Workbench - Common - Home API</name>
   <description>Kie Workbench - Common - Home API</description>
 
+  <properties>
+    <java.module.name>org.kie.wb.common.home.api</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.uberfire</groupId>

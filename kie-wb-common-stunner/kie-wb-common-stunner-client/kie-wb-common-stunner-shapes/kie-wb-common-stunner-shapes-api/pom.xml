@@ -30,6 +30,10 @@
   <description>Kie Workbench - Common - Stunner - Shapes API</description>
   <packaging>jar</packaging>
 
+  <properties>
+    <java.module.name>org.kie.wb.common.stunner.shapes.api</java.module.name>
+  </properties>
+
   <dependencies>
 
     <!-- Stunner. -->

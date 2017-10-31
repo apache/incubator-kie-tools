@@ -15,6 +15,10 @@
   <name>Kie Workbench - Common - Forms - Data Modeller Integration - API</name>
   <description>Kie Workbench - Forms - Data Modeller Integration - API</description>
 
+  <properties>
+    <java.module.name>org.kie.wb.common.forms.data.modeller.integration.api</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.jboss.errai</groupId>

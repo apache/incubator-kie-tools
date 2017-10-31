@@ -30,6 +30,10 @@
   <description>Kie Workbench - Common - Stunner - Basic Definition Set - API</description>
   <packaging>jar</packaging>
 
+  <properties>
+    <java.module.name>org.kie.wb.common.stunner.basicset.api</java.module.name>
+  </properties>
+
   <dependencies>
 
     <!-- Stunner. -->

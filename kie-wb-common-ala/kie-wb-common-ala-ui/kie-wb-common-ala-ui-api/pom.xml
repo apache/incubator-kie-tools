@@ -16,6 +16,10 @@
   <name>KIE Workbench Common ALA :: UI - API</name>
   <description>KIE Workbench Common ALA :: UI - API</description>
 
+  <properties>
+    <java.module.name>org.kie.wb.common.ala.ui.api</java.module.name>
+  </properties>
+
   <dependencies>
 
     <dependency>

@@ -30,6 +30,10 @@
   <name>Kie Workbench - Common - Forms - ADF - Base</name>
   <description>Kie Workbench - Common - ADF - Base</description>
 
+  <properties>
+    <java.module.name>org.kie.wb.common.forms.adf.base</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.workbench.forms</groupId>

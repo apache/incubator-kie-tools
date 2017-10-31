@@ -15,6 +15,10 @@
 
   <name>KIE Workbench Common ALA :: Registry VFS</name>
 
+  <properties>
+    <java.module.name>org.kie.wb.common.ala.registry.vfs</java.module.name>
+  </properties>
+
   <dependencies>
 
     <dependency>

@@ -30,6 +30,10 @@
   <description>Kie Workbench - Common - Stunner - Basic Definition Set - Client</description>
   <packaging>jar</packaging>
 
+  <properties>
+    <java.module.name>org.kie.wb.common.stunner.basicset.client</java.module.name>
+  </properties>
+
   <dependencies>
 
     <!-- Stunner. -->

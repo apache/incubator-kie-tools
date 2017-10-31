@@ -30,6 +30,10 @@
   <description>Kie Workbench - Common - Stunner - Core API</description>
   <packaging>jar</packaging>
 
+  <properties>
+    <java.module.name>org.kie.wb.common.stunner.core.api</java.module.name>
+  </properties>
+
   <dependencies>
 
     <!-- GWT. -->

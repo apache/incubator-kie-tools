@@ -30,6 +30,10 @@
   <name>Kie Workbench - Common - Forms - ADF - Engine - API</name>
   <description>Kie Workbench - Common - Forms - ADF - Engine - API</description>
 
+  <properties>
+    <java.module.name>org.kie.wb.common.forms.adf.engine.api</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.uberfire</groupId>

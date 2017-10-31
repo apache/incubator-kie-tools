@@ -14,4 +14,7 @@
 
   <name>Kie Workbench - Common - Contributors - API</name>
 
+  <properties>
+    <java.module.name>org.kie.wb.common.contributors.api</java.module.name>
+  </properties>
 </project>

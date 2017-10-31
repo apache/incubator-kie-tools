@@ -28,6 +28,10 @@
   <artifactId>kie-wb-common-forms-bpmn-api</artifactId>
   <name>Kie Workbench - Common - Forms - BPMN Form Generation API</name>
 
+  <properties>
+    <java.module.name>org.kie.wb.common.forms.bpmn.api</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.uberfire</groupId>

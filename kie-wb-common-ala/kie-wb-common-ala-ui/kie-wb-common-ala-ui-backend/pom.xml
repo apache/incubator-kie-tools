@@ -16,6 +16,10 @@
   <name>KIE Workbench Common ALA :: UI - Backend</name>
   <description>KIE Workbench Common ALA :: UI - Backend</description>
 
+  <properties>
+    <java.module.name>org.kie.wb.common.ala.ui.backend</java.module.name>
+  </properties>
+
   <dependencies>
 
     <dependency>

@@ -31,6 +31,10 @@
   <name>Kie Workbench - Common - Java editor API</name>
   <description>Kie Workbench - Common - Java editor API</description>
 
+  <properties>
+    <java.module.name>org.kie.wb.common.java.editor.api</java.module.name>
+  </properties>
+
   <dependencies>
 
     <dependency>

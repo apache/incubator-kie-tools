@@ -30,6 +30,10 @@
   <description>Kie Workbench - Common - Stunner - Case Management Definition Set - Project integration - API</description>
   <packaging>jar</packaging>
 
+  <properties>
+    <java.module.name>org.kie.wb.common.stunner.casemgmt.project.api</java.module.name>
+  </properties>
+
   <dependencies>
 
     <!-- Stunner. -->

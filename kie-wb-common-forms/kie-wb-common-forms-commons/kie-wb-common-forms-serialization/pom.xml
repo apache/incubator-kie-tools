@@ -14,6 +14,10 @@
   <name>Kie Workbench - Common - Forms - Commons - Serialization</name>
   <description>Kie Workbench - Common - Forms - Serialization</description>
 
+  <properties>
+    <java.module.name>org.kie.wb.common.forms.serialization</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.commons</groupId>

@@ -29,6 +29,10 @@
   <description>Kie Workbench - Common - Stunner - Case Management Definition Set - Client</description>
   <packaging>jar</packaging>
 
+  <properties>
+    <java.module.name>org.kie.wb.common.stunner.casemgmt.client</java.module.name>
+  </properties>
+
   <dependencies>
 
     <!-- Stunner -->

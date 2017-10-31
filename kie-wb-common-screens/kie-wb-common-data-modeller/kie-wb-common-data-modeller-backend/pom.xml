@@ -16,6 +16,10 @@
   <name>Kie Workbench - Common - Data modeller Backend</name>
   <description>Kie Workbench - Common - Data modeller Backend</description>
 
+  <properties>
+    <java.module.name>org.kie.wb.common.data.modeller.backend</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie</groupId>

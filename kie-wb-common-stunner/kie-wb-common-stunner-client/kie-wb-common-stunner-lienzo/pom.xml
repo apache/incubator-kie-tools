@@ -30,6 +30,10 @@
   <description>Kie Workbench - Common - Stunner - Lienzo</description>
   <packaging>jar</packaging>
 
+  <properties>
+    <java.module.name>org.kie.wb.common.stunner.lienzo</java.module.name>
+  </properties>
+
   <dependencies>
 
     <!-- Stunner. -->

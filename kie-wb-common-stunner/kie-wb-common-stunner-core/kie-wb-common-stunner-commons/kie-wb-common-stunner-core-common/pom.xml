@@ -30,6 +30,10 @@
   <description>Kie Workbench - Common - Stunner - Core Common</description>
   <packaging>jar</packaging>
 
+  <properties>
+    <java.module.name>org.kie.wb.common.stunner.common.core</java.module.name>
+  </properties>
+
   <dependencies>
 
     <dependency>

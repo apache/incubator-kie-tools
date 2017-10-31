@@ -31,6 +31,10 @@
   <description>Kie Workbench - Common - Stunner - SVG - Generator</description>
   <packaging>jar</packaging>
 
+  <properties>
+    <java.module.name>org.kie.wb.common.stunner.svg.generator</java.module.name>
+  </properties>
+
   <dependencies>
 
     <!-- Stunner. -->

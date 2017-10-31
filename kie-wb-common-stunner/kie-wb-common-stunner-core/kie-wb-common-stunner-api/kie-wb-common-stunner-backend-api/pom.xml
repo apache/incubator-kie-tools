@@ -30,8 +30,11 @@
   <description>Kie Workbench - Common - Stunner - Backend API</description>
   <packaging>jar</packaging>
 
-  <dependencies>
+  <properties>
+    <java.module.name>org.kie.wb.common.stunner.api.backend</java.module.name>
+  </properties>
 
+  <dependencies>
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-core-api</artifactId>

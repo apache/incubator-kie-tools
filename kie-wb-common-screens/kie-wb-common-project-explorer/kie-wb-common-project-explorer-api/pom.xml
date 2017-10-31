@@ -15,6 +15,10 @@
   <name>Kie Workbench - Common - Project Explorer API</name>
   <description>Kie Workbench - Common - Project Explorer API</description>
 
+  <properties>
+    <java.module.name>org.kie.wb.common.project.explorer.api</java.module.name>
+  </properties>
+
   <dependencies>
 
     <!-- dependencies added because of new illegal transitive dependency check -->

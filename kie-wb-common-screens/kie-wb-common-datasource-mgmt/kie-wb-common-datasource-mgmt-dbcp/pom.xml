@@ -15,6 +15,10 @@
   <name>Kie Workbench - Common - Data Source Mgmt DBCP</name>
   <description>Kie Workbench - Common - Data Source Mgmt DBCP</description>
 
+  <properties>
+    <java.module.name>org.kie.wb.common.datasource.mgmt.dbcp</java.module.name>
+  </properties>
+
   <dependencies>
 
     <dependency>

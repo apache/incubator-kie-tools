@@ -12,6 +12,10 @@
   <name>Kie Workbench - Common - Social Home Page - API</name>
   <description>Kie Workbench - Common - Social Home Page - API</description>
 
+  <properties>
+    <java.module.name>org.kie.wb.common.social.home.page.api</java.module.name>
+  </properties>
+
   <dependencies>
     <!-- Project Dependencies -->
     <dependency>

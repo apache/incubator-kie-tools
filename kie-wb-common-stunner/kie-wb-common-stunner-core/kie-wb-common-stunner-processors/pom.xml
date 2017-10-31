@@ -30,6 +30,10 @@
   <description>Kie Workbench - Common - Stunner - Processors</description>
   <packaging>jar</packaging>
 
+  <properties>
+    <java.module.name>org.kie.wb.common.stunner.processors</java.module.name>
+  </properties>
+
   <dependencies>
 
     <dependency>

@@ -16,6 +16,10 @@
   <name>Kie Workbench - Common - Data Source Mgmt Client</name>
   <description>Kie Workbench - Common - Data Source Mgmt Client</description>
 
+  <properties>
+    <java.module.name>org.kie.wb.common.datasource.mgmt.client</java.module.name>
+  </properties>
+
   <dependencies>
 
     <dependency>

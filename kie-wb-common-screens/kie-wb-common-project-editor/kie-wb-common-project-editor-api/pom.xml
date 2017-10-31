@@ -31,6 +31,10 @@
   <name>Kie Workbench - Common - Project Editor API</name>
   <description>Kie Workbench - Common - Project Editor API</description>
 
+  <properties>
+    <java.module.name>org.kie.wb.common.project.editor.api</java.module.name>
+  </properties>
+
   <dependencies>
 
     <dependency>
