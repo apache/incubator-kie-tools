@@ -38,7 +38,7 @@ import org.uberfire.java.nio.base.options.CommentedOption;
 
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class DefaultDriverInitializerTest {
 
     private static final String GLOBAL_URI = "default://master@datasources/";
@@ -55,7 +55,7 @@ public class DefaultDriverInitializerTest {
     @Mock
     private CommentedOption commentedOption;
 
-    private DefaultDriverInitializer driverInitializer;
+    private MyDefaultDriverInitializer driverInitializer;
 
     @Mock
     private DefRegistry defRegistry;
@@ -71,21 +71,23 @@ public class DefaultDriverInitializerTest {
 
     @Before
     public void setup() {
-        when( globalPath.toURI() ).thenReturn( GLOBAL_URI );
-        globalNioPath = Paths.convert( globalPath );
-        when( serviceHelper.getGlobalDataSourcesContext() ).thenReturn( globalPath );
-        when( serviceHelper.getDefRegistry() ).thenReturn( defRegistry );
+        when(globalPath.toURI()).thenReturn(GLOBAL_URI);
+        globalNioPath = Paths.convert(globalPath);
+        when(serviceHelper.getGlobalDataSourcesContext()).thenReturn(globalPath);
+        when(serviceHelper.getDefRegistry()).thenReturn(defRegistry);
 
         setUpSystemDrivers();
         // create the expected drivers and the expected destination paths
         expectedDrivers = createExpectedDrivers();
-        globalNioPaths = new org.uberfire.java.nio.file.Path[ expectedDrivers.size() ];
-        for ( int i = 0; i < globalNioPaths.length; i ++) {
-            globalNioPaths[ i ] = globalNioPath.resolve( expectedDrivers.get( i ).getName() + ".driver" );
+        globalNioPaths = new org.uberfire.java.nio.file.Path[expectedDrivers.size()];
+        for (int i = 0; i < globalNioPaths.length; i++) {
+            globalNioPaths[i] = globalNioPath.resolve(expectedDrivers.get(i).getName() + ".driver");
         }
 
-        when( optionsFactory.makeCommentedOption( "system generated driver" ) ).thenReturn( commentedOption );
-        driverInitializer = new DefaultDriverInitializerImpl(ioService, serviceHelper, optionsFactory );
+        when(optionsFactory.makeCommentedOption("system generated driver")).thenReturn(commentedOption);
+        driverInitializer = spy(new MyDefaultDriverInitializer(ioService,
+                                                               serviceHelper,
+                                                               optionsFactory));
     }
 
     @Test
@@ -96,46 +98,93 @@ public class DefaultDriverInitializerTest {
         // All driver definitions provided as System properties, and the ones provided in the configuration file should
         // have written in the expected target paths.
         String expectedSource;
-        for ( int i = 0; i < expectedDrivers.size(); i++ ) {
-            expectedSource = DriverDefSerializer.serialize( expectedDrivers.get( i ) );
-            verify( ioService, times( 1 ) ).write( globalNioPaths[ i ], expectedSource, commentedOption );
-            verify( defRegistry, times( 1 ) ).setEntry( Paths.convert( globalNioPaths[ i ] ), expectedDrivers.get( i ) );
+        for (int i = 0; i < expectedDrivers.size(); i++) {
+            expectedSource = DriverDefSerializer.serialize(expectedDrivers.get(i));
+            verify(ioService,
+                   times(1)).write(globalNioPaths[i],
+                                   expectedSource,
+                                   commentedOption);
+            verify(defRegistry,
+                   times(1)).setEntry(Paths.convert(globalNioPaths[i]),
+                                      expectedDrivers.get(i));
+        }
+    }
+
+    @Test
+    public void testDisableDefaultDrivers() {
+        System.getProperties().setProperty(DefaultDriverInitializerImpl.DISABLE_DEFAULT_DRIVERS,
+                                           "true");
+        driverInitializer.initializeDefaultDrivers();
+        verify(driverInitializer,
+               never()).initializeFromConfigFile();
+        verify(driverInitializer,
+               never()).initializeFromSystemProperties();
+    }
+
+    class MyDefaultDriverInitializer
+            extends DefaultDriverInitializerImpl {
+
+        public MyDefaultDriverInitializer(IOService ioService,
+                                          DataSourceServicesHelper serviceHelper,
+                                          CommentedOptionFactory optionsFactory) {
+            super(ioService,
+                  serviceHelper,
+                  optionsFactory);
+        }
+
+        @Override
+        protected void initializeFromSystemProperties() {
+            super.initializeFromSystemProperties();
+        }
+
+        @Override
+        protected void initializeFromConfigFile() {
+            super.initializeFromConfigFile();
         }
     }
 
     private void setUpSystemDrivers() {
         // emulates drivers definitions passed as System properties.
         Properties properties = System.getProperties();
-        for ( int i = 0; i < 2; i++ ) {
-            properties.put( "driverDef.uuid." + i, "sys-uuid" + i );
-            properties.put( "driverDef.name." + i, "sys-name" + i );
-            properties.put( "driverDef.driverClass." + i, "sys-driverClass" + i );
-            properties.put( "driverDef.groupId." + i, "sys-groupId" + i );
-            properties.put( "driverDef.artifactId." + i, "sys-artifactId" + i );
-            properties.put( "driverDef.version." + i, "sys-version" + i );
+        for (int i = 0; i < 2; i++) {
+            properties.put("driverDef.uuid." + i,
+                           "sys-uuid" + i);
+            properties.put("driverDef.name." + i,
+                           "sys-name" + i);
+            properties.put("driverDef.driverClass." + i,
+                           "sys-driverClass" + i);
+            properties.put("driverDef.groupId." + i,
+                           "sys-groupId" + i);
+            properties.put("driverDef.artifactId." + i,
+                           "sys-artifactId" + i);
+            properties.put("driverDef.version." + i,
+                           "sys-version" + i);
         }
     }
 
     private List<DriverDef> createExpectedDrivers() {
         // create 2 expected drivers defined by System properties.
-        List<DriverDef> expectedDrivers = createDrivers( "sys-", 2 );
+        List<DriverDef> expectedDrivers = createDrivers("sys-",
+                                                        2);
         // and 2 more coming from the configuration file.
-        expectedDrivers.addAll( createDrivers( "", 2 ) );
+        expectedDrivers.addAll(createDrivers("",
+                                             2));
         return expectedDrivers;
     }
 
-    private List<DriverDef> createDrivers( String prefix, int count ) {
-        List<DriverDef> driverDefs = new ArrayList<>(  );
+    private List<DriverDef> createDrivers(String prefix,
+                                          int count) {
+        List<DriverDef> driverDefs = new ArrayList<>();
         DriverDef driverDef;
-        for ( int i = 0; i < count; i++ ) {
+        for (int i = 0; i < count; i++) {
             driverDef = new DriverDef();
-            driverDef.setUuid( prefix + "uuid" + i );
-            driverDef.setName( prefix + "name" + i );
-            driverDef.setDriverClass( prefix + "driverClass" + i );
-            driverDef.setGroupId( prefix + "groupId" + i );
-            driverDef.setArtifactId( prefix + "artifactId" + i );
-            driverDef.setVersion( prefix + "version" + i );
-            driverDefs.add( driverDef );
+            driverDef.setUuid(prefix + "uuid" + i);
+            driverDef.setName(prefix + "name" + i);
+            driverDef.setDriverClass(prefix + "driverClass" + i);
+            driverDef.setGroupId(prefix + "groupId" + i);
+            driverDef.setArtifactId(prefix + "artifactId" + i);
+            driverDef.setVersion(prefix + "version" + i);
+            driverDefs.add(driverDef);
         }
         return driverDefs;
     }

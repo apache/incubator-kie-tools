@@ -35,11 +35,14 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 
+import static org.kie.workbench.common.screens.datasource.management.backend.core.DataSourceSettings.DATASOURCE_MANAGEMENT_PREFIX;
+import static org.kie.workbench.common.screens.datasource.management.util.ServiceUtil.getManagedProperty;
+
 @ApplicationScoped
 public class DefaultDriverInitializerImpl
         implements DefaultDriverInitializer {
 
-    private static final Logger logger = LoggerFactory.getLogger( DefaultDriverInitializerImpl.class );
+    private static final Logger logger = LoggerFactory.getLogger(DefaultDriverInitializerImpl.class);
 
     private static final String PREFIX = "driverDef";
 
@@ -55,6 +58,8 @@ public class DefaultDriverInitializerImpl
 
     private static final String VERSION = PREFIX + ".version";
 
+    public static final String DISABLE_DEFAULT_DRIVERS = DATASOURCE_MANAGEMENT_PREFIX + ".disableDefaultDrivers";
+
     private IOService ioService;
 
     private DataSourceServicesHelper serviceHelper;
@@ -67,9 +72,9 @@ public class DefaultDriverInitializerImpl
     }
 
     @Inject
-    public DefaultDriverInitializerImpl( @Named("ioStrategy") IOService ioService,
-            DataSourceServicesHelper serviceHelper,
-            CommentedOptionFactory optionsFactory ) {
+    public DefaultDriverInitializerImpl(@Named("ioStrategy") IOService ioService,
+                                        DataSourceServicesHelper serviceHelper,
+                                        CommentedOptionFactory optionsFactory) {
         this.ioService = ioService;
         this.serviceHelper = serviceHelper;
         this.optionsFactory = optionsFactory;
@@ -77,58 +82,85 @@ public class DefaultDriverInitializerImpl
 
     @Override
     public void initializeDefaultDrivers() {
-        initializeFromSystemProperties();
-        initializeFromConfigFile();
+        boolean disableDefaultDrivers = Boolean.valueOf(getManagedProperty(DataSourceSettings.getInstance().getProperties(),
+                                                                           DISABLE_DEFAULT_DRIVERS));
+        if (disableDefaultDrivers) {
+            logger.debug("Default drivers initialization was disabled by using the " + DISABLE_DEFAULT_DRIVERS + " configuration property.");
+        } else {
+            initializeFromSystemProperties();
+            initializeFromConfigFile();
+        }
     }
 
     protected void initializeFromSystemProperties() {
-        initializeFromProperties( System.getProperties() );
+        initializeFromProperties(System.getProperties());
     }
 
     protected void initializeFromConfigFile() {
-        initializeFromProperties( DataSourceSettings.getInstance().getProperties() );
+        initializeFromProperties(DataSourceSettings.getInstance().getProperties());
     }
 
-    private void initializeFromProperties( Properties properties ) {
-        final Set<String> driverCodes = new HashSet<>( );
+    private void initializeFromProperties(Properties properties) {
+        final Set<String> driverCodes = new HashSet<>();
         DriverDef driverDef;
-        final org.uberfire.java.nio.file.Path globalPath = Paths.convert( serviceHelper.getGlobalDataSourcesContext() );
+        final org.uberfire.java.nio.file.Path globalPath = Paths.convert(serviceHelper.getGlobalDataSourcesContext());
         org.uberfire.java.nio.file.Path targetPath;
         String source;
 
-        for ( String propertyName : properties.stringPropertyNames() ) {
-            if ( propertyName.length() > UUID.length() && propertyName.startsWith( UUID  + "." ) ) {
-                driverCodes.add( propertyName.substring( UUID.length() + 1, propertyName.length() ) );
+        for (String propertyName : properties.stringPropertyNames()) {
+            if (propertyName.length() > UUID.length() && propertyName.startsWith(UUID + ".")) {
+                driverCodes.add(propertyName.substring(UUID.length() + 1,
+                                                       propertyName.length()));
             }
         }
 
-        for ( String driverCode : driverCodes ) {
+        for (String driverCode : driverCodes) {
             driverDef = new DriverDef();
-            driverDef.setUuid( getDriverParam( properties, UUID, driverCode ) );
-            driverDef.setName( getDriverParam( properties, NAME, driverCode ) );
-            driverDef.setDriverClass( getDriverParam( properties, DRIVER_CLASS, driverCode ) );
-            driverDef.setGroupId( getDriverParam( properties, GROUP_ID, driverCode ) );
-            driverDef.setArtifactId( getDriverParam( properties, ARTIFACT_ID, driverCode ) );
-            driverDef.setVersion( getDriverParam( properties, VERSION, driverCode ) );
-            if ( driverDefValidator.validate( driverDef ) ) {
-                targetPath = globalPath.resolve( driverDef.getName( ) + ".driver" );
+            driverDef.setUuid(getDriverParam(properties,
+                                             UUID,
+                                             driverCode));
+            driverDef.setName(getDriverParam(properties,
+                                             NAME,
+                                             driverCode));
+            driverDef.setDriverClass(getDriverParam(properties,
+                                                    DRIVER_CLASS,
+                                                    driverCode));
+            driverDef.setGroupId(getDriverParam(properties,
+                                                GROUP_ID,
+                                                driverCode));
+            driverDef.setArtifactId(getDriverParam(properties,
+                                                   ARTIFACT_ID,
+                                                   driverCode));
+            driverDef.setVersion(getDriverParam(properties,
+                                                VERSION,
+                                                driverCode));
+            if (driverDefValidator.validate(driverDef)) {
+                targetPath = globalPath.resolve(driverDef.getName() + ".driver");
                 try {
-                    if ( !ioService.exists( targetPath ) ) {
-                        source = DriverDefSerializer.serialize( driverDef );
-                        serviceHelper.getDefRegistry().setEntry( Paths.convert( targetPath ), driverDef );
-                        ioService.write( targetPath, source, optionsFactory.makeCommentedOption( "system generated driver" ) );
+                    if (!ioService.exists(targetPath)) {
+                        source = DriverDefSerializer.serialize(driverDef);
+                        serviceHelper.getDefRegistry().setEntry(Paths.convert(targetPath),
+                                                                driverDef);
+                        ioService.write(targetPath,
+                                        source,
+                                        optionsFactory.makeCommentedOption("system generated driver"));
                     }
-                } catch ( Exception e ) {
-                    serviceHelper.getDefRegistry().invalidateCache( Paths.convert( targetPath ) );
-                    logger.error( "It was not possible to write driver definition {} in path {}. ", driverDef, targetPath );
+                } catch (Exception e) {
+                    serviceHelper.getDefRegistry().invalidateCache(Paths.convert(targetPath));
+                    logger.error("It was not possible to write driver definition {} in path {}. ",
+                                 driverDef,
+                                 targetPath);
                 }
             } else {
-                logger.warn( "Driver will be skipped due to invalid or uncompleted properties {}.", driverCode );
+                logger.warn("Driver will be skipped due to invalid or uncompleted properties {}.",
+                            driverCode);
             }
         }
     }
 
-    private String getDriverParam( Properties properties, String propertyName, String driverCode ) {
-        return properties.getProperty( propertyName + "." + driverCode );
+    private String getDriverParam(Properties properties,
+                                  String propertyName,
+                                  String driverCode) {
+        return properties.getProperty(propertyName + "." + driverCode);
     }
 }
