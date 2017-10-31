@@ -21,7 +21,7 @@ package org.uberfire.ext.editor.commons.client.validation;
  */
 public interface ValidatorCallback {
 
-    public void onSuccess();
+    void onSuccess();
 
-    public void onFailure();
+    void onFailure();
 }

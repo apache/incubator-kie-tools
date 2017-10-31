@@ -25,9 +25,7 @@ import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.dom.client.StyleInjector;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.client.mvp.ActivityBeansInfo;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
@@ -76,12 +74,6 @@ public abstract class RuntimePluginBaseEditor extends BaseEditor {
 
     @Inject
     private Event<PluginUnregistered> pluginUnregisteredEvent;
-
-    @Inject
-    private SyncBeanManager beanManager;
-
-    @Inject
-    private ActivityBeansInfo activityBeansInfo;
 
     @Inject
     private SavePopUpPresenter savePopUpPresenter;

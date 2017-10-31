@@ -27,6 +27,10 @@ import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.ActivityBeansInfo;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
 import org.uberfire.ext.preferences.client.annotations.PreferenceForm;
@@ -35,9 +39,14 @@ import org.uberfire.preferences.shared.bean.BasePreference;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class PreferenceFormBeansInfoTest {
 
+    @Mock
     private SyncBeanManager syncBeanManager;
+
+    @Mock
+    private ActivityBeansCache activityBeansCache;
 
     private ActivityBeansInfo activityBeansInfo;
 
@@ -45,13 +54,7 @@ public class PreferenceFormBeansInfoTest {
 
     @Before
     public void setup() {
-        syncBeanManager = mock(SyncBeanManager.class);
-        activityBeansInfo = new ActivityBeansInfo() {
-            @Override
-            public SyncBeanManager getBeanManager() {
-                return syncBeanManager;
-            }
-        };
+        activityBeansInfo = new ActivityBeansInfo(syncBeanManager, activityBeansCache);
         preferenceFormBeansInfo = new PreferenceFormBeansInfo(activityBeansInfo);
         when(syncBeanManager.lookupBeans(WorkbenchScreenActivity.class))
                 .thenReturn(generateBeansList());

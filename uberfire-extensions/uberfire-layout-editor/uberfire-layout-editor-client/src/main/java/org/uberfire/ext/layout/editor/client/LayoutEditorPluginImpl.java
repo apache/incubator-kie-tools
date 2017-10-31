@@ -26,15 +26,12 @@ import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
-import org.uberfire.ext.layout.editor.api.LayoutServices;
+import org.uberfire.ext.layout.editor.api.PerspectiveServices;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditorPlugin;
-import org.uberfire.ext.plugin.model.LayoutEditorModel;
-import org.uberfire.ext.plugin.model.PluginType;
-import org.uberfire.ext.plugin.service.PluginServices;
-import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.mvp.Command;
 
 @Dependent
 public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
@@ -43,10 +40,7 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
     private LayoutEditorPresenter layoutEditorPresenter;
 
     @Inject
-    private Caller<PluginServices> pluginServices;
-
-    @Inject
-    private Caller<LayoutServices> layoutServices;
+    private Caller<PerspectiveServices> perspectiveServices;
 
     @Inject
     private SavePopUpPresenter savePopUpPresenter;
@@ -54,12 +48,6 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
     private String pluginName;
     private String emptyTitleText;
     private String emptySubTitleText;
-
-    private PluginType pluginType;
-
-    private Path currentPath;
-
-    private ParameterizedCommand<LayoutEditorModel> loadCallBack;
 
     @Override
     public void init(String layoutName,
@@ -113,13 +101,7 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
 
     @Override
     public LayoutTemplate getLayout() {
-        return getLayoutEditor();
-    }
-
-    private LayoutTemplate getLayoutEditor() {
-        LayoutTemplate layout = layoutEditorPresenter.getLayout();
-        layout.setName(pluginName);
-        return layout;
+        return layoutEditorPresenter.getLayout();
     }
 
     @Override
@@ -135,79 +117,34 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
     }
 
     @Override
-    public void load(final PluginType pluginType,
-                     final Path currentPath,
-                     final ParameterizedCommand<LayoutEditorModel> loadCallBack) {
+    public void load(Path currentPath,
+                     Command loadCallBack) {
 
-        this.pluginType = pluginType;
-        this.currentPath = currentPath;
-        this.loadCallBack = loadCallBack;
-        pluginServices.call(new RemoteCallback<LayoutEditorModel>() {
-
-            @Override
-            public void callback(final LayoutEditorModel model) {
-
-                layoutServices.call(new RemoteCallback<LayoutTemplate>() {
-
-                    @Override
-                    public void callback(final LayoutTemplate layoutTemplate) {
-                        if (layoutTemplate != null) {
-                            layoutEditorPresenter.loadLayout(layoutTemplate,
-                                                             emptyTitleText,
-                                                             emptySubTitleText);
-                            loadCallBack.execute(getLayoutContent(currentPath,
-                                                                  model.getLayoutEditorModel()));
-                        } else {
-                            layoutEditorPresenter
-                                    .loadEmptyLayout(pluginName,
-                                                     emptyTitleText,
-                                                     emptySubTitleText);
-                            ;
-                        }
-                    }
-                }).convertLayoutFromString(model.getLayoutEditorModel());
+        perspectiveServices.call((LayoutTemplate layoutTemplate) -> {
+            if (layoutTemplate != null) {
+                layoutEditorPresenter.loadLayout(layoutTemplate,
+                        emptyTitleText,
+                        emptySubTitleText);
+                loadCallBack.execute();
+            } else {
+                layoutEditorPresenter
+                        .loadEmptyLayout(pluginName,
+                                emptyTitleText,
+                                emptySubTitleText);
             }
-        }).getLayoutEditor(currentPath,
-                           pluginType);
+
+        }).getLayoutTemplate(currentPath);
     }
 
     @Override
     public void save(final Path path,
                      final RemoteCallback<Path> saveSuccessCallback) {
 
-        layoutServices.call(new RemoteCallback<String>() {
-
-            @Override
-            public void callback(final String model) {
-                savePlugin(model,
-                           path,
-                           saveSuccessCallback);
-            }
-        }).convertLayoutToString(getLayoutEditor());
-    }
-
-    private void savePlugin(final String model,
-                            final Path path,
-                            final RemoteCallback<Path> saveSuccessCallback) {
-        savePopUpPresenter.show(path,
-                                new ParameterizedCommand<String>() {
-
-                                    @Override
-                                    public void execute(final String commitMessage) {
-                                        pluginServices.call(saveSuccessCallback).saveLayout(
-                                                getLayoutContent(path,
-                                                                 model),
-                                                commitMessage);
-                                    }
-                                });
-    }
-
-    private LayoutEditorModel getLayoutContent(Path currentPath,
-                                               String model) {
-        return new LayoutEditorModel(pluginName,
-                                     pluginType,
-                                     currentPath,
-                                     model);
+        savePopUpPresenter.show(path, commitMessage -> {
+            LayoutTemplate layoutTemplate = getLayout();
+            perspectiveServices.call(saveSuccessCallback)
+                    .saveLayoutTemplate(path, layoutTemplate, commitMessage);
+        });
     }
 
     @Override

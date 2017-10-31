@@ -33,6 +33,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.ext.editor.commons.backend.validation.DefaultFileNameValidator;
@@ -44,6 +45,7 @@ import org.uberfire.ext.plugin.event.PluginSaved;
 import org.uberfire.ext.plugin.exception.PluginAlreadyExists;
 import org.uberfire.ext.plugin.model.CodeType;
 import org.uberfire.ext.plugin.model.Framework;
+import org.uberfire.ext.plugin.model.LayoutEditorModel;
 import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginSimpleContent;
 import org.uberfire.ext.plugin.model.PluginType;
@@ -205,11 +207,13 @@ public class PluginServicesImplTest {
                 PluginType.SCREEN,
                 null);
 
-        pluginServices.copy(pluginPath,
+        Path targetDir = Paths.convert(Paths.convert(targetPlugin.getPath()).getParent());
+        Path resultPath = pluginServices.copy(pluginPath,
                 "newEmptyScreen",
-                targetPlugin.getPath(),
+                targetDir,
                 "");
 
+        assertEquals(Paths.convert(resultPath), Paths.convert(targetPlugin.getPath()));
         verify(pluginAddedEvent,
                 times(1)).fire(any(PluginAdded.class));
 
@@ -267,6 +271,18 @@ public class PluginServicesImplTest {
         Collection<RuntimePlugin> runtimePlugins = pluginServices.listRuntimePlugins();
         assertEquals(0,
                      runtimePlugins.size());
+    }
+
+    @Test
+    public void testLoadEmptyLayout() {
+        Path pluginPath = createPlugin("emptyLayout",
+                PluginType.PERSPECTIVE_LAYOUT,
+                null);
+
+        LayoutEditorModel layoutEditorModel = pluginServices.getLayoutEditor(pluginPath, PluginType.PERSPECTIVE_LAYOUT);
+        assertEquals(layoutEditorModel.getName(), "emptyLayout");
+        assertEquals(layoutEditorModel.getPath(), pluginPath);
+        assertTrue(layoutEditorModel.isEmptyLayout());
     }
 
     private Path createPlugin(String name,

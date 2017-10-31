@@ -27,25 +27,27 @@ import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ActivityBeansInfoTest {
 
+    @Mock
     private SyncBeanManager syncBeanManager;
+
+    @Mock
+    private ActivityBeansCache activityBeansCache;
 
     private ActivityBeansInfo activityBeansInfo;
 
     @Before
     public void setup() {
-        syncBeanManager = mock(SyncBeanManager.class);
-        activityBeansInfo = new ActivityBeansInfo() {
-            @Override
-            public SyncBeanManager getBeanManager() {
-                return syncBeanManager;
-            }
-        };
+        activityBeansInfo = new ActivityBeansInfo(syncBeanManager, activityBeansCache);
     }
 
     @Test

@@ -43,6 +43,7 @@ public class ScreenLayoutDragComponentTest {
 
     private ScreenLayoutDragComponent screenLayoutDragComponent;
 
+    @Mock
     private ActivityBeansInfo activityBeansInfo;
 
     @Mock
@@ -52,9 +53,9 @@ public class ScreenLayoutDragComponentTest {
     public void setup() {
         screenLayoutDragComponent = spy(new ScreenLayoutDragComponent(placeManager));
 
-        activityBeansInfo = spy(new ActivityBeansInfo());
+        activityBeansInfo = spy(new ActivityBeansInfo(null, null));
 
-        List<String> availableWorkbenchScreensIds = new ArrayList<String>();
+        List<String> availableWorkbenchScreensIds = new ArrayList<>();
         availableWorkbenchScreensIds.add("screen1");
         availableWorkbenchScreensIds.add("screen2");
         availableWorkbenchScreensIds.add("screen3");

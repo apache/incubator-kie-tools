@@ -17,15 +17,12 @@ package org.uberfire.ext.layout.editor.client.api;
 
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.ext.plugin.model.LayoutEditorModel;
-import org.uberfire.ext.plugin.model.PluginType;
-import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.mvp.Command;
 
 public interface LayoutEditorPlugin extends LayoutEditor {
 
-    void load(PluginType pluginType,
-              Path currentPath,
-              ParameterizedCommand<LayoutEditorModel> loadCallBack);
+    void load(Path currentPath,
+              Command loadCallBack);
 
     void save(Path path,
               RemoteCallback<Path> saveSuccessCallback);

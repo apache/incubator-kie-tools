@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -47,26 +46,22 @@ import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
+import org.uberfire.ext.layout.editor.api.PerspectiveServices;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditorPlugin;
 import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorDragComponent;
 import org.uberfire.ext.plugin.client.perspective.editor.components.popup.AddTag;
-import org.uberfire.ext.plugin.client.perspective.editor.generator.PerspectiveEditorGenerator;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.PerspectiveEditorSettings;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.TargetDivList;
 import org.uberfire.ext.plugin.client.security.PluginController;
 import org.uberfire.ext.plugin.client.type.PerspectiveLayoutPluginResourceType;
 import org.uberfire.ext.plugin.client.validation.PluginNameValidator;
-import org.uberfire.ext.plugin.event.PluginRenamed;
-import org.uberfire.ext.plugin.model.LayoutEditorModel;
 import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginType;
-import org.uberfire.ext.plugin.service.PluginServices;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
@@ -84,15 +79,13 @@ public class PerspectiveEditorPresenter extends BaseEditor {
     @Inject
     private View perspectiveEditorView;
     @Inject
-    private PerspectiveEditorGenerator perspectiveEditorGenerator;
-    @Inject
     private LayoutEditorPlugin layoutEditorPlugin;
     @Inject
     private Event<NotificationEvent> ufNotification;
     @Inject
     private PerspectiveLayoutPluginResourceType resourceType;
     @Inject
-    private Caller<PluginServices> pluginServices;
+    private Caller<PerspectiveServices> perspectiveServices;
     @Inject
     private PluginNameValidator pluginNameValidator;
     @Inject
@@ -233,15 +226,14 @@ public class PerspectiveEditorPresenter extends BaseEditor {
     @Override
     protected void loadContent() {
         baseView.hideBusyIndicator();
-        layoutEditorPlugin.load(PluginType.PERSPECTIVE_LAYOUT,
-                                versionRecordManager.getCurrentPath(),
-                                new ParameterizedCommand<LayoutEditorModel>() {
-                                    @Override
-                                    public void execute(LayoutEditorModel layoutEditorModel) {
-                                        setOriginalHash(getCurrentModelHash());
-                                        plugin = layoutEditorModel;
-                                    }
-                                });
+        layoutEditorPlugin.load(versionRecordManager.getCurrentPath(), this::afterLoad);
+    }
+
+    protected void afterLoad() {
+        setOriginalHash(getCurrentModelHash());
+        plugin = new Plugin(layoutEditorPlugin.getLayout().getName(),
+                PluginType.PERSPECTIVE_LAYOUT,
+                versionRecordManager.getCurrentPath());
     }
 
     @Override
@@ -253,14 +245,10 @@ public class PerspectiveEditorPresenter extends BaseEditor {
 
     @Override
     protected RemoteCallback<Path> getSaveSuccessCallback(final int newHash) {
-        return new RemoteCallback<Path>() {
-            @Override
-            public void callback(final Path path) {
-                RemoteCallback<Path> saveSuccessCallback = PerspectiveEditorPresenter.super
-                        .getSaveSuccessCallback(getCurrentModelHash());
-                saveSuccessCallback.callback(path);
-                perspectiveEditorGenerator.generate(layoutEditorPlugin.getLayout());
-            }
+        return path -> {
+            RemoteCallback<Path> saveSuccessCallback = PerspectiveEditorPresenter.super
+                    .getSaveSuccessCallback(getCurrentModelHash());
+            saveSuccessCallback.callback(path);
         };
     }
 
@@ -268,16 +256,17 @@ public class PerspectiveEditorPresenter extends BaseEditor {
         return layoutEditorPlugin.getLayout().hashCode();
     }
 
-    protected void onPlugInRenamed(@Observes final PluginRenamed pluginRenamed) {
-        if (pluginRenamed.getOldPluginName().equals(plugin.getName()) &&
-                pluginRenamed.getPlugin().getType().equals(plugin.getType())) {
-            plugin = new Plugin(pluginRenamed.getPlugin().getName(),
-                                PluginType.PERSPECTIVE_LAYOUT,
-                                pluginRenamed.getPlugin().getPath());
-            changeTitleNotification.fire(new ChangeTitleWidgetEvent(place,
-                                                                    getTitleText(),
-                                                                    getTitle()));
-        }
+    @Override
+    protected void onRename() {
+        Path currentPath = versionRecordManager.getCurrentPath();
+        layoutEditorPlugin.load(currentPath, this::afterRename);
+    }
+
+    protected void afterRename() {
+        this.afterLoad();
+        changeTitleNotification.fire(new ChangeTitleWidgetEvent(place,
+                getTitleText(),
+                getTitle()));
     }
 
     @Override
@@ -292,17 +281,17 @@ public class PerspectiveEditorPresenter extends BaseEditor {
 
     @Override
     protected Caller<? extends SupportsDelete> getDeleteServiceCaller() {
-        return pluginServices;
+        return perspectiveServices;
     }
 
     @Override
     protected Caller<? extends SupportsRename> getRenameServiceCaller() {
-        return pluginServices;
+        return perspectiveServices;
     }
 
     @Override
     protected Caller<? extends SupportsCopy> getCopyServiceCaller() {
-        return pluginServices;
+        return perspectiveServices;
     }
 
     public void saveProperty(String key,

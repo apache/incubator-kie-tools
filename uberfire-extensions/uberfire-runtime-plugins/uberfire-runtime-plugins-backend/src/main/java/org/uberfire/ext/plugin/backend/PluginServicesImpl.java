@@ -543,16 +543,26 @@ public class PluginServicesImpl implements PluginServices {
                                               final String newName,
                                               final String comment) {
 
-        final Path newPath = getPluginPath(newName);
+
+        return copy(path, newName, null, comment);
+    }
+
+    @Override
+    public org.uberfire.backend.vfs.Path copy(org.uberfire.backend.vfs.Path path,
+                                              String newName,
+                                              org.uberfire.backend.vfs.Path targetDirectory,
+                                              String comment) {
+
+        Path newPath = targetDirectory == null ? getPluginPath(newName) : convert(targetDirectory);
         if (getIoService().exists(newPath)) {
             throw new FileAlreadyExistsException(newPath.toString());
         }
 
         try {
             getIoService().startBatch(fileSystem,
-                                      commentedOption(comment));
+                    commentedOption(comment));
             getIoService().copy(convert(path).getParent(),
-                                newPath);
+                    newPath);
         } finally {
             getIoService().endBatch();
         }
@@ -563,17 +573,9 @@ public class PluginServicesImpl implements PluginServices {
         String registry = createRegistry(pluginContent);
 
         pluginAddedEvent.fire(new PluginAdded(pluginContent,
-                                              sessionInfo));
+                sessionInfo));
 
         return result;
-    }
-
-    @Override
-    public org.uberfire.backend.vfs.Path copy(org.uberfire.backend.vfs.Path path,
-                                              String newName,
-                                              org.uberfire.backend.vfs.Path targetDirectory,
-                                              String comment) {
-        return copy(path, newName, comment);
     }
 
     @Override
@@ -688,8 +690,9 @@ public class PluginServicesImpl implements PluginServices {
                                          path,
                                          fileContent);
         }
-
-        return new LayoutEditorModel().emptyLayout();
+        return new LayoutEditorModel(pluginName,
+                PluginType.PERSPECTIVE_LAYOUT,
+                path, null).emptyLayout();
     }
 
     @Override

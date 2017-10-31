@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -40,15 +41,18 @@ import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
-import org.uberfire.ext.layout.editor.api.LayoutServices;
+import org.uberfire.ext.layout.editor.api.PerspectiveServices;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.generator.LayoutGenerator;
+import org.uberfire.ext.plugin.event.PluginAdded;
 import org.uberfire.ext.plugin.event.PluginDeleted;
-import org.uberfire.ext.plugin.model.LayoutEditorModel;
+import org.uberfire.ext.plugin.event.PluginRenamed;
+import org.uberfire.ext.plugin.event.PluginSaved;
+import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginType;
-import org.uberfire.ext.plugin.service.PluginServices;
 
 @EntryPoint
+@ApplicationScoped
 public class PerspectiveEditorGenerator {
 
     @Inject
@@ -61,35 +65,24 @@ public class PerspectiveEditorGenerator {
     private LayoutGenerator layoutGenerator;
 
     @Inject
-    private Caller<PluginServices> pluginServices;
-
-    @Inject
-    private Caller<LayoutServices> layoutServices;
+    private Caller<PerspectiveServices> perspectiveServices;
 
     @PostConstruct
     public void loadPerspectives() {
-        pluginServices.call(new RemoteCallback<Collection<LayoutEditorModel>>() {
-            @Override
-            public void callback(final Collection<LayoutEditorModel> response) {
-                for (LayoutEditorModel layoutEditorModel : response) {
-                    generatePerspective(layoutEditorModel.getLayoutEditorModel());
-                }
-            }
-        }).listLayoutEditor(PluginType.PERSPECTIVE_LAYOUT);
+        perspectiveServices.call((Collection<LayoutTemplate> response) -> {
+            response.forEach(this::generatePerspective);
+        }).listLayoutTemplates();
     }
 
     public void generatePerspective(String layoutEditorModel) {
-        layoutServices.call(new RemoteCallback<LayoutTemplate>() {
-            @Override
-            public void callback(final LayoutTemplate perspective) {
-                if (perspective != null) {
-                    generate(perspective);
-                }
+        perspectiveServices.call((LayoutTemplate perspective) -> {
+            if (perspective != null) {
+                generatePerspective(perspective);
             }
-        }).convertLayoutFromString(layoutEditorModel);
+        }).convertToLayoutTemplate(layoutEditorModel);
     }
 
-    public void generate(LayoutTemplate layoutTemplate) {
+    public void generatePerspective(LayoutTemplate layoutTemplate) {
         if (isANewPerspective(layoutTemplate)) {
             PerspectiveEditorScreenActivity screen = createNewScreen(layoutTemplate);
             createNewPerspective(layoutTemplate,
@@ -107,6 +100,11 @@ public class PerspectiveEditorGenerator {
         final PerspectiveEditorActivity perspectiveEditorActivity = (PerspectiveEditorActivity) activity.getInstance();
         perspectiveEditorActivity.update(layoutTemplate,
                                          screen);
+    }
+
+    public void removePerspective(String perspectiveName) {
+        activityBeansCache.removeActivity(perspectiveName);
+        activityBeansCache.removeActivity(perspectiveName + PerspectiveEditorScreenActivity.screenSufix());
     }
 
     private PerspectiveEditorScreenActivity updateScreen(LayoutTemplate layoutTemplate) {
@@ -160,14 +158,36 @@ public class PerspectiveEditorGenerator {
         return activity == null;
     }
 
-    // Sync up the activity registry with perspectives deletion
+    // Sync up with changes in backend
+
+    private void onPlugInAdded(@Observes final PluginAdded event) {
+        PortablePreconditions.checkNotNull("PluginAdded event", event);
+        Plugin plugin = event.getPlugin();
+        perspectiveServices.call((RemoteCallback<LayoutTemplate>) this::generatePerspective)
+                .getLayoutTemplate(plugin);
+    }
+
+    private void onPlugInSaved(@Observes final PluginSaved event) {
+        PortablePreconditions.checkNotNull("PluginSaved event", event);
+        Plugin plugin = event.getPlugin();
+        perspectiveServices.call((RemoteCallback<LayoutTemplate>) this::generatePerspective)
+                .getLayoutTemplate(plugin);
+    }
+
+    private void onPlugInRenamed(@Observes final PluginRenamed event) {
+        PortablePreconditions.checkNotNull("PluginRenamed event", event);
+        Plugin plugin = event.getPlugin();
+        removePerspective(event.getOldPluginName());
+
+        perspectiveServices.call((RemoteCallback<LayoutTemplate>) this::generatePerspective)
+                .getLayoutTemplate(plugin);
+    }
 
     private void onPlugInDeleted(@Observes final PluginDeleted event) {
-        PortablePreconditions.checkNotNull("PluginDeleted event",
-                                           event);
+        PortablePreconditions.checkNotNull("PluginDeleted event", event);
         if (PluginType.PERSPECTIVE_LAYOUT.equals(event.getPluginType())) {
             String pluginName = event.getPluginName();
-            activityBeansCache.removeActivity(pluginName);
+            removePerspective(pluginName);
         }
     }
 }

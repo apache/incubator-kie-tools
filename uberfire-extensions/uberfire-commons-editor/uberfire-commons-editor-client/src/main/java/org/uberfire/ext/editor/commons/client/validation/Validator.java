@@ -20,6 +20,6 @@ package org.uberfire.ext.editor.commons.client.validation;
  */
 public interface Validator {
 
-    public void validate(final String value,
-                         final ValidatorCallback callback);
+    void validate(final String value,
+                  final ValidatorCallback callback);
 }
