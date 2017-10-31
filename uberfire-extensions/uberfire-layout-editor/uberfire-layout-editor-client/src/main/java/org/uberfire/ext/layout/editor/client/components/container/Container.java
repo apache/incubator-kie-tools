@@ -111,6 +111,7 @@ public class Container {
         this.pageStyle = pageStyle;
         this.emptyTitleText = emptyTitleText;
         this.emptySubTitleText = emptySubTitleText;
+        clearView();
         createEmptyDropRow();
         setupResizeRows();
     }
@@ -119,17 +120,20 @@ public class Container {
                      String emptyTitleText,
                      String emptySubTitleText) {
         this.layoutTemplate = layoutTemplate;
+        this.layoutName = layoutTemplate.getName();
         this.pageStyle = layoutTemplate.getStyle();
         this.emptyTitleText = emptyTitleText;
         this.emptySubTitleText = emptySubTitleText;
+        this.rows.forEach(this::destroy);
+        this.rows.clear();
         if (!layoutTemplate.isEmpty()) {
-            this.layoutName = layoutTemplate.getName();
             this.properties = layoutTemplate.getLayoutProperties();
             for (LayoutRow layoutRow : layoutTemplate.getRows()) {
                 rows.add(load(layoutRow));
             }
             updateView();
         } else {
+            clearView();
             createEmptyDropRow();
         }
         setupResizeRows();
@@ -508,7 +512,7 @@ public class Container {
         }
     }
 
-    public UberElement<Container> getView() {
+    public View getView() {
         updateView();
         return view;
     }

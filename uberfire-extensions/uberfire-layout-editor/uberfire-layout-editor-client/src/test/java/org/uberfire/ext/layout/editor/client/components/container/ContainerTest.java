@@ -119,6 +119,53 @@ public class ContainerTest extends AbstractLayoutEditorTest {
     }
 
     @Test
+    public void loadEmptyTemplateClearEmptyRow() throws Exception {
+        reset(container.getView());
+        LayoutTemplate layoutTemplate = new LayoutTemplate("layout");
+        container.load(layoutTemplate, "title", "subtitle");
+        assertEquals(container.getLayoutName(), "layout");
+        assertEquals(container.getRows().size(), 0);
+        assertNotNull(container.getEmptyDropRow());
+        verify(container.getView()).clear();
+        verify(container.getView()).addEmptyRow(container.getEmptyDropRow().getView());
+
+        reset(container.getView());
+        container.load(layoutTemplate, "", "");
+        assertEquals(container.getRows().size(), 0);
+        assertNotNull(container.getEmptyDropRow());
+        verify(container.getView()).clear();
+        verify(container.getView()).addEmptyRow(container.getEmptyDropRow().getView());
+    }
+
+    @Test
+    public void loadEmptyLayoutClearEmptyRow() throws Exception {
+        reset(container.getView());
+        container.loadEmptyLayout("layout", LayoutTemplate.Style.FLUID, "title", "subtitle");
+        assertEquals(container.getLayoutName(), "layout");
+        assertEquals(container.getRows().size(), 0);
+        assertNotNull(container.getEmptyDropRow());
+        verify(container.getView()).clear();
+        verify(container.getView()).addEmptyRow(container.getEmptyDropRow().getView());
+
+        reset(container.getView());
+        container.loadEmptyLayout("layout", LayoutTemplate.Style.FLUID, "title", "subtitle");
+        assertEquals(container.getRows().size(), 0);
+        assertNotNull(container.getEmptyDropRow());
+        verify(container.getView()).clear();
+        verify(container.getView()).addEmptyRow(container.getEmptyDropRow().getView());
+    }
+
+    @Test
+    public void loadNonEmptyTemplateClearExistingRows() throws Exception {
+        LayoutTemplate layoutTemplate = getLayoutFromFileTemplate(SAMPLE_FULL_FLUID_LAYOUT);
+        container.load(layoutTemplate, "title", "subtitle");
+        assertEquals(container.getRows().size(), 4);
+
+        container.load(layoutTemplate, "", "");
+        assertEquals(container.getRows().size(), 4);
+    }
+
+    @Test
     public void loadAndExportFluidLayout() throws Exception {
 
         LayoutTemplate expected = loadLayout(SAMPLE_FULL_FLUID_LAYOUT);
