@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,7 +34,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.soup.project.datamodel.oracle.DataType;
 
-import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.*;
+import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.assertContains;
+import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.assertDoesNotContain;
+import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.assertOnlyContains;
+import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.assertResultIsEmpty;
+import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.loadResource;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(GwtMockitoTestRunner.class)

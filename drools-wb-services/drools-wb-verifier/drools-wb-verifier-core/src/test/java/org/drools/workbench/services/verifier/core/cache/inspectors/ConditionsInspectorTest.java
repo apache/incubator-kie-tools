@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,22 +16,23 @@
 
 package org.drools.workbench.services.verifier.core.cache.inspectors;
 
-import org.drools.workbench.services.verifier.core.cache.inspectors.condition.ComparableConditionInspector;
-import org.drools.workbench.services.verifier.core.cache.inspectors.condition.ConditionInspector;
 import org.drools.workbench.services.verifier.api.client.index.Column;
 import org.drools.workbench.services.verifier.api.client.index.Field;
+import org.drools.workbench.services.verifier.api.client.index.FieldCondition;
 import org.drools.workbench.services.verifier.api.client.index.ObjectField;
 import org.drools.workbench.services.verifier.api.client.index.keys.Values;
+import org.drools.workbench.services.verifier.core.cache.inspectors.condition.ComparableConditionInspector;
+import org.drools.workbench.services.verifier.core.cache.inspectors.condition.ConditionInspector;
 import org.drools.workbench.services.verifier.core.cache.inspectors.condition.ConditionsInspectorMultiMap;
-import org.drools.workbench.services.verifier.api.client.index.FieldCondition;
 import org.drools.workbench.services.verifier.core.checks.AnalyzerConfigurationMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ConditionsInspectorTest {

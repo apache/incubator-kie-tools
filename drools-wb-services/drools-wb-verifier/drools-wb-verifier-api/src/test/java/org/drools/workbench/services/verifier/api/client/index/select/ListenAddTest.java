@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,15 +18,16 @@ package org.drools.workbench.services.verifier.api.client.index.select;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.workbench.services.verifier.api.client.maps.KeyDefinition;
-import org.drools.workbench.services.verifier.api.client.maps.MultiMapFactory;
 import org.drools.workbench.services.verifier.api.client.index.keys.Value;
-import org.drools.workbench.services.verifier.api.client.maps.MultiMap;
 import org.drools.workbench.services.verifier.api.client.index.matchers.ExactMatcher;
+import org.drools.workbench.services.verifier.api.client.maps.KeyDefinition;
+import org.drools.workbench.services.verifier.api.client.maps.MultiMap;
+import org.drools.workbench.services.verifier.api.client.maps.MultiMapFactory;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class ListenAddTest {
 

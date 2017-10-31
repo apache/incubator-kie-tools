@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,12 +19,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.workbench.services.verifier.api.client.maps.KeyTreeMap;
-import org.drools.workbench.services.verifier.api.client.maps.MultiMap;
 import org.drools.workbench.services.verifier.api.client.index.keys.Value;
 import org.drools.workbench.services.verifier.api.client.index.matchers.Matcher;
 import org.drools.workbench.services.verifier.api.client.index.select.Listen;
 import org.drools.workbench.services.verifier.api.client.index.select.Select;
+import org.drools.workbench.services.verifier.api.client.maps.KeyTreeMap;
+import org.drools.workbench.services.verifier.api.client.maps.MultiMap;
 
 public class ObjectTypes {
 
