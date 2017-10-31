@@ -545,7 +545,7 @@ public class PluginServicesImpl implements PluginServices {
 
         final Path newPath = getPluginPath(newName);
         if (getIoService().exists(newPath)) {
-            throw new RuntimeException(new FileAlreadyExistsException(newPath.toString()));
+            throw new FileAlreadyExistsException(newPath.toString());
         }
 
         try {
@@ -569,11 +569,11 @@ public class PluginServicesImpl implements PluginServices {
     }
 
     @Override
-    public org.uberfire.backend.vfs.Path copy(final org.uberfire.backend.vfs.Path path,
-                                              final String newName,
-                                              final org.uberfire.backend.vfs.Path targetDirectory,
-                                              final String comment) {
-        throw new UnsupportedOperationException("A plugin cannot be copied to another directory.");
+    public org.uberfire.backend.vfs.Path copy(org.uberfire.backend.vfs.Path path,
+                                              String newName,
+                                              org.uberfire.backend.vfs.Path targetDirectory,
+                                              String comment) {
+        return copy(path, newName, comment);
     }
 
     @Override
@@ -582,7 +582,7 @@ public class PluginServicesImpl implements PluginServices {
                                                 final String comment) {
         final Path newPath = getPluginPath(newName);
         if (getIoService().exists(newPath)) {
-            throw new RuntimeException(new FileAlreadyExistsException(newPath.toString()));
+            throw new FileAlreadyExistsException(newPath.toString());
         }
 
         try {
