@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,7 +26,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionVariab
 import org.drools.workbench.models.guided.dtable.shared.model.BRLVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.services.verifier.api.client.index.BRLAction;
 import org.drools.workbench.services.verifier.plugin.client.DTableUpdateManager;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
