@@ -23,9 +23,6 @@ import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 
-/**
- * TODO: update me
- */
 public class ResolveObjectIds {
 
     private final Git git;

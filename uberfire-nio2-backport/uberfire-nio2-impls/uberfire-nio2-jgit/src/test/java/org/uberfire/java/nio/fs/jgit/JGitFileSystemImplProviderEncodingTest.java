@@ -25,11 +25,12 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.fs.jgit.util.commands.Commit;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-public class JGitFileSystemProviderEncodingTest extends AbstractTestInfra {
+public class JGitFileSystemImplProviderEncodingTest extends AbstractTestInfra {
 
     private int gitDaemonPort;
 
@@ -45,12 +46,13 @@ public class JGitFileSystemProviderEncodingTest extends AbstractTestInfra {
         return gitPrefs;
     }
 
+
     @Test
     public void test() throws IOException {
         final URI originRepo = URI.create("git://encoding-origin-name");
 
         final JGitFileSystem origin = (JGitFileSystem) provider.newFileSystem(originRepo,
-                                                                              Collections.emptyMap());
+                                                                                      Collections.emptyMap());
 
         new Commit(origin.getGit(),
                    "master",
@@ -94,7 +96,7 @@ public class JGitFileSystemProviderEncodingTest extends AbstractTestInfra {
         final URI newRepo = URI.create("git://my-encoding-repo-name");
 
         final Map<String, Object> env = new HashMap<String, Object>() {{
-            put(JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
+            put(JGitFileSystemProviderConfiguration.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
                 "git://localhost:" + gitDaemonPort + "/encoding-origin-name");
         }};
 
@@ -107,7 +109,10 @@ public class JGitFileSystemProviderEncodingTest extends AbstractTestInfra {
 
         provider.getPath(fs.getPath("file+name.txt").toUri());
 
-        assertThat(provider.getPath(fs.getPath("file+name.txt").toUri())).isEqualTo(fs.getPath("file+name.txt"));
+        URI uri = fs.getPath("file+name.txt").toUri();
+        Path path = provider.getPath(uri);
+        Path path1 = fs.getPath("file+name.txt");
+        assertThat(path).isEqualTo(path1);
 
         assertThat(provider.getPath(fs.getPath("file name.txt").toUri())).isEqualTo(fs.getPath("file name.txt"));
 

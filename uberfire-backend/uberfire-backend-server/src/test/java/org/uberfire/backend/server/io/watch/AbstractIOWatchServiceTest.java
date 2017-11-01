@@ -23,10 +23,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.server.util.Filter;
 import org.uberfire.commons.async.DescriptiveThreadFactory;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.ClosedWatchServiceException;
+import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.InterruptedException;
 import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.file.WatchKey;
@@ -34,7 +37,9 @@ import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.java.nio.file.Watchable;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
+@RunWith(MockitoJUnitRunner.class)
 public class AbstractIOWatchServiceTest {
 
     @Test
@@ -110,7 +115,7 @@ public class AbstractIOWatchServiceTest {
                 }
             };
 
-            service.addWatchService(null,
+            service.addWatchService(mock(FileSystem.class),
                                     ws);
 
             Set<AsyncWatchService> watchThreads = null;
@@ -123,13 +128,8 @@ public class AbstractIOWatchServiceTest {
             }
             AsyncWatchService asyncWatchService = watchThreads.iterator().next();
 
-            IOWatchServiceExecutor wsExecutor = new IOWatchServiceExecutor() {
-
-                @Override
-                public void execute(WatchKey watchKey,
-                                    Filter<WatchEvent<?>> filter) {
-                    throw new RuntimeException("dummy");
-                }
+            IOWatchServiceExecutor wsExecutor = (watchKey, filter) -> {
+                throw new RuntimeException("dummy");
             };
 
             try {

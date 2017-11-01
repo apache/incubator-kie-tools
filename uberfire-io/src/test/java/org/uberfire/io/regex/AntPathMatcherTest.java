@@ -66,7 +66,6 @@ public class AntPathMatcherTest {
         JGitFileSystemProvider gitFsProvider = (JGitFileSystemProvider) FileSystemProviders.resolveProvider(URI.create("git://whatever"));
         gitFsProvider.shutdown();
         FileUtils.deleteQuietly(gitFsProvider.getGitRepoContainerDir());
-        gitFsProvider.rescanForExistingRepositories();
     }
 
     @Test

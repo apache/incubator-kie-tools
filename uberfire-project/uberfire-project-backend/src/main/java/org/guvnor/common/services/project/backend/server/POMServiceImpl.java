@@ -35,7 +35,6 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
-import org.uberfire.java.nio.file.FileSystem;
 
 @Service
 @WorkspaceScoped
@@ -136,7 +135,7 @@ public class POMServiceImpl
 
         try {
 
-            ioService.startBatch(new FileSystem[]{Paths.convert(path).getFileSystem()},
+            ioService.startBatch(Paths.convert(path).getFileSystem(),
                                  optionsFactory.makeCommentedOption(comment != null ? comment : ""));
 
             save(path,

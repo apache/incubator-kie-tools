@@ -85,6 +85,11 @@
     <!-- WildFly version used together with the GWT's Super Dev Mode -->
     <version.org.wildfly.gwt.sdm>10.1.0.Final</version.org.wildfly.gwt.sdm>
 
+    <version.org.apache.activemq.artemis>2.3.0</version.org.apache.activemq.artemis>
+    <version.io.netty>4.1.16.Final</version.io.netty>
+    <netty-transport-native-epoll-classifier>linux-x86_64</netty-transport-native-epoll-classifier>
+    <netty-transport-native-kqueue-classifier>osx-x86_64</netty-transport-native-kqueue-classifier>
+
     <!-- Lienzo core upgrade required by Stunner. Can be removed once IP BOM is upgraded.-->
     <version.com.ahome-it.lienzo-core>2.0.292-RELEASE</version.com.ahome-it.lienzo-core>
     <version.com.ahome-it.lienzo-tests>2.0.292-RELEASE</version.com.ahome-it.lienzo-tests>
@@ -936,11 +941,59 @@
         <version>${version.org.jboss.byteman}</version>
         <scope>test</scope>
       </dependency>
-
       <dependency>
         <groupId>org.wildfly.security</groupId>
         <artifactId>wildfly-elytron</artifactId>
         <version>${version.org.wildfly.security}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-internal</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <!-- Apache ActiveMQ/Artemis -->
+      <dependency>
+        <groupId>org.apache.activemq</groupId>
+        <artifactId>artemis-jms-client</artifactId>
+        <version>${version.org.apache.activemq.artemis}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-buffer</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-transport</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-handler</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-transport-native-epoll</artifactId>
+        <version>${version.io.netty}</version>
+        <classifier>${netty-transport-native-epoll-classifier}</classifier>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-transport-native-kqueue</artifactId>
+        <version>${version.io.netty}</version>
+        <classifier>${netty-transport-native-kqueue-classifier}</classifier>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec-http</artifactId>
+        <version>${version.io.netty}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

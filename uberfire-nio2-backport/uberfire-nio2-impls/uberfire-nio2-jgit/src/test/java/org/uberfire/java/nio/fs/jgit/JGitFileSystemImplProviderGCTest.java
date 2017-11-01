@@ -28,7 +28,7 @@ import org.uberfire.java.nio.file.Path;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.fest.assertions.api.Assertions.failBecauseExceptionWasNotThrown;
 
-public class JGitFileSystemProviderGCTest extends AbstractTestInfra {
+public class JGitFileSystemImplProviderGCTest extends AbstractTestInfra {
 
     @Test
     public void testGC() throws IOException {

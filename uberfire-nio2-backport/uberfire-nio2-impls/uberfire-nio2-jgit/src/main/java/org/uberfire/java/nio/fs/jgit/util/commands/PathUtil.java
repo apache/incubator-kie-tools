@@ -16,9 +16,6 @@
 
 package org.uberfire.java.nio.fs.jgit.util.commands;
 
-/**
- * TODO: update me
- */
 public class PathUtil {
 
     public static String normalize(final String path) {

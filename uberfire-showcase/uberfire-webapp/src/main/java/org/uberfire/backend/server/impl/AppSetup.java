@@ -49,7 +49,6 @@ public class AppSetup {
                                             PLAYGROUND_UID);
                                     }});
         } catch (final FileSystemAlreadyExistsException ignore) {
-
         }
     }
 }

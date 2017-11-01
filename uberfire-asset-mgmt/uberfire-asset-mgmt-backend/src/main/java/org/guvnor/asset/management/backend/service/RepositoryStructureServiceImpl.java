@@ -190,7 +190,7 @@ public class RepositoryStructureServiceImpl
                 return null;
             }
 
-            ioService.startBatch(new FileSystem[]{Paths.convert(path).getFileSystem()},
+            ioService.startBatch(Paths.convert(path).getFileSystem(),
                                  optionsFactory.makeCommentedOption(comment != null ? comment : ""));
 
             boolean saveParentPom = false;

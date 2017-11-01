@@ -37,6 +37,7 @@ import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
+import org.uberfire.java.nio.file.FileSystemMetadata;
 import org.uberfire.java.nio.file.FileSystemNotFoundException;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.NotDirectoryException;
@@ -48,9 +49,6 @@ import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.attribute.FileTime;
 
-/**
- * TODO: update me
- */
 public class MockIOService implements IOService {
 
     @Override
@@ -64,19 +62,8 @@ public class MockIOService implements IOService {
     }
 
     @Override
-    public void startBatch(FileSystem[] fs,
-                           Option... options) {
-
-    }
-
-    @Override
     public void startBatch(FileSystem fs,
                            Option... options) {
-
-    }
-
-    @Override
-    public void startBatch(FileSystem... fs) {
 
     }
 
@@ -102,7 +89,7 @@ public class MockIOService implements IOService {
     }
 
     @Override
-    public Iterable<FileSystem> getFileSystems() {
+    public Iterable<FileSystemMetadata> getFileSystemMetadata() {
         return null;
     }
 

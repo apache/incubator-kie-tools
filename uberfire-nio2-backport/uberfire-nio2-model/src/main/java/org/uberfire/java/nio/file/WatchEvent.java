@@ -16,7 +16,9 @@
 
 package org.uberfire.java.nio.file;
 
-public interface WatchEvent<T> {
+import java.io.Serializable;
+
+public interface WatchEvent<T> extends Serializable {
 
     Kind<T> kind();
 

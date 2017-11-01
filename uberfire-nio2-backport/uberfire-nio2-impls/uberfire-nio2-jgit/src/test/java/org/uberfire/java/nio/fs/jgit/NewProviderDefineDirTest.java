@@ -28,9 +28,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import static org.fest.assertions.api.Assertions.assertThat;
-import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider.GIT_NIO_DIR;
-import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider.GIT_NIO_DIR_NAME;
-import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider.REPOSITORIES_CONTAINER_DIR;
+import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_NIO_DIR;
+import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_NIO_DIR_NAME;
+import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.REPOSITORIES_CONTAINER_DIR;
 
 @RunWith(Parameterized.class)
 public class NewProviderDefineDirTest extends AbstractTestInfra {
@@ -68,15 +68,28 @@ public class NewProviderDefineDirTest extends AbstractTestInfra {
     public void testUsingProvidedPath() throws IOException {
         final URI newRepo = URI.create("git://repo-name");
 
-        provider.newFileSystem(newRepo,
-                               EMPTY_ENV);
+        JGitFileSystemProxy fileSystem = (JGitFileSystemProxy) provider.newFileSystem(newRepo,
+                                                                                      EMPTY_ENV);
 
-        final String[] names = tempDir.list();
+        //no infra created due to lazy loading nature of our FS
+        String[] names = tempDir.list();
+
+        assertThat(names).isEmpty();
+
+        String[] repos = new File(tempDir,
+                                  dirPathName).list();
+
+        assertThat(repos).isNull();
+
+        //FS created
+        fileSystem.getRealJGitFileSystem();
+
+        names = tempDir.list();
 
         assertThat(names).isNotEmpty().contains(dirPathName);
 
-        final String[] repos = new File(tempDir,
-                                        dirPathName).list();
+        repos = new File(tempDir,
+                         dirPathName).list();
 
         assertThat(repos).isNotEmpty().contains("repo-name.git");
     }

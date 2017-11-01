@@ -23,6 +23,7 @@ import java.util.Map;
 import org.junit.Test;
 import org.uberfire.java.nio.base.FileSystemId;
 import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.FileSystemMetadata;
 import org.uberfire.java.nio.file.Path;
 
 import static org.junit.Assert.*;
@@ -38,6 +39,7 @@ public class FileSystemSyncTest {
 
         final Path rootPath = mock(Path.class);
 
+
         when(mockedFS.getRootDirectories()).thenReturn(Arrays.asList(rootPath));
         when(mockedFSId.getRootDirectories()).thenReturn(Arrays.asList(rootPath));
 
@@ -48,7 +50,7 @@ public class FileSystemSyncTest {
 
         {
             final FileSystemSyncLock<String> fileSystemSyncLock = new FileSystemSyncLock<String>("serviceId",
-                                                                                                 mockedFS);
+                                                                                                 new FileSystemMetadata(mockedFSId));
             final Map<String, String> content = fileSystemSyncLock.buildContent();
 
             assertEquals("my-fsid",
@@ -56,7 +58,7 @@ public class FileSystemSyncTest {
         }
         {
             final FileSystemSyncNonLock<String> fileSystemSyncNonLock = new FileSystemSyncNonLock<String>("serviceId",
-                                                                                                          mockedFS);
+                                                                                                          new FileSystemMetadata(mockedFSId));
             final Map<String, String> content = fileSystemSyncNonLock.buildContent();
 
             assertEquals("my-fsid",

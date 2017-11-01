@@ -20,9 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 
 import org.junit.Test;
 import org.uberfire.java.nio.base.BasicFileAttributesImpl;
@@ -30,8 +28,6 @@ import org.uberfire.java.nio.base.NotImplementedException;
 import org.uberfire.java.nio.channels.SeekableByteChannel;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
-import org.uberfire.java.nio.fs.file.BaseSimpleFileStore;
-import org.uberfire.java.nio.fs.jgit.JGitFileStore;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.fest.assertions.api.Assertions.fail;
@@ -475,21 +471,6 @@ public class FilesTest extends AbstractBaseTest {
         }
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void copyDifferentProviders() {
-        final Map<String, Object> env = new HashMap<String, Object>(2);
-        env.put("userName",
-                "user");
-        env.put("password",
-                "pass");
-        final URI uri = URI.create("git://test" + System.currentTimeMillis());
-        FileSystems.newFileSystem(uri,
-                                  env);
-
-        Files.copy(Paths.get(uri),
-                   newTempDir());
-    }
-
     @Test(expected = IllegalArgumentException.class)
     public void copyNull1() throws IOException {
         Files.copy(newTempDir(),
@@ -595,40 +576,6 @@ public class FilesTest extends AbstractBaseTest {
     public void moveNull3() throws IOException {
         Files.move(null,
                    null);
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void moveDifferentProviders() {
-        final Map<String, Object> env = new HashMap<String, Object>(2);
-        env.put("userName",
-                "user");
-        env.put("password",
-                "pass");
-        FileSystems.newFileSystem(URI.create("git://testXXXXXXX"),
-                                  env);
-
-        Files.move(Paths.get(URI.create("git://testXXXXXXX")),
-                   newTempDir());
-    }
-
-    @Test
-    public void getFileStore() {
-        assertThat(Files.getFileStore(Paths.get("/some/file"))).isNotNull().isInstanceOf(BaseSimpleFileStore.class);
-
-        final Map<String, Object> env = new HashMap<String, Object>(2);
-        env.put("userName",
-                "user");
-        env.put("password",
-                "pass");
-        final String repoName = "git://testXXXXXXX" + System.currentTimeMillis();
-        final URI uri = URI.create(repoName);
-        FileSystems.newFileSystem(uri,
-                                  env);
-
-        assertThat(Files.getFileStore(Paths.get(uri))).isNotNull().isInstanceOf(JGitFileStore.class);
-
-        final URI fetch = URI.create(repoName + "?fetch");
-        FileSystems.getFileSystem(fetch);
     }
 
     @Test(expected = IllegalArgumentException.class)

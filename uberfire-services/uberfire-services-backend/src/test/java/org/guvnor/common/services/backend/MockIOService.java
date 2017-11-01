@@ -37,6 +37,7 @@ import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
+import org.uberfire.java.nio.file.FileSystemMetadata;
 import org.uberfire.java.nio.file.FileSystemNotFoundException;
 import org.uberfire.java.nio.file.InterruptedException;
 import org.uberfire.java.nio.file.NoSuchFileException;
@@ -71,19 +72,8 @@ public class MockIOService
     }
 
     @Override
-    public void startBatch(FileSystem[] fileSystems,
-                           Option... options) throws InterruptedException {
-
-    }
-
-    @Override
     public void startBatch(FileSystem fileSystem,
                            Option... options) throws InterruptedException {
-
-    }
-
-    @Override
-    public void startBatch(FileSystem... fileSystems) throws InterruptedException {
 
     }
 
@@ -109,7 +99,7 @@ public class MockIOService
     }
 
     @Override
-    public Iterable<FileSystem> getFileSystems() {
+    public Iterable<FileSystemMetadata> getFileSystemMetadata() {
         return null;
     }
 

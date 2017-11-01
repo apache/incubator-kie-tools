@@ -65,6 +65,7 @@ import org.uberfire.java.nio.file.FileStore;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.InvalidPathException;
+import org.uberfire.java.nio.file.LockableFileSystem;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.PathMatcher;
 import org.uberfire.java.nio.file.PatternSyntaxException;
@@ -83,13 +84,7 @@ public class SystemConfigProducer implements Extension {
 
     private final List<OrderedBean> startupEagerBeans = new LinkedList<OrderedBean>();
     private final List<OrderedBean> startupBootstrapBeans = new LinkedList<OrderedBean>();
-    private final Comparator<OrderedBean> priorityComparator = new Comparator<OrderedBean>() {
-        @Override
-        public int compare(final OrderedBean o1,
-                           final OrderedBean o2) {
-            return o1.priority - o2.priority;
-        }
-    };
+    private final Comparator<OrderedBean> priorityComparator = (o1, o2) -> o1.priority - o2.priority;
     private boolean systemFSNotExists = true;
     private boolean ioStrategyBeanNotFound = true;
 
@@ -242,6 +237,7 @@ public class SystemConfigProducer implements Extension {
             public Set<Type> getTypes() {
                 return new HashSet<Type>() {{
                     add(FileSystem.class);
+                    add(LockableFileSystem.class);
                     add(Object.class);
                 }};
             }
@@ -573,6 +569,11 @@ public class SystemConfigProducer implements Extension {
         }
 
         @Override
+        public String getName() {
+            return "DummyFileSystem";
+        }
+
+        @Override
         public void close() throws IOException {
 
         }
@@ -592,14 +593,6 @@ public class SystemConfigProducer implements Extension {
                             final int priority) {
             this.bean = bean;
             this.priority = priority;
-        }
-    }
-
-    private class DummyStarable implements Startable {
-
-        @Override
-        public void start() {
-
         }
     }
 

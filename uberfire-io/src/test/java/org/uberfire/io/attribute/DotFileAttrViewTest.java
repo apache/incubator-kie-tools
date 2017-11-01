@@ -48,7 +48,7 @@ import static org.junit.Assert.*;
  */
 public class DotFileAttrViewTest {
 
-    protected static final List<File> tempFiles = new ArrayList<File>();
+    protected static final List<File> tempFiles = new ArrayList<>();
     protected static IOService ioService = null;
     private static boolean created = false;
 
@@ -79,9 +79,9 @@ public class DotFileAttrViewTest {
 
     @Test
     public void testDotFileAttrAccess() throws IOException {
-        final URI newRepo = URI.create("git://" + new Date().getTime() + "-repo-test");
+        final URI newRepo = URI.create("git://" + new Date().getTime() + "-repo-test-3");
         ioService().newFileSystem(newRepo,
-                                  new HashMap<String, Object>());
+                                  new HashMap<>());
 
         final Path dir = ioService().get(newRepo);
         final Path file = dir.resolve("myFile.txt");
@@ -194,7 +194,7 @@ public class DotFileAttrViewTest {
                                path);
             System.out.println(".niogit: " + path);
 
-            final URI newRepo = URI.create("git://repo-test");
+            final URI newRepo = URI.create("git://repo-test-3");
 
             try {
                 ioService().newFileSystem(newRepo,

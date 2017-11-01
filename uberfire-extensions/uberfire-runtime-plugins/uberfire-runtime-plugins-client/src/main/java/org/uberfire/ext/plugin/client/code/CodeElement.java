@@ -22,9 +22,6 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.ext.plugin.model.CodeType;
 import org.uberfire.mvp.ParameterizedCommand;
 
-/**
- * TODO: update me
- */
 public interface CodeElement {
 
     void addNav(final DropDownMenu parent,

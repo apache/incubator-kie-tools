@@ -33,7 +33,7 @@ import org.uberfire.java.nio.fs.jgit.util.exceptions.GitException;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-public class JGitFileSystemProviderMergeTest extends AbstractTestInfra {
+public class JGitFileSystemImplProviderMergeTest extends AbstractTestInfra {
 
     @Test
     public void testMergeSuccessful() throws IOException, GitAPIException {

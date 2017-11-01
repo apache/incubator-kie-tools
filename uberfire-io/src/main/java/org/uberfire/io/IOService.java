@@ -38,6 +38,7 @@ import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
+import org.uberfire.java.nio.file.FileSystemMetadata;
 import org.uberfire.java.nio.file.FileSystemNotFoundException;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.NotDirectoryException;
@@ -58,13 +59,8 @@ public interface IOService extends PriorityDisposable {
 
     void startBatch(final FileSystem fs);
 
-    void startBatch(final FileSystem[] fs,
-                    final Option... options);
-
     void startBatch(final FileSystem fs,
                     final Option... options);
-
-    void startBatch(final FileSystem... fs);
 
     void endBatch();
 
@@ -77,7 +73,7 @@ public interface IOService extends PriorityDisposable {
     Path get(final URI uri)
             throws IllegalArgumentException, FileSystemNotFoundException, SecurityException;
 
-    Iterable<FileSystem> getFileSystems();
+    Iterable<FileSystemMetadata> getFileSystemMetadata();
 
     FileSystem getFileSystem(final URI uri)
             throws IllegalArgumentException, FileSystemNotFoundException,

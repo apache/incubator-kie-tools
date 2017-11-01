@@ -66,7 +66,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     private final BatchIndex batchIndex;
 
     private final Class<? extends FileAttributeView>[] views;
-    private final List<FileSystem> watchedList = new ArrayList<FileSystem>();
+    private final List<String> watchedList = new ArrayList<>();
     private final List<WatchService> watchServices = new ArrayList<WatchService>();
 
     private final Observer observer;
@@ -200,20 +200,10 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     public FileSystem getFileSystem(final URI uri)
             throws IllegalArgumentException, FileSystemNotFoundException,
             ProviderNotFoundException, SecurityException {
-        try {
-            final FileSystem fs = super.getFileSystem(uri);
-            indexIfFresh(fs);
-            setupWatchService(fs);
-            return fs;
-        } catch (final IllegalArgumentException ex) {
-            throw ex;
-        } catch (final FileSystemNotFoundException ex) {
-            throw ex;
-        } catch (final ProviderNotFoundException ex) {
-            throw ex;
-        } catch (final SecurityException ex) {
-            throw ex;
-        }
+        final FileSystem fs = super.getFileSystem(uri);
+        indexIfFresh(fs);
+        setupWatchService(fs);
+        return fs;
     }
 
     @Override
@@ -221,23 +211,11 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                                     final Map<String, ?> env)
             throws IllegalArgumentException, FileSystemAlreadyExistsException,
             ProviderNotFoundException, IOException, SecurityException {
-        try {
-            final FileSystem fs = super.newFileSystem(uri,
-                                                      env);
-            index(fs);
-            setupWatchService(fs);
-            return fs;
-        } catch (final IllegalArgumentException ex) {
-            throw ex;
-        } catch (final FileSystemAlreadyExistsException ex) {
-            throw ex;
-        } catch (final ProviderNotFoundException ex) {
-            throw ex;
-        } catch (final IOException ex) {
-            throw ex;
-        } catch (final SecurityException ex) {
-            throw ex;
-        }
+        final FileSystem fs = super.newFileSystem(uri,
+                                                  env);
+        index(fs);
+        setupWatchService(fs);
+        return fs;
     }
 
     @Override
@@ -254,11 +232,11 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     }
 
     protected void setupWatchService(final FileSystem fs) {
-        if (watchedList.contains(fs)) {
+        if (watchedList.contains(fs.getName())) {
             return;
         }
         final WatchService ws = fs.newWatchService();
-        watchedList.add(fs);
+        watchedList.add(fs.getName());
         watchServices.add(ws);
 
         final ExecutorService defaultInstance = this.executorService;

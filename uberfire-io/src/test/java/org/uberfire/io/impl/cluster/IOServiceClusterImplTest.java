@@ -18,6 +18,7 @@ package org.uberfire.io.impl.cluster;
 
 import java.net.URI;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 import org.uberfire.commons.cluster.ClusterService;
@@ -25,6 +26,7 @@ import org.uberfire.io.impl.IOServiceLockable;
 import org.uberfire.io.lock.BatchLockControl;
 import org.uberfire.java.nio.base.FileSystemId;
 import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.FileSystemMetadata;
 import org.uberfire.java.nio.file.Option;
 import org.uberfire.java.nio.file.Path;
 
@@ -53,8 +55,9 @@ public class IOServiceClusterImplTest {
         final IOServiceLockable serviceLockable = mock(IOServiceLockable.class);
         final BatchLockControl batchLockControl = mock(BatchLockControl.class);
 
-        when(serviceLockable.getFileSystems()).thenReturn(Arrays.asList(mockedFSId,
-                                                                        mockedFS));
+        List<FileSystemMetadata> fsInfo = Arrays.asList(new FileSystemMetadata(mockedFSId),
+                                                        new FileSystemMetadata(mockedFS));
+        when(serviceLockable.getFileSystemMetadata()).thenReturn(fsInfo);
         when(batchLockControl.getHoldCount()).thenReturn(0);
         when(serviceLockable.getLockControl()).thenReturn(batchLockControl);
 
@@ -91,7 +94,7 @@ public class IOServiceClusterImplTest {
             assertEquals(0,
                          ioServiceCluster.batchFileSystems.size());
 
-            ioServiceCluster.startBatch(new FileSystem[]{mockedFS},
+            ioServiceCluster.startBatch(mockedFS,
                                         mock(Option.class));
 
             assertEquals(1,

@@ -27,6 +27,7 @@ import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.services.cdi.Startup;
+import org.uberfire.java.nio.file.FileSystemMetadata;
 import org.uberfire.java.nio.file.api.FileSystemProviders;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 import org.uberfire.java.nio.security.FileSystemUser;
@@ -90,7 +91,7 @@ public class IOServiceSecuritySetup {
                 );
                 sfp.setAuthorizer((fs, fileSystemUser) ->
                                           authorizationManager.authorize(
-                                                  new FileSystemResourceAdaptor(fs),
+                                                  new FileSystemResourceAdaptor(new FileSystemMetadata(fs)),
                                                   ((UserAdapter) fileSystemUser).getWrappedUser())
 
                 );

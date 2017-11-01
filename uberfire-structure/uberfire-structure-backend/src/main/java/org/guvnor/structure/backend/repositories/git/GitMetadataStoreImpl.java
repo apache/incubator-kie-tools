@@ -33,7 +33,7 @@ public class GitMetadataStoreImpl implements GitMetadataStore {
 
     private Logger logger = LoggerFactory.getLogger(GitMetadataStoreImpl.class);
     public static final String SEPARATOR = "/";
-    public static final String METADATA = "default://system/metadata";
+    public static final String METADATA = "default://system_ou/metadata";
 
     private ObjectStorage storage;
 

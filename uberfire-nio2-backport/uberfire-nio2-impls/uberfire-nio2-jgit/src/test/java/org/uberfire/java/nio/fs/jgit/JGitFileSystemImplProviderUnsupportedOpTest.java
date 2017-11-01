@@ -27,7 +27,7 @@ import org.uberfire.java.nio.file.Path;
 import static java.util.Collections.emptySet;
 import static org.fest.assertions.api.Assertions.failBecauseExceptionWasNotThrown;
 
-public class JGitFileSystemProviderUnsupportedOpTest extends AbstractTestInfra {
+public class JGitFileSystemImplProviderUnsupportedOpTest extends AbstractTestInfra {
 
     @Test
     public void testNewFileSystemUnsupportedOp() {

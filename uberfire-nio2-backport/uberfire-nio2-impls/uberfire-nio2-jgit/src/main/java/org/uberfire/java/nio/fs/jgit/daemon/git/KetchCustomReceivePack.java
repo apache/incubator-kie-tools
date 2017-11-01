@@ -17,9 +17,6 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.ReceiveCommand;
 import org.eclipse.jgit.transport.ReceivePack;
 
-/**
- * TODO: update me
- */
 public class KetchCustomReceivePack extends ReceivePack {
 
     public KetchCustomReceivePack(final Repository into) {

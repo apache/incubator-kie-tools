@@ -33,7 +33,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 import static org.fest.assertions.api.Assertions.fail;
 import static org.fest.assertions.api.Assertions.failBecauseExceptionWasNotThrown;
 
-public class JGitFileSystemProviderCpMvTest extends AbstractTestInfra {
+public class JGitFileSystemImplProviderCpMvTest extends AbstractTestInfra {
 
     @Test
     public void testCopyBranches() throws IOException {

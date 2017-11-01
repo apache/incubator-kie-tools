@@ -39,7 +39,7 @@ import org.uberfire.java.nio.file.Path;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-public class JGitFileSystemProviderHookTest extends AbstractTestInfra {
+public class JGitFileSystemImplProviderHookTest extends AbstractTestInfra {
 
     @Override
     public Map<String, String> getGitPreferences() {
@@ -75,8 +75,8 @@ public class JGitFileSystemProviderHookTest extends AbstractTestInfra {
 
         assertThat(fs).isNotNull();
 
-        if (fs instanceof JGitFileSystem) {
-            File[] hooks = new File(((JGitFileSystem) fs).getGit().getRepository().getDirectory(),
+        if (fs instanceof JGitFileSystemImpl) {
+            File[] hooks = new File(((JGitFileSystemImpl) fs).getGit().getRepository().getDirectory(),
                                     "hooks").listFiles();
             assertThat(hooks).isNotEmpty().isNotNull();
             assertThat(hooks.length).isEqualTo(2);

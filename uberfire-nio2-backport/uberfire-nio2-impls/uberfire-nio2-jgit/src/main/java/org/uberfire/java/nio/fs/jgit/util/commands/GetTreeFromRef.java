@@ -20,9 +20,6 @@ import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 
-/**
- * TODO: update me
- */
 public class GetTreeFromRef {
 
     private final Git git;

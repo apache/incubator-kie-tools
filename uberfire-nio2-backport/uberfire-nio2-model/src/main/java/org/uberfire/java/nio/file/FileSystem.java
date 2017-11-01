@@ -49,4 +49,6 @@ public interface FileSystem extends Closeable,
     UserPrincipalLookupService getUserPrincipalLookupService() throws UnsupportedOperationException;
 
     WatchService newWatchService() throws UnsupportedOperationException, IOException;
+
+    String getName();
 }

@@ -23,9 +23,6 @@ import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 
-/**
- * TODO: update me
- */
 public class ResolveRevCommit {
 
     private final Repository repo;

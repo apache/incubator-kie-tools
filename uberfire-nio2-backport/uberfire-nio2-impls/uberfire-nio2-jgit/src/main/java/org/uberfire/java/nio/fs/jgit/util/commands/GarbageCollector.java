@@ -20,9 +20,6 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.internal.storage.reftree.RefTreeDatabase;
 import org.uberfire.java.nio.fs.jgit.util.GitImpl;
 
-/**
- * TODO: update me
- */
 public class GarbageCollector {
 
     private final GitImpl git;

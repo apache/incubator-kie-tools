@@ -45,6 +45,7 @@ import org.uberfire.java.nio.base.attributes.HiddenAttributeView;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.base.options.SquashOption;
 import org.uberfire.java.nio.base.version.VersionRecord;
+import org.uberfire.java.nio.file.AmbiguousFileSystemNameException;
 import org.uberfire.java.nio.file.DirectoryNotEmptyException;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
@@ -71,15 +72,17 @@ import org.uberfire.java.nio.fs.jgit.util.exceptions.GitException;
 import org.uberfire.java.nio.fs.jgit.util.model.PathInfo;
 import org.uberfire.java.nio.fs.jgit.util.model.PathType;
 
+import static junit.framework.Assert.assertNotSame;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.fest.assertions.api.Assertions.fail;
 import static org.fest.assertions.api.Assertions.failBecauseExceptionWasNotThrown;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.uberfire.java.nio.file.StandardDeleteOption.NON_EMPTY_DIRECTORIES;
 
-public class JGitFileSystemProviderTest extends AbstractTestInfra {
+public class JGitFileSystemImplProviderTest extends AbstractTestInfra {
 
     private int gitDaemonPort;
 
@@ -216,7 +219,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         final URI newRepo = URI.create("git://my-repo-name");
 
         final Map<String, Object> env = new HashMap<String, Object>() {{
-            put(JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
+            put(JGitFileSystemProviderConfiguration.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
                 "git://localhost:" + gitDaemonPort + "/my-simple-test-origin-name");
         }};
 
@@ -306,7 +309,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         final URI newRepo = URI.create("git://my-repo");
 
         final Map<String, Object> env = new HashMap<String, Object>() {{
-            put(JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
+            put(JGitFileSystemProviderConfiguration.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
                 "git://localhost:" + gitDaemonPort + "/my-simple-test-origin-repo");
         }};
 
@@ -335,7 +338,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         final URI newRepo2 = URI.create("git://my-repo2");
 
         final Map<String, Object> env2 = new HashMap<String, Object>() {{
-            put(JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
+            put(JGitFileSystemProviderConfiguration.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
                 "git://localhost:" + gitDaemonPort + "/my-simple-test-origin-repo");
         }};
 
@@ -429,7 +432,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         final URI newRepo = URI.create("git://my-repo-name");
 
         final Map<String, Object> env = new HashMap<String, Object>() {{
-            put(JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
+            put(JGitFileSystemProviderConfiguration.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
                 "git://localhost:" + gitDaemonPort + "/my-simple-test-origin-name");
         }};
 
@@ -439,8 +442,6 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         assertThat(fs).isNotNull();
 
         assertThat(fs.getRootDirectories()).hasSize(1);
-
-        provider.rescanForExistingRepositories();
 
         final FileSystem fs2 = provider.getFileSystem(newRepo);
 
@@ -488,7 +489,9 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
 
         assertThat(path).isNotNull();
         assertThat(path.getRoot().toString()).isEqualTo("/");
-        assertThat(path.getRoot().toRealPath().toUri().toString()).isEqualTo("git://master@new-get-repo-name/");
+        Path root = path.getRoot();
+        Path path1 = root.toRealPath();
+        assertThat(root.toRealPath().toUri().toString()).isEqualTo("git://master@new-get-repo-name/");
         assertThat(path.toString()).isEqualTo("/home");
 
         final Path pathRelative = provider.getPath(URI.create("git://master@new-get-repo-name/:home"));
@@ -530,6 +533,31 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
     }
 
     @Test
+    public void testGetComplexPathComposed() {
+        final URI newRepo = URI.create("git://new-complex-get-repo-name/composed");
+
+        provider.newFileSystem(newRepo,
+                               EMPTY_ENV);
+
+        final Path path1 = provider.getPath(URI.create("git://new-complex-get-repo-name/composed/home"));
+
+        assertThat(path1).isNotNull();
+        assertThat(path1.getRoot().toString()).isEqualTo("/");
+        assertThat(path1.toString()).isEqualTo("/home");
+
+        final Path path = provider.getPath(URI.create("git://origin/master@new-complex-get-repo-name/composed/home"));
+
+        assertThat(path).isNotNull();
+        assertThat(path.getRoot().toString()).isEqualTo("/");
+        assertThat(path.toString()).isEqualTo("/home");
+
+        final Path pathRelative = provider.getPath(URI.create("git://origin/master@new-complex-get-repo-name/composed/:home"));
+        assertThat(pathRelative).isNotNull();
+        assertThat(pathRelative.getRoot().toString()).isEqualTo("");
+        assertThat(pathRelative.toString()).isEqualTo("home");
+    }
+
+    @Test
     public void testInputStream() throws IOException {
         final File parentFolder = createTempDirectory();
         final File gitFolder = new File(parentFolder,
@@ -553,7 +581,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         final URI newRepo = URI.create("git://inputstream-test-repo");
 
         final Map<String, Object> env = new HashMap<String, Object>() {{
-            put(JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
+            put(JGitFileSystemProviderConfiguration.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
                 origin.getRepository().getDirectory().toString());
         }};
 
@@ -599,7 +627,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         final URI newRepo = URI.create("git://xinputstream-test-repo");
 
         final Map<String, Object> env = new HashMap<String, Object>() {{
-            put(JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
+            put(JGitFileSystemProviderConfiguration.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
                 origin.getRepository().getDirectory().toString());
         }};
 
@@ -645,7 +673,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         final URI newRepo = URI.create("git://xxinputstream-test-repo");
 
         final Map<String, Object> env = new HashMap<String, Object>() {{
-            put(JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
+            put(JGitFileSystemProviderConfiguration.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
                 origin.getRepository().getDirectory().toString());
         }};
 
@@ -684,7 +712,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         final URI newRepo = URI.create("git://inputstream-not-exists-test-repo");
 
         final Map<String, Object> env = new HashMap<String, Object>() {{
-            put(JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
+            put(JGitFileSystemProviderConfiguration.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
                 origin.getRepository().getDirectory().toString());
         }};
 
@@ -734,7 +762,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         final URI newRepo = URI.create("git://outstream-test-repo");
 
         final Map<String, Object> env = new HashMap<String, Object>() {{
-            put(JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
+            put(JGitFileSystemProviderConfiguration.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
                 origin.getRepository().getDirectory().toString());
         }};
 
@@ -801,7 +829,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         final URI newRepo = URI.create("git://outstreamwithop-test-repo");
 
         final Map<String, Object> env = new HashMap<String, Object>() {{
-            put(JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
+            put(JGitFileSystemProviderConfiguration.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
                 origin.getRepository().getDirectory().toString());
         }};
 
@@ -1265,22 +1293,12 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         outStream4.close();
 
         final DirectoryStream<Path> stream1 = provider.newDirectoryStream(provider.getPath(URI.create("git://user_branch@filter-dirstream-test-repo/")),
-                                                                          new DirectoryStream.Filter<Path>() {
-                                                                              @Override
-                                                                              public boolean accept(final Path entry) throws org.uberfire.java.nio.IOException {
-                                                                                  return entry.toString().endsWith(".xxx");
-                                                                              }
-                                                                          });
+                                                                          entry -> entry.toString().endsWith(".xxx"));
 
         assertThat(stream1).isNotNull().hasSize(1).contains(path4);
 
         final DirectoryStream<Path> stream2 = provider.newDirectoryStream(provider.getPath(URI.create("git://master@filter-dirstream-test-repo/")),
-                                                                          new DirectoryStream.Filter<Path>() {
-                                                                              @Override
-                                                                              public boolean accept(final Path entry) throws org.uberfire.java.nio.IOException {
-                                                                                  return false;
-                                                                              }
-                                                                          });
+                                                                          entry -> false);
 
         assertThat(stream2).isNotNull().hasSize(0);
     }
@@ -1610,7 +1628,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
 
         final FileSystem fs = provider.newFileSystem(newRepo,
                                                      new HashMap<String, Object>() {{
-                                                         put(JGitFileSystemProvider.GIT_ENV_KEY_INIT,
+                                                         put(JGitFileSystemProviderConfiguration.GIT_ENV_KEY_INIT,
                                                              "true");
                                                      }});
 
@@ -1655,7 +1673,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
 
         final FileSystem fs = provider.newFileSystem(newRepo,
                                                      new HashMap<String, Object>() {{
-                                                         put(JGitFileSystemProvider.GIT_ENV_KEY_INIT,
+                                                         put(JGitFileSystemProviderConfiguration.GIT_ENV_KEY_INIT,
                                                              "true");
                                                      }});
 
@@ -1772,7 +1790,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
 
         final FileSystem fs = provider.newFileSystem(newRepo,
                                                      new HashMap<String, Object>() {{
-                                                         put(JGitFileSystemProvider.GIT_ENV_KEY_INIT,
+                                                         put(JGitFileSystemProviderConfiguration.GIT_ENV_KEY_INIT,
                                                              "true");
                                                      }});
 
@@ -1780,7 +1798,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
 
         doThrow(new RuntimeException()).
                 when(provider).
-                notifyDiffs(any(JGitFileSystem.class),
+                notifyDiffs(any(JGitFileSystemImpl.class),
                             any(String.class),
                             any(String.class),
                             any(String.class),
@@ -1807,6 +1825,278 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
             fail("Batch can't fail!",
                  ex);
         }
+    }
+
+    @Test
+    public void resolveFSName() {
+
+        String fsName = "dora-repo";
+        assertEquals(fsName,
+                     provider.extractFSName(URI.create("git://dora-repo")));
+        assertEquals(fsName,
+                     provider.extractFSName(URI.create("default://dora-repo")));
+
+        assertEquals(fsName,
+                     provider.extractFSName(URI.create("git://branch@dora-repo")));
+        assertEquals(fsName,
+                     provider.extractFSName(URI.create("default://branch@dora-repo")));
+
+        fsName = "dora-repo/subdir";
+        assertEquals(fsName,
+                     provider.extractFSName(URI.create("git://dora-repo/subdir")));
+        assertEquals("dora-repo/subdir",
+                     provider.extractFSName(URI.create("default://dora-repo/subdir")));
+
+        assertEquals("dora-repo/subdir",
+                     provider.extractFSName(URI.create("git://branch@dora-repo/subdir")));
+        assertEquals("dora-repo/subdir",
+                     provider.extractFSName(URI.create("default://branch@dora-repo/subdir")));
+
+        fsName = "dora-repo/subdir/subdir";
+        assertEquals(fsName,
+                     provider.extractFSName(URI.create("git://dora-repo/subdir/subdir")));
+        assertEquals(fsName,
+                     provider.extractFSName(URI.create("default://dora-repo/subdir/subdir")));
+
+        assertEquals(fsName,
+                     provider.extractFSName(URI.create("git://branch@dora-repo/subdir/subdir")));
+        assertEquals(fsName,
+                     provider.extractFSName(URI.create("default://branch@dora-repo/subdir/subdir")));
+    }
+
+    @Test
+    public void resolveSimpleFSNames() {
+
+        final URI newRepo = URI.create("git://dora-repo");
+
+        try {
+            final Path path = provider.getPath(URI.create("git://dora-repo/some/path/myfile.txt"));
+            fail("should triggered FileSystemNotFoundException");
+        } catch (FileSystemNotFoundException e) {
+            //ignored
+        }
+
+        final FileSystem fs = provider.newFileSystem(newRepo,
+                                                     EMPTY_ENV);
+
+        assertThat(fs).isNotNull();
+
+        final Path path = provider.getPath(URI.create("git://dora-repo/some/path/myfile.txt"));
+        final Path another = provider.getPath(URI.create("git://dora-repo/another/path/myfile.txt"));
+
+        assertEquals(fs,
+                     path.getFileSystem());
+        assertEquals(path.getFileSystem(),
+                     another.getFileSystem());
+    }
+
+    @Test
+    public void resolveComposedFSNames() {
+
+        final URI simpleName = URI.create("git://dora-repo");
+
+        final FileSystem fsSimpleName = provider.newFileSystem(simpleName,
+                                                               EMPTY_ENV);
+
+        assertThat(fsSimpleName).isNotNull();
+
+        final URI composedName = URI.create("git://ou-dora/dora-repo");
+
+        final FileSystem fsComposedName = provider.newFileSystem(composedName,
+                                                                 EMPTY_ENV);
+
+        assertThat(fsComposedName).isNotNull();
+
+        assertNotSame(fsSimpleName,
+                      fsComposedName);
+
+        assertEquals(fsSimpleName,
+                     provider.getFileSystem(simpleName));
+
+        assertEquals(fsComposedName,
+                     provider.getFileSystem(composedName));
+
+        final URI simpleFileName = URI.create("git://dora-repo/file.txt");
+
+        assertEquals(fsSimpleName,
+                     provider.getFileSystem(simpleFileName));
+
+        final URI composedFileName = URI.create("git://ou-dora/dora-repo/file.txt");
+
+        assertEquals(fsComposedName,
+                     provider.getFileSystem(composedFileName));
+    }
+
+    @Test
+    public void validFSNameTest() {
+
+        checkAmbiguousFS("git://dora-repo",
+                         "git://dora-repo/subdir");
+
+        checkAmbiguousFS("git://bento-repo/subdir",
+                         "git://bento-repo");
+
+        checkAmbiguousFS("git://leao",
+                         "default://leao/subdir/subdir");
+
+        checkAmbiguousFS("git://rex/subdir",
+                         "git://rex",
+                         "git://rex/subdir/subdir",
+                         "git://rex/subdir/subdir");
+
+        provider.newFileSystem(URI.create("git://ou/dora"),
+                               EMPTY_ENV);
+        provider.newFileSystem(URI.create("git://user1/dora"),
+                               EMPTY_ENV);
+        provider.newFileSystem(URI.create("git://user2/dora"),
+                               EMPTY_ENV);
+        provider.newFileSystem(URI.create("git://user3/dora"),
+                               EMPTY_ENV);
+    }
+
+    private void checkAmbiguousFS(String fsOriginalName,
+                                  String... ambiguousFsName) {
+        provider.newFileSystem(URI.create(fsOriginalName),
+                               EMPTY_ENV);
+        try {
+            for (String fsName : ambiguousFsName) {
+                provider.newFileSystem(URI.create(fsName),
+                                       EMPTY_ENV);
+            }
+            fail("ambiguous fs");
+        } catch (AmbiguousFileSystemNameException e) {
+            //expected
+        }
+    }
+
+    @Test
+    public void checkRootPath() {
+
+        URI composedName = URI.create("git://dora-repo/subdir1");
+
+        FileSystem fsComposedName = provider.newFileSystem(composedName,
+                                                           EMPTY_ENV);
+
+        Path path = provider.getPath(URI.create("git://dora-repo/subdir1/file.txt"));
+        Path path1 = provider.getPath(URI.create("git://origin/bla@dora-repo/subdir1/file2.txt"));
+
+        assertEquals(fsComposedName,
+                     path.getRoot().getFileSystem());
+
+        assertEquals(fsComposedName,
+                     path1.getRoot().getFileSystem());
+    }
+
+    @Test
+    public void getPathForComposedFSNames() {
+
+        URI composedName = URI.create("git://dora-repo/subdir1");
+
+        FileSystem fsComposedName = provider.newFileSystem(composedName,
+                                                           EMPTY_ENV);
+        URI simpleFileName = URI.create("git://dora-repo/subdir1/file.txt");
+
+        Path path = provider.getPath(simpleFileName);
+
+        assertEquals(fsComposedName,
+                     path.getFileSystem());
+        assertEquals("/file.txt",
+                     ((JGitPathImpl) path).getPath());
+
+        URI simpleName = URI.create("git://bento-repo/");
+
+        FileSystem fsSimpleName = provider.newFileSystem(simpleName,
+                                                         EMPTY_ENV);
+
+        URI composedFileName = URI.create("git://bento-repo/subdir1/file.txt");
+
+        path = provider.getPath(composedFileName);
+
+        assertEquals(fsSimpleName,
+                     path.getFileSystem());
+        assertEquals("/subdir1/file.txt",
+                     ((JGitPathImpl) path).getPath());
+
+        composedFileName = URI.create("git://bento-repo/subdir1/subdir2/file.txt");
+
+        path = provider.getPath(composedFileName);
+
+        assertEquals(fsSimpleName,
+                     path.getFileSystem());
+        assertEquals("/subdir1/subdir2/file.txt",
+                     ((JGitPathImpl) path).getPath());
+
+        composedFileName = URI.create("git://bento-repo/subdir1/subdir2/subdir3");
+
+        path = provider.getPath(composedFileName);
+
+        assertEquals(fsSimpleName,
+                     path.getFileSystem());
+        assertEquals("/subdir1/subdir2/subdir3",
+                     ((JGitPathImpl) path).getPath());
+    }
+
+    @Test
+    public void getPathForComposedFSNames2() {
+        URI composedName = URI.create("git://user1/dora");
+
+        FileSystem fsComposedName1 = provider.newFileSystem(composedName,
+                                                            EMPTY_ENV);
+
+        URI composedName2 = URI.create("git://user2/dora");
+
+        FileSystem fsComposedName2 = provider.newFileSystem(composedName2,
+                                                            EMPTY_ENV);
+
+        URI composedFileName1 = URI.create("git://user1/dora/file.txt");
+
+        Path path1 = provider.getPath(composedFileName1);
+
+        URI composedFileName2 = URI.create("git://user2/dora/file.txt");
+
+        Path path2 = provider.getPath(composedFileName2);
+
+        assertNotEquals(fsComposedName1,
+                        fsComposedName2);
+        assertNotEquals(path1.getFileSystem(),
+                        path2.getFileSystem());
+
+        assertEquals(path2.toString(),
+                     provider.extractPath(composedFileName2));
+    }
+
+    @Test
+    public void extractPathTest() {
+
+        URI composedName = URI.create("git://user1/dora");
+
+        FileSystem fsComposedName1 = provider.newFileSystem(composedName,
+                                                            EMPTY_ENV);
+
+        URI composedFileName1 = URI.create("git://user1/dora/file.txt");
+
+        Path path1 = provider.getPath(composedFileName1);
+
+        assertEquals(path1.toString(),
+                     provider.extractPath(composedFileName1));
+    }
+
+    @Test
+    public void resolveByRepositoryTest() {
+
+        JGitFileSystem fsSimpleName = ((JGitFileSystemProxy) provider.newFileSystem(URI.create("git://repo"),
+                                                                                    EMPTY_ENV)).getRealJGitFileSystem();
+
+        JGitFileSystemProvider.RepositoryResolverImpl<Object> objectRepositoryResolver = provider.new RepositoryResolverImpl<>();
+
+        assertEquals(fsSimpleName,
+                     objectRepositoryResolver.resolveFileSystem(fsSimpleName.getGit().getRepository()));
+
+        JGitFileSystem fsComposedName1 = ((JGitFileSystemProxy) provider.newFileSystem(URI.create("git://user1/dora"),
+                                                                                       EMPTY_ENV)).getRealJGitFileSystem();
+
+        assertEquals(fsComposedName1,
+                     objectRepositoryResolver.resolveFileSystem(fsComposedName1.getGit().getRepository()));
     }
 
     private interface MyAttrs extends BasicFileAttributes {

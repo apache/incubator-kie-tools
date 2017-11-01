@@ -25,7 +25,7 @@ import org.uberfire.java.nio.file.Path;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-public class JGitFileSystemProviderAsDefaultTest extends AbstractTestInfra {
+public class JGitFileSystemImplProviderAsDefaultTest extends AbstractTestInfra {
 
     @Before
     public void forceProviderToDefault() {

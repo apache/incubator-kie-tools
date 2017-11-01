@@ -19,13 +19,13 @@ package org.uberfire.java.nio.fs.jgit;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
@@ -50,9 +50,9 @@ import static org.junit.Assert.*;
 
 @RunWith(org.jboss.byteman.contrib.bmunit.BMUnitRunner.class)
 @BMUnitConfig(loadDirectory = "target/test-classes", debug = true) // set "debug=true to see debug output
-public class JGitFileSystemProviderBytemanTest extends AbstractTestInfra {
+public class JGitFileSystemImplProviderBytemanTest extends AbstractTestInfra {
 
-    private static Logger logger = LoggerFactory.getLogger(JGitFileSystemProviderBytemanTest.class);
+    private static Logger logger = LoggerFactory.getLogger(JGitFileSystemImplProviderBytemanTest.class);
 
     @Ignore("This test produces a strange behaviour that locks the other test. Is ignored until a solution is found.")
     @Test()
@@ -60,8 +60,8 @@ public class JGitFileSystemProviderBytemanTest extends AbstractTestInfra {
     public void testConcurrentLocking() throws IOException, GitAPIException {
 
         final URI newRepo = URI.create("git://byteman-lock-squash-repo");
-        final JGitFileSystem fs = (JGitFileSystem) provider.newFileSystem(newRepo,
-                                                                          EMPTY_ENV);
+        final JGitFileSystemImpl fs = (JGitFileSystemImpl) provider.newFileSystem(newRepo,
+                                                                                  EMPTY_ENV);
         final CyclicBarrier threadsFinishedBarrier = new CyclicBarrier(3);
 
         final Thread t = new Thread(() -> {
@@ -290,8 +290,9 @@ public class JGitFileSystemProviderBytemanTest extends AbstractTestInfra {
     public void testFileSystemLockOnException() throws IOException, GitAPIException {
 
         final URI newRepo = URI.create("git://byteman-exception-commit-repo");
-        final JGitFileSystem fs = (JGitFileSystem) provider.newFileSystem(newRepo,
-                                                                          EMPTY_ENV);
+        final JGitFileSystemProxy fsProxy = (JGitFileSystemProxy) provider.newFileSystem(newRepo,
+                                                                                         EMPTY_ENV);
+        JGitFileSystem fs = fsProxy.getRealJGitFileSystem();
 
         final Path path = provider.getPath(URI.create("git://master@byteman-exception-commit-repo/myfile.txt"));
 
@@ -300,28 +301,26 @@ public class JGitFileSystemProviderBytemanTest extends AbstractTestInfra {
                       path,
                       "master");
         } catch (RuntimeException e) {
-            // intentional Exception. Ignore
         }
 
         // fs must be unlocked
         Object lock = null;
         try {
-            Field field = JGitFileSystem.class.getDeclaredField("lock");
+            Field field = JGitFileSystemImpl.class.getDeclaredField("lock");
             field.setAccessible(true);
             lock = field.get(fs);
         } catch (Exception e) {
+            e.printStackTrace();
             fail(e.getMessage());
         }
         Object isLocked = null;
         try {
-            Field field = lock.getClass().getDeclaredField("isLocked");
-            field.setAccessible(true);
-            isLocked = field.get(lock);
+            Method method = lock.getClass().getMethod("isLocked");
+            isLocked = method.invoke(lock);
         } catch (Exception e) {
             fail(e.getMessage());
         }
-
-        assertFalse(((AtomicBoolean) isLocked).get());
+        assertFalse(((Boolean) isLocked));
     }
 
     private VersionRecord makeVersionRecord(final String author,

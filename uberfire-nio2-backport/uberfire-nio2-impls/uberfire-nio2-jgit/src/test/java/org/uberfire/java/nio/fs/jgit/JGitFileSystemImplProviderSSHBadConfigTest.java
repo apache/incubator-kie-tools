@@ -24,7 +24,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class JGitFileSystemProviderSSHBadConfigTest extends AbstractTestInfra {
+public class JGitFileSystemImplProviderSSHBadConfigTest extends AbstractTestInfra {
 
     @Override
     public Map<String, String> getGitPreferences() {
@@ -42,7 +42,7 @@ public class JGitFileSystemProviderSSHBadConfigTest extends AbstractTestInfra {
 
     @Test
     public void testCheckDefaultSSHIdleWithInvalidArg() throws IOException {
-        assertEquals(JGitFileSystemProvider.SSH_IDLE_TIMEOUT,
+        assertEquals(JGitFileSystemProviderConfiguration.DEFAULT_SSH_IDLE_TIMEOUT,
                      provider.getGitSSHService().getProperties().get(SshServer.IDLE_TIMEOUT));
     }
 }

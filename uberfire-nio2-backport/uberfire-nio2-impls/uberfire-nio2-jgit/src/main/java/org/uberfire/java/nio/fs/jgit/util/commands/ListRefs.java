@@ -22,9 +22,6 @@ import java.util.List;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 
-/**
- * TODO: update me
- */
 public class ListRefs {
 
     private final Repository repo;

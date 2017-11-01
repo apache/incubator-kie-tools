@@ -23,8 +23,7 @@ import java.util.concurrent.RunnableFuture;
 
 import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.commons.message.MessageType;
-import org.uberfire.java.nio.base.FileSystemId;
-import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.FileSystemMetadata;
 
 import static org.uberfire.io.impl.cluster.ClusterMessageType.SYNC_FS;
 
@@ -36,12 +35,12 @@ public class FileSystemSyncNonLock<V> {
     private final String uri;
 
     public FileSystemSyncNonLock(final String serviceId,
-                                 final FileSystem _fileSystem) {
-        final FileSystem fileSystem = _fileSystem.getRootDirectories().iterator().next().getFileSystem();
+                                 final FileSystemMetadata fsInfo) {
         this.serviceId = serviceId;
-        this.scheme = fileSystem.getRootDirectories().iterator().next().toUri().getScheme();
-        this.id = ((FileSystemId) fileSystem).id();
-        this.uri = fileSystem.toString();
+
+        this.scheme = fsInfo.getScheme();
+        this.id = fsInfo.getId();
+        this.uri = fsInfo.getUri();
     }
 
     public MessageType getMessageType() {

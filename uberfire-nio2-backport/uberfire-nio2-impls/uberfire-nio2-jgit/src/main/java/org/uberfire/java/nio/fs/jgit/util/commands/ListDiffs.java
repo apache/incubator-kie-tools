@@ -26,9 +26,6 @@ import org.uberfire.java.nio.fs.jgit.util.Git;
 
 import static java.util.Collections.emptyList;
 
-/**
- * TODO: update me
- */
 public class ListDiffs {
 
     private final Git git;

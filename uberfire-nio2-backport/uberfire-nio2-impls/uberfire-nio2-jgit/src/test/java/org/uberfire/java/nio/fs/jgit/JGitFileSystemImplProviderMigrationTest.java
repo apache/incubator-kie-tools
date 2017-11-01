@@ -21,16 +21,14 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.uberfire.java.nio.file.FileSystemNotFoundException;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.fest.assertions.api.Assertions.fail;
 
-/**
- * Created by aparedes on 9/16/16.
- */
-public class JGitFileSystemProviderMigrationTest extends AbstractTestInfra {
+public class JGitFileSystemImplProviderMigrationTest extends AbstractTestInfra {
 
     @Test
     public void testCreateANewDirectoryWithMigrationEnv() {
@@ -53,39 +51,4 @@ public class JGitFileSystemProviderMigrationTest extends AbstractTestInfra {
         assertThat(provider.getFileSystem(newUri)).isNotNull();
     }
 
-    @Test
-    public void testMigrateOldDirectories() {
-
-        final Map<String, ?> env = new HashMap<String, Object>() {{
-            put("init",
-                Boolean.TRUE);
-        }};
-
-        final Map<String, ?> envMigrate = new HashMap<String, Object>() {{
-            put("init",
-                Boolean.TRUE);
-            put("migrate-from",
-                URI.create("git://old"));
-        }};
-
-        String oldPath = "git://old";
-        final URI oldUri = URI.create(oldPath);
-        final JGitFileSystem fs = (JGitFileSystem) provider.newFileSystem(oldUri,
-                                                                          env);
-
-        String newPath = "git://test/old";
-        final URI newUri = URI.create(newPath);
-        provider.newFileSystem(newUri,
-                               envMigrate);
-
-        try {
-            provider.getFileSystem(oldUri);
-            fail("It should not reach here because old filesystem does not exists");
-        } catch (FileSystemNotFoundException ex) {
-            assertThat(new File(provider.getGitRepoContainerDir(),
-                                "test/old" + ".git").exists()).isTrue();
-            assertThat(new File(provider.getGitRepoContainerDir(),
-                                "old" + ".git").exists()).isFalse();
-        }
-    }
 }

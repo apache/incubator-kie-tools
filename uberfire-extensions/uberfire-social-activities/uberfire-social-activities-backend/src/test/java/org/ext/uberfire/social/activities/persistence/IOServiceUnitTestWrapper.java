@@ -37,6 +37,7 @@ import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
+import org.uberfire.java.nio.file.FileSystemMetadata;
 import org.uberfire.java.nio.file.FileSystemNotFoundException;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.NotDirectoryException;
@@ -52,7 +53,7 @@ import static org.mockito.Mockito.*;
 
 public class IOServiceUnitTestWrapper implements IOService {
 
-    Map<String, String> fileSystem = new HashMap<String, String>();
+    Map<String, String> fileSystem = new HashMap<>();
 
     @Override
     public void dispose() {
@@ -65,19 +66,8 @@ public class IOServiceUnitTestWrapper implements IOService {
     }
 
     @Override
-    public void startBatch(FileSystem[] fs,
-                           Option... options) {
-
-    }
-
-    @Override
     public void startBatch(FileSystem fs,
                            Option... options) {
-
-    }
-
-    @Override
-    public void startBatch(FileSystem... fs) {
 
     }
 
@@ -105,7 +95,7 @@ public class IOServiceUnitTestWrapper implements IOService {
     }
 
     @Override
-    public Iterable<FileSystem> getFileSystems() {
+    public Iterable<FileSystemMetadata> getFileSystemMetadata() {
         return null;
     }
 

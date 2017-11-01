@@ -37,9 +37,9 @@ import org.uberfire.java.nio.fs.jgit.util.commands.CreateRepository;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-public class JGitFileSystemProviderDiffTest extends AbstractTestInfra {
+public class JGitFileSystemImplProviderDiffTest extends AbstractTestInfra {
 
-    private Logger logger = LoggerFactory.getLogger(JGitFileSystemProviderDiffTest.class);
+    private Logger logger = LoggerFactory.getLogger(JGitFileSystemImplProviderDiffTest.class);
 
     @Test
     public void testDiffsBetweenBranches() throws IOException {
@@ -123,7 +123,7 @@ public class JGitFileSystemProviderDiffTest extends AbstractTestInfra {
         final URI newRepo = URI.create("git://diff-repo");
 
         final Map<String, Object> env = new HashMap<String, Object>() {{
-            put(JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
+            put(JGitFileSystemProviderConfiguration.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
                 origin.getRepository().getDirectory().toString());
         }};
 
@@ -182,7 +182,7 @@ public class JGitFileSystemProviderDiffTest extends AbstractTestInfra {
         final URI newRepo = URI.create("git://diff-repo");
 
         final Map<String, Object> env = new HashMap<String, Object>() {{
-            put(JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
+            put(JGitFileSystemProviderConfiguration.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
                 origin.getRepository().getDirectory().toString());
         }};
 

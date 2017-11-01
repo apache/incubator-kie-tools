@@ -34,7 +34,7 @@ import org.uberfire.java.nio.fs.jgit.util.GitImpl;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-public class JGitFileSystemProviderWithFoldersTest extends AbstractTestInfra {
+public class JGitFileSystemImplProviderWithFoldersTest extends AbstractTestInfra {
 
     @Test
     public void testNewFileSystemWithSubfolder() {
@@ -83,6 +83,12 @@ public class JGitFileSystemProviderWithFoldersTest extends AbstractTestInfra {
     @Test
     public void testExtractPathWithAuthority() {
 
+        provider.newFileSystem(URI.create("git://test/repo"),
+                               new HashMap<String, Object>() {{
+                                   put("init",
+                                       Boolean.TRUE);
+                               }});
+
         String path = "git://master@test/repo/readme.md";
         final URI uri = URI.create(path);
         final String extracted = provider.extractPath(uri);
@@ -92,6 +98,10 @@ public class JGitFileSystemProviderWithFoldersTest extends AbstractTestInfra {
     @Test
     public void testComplexExtractPath() {
 
+        final URI newRepo = URI.create("git://test/repo");
+        final FileSystem fs = provider.newFileSystem(newRepo,
+                                                     EMPTY_ENV);
+
         String path = "git://origin/master@test/repo/readme.md";
         final URI uri = URI.create(path);
         final String extracted = provider.extractPath(uri);
@@ -100,49 +110,31 @@ public class JGitFileSystemProviderWithFoldersTest extends AbstractTestInfra {
 
     @Test
     public void testExtractComplexRepoName() {
+        provider.newFileSystem(URI.create("default://test/repo"),
+                               new HashMap<String, Object>() {{
+                                   put("init",
+                                       Boolean.TRUE);
+                               }});
+
         String path = "git://origin/master@test/repo/readme.md";
         final URI uri = URI.create(path);
-        final String extracted = provider.extractRepoNameWithFolder(uri);
-        assertThat(extracted).isEqualTo("test/repo");
+        final String extracted = provider.extractFSNameWithPath(uri);
+        assertThat(extracted).isEqualTo("test/repo/readme.md");
     }
 
     @Test
     public void testExtractSimpleRepoName() {
         String path = "git://master@test/repo/readme.md";
         final URI uri = URI.create(path);
-        final String extracted = provider.extractRepoNameWithFolder(uri);
-        assertThat(extracted).isEqualTo("test/repo");
+        final String extracted = provider.extractFSNameWithPath(uri);
+        assertThat(extracted).isEqualTo("test/repo/readme.md");
     }
 
     @Test
     public void testExtractVerySimpleRepoName() {
         String path = "git://test/repo/readme.md";
         final URI uri = URI.create(path);
-        final String extracted = provider.extractRepoNameWithFolder(uri);
-        assertThat(extracted).isEqualTo("test/repo");
-    }
-
-    @Test
-    public void testExtractHostWithBranch() {
-        String path = "git://origin/master@test/repo/readme.md";
-        final URI uri = URI.create(path);
-        final String extracted = provider.extractHost(uri);
-        assertThat(extracted).isEqualTo("origin/master@test/repo");
-    }
-
-    @Test
-    public void testExtractHost() {
-        String path = "git://test/repo/readme.md";
-        final URI uri = URI.create(path);
-        final String extracted = provider.extractHost(uri);
-        assertThat(extracted).isEqualTo("test/repo");
-    }
-
-    @Test
-    public void testSimpleExtractHost() {
-        String path = "git://master@test/repo/readme.md";
-        final URI uri = URI.create(path);
-        final String extracted = provider.extractHost(uri);
-        assertThat(extracted).isEqualTo("master@test/repo");
+        final String extracted = provider.extractFSNameWithPath(uri);
+        assertThat(extracted).isEqualTo("test/repo/readme.md");
     }
 }

@@ -24,9 +24,6 @@ import org.eclipse.jgit.lib.Repository;
 
 import static org.eclipse.jgit.lib.Constants.OBJ_TREE;
 
-/**
- * TODO: update me
- */
 public class GetRef {
 
     private final Repository repo;

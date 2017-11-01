@@ -23,7 +23,6 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -49,6 +48,7 @@ import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
+import org.uberfire.java.nio.file.FileSystemMetadata;
 import org.uberfire.java.nio.file.FileSystemNotFoundException;
 import org.uberfire.java.nio.file.FileSystems;
 import org.uberfire.java.nio.file.Files;
@@ -77,7 +77,8 @@ public abstract class AbstractIOService implements IOServiceIdentifiable,
     private static final Set<StandardOpenOption> CREATE_NEW_FILE_OPTIONS = EnumSet.of(CREATE_NEW,
                                                                                       WRITE);
     protected final IOWatchService ioWatchService;
-    protected final Set<FileSystem> fileSystems = Collections.newSetFromMap(new ConcurrentHashMap<FileSystem, Boolean>());
+
+    protected final Set<FileSystemMetadata> fileSystems = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private final BatchLockControl batchLockControl = new BatchLockControl();
     protected NewFileSystemListener newFileSystemListener = null;
     protected boolean isDisposed = false;
@@ -110,53 +111,34 @@ public abstract class AbstractIOService implements IOServiceIdentifiable,
 
     @Override
     public void startBatch(FileSystem fs) {
-        batchProcess(new FileSystem[]{fs});
+        batchProcess(fs);
     }
 
     @Override
     public void startBatch(FileSystem fs,
                            final Option... options) {
-        batchProcess(new FileSystem[]{fs},
-                     options);
-    }
-
-    @Override
-    public void startBatch(final FileSystem... fs) {
-        batchProcess(fs);
-    }
-
-    @Override
-    public void startBatch(FileSystem[] fs,
-                           final Option... options) {
         batchProcess(fs,
                      options);
     }
 
-    private void batchProcess(final FileSystem[] fs,
+    private void batchProcess(final FileSystem fs,
                               final Option... options) {
         startBatchProcess(fs);
-        if (!fileSystems.isEmpty()) {
-            cleanupClosedFileSystems();
-            setOptionsOnFileSystems(fs,
-                                    options);
-        }
+        setOptionsOnFileSystem(fs,
+                               options);
     }
 
-    private void setOptionsOnFileSystems(FileSystem[] fss,
-                                         Option[] options) {
+    private void startBatchProcess(final FileSystem fileSystem) {
+        batchLockControl.lock(fileSystem);
+        setBatchModeOn(fileSystem);
+    }
+
+    private void setOptionsOnFileSystem(FileSystem fs,
+                                        Option[] options) {
         if (options != null && options.length == 1) {
-            for (FileSystem fs : fss) {
-                setAttribute(getFirstRootDirectory(fs),
-                             FileSystemState.FILE_SYSTEM_STATE_ATTR,
-                             options[0]);
-            }
-        }
-    }
-
-    private void startBatchProcess(final FileSystem... fileSystems) {
-        batchLockControl.lock(fileSystems);
-        for (final FileSystem fs : fileSystems) {
-            setBatchModeOn(fs);
+            setAttribute(getFirstRootDirectory(fs),
+                         FileSystemState.FILE_SYSTEM_STATE_ATTR,
+                         options[0]);
         }
     }
 
@@ -172,7 +154,8 @@ public abstract class AbstractIOService implements IOServiceIdentifiable,
         }
 
         try {
-            cleanUpAndUnsetBatchModeOnFileSystems();
+            FileSystem fsOnBatch = batchLockControl.getFileSystemOnBatch();
+            cleanUpAndUnsetBatchModeOnFileSystems(fsOnBatch);
         } catch (Exception e) {
             throw new RuntimeException("Exception cleaning and unsetting batch mode on FS.",
                                        e);
@@ -181,30 +164,13 @@ public abstract class AbstractIOService implements IOServiceIdentifiable,
         }
     }
 
-    private void cleanUpAndUnsetBatchModeOnFileSystems() {
-        if (!fileSystems.isEmpty()) {
-            cleanupClosedFileSystems();
-        }
-
-        for (final FileSystem fs : fileSystems) {
-            unsetBatchModeOn(fs);
-        }
+    private void cleanUpAndUnsetBatchModeOnFileSystems(FileSystem fileSystemOnBatch) {
+        unsetBatchModeOn(fileSystemOnBatch);
     }
 
     @Override
     public BatchLockControl getLockControl() {
         return batchLockControl;
-    }
-
-    private void cleanupClosedFileSystems() {
-        final ArrayList<FileSystem> removeList = new ArrayList<FileSystem>();
-        for (final FileSystem fileSystem : fileSystems) {
-            if (!fileSystem.isOpen()) {
-                removeList.add(fileSystem);
-            }
-        }
-
-        fileSystems.removeAll(removeList);
     }
 
     private void setBatchModeOn(FileSystem fs) {
@@ -243,7 +209,7 @@ public abstract class AbstractIOService implements IOServiceIdentifiable,
     }
 
     @Override
-    public Iterable<FileSystem> getFileSystems() {
+    public Iterable<FileSystemMetadata> getFileSystemMetadata() {
         return fileSystems;
     }
 
@@ -286,7 +252,7 @@ public abstract class AbstractIOService implements IOServiceIdentifiable,
                                            fs.newWatchService());
         }
 
-        fileSystems.add(fs);
+        fileSystems.add(new FileSystemMetadata(fs));
 
         return fs;
     }
@@ -393,14 +359,6 @@ public abstract class AbstractIOService implements IOServiceIdentifiable,
     }
 
     @Override
-    public Map<String, Object> readAttributes(final Path path)
-            throws UnsupportedOperationException, NoSuchFileException, IllegalArgumentException,
-            IOException, SecurityException {
-        return readAttributes(path,
-                              "*");
-    }
-
-    @Override
     public Path setAttribute(final Path path,
                              final String attribute,
                              final Object value)
@@ -409,6 +367,14 @@ public abstract class AbstractIOService implements IOServiceIdentifiable,
                            attribute,
                            value);
         return path;
+    }
+
+    @Override
+    public Map<String, Object> readAttributes(final Path path)
+            throws UnsupportedOperationException, NoSuchFileException, IllegalArgumentException,
+            IOException, SecurityException {
+        return readAttributes(path,
+                              "*");
     }
 
     @Override
@@ -619,9 +585,9 @@ public abstract class AbstractIOService implements IOServiceIdentifiable,
     @Override
     public void dispose() {
         isDisposed = true;
-        for (final FileSystem fileSystem : getFileSystems()) {
+        for (final FileSystemMetadata fileSystem : getFileSystemMetadata()) {
             try {
-                fileSystem.dispose();
+                fileSystem.closeFS();
             } catch (final Exception ignored) {
             }
         }

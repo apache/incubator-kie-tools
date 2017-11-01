@@ -35,7 +35,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Filter;
 import org.uberfire.commons.async.DescriptiveRunnable;
-import org.uberfire.commons.concurrent.Managed;
 import org.uberfire.commons.concurrent.Unmanaged;
 import org.uberfire.commons.services.cdi.ApplicationStarted;
 import org.uberfire.io.IOWatchService;
@@ -57,12 +56,12 @@ public abstract class AbstractIOWatchService implements IOWatchService,
     private static final Integer AWAIT_TERMINATION_TIMEOUT = Integer.parseInt(System.getProperty("org.uberfire.watcher.quitetimeout",
                                                                                                  "3"));
 
-    private final List<FileSystem> fileSystems = new ArrayList<FileSystem>();
-    private final List<WatchService> watchServices = new ArrayList<WatchService>();
+    private final List<String> fileSystems = new ArrayList<>();
+    private final List<WatchService> watchServices = new ArrayList<>();
     protected boolean isDisposed = false;
 
     private boolean started;
-    private final Set<AsyncWatchService> watchThreads = new HashSet<AsyncWatchService>();
+    private final Set<AsyncWatchService> watchThreads = new HashSet<>();
     private Event<ResourceBatchChangesEvent> resourceBatchChanges;
     private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
     private Event<ResourceRenamedEvent> resourceRenamedEvent;
@@ -72,7 +71,7 @@ public abstract class AbstractIOWatchService implements IOWatchService,
 
     private IOWatchServiceExecutor executor = null;
 
-    private final Set<Future<?>> jobs = new CopyOnWriteArraySet<Future<?>>();
+    private final Set<Future<?>> jobs = new CopyOnWriteArraySet<>();
 
     public AbstractIOWatchService() {
     }
@@ -156,13 +155,13 @@ public abstract class AbstractIOWatchService implements IOWatchService,
 
     @Override
     public boolean hasWatchService(final FileSystem fs) {
-        return fileSystems.contains(fs);
+        return fileSystems.contains(fs.getName());
     }
 
     @Override
     public void addWatchService(final FileSystem fs,
                                 final WatchService ws) {
-        fileSystems.add(fs);
+        fileSystems.add(fs.getName());
         watchServices.add(ws);
 
         final AsyncWatchService asyncWatchService = new AsyncWatchService() {

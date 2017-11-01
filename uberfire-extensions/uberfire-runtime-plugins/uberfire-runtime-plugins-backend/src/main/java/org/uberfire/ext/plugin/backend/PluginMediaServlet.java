@@ -78,7 +78,7 @@ public class PluginMediaServlet
             }
         }
         try {
-            fileSystem = ioService.newFileSystem(URI.create("default://plugins"),
+            fileSystem = ioService.newFileSystem(URI.create("default://system_ou/plugins"),
                                                  new HashMap<String, Object>() {{
                                                      put("init",
                                                          Boolean.TRUE);
@@ -86,7 +86,7 @@ public class PluginMediaServlet
                                                          Boolean.TRUE);
                                                  }});
         } catch (final FileSystemAlreadyExistsException e) {
-            fileSystem = ioService.getFileSystem(URI.create("default://plugins"));
+            fileSystem = ioService.getFileSystem(URI.create("default://system_ou/plugins"));
         }
         this.root = fileSystem.getRootDirectories().iterator().next();
     }
@@ -170,7 +170,7 @@ public class PluginMediaServlet
                 }
 
                 try {
-                    ioService.startBatch();
+                    ioService.startBatch(path.getFileSystem());
                     writeFile(ioService,
                               path,
                               fileItem);

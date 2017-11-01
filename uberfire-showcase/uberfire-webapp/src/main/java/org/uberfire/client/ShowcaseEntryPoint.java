@@ -15,7 +15,13 @@
  */
 package org.uberfire.client;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
@@ -267,14 +273,7 @@ public class ShowcaseEntryPoint {
         //Sort Perspective Providers so they're always in the same sequence!
         List<PerspectiveActivity> sortedActivities = new ArrayList<>(activities);
         Collections.sort(sortedActivities,
-                         new Comparator<PerspectiveActivity>() {
-
-                             @Override
-                             public int compare(PerspectiveActivity o1,
-                                                PerspectiveActivity o2) {
-                                 return o1.getName().compareTo(o2.getName());
-                             }
-                         });
+                         (o1, o2) -> o1.getName().compareTo(o2.getName()));
 
         return sortedActivities;
     }
@@ -306,14 +305,11 @@ public class ShowcaseEntryPoint {
     @Produces
     @ApplicationScoped
     public MainBrand createBrandLogo() {
-        return new MainBrand() {
-            @Override
-            public Widget asWidget() {
-                final Image image = new Image(AppResource.INSTANCE.images().ufBrandLogo());
-                image.getElement().setAttribute("height",
-                                                "10");
-                return image;
-            }
+        return () -> {
+            final Image image = new Image(AppResource.INSTANCE.images().ufBrandLogo());
+            image.getElement().setAttribute("height",
+                                            "10");
+            return image;
         };
     }
 

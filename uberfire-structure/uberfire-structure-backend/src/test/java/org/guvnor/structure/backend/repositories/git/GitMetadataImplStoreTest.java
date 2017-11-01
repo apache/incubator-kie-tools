@@ -74,7 +74,7 @@ public class GitMetadataImplStoreTest {
     @Test
     public void testStorageInitialization() {
         metadataStore.init();
-        verify(storage).init(eq("default://system/metadata"));
+        verify(storage).init(eq("default://system_ou/metadata"));
     }
 
     @Test

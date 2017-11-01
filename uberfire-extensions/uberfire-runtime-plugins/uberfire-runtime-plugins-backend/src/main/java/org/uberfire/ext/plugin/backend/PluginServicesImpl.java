@@ -28,7 +28,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -79,10 +78,10 @@ import org.uberfire.java.nio.file.StandardDeleteOption;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.rpc.SessionInfo;
 
-import static org.uberfire.backend.server.util.Paths.convert;
 import static org.kie.soup.commons.validation.PortablePreconditions.checkCondition;
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.backend.server.util.Paths.convert;
 import static org.uberfire.java.nio.file.Files.walkFileTree;
 
 @Service
@@ -122,7 +121,7 @@ public class PluginServicesImpl implements PluginServices {
     public void init() {
         this.gson = new GsonBuilder().setPrettyPrinting().create();
         try {
-            fileSystem = getIoService().newFileSystem(URI.create("default://plugins"),
+            fileSystem = getIoService().newFileSystem(URI.create("default://system_ou/plugins"),
                                                       new HashMap<String, Object>() {{
                                                           put("init",
                                                               Boolean.TRUE);
@@ -130,8 +129,9 @@ public class PluginServicesImpl implements PluginServices {
                                                               Boolean.TRUE);
                                                       }});
         } catch (FileSystemAlreadyExistsException e) {
-            fileSystem = getIoService().getFileSystem(URI.create("default://plugins"));
+            fileSystem = getIoService().getFileSystem(URI.create("default://system_ou/plugins"));
         }
+
         this.root = fileSystem.getRootDirectories().iterator().next();
     }
 
@@ -223,7 +223,7 @@ public class PluginServicesImpl implements PluginServices {
 
     @Override
     public Collection<Plugin> listPlugins() {
-        final Collection<Plugin> result = new ArrayList<Plugin>();
+        final Collection<Plugin> result = new ArrayList<>();
 
         if (getIoService().exists(root)) {
             walkFileTree(checkNotNull("root",

@@ -30,7 +30,7 @@ import static org.uberfire.backend.vfs.PathFactory.newPath;
 
 public final class Paths {
 
-    private static Map<org.uberfire.java.nio.file.FileSystem, FileSystem> cache = new HashMap<org.uberfire.java.nio.file.FileSystem, FileSystem>();
+    private static Map<org.uberfire.java.nio.file.FileSystem, FileSystem> cache = new HashMap<>();
 
     public static Path convert(final org.uberfire.java.nio.file.Path path) {
         if (path == null) {
@@ -64,7 +64,7 @@ public final class Paths {
 
     public static FileSystem convert(final org.uberfire.java.nio.file.FileSystem fs) {
         if (!cache.containsKey(fs)) {
-            final Map<String, String> roots = new HashMap<String, String>();
+            final Map<String, String> roots = new HashMap<>();
             for (final org.uberfire.java.nio.file.Path root : fs.getRootDirectories()) {
                 roots.put(root.toUri().toString(),
                           root.getFileName() == null ? "/" : root.getFileName().toString());

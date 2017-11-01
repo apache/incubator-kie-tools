@@ -16,9 +16,6 @@
 
 package org.uberfire.java.nio.fs.jgit.util.model;
 
-/**
- * TODO: update me
- */
 public enum PathType {
     NOT_FOUND,
     DIRECTORY,

@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.ejb.AccessTimeout;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ejb.TransactionAttribute;
@@ -57,9 +58,8 @@ import static org.uberfire.backend.server.util.Paths.convert;
 @Singleton
 @Startup
 @TransactionAttribute(NOT_SUPPORTED)
+@AccessTimeout(value = 30, unit = java.util.concurrent.TimeUnit.SECONDS)
 public class IOWatchServiceExecutorImpl implements IOWatchServiceExecutor {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(IOWatchServiceExecutorImpl.class);
 
     @Inject
     private Event<ResourceBatchChangesEvent> resourceBatchChanges;
@@ -95,7 +95,7 @@ public class IOWatchServiceExecutorImpl implements IOWatchServiceExecutor {
         WatchContext firstContext = null;
 
         if (events.size() > 1) {
-            final Map<Path, Collection<ResourceChange>> changes = new HashMap<Path, Collection<ResourceChange>>();
+            final Map<Path, Collection<ResourceChange>> changes = new HashMap<>();
             for (final WatchEvent event : events) {
                 if (!filter.doFilter(event)) {
                     if (firstContext == null) {
@@ -105,7 +105,7 @@ public class IOWatchServiceExecutorImpl implements IOWatchServiceExecutor {
                     if (result != null) {
                         if (!changes.containsKey(result.getK1())) {
                             changes.put(result.getK1(),
-                                        new ArrayList<ResourceChange>());
+                                        new ArrayList<>());
                         }
                         changes.get(result.getK1()).add(result.getK2());
                     }

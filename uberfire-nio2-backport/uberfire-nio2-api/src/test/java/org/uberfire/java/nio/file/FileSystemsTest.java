@@ -16,31 +16,16 @@
 
 package org.uberfire.java.nio.file;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.java.nio.fs.file.BaseSimpleFileSystem;
-import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
-import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
-import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
 public class FileSystemsTest {
-
-    @Before
-    @After
-    public void cleanup() throws IOException {
-        FileUtils.deleteDirectory(new File(JGitFileSystemProvider.REPOSITORIES_CONTAINER_DIR));
-    }
 
     @Test
     public void testGetDefault() {
@@ -51,45 +36,6 @@ public class FileSystemsTest {
     public void testGetFileSystemByURI() {
         assertThat(FileSystems.getFileSystem(URI.create("default:///"))).isNotNull().isInstanceOf(BaseSimpleFileSystem.class);
         assertThat(FileSystems.getFileSystem(URI.create("file:///"))).isNotNull().isInstanceOf(BaseSimpleFileSystem.class);
-    }
-
-    @Test
-    public void testNewFileSystem() {
-
-        final Map<String, Object> env = new HashMap<String, Object>(2);
-        env.put("userName",
-                "user");
-        env.put("password",
-                "pass");
-
-        final FileSystem fs = FileSystems.newFileSystem(URI.create("git://my-test"),
-                                                        env);
-
-        assertThat(fs).isNotNull();
-
-        final FileSystem newFS = FileSystems.newFileSystem(JGitPathImpl.create((JGitFileSystem) fs,
-                                                                               "new_test",
-                                                                               "my-other-test",
-                                                                               false),
-                                                           null);
-
-        assertThat(newFS).isNotNull();
-    }
-
-    @Test(expected = FileSystemAlreadyExistsException.class)
-    public void testNewOnExistingFileSystem() {
-
-        final Map<String, Object> env = new HashMap<String, Object>(2);
-        env.put("userName",
-                "user");
-        env.put("password",
-                "pass");
-
-        FileSystems.newFileSystem(URI.create("git://test"),
-                                  env);
-
-        FileSystems.newFileSystem(URI.create("git://test"),
-                                  env);
     }
 
     @Test(expected = IllegalArgumentException.class)

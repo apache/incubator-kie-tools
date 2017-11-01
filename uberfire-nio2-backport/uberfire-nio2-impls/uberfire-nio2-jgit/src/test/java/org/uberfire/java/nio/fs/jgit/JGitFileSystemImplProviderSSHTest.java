@@ -35,7 +35,7 @@ import org.uberfire.java.nio.security.FileSystemUser;
 
 import static org.junit.Assert.*;
 
-public class JGitFileSystemProviderSSHTest extends AbstractTestInfra {
+public class JGitFileSystemImplProviderSSHTest extends AbstractTestInfra {
 
     private int gitSSHPort;
 
@@ -59,25 +59,13 @@ public class JGitFileSystemProviderSSHTest extends AbstractTestInfra {
         Assume.assumeFalse("UF-511",
                            System.getProperty("java.vendor").equals("IBM Corporation"));
         //Setup Authorization/Authentication
-        provider.setAuthenticator(new FileSystemAuthenticator() {
+        provider.setAuthenticator((username, password) -> new FileSystemUser() {
             @Override
-            public FileSystemUser authenticate(final String username,
-                                               final String password) {
-                return new FileSystemUser() {
-                    @Override
-                    public String getName() {
-                        return "admin";
-                    }
-                };
+            public String getName() {
+                return "admin";
             }
         });
-        provider.setAuthorizer(new FileSystemAuthorizer() {
-            @Override
-            public boolean authorize(final FileSystem fs,
-                                     final FileSystemUser fileSystemUser) {
-                return true;
-            }
-        });
+        provider.setAuthorizer((fs, fileSystemUser) -> true);
 
         CredentialsProvider.setDefault(new UsernamePasswordCredentialsProvider("admin",
                                                                                ""));

@@ -32,6 +32,7 @@ import org.mockito.Mockito;
 import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
 import org.uberfire.io.CommonIOServiceDotFileTest;
 import org.uberfire.io.IOService;
+import org.uberfire.io.lock.BatchLockControl;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.file.FileSystem;
@@ -39,8 +40,9 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.java.nio.file.api.FileSystemProviders;
-import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystemImpl;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystemProxy;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -49,11 +51,11 @@ public class BatchTest {
 
     final static IOService ioService = new IOServiceDotFileImpl();
     static FileSystem fs1;
-    static JGitFileSystem fs1Batch;
+    static JGitFileSystemImpl fs1Batch;
     static FileSystem fs2;
-    static JGitFileSystem fs2Batch;
+    static JGitFileSystemImpl fs2Batch;
     static FileSystem fs3;
-    static JGitFileSystem fs3Batch;
+    static JGitFileSystemImpl fs3Batch;
     private static File path = null;
 
     @BeforeClass
@@ -70,8 +72,8 @@ public class BatchTest {
         final URI newRepo = URI.create("git://amend-repo-test");
 
         fs1 = ioService.newFileSystem(newRepo,
-                                      new HashMap<String, Object>());
-        fs1Batch = (JGitFileSystem) fs1;
+                                      new HashMap<>());
+        fs1Batch = (JGitFileSystemImpl) ((JGitFileSystemProxy) fs1).getRealJGitFileSystem();
         Path init = ioService.get(URI.create("git://amend-repo-test/init.file"));
         ioService.write(init,
                         "setupFS!");
@@ -83,7 +85,7 @@ public class BatchTest {
                                           put("init",
                                               "true");
                                       }});
-        fs2Batch = (JGitFileSystem) fs2;
+        fs2Batch = (JGitFileSystemImpl) ((JGitFileSystemProxy) fs2).getRealJGitFileSystem();
         init = ioService.get(URI.create("git://check-amend-repo-test/init.file"));
         ioService.write(init,
                         "setupFS!");
@@ -94,7 +96,7 @@ public class BatchTest {
                                           put("init",
                                               "true");
                                       }});
-        fs3Batch = (JGitFileSystem) fs3;
+        fs3Batch = (JGitFileSystemImpl) ((JGitFileSystemProxy) fs3).getRealJGitFileSystem();
         init = ioService.get(URI.create("git://check-amend-repo-test-2/init.file"));
         ioService.write(init,
                         "setupFS!");
@@ -106,7 +108,6 @@ public class BatchTest {
         JGitFileSystemProvider gitFsProvider = (JGitFileSystemProvider) FileSystemProviders.resolveProvider(URI.create("git://whatever"));
         gitFsProvider.shutdown();
         FileUtils.deleteQuietly(gitFsProvider.getGitRepoContainerDir());
-        gitFsProvider.rescanForExistingRepositories();
     }
 
     @Test
@@ -163,7 +164,7 @@ public class BatchTest {
         assertEquals(2,
                      vinit2.readAttributes().history().records().size());
 
-        ioService.startBatch(new FileSystem[]{init.getFileSystem()});
+        ioService.startBatch(init.getFileSystem());
         final Path path = ioService.get(URI.create("git://amend-repo-test/mybatch" + new Random(10L).nextInt() + ".txt"));
         final Path path2 = ioService.get(URI.create("git://amend-repo-test/mybatch2" + new Random(10L).nextInt() + ".txt"));
         ioService.write(path,
@@ -197,6 +198,8 @@ public class BatchTest {
                      v.readAttributes().history().records().size());
         assertEquals(1,
                      v2.readAttributes().history().records().size());
+
+        assertProperBatchCleanup();
     }
 
     @Test
@@ -213,7 +216,7 @@ public class BatchTest {
 
         final WatchService ws = f1.getFileSystem().newWatchService();
 
-        ioService.startBatch(new FileSystem[]{f1.getFileSystem()});
+        ioService.startBatch(f1.getFileSystem());
         ioService.write(f1,
                         "f1-u1!");
         assertNull(ws.poll());
@@ -249,7 +252,7 @@ public class BatchTest {
                          v3.readAttributes().history().records().size());
         }
 
-        ioService.startBatch(new FileSystem[]{f1.getFileSystem()});
+        ioService.startBatch(f1.getFileSystem());
         ioService.write(f1,
                         "f1-u1!");
         assertNull(ws.poll());
@@ -284,6 +287,7 @@ public class BatchTest {
             assertEquals(2,
                          v3.readAttributes().history().records().size());
         }
+        assertProperBatchCleanup();
     }
 
     @Test
@@ -294,10 +298,11 @@ public class BatchTest {
                         new CommentedOption("User Tester",
                                             "message1"));
 
-        ioService.startBatch(new FileSystem[]{fs1});
+        ioService.startBatch(fs1);
         assertTrue(fs1Batch.isOnBatch());
         ioService.endBatch();
         assertFalse(fs1Batch.isOnBatch());
+        assertProperBatchCleanup();
     }
 
     @Test
@@ -314,12 +319,11 @@ public class BatchTest {
                         new CommentedOption("User Tester",
                                             "message1"));
 
-        ioService.startBatch(new FileSystem[]{fs1});
+        ioService.startBatch(fs1);
         assertTrue(fs1Batch.isOnBatch());
         assertFalse(fs2Batch.isOnBatch());
         ioService.endBatch();
-        assertFalse(fs1Batch.isOnBatch());
-        assertFalse(fs2Batch.isOnBatch());
+        assertProperBatchCleanup();
     }
 
     @Test
@@ -336,14 +340,41 @@ public class BatchTest {
                         new CommentedOption("User Tester",
                                             "message1"));
 
-        ioService.startBatch(new FileSystem[]{fs1});
+        ioService.startBatch(fs1);
         assertTrue(fs1Batch.isOnBatch());
-        ioService.startBatch(new FileSystem[]{fs1});
-        assertTrue(fs1Batch.isOnBatch());
-        ioService.endBatch();
+        ioService.startBatch(fs1);
         assertTrue(fs1Batch.isOnBatch());
         ioService.endBatch();
-        assertFalse(fs1Batch.isOnBatch());
+        assertTrue(fs1Batch.isOnBatch());
+        ioService.endBatch();
+        assertProperBatchCleanup();
+    }
+
+    @Test
+    public void innerBatchShouldOnlyBeCalledOnTheSameFS() throws IOException, InterruptedException {
+        Path repo1 = ioService.get(URI.create("git://amend-repo-test/readme.txt"));
+        ioService.write(repo1,
+                        "init!",
+                        new CommentedOption("User Tester",
+                                            "message1"));
+
+        Path repo2 = ioService.get(URI.create("git://check-amend-repo-test/readme.txt"));
+        ioService.write(repo2,
+                        "init!",
+                        new CommentedOption("User Tester",
+                                            "message1"));
+
+        ioService.startBatch(fs1);
+        assertTrue(fs1Batch.isOnBatch());
+        try {
+            ioService.startBatch(fs2);
+            fail();
+        } catch (BatchLockControl.BatchRuntimeException e) {
+            //We already have a batch process running on another FS : git://amend-repo-test
+        }
+        assertTrue(fs1Batch.isOnBatch());
+        ioService.endBatch();
+        assertProperBatchCleanup();
     }
 
     @Test
@@ -354,7 +385,7 @@ public class BatchTest {
                         "init f1!");
         // END workaround
 
-        ioService.startBatch(new FileSystem[]{f11.getFileSystem()});
+        ioService.startBatch(f11.getFileSystem());
         ioService.write(f11,
                         "f1-u1!");
         ioService.endBatch();
@@ -365,13 +396,13 @@ public class BatchTest {
         assertEquals(2,
                      v.readAttributes().history().records().size());
 
-        ioService.startBatch(new FileSystem[]{f11.getFileSystem()});
+        ioService.startBatch(f11.getFileSystem());
 
         ioService.write(f11,
                         "f2-u2!");
 
         //inner batch (samme commit)
-        ioService.startBatch(new FileSystem[]{f11.getFileSystem()});
+        ioService.startBatch(f11.getFileSystem());
         ioService.write(f11,
                         "f2-u2 - inner batch!");
         ioService.write(f11,
@@ -390,6 +421,7 @@ public class BatchTest {
         assertNotNull(v);
         assertEquals(4,
                      v.readAttributes().history().records().size());
+        assertProperBatchCleanup();
     }
 
     @Test
@@ -406,9 +438,9 @@ public class BatchTest {
                         new CommentedOption("User Tester",
                                             "message1"));
 
-        ioService.startBatch(new FileSystem[]{fs1});
+        ioService.startBatch(fs1);
         try {
-            ioService.startBatch(new FileSystem[]{fs1});
+            ioService.startBatch(fs1);
         } catch (final Exception e) {
             fail();
         }
@@ -421,6 +453,7 @@ public class BatchTest {
             fail();
         } catch (final Exception e) {
         }
+        assertProperBatchCleanup();
     }
 
     @Test
@@ -437,35 +470,13 @@ public class BatchTest {
                         new CommentedOption("User Tester",
                                             "message1"));
 
-        ioService.startBatch(new FileSystem[]{fs1});
+        ioService.startBatch(fs1);
         assertTrue(fs1Batch.isOnBatch());
         ioService.endBatch();
-        ioService.startBatch(new FileSystem[]{fs2});
+        ioService.startBatch(fs2);
         assertTrue(fs2Batch.isOnBatch());
         ioService.endBatch();
-    }
-
-    @Test
-    public void iCanLockMultipleFS() throws IOException, InterruptedException {
-        Path init = ioService.get(URI.create("git://amend-repo-test/readme.txt"));
-        ioService.write(init,
-                        "init!",
-                        new CommentedOption("User Tester",
-                                            "message1"));
-
-        init = ioService.get(URI.create("git://check-amend-repo-test/readme.txt"));
-        ioService.write(init,
-                        "init!",
-                        new CommentedOption("User Tester",
-                                            "message1"));
-
-        ioService.startBatch(new FileSystem[]{fs1, fs2});
-        assertTrue(fs1Batch.isOnBatch());
-        assertTrue(fs2Batch.isOnBatch());
-
-        ioService.endBatch();
-        assertFalse(fs1Batch.isOnBatch());
-        assertFalse(fs2Batch.isOnBatch());
+        assertProperBatchCleanup();
     }
 
     @Test
@@ -475,14 +486,14 @@ public class BatchTest {
         ioService.write(init,
                         "init!");
 
-        ioService.startBatch(new FileSystem[]{fs1});
+        ioService.startBatch(fs1);
         System.out.println("After start batch");
-        new Thread("second") {
+        Thread thread = new Thread("second") {
             @Override
             public void run() {
                 try {
                     System.out.println("Inner starting");
-                    ioService.startBatch(new FileSystem[]{fs1});
+                    ioService.startBatch(fs1);
                     System.out.println("Inner after batch");
                     final OutputStream innerOut = ioService.newOutputStream(init);
                     for (int i = 0; i < 100; i++) {
@@ -497,7 +508,8 @@ public class BatchTest {
                     ex.printStackTrace();
                 }
             }
-        }.start();
+        };
+        thread.start();
         System.out.println("After start 2nd Thread");
         for (int i = 0; i < 100; i++) {
             if (i % 20 == 0) {
@@ -509,6 +521,8 @@ public class BatchTest {
         System.out.println("After writes");
         ioService.endBatch();
         System.out.println("After end batch");
+        thread.join();
+        assertProperBatchCleanup();
     }
 
     @Test
@@ -517,7 +531,7 @@ public class BatchTest {
         ioService.write(init,
                         "init!");
 
-        new Thread("second") {
+        Thread thread = new Thread("second") {
             @Override
             public void run() {
                 try {
@@ -532,7 +546,8 @@ public class BatchTest {
                     ex.printStackTrace();
                 }
             }
-        }.start();
+        };
+        thread.start();
         System.out.println("After start 2nd Thread");
         for (int i = 0; i < 100; i++) {
             if (i % 20 == 0) {
@@ -542,6 +557,8 @@ public class BatchTest {
                             ("sss" + i).getBytes());
         }
         System.out.println("After writes");
+        thread.join();
+        assertProperBatchCleanup();
     }
 
     @Test
@@ -550,7 +567,7 @@ public class BatchTest {
         ioService.write(init,
                         "init!");
 
-        ioService.startBatch(new FileSystem[]{fs1});
+        ioService.startBatch(fs1);
         System.out.println("After start batch");
 
         final Runnable runnable = new Runnable() {
@@ -559,7 +576,7 @@ public class BatchTest {
             public void run() {
                 try {
                     System.out.println("Inner starting");
-                    ioService.startBatch(new FileSystem[]{fs1});
+                    ioService.startBatch(fs1);
                     System.out.println("Inner after batch");
                     final OutputStream innerOut = ioService.newOutputStream(init);
                     for (int i = 0; i < 100; i++) {
@@ -596,6 +613,9 @@ public class BatchTest {
         System.out.println("After writes");
         ioService.endBatch();
         System.out.println("After end batch");
+        thread.join();
+        thread2.join();
+        assertProperBatchCleanup();
     }
 
     @Test
@@ -604,7 +624,7 @@ public class BatchTest {
         ioService.write(init,
                         "init!");
 
-        ioService.startBatch(new FileSystem[]{fs1});
+        ioService.startBatch(fs1);
         System.out.println("After start batch");
 
         final Runnable runnable = new Runnable() {
@@ -646,6 +666,9 @@ public class BatchTest {
         System.out.println("After writes");
         ioService.endBatch();
         System.out.println("After end batch");
+        thread.join();
+        thread2.join();
+        assertProperBatchCleanup();
     }
 
     @Test
@@ -659,7 +682,7 @@ public class BatchTest {
             public void run() {
                 try {
                     System.out.println("Inner starting");
-                    ioService.startBatch(new FileSystem[]{fs1});
+                    ioService.startBatch(fs1);
                     System.out.println("Inner after batch");
                     final OutputStream innerOut = ioService.newOutputStream(init);
                     for (int i = 0; i < 100; i++) {
@@ -695,6 +718,9 @@ public class BatchTest {
                             ("sss" + i).getBytes());
         }
         System.out.println("After writes");
+        thread.join();
+        thread2.join();
+        assertProperBatchCleanup();
     }
 
     @Test
@@ -709,7 +735,7 @@ public class BatchTest {
                            new CommentedOption("User Tester",
                                                "message1"));
 
-        ioServiceSpy.startBatch(new FileSystem[]{fs1});
+        ioServiceSpy.startBatch(fs1);
         assertTrue(ioServiceSpy.getLockControl().isLocked());
         try {
             ioServiceSpy.endBatch();
@@ -717,5 +743,14 @@ public class BatchTest {
 
         }
         assertFalse(ioServiceSpy.getLockControl().isLocked());
+    }
+
+    private void assertProperBatchCleanup() {
+        assertFalse(fs1Batch.isOnBatch());
+        assertFalse(fs1Batch.isLocked());
+        assertFalse(fs2Batch.isOnBatch());
+        assertFalse(fs2Batch.isLocked());
+        assertFalse(fs3Batch.isOnBatch());
+        assertFalse(fs3Batch.isLocked());
     }
 }

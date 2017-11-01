@@ -16,6 +16,7 @@
 
 package org.uberfire.backend.server.security;
 
+import java.net.URI;
 import java.util.Arrays;
 import javax.enterprise.inject.Instance;
 
@@ -92,8 +93,10 @@ public class IOServiceSecuritySetupTest {
                                            withSettings().extraInterfaces(FileSystemId.class));
         when(((FileSystemId) mockedFSId).id()).thenReturn("mockFS");
         final Path rootPath = mock(Path.class);
+        when(rootPath.toUri()).thenReturn(URI.create("/"));
         when(mockfs.getRootDirectories()).thenReturn(Arrays.asList(rootPath));
         when(mockedFSId.getRootDirectories()).thenReturn(Arrays.asList(rootPath));
+
         when(rootPath.getFileSystem()).thenReturn(mockedFSId);
 
         assertTrue(mockFsp.authorizer.authorize(mockfs,
@@ -132,6 +135,7 @@ public class IOServiceSecuritySetupTest {
         final FileSystem mockedFSId = mock(FileSystem.class,
                                            withSettings().extraInterfaces(FileSystemId.class));
         final Path rootPath = mock(Path.class);
+        when(rootPath.toUri()).thenReturn(URI.create("/"));
         when(mockfs.getRootDirectories()).thenReturn(Arrays.asList(rootPath));
         when(mockedFSId.getRootDirectories()).thenReturn(Arrays.asList(rootPath));
         when(rootPath.getFileSystem()).thenReturn(mockedFSId);

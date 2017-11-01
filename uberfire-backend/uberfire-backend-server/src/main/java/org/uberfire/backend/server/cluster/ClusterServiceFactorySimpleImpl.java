@@ -21,9 +21,6 @@ import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.commons.message.MessageHandlerResolver;
 import org.uberfire.io.impl.cluster.helix.ClusterServiceHelix;
 
-/**
- * TODO: update me
- */
 public class ClusterServiceFactorySimpleImpl implements ClusterServiceFactory {
 
     private final String clusterName;

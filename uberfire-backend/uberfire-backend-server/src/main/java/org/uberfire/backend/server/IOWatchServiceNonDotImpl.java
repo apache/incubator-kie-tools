@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import org.uberfire.backend.server.io.watch.AbstractIOWatchService;
 import org.uberfire.commons.concurrent.Unmanaged;
 import org.uberfire.java.nio.base.WatchContext;
+import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.StandardWatchEventKind;
 import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.workbench.events.ResourceAddedEvent;
@@ -58,22 +59,26 @@ public class IOWatchServiceNonDotImpl extends AbstractIOWatchService {
     public boolean doFilter(WatchEvent<?> object) {
         final WatchContext context = (WatchContext) object.context();
         if (object.kind().equals(StandardWatchEventKind.ENTRY_MODIFY)) {
-            if (context.getOldPath().getFileName().toString().startsWith(".")) {
+            if (shouldFilter(context.getOldPath())) {
                 return true;
             }
         } else if (object.kind().equals(StandardWatchEventKind.ENTRY_CREATE)) {
-            if (context.getPath().getFileName().toString().startsWith(".")) {
+            if (shouldFilter(context.getPath())) {
                 return true;
             }
         } else if (object.kind().equals(StandardWatchEventKind.ENTRY_RENAME)) {
-            if (context.getOldPath().getFileName().toString().startsWith(".")) {
+            if (shouldFilter(context.getOldPath())) {
                 return true;
             }
         } else if (object.kind().equals(StandardWatchEventKind.ENTRY_DELETE)) {
-            if (context.getOldPath().getFileName().toString().startsWith(".")) {
+            if (shouldFilter(context.getOldPath())) {
                 return true;
             }
         }
         return false;
+    }
+
+    boolean shouldFilter(Path path) {
+        return path != null && path.getFileName() != null && path.getFileName().toString().startsWith(".");
     }
 }

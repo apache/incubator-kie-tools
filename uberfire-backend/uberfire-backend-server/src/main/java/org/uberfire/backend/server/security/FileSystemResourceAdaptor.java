@@ -17,8 +17,7 @@
 package org.uberfire.backend.server.security;
 
 import org.uberfire.backend.authz.FileSystemResourceType;
-import org.uberfire.java.nio.base.FileSystemId;
-import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.FileSystemMetadata;
 import org.uberfire.security.ResourceType;
 import org.uberfire.security.authz.RuntimeContentResource;
 
@@ -26,26 +25,25 @@ public class FileSystemResourceAdaptor implements RuntimeContentResource {
 
     public static final FileSystemResourceType RESOURCE_TYPE = new FileSystemResourceType();
 
-    private final FileSystem fileSystem;
+    private final String identifier;
+    private FileSystemMetadata fileSystemMetadata;
 
-    public FileSystemResourceAdaptor(final FileSystem fileSystem) {
-        if (fileSystem == null) {
-            this.fileSystem = null;
+    public FileSystemResourceAdaptor(final FileSystemMetadata fsFileSystemMetadata) {
+        this.fileSystemMetadata = fsFileSystemMetadata;
+        if (fsFileSystemMetadata.isAFileSystemID()) {
+            identifier = fsFileSystemMetadata.getId();
         } else {
-            this.fileSystem = fileSystem.getRootDirectories().iterator().next().getFileSystem();
+            identifier = fsFileSystemMetadata.getUri();
         }
-    }
-
-    public FileSystem getFileSystem() {
-        return fileSystem;
     }
 
     @Override
     public String getIdentifier() {
-        if (fileSystem instanceof FileSystemId) {
-            return ((FileSystemId) fileSystem).id();
-        }
-        return fileSystem.toString();
+        return identifier;
+    }
+
+    FileSystemMetadata getFileSystemMetadata() {
+        return fileSystemMetadata;
     }
 
     @Override

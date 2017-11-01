@@ -22,14 +22,12 @@ import java.util.Arrays;
 import org.junit.Test;
 import org.uberfire.java.nio.base.FileSystemId;
 import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.FileSystemMetadata;
 import org.uberfire.java.nio.file.Path;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-/**
- * TODO: update me
- */
 public class FileSystemResourceAdaptorTest {
 
     @Test
@@ -49,9 +47,10 @@ public class FileSystemResourceAdaptorTest {
         when(((FileSystemId) mockedFSId).id()).thenReturn("my-fsid");
 
         {
-            final FileSystemResourceAdaptor fileSystemResourceAdaptor = new FileSystemResourceAdaptor(mockedFS);
-            assertEquals(mockedFSId,
-                         fileSystemResourceAdaptor.getFileSystem());
+            FileSystemMetadata fileSystemInfo = new FileSystemMetadata(mockedFSId);
+            final FileSystemResourceAdaptor fileSystemResourceAdaptor = new FileSystemResourceAdaptor(fileSystemInfo);
+            assertEquals(fileSystemInfo,
+                         fileSystemResourceAdaptor.getFileSystemMetadata());
             assertEquals("my-fsid",
                          fileSystemResourceAdaptor.getIdentifier());
         }

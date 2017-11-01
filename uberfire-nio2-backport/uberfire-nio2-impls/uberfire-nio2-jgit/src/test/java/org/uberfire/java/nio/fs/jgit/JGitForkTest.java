@@ -182,7 +182,7 @@ public class JGitForkTest extends AbstractTestInfra {
         String TARGET = "testforkB/target";
 
         final Map<String, ?> env = new HashMap<String, Object>() {{
-            put(JGitFileSystemProvider.GIT_ENV_KEY_INIT,
+            put(JGitFileSystemProviderConfiguration.GIT_ENV_KEY_INIT,
                 "true");
         }};
 
@@ -192,7 +192,7 @@ public class JGitForkTest extends AbstractTestInfra {
                                env);
 
         final Map<String, ?> forkEnv = new HashMap<String, Object>() {{
-            put(JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
+            put(JGitFileSystemProviderConfiguration.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
                 SOURCE);
         }};
         String forkPath = "git://" + TARGET;
@@ -212,7 +212,7 @@ public class JGitForkTest extends AbstractTestInfra {
         String TARGET = "testforkB/target";
 
         final Map<String, ?> env = new HashMap<String, Object>() {{
-            put(JGitFileSystemProvider.GIT_ENV_KEY_INIT,
+            put(JGitFileSystemProviderConfiguration.GIT_ENV_KEY_INIT,
                 "true");
         }};
 
@@ -222,7 +222,7 @@ public class JGitForkTest extends AbstractTestInfra {
                                env);
 
         final Map<String, ?> forkEnv = new HashMap<String, Object>() {{
-            put(JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
+            put(JGitFileSystemProviderConfiguration.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
                 SOURCE);
         }};
 

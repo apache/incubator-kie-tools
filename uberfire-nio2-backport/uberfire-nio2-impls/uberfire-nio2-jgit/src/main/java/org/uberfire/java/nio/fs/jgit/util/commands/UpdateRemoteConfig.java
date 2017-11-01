@@ -29,9 +29,6 @@ import org.eclipse.jgit.transport.URIish;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 
-/**
- * TODO: update me
- */
 public class UpdateRemoteConfig {
 
     private final Git git;

@@ -44,6 +44,7 @@ public abstract class BaseSimpleFileSystem implements FileSystem,
     private final String defaultDirectory;
     private final Set<String> supportedFileAttributeViews;
     private final File[] roots;
+    private final String name;
 
     BaseSimpleFileSystem(final FileSystemProvider provider,
                          final String path) {
@@ -59,6 +60,7 @@ public abstract class BaseSimpleFileSystem implements FileSystem,
                      roots);
         checkCondition("should have at least one root",
                        roots.length > 0);
+        this.name = path != null ? path : id();
         this.roots = roots;
         this.provider = provider;
         this.defaultDirectory = validateDefaultDir(path);
@@ -176,5 +178,10 @@ public abstract class BaseSimpleFileSystem implements FileSystem,
     @Override
     public String toString() {
         return "file://" + id();
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 }

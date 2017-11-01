@@ -396,5 +396,10 @@ public class MockSecuredFilesystemProvider implements SecuredFileSystemProvider 
         public WatchService newWatchService() throws UnsupportedOperationException, IOException {
             return null;
         }
+
+        @Override
+        public String getName() {
+            return "name";
+        }
     }
 }

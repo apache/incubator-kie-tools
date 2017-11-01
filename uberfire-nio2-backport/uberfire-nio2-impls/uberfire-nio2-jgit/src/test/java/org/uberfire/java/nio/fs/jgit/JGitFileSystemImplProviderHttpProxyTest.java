@@ -29,7 +29,7 @@ import org.junit.Test;
 import static java.net.Authenticator.requestPasswordAuthentication;
 import static org.junit.Assert.*;
 
-public class JGitFileSystemProviderHttpProxyTest {
+public class JGitFileSystemImplProviderHttpProxyTest {
 
     @Test
     public void testHttpProxy() throws MalformedURLException, UnknownHostException {

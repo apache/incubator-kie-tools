@@ -16,9 +16,10 @@
 
 package org.uberfire.java.nio.file;
 
+import java.io.Serializable;
 import java.util.List;
 
-public interface WatchKey {
+public interface WatchKey extends Serializable {
 
     boolean isValid();
 

@@ -6,9 +6,6 @@ import java.util.function.Consumer;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.StoredConfig;
 
-/**
- * TODO: update me
- */
 public class WriteConfiguration {
 
     private final Repository repo;

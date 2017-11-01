@@ -28,9 +28,6 @@ import org.uberfire.java.nio.fs.jgit.util.Git;
 
 import static org.eclipse.jgit.lib.Constants.HEAD;
 
-/**
- * TODO: update me
- */
 public class ConvertRefTree {
 
     private final Git git;

@@ -25,9 +25,11 @@ import org.apache.commons.io.FileUtils;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.api.FileSystemProviders;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
+import org.uberfire.java.nio.fs.jgit.manager.JGitFileSystemsCache;
 
 public class FileSystemTestingUtils {
 
@@ -36,10 +38,16 @@ public class FileSystemTestingUtils {
     private IOService ioService;
 
     public void setup() throws IOException {
+        setup(true);
+    }
+
+    public void setup(boolean initRepo) throws IOException {
         ioService = new IOServiceDotFileImpl();
 
         createTempDirectory();
-        setupJGitRepository();
+        setupJGitRepository("git://amend-repo-test",
+                            initRepo
+        );
     }
 
     private void createTempDirectory()
@@ -57,16 +65,31 @@ public class FileSystemTestingUtils {
         this.path = temp;
     }
 
-    private void setupJGitRepository() {
+    public FileSystem setupJGitRepository(String repoPath,
+                                          boolean initRepo) {
         System.setProperty("org.uberfire.nio.git.dir",
                            path.getAbsolutePath());
-        final URI newRepo = URI.create("git://amend-repo-test");
+        final URI newRepo = URI.create(repoPath);
 
-        fileSystem = ioService.newFileSystem(newRepo,
-                                             new HashMap<String, Object>());
-        Path init = ioService.get(URI.create("git://amend-repo-test/init.file"));
-        ioService.write(init,
-                        "setupFS!");
+        try {
+
+            fileSystem = ioService.newFileSystem(newRepo,
+                                                 new HashMap<String, Object>());
+        } catch (FileSystemAlreadyExistsException e) {
+
+        }
+        if (initRepo) {
+
+            Path init = ioService.get(URI.create(repoPath + "/init.file"));
+            ioService.write(init,
+                            "setupFS!");
+        }
+        return fileSystem;
+    }
+
+    public void setProviderAsDefault() {
+        JGitFileSystemProvider gitFsProvider = (JGitFileSystemProvider) FileSystemProviders.resolveProvider(URI.create("git://whatever"));
+        gitFsProvider.forceAsDefault();
     }
 
     public void cleanup() {
@@ -74,7 +97,11 @@ public class FileSystemTestingUtils {
         JGitFileSystemProvider gitFsProvider = (JGitFileSystemProvider) FileSystemProviders.resolveProvider(URI.create("git://whatever"));
         gitFsProvider.shutdown();
         FileUtils.deleteQuietly(gitFsProvider.getGitRepoContainerDir());
-        gitFsProvider.rescanForExistingRepositories();
+    }
+
+    public void shutDownProvider() {
+        JGitFileSystemProvider gitFsProvider = (JGitFileSystemProvider) FileSystemProviders.resolveProvider(URI.create("git://whatever"));
+        gitFsProvider.shutdown();
     }
 
     public FileSystem getFileSystem() {
@@ -83,5 +110,14 @@ public class FileSystemTestingUtils {
 
     public IOService getIoService() {
         return ioService;
+    }
+
+    public JGitFileSystemProvider getProvider() {
+        return (JGitFileSystemProvider) FileSystemProviders.resolveProvider(URI.create("git://whatever"));
+    }
+
+    public JGitFileSystemsCache.JGitFileSystemsCacheInfo getFSCacheInfo() {
+        JGitFileSystemProvider gitFsProvider = (JGitFileSystemProvider) FileSystemProviders.resolveProvider(URI.create("git://whatever"));
+        return gitFsProvider.getFsManager().getFsCache().getCacheInfo();
     }
 }
