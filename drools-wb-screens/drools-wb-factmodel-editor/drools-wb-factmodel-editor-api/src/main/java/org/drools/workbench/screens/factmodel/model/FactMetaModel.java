@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,10 +16,10 @@
 
 package org.drools.workbench.screens.factmodel.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * Represents the GUI data for a fact model definition.
