@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,6 +24,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.testscenarios.shared.CollectionFieldData;
@@ -40,7 +41,6 @@ import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScena
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.uberfire.ext.widgets.common.client.common.ClickableLabel;
-import com.google.gwt.user.client.ui.FlexTable;
 import org.uberfire.ext.widgets.common.client.common.ImageButton;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
@@ -26,7 +27,6 @@ import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.ext.widgets.common.client.common.ClickableLabel;
-import com.google.gwt.user.client.ui.FlexTable;
 
 public class DataInputWidget
         extends FlexTable

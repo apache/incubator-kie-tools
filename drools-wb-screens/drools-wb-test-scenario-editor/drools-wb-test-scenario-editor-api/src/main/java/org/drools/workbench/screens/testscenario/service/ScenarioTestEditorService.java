@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,14 +16,10 @@
 
 package org.drools.workbench.screens.testscenario.service;
 
-import javax.enterprise.event.Event;
-
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.model.TestScenarioModelContent;
 import org.drools.workbench.screens.testscenario.model.TestScenarioResult;
 import org.guvnor.common.services.shared.file.SupportsUpdate;
-import org.guvnor.common.services.shared.test.TestResultMessage;
-import org.guvnor.common.services.shared.test.TestService;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
