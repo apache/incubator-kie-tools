@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,20 +23,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.jbpm.process.core.ParameterDefinition;
-import org.jbpm.process.core.WorkDefinition;
-import org.jbpm.process.core.datatype.DataType;
-import org.jbpm.process.core.datatype.impl.type.BooleanDataType;
-import org.jbpm.process.core.datatype.impl.type.FloatDataType;
-import org.jbpm.process.core.datatype.impl.type.IntegerDataType;
-import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
-import org.jbpm.process.core.datatype.impl.type.StringDataType;
 import org.drools.workbench.models.datamodel.workitems.PortableBooleanParameterDefinition;
 import org.drools.workbench.models.datamodel.workitems.PortableFloatParameterDefinition;
 import org.drools.workbench.models.datamodel.workitems.PortableIntegerParameterDefinition;
@@ -62,6 +55,14 @@ import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.jbpm.process.core.ParameterDefinition;
+import org.jbpm.process.core.WorkDefinition;
+import org.jbpm.process.core.datatype.DataType;
+import org.jbpm.process.core.datatype.impl.type.BooleanDataType;
+import org.jbpm.process.core.datatype.impl.type.FloatDataType;
+import org.jbpm.process.core.datatype.impl.type.IntegerDataType;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
+import org.jbpm.process.core.datatype.impl.type.StringDataType;
 import org.jbpm.process.workitem.WorkDefinitionImpl;
 import org.kie.workbench.common.services.backend.service.KieService;
 import org.slf4j.Logger;
