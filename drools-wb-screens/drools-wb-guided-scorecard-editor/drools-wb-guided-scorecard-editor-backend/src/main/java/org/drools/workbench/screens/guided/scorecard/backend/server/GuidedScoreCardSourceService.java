@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,10 +23,10 @@ import org.drools.workbench.models.guided.scorecard.backend.GuidedScoreCardDRLPe
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.service.GuidedScoreCardEditorService;
 import org.drools.workbench.screens.guided.scorecard.type.GuidedScoreCardResourceTypeDefinition;
+import org.kie.workbench.common.services.backend.source.BaseSourceService;
 import org.kie.workbench.common.services.shared.source.SourceGenerationFailedException;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.java.nio.file.Path;
-import org.kie.workbench.common.services.backend.source.BaseSourceService;
 
 @ApplicationScoped
 public class GuidedScoreCardSourceService
