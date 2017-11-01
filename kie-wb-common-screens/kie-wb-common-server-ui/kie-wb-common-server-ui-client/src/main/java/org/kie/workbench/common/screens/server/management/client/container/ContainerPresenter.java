@@ -143,16 +143,10 @@ public class ContainerPresenter {
     }
 
     public void load(final ContainerSpecKey containerSpecKey) {
-        checkNotNull("containerSpecKey",
-                     containerSpecKey);
-        runtimeManagementService.call(new RemoteCallback<ContainerSpecData>() {
-            @Override
-            public void callback(final ContainerSpecData content) {
-                checkNotNull("content",
-                             content);
-                setup(content.getContainerSpec(),
-                      content.getContainers());
-            }
+        checkNotNull("containerSpecKey", containerSpecKey);
+        runtimeManagementService.call((RemoteCallback<ContainerSpecData>) content -> {
+            checkNotNull("content", content);
+            loadContainers(content);
         }).getContainersByContainerSpec(containerSpecKey.getServerTemplateKey().getId(),
                                         containerSpecKey.getId());
     }
