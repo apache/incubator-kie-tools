@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,15 +16,15 @@
 
 package org.drools.workbench.screens.globals.backend.server.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.workbench.screens.globals.model.Global;
 import org.drools.workbench.screens.globals.model.GlobalsModel;
 import org.kie.soup.project.datamodel.commons.packages.PackageNameParser;
 import org.kie.soup.project.datamodel.commons.packages.PackageNameWriter;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.GlobalsParser;
 import org.uberfire.commons.data.Pair;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class persists the rule model to DRL and back
