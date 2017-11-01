@@ -15,6 +15,10 @@
   <name>Drools Workbench - Test Scenario Editor - Client</name>
   <description>Drools Workbench - Test Scenario Editor - Client</description>
 
+  <properties>
+    <java.module.name>org.drools.wb.testscenario.editor.client</java.module.name>
+  </properties>
+
   <dependencies>
 
     <!-- dependencies added because of new illegal transitive dependency check -->

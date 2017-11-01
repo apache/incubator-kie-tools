@@ -12,6 +12,10 @@
   <name>Drools Workbench - Extensions - DRL - Server</name>
   <description>Drools Workbench - Extensions - DRL - Server</description>
 
+  <properties>
+    <java.module.name>org.drools.wb.extension.drl.server</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.workbench.services</groupId>

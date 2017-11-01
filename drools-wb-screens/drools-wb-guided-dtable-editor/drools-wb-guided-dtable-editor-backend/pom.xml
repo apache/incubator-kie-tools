@@ -14,6 +14,10 @@
   <name>Drools Workbench - Guided Decision Table Editor - Backend</name>
   <description>Drools Workbench - Guided Decision Table Editor - Backend</description>
 
+  <properties>
+    <java.module.name>org.drools.wb.guided.dtable.editor.backend</java.module.name>
+  </properties>
+
   <dependencies>
 
     <!-- dependencies added because of new illegal transitive dependency check -->

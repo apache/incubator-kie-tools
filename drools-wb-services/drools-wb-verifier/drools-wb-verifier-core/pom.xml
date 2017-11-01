@@ -14,6 +14,9 @@
     <name>Drools Workbench - Verifier Core</name>
     <description>Drools Workbench - Verifier Core</description>
 
+    <properties>
+        <java.module.name>org.drools.wb.verifier.core</java.module.name>
+    </properties>
 
     <dependencies>
 

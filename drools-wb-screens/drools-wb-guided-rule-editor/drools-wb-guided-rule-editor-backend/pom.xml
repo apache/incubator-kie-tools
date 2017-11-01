@@ -15,6 +15,10 @@
   <name>Drools Workbench - Guided Rule Editor - Backend</name>
   <description>Drools Workbench - Guided Rule Editor - Backend</description>
 
+  <properties>
+    <java.module.name>org.drools.wb.guided.rule.editor.backend</java.module.name>
+  </properties>
+
   <dependencies>
 
     <!-- dependencies added because of new illegal transitive dependency check -->

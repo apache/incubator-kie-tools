@@ -15,6 +15,10 @@
   <name>Drools Workbench - Guided Template Editor - Client</name>
   <description>Drools Workbench - Guided Template Editor - Client</description>
 
+  <properties>
+    <java.module.name>org.drools.wb.guided.template.editor.client</java.module.name>
+  </properties>
+
   <dependencies>
 
     <!-- dependencies added because of new illegal transitive dependency check -->

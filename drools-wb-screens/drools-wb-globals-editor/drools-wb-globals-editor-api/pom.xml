@@ -15,6 +15,10 @@
   <name>Drools Workbench - Globals Editor - API</name>
   <description>Drools Workbench - Globals Editor - API</description>
 
+  <properties>
+    <java.module.name>org.drools.wb.globals.editor.api</java.module.name>
+  </properties>
+
   <dependencies>
 
     <!-- dependencies added because of new illegal transitive dependency check -->

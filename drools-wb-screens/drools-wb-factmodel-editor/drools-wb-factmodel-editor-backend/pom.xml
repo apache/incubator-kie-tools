@@ -15,6 +15,10 @@
   <name>Drools Workbench - Fact Model Editor - Backend</name>
   <description>Drools Workbench - Fact Model Editor - Backend</description>
 
+  <properties>
+    <java.module.name>org.drools.wb.factmodel.editor.backend</java.module.name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.soup</groupId>

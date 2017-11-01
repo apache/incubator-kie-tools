@@ -14,6 +14,10 @@
   <name>Drools Workbench - XLS Decision Table - Backend</name>
   <description>Drools Workbench - XLS Decision Table - Backend</description>
 
+  <properties>
+    <java.module.name>org.drools.wb.dtable.xls.editor.backend</java.module.name>
+  </properties>
+
   <dependencies>
 
     <!-- dependencies added because of new illegal transitive dependency check -->

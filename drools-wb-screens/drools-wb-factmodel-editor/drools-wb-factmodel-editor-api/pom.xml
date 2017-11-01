@@ -15,6 +15,10 @@
   <name>Drools Workbench - Fact Model Editor - API</name>
   <description>Drools Workbench - Fact Model Editor - API</description>
 
+  <properties>
+    <java.module.name>org.drools.wb.factmodel.editor.api</java.module.name>
+  </properties>
+
   <dependencies>
 
     <dependency>

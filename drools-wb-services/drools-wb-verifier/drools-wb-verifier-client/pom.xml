@@ -13,7 +13,11 @@
 
     <name>Drools Workbench - Verifier Decision Table Plugin</name>
     <description>Required classes to connect to the dtable Verifier Web Worker.</description>
-    
+
+    <properties>
+        <java.module.name>org.drools.wb.verifier.client</java.module.name>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.kie.soup</groupId>

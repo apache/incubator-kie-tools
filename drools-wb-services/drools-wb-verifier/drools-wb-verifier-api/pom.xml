@@ -15,6 +15,10 @@
     <name>Drools Workbench - Verifier Api</name>
     <description>Drools Workbench - Verifier Api</description>
 
+    <properties>
+        <java.module.name>org.drools.wb.verifier.api</java.module.name>
+    </properties>
+
     <dependencies>
 
         <dependency>

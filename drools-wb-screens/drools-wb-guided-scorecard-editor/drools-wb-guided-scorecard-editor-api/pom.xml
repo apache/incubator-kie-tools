@@ -14,6 +14,10 @@
   <name>Drools Workbench - Guided Score Card Editor - API</name>
   <description>Drools Workbench - Guided Score Card Editor - API</description>
 
+  <properties>
+    <java.module.name>org.drools.wb.guided.scorecard.editor.api</java.module.name>
+  </properties>
+
   <dependencies>
 
     <!-- dependencies added because of new illegal transitive dependency check -->
