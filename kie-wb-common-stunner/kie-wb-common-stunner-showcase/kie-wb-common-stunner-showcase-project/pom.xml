@@ -58,8 +58,8 @@
 
     <!-- Uberfire. -->
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-maven-support</artifactId>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-maven-support</artifactId>
     </dependency>
 
     <dependency>
@@ -1195,7 +1195,7 @@
             <compileSourcesArtifact>org.kie.soup:kie-soup-commons</compileSourcesArtifact>
 
             <!-- UberFire. -->
-            <compileSourcesArtifact>org.uberfire:uberfire-maven-support</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.soup:kie-soup-maven-support</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-nio2-model</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-io</compileSourcesArtifact>
