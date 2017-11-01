@@ -768,19 +768,21 @@ public class WiresConnector
         @Override
         public void onNodeDragStart(NodeDragStartEvent event)
         {
-            this.m_control.dragStart(event.getDragContext());
+            this.m_control.onMoveStart(event.getDragContext().getDragStartX(),
+                                       event.getDragContext().getDragStartY());
         }
 
         @Override
         public void onNodeDragMove(NodeDragMoveEvent event)
         {
-            this.m_control.dragMove(event.getDragContext());
+            this.m_control.onMove(event.getDragContext().getDragStartX(),
+                                  event.getDragContext().getDragStartY());
         }
 
         @Override
         public void onNodeDragEnd(NodeDragEndEvent event)
         {
-            this.m_control.dragEnd(event.getDragContext());
+            this.m_control.onMoveComplete();
         }
 
 
@@ -789,7 +791,7 @@ public class WiresConnector
         {
             if (m_wiresManager.getSelectionManager() != null )
             {
-                m_wiresManager.getSelectionManager().selected(m_connector, event);
+                m_wiresManager.getSelectionManager().selected(m_connector, event.isShiftKeyDown());
             }
         }
 

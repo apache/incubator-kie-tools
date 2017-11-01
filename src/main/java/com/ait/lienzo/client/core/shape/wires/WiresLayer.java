@@ -18,6 +18,7 @@
 package com.ait.lienzo.client.core.shape.wires;
 
 import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.types.Point2D;
 
 public class WiresLayer extends WiresContainer
 {
@@ -29,5 +30,25 @@ public class WiresLayer extends WiresContainer
     public Layer getLayer()
     {
         return (Layer) getContainer();
+    }
+
+    @Override
+    public Point2D getLocation() {
+        return getLayer().getAbsoluteLocation();
+    }
+
+    @Override
+    public Point2D getComputedLocation() {
+        return getLayer().getComputedLocation();
+    }
+
+    @Override
+    public double getX() {
+        return getLocation().getX();
+    }
+
+    @Override
+    public double getY() {
+        return getLocation().getY();
     }
 }

@@ -17,19 +17,36 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
+import java.util.Objects;
+
 import com.ait.lienzo.client.core.Attribute;
-import com.ait.lienzo.client.core.event.*;
+import com.ait.lienzo.client.core.event.AnimationFrameAttributesChangedBatcher;
+import com.ait.lienzo.client.core.event.AttributesChangedEvent;
+import com.ait.lienzo.client.core.event.AttributesChangedHandler;
+import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
+import com.ait.lienzo.client.core.event.NodeDragEndEvent;
+import com.ait.lienzo.client.core.event.NodeDragEndHandler;
+import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
+import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
+import com.ait.lienzo.client.core.event.NodeDragStartEvent;
+import com.ait.lienzo.client.core.event.NodeDragStartHandler;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IContainer;
 import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.lienzo.client.core.shape.wires.event.*;
+import com.ait.lienzo.client.core.shape.wires.event.WiresDragEndEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresDragEndHandler;
+import com.ait.lienzo.client.core.shape.wires.event.WiresDragMoveEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresDragMoveHandler;
+import com.ait.lienzo.client.core.shape.wires.event.WiresDragStartEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresDragStartHandler;
+import com.ait.lienzo.client.core.shape.wires.event.WiresMoveEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresMoveHandler;
+import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.tooling.common.api.flow.Flows;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
-
-import java.util.Objects;
 
 import static com.ait.lienzo.client.core.AttributeOp.any;
 
@@ -42,10 +59,6 @@ public class WiresContainer
     private IContainer<?, IPrimitive<?>>     m_container;
 
     private WiresContainer                   m_parent;
-
-    private IContainmentAcceptor             m_containmentAcceptor = IContainmentAcceptor.ALL;;
-
-    private IDockingAcceptor                 m_dockingAcceptor     = IDockingAcceptor.ALL;
 
     private WiresContainer                   dockedTo;
 
@@ -99,6 +112,32 @@ public class WiresContainer
         return getContainer().asGroup();
     }
 
+    public double getX()
+    {
+        return getGroup().getX();
+    }
+
+    public double getY()
+    {
+        return getGroup().getY();
+    }
+
+    public WiresContainer setLocation(final Point2D p)
+    {
+        getGroup().setLocation(p);
+        return this;
+    }
+
+    public Point2D getLocation()
+    {
+        return getGroup().getLocation();
+    }
+
+    public Point2D getComputedLocation()
+    {
+        return getGroup().getComputedLocation();
+    }
+
     public void setContainer(IContainer<?, IPrimitive<?>> container)
     {
         m_container = container;
@@ -117,26 +156,6 @@ public class WiresContainer
     public NFastArrayList<WiresShape> getChildShapes()
     {
         return m_childShapes;
-    }
-
-    public IContainmentAcceptor getContainmentAcceptor()
-    {
-        return m_containmentAcceptor;
-    }
-
-    public void setContainmentAcceptor(IContainmentAcceptor containmentAcceptor)
-    {
-        m_containmentAcceptor = containmentAcceptor;
-    }
-
-    public IDockingAcceptor getDockingAcceptor()
-    {
-        return m_dockingAcceptor;
-    }
-
-    public void setDockingAcceptor(IDockingAcceptor dockingAcceptor)
-    {
-        m_dockingAcceptor = dockingAcceptor;
     }
 
     public ILayoutHandler getLayoutHandler()
@@ -285,8 +304,8 @@ public class WiresContainer
 
     private void fireMove() {
         m_events.fireEvent(new WiresMoveEvent(WiresContainer.this,
-                                              (int) getGroup().getX(),
-                                              (int) getGroup().getY()));
+                                              (int) getLocation().getX(),
+                                              (int) getLocation().getY()));
     }
 
     public final HandlerRegistration addWiresMoveHandler(final WiresMoveHandler handler)

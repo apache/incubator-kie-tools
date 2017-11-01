@@ -22,9 +22,9 @@ public interface IContainmentAcceptor
 
     public static final IContainmentAcceptor NONE = new DefaultContainmentAcceptor(false);
 
-    public boolean containmentAllowed(WiresContainer parent, WiresShape child);
+    public boolean containmentAllowed(WiresContainer parent, WiresShape[] children);
 
-    public boolean acceptContainment(WiresContainer parent, WiresShape child);
+    public boolean acceptContainment(WiresContainer parent, WiresShape[] children);
 
     public static class DefaultContainmentAcceptor implements IContainmentAcceptor
     {
@@ -36,13 +36,13 @@ public interface IContainmentAcceptor
         }
 
         @Override
-        public boolean containmentAllowed(WiresContainer parent, WiresShape child)
+        public boolean containmentAllowed(WiresContainer parent, WiresShape[] children)
         {
             return m_defaultValue;
         }
 
         @Override
-        public boolean acceptContainment(WiresContainer parent, WiresShape child)
+        public boolean acceptContainment(WiresContainer parent, WiresShape[] children)
         {
             return m_defaultValue;
         }

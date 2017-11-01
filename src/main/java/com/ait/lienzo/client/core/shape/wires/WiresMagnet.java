@@ -235,13 +235,13 @@ public class WiresMagnet extends AbstractControlHandle implements Iterable<Wires
         m_magnets.destroy(this);
     }
 
-    WiresMagnet setRx(final double x)
+    public WiresMagnet setRx(final double x)
     {
         this.m_x = x;
         return this;
     }
 
-    WiresMagnet setRy(final double y)
+    public WiresMagnet setRy(final double y)
     {
         this.m_y = y;
         return this;

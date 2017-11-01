@@ -16,24 +16,16 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers;
 
-/**
- * The Wires Shape control type.
- * This orchestrates the different controls related to Wires Shapes.
- */
-public interface WiresShapeControl extends WiresMoveControl,
-                                           WiresMouseControl,
-                                           WiresControl,
-                                           WiresBoundsConstraintControl {
+import com.ait.lienzo.client.core.types.Point2D;
 
-    void setAlignAndDistributeControl(AlignAndDistributeControl control);
+public interface WiresContainmentControl extends WiresMoveControl,
+                                                 WiresControl {
 
-    WiresMagnetsControl getMagnetsControl();
+    WiresContainmentControl setEnabled(boolean enabled);
 
-    AlignAndDistributeControl getAlignAndDistributeControl();
+    boolean isAllow();
 
-    WiresDockingControl getDockingControl();
+    boolean accept();
 
-    WiresContainmentControl getContainmentControl();
-
-    WiresParentPickerControl getParentPickerControl();
+    Point2D getCandidateLocation();
 }

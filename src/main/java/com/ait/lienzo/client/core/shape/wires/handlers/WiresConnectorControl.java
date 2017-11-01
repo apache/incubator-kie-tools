@@ -12,7 +12,9 @@ import com.ait.lienzo.client.core.shape.IPrimitive;
  * user interaction behaviours rather than defaults.
  *
  */
-public interface WiresConnectorControl extends DragControl {
+public interface WiresConnectorControl extends WiresMoveControl {
+
+    void move(double dx, double dy, boolean midPointsOnly, boolean moveLinePoints);
 
     void addControlPoint( double x, double y );
 
@@ -25,5 +27,7 @@ public interface WiresConnectorControl extends DragControl {
     WiresConnectionControl getHeadConnectionControl();
 
     WiresConnectionControl getTailConnectionControl();
+
+    void reset();
 
 }

@@ -40,7 +40,7 @@ public interface ILayoutHandler {
                          final WiresContainer container,
                          final Point2D mouseRelativeLoc ) {
             //Add the shape to the container at the specified position. No layout.
-            shape.getGroup().setLocation( mouseRelativeLoc );
+            shape.setLocation( mouseRelativeLoc );
             container.add( shape );
         }
 
