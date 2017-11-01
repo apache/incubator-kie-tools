@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,11 +17,11 @@
 package org.drools.workbench.screens.guided.rule.client.widget;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.drools.workbench.models.datamodel.rule.ActionGlobalCollectionAdd;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import com.google.gwt.user.client.ui.FlexTable;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 
 /**
