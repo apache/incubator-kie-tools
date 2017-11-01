@@ -80,7 +80,7 @@ public class FindResourceReferencesQueryInvalidIndexTermsTest extends BaseIndexi
 
     @Override
     protected String getRepositoryName() {
-        return this.getClass().getSimpleName();
+        return testName.getMethodName();
     }
 
 }

@@ -267,6 +267,6 @@ public class FindRulesByProjectQueryValidIndexTermsTest
 
     @Override
     protected String getRepositoryName() {
-        return this.getClass().getSimpleName();
+        return testName.getMethodName();
     }
 }

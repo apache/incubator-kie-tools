@@ -854,7 +854,7 @@ public class DataModelerServiceImpl
                                     serviceHelper.makeCommentedOption(comment));
                 }
 
-                ioService.startBatch(new FileSystem[]{_target.getFileSystem()});
+                ioService.startBatch(_target.getFileSystem());
 
                 ioService.move(_path,
                                _target,

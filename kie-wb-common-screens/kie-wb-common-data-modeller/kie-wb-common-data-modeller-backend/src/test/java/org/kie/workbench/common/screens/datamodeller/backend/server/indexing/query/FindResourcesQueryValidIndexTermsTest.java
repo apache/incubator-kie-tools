@@ -176,7 +176,7 @@ public class FindResourcesQueryValidIndexTermsTest extends BaseIndexingTest<Java
 
     @Override
     protected String getRepositoryName() {
-        return this.getClass().getSimpleName();
+        return testName.getMethodName();
     }
 
 }

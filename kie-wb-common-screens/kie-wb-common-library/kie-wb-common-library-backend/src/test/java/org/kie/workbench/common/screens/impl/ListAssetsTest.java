@@ -86,7 +86,7 @@ public class ListAssetsTest
 
     @Override
     protected String getRepositoryName() {
-        return this.getClass().getSimpleName();
+        return testName.getMethodName();
     }
 
     /**

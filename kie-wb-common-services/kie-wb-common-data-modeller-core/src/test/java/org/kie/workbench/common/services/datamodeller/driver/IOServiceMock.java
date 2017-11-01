@@ -48,6 +48,7 @@ import org.uberfire.java.nio.file.ProviderNotFoundException;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.attribute.FileTime;
+import org.uberfire.java.nio.file.FileSystemMetadata;
 
 public class IOServiceMock
         implements IOService {
@@ -63,19 +64,8 @@ public class IOServiceMock
     }
 
     @Override
-    public void startBatch( FileSystem[] fs,
-                            Option... options ) {
-
-    }
-
-    @Override
     public void startBatch( FileSystem fileSystem,
                             Option... options ) {
-
-    }
-
-    @Override
-    public void startBatch( FileSystem... fileSystems ) {
 
     }
 
@@ -101,7 +91,7 @@ public class IOServiceMock
     }
 
     @Override
-    public Iterable<FileSystem> getFileSystems() {
+    public Iterable<org.uberfire.java.nio.file.FileSystemMetadata> getFileSystemMetadata() {
         return null;
     }
 

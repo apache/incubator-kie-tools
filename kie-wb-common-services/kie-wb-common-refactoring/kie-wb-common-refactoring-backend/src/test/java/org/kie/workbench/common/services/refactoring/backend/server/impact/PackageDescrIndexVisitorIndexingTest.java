@@ -206,7 +206,7 @@ public class PackageDescrIndexVisitorIndexingTest
 
     @Override
     protected String getRepositoryName() {
-        return this.getClass().getSimpleName();
+        return testName.getMethodName();
     }
 
 }

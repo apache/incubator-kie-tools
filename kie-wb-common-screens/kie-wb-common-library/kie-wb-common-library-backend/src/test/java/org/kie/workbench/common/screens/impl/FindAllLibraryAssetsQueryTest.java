@@ -167,6 +167,6 @@ public class FindAllLibraryAssetsQueryTest
 
     @Override
     protected String getRepositoryName() {
-        return this.getClass().getSimpleName();
+        return testName.getMethodName();
     }
 }

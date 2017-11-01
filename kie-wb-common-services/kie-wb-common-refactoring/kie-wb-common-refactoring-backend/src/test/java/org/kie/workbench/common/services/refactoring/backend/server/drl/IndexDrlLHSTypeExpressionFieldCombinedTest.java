@@ -84,7 +84,7 @@ public class IndexDrlLHSTypeExpressionFieldCombinedTest extends BaseIndexingTest
 
     @Override
     protected String getRepositoryName() {
-        return this.getClass().getSimpleName();
+        return testName.getMethodName();
     }
 
 }

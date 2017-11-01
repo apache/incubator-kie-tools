@@ -96,7 +96,7 @@ public class IndexDrlLHSTypeExpressionField4Test extends BaseIndexingTest<TestDr
 
     @Override
     protected String getRepositoryName() {
-        return this.getClass().getSimpleName();
+        return testName.getMethodName();
     }
 
 }

@@ -41,6 +41,8 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.rules.TestName;
 import org.kie.workbench.common.screens.library.api.index.LibraryFileNameIndexTerm;
 import org.kie.workbench.common.screens.library.api.index.LibraryProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.ImpactAnalysisAnalyzerWrapperFactory;
@@ -80,6 +82,9 @@ public abstract class BaseLibraryIndexingTest {
     protected Path basePath;
     protected RefactoringQueryServiceImpl service;
     protected IOService ioService = null;
+
+    @Rule
+    public TestName testName = new TestName();
 
     @AfterClass
     @BeforeClass

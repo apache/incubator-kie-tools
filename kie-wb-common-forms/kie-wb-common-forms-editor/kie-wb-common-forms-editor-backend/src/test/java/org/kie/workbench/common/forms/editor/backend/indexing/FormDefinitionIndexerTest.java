@@ -209,7 +209,7 @@ public class FormDefinitionIndexerTest extends BaseIndexingTest<FormResourceType
 
     @Override
     protected String getRepositoryName() {
-        return this.getClass().getSimpleName();
+        return testName.getMethodName();
     }
 
     @Override

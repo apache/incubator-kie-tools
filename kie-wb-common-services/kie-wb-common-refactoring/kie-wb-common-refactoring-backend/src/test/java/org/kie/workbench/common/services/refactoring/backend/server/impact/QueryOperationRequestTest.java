@@ -15,12 +15,6 @@
  */
 package org.kie.workbench.common.services.refactoring.backend.server.impact;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,10 +22,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import javax.enterprise.inject.Instance;
-
 import org.apache.lucene.analysis.Analyzer;
-import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
@@ -52,10 +43,11 @@ import org.kie.workbench.common.services.refactoring.service.impact.RefactorOper
 import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
 import org.uberfire.java.nio.file.Path;
 
+import static org.junit.Assert.*;
+
 public class QueryOperationRequestTest extends BaseIndexingTest<TestDrlFileTypeDefinition> {
 
     // Setup fields, methods and other logic --------------------------------------------------------------------------------------
-
 
     @Override
     protected TestIndexer<TestDrlFileTypeDefinition> getIndexer() {
@@ -67,7 +59,8 @@ public class QueryOperationRequestTest extends BaseIndexingTest<TestDrlFileTypeD
         return new HashMap<String, Analyzer>() {
 
             {
-                put(ProjectRootPathIndexTerm.TERM, new FilenameAnalyzer());
+                put(ProjectRootPathIndexTerm.TERM,
+                    new FilenameAnalyzer());
             }
         };
     }
@@ -79,7 +72,7 @@ public class QueryOperationRequestTest extends BaseIndexingTest<TestDrlFileTypeD
 
     @Override
     protected String getRepositoryName() {
-        return this.getClass().getSimpleName();
+        return testName.getMethodName();
     }
 
     protected Set<NamedQuery> getQueries() {
@@ -103,27 +96,32 @@ public class QueryOperationRequestTest extends BaseIndexingTest<TestDrlFileTypeD
         //Add test files
         final Path path1 = basePath.resolve("drl1.drl");
         final String drl1 = loadText("drl1.drl");
-        ioService().write(path1, drl1);
+        ioService().write(path1,
+                          drl1);
         final Path path2 = basePath.resolve("drl2.drl");
         final String drl2 = loadText("drl2.drl");
-        ioService().write(path2, drl2);
-        final Path path3 = basePath.resolve( "drl3.drl" );
-        final String drl3 = loadText( "drl3.drl" );
-        ioService().write( path3,
-                           drl3 );
+        ioService().write(path2,
+                          drl2);
+        final Path path3 = basePath.resolve("drl3.drl");
+        final String drl3 = loadText("drl3.drl");
+        ioService().write(path3,
+                          drl3);
 
         Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
         {
-            QueryOperationRequest request = QueryOperationRequest.referencesSharedPart("myRuleFlowGroup", PartType.RULEFLOW_GROUP).inAllProjects().onAllBranches();
+            QueryOperationRequest request = QueryOperationRequest.referencesSharedPart("myRuleFlowGroup",
+                                                                                       PartType.RULEFLOW_GROUP).inAllProjects().onAllBranches();
 
             try {
                 final List<RefactoringPageRow> response = service.queryToList(request);
                 assertNotNull(response);
-                assertEquals(2, response.size());
-                assertResponseContains(response, path1);
-                assertResponseContains(response, path3);
-
+                assertEquals(2,
+                             response.size());
+                assertResponseContains(response,
+                                       path1);
+                assertResponseContains(response,
+                                       path3);
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
                 fail(e.getMessage());
@@ -131,16 +129,21 @@ public class QueryOperationRequestTest extends BaseIndexingTest<TestDrlFileTypeD
         }
 
         {
-            QueryOperationRequest request = QueryOperationRequest.referencesSharedPart("*", PartType.RULEFLOW_GROUP, TermSearchType.WILDCARD).inAllProjects().onAllBranches();
+            QueryOperationRequest request = QueryOperationRequest.referencesSharedPart("*",
+                                                                                       PartType.RULEFLOW_GROUP,
+                                                                                       TermSearchType.WILDCARD).inAllProjects().onAllBranches();
 
             try {
                 final List<RefactoringPageRow> response = service.queryToList(request);
                 assertNotNull(response);
-                assertEquals(3, response.size());
-                assertResponseContains(response, path1);
-                assertResponseContains(response, path2);
-                assertResponseContains(response, path3);
-
+                assertEquals(3,
+                             response.size());
+                assertResponseContains(response,
+                                       path1);
+                assertResponseContains(response,
+                                       path2);
+                assertResponseContains(response,
+                                       path3);
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
                 fail(e.getMessage());
@@ -156,27 +159,47 @@ public class QueryOperationRequestTest extends BaseIndexingTest<TestDrlFileTypeD
         String projectRootPathURI = "default://repo/my-project";
         String newClassName = Random.class.getName();
 
-        DeleteOperationRequest delReq = DeleteOperationRequest.deleteReferences(className, ResourceType.JAVA).inProject(projectName).onAllBranches();
+        DeleteOperationRequest delReq = DeleteOperationRequest.deleteReferences(className,
+                                                                                ResourceType.JAVA).inProject(projectName).onAllBranches();
 
-        delReq = DeleteOperationRequest.deleteReferences(className, ResourceType.JAVA).inProjectRootPathURI( projectRootPathURI ).onAllBranches();
+        delReq = DeleteOperationRequest.deleteReferences(className,
+                                                         ResourceType.JAVA).inProjectRootPathURI(projectRootPathURI).onAllBranches();
 
-        delReq = DeleteOperationRequest.deletePartReferences(className, "setAge(long)", PartType.METHOD).inProject(projectName).onAllBranches();
+        delReq = DeleteOperationRequest.deletePartReferences(className,
+                                                             "setAge(long)",
+                                                             PartType.METHOD).inProject(projectName).onAllBranches();
 
-        delReq = DeleteOperationRequest.deletePartReferences(className, "setAge(long)", PartType.METHOD).inProjectRootPathURI( projectRootPathURI ).onAllBranches();
+        delReq = DeleteOperationRequest.deletePartReferences(className,
+                                                             "setAge(long)",
+                                                             PartType.METHOD).inProjectRootPathURI(projectRootPathURI).onAllBranches();
 
-        RefactorOperationRequest refOp = RefactorOperationRequest.refactorReferences(className, ResourceType.JAVA, newClassName).inProject(projectName).onBranch("branch-name");
+        RefactorOperationRequest refOp = RefactorOperationRequest.refactorReferences(className,
+                                                                                     ResourceType.JAVA,
+                                                                                     newClassName).inProject(projectName).onBranch("branch-name");
 
-        refOp = RefactorOperationRequest.refactorReferences(className, ResourceType.JAVA, newClassName).inProjectRootPathURI( projectRootPathURI ).onBranch("branch-name");
+        refOp = RefactorOperationRequest.refactorReferences(className,
+                                                            ResourceType.JAVA,
+                                                            newClassName).inProjectRootPathURI(projectRootPathURI).onBranch("branch-name");
 
-        refOp = RefactorOperationRequest.refactorPartReferences(className, "toName(int)", PartType.METHOD, "toSurName(int)").inProject(projectName).onAllBranches();
+        refOp = RefactorOperationRequest.refactorPartReferences(className,
+                                                                "toName(int)",
+                                                                PartType.METHOD,
+                                                                "toSurName(int)").inProject(projectName).onAllBranches();
 
-        refOp = RefactorOperationRequest.refactorPartReferences(className, "toName(int)", PartType.METHOD, "toSurName(int)").inProjectRootPathURI( projectRootPathURI ).onAllBranches();
+        refOp = RefactorOperationRequest.refactorPartReferences(className,
+                                                                "toName(int)",
+                                                                PartType.METHOD,
+                                                                "toSurName(int)").inProjectRootPathURI(projectRootPathURI).onAllBranches();
 
-        refOp = RefactorOperationRequest.refactorPartReferences(className, "toName(int)", PartType.METHOD, "toSurName(int)").inProject(projectName).onBranch("branch-name");
+        refOp = RefactorOperationRequest.refactorPartReferences(className,
+                                                                "toName(int)",
+                                                                PartType.METHOD,
+                                                                "toSurName(int)").inProject(projectName).onBranch("branch-name");
 
-        QueryOperationRequest queOp = QueryOperationRequest.references(className, ResourceType.JAVA).inProject(projectName).onBranch("branch-name");
+        QueryOperationRequest queOp = QueryOperationRequest.references(className,
+                                                                       ResourceType.JAVA).inProject(projectName).onBranch("branch-name");
 
-        queOp = QueryOperationRequest.references(className, ResourceType.JAVA).inProjectRootPathURI( projectRootPathURI ).onBranch("branch-name");
+        queOp = QueryOperationRequest.references(className,
+                                                 ResourceType.JAVA).inProjectRootPathURI(projectRootPathURI).onBranch("branch-name");
     }
-
 }

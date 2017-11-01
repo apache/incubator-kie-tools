@@ -122,7 +122,7 @@ public class FindResourcesQueryInvalidIndexTermsTest extends BaseIndexingTest<Te
 
     @Override
     protected String getRepositoryName() {
-        return this.getClass().getSimpleName();
+        return testName.getMethodName();
     }
 
 }

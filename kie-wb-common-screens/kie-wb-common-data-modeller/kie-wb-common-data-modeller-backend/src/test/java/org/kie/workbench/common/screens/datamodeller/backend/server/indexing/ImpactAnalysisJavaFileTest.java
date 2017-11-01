@@ -220,6 +220,6 @@ public class ImpactAnalysisJavaFileTest extends BaseIndexingTest<JavaResourceTyp
 
     @Override
     protected String getRepositoryName() {
-        return this.getClass().getSimpleName();
+        return testName.getMethodName();
     }
 }

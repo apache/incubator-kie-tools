@@ -234,7 +234,7 @@ public class DataModelerServiceTest {
                                             "Comment");
 
         verify(ioService,
-               times(1)).startBatch(any(FileSystem[].class));
+               times(1)).startBatch(any(FileSystem.class));
         verify(ioService,
                times(1)).move(any(org.uberfire.java.nio.file.Path.class),
                               any(org.uberfire.java.nio.file.Path.class),

@@ -29,6 +29,8 @@ import javax.enterprise.inject.Instance;
 import org.apache.lucene.analysis.Analyzer;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TestName;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQueries;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
 import org.kie.workbench.common.services.refactoring.backend.server.query.RefactoringQueryServiceImpl;
@@ -51,6 +53,9 @@ public abstract class BaseIndexingTest<T extends ResourceTypeDefinition> extends
     protected Path basePath;
 
     protected RefactoringQueryServiceImpl service;
+
+    @Rule
+    public TestName testName = new TestName();
 
     @Before
     public void setup() throws IOException {

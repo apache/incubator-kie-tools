@@ -114,7 +114,7 @@ public class FindResourcePartReferencesQueryInvalidIndexTermsTest extends BaseIn
 
     @Override
     protected String getRepositoryName() {
-        return this.getClass().getSimpleName();
+        return testName.getMethodName();
     }
 
 }

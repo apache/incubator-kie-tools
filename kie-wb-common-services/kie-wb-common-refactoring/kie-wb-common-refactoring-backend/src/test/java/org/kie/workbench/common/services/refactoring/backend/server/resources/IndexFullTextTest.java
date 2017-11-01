@@ -71,7 +71,7 @@ public class IndexFullTextTest extends BaseIndexingTest<TestPropertiesFileTypeDe
 
     @Override
     protected String getRepositoryName() {
-        return this.getClass().getSimpleName();
+        return testName.getMethodName();
     }
 
     @Override

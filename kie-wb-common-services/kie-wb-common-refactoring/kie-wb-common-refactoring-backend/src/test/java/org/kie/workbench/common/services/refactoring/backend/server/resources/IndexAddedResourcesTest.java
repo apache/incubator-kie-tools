@@ -75,7 +75,7 @@ public class IndexAddedResourcesTest extends BaseIndexingTest<TestPropertiesFile
 
     @Override
     protected String getRepositoryName() {
-        return this.getClass().getSimpleName();
+        return testName.getMethodName();
     }
 
     @Override

@@ -79,7 +79,7 @@ public class RefactoringQueryServiceImplGeneralTest extends BaseIndexingTest<Tes
 
     @Override
     protected String getRepositoryName() {
-        return this.getClass().getSimpleName();
+        return testName.getMethodName();
     }
 
 }
