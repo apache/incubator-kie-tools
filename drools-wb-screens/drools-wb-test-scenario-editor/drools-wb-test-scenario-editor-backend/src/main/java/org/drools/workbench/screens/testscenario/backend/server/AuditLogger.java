@@ -132,7 +132,7 @@ public class AuditLogger {
 
             @Override
             public void beforeMatchFired(BeforeMatchFiredEvent beforeMatchFiredEvent) {
-//                log(beforeMatchFiredEvent);
+                log(beforeMatchFiredEvent);
             }
 
             @Override
@@ -179,7 +179,7 @@ public class AuditLogger {
                 Object object = objectInsertedEvent.getObject();
                 Rule rule = objectInsertedEvent.getRule();
                 if (rule == null) {
-                    logs.add("Fact " + object.getClass().getName() + " inserted.");
+                    logs.add("Fact " + object.getClass().getName() + " inserted. Fact[ " + object.toString() + " ].");
                 } else {
                     logs.add("Fact " + object.getClass().getName() + " inserted in rule " + rule.getName() + ". Fact[ " + object.toString() + " ].");
                 }

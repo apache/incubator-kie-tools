@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.testscenario.backend.server;
 
 import java.lang.annotation.Annotation;
+import java.net.URL;
 import java.util.ArrayList;
 
 import javax.enterprise.event.Event;
@@ -28,18 +29,37 @@ import org.guvnor.structure.server.config.ConfigurationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.builder.model.KieSessionModel;
+import org.kie.api.conf.EqualityBehaviorOption;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.workbench.common.services.backend.session.SessionService;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.io.IOService;
+import org.uberfire.io.impl.IOServiceDotFileImpl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -49,18 +69,28 @@ import static org.mockito.Mockito.when;
 public class ScenarioRunnerServiceTest {
 
     @Mock
-    ScenarioLoader scenarioLoader;
+    private ScenarioLoader scenarioLoader;
+
     private ScenarioRunnerService service;
-    @Mock
-    private KieSession defaultPseudoClockKieSession;
+
+    @Captor
+    private ArgumentCaptor<TestResultMessage> testResultMessageCaptor;
+
+    @Spy
+    private IOService ioService = new IOServiceDotFileImpl("testIoService");
+
+    @InjectMocks
+    private ScenarioTestEditorServiceImpl testEditorService = new ScenarioTestEditorServiceImpl();
+
     @Mock
     private SessionService sessionService;
+
     private TestResultMessageEventMock defaultTestResultMessageEvent;
 
     @Before
     public void setUp() throws Exception {
-        ConfigurationService configurationService = mock(ConfigurationService.class);
-        KieProjectService projectService = mock(KieProjectService.class);
+        final ConfigurationService configurationService = mock(ConfigurationService.class);
+        final KieProjectService projectService = mock(KieProjectService.class);
 
         defaultTestResultMessageEvent = spy(new TestResultMessageEventMock());
 
@@ -70,10 +100,32 @@ public class ScenarioRunnerServiceTest {
                                             projectService,
                                             scenarioLoader);
 
-        when(sessionService.newDefaultKieSessionWithPseudoClock(any(KieProject.class))).thenReturn(defaultPseudoClockKieSession);
-    }
+        final KieServices kieServices = KieServices.Factory.get();
+        final KieModuleModel kieModuleModel = kieServices.newKieModuleModel();
+        final KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel("defaultKieBase")
+                .setDefault(true)
+                .setEqualsBehavior(EqualityBehaviorOption.EQUALITY)
+                .setEventProcessingMode(EventProcessingOption.STREAM);
 
-    // TODO: Make sure the ksessions get loaded
+        kieBaseModel.newKieSessionModel("defaultKieSession")
+                .setDefault(true)
+                .setType(KieSessionModel.KieSessionType.STATEFUL)
+                .setClockType(ClockTypeOption.get("pseudo"));
+
+        final KieFileSystem kfs = kieServices.newKieFileSystem();
+        kfs.writeKModuleXML(kieModuleModel.toXML());
+        kfs.write(ResourceFactory.newUrlResource(this.getClass()
+                                                     .getResource("HelloEveryOne.gdst")
+                                                     .toString()));
+
+        kieServices.newKieBuilder(kfs).buildAll();
+
+        final KieContainer kieContainer = kieServices
+                .newKieContainer(kieServices.getRepository().getDefaultReleaseId());
+        final KieSession kieSession = kieContainer.newKieSession();
+
+        doReturn(kieSession).when(sessionService).newDefaultKieSessionWithPseudoClock(any(KieProject.class));
+    }
 
     @Test
     public void testRunEmptyScenario() throws Exception {
@@ -87,6 +139,28 @@ public class ScenarioRunnerServiceTest {
         verify(defaultTestResultMessageEvent).fire(argumentCaptor.capture());
         assertEquals("userName",
                      argumentCaptor.getValue().getIdentifier());
+    }
+
+    @Test
+    public void testGreetings() throws Exception {
+        final KieProject project = mock(KieProject.class);
+
+        final URL scenarioResource = getClass().getResource("greetings.scenario");
+        final Path scenarioPath = PathFactory.newPath(scenarioResource.getFile(),
+                                                      scenarioResource.toURI().toString());
+
+        final Scenario scenario = testEditorService.load(scenarioPath);
+        assertFalse(scenario.wasSuccessful());
+
+        TestScenarioResult result = service.run("userName", scenario, project);
+
+        assertTrue(scenario.wasSuccessful());
+        assertTrue(result.getScenario().wasSuccessful());
+
+        verify(defaultTestResultMessageEvent).fire(testResultMessageCaptor.capture());
+        final TestResultMessage resultMessage = testResultMessageCaptor.getValue();
+        assertEquals(0, resultMessage.getFailures().size());
+        assertTrue(resultMessage.wasSuccessful());
     }
 
     @Test

@@ -42,7 +42,7 @@
           <fieldName>approved</fieldName>
           <expected>false</expected>
           <actualResult></actualResult>
-          <successResult>true</successResult>
+          <successResult>false</successResult>
           <explanation>[application] field [approved] was [false].</explanation>
           <operator>==</operator>
           <nature>0</nature>
@@ -59,4 +59,7 @@
   <imports>
     <imports/>
   </imports>
+  <ksessions>
+      <string>defaultKieSession</string>
+    </ksessions>
 </scenario>

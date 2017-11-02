@@ -176,6 +176,11 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-workbench-models-guided-dtable</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 </project>
