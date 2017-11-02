@@ -33,16 +33,16 @@ commitMsg="update to version $newVersion"
 git commit -m "$commitMsg"
 
 # build the repos & deploy into local dir (will be later copied into staging repo)
-deploy-dir=$WORKSPACE/deploy-dir
+deployDir=$WORKSPACE/deployDir
 # (1) do a full build, but deploy only into local dir
 # we will deploy into remote staging repo only once the whole build passed (to save time and bandwith)
-mvn -B -e clean deploy -U -Dfull -Drelease -T1C -DaltDeploymentRepository=local::default::file://$deploy-dir -Dmaven.test.failure.ignore=true\
+mvn -B -e clean deploy -U -Dfull -Drelease -T1C -DaltDeploymentRepository=local::default::file://$deployDir -Dmaven.test.failure.ignore=true\
  -Dgwt.memory.settings="-Xmx2g -Xms1g -Xss1M" -Dgwt.compiler.localWorkers=2
 
 # (2) upload the content to remote staging repo
-cd $deploy-dir
+cd $deployDir
 mvn -B -e org.sonatype.plugins:nexus-staging-maven-plugin:1.6.5:deploy-staged-repository -DnexusUrl=https://repository.jboss.org/nexus -DserverId=jboss-releases-repository\
- -DrepositoryDirectory=$deploy-dir -DstagingProfileId=$stagingProfile -DstagingDescription="uberfire $newVersion" -DstagingProgressTimeoutMinutes=30
+ -DrepositoryDirectory=$deployDir -DstagingProfileId=$stagingProfile -DstagingDescription="uberfire $newVersion" -DstagingProgressTimeoutMinutes=30
 
 # pushes the release-branches to jboss-integration or droolsjbpm [IMPORTANT: "push -n" (--dryrun) should be replaced by "push" when script is finished and will be applied]
 if [ "$target" == "community" ]; then
