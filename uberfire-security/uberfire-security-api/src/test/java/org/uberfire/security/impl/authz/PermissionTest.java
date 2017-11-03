@@ -150,4 +150,11 @@ public class PermissionTest {
                                                true);
         assertFalse(p1.implies(p2));
     }
+
+    @Test
+    public void testImplyNameWithDots() {
+        Permission p1 = new DotNamedPermission("resource.read", true);
+        Permission p2 = new DotNamedPermission("resource.read.r1.dot", true);
+        assertTrue(p1.impliesName(p2));
+    }
 }

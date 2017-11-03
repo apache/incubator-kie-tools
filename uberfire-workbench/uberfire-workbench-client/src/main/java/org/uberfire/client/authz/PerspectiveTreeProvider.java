@@ -212,9 +212,19 @@ public class PerspectiveTreeProvider implements PermissionTreeProvider {
     }
 
     public String getPerspectiveName(String perspectiveId) {
+        // Look for preset names first
         if (perspectiveNameMap.containsKey(perspectiveId)) {
             return perspectiveNameMap.get(perspectiveId);
         }
+        // For user created perspectives, the perspective id. is always the name set by its author
+        SyncBeanDef<Activity> beanDef = activityBeansCache.getActivity(perspectiveId);
+        if (beanDef != null) {
+            Activity activity = beanDef.getInstance();
+            if (activity != null && !(activity instanceof AbstractWorkbenchPerspectiveActivity)) {
+                return perspectiveId;
+            }
+        }
+        // By default, to avoid displaying FQCN, the name is the string after the last dot
         int lastDot = perspectiveId.lastIndexOf(".");
         return lastDot != -1 ? perspectiveId.substring(lastDot + 1) : perspectiveId;
     }

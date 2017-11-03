@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PerspectiveActivity;
@@ -62,14 +63,28 @@ public class PerspectiveTreeProviderTest {
         List<SyncBeanDef<Activity>> beanDefs = new ArrayList<>();
         SyncBeanDef<Activity> bean1 = mock(SyncBeanDef.class);
         SyncBeanDef<Activity> bean2 = mock(SyncBeanDef.class);
-        PerspectiveActivity perspective1 = mock(PerspectiveActivity.class);
+        SyncBeanDef<Activity> bean3 = mock(SyncBeanDef.class);
+        SyncBeanDef<Activity> bean4 = mock(SyncBeanDef.class);
+        PerspectiveActivity perspective1 = mock(AbstractWorkbenchPerspectiveActivity.class);
         PerspectiveActivity perspective2 = mock(PerspectiveActivity.class);
+        PerspectiveActivity perspective3 = mock(PerspectiveActivity.class);
+        PerspectiveActivity perspective4 = mock(AbstractWorkbenchPerspectiveActivity.class);
         when(bean1.getInstance()).thenReturn(perspective1);
         when(bean2.getInstance()).thenReturn(perspective2);
+        when(bean3.getInstance()).thenReturn(perspective3);
+        when(bean4.getInstance()).thenReturn(perspective4);
         when(perspective1.getIdentifier()).thenReturn("Perspective1");
         when(perspective2.getIdentifier()).thenReturn("Perspective2");
+        when(perspective3.getIdentifier()).thenReturn("org.Perspective3");
+        when(perspective4.getIdentifier()).thenReturn("org.Perspective4");
         beanDefs.add(bean1);
         beanDefs.add(bean2);
+        beanDefs.add(bean3);
+        beanDefs.add(bean4);
+        when(activityBeansCache.getActivity("Perspective1")).thenReturn(bean1);
+        when(activityBeansCache.getActivity("Perspective2")).thenReturn(bean2);
+        when(activityBeansCache.getActivity("org.Perspective3")).thenReturn(bean3);
+        when(activityBeansCache.getActivity("org.Perspective4")).thenReturn(bean4);
         when(activityBeansCache.getPerspectiveActivities()).thenReturn(beanDefs);
 
         permissionManager = new DefaultPermissionManager();
@@ -129,7 +144,7 @@ public class PerspectiveTreeProviderTest {
                               options,
                               children -> {
                                   assertEquals(children.size(),
-                                               1);
+                                               3);
                               });
     }
 
@@ -185,6 +200,18 @@ public class PerspectiveTreeProviderTest {
                 checkDependencies(child);
             }
         });
+    }
+
+    @Test
+    public void testPerspectiveName() {
+        String name = provider.getPerspectiveName("Perspective1");
+        assertEquals(name, "A nice perspective");
+        name = provider.getPerspectiveName("Perspective2");
+        assertEquals(name, "Another nice perspective");
+        name = provider.getPerspectiveName("org.Perspective3");
+        assertEquals(name, "org.Perspective3");
+        name = provider.getPerspectiveName("org.Perspective4");
+        assertEquals(name, "Perspective4");
     }
 
     protected void checkDependencies(PermissionNode permissionNode) {

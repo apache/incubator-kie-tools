@@ -22,7 +22,7 @@ package org.uberfire.ext.widgets.common.client.dropdown;
 public interface PerspectiveNameProvider {
 
     /**
-     * Get a user friendly name for the4 given perspective identifier
+     * Get a user friendly name for the given perspective identifier
      * @param perspectiveId The id. of an existing perspective.
      * @return A displayable name
      */

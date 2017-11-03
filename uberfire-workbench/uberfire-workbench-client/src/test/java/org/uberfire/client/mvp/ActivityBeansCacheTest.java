@@ -194,7 +194,7 @@ public class ActivityBeansCacheTest {
 
         SyncBeanDef mock2 = mock(SyncBeanDef.class);
         when(mock2.getName()).thenReturn("screen");
-        when(mock2.getType()).thenReturn(WorkbenchScreenActivity.class);
+        when(mock2.isAssignableTo(PerspectiveActivity.class)).thenReturn(false);
 
         cache.addNewPerspectiveActivity(mock1);
         cache.addNewPerspectiveActivity(mock2);

@@ -111,13 +111,7 @@ public class DotNamedPermission implements Permission,
             return false;
         }
         String otherName = other.getName();
-        int lastDot = name.trim().length();
-        int otherLastDot = otherName != null ? otherName.lastIndexOf('.') : -1;
-        if (lastDot != otherLastDot) {
-            return false;
-        }
-        return other.getName().substring(0,
-                                         lastDot).equals(name);
+        return otherName != null && otherName.startsWith(name + ".");
     }
 
     @Override
