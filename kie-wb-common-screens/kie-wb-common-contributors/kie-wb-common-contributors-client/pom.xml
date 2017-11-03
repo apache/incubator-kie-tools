@@ -18,8 +18,8 @@
 
     <!-- dependencies added because of new illegal transitive dependency check -->
     <dependency>
-      <groupId>org.dashbuilder</groupId>
-      <artifactId>dashbuilder-dataset-api</artifactId>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-dataset-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.dashbuilder</groupId>
@@ -126,8 +126,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.dashbuilder</groupId>
-      <artifactId>dashbuilder-dataset-api</artifactId>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-dataset-api</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
