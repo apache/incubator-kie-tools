@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearStatesSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.DeleteSelectionSessionCommand;
@@ -83,11 +84,15 @@ public class AbstractProjectDiagramEditorTest {
 
     @Mock
     protected SessionCommandFactory sessionCommandFactory;
+
     @Mock
     private ProjectMessagesListener projectMessagesListener;
 
     @Mock
     private ClientResourceTypeMock resourceType;
+
+    @Mock
+    private DiagramClientErrorHandler diagramClientErrorHandler;
 
     abstract class ClientResourceTypeMock implements ClientResourceType {
 
@@ -122,7 +127,8 @@ public class AbstractProjectDiagramEditorTest {
                                                                              mock(ProjectDiagramEditorMenuItemsBuilder.class),
                                                                              new EventSourceMock<>(),
                                                                              new EventSourceMock<>(),
-                                                                             projectMessagesListener) {
+                                                                             projectMessagesListener,
+                                                                             diagramClientErrorHandler) {
             {
                 fileMenuBuilder = AbstractProjectDiagramEditorTest.this.fileMenuBuilder;
                 workbenchContext = AbstractProjectDiagramEditorTest.this.workbenchContext;

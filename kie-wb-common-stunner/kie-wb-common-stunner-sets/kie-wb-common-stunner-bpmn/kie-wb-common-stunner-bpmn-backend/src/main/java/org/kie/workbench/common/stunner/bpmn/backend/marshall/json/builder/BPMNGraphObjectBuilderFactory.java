@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.annotation.RuntimeDefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.BindableMorphAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.MorphAdapter;
+import org.kie.workbench.common.stunner.core.definition.exception.DefinitionNotFoundException;
 import org.kie.workbench.common.stunner.core.definition.morph.BindablePropertyMorphDefinition;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
@@ -88,7 +89,7 @@ public class BPMNGraphObjectBuilderFactory implements GraphObjectBuilderFactory 
                 }
             }
         }
-        throw new RuntimeException("No definition found for oryx stencil with id [" + oryxId + "]");
+        throw new DefinitionNotFoundException("No definition found for oryx stencil with id [" + oryxId + "]", oryxId);
     }
 
     private static boolean isNodeFactory(final Class<? extends ElementFactory> elementFactory) {

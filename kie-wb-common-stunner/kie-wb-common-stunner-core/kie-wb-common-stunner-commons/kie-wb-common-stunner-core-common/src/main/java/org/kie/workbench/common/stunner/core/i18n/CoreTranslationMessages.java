@@ -46,4 +46,6 @@ public class CoreTranslationMessages {
     public static final String VALIDATION_SUCCESS = RULE_PREF + "success";
 
     public static final String VALIDATION_FAILED = RULE_PREF + "fail";
+
+    public static final String DIAGRAM_LOAD_FAIL_UNSUPPORTED_ELEMENTS = "org.kie.workbench.common.stunner.core.client.diagram.load.fail.unsupported";
 }

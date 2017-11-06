@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -53,6 +54,7 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.StandardDeleteOption;
 
+@ApplicationScoped
 @Service
 public class DiagramServiceImpl
         extends AbstractVFSDiagramService<Metadata, Diagram<Graph, Metadata>>

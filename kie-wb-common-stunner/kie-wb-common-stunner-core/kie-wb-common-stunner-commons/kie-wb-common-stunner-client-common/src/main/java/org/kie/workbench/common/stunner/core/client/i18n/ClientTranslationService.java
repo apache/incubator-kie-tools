@@ -40,7 +40,7 @@ public class ClientTranslationService extends AbstractTranslationService {
     }
 
     @Override
-    protected String getKeyValue(final String key,
+    public String getKeyValue(final String key,
                                  final Object... args) {
         return erraiTranslationService.format(key,
                                               args);

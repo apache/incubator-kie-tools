@@ -20,6 +20,7 @@ import javax.enterprise.event.Event;
 
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
@@ -51,7 +52,8 @@ class ProjectDiagramEditorStub extends AbstractProjectDiagramEditor<ClientResour
                                     ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder,
                                     Event<OnDiagramFocusEvent> onDiagramFocusEvent,
                                     Event<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent,
-                                    ProjectMessagesListener projectMessagesListener) {
+                                    ProjectMessagesListener projectMessagesListener,
+                                    DiagramClientErrorHandler diagramClientErrorHandler) {
         super(view,
               placeManager,
               errorPopupPresenter,
@@ -65,7 +67,8 @@ class ProjectDiagramEditorStub extends AbstractProjectDiagramEditor<ClientResour
               menuItemsBuilder,
               onDiagramFocusEvent,
               onDiagramLostFocusEvent,
-              projectMessagesListener);
+              projectMessagesListener,
+              diagramClientErrorHandler);
     }
 
     @Override

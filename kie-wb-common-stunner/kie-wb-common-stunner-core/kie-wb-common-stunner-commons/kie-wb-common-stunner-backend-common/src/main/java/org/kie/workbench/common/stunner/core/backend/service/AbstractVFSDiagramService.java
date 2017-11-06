@@ -246,10 +246,15 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
                                                   attrs);
                                      org.uberfire.backend.vfs.Path file = org.uberfire.backend.server.util.Paths.convert(_file);
                                      if (accepts(file)) {
-                                         // portable diagram representation.
-                                         D diagram = getDiagramByPath(file);
-                                         if (null != diagram) {
-                                             result.add(diagram);
+                                         try {
+                                             // portable diagram representation.
+                                             D diagram = getDiagramByPath(file);
+                                             if (null != diagram) {
+                                                 result.add(diagram);
+                                             }
+                                         } catch (Exception e) {
+                                             //skipping add diagram to the result
+                                             LOG.error("Error getting diagram for path {}", file, e);
                                          }
                                      }
                                      return FileVisitResult.CONTINUE;

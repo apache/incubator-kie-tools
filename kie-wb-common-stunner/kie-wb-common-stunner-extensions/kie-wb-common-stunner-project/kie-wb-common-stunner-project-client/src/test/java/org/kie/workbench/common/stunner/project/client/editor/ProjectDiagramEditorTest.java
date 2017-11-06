@@ -16,7 +16,10 @@
 
 package org.kie.workbench.common.stunner.project.client.editor;
 
+import java.util.function.Consumer;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import com.google.gwtmockito.WithClassesToStub;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +27,8 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.Sessio
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
 import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
+import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSessionFactory;
@@ -40,6 +45,7 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.VisitGr
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ClientFullSessionImpl;
+import org.kie.workbench.common.stunner.core.definition.exception.DefinitionNotFoundException;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
@@ -48,8 +54,8 @@ import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiag
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
@@ -63,13 +69,15 @@ import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentCaptor.forClass;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -77,6 +85,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
+@WithClassesToStub(PathPlaceRequest.class)
 public class ProjectDiagramEditorTest {
 
     @Mock
@@ -151,6 +160,8 @@ public class ProjectDiagramEditorTest {
     EventSourceMock<OnDiagramLoseFocusEvent> onDiagramLostFocusEven;
     @Mock
     ProjectMessagesListener projectMessagesListener;
+    @Mock
+    DiagramClientErrorHandler diagramClientErrorHandler;
 
     private ProjectDiagramEditorStub tested;
 
@@ -182,7 +193,7 @@ public class ProjectDiagramEditorTest {
 
         when(placeRequest.getIdentifier()).thenReturn(ProjectDiagramEditorStub.EDITOR_ID);
 
-        ClientProjectDiagramService mock = Mockito.mock(ClientProjectDiagramService.class);
+        ClientProjectDiagramService mock = mock(ClientProjectDiagramService.class);
 
         this.tested = new ProjectDiagramEditorStub(view,
                                                    placeManager,
@@ -197,7 +208,8 @@ public class ProjectDiagramEditorTest {
                                                    menuItemsBuilder,
                                                    onDiagramFocusEvent,
                                                    onDiagramLostFocusEven,
-                                                   projectMessagesListener
+                                                   projectMessagesListener,
+                                                   diagramClientErrorHandler
         ) {
             {
                 overviewWidget = overviewWidgetMock;
@@ -246,6 +258,24 @@ public class ProjectDiagramEditorTest {
         verify(projectDiagramServices,
                times(1)).getByPath(eq(path),
                                    any(ServiceCallback.class));
+    }
+
+    @Test
+    public void testLoadContentError() {
+        ArgumentCaptor<ServiceCallback> callbackArgumentCaptor = forClass(ServiceCallback.class);
+
+        tested.loadContent();
+
+        verify(projectDiagramServices, times(1)).getByPath(eq(path), callbackArgumentCaptor.capture());
+
+        callbackArgumentCaptor.getValue().onError(new ClientRuntimeError(new DefinitionNotFoundException()));
+
+        verify(placeManager, times(1)).forceClosePlace(any(PathPlaceRequest.class));
+
+        ArgumentCaptor<Consumer> consumerArgumentCaptor = forClass(Consumer.class);
+        verify(diagramClientErrorHandler, times(1)).handleError(any(ClientRuntimeError.class), consumerArgumentCaptor.capture());
+        consumerArgumentCaptor.getValue().accept("error message");
+        verify(errorPopupPresenter, times(1)).showMessage("error message");
     }
 
     @Test

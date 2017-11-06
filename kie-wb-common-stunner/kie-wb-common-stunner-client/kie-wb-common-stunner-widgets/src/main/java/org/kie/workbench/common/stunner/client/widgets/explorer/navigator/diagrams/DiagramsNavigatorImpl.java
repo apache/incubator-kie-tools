@@ -33,6 +33,7 @@ import org.kie.workbench.common.stunner.client.widgets.explorer.navigator.Naviga
 import org.kie.workbench.common.stunner.client.widgets.explorer.navigator.NavigatorItem;
 import org.kie.workbench.common.stunner.client.widgets.explorer.navigator.NavigatorItemView;
 import org.kie.workbench.common.stunner.client.widgets.explorer.navigator.NavigatorView;
+import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.service.ClientDiagramService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
@@ -41,32 +42,48 @@ import org.kie.workbench.common.stunner.core.lookup.LookupManager;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramLookupRequest;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramLookupRequestImpl;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramRepresentation;
+import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 
 @Dependent
 public class DiagramsNavigatorImpl implements DiagramsNavigator {
 
     private static Logger LOGGER = Logger.getLogger(DiagramsNavigatorImpl.class.getName());
 
-    ClientDiagramService clientDiagramServices;
-    ManagedInstance<DiagramNavigatorItem> navigatorItemInstances;
-    Event<LoadDiagramEvent> loadDiagramEventEvent;
-    NavigatorView<?> view;
+    private final ClientDiagramService clientDiagramServices;
 
-    private final List<NavigatorItem<DiagramRepresentation>> items = new LinkedList<>();
+    private final ManagedInstance<DiagramNavigatorItem> navigatorItemInstances;
+
+    private final Event<LoadDiagramEvent> loadDiagramEventEvent;
+
+    private final NavigatorView<?> view;
+
+    private final ErrorPopupPresenter errorPopupPresenter;
+
+    private final DiagramClientErrorHandler diagramClientErrorHandler;
+
+    private final List<NavigatorItem<DiagramRepresentation>> items;
+
     private int width;
+
     private int height;
 
     @Inject
     public DiagramsNavigatorImpl(final ClientDiagramService clientDiagramServices,
                                  final ManagedInstance<DiagramNavigatorItem> navigatorItemInstances,
                                  final Event<LoadDiagramEvent> loadDiagramEventEvent,
-                                 final NavigatorView<?> view) {
+                                 final NavigatorView<?> view,
+                                 final DiagramClientErrorHandler diagramClientErrorHandler,
+                                 final ErrorPopupPresenter errorPopupPresenter) {
         this.clientDiagramServices = clientDiagramServices;
         this.navigatorItemInstances = navigatorItemInstances;
         this.loadDiagramEventEvent = loadDiagramEventEvent;
         this.view = view;
+        this.diagramClientErrorHandler = diagramClientErrorHandler;
+        this.errorPopupPresenter = errorPopupPresenter;
+
         this.width = 140;
         this.height = 140;
+        this.items = new LinkedList<>();
     }
 
     @Override
@@ -132,10 +149,8 @@ public class DiagramsNavigatorImpl implements DiagramsNavigator {
         item.show(diagramRepresentation,
                   width,
                   height,
-                  () -> {
-                      onItemSelected(item,
-                                     diagramRepresentation);
-                  });
+                  () -> onItemSelected(item, diagramRepresentation)
+        );
     }
 
     private void onItemSelected(final DiagramNavigatorItem item,
@@ -167,14 +182,13 @@ public class DiagramsNavigatorImpl implements DiagramsNavigator {
     }
 
     private void showError(final ClientRuntimeError error) {
-        final String message = StunnerClientLogger.getErrorMessage(error);
-        showError(message);
+        diagramClientErrorHandler.handleError(error, message -> showError(message));
+        log(Level.SEVERE, StunnerClientLogger.getErrorMessage(error));
+        fireProcessingCompleted();
     }
 
-    private void showError(final String error) {
-        fireProcessingCompleted();
-        log(Level.SEVERE,
-            error);
+    private void showError(final String message) {
+        errorPopupPresenter.showMessage(message);
     }
 
     private void log(final Level level,

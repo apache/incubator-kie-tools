@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.bpmn.project.client.type.BPMNDiagramReso
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
@@ -77,7 +78,8 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
                              final ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder,
                              final Event<OnDiagramFocusEvent> onDiagramFocusEvent,
                              final Event<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent,
-                             final ProjectMessagesListener projectMessagesListener) {
+                             final ProjectMessagesListener projectMessagesListener,
+                             final DiagramClientErrorHandler diagramClientErrorHandler) {
         super(view,
               placeManager,
               errorPopupPresenter,
@@ -91,7 +93,8 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
               menuItemsBuilder,
               onDiagramFocusEvent,
               onDiagramLostFocusEvent,
-              projectMessagesListener);
+              projectMessagesListener,
+              diagramClientErrorHandler);
     }
 
     @OnStartup
