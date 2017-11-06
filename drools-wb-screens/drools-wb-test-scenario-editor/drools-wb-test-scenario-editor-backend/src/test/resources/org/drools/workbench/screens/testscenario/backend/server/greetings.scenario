@@ -32,7 +32,11 @@
   <inclusive>false</inclusive>
   <packageName>org.drools.workbench.screens.testscenario.backend.server</packageName>
   <imports>
-    <imports/>
+    <imports>
+      <org.kie.soup.project.datamodel.imports.Import>
+        <type>org.drools.workbench.screens.testscenario.backend.server.model.Person</type>
+      </org.kie.soup.project.datamodel.imports.Import>
+    </imports>
   </imports>
   <ksessions>
     <string>defaultKieSession</string>
