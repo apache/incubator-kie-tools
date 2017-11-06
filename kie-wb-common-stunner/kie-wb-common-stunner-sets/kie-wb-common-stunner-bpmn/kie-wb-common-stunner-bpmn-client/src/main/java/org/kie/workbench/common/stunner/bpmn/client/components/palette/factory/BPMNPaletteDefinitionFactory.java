@@ -32,10 +32,12 @@ import org.kie.workbench.common.stunner.bpmn.definition.BaseGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseStartEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseThrowingIntermediateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.Categories;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
@@ -76,6 +78,8 @@ public class BPMNPaletteDefinitionFactory extends BindableDefSetPaletteDefinitio
             IntermediateTimerEvent.class);
         put(Categories.EVENTS,
             IntermediateSignalEventCatching.class);
+        put(Categories.EVENTS,
+            IntermediateSignalEventThrowing.class);
         put(Categories.GATEWAYS,
             ParallelGateway.class);
         put(Categories.CONTAINERS,
@@ -115,6 +119,8 @@ public class BPMNPaletteDefinitionFactory extends BindableDefSetPaletteDefinitio
                                translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.definition.morph.base.end"));
         MORPH_GROUP_TITLES.put(BaseCatchingIntermediateEvent.class.getName(),
                                translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.definition.morph.base.catchingIntermediate"));
+        MORPH_GROUP_TITLES.put(BaseThrowingIntermediateEvent.class.getName(),
+                               translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.definition.morph.base.throwingIntermediate"));
         MORPH_GROUP_TITLES.put(BaseSubprocess.class.getName(),
                                translationService.getKeyValue("org.kie.workbench.common.stunner.bpmn.definition.morph.base.subprocess"));
         MORPH_GROUP_TITLES.put(BaseGateway.class.getName(),

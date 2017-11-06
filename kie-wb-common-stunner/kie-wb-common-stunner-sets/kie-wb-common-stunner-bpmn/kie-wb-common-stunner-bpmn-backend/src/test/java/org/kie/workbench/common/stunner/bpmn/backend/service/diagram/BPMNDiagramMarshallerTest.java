@@ -77,6 +77,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
@@ -172,6 +173,7 @@ public class BPMNDiagramMarshallerTest {
     private static final String BPMN_STARTTIMEREVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startTimerEvent.bpmn";
     private static final String BPMN_STARTSIGNALEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startSignalEvent.bpmn";
     private static final String BPMN_INTERMEDIATE_SIGNAL_EVENTCATCHING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateSignalEventCatching.bpmn";
+    private static final String BPMN_INTERMEDIATE_SIGNAL_EVENTTHROWING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateSignalEventThrowing.bpmn";
     private static final String BPMN_INTERMEDIATE_TIMER_EVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateTimerEvent.bpmn";
     private static final String BPMN_ENDEVENTASSIGNMENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endEventAssignments.bpmn";
     private static final String BPMN_PROCESSPROPERTIES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/processProperties.bpmn";
@@ -608,6 +610,33 @@ public class BPMNDiagramMarshallerTest {
         DataIOSet dataIOSet = intermediateSignalEventCatching.getDataIOSet();
         AssignmentsInfo assignmentsInfo = dataIOSet.getAssignmentsinfo();
         assertEquals("||output1_:String||[dout]output1_->var1",
+                     assignmentsInfo.getValue());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnmarshallIntermediateSignalEventThrowing() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_INTERMEDIATE_SIGNAL_EVENTTHROWING);
+        assertDiagram(diagram,
+                      2);
+        assertEquals("intermediateSignalThrowing",
+                     diagram.getMetadata().getTitle());
+        Node<? extends Definition, ?> intermediateEventNode = diagram.getGraph().getNode("_A45EC77D-5414-4348-BA8F-05C4FFD660EE");
+        IntermediateSignalEventThrowing intermediateSignalEventThrowing = (IntermediateSignalEventThrowing) intermediateEventNode.getContent().getDefinition();
+        assertNotNull(intermediateSignalEventThrowing.getGeneral());
+        assertEquals("MySignalThrowingEvent",
+                     intermediateSignalEventThrowing.getGeneral().getName().getValue());
+        assertEquals("MySignalThrowingEventDocumentation",
+                     intermediateSignalEventThrowing.getGeneral().getDocumentation().getValue());
+        assertNotNull(intermediateSignalEventThrowing.getExecutionSet());
+        assertEquals("processInstance",
+                     intermediateSignalEventThrowing.getExecutionSet().getSignalScope().getValue());
+        assertEquals("MySignal",
+                     intermediateSignalEventThrowing.getExecutionSet().getSignalRef().getValue());
+
+        DataIOSet dataIOSet = intermediateSignalEventThrowing.getDataIOSet();
+        AssignmentsInfo assignmentsInfo = dataIOSet.getAssignmentsinfo();
+        assertEquals("_input1:String||||[din]var1->_input1",
                      assignmentsInfo.getValue());
     }
 
@@ -1675,6 +1704,25 @@ public class BPMNDiagramMarshallerTest {
         assertTrue(result.contains(" signalRef=\"_3b677877-9be0-3fe7-bfc4-94a862fdc919\""));
         assertTrue(result.contains("<bpmn2:signal"));
         assertTrue(result.contains("name=\"MySignal\""));
+    }
+
+    @Test
+    public void testMarshallIntermediateSignalEventThrowing() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_INTERMEDIATE_SIGNAL_EVENTTHROWING);
+        String result = tested.marshall(diagram);
+        assertDiagram(result,
+                      1,
+                      1,
+                      0);
+
+        assertTrue(result.contains("<bpmn2:intermediateThrowEvent"));
+        assertTrue(result.contains(" name=\"MySignalThrowingEvent\""));
+        assertTrue(result.contains("<bpmn2:signalEventDefinition"));
+        assertTrue(result.contains(" signalRef=\"_3b677877-9be0-3fe7-bfc4-94a862fdc919\""));
+        assertTrue(result.contains("<bpmn2:signal"));
+        assertTrue(result.contains("name=\"MySignal\""));
+        assertTrue(result.contains("<drools:metaData name=\"customScope\">"));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[processInstance]]></drools:metaValue>"));
     }
 
     @Test

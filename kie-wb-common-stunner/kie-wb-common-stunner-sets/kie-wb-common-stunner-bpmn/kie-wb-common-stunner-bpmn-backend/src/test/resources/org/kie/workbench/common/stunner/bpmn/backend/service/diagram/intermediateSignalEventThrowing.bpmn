@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:drools="http://www.jboss.org/drools" id="_4-2CoLsvEeefzdxaJTE7xg" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" exporter="jBPM Designer" exporterVersion="6.2.0" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_var1Item" structureRef="String"/>
+  <bpmn2:signal id="_3b677877-9be0-3fe7-bfc4-94a862fdc919" name="MySignal"/>
+  <bpmn2:process id="evaluation.intermediateSignalThrowing" drools:packageName="Evaluation.src.main.resources" drools:version="1.0" name="intermediateSignalThrowing" isExecutable="true">
+    <bpmn2:property id="var1" itemSubjectRef="_var1Item"/>
+    <bpmn2:intermediateThrowEvent id="_A45EC77D-5414-4348-BA8F-05C4FFD660EE" drools:selectable="true" color:background-color="#8cabff" color:border-color="#008cec" color:color="#000000" name="MySignalThrowingEvent">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[MySignalThrowingEvent]]></drools:metaValue>
+        </drools:metaData>
+        <drools:metaData name="customScope">
+          <drools:metaValue><![CDATA[processInstance]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:documentation id="_4-2CobsvEeefzdxaJTE7xg"><![CDATA[MySignalThrowingEventDocumentation]]></bpmn2:documentation>
+      <bpmn2:dataInput id="_A45EC77D-5414-4348-BA8F-05C4FFD660EE__input1InputX" drools:dtype="String" name="_input1"/>
+      <bpmn2:dataInputAssociation id="_4-2Co7svEeefzdxaJTE7xg">
+        <bpmn2:sourceRef>var1</bpmn2:sourceRef>
+        <bpmn2:targetRef>_A45EC77D-5414-4348-BA8F-05C4FFD660EE__input1InputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:inputSet id="_4-2CorsvEeefzdxaJTE7xg">
+        <bpmn2:dataInputRefs>_A45EC77D-5414-4348-BA8F-05C4FFD660EE__input1InputX</bpmn2:dataInputRefs>
+      </bpmn2:inputSet>
+      <bpmn2:signalEventDefinition id="_4-2CpLsvEeefzdxaJTE7xg" signalRef="_3b677877-9be0-3fe7-bfc4-94a862fdc919"/>
+    </bpmn2:intermediateThrowEvent>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_4-2CpbsvEeefzdxaJTE7xg">
+    <bpmndi:BPMNPlane id="_4-2CprsvEeefzdxaJTE7xg" bpmnElement="evaluation.intermediateSignalThrowing">
+      <bpmndi:BPMNShape id="_4-2Cp7svEeefzdxaJTE7xg" bpmnElement="_A45EC77D-5414-4348-BA8F-05C4FFD660EE">
+        <dc:Bounds height="30.0" width="30.0" x="120.0" y="105.0"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmn2:relationship id="_4-2CqLsvEeefzdxaJTE7xg" type="BPSimData">
+    <bpmn2:extensionElements>
+      <bpsim:BPSimData>
+        <bpsim:Scenario xsi:type="bpsim:Scenario" id="default" name="Simulationscenario">
+          <bpsim:ScenarioParameters xsi:type="bpsim:ScenarioParameters" baseTimeUnit="min"/>
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_A45EC77D-5414-4348-BA8F-05C4FFD660EE" id="_4-2CqbsvEeefzdxaJTE7xg">
+            <bpsim:TimeParameters xsi:type="bpsim:TimeParameters">
+              <bpsim:ProcessingTime xsi:type="bpsim:Parameter">
+                <bpsim:UniformDistribution max="10.0" min="5.0"/>
+              </bpsim:ProcessingTime>
+            </bpsim:TimeParameters>
+          </bpsim:ElementParameters>
+        </bpsim:Scenario>
+      </bpsim:BPSimData>
+    </bpmn2:extensionElements>
+    <bpmn2:source>_4-2CoLsvEeefzdxaJTE7xg</bpmn2:source>
+    <bpmn2:target>_4-2CoLsvEeefzdxaJTE7xg</bpmn2:target>
+  </bpmn2:relationship>
+</bpmn2:definitions>
