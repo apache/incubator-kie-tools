@@ -59,7 +59,6 @@ import org.uberfire.io.impl.IOServiceDotFileImpl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -135,7 +134,7 @@ public class ScenarioRunnerServiceTest {
     @Test
     public void testGreetings() throws Exception {
         initKieSession("HelloEveryOne.gdst");
-        testScenario("greetings.scenario");
+        testScenario("greetings.scenario", true);
     }
 
     /**
@@ -145,7 +144,23 @@ public class ScenarioRunnerServiceTest {
     @Test
     public void testHighAndSmall() throws Exception {
         initKieSession("thereIsHighPerson.rdrl", "thereAreBothHighAndSmallPerson.rdrl");
-        testScenario("highAndSmall.scenario");
+        testScenario("highAndSmall.scenario", true);
+    }
+
+    /**
+     * DROOLS-2104
+     * Use XLS table
+     */
+    @Test
+    public void testCouples() throws Exception {
+        initKieSession("couplesWithSameEyes.xls");
+        testScenario("testCouples.scenario", true);
+    }
+
+    @Test
+    public void testCouplesNegative() throws Exception {
+        initKieSession("couplesWithSameEyes.xls");
+        testScenario("testCouplesNegative.scenario", false);
     }
 
     @Test
@@ -168,7 +183,7 @@ public class ScenarioRunnerServiceTest {
                      argumentCaptor.getValue().getIdentifier());
     }
 
-    private void testScenario(String scenarioName) throws Exception {
+    private void testScenario(String scenarioName, boolean isExpectedSuccess) throws Exception {
         final KieProject project = mock(KieProject.class);
 
         final URL scenarioResource = getClass().getResource(scenarioName);
@@ -180,13 +195,13 @@ public class ScenarioRunnerServiceTest {
 
         TestScenarioResult result = service.run("userName", scenario, project);
 
-        assertTrue(scenario.wasSuccessful());
-        assertTrue(result.getScenario().wasSuccessful());
+        assertEquals(isExpectedSuccess, scenario.wasSuccessful());
+        assertEquals(isExpectedSuccess, result.getScenario().wasSuccessful());
 
         verify(defaultTestResultMessageEvent).fire(testResultMessageCaptor.capture());
         final TestResultMessage resultMessage = testResultMessageCaptor.getValue();
-        assertEquals(0, resultMessage.getFailures().size());
-        assertTrue(resultMessage.wasSuccessful());
+        assertEquals(isExpectedSuccess, resultMessage.getFailures().size() == 0);
+        assertEquals(isExpectedSuccess, resultMessage.wasSuccessful());
     }
 
     private Scenario makeScenario(String name) {

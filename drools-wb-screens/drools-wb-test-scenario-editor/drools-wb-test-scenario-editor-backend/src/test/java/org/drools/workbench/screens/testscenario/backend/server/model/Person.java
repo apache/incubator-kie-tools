@@ -28,6 +28,10 @@ public class Person implements java.io.Serializable {
 
     private int height;
 
+    private Person coupleWith;
+
+    private String eyeColor;
+
     public Person() {
     }
 
@@ -53,6 +57,22 @@ public class Person implements java.io.Serializable {
 
     public Person(int height) {
         this.height = height;
+    }
+
+    public Person getCoupleWith() {
+        return coupleWith;
+    }
+
+    public void setCoupleWith(Person coupleWith) {
+        this.coupleWith = coupleWith;
+    }
+
+    public String getEyeColor() {
+        return eyeColor;
+    }
+
+    public void setEyeColor(String eyeColor) {
+        this.eyeColor = eyeColor;
     }
 
     @Override
