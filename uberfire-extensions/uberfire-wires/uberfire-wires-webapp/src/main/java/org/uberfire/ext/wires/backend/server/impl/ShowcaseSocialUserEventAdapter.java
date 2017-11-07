@@ -31,6 +31,7 @@ import org.ext.uberfire.social.activities.model.SocialUser;
 import org.ext.uberfire.social.activities.service.SocialAdapter;
 import org.ext.uberfire.social.activities.service.SocialCommandTypeFilter;
 import org.ext.uberfire.social.activities.service.SocialUserRepositoryAPI;
+import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.ext.wires.shared.social.ShowcaseSocialUserEvent;
 
 @ApplicationScoped
@@ -48,7 +49,7 @@ public class ShowcaseSocialUserEventAdapter implements SocialAdapter<ShowcaseSoc
 
     @Override
     public SocialEventType socialEventType() {
-        return DefaultTypes.DUMMY_EVENT;
+        return SampleType.SAMPLE;
     }
 
     @Override
@@ -73,7 +74,7 @@ public class ShowcaseSocialUserEventAdapter implements SocialAdapter<ShowcaseSoc
         final String desc = String.format("new social event (%d)",
                                           counter.incrementAndGet());
         return new SocialActivitiesEvent(socialUser,
-                                         DefaultTypes.DUMMY_EVENT,
+                                         SampleType.SAMPLE,
                                          new Date())
                 .withAdicionalInfo("edited")
                 .withDescription(desc)
@@ -93,5 +94,11 @@ public class ShowcaseSocialUserEventAdapter implements SocialAdapter<ShowcaseSoc
     @Override
     public List<String> getTimelineFiltersNames() {
         return new ArrayList<String>();
+    }
+
+    @Portable
+    public enum SampleType implements SocialEventType {
+
+        SAMPLE,
     }
 }

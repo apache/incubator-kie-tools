@@ -25,7 +25,6 @@ import javax.inject.Inject;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.commons.concurrent.Managed;
 import org.uberfire.commons.concurrent.Unmanaged;
 import org.uberfire.commons.lifecycle.Disposable;
@@ -55,19 +54,8 @@ public class DisposableShutdownService implements ServletContextListener {
 
     @Override
     public void contextDestroyed(final ServletContextEvent sce) {
-        ClusterService clusterService = null;
 
         final List<PriorityDisposable> disposables = new ArrayList<PriorityDisposable>(PriorityDisposableRegistry.getDisposables());
-        for (final PriorityDisposable disposable : disposables) {
-            if (disposable instanceof ClusterService) {
-                clusterService = (ClusterService) disposable;
-            }
-        }
-
-        if (clusterService != null) {
-            disposables.remove(clusterService);
-            clusterService.lock();
-        }
 
         sort(disposables);
 
@@ -82,11 +70,6 @@ public class DisposableShutdownService implements ServletContextListener {
             if (fileSystemProvider instanceof Disposable) {
                 ((Disposable) fileSystemProvider).dispose();
             }
-        }
-
-        if (clusterService != null) {
-            clusterService.unlock();
-            clusterService.dispose();
         }
 
         PriorityDisposableRegistry.clear();

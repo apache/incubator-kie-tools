@@ -26,14 +26,12 @@ import javax.inject.Named;
 
 import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.backend.server.security.IOSecurityAuth;
-import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.commons.concurrent.Unmanaged;
 import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceNio2WrapperImpl;
-import org.uberfire.io.impl.cluster.IOServiceClusterImpl;
 import org.uberfire.java.nio.file.FileSystem;
 
 @ApplicationScoped
@@ -41,8 +39,6 @@ import org.uberfire.java.nio.file.FileSystem;
 public class ConfigIOServiceProducer {
 
     private static ConfigIOServiceProducer instance;
-
-    private ClusterServiceFactory clusterServiceFactory;
 
     private ExecutorService executorService;
 
@@ -62,10 +58,8 @@ public class ConfigIOServiceProducer {
     }
 
     @Inject
-    public ConfigIOServiceProducer(@Named("clusterServiceFactory") ClusterServiceFactory clusterServiceFactory,
-                                   @Unmanaged ExecutorService executorService,
+    public ConfigIOServiceProducer(@Unmanaged ExecutorService executorService,
                                    @IOSecurityAuth Instance<AuthenticationService> applicationProvidedConfigIOAuthService) {
-        this.clusterServiceFactory = clusterServiceFactory;
         this.executorService = executorService;
         this.applicationProvidedConfigIOAuthService = applicationProvidedConfigIOAuthService;
     }
@@ -73,14 +67,7 @@ public class ConfigIOServiceProducer {
     @PostConstruct
     public void setup() {
         instance = this;
-        if (clusterServiceFactory == null) {
-            configIOService = new IOServiceNio2WrapperImpl("config");
-        } else {
-            configIOService = new IOServiceClusterImpl(new IOServiceNio2WrapperImpl("config"),
-                                                       clusterServiceFactory,
-                                                       clusterServiceFactory.isAutoStart(),
-                                                       executorService);
-        }
+        configIOService = new IOServiceNio2WrapperImpl("config");
         configFileSystem = (FileSystem) PriorityDisposableRegistry.get("systemFS");
     }
 

@@ -62,7 +62,6 @@
     <version.org.easytesting.fest>${version.org.easytesting.fest}</version.org.easytesting.fest>
     <version.org.hamcrest>${version.org.hamcrest}</version.org.hamcrest>
 
-    <version.org.apache.helix>${version.org.apache.helix}</version.org.apache.helix>
     <version.org.eclipse.jgit>${version.org.eclipse.jgit}</version.org.eclipse.jgit>
     <version.com.jcraft>${version.com.jcraft}</version.com.jcraft>
 
@@ -142,18 +141,6 @@
         <groupId>com.jcraft</groupId>
         <artifactId>jsch</artifactId>
         <version>\${version.com.jcraft}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.helix</groupId>
-        <artifactId>helix-core</artifactId>
-        <version>\${version.org.apache.helix}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>jline</groupId>
-            <artifactId>jline</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <!-- Formatting -->

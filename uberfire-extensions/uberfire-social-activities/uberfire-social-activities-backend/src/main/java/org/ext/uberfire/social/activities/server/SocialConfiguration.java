@@ -18,17 +18,9 @@ package org.ext.uberfire.social.activities.server;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.uberfire.commons.cluster.ClusterServiceFactory;
 
 @ApplicationScoped
 public class SocialConfiguration {
-
-    @Inject
-    @Named("clusterServiceFactory")
-    private ClusterServiceFactory clusterServiceFactory;
 
     private Boolean socialEnable;
 

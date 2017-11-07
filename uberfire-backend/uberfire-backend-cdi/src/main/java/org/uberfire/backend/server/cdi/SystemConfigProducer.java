@@ -26,7 +26,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
@@ -49,8 +48,6 @@ import javax.inject.Singleton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.commons.cluster.ClusterServiceFactory;
-import org.uberfire.commons.concurrent.Unmanaged;
 import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
 import org.uberfire.commons.services.cdi.Startable;
 import org.uberfire.commons.services.cdi.Startup;
@@ -58,7 +55,6 @@ import org.uberfire.commons.services.cdi.StartupType;
 import org.uberfire.commons.services.cdi.Veto;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceNio2WrapperImpl;
-import org.uberfire.io.impl.cluster.IOServiceClusterImpl;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.FileSystemState;
 import org.uberfire.java.nio.file.FileStore;
@@ -359,28 +355,7 @@ public class SystemConfigProducer implements Extension {
             @Override
             public IOService create(CreationalContext<IOService> ctx) {
 
-                final Bean<ClusterServiceFactory> clusterFactoryBean = (Bean<ClusterServiceFactory>) bm.getBeans("clusterServiceFactory").iterator().next();
-                final CreationalContext<ClusterServiceFactory> _ctx = bm.createCreationalContext(clusterFactoryBean);
-                final ClusterServiceFactory clusterServiceFactory = (ClusterServiceFactory) bm.getReference(clusterFactoryBean,
-                                                                                                            ClusterServiceFactory.class,
-                                                                                                            _ctx);
-
-                final ExecutorService executorService = getBean(bm,
-                                                                ExecutorService.class,
-                                                                new AnnotationLiteral<Unmanaged>() {
-                                                                });
-
-                final IOService result;
-
-                if (clusterServiceFactory == null) {
-                    result = new IOServiceNio2WrapperImpl();
-                } else {
-                    result = new IOServiceClusterImpl(new IOServiceNio2WrapperImpl(),
-                                                      clusterServiceFactory,
-                                                      executorService);
-                }
-
-                return result;
+                return new IOServiceNio2WrapperImpl();
             }
 
             @Override

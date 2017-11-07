@@ -26,7 +26,7 @@ import javax.inject.Named;
 import com.thoughtworks.xstream.XStream;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.soup.commons.xstream.XStreamUtils;
-import org.uberfire.commons.cluster.ClusterServiceFactory;
+import org.uberfire.commons.cluster.ClusterParameters;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.FileVisitResult;
@@ -48,14 +48,13 @@ public class WorkbenchServicesImpl implements WorkbenchServices {
 
     public static final String PERSPECTIVE_EXTENSION = ".perspective";
     private final XStream xs = XStreamUtils.createTrustingXStream();
+    private final ClusterParameters clusterParameters = new ClusterParameters();
+
     @Inject
     @Named("configIO")
     private IOService ioService;
     @Inject
     private UserServicesImpl userServices;
-    @Inject
-    @Named("clusterServiceFactory")
-    private ClusterServiceFactory clusterServiceFactory;
 
     @Override
     public void save(final String perspectiveId,
@@ -210,7 +209,7 @@ public class WorkbenchServicesImpl implements WorkbenchServices {
 
     @Override
     public boolean isWorkbenchOnCluster() {
-        return clusterServiceFactory != null;
+        return clusterParameters.isAppFormerClustered();
     }
 
     private Path getPathToDefaultEditors() {

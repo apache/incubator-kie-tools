@@ -85,7 +85,7 @@ public class SocialTimelineCacheClusterPersistence extends SocialTimelineCachePe
                 Path timeLineDir = userServicesBackend.buildPath(SOCIAL_FILES,
                                                                  sampleType.name());
                 ioService.startBatch(timeLineDir.getFileSystem());
-                socialClusterMessaging.notifySomeInstanceisOnShutdown();
+                socialClusterMessaging.notifySomeInstanceIsOnShutdown();
                 saveAllTypeEvents();
                 saveAllUserTimelines();
             } catch (Exception e) {

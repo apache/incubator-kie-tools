@@ -36,7 +36,7 @@ import org.ext.uberfire.social.activities.service.SocialEventTypeRepositoryAPI;
 import org.ext.uberfire.social.activities.service.SocialTimelinePersistenceAPI;
 import org.ext.uberfire.social.activities.service.SocialUserPersistenceAPI;
 import org.uberfire.backend.server.io.ConfigIOServiceProducer;
-import org.uberfire.commons.cluster.ClusterServiceFactory;
+import org.uberfire.commons.cluster.ClusterJMSService;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
 import org.uberfire.io.IOService;
@@ -50,9 +50,6 @@ public class SocialTimelinePersistenceProducer {
     SocialEventTypeRepositoryAPI socialEventTypeRepository;
     @Inject
     SocialSecurityConstraintsManager socialSecurityConstraintsManager;
-    @Inject
-    @Named("clusterServiceFactory")
-    private ClusterServiceFactory clusterServiceFactory;
     private SocialTimelinePersistenceAPI socialTimelinePersistenceAPI;
     private Gson gson;
     private Type gsonCollectionType;
@@ -73,9 +70,12 @@ public class SocialTimelinePersistenceProducer {
     @Inject
     private SocialUserPersistenceAPI socialUserPersistenceAPI;
 
+    private ClusterJMSService clusterJMSService;
+
     @PostConstruct
     public void setup() {
         gsonFactory();
+        clusterJMSService = new ClusterJMSService();
         final IOService _ioService = getConfigIOServiceProducer().configIOService();
         final FileSystem _fileSystem = getConfigIOServiceProducer().configFileSystem();
         final SocialUserServicesExtendedBackEndImpl userServicesBackend = new SocialUserServicesExtendedBackEndImpl(fileSystem);
@@ -92,7 +92,7 @@ public class SocialTimelinePersistenceProducer {
     void setupSocialTimelinePersistenceAPI(IOService _ioService,
                                            FileSystem _fileSystem,
                                            SocialUserServicesExtendedBackEndImpl userServicesBackend) {
-        if (clusterServiceFactory == null) {
+        if (!clusterJMSService.isAppFormerClustered()) {
             socialTimelinePersistenceAPI = new SocialTimelineCacheInstancePersistence(gson,
                                                                                       gsonCollectionType,
                                                                                       _ioService,
@@ -111,6 +111,7 @@ public class SocialTimelinePersistenceProducer {
                                                                                      userServicesBackend,
                                                                                      _fileSystem,
                                                                                      socialSecurityConstraintsManager);
+            socialClusterMessaging.setup(clusterJMSService, socialTimelinePersistenceAPI, socialUserPersistenceAPI);
         }
         socialTimelinePersistenceAPI.setup();
     }

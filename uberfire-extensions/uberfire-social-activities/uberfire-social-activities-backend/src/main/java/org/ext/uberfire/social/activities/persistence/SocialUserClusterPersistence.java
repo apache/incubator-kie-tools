@@ -24,7 +24,7 @@ import org.uberfire.java.nio.file.Path;
 
 public class SocialUserClusterPersistence extends SocialUserCachePersistence {
 
-    private final SocialUserClusterMessaging socialUserClusterMessaging;
+    private SocialUserClusterMessaging socialUserClusterMessaging;
 
     public SocialUserClusterPersistence(SocialUserServicesExtendedBackEndImpl userServicesBackend,
                                         UserServicesImpl userServices,

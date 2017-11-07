@@ -27,11 +27,9 @@ import javax.inject.Named;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.backend.server.IOWatchServiceNonDotImpl;
-import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.commons.concurrent.Unmanaged;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
-import org.uberfire.io.impl.cluster.IOServiceClusterImpl;
 
 @ApplicationScoped
 public class ApplicationScopedProducer {
@@ -39,8 +37,6 @@ public class ApplicationScopedProducer {
     IOWatchServiceNonDotImpl watchService;
 
     private AuthenticationService authenticationService;
-
-    private ClusterServiceFactory clusterServiceFactory;
 
     private IOService ioService;
 
@@ -52,23 +48,15 @@ public class ApplicationScopedProducer {
     @Inject
     public ApplicationScopedProducer(IOWatchServiceNonDotImpl watchService,
                                      AuthenticationService authenticationService,
-                                     @Named("clusterServiceFactory") ClusterServiceFactory clusterServiceFactory,
                                      @Unmanaged ExecutorService executorService) {
         this.watchService = watchService;
         this.authenticationService = authenticationService;
-        this.clusterServiceFactory = clusterServiceFactory;
         this.executorService = executorService;
     }
 
     @PostConstruct
     public void setup() {
-        if (clusterServiceFactory == null) {
-            ioService = new IOServiceDotFileImpl(watchService);
-        } else {
-            ioService = new IOServiceClusterImpl(new IOServiceDotFileImpl(watchService),
-                                                 clusterServiceFactory,
-                                                 executorService);
-        }
+        ioService = new IOServiceDotFileImpl(watchService);
     }
 
     @Produces
