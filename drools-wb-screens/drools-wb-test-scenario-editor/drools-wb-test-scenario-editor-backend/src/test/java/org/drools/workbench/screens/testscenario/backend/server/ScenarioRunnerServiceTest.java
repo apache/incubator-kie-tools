@@ -164,6 +164,18 @@ public class ScenarioRunnerServiceTest {
     }
 
     @Test
+    public void testSimilarPerson() throws Exception {
+        initKieSession("mostSimilarPerson.gdst");
+        testScenario("testSimilarPerson.scenario", true);
+    }
+
+    @Test
+    public void testSimilarPersonNegative() throws Exception {
+        initKieSession("mostSimilarPerson.gdst");
+        testScenario("testSimilarPersonNegative.scenario", false);
+    }
+
+    @Test
     public void testRunSeveralScenarios() throws Exception {
         initKieSession();
         Path path = mock(Path.class);
