@@ -19,13 +19,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.thoughtworks.xstream.XStream;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.soup.commons.xstream.XStreamUtils;
 import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
@@ -47,7 +47,7 @@ import static org.uberfire.java.nio.file.Files.walkFileTree;
 public class WorkbenchServicesImpl implements WorkbenchServices {
 
     public static final String PERSPECTIVE_EXTENSION = ".perspective";
-    private final XStream xs = new XStream();
+    private final XStream xs = XStreamUtils.createTrustingXStream();
     @Inject
     @Named("configIO")
     private IOService ioService;

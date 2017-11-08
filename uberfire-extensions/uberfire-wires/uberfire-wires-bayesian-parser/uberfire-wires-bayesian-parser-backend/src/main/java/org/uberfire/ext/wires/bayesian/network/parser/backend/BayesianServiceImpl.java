@@ -21,6 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import com.thoughtworks.xstream.XStream;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.soup.commons.xstream.XStreamUtils;
 import org.uberfire.ext.wires.bayesian.network.parser.client.builder.BayesianBuilder;
 import org.uberfire.ext.wires.bayesian.network.parser.client.model.BayesNetwork;
 import org.uberfire.ext.wires.bayesian.network.parser.client.parser.Bif;
@@ -45,7 +46,7 @@ public class BayesianServiceImpl implements BayesianService {
     }
 
     private Bif processXML(InputStream resourceAsStream) {
-        XStream xstream = new XStream();
+        XStream xstream = XStreamUtils.createTrustingXStream();
         xstream.processAnnotations(Bif.class);
         xstream.processAnnotations(Network.class);
         xstream.processAnnotations(Probability.class);

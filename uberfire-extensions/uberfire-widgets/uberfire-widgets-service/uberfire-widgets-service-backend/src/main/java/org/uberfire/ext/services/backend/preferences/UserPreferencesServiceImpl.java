@@ -21,6 +21,7 @@ import javax.inject.Named;
 import com.thoughtworks.xstream.XStream;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.kie.soup.commons.xstream.XStreamUtils;
 import org.uberfire.backend.server.UserServicesBackendImpl;
 import org.uberfire.ext.services.shared.preferences.UserPreference;
 import org.uberfire.ext.services.shared.preferences.UserPreferencesService;
@@ -41,7 +42,7 @@ public class UserPreferencesServiceImpl implements UserPreferencesService {
     @Named("configIO")
     private IOService ioServiceConfig;
 
-    private XStream xs = new XStream();
+    private XStream xs = XStreamUtils.createTrustingXStream();
 
     @Override
     public void saveUserPreferences(final UserPreference preferences) {

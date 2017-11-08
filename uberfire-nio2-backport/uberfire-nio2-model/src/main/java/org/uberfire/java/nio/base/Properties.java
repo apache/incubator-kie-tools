@@ -24,6 +24,7 @@ import java.util.Map;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
+import org.kie.soup.commons.xstream.XStreamUtils;
 
 /**
  *
@@ -58,7 +59,7 @@ public class Properties extends HashMap<String, Object> {
 
     public void store(final OutputStream out,
                       boolean closeOnFinish) {
-        final XStream xstream = new XStream();
+        final XStream xstream = XStreamUtils.createTrustingXStream();
         xstream.toXML(this,
                       out);
         if (closeOnFinish) {
@@ -76,7 +77,7 @@ public class Properties extends HashMap<String, Object> {
 
     public void load(final InputStream in,
                      boolean closeOnFinish) {
-        final XStream xstream = new XStream();
+        final XStream xstream = XStreamUtils.createTrustingXStream();
         final Properties temp = new Properties();
         try {
             xstream.fromXML(in,
