@@ -16,9 +16,6 @@
 
 package org.uberfire.ext.widgets.common.client.dropdown;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -42,22 +39,17 @@ public class PerspectiveDropDown implements IsWidget {
     Set<String> perspectiveIdsExcluded;
     LiveSearchService searchService = (pattern, maxResults, callback) -> {
 
-        List<String> result = new ArrayList<>();
+        LiveSearchResults result = new LiveSearchResults(maxResults);
         for (SyncBeanDef<Activity> beanDef : activityBeansCache.getPerspectiveActivities()) {
             String perspectiveName = beanDef.getName();
             if (perspectiveIdsExcluded == null || !perspectiveIdsExcluded.contains(perspectiveName)) {
                 String name = getItemName(perspectiveName);
                 if (name.toLowerCase().contains(pattern.toLowerCase())) {
-                    result.add(name);
+                    result.add(perspectiveName, name);
                 }
             }
         }
-
-        if (maxResults > 0 && maxResults < result.size()) {
-            result = result.subList(0,
-                                    maxResults);
-        }
-        Collections.sort(result);
+        result.sortByValue();
         callback.afterSearch(result);
     };
 
@@ -101,28 +93,23 @@ public class PerspectiveDropDown implements IsWidget {
     }
 
     public PerspectiveActivity getSelectedPerspective() {
-        String selected = liveSearchDropDown.getSelectedItem();
+        String selected = liveSearchDropDown.getSelectedKey();
         if (selected == null) {
             return null;
         }
-        for (SyncBeanDef beanDef : activityBeansCache.getPerspectiveActivities()) {
-            PerspectiveActivity p = (PerspectiveActivity) beanDef.getInstance();
-            String name = getItemName(p);
-            if (selected.equals(name)) {
-                return p;
-            }
-        }
-        return null;
+        SyncBeanDef beanDef = activityBeansCache.getActivity(selected);
+        PerspectiveActivity p = (PerspectiveActivity) beanDef.getInstance();
+        return p;
     }
 
     public void setSelectedPerspective(String perspectiveId) {
         String item = getItemName(perspectiveId);
-        liveSearchDropDown.setSelectedItem(item);
+        liveSearchDropDown.setSelectedItem(perspectiveId, item);
     }
 
     public void setSelectedPerspective(PerspectiveActivity selectedPerspective) {
         String item = getItemName(selectedPerspective);
-        liveSearchDropDown.setSelectedItem(item);
+        liveSearchDropDown.setSelectedItem(selectedPerspective.getIdentifier(), item);
     }
 
     public void setMaxItems(int maxItems) {

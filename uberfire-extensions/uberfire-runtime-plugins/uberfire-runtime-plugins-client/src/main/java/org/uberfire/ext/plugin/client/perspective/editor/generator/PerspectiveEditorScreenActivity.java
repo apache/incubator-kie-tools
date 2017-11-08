@@ -34,6 +34,7 @@ public class PerspectiveEditorScreenActivity implements WorkbenchScreenActivity 
     private final LayoutGenerator layoutGenerator;
     private LayoutTemplate layoutTemplate;
     private PlaceRequest place;
+    private String identifier;
 
     private Panel mainPanel = new FlowPanel();
 
@@ -41,10 +42,13 @@ public class PerspectiveEditorScreenActivity implements WorkbenchScreenActivity 
                                            final LayoutGenerator layoutGenerator) {
         this.layoutTemplate = layoutTemplate;
         this.layoutGenerator = layoutGenerator;
+        this.identifier = buildScreenId(layoutTemplate.getName());
     }
 
-    public static String screenSufix() {
-        return "Screen";
+    public static String buildScreenId(String perspectiveId) {
+        // AF-905: [Layout Editor] Errors while creating a page with the name of an existing screen
+        // Make sure the generated id. doesn't clash with any existing screen
+        return perspectiveId + " [Screen]";
     }
 
     public LayoutTemplate getLayoutTemplate() {
@@ -67,7 +71,7 @@ public class PerspectiveEditorScreenActivity implements WorkbenchScreenActivity 
 
     @Override
     public String getIdentifier() {
-        return layoutTemplate.getName() + screenSufix();
+        return identifier;
     }
 
     @Override

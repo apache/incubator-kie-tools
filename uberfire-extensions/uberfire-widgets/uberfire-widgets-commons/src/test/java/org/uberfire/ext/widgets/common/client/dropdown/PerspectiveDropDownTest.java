@@ -89,7 +89,7 @@ public class PerspectiveDropDownTest {
         perspectiveDropDown.setPerspectiveIdsExcluded(excluded);
         perspectiveDropDown.searchService.search("", -1, itemList -> {
             assertEquals(itemList.size(), 1);
-            assertEquals(itemList.get(0), "B");
+            assertEquals(itemList.get(0).getKey(), "B");
         });
     }
 

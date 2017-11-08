@@ -55,17 +55,21 @@ import org.uberfire.ext.plugin.model.PluginType;
 @ApplicationScoped
 public class PerspectiveEditorGenerator {
 
-    @Inject
     private SyncBeanManager beanManager;
-
-    @Inject
     private ActivityBeansCache activityBeansCache;
-
-    @Inject
     private LayoutGenerator layoutGenerator;
+    private Caller<PerspectiveServices> perspectiveServices;
 
     @Inject
-    private Caller<PerspectiveServices> perspectiveServices;
+    public PerspectiveEditorGenerator(SyncBeanManager beanManager,
+                                      ActivityBeansCache activityBeansCache,
+                                      LayoutGenerator layoutGenerator,
+                                      Caller<PerspectiveServices> perspectiveServices) {
+        this.beanManager = beanManager;
+        this.activityBeansCache = activityBeansCache;
+        this.layoutGenerator = layoutGenerator;
+        this.perspectiveServices = perspectiveServices;
+    }
 
     @PostConstruct
     public void loadPerspectives() {
@@ -82,39 +86,42 @@ public class PerspectiveEditorGenerator {
         }).convertToLayoutTemplate(layoutEditorModel);
     }
 
-    public void generatePerspective(LayoutTemplate layoutTemplate) {
+    public PerspectiveEditorActivity generatePerspective(LayoutTemplate layoutTemplate) {
         if (isANewPerspective(layoutTemplate)) {
             PerspectiveEditorScreenActivity screen = createNewScreen(layoutTemplate);
-            createNewPerspective(layoutTemplate,
+            return createNewPerspective(layoutTemplate,
                                  screen);
         } else {
             PerspectiveEditorScreenActivity screen = updateScreen(layoutTemplate);
-            updatePerspective(layoutTemplate,
+            return updatePerspective(layoutTemplate,
                               screen);
         }
     }
 
-    private void updatePerspective(LayoutTemplate layoutTemplate,
+    private PerspectiveEditorActivity updatePerspective(LayoutTemplate layoutTemplate,
                                    PerspectiveEditorScreenActivity screen) {
         final SyncBeanDef<Activity> activity = activityBeansCache.getActivity(layoutTemplate.getName());
         final PerspectiveEditorActivity perspectiveEditorActivity = (PerspectiveEditorActivity) activity.getInstance();
         perspectiveEditorActivity.update(layoutTemplate,
                                          screen);
+        return perspectiveEditorActivity;
     }
 
     public void removePerspective(String perspectiveName) {
+        String perspectiveScreenId = PerspectiveEditorScreenActivity.buildScreenId(perspectiveName);
         activityBeansCache.removeActivity(perspectiveName);
-        activityBeansCache.removeActivity(perspectiveName + PerspectiveEditorScreenActivity.screenSufix());
+        activityBeansCache.removeActivity(perspectiveScreenId);
     }
 
     private PerspectiveEditorScreenActivity updateScreen(LayoutTemplate layoutTemplate) {
-        final SyncBeanDef<Activity> activity = activityBeansCache.getActivity(layoutTemplate.getName() + PerspectiveEditorScreenActivity.screenSufix());
+        final String perspectiveScreenId = PerspectiveEditorScreenActivity.buildScreenId(layoutTemplate.getName());
+        final SyncBeanDef<Activity> activity = activityBeansCache.getActivity(perspectiveScreenId);
         final PerspectiveEditorScreenActivity screenActivity = (PerspectiveEditorScreenActivity) activity.getInstance();
         screenActivity.setLayoutTemplate(layoutTemplate);
         return screenActivity;
     }
 
-    private void createNewPerspective(LayoutTemplate perspective,
+    private PerspectiveEditorActivity createNewPerspective(LayoutTemplate perspective,
                                       PerspectiveEditorScreenActivity screen) {
         final PerspectiveEditorActivity activity = new PerspectiveEditorActivity(perspective,
                                                                                  screen);
@@ -126,6 +133,7 @@ public class PerspectiveEditorGenerator {
                                                         true));
 
         activityBeansCache.addNewPerspectiveActivity(beanManager.lookupBeans(perspective.getName()).iterator().next());
+        return activity;
     }
 
     private PerspectiveEditorScreenActivity createNewScreen(LayoutTemplate perspective) {

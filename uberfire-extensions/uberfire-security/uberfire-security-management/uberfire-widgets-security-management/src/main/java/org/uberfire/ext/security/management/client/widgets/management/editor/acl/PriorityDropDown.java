@@ -26,6 +26,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsConstants;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchDropDown;
+import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchResults;
 import org.uberfire.mvp.Command;
 
 @Dependent
@@ -47,9 +48,10 @@ public class PriorityDropDown implements IsWidget {
         priorityItemList.add(UsersManagementWidgetsConstants.INSTANCE.priorityLow());
         priorityItemList.add(UsersManagementWidgetsConstants.INSTANCE.priorityVeryLow());
 
+        LiveSearchResults liveSearchResults = new LiveSearchResults(priorityItemList).sortByKey();
         liveSearchDropDown.setSelectorHint(UsersManagementWidgetsConstants.INSTANCE.selectPriorityHint());
         liveSearchDropDown.setSearchEnabled(false);
-        liveSearchDropDown.setSearchService((pattern, maxResults, callback) -> callback.afterSearch(priorityItemList));
+        liveSearchDropDown.setSearchService((pattern, maxResults, callback) -> callback.afterSearch(liveSearchResults));
     }
 
     @Override
@@ -64,7 +66,7 @@ public class PriorityDropDown implements IsWidget {
     }
 
     public int getSelectedPriority() {
-        String selected = liveSearchDropDown.getSelectedItem();
+        String selected = liveSearchDropDown.getSelectedKey();
         if (selected == null) {
             return -1;
         }
@@ -75,7 +77,7 @@ public class PriorityDropDown implements IsWidget {
     public void setSelectedPriority(int ordinal) {
         Priority priority = resolvePriority(ordinal);
         String item = priorityItemList.get(priority.getIndex());
-        liveSearchDropDown.setSelectedItem(item);
+        liveSearchDropDown.setSelectedItem(item, item);
     }
 
     public void setWidth(int minWidth) {

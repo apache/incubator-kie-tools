@@ -16,7 +16,8 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.editor.acl;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import javax.enterprise.event.Event;
 
 import org.junit.Before;
@@ -33,10 +34,12 @@ import org.uberfire.ext.security.management.client.widgets.management.events.Per
 import org.uberfire.ext.security.management.client.widgets.management.events.PermissionNodeAddedEvent;
 import org.uberfire.ext.security.management.client.widgets.management.events.PermissionNodeRemovedEvent;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchDropDown;
+import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchService;
 import org.uberfire.mvp.Command;
 import org.uberfire.security.authz.AuthorizationResult;
 import org.uberfire.security.authz.Permission;
 import org.uberfire.security.client.authz.tree.LoadCallback;
+import org.uberfire.security.client.authz.tree.LoadOptions;
 import org.uberfire.security.client.authz.tree.PermissionNode;
 import org.uberfire.security.client.authz.tree.PermissionTreeProvider;
 import org.uberfire.security.client.authz.tree.impl.PermissionGroupNode;
@@ -81,9 +84,6 @@ public class MultiplePermissionNodeEditorTest {
     LiveSearchDropDown liveSearchDropDown;
 
     @Mock
-    PermissionTreeProvider permissionTreeProvider;
-
-    @Mock
     PermissionWidgetFactory widgetFactory;
 
     @Mock
@@ -104,6 +104,7 @@ public class MultiplePermissionNodeEditorTest {
     @Mock
     Command onChange;
 
+    PermissionTreeProvider permissionTreeProvider;
     PermissionGroupNode permissionGroupNode;
     PermissionResourceNode permissionResourceNode;
     MultiplePermissionNodeEditor presenter;
@@ -113,8 +114,8 @@ public class MultiplePermissionNodeEditorTest {
     PermissionExceptionSwitch permissionSwitchUpdate1;
     PermissionExceptionSwitch permissionSwitchRead2;
     PermissionExceptionSwitch permissionSwitchUpdate2;
-    PermissionNode permissionChildNode1;
-    PermissionNode permissionChildNode2;
+    PermissionLeafNode permissionChildNode1;
+    PermissionLeafNode permissionChildNode2;
     LeafPermissionNodeEditor childEditor1;
     LeafPermissionNodeEditor childEditor2;
     Permission permissionRead;
@@ -123,9 +124,26 @@ public class MultiplePermissionNodeEditorTest {
     Permission permissionUpdate1;
     Permission permissionRead2;
     Permission permissionUpdate2;
+    List<PermissionNode> permissionResourceChildrenAdded = new ArrayList<>();
+    List<PermissionNode> permissionResourceChildrenAvailable = new ArrayList<>();
+
+    class TestPermissionProvider implements PermissionTreeProvider {
+
+        @Override
+        public PermissionNode buildRootNode() {
+            return null;
+        }
+
+        @Override
+        public void loadChildren(PermissionNode parent, LoadOptions options, LoadCallback consumer) {
+            consumer.afterLoad(permissionResourceChildrenAvailable);
+        }
+    }
 
     @Before
     public void setUp() {
+        permissionTreeProvider = new TestPermissionProvider();
+
         permissionRead = spy(new DotNamedPermission("read",
                                                     true));
         permissionRead1 = spy(new DotNamedPermission("read.p1",
@@ -147,6 +165,7 @@ public class MultiplePermissionNodeEditorTest {
         permissionSwitchUpdate2 = spy(new PermissionExceptionSwitch(permissionSwitchUpdateView2));
 
         permissionChildNode1 = spy(new PermissionLeafNode());
+        permissionChildNode1.setNodeName("p1");
         permissionChildNode1.addPermission(permissionRead1,
                                            "read",
                                            "read");
@@ -157,6 +176,7 @@ public class MultiplePermissionNodeEditorTest {
                                              permissionUpdate1);
 
         permissionChildNode2 = spy(new PermissionLeafNode());
+        permissionChildNode2.setNodeName("p2");
         permissionChildNode2.addPermission(permissionRead2,
                                            "read",
                                            "read");
@@ -213,17 +233,21 @@ public class MultiplePermissionNodeEditorTest {
                                                      nodeAddedEvent,
                                                      nodeRemovedEvent);
 
+        permissionResourceChildrenAvailable.add(permissionChildNode1);
+        permissionResourceChildrenAvailable.add(permissionChildNode2);
+
+        permissionResourceChildrenAdded.add(permissionChildNode1);
+        permissionResourceChildrenAdded.add(permissionChildNode2);
+
         doAnswer(invocationOnMock -> {
             LoadCallback callback = (LoadCallback) invocationOnMock.getArguments()[0];
-            callback.afterLoad(Arrays.asList(permissionChildNode1,
-                                             permissionChildNode2));
+            callback.afterLoad(permissionResourceChildrenAdded);
             return null;
         }).when(permissionGroupNode).expand(any(LoadCallback.class));
 
         doAnswer(invocationOnMock -> {
             LoadCallback callback = (LoadCallback) invocationOnMock.getArguments()[0];
-            callback.afterLoad(Arrays.asList(permissionChildNode1,
-                                             permissionChildNode2));
+            callback.afterLoad(permissionResourceChildrenAdded);
             return null;
         }).when(permissionResourceNode).expand(any(LoadCallback.class));
     }
@@ -428,5 +452,49 @@ public class MultiplePermissionNodeEditorTest {
         verify(permissionSwitchUpdate).setOn(false);
         verify(permissionSwitchUpdateView1,
                atLeastOnce()).setExceptionEnabled(false);
+    }
+
+    @Test
+    public void testAddChildDropDownEmpty() {
+        permissionResourceChildrenAdded.clear();
+        permissionResourceChildrenAdded.add(permissionChildNode1);
+        permissionResourceChildrenAdded.add(permissionChildNode2);
+        presenter.edit(permissionResourceNode);
+
+        LiveSearchService searchService = presenter.getChildrenSearchService();
+        searchService.search("", -1, results -> {
+            assertEquals(results.size(), 0);
+        });
+    }
+
+    @Test
+    public void testAddChildDropDownFull() {
+        permissionResourceChildrenAdded.clear();
+        presenter.edit(permissionResourceNode);
+
+        LiveSearchService searchService = presenter.getChildrenSearchService();
+        searchService.search("", -1, results -> {
+            assertEquals(results.size(), 2);
+        });
+    }
+
+    @Test
+    public void testAddChildDropDownDuplicateNames() {
+        permissionResourceChildrenAdded.clear();
+        permissionResourceChildrenAdded.add(permissionChildNode2);
+        PermissionLeafNode permissionChildNode3 = new PermissionLeafNode();
+        permissionChildNode3.addPermission(new DotNamedPermission("read.p1b", true), "", "");
+        permissionChildNode3.setNodeName("p1");
+        permissionResourceChildrenAvailable.add(permissionChildNode3);
+        presenter.edit(permissionResourceNode);
+
+        LiveSearchService searchService = presenter.getChildrenSearchService();
+        searchService.search("", -1, results -> {
+            assertEquals(results.size(), 2);
+            assertEquals(results.get(0).getKey(), "read.p1");
+            assertEquals(results.get(0).getValue(), "p1");
+            assertEquals(results.get(1).getKey(), "read.p1b");
+            assertEquals(results.get(1).getValue(), "p1");
+        });
     }
 }

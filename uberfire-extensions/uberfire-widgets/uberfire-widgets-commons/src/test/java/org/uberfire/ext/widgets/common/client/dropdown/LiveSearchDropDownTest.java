@@ -16,10 +16,6 @@
 
 package org.uberfire.ext.widgets.common.client.dropdown;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
@@ -45,20 +41,23 @@ public class LiveSearchDropDownTest {
     @Spy
     LiveSearchService searchService = new LiveSearchService() {
 
-        public void search(String p,
+        public void search(String pattern,
                            int max,
-                           LiveSearchCallback c) {
-            switch (p) {
+                           LiveSearchCallback callback) {
+            LiveSearchResults results = new LiveSearchResults();
+            switch (pattern) {
                 case "a":
-                    c.afterSearch(Collections.singletonList("a"));
+                    results.add("1", "a");
+                    callback.afterSearch(results);
                     break;
                 case "b":
-                    c.afterSearch(Arrays.asList("a",
-                                                "b",
-                                                "c"));
+                    results.add("1", "a");
+                    results.add("2", "b");
+                    results.add("3", "c");
+                    callback.afterSearch(results);
                     break;
                 default:
-                    c.afterSearch(Collections.emptyList());
+                    callback.afterSearch(results);
                     break;
             }
         }
@@ -117,7 +116,7 @@ public class LiveSearchDropDownTest {
                      "a");
 
         verify(view).clearItems();
-        verify(view).addItem("a");
+        verify(view).addItem("1", "a");
         verify(view).searchFinished();
 
         verify(searchService).search(eq("a"),
@@ -151,7 +150,7 @@ public class LiveSearchDropDownTest {
         presenter.search("a"); // 2nd search is ignored as it's a repetition
 
         verify(view).clearItems();
-        verify(view).addItem("a");
+        verify(view).addItem("1", "a");
         verify(view).searchFinished();
 
         verify(searchService).search(eq("a"),
@@ -186,7 +185,7 @@ public class LiveSearchDropDownTest {
         verify(view,
                times(6)).clearItems();
         verify(view,
-               times(3)).addItem("a");
+               times(3)).addItem("1", "a");
         verify(view,
                times(3)).noItems(anyString());
     }
@@ -222,7 +221,7 @@ public class LiveSearchDropDownTest {
         verify(view,
                times(6)).clearItems();
         verify(view,
-               times(3)).addItem("a");
+               times(3)).addItem("1", "a");
         verify(view,
                times(3)).noItems(anyString());
     }
@@ -231,26 +230,26 @@ public class LiveSearchDropDownTest {
     public void testItemsOrdered() {
         presenter.search("b");
 
-        ArgumentCaptor<List> itemListCaptor = ArgumentCaptor.forClass(List.class);
-        verify(presenter).showItemList(itemListCaptor.capture());
+        ArgumentCaptor<LiveSearchResults> resultsCaptor = ArgumentCaptor.forClass(LiveSearchResults.class);
+        verify(presenter).showResults(resultsCaptor.capture());
 
-        List itemList = itemListCaptor.getValue();
-        assertEquals(itemList.size(),
+        LiveSearchResults results = resultsCaptor.getValue();
+        assertEquals(results.size(),
                      3);
-        assertEquals(itemList.get(0),
+        assertEquals(results.get(0).getValue(),
                      "a");
-        assertEquals(itemList.get(1),
+        assertEquals(results.get(1).getValue(),
                      "b");
-        assertEquals(itemList.get(2),
+        assertEquals(results.get(2).getValue(),
                      "c");
     }
 
     @Test
     public void testItemSelected() {
-        presenter.onItemSelected("a");
+        presenter.onItemSelected("1", "a");
 
-        assertEquals(presenter.getSelectedItem(),
-                     "a");
+        assertEquals(presenter.getSelectedKey(), "1");
+        assertEquals(presenter.getSelectedValue(), "a");
         verify(view).setDropDownText("a");
         verify(onChangeCommand).execute();
     }

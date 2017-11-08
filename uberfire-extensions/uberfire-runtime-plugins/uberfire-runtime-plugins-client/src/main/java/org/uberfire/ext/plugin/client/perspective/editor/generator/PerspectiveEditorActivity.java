@@ -48,6 +48,10 @@ public class PerspectiveEditorActivity implements PerspectiveActivity {
         this.screen = screen;
     }
 
+    public PerspectiveEditorScreenActivity getScreen() {
+        return screen;
+    }
+
     @Override
     public PlaceRequest getPlace() {
         return place;

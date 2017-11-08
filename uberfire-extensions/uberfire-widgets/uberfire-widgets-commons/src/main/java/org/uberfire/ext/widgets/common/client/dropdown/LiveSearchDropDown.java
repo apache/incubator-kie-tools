@@ -17,7 +17,6 @@
 package org.uberfire.ext.widgets.common.client.dropdown;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -36,8 +35,9 @@ public class LiveSearchDropDown implements IsWidget {
     LiveSearchService searchService = null;
     boolean searchEnabled = true;
     boolean searchCacheEnabled = true;
-    Map<String, List<String>> searchCache = new HashMap<>();
-    String selectedItem = null;
+    Map<String,LiveSearchResults> searchCache = new HashMap<>();
+    String selectedKey = null;
+    String selectedValue = null;
     String lastSearch = null;
     String searchHint = null;
     String selectorHint = null;
@@ -109,13 +109,18 @@ public class LiveSearchDropDown implements IsWidget {
         view.setWidth(minWidth);
     }
 
-    public String getSelectedItem() {
-        return selectedItem;
+    public String getSelectedKey() {
+        return selectedKey;
     }
 
-    public void setSelectedItem(String selectedItem) {
-        this.selectedItem = selectedItem;
-        view.setSelectedItem(selectedItem);
+    public String getSelectedValue() {
+        return selectedValue;
+    }
+
+    public void setSelectedItem(String key, String value) {
+        this.selectedKey = key;
+        this.selectedValue = value;
+        view.setSelectedValue(selectedValue);
     }
 
     public void clear() {
@@ -134,7 +139,7 @@ public class LiveSearchDropDown implements IsWidget {
             lastSearch = pattern != null ? pattern : "";
 
             if (searchCacheEnabled && searchCache.containsKey(lastSearch)) {
-                showItemList(getFromSearchCache(lastSearch));
+                showResults(getFromSearchCache(lastSearch));
             } else {
                 doSearch(pattern);
             }
@@ -145,31 +150,31 @@ public class LiveSearchDropDown implements IsWidget {
         view.searchInProgress(searchHint);
         searchService.search(lastSearch,
                              maxItems,
-                             itemList -> {
+                             results -> {
                                  addToSearchCache(pattern,
-                                                  itemList);
-                                 showItemList(itemList);
+                                         results);
+                                 showResults(results);
                                  view.searchFinished();
                              });
     }
 
-    protected List<String> getFromSearchCache(String pattern) {
+    protected LiveSearchResults getFromSearchCache(String pattern) {
         return searchCache.get(pattern);
     }
 
     protected void addToSearchCache(String pattern,
-                                    List<String> itemList) {
+                                    LiveSearchResults searchResults) {
         searchCache.put(pattern,
-                        itemList);
+                searchResults);
     }
 
-    public void showItemList(List<String> itemList) {
+    public void showResults(LiveSearchResults results) {
         view.clearItems();
-        if (itemList.isEmpty()) {
+        if (results.isEmpty()) {
             view.noItems(notFoundMessage);
         }
-        for (String i : itemList) {
-            view.addItem(i);
+        for (LiveSearchEntry entry : results) {
+            view.addItem(entry.getKey(), entry.getValue());
         }
     }
 
@@ -181,9 +186,10 @@ public class LiveSearchDropDown implements IsWidget {
 
     // View callbacks
 
-    void onItemSelected(String item) {
-        selectedItem = item;
-        view.setDropDownText(item);
+    void onItemSelected(String key, String value) {
+        selectedKey = key;
+        selectedValue = value;
+        view.setDropDownText(value);
         if (onChange != null) {
             onChange.execute();
         }
@@ -195,9 +201,9 @@ public class LiveSearchDropDown implements IsWidget {
 
         void noItems(String msg);
 
-        void addItem(String item);
+        void addItem(String key, String value);
 
-        void setSelectedItem(String selectedItem);
+        void setSelectedValue(String selectedItem);
 
         void setSearchEnabled(boolean enabled);
 

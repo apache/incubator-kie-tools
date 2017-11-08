@@ -127,16 +127,16 @@ public class LiveSearchDropDownView extends Composite
     }
 
     @Override
-    public void addItem(String item) {
+    public void addItem(String key, String value) {
         AnchorElement anchor = Document.get().createAnchorElement();
-        anchor.setInnerText(item);
+        anchor.setInnerText(value);
 
         Event.sinkEvents(anchor,
                          Event.ONCLICK);
         Event.setEventListener(anchor,
                                event -> {
                                    if (Event.ONCLICK == event.getTypeInt()) {
-                                       presenter.onItemSelected(item);
+                                       presenter.onItemSelected(key, value);
                                    }
                                });
 
@@ -146,7 +146,7 @@ public class LiveSearchDropDownView extends Composite
     }
 
     @Override
-    public void setSelectedItem(String selectedItem) {
+    public void setSelectedValue(String selectedItem) {
         dropDownText.setTextContent(selectedItem);
     }
 

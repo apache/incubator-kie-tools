@@ -32,6 +32,7 @@ import org.uberfire.ext.security.management.client.widgets.management.events.Per
 import org.uberfire.ext.security.management.client.widgets.management.events.PermissionNodeAddedEvent;
 import org.uberfire.ext.security.management.client.widgets.management.events.PermissionNodeRemovedEvent;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchDropDown;
+import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchResults;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchService;
 import org.uberfire.security.authz.AuthorizationResult;
 import org.uberfire.security.authz.Permission;
@@ -52,30 +53,29 @@ public class MultiplePermissionNodeEditor extends BasePermissionNodeEditor {
     Event<PermissionNodeRemovedEvent> permissionNodeRemovedEvent;
     Map<String, PermissionNode> childSelectorNodeMap = new TreeMap<>();
     boolean expanded = false;
-    LiveSearchService childrenSearchService = (pattern, maxResults, callback) -> {
 
+    LiveSearchService childrenSearchService = (pattern, maxResults, callback) -> {
         PermissionTreeProvider provider = permissionNode.getPermissionTreeProvider();
         DefaultLoadOptions loadOptions = new DefaultLoadOptions();
         loadOptions.setNodeNamePattern(pattern);
         loadOptions.setMaxNodes(maxResults);
 
-        provider.loadChildren(permissionNode,
-                              loadOptions,
-                              children -> {
+        provider.loadChildren(permissionNode, loadOptions, children -> {
+            LiveSearchResults result = new LiveSearchResults(maxResults);
+            children.stream().filter(this::isNotEdited).forEach(node -> {
+                String permissionName = node.getPermissionList().get(0).getName();
+                result.add(permissionName, node.getNodeName());
+                childSelectorNodeMap.put(permissionName, node);
+            });
 
-                                  childSelectorNodeMap.clear();
-
-                                  for (PermissionNode childNode : children) {
-                                      String childName = childNode.getNodeName();
-                                      if (!childAlreadyAdded(childName)) {
-                                          childSelectorNodeMap.put(childName,
-                                                                   childNode);
-                                      }
-                                  }
-                                  List<String> result = new ArrayList<>(childSelectorNodeMap.keySet());
-                                  callback.afterSearch(result);
-                              });
+            result.sortByValue();
+            callback.afterSearch(result);
+        });
     };
+
+    public LiveSearchService getChildrenSearchService() {
+        return childrenSearchService;
+    }
 
     @Inject
     public MultiplePermissionNodeEditor(View view,
@@ -131,7 +131,7 @@ public class MultiplePermissionNodeEditor extends BasePermissionNodeEditor {
             liveSearchDropDown.setMaxItems(50);
             liveSearchDropDown.setWidth(220);
             liveSearchDropDown.setSearchService(childrenSearchService);
-            liveSearchDropDown.setOnChange(() -> onChildSelected(liveSearchDropDown.getSelectedItem()));
+            liveSearchDropDown.setOnChange(() -> onChildSelected(liveSearchDropDown.getSelectedKey()));
 
             view.setAddChildEnabled(true);
             view.setResourceName(resourceName);
@@ -305,8 +305,8 @@ public class MultiplePermissionNodeEditor extends BasePermissionNodeEditor {
                                                                        child.getPermissionNode()));
     }
 
-    public void onChildSelected(String childName) {
-        PermissionNode childNode = childSelectorNodeMap.remove(childName);
+    public void onChildSelected(String permissionName) {
+        PermissionNode childNode = childSelectorNodeMap.remove(permissionName);
         overwritePermissions(childNode);
         PermissionNodeEditor childEditor = registerChild(childNode);
         if (view.hasChildren()) {
@@ -335,14 +335,12 @@ public class MultiplePermissionNodeEditor extends BasePermissionNodeEditor {
         }
     }
 
-    protected boolean childAlreadyAdded(String nodeName) {
-        for (PermissionNodeEditor childEditor : getChildEditors()) {
-            String existingName = childEditor.getPermissionNode().getNodeName();
-            if (existingName.equals(nodeName)) {
-                return true;
-            }
-        }
-        return false;
+    private boolean isNotEdited(PermissionNode node) {
+        String permissionName = node.getPermissionList().get(0).getName();
+        return !getChildEditors().stream()
+                .map(editor -> editor.getPermissionNode().getPermissionList().get(0).getName())
+                .filter(name -> name.equals(permissionName))
+                .findAny().isPresent();
     }
 
     public interface View extends UberView<MultiplePermissionNodeEditor> {

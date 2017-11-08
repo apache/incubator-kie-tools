@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,21 @@
 
 package org.uberfire.ext.widgets.common.client.dropdown;
 
-public interface LiveSearchCallback {
+public class LiveSearchEntry {
 
-    void afterSearch(LiveSearchResults results);
+    String key;
+    String value;
+
+    public LiveSearchEntry(String key, String value) {
+        this.key = key;
+        this.value = value;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public String getValue() {
+        return value;
+    }
 }
