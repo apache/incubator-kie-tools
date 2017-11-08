@@ -176,6 +176,18 @@ public class ScenarioRunnerServiceTest {
     }
 
     @Test
+    public void testMergeMolecules() throws Exception {
+        initKieSession("mergeMolecules.gdst");
+        testScenario("testMergedMolecules.scenario", true);
+    }
+
+    @Test
+    public void testMergeMoleculesNegative() throws Exception {
+        initKieSession("mergeMolecules.gdst");
+        testScenario("testMergedMoleculesNegative.scenario", false);
+    }
+
+    @Test
     public void testRunSeveralScenarios() throws Exception {
         initKieSession();
         Path path = mock(Path.class);
@@ -205,7 +217,7 @@ public class ScenarioRunnerServiceTest {
         final Scenario scenario = testEditorService.load(scenarioPath);
         assertFalse(scenario.wasSuccessful());
 
-        TestScenarioResult result = service.run("userName", scenario, project);
+        final TestScenarioResult result = service.run("userName", scenario, project);
 
         assertEquals(isExpectedSuccess, scenario.wasSuccessful());
         assertEquals(isExpectedSuccess, result.getScenario().wasSuccessful());
