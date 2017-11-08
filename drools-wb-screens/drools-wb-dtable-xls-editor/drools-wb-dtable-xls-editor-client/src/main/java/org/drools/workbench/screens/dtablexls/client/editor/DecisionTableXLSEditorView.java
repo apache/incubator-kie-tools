@@ -29,6 +29,7 @@ public interface DecisionTableXLSEditorView
 
         void onUpload();
 
+        void onUploadSuccess();
     }
 
     void setupUploadWidget( ClientResourceType resourceType  );

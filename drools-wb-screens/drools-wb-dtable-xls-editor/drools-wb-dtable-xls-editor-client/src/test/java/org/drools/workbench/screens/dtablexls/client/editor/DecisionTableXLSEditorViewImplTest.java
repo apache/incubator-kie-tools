@@ -25,14 +25,19 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.widgets.client.widget.AttachmentFileWidget;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -40,35 +45,33 @@ import static org.mockito.Mockito.verify;
 public class DecisionTableXLSEditorViewImplTest {
 
     private static final String SERVLET_URL = "dtablexls/file?clientId=123";
+
+    @Spy
+    @InjectMocks
     private DecisionTableXLSEditorViewImpl view;
 
     @Mock
-    AttachmentFileWidget attachmentFileWidget;
+    private EventSourceMock<NotificationEvent> notificationEvent;
 
     @Mock
-    ClientResourceType type;
+    private AttachmentFileWidget attachmentFileWidget;
 
     @Mock
-    DecisionTableXLSEditorPresenter presenter;
+    private ClientResourceType type;
+
+    @Mock
+    private DecisionTableXLSEditorPresenter presenter;
 
     @Captor
-    ArgumentCaptor<ClickHandler> clickCaptor;
+    private ArgumentCaptor<ClickHandler> clickCaptor;
+
+    @Captor
+    private ArgumentCaptor<Command> commandCaptor;
 
     @Before
     public void setup() {
-        view = new DecisionTableXLSEditorViewImpl() {
-
-            @Override
-            String getClientId() {
-                return "123";
-            }
-
-            @Override
-            protected AttachmentFileWidget constructUploadWidget(ClientResourceType resourceTypeDefinition) {
-                return attachmentFileWidget;
-            }
-        };
-
+        doReturn("123").when(view).getClientId();
+        doReturn(attachmentFileWidget).when(view).constructUploadWidget(any());
         view.init(presenter);
     }
 
@@ -100,8 +103,11 @@ public class DecisionTableXLSEditorViewImplTest {
         view.submit(path);
         verify(attachmentFileWidget).submit(eq(path),
                                             eq(SERVLET_URL),
-                                            any(Command.class),
+                                            commandCaptor.capture(),
                                             any(Command.class));
+        commandCaptor.getValue().execute();
+        verify(notificationEvent).fire(any(NotificationEvent.class));
+        verify(presenter).onUploadSuccess();
     }
 
     private Path path() {

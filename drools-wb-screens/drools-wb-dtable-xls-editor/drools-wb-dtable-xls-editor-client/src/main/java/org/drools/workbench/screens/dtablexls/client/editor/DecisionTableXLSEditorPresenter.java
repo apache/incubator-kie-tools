@@ -121,6 +121,11 @@ public class DecisionTableXLSEditorPresenter
         }
     }
 
+    @Override
+    public void onUploadSuccess() {
+        versionRecordManager.reloadVersions(versionRecordManager.getPathToLatest());
+    }
+
     void submit() {
         view.submit(versionRecordManager.getCurrentPath());
         concurrentUpdateSessionInfo = null;

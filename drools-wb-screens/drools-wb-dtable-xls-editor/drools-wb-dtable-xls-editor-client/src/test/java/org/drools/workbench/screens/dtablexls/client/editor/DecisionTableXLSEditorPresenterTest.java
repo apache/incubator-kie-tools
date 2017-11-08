@@ -103,9 +103,6 @@ public class DecisionTableXLSEditorPresenterTest {
     KieEditorWrapperView kieView;
 
     @Mock
-    VersionRecordManager versionRecordManagerMock;
-
-    @Mock
     EventSourceMock<NotificationEvent> notification;
 
     @Mock
@@ -151,7 +148,6 @@ public class DecisionTableXLSEditorPresenterTest {
             {
                 kieView = mock(KieEditorWrapperView.class);
                 overviewWidget = mock(OverviewWidgetPresenter.class);
-                versionRecordManager = versionRecordManagerMock;
                 concurrentUpdateSessionInfo = null;
                 fileMenuBuilder = DecisionTableXLSEditorPresenterTest.this.fileMenuBuilder;
                 projectController = DecisionTableXLSEditorPresenterTest.this.projectController;
@@ -191,9 +187,12 @@ public class DecisionTableXLSEditorPresenterTest {
 
     @Test
     public void testOnUploadWhenConcurrentUpdateSessionInfoIsNull() {
+        final ObservablePath path = mock(ObservablePath.class);
+        doReturn(path).when(versionRecordManager).getCurrentPath();
+
         presenter.onUpload();
 
-        verify(view).submit(versionRecordManagerMock.getCurrentPath());
+        verify(view).submit(path);
 
         assertNull(presenter.getConcurrentUpdateSessionInfo());
     }
@@ -216,6 +215,19 @@ public class DecisionTableXLSEditorPresenterTest {
 
         verify(busyIndicatorView).hideBusyIndicator();
         verify(presenter).showConcurrentUpdateError();
+        verify(versionRecordManager, never()).reloadVersions(versionRecordManager.getCurrentPath());
+    }
+
+    @Test
+    public void testOnUploadSuccess() {
+        final ObservablePath path = mock(ObservablePath.class);
+        doReturn(null).when(versionRecordManager).getCurrentPath();
+        doReturn(path).when(versionRecordManager).getPathToLatest();
+
+        presenter.onUploadSuccess();
+        verify(versionRecordManager).getPathToLatest();
+        verify(versionRecordManager, never()).getCurrentPath();
+        verify(versionRecordManager).reloadVersions(path);
     }
 
     @Test

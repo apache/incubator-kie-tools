@@ -119,6 +119,7 @@ public class DecisionTableXLSEditorViewImpl
                                 public void execute() {
                                     BusyPopup.close();
                                     notifySuccess();
+                                    presenter.onUploadSuccess();
                                 }
                             },
                             new Command() {
