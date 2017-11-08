@@ -57,6 +57,10 @@ public abstract class DefaultEditorFileUploadBase
         initForm();
     }
 
+    static boolean isUploadSuccessful(AbstractForm.SubmitCompleteEvent submitEvent) {
+        return "OK".equalsIgnoreCase(submitEvent.getResults());
+    }
+
     void initForm() {
         form.setEncoding(FormPanel.ENCODING_MULTIPART);
         form.setMethod(FormPanel.METHOD_POST);
@@ -68,16 +72,13 @@ public abstract class DefaultEditorFileUploadBase
         // - the underlying cause https://github.com/gwtbootstrap3/gwtbootstrap3/issues/375
         // Validation is now performed prior to the form being submitted.
 
-        form.addSubmitCompleteHandler(new AbstractForm.SubmitCompleteHandler() {
-            @Override
-            public void onSubmitComplete(final AbstractForm.SubmitCompleteEvent event) {
-                if ("OK".equalsIgnoreCase(event.getResults())) {
-                    Window.alert(CoreConstants.INSTANCE.UploadSuccess());
-                    executeCallback(successCallback);
-                } else if ("FAIL".equalsIgnoreCase(event.getResults())) {
-                    Window.alert(CoreConstants.INSTANCE.UploadFail());
-                    executeCallback(errorCallback);
-                }
+        form.addSubmitCompleteHandler(event -> {
+            if (isUploadSuccessful(event)) {
+                Window.alert(CoreConstants.INSTANCE.UploadSuccess());
+                executeCallback(successCallback);
+            } else {
+                Window.alert(CoreConstants.INSTANCE.UploadFail());
+                executeCallback(errorCallback);
             }
         });
     }
