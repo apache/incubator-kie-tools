@@ -28,6 +28,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
@@ -261,11 +262,18 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
             startNoneEventPropertiesMap.put(AssignmentsInfo.class,
                                             "assignmentsinfo");
 
+            Map<Class<?>, String> endSignalEventPropertiesMap = new HashMap<Class<?>, String>();
+            put(EndSignalEvent.class,
+                endSignalEventPropertiesMap);
+            endSignalEventPropertiesMap.put(AssignmentsInfo.class,
+                                            "assignmentsinfo");
+
             Map<Class<?>, String> startSignalEventPropertiesMap = new HashMap<Class<?>, String>();
             put(StartSignalEvent.class,
                 startSignalEventPropertiesMap);
             startSignalEventPropertiesMap.put(AssignmentsInfo.class,
                                               "assignmentsinfo");
+
             Map<Class<?>, String> startTimerEventPropertiesMap = new HashMap<Class<?>, String>();
             put(StartTimerEvent.class,
                 startTimerEventPropertiesMap);

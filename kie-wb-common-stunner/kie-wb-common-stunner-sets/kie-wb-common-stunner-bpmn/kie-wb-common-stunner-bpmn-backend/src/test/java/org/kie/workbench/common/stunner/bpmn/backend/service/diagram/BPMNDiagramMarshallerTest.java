@@ -74,6 +74,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
@@ -176,6 +177,7 @@ public class BPMNDiagramMarshallerTest {
     private static final String BPMN_INTERMEDIATE_SIGNAL_EVENTTHROWING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateSignalEventThrowing.bpmn";
     private static final String BPMN_INTERMEDIATE_TIMER_EVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateTimerEvent.bpmn";
     private static final String BPMN_ENDEVENTASSIGNMENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endEventAssignments.bpmn";
+    private static final String BPMN_ENDSIGNALEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endSignalEvent.bpmn";
     private static final String BPMN_PROCESSPROPERTIES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/processProperties.bpmn";
     private static final String BPMN_BUSINESSRULETASKRULEFLOWGROUP = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/businessRuleTask.bpmn";
     private static final String BPMN_REUSABLE_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/reusableSubprocessCalledElement.bpmn";
@@ -679,6 +681,25 @@ public class BPMNDiagramMarshallerTest {
         AssignmentsInfo assignmentsinfo2 = dataIOSet2.getAssignmentsinfo();
         assertEquals("EndNoneEventInput1:String||||[din]reason->EndNoneEventInput1",
                      assignmentsinfo2.getValue());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnmarshallEndSignalEvent() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_ENDSIGNALEVENT);
+        assertDiagram(diagram,
+                      2);
+        assertEquals("EndEventAssignments",
+                     diagram.getMetadata().getTitle());
+
+        Node<? extends Definition, ?> endSignalEventNode = diagram.getGraph().getNode("_C9151E0C-2E3E-4558-AFC2-34038E3A8552");
+        EndSignalEvent endSignalEvent = (EndSignalEvent) endSignalEventNode.getContent().getDefinition();
+        DataIOSet dataIOSet = endSignalEvent.getDataIOSet();
+        AssignmentsInfo assignmentsinfo = dataIOSet.getAssignmentsinfo();
+        assertEquals("EndSignalEventInput1:String||||[din]employee->EndSignalEventInput1",
+                     assignmentsinfo.getValue());
+        assertEquals("project", endSignalEvent.getExecutionSet().getSignalScope().getValue());
+        assertEquals("employee", endSignalEvent.getExecutionSet().getSignalRef().getValue());
     }
 
     @Test
@@ -1681,12 +1702,28 @@ public class BPMNDiagramMarshallerTest {
                       1,
                       3,
                       2);
-
         assertTrue(result.contains("<bpmn2:startEvent"));
         assertTrue(result.contains(" name=\"StartSignalEvent1\""));
         assertTrue(result.contains("<bpmn2:signal id=\"_47718ea6-a6a4-3ceb-9e93-2111bdad0b8c\" name=\"sig1\"/>"));
         assertTrue(result.contains("<bpmn2:signalEventDefinition"));
         assertTrue(result.contains("signalRef=\"_47718ea6-a6a4-3ceb-9e93-2111bdad0b8c\"/>"));
+    }
+
+    @Test
+    public void testMarshallEndSignalEvent() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_ENDSIGNALEVENT);
+        String result = tested.marshall(diagram);
+        assertDiagram(result,
+                      1,
+                      1,
+                      0);
+        assertTrue(result.contains("<bpmn2:endEvent id=\"_C9151E0C-2E3E-4558-AFC2-34038E3A8552\""));
+        assertTrue(result.contains(" name=\"EndSignalEvent\""));
+        assertTrue(result.contains("<bpmn2:signalEventDefinition"));
+        assertTrue(result.contains("<bpmn2:signal id=\"_fa547353-0e4d-3a5a-9e1e-b53d2fedb10c\" name=\"employee\"/>"));
+        assertTrue(result.contains("<bpmndi:BPMNDiagram"));
+        assertTrue(result.contains("<bpmn2:relationship"));
+        assertTrue(result.contains("<bpmn2:extensionElements"));
     }
 
     @Test

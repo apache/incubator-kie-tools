@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
@@ -63,6 +64,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
                 StartSignalEvent.class,
                 StartTimerEvent.class,
                 EndNoneEvent.class,
+                EndSignalEvent.class,
                 EndTerminateEvent.class,
                 IntermediateTimerEvent.class,
                 IntermediateSignalEventCatching.class,
@@ -84,6 +86,13 @@ public class BPMNDefinitionSet {
     @Description
     public static final transient String description = "BPMN2";
 
+    public BPMNDefinitionSet() {
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
     @NonPortable
     public static class BPMNDefinitionSetBuilder implements Builder<BPMNDefinitionSet> {
 
@@ -91,12 +100,5 @@ public class BPMNDefinitionSet {
         public BPMNDefinitionSet build() {
             return new BPMNDefinitionSet();
         }
-    }
-
-    public BPMNDefinitionSet() {
-    }
-
-    public String getDescription() {
-        return description;
     }
 }

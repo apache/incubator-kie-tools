@@ -22,6 +22,7 @@ import java.util.Map;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNImageResources;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseEndEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
@@ -31,7 +32,9 @@ import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 public class EndEventShapeDef
         implements BPMNSvgShapeDef<BaseEndEvent> {
 
-    public final static Map<Class<? extends BaseEndEvent>, String> VIEWS = new HashMap<Class<? extends BaseEndEvent>, String>(1) {{
+    public final static Map<Class<? extends BaseEndEvent>, String> VIEWS = new HashMap<Class<? extends BaseEndEvent>, String>(2) {{
+        put(EndSignalEvent.class,
+            BPMNSVGViewFactory.VIEW_EVENT_SIGNAL);
         put(EndTerminateEvent.class,
             BPMNSVGViewFactory.VIEW_EVENT_END_TERMINATE);
     }};
@@ -39,6 +42,8 @@ public class EndEventShapeDef
     private static final SvgDataUriGlyph.Builder GLYPH_BUILDER =
             SvgDataUriGlyph.Builder.create()
                     .setUri(BPMNImageResources.INSTANCE.eventEnd().getSafeUri())
+                    .addUri(BPMNSVGViewFactory.VIEW_EVENT_SIGNAL,
+                            BPMNImageResources.INSTANCE.eventSignal().getSafeUri())
                     .addUri(BPMNSVGViewFactory.VIEW_EVENT_END_TERMINATE,
                             BPMNImageResources.INSTANCE.eventEndTerminate().getSafeUri());
 
