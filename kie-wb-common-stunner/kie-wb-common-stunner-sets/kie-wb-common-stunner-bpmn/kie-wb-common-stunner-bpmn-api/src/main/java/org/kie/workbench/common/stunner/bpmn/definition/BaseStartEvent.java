@@ -25,7 +25,6 @@ import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
-import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
@@ -48,11 +47,6 @@ public abstract class BaseStartEvent implements BPMNDefinition,
     @FormField
     @Valid
     protected BPMNGeneralSet general;
-
-    @PropertySet
-    @FormField(afterElement = "executionSet")
-    @Valid
-    protected DataIOSet dataIOSet;
 
     @PropertySet
     @Valid
@@ -94,13 +88,11 @@ public abstract class BaseStartEvent implements BPMNDefinition,
     }
 
     public BaseStartEvent(final BPMNGeneralSet general,
-                          final DataIOSet dataIOSet,
                           final BackgroundSet backgroundSet,
                           final FontSet fontSet,
                           final CircleDimensionSet dimensionsSet,
                           final SimulationAttributeSet simulationSet) {
         this.general = general;
-        this.dataIOSet = dataIOSet;
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
         this.dimensionsSet = dimensionsSet;
@@ -119,12 +111,12 @@ public abstract class BaseStartEvent implements BPMNDefinition,
 
     @Override
     public boolean hasOutputVars() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean isSingleOutputVar() {
-        return true;
+        return false;
     }
 
     public String getCategory() {
@@ -139,10 +131,6 @@ public abstract class BaseStartEvent implements BPMNDefinition,
         return general;
     }
 
-    public DataIOSet getDataIOSet() {
-        return dataIOSet;
-    }
-
     public BackgroundSet getBackgroundSet() {
         return backgroundSet;
     }
@@ -153,10 +141,6 @@ public abstract class BaseStartEvent implements BPMNDefinition,
 
     public void setGeneral(final BPMNGeneralSet general) {
         this.general = general;
-    }
-
-    public void setDataIOSet(final DataIOSet dataIOSet) {
-        this.dataIOSet = dataIOSet;
     }
 
     public void setBackgroundSet(final BackgroundSet backgroundSet) {
@@ -186,7 +170,6 @@ public abstract class BaseStartEvent implements BPMNDefinition,
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(general.hashCode(),
-                                         dataIOSet.hashCode(),
                                          backgroundSet.hashCode(),
                                          fontSet.hashCode(),
                                          dimensionsSet.hashCode(),
@@ -198,7 +181,6 @@ public abstract class BaseStartEvent implements BPMNDefinition,
         if (o instanceof BaseStartEvent) {
             BaseStartEvent other = (BaseStartEvent) o;
             return general.equals(other.general) &&
-                    dataIOSet.equals(other.dataIOSet) &&
                     backgroundSet.equals(other.backgroundSet) &&
                     fontSet.equals(other.fontSet) &&
                     dimensionsSet.equals(other.dimensionsSet) &&

@@ -35,6 +35,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.TaskGeneralSet;
@@ -89,6 +90,9 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
 
     @Mock
     StartNoneEvent startNoneEvent;
+
+    @Mock
+    StartSignalEvent startSignalEvent;
 
     @Mock
     EndTerminateEvent endTerminateEvent;
@@ -155,6 +159,10 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
         doCallRealMethod().when(startNoneEvent).isSingleInputVar();
         doCallRealMethod().when(startNoneEvent).hasOutputVars();
         doCallRealMethod().when(startNoneEvent).isSingleOutputVar();
+        doCallRealMethod().when(startSignalEvent).hasInputVars();
+        doCallRealMethod().when(startSignalEvent).isSingleInputVar();
+        doCallRealMethod().when(startSignalEvent).hasOutputVars();
+        doCallRealMethod().when(startSignalEvent).isSingleOutputVar();
         doCallRealMethod().when(endTerminateEvent).hasInputVars();
         doCallRealMethod().when(endTerminateEvent).isSingleInputVar();
         doCallRealMethod().when(endTerminateEvent).hasOutputVars();
@@ -297,6 +305,29 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
     @Test
     public void testSetBPMNModelStartNoneEvent() {
         widget.setBPMNModel(startNoneEvent);
+        assertEquals(false,
+                     widget.hasInputVars);
+        assertEquals(false,
+                     widget.isSingleInputVar);
+        assertEquals(false,
+                     widget.hasOutputVars);
+        assertEquals(false,
+                     widget.isSingleOutputVar);
+
+        String assignmentsInfoString = widget.getVariableCountsString(null,
+                                                                      null,
+                                                                      DATA_OUTPUT,
+                                                                      null,
+                                                                      PROCESS_VARS,
+                                                                      ASSIGNMENTS_SINGLE_OUTPUT,
+                                                                      widget.getDisallowedPropertyNames());
+        assertEquals("",
+                     assignmentsInfoString);
+    }
+
+    @Test
+    public void testSetBPMNModelStartSignalEvent() {
+        widget.setBPMNModel(startSignalEvent);
         assertEquals(false,
                      widget.hasInputVars);
         assertEquals(false,

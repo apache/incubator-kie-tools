@@ -63,19 +63,24 @@ public class StartSignalEvent extends BaseStartEvent {
     @Valid
     protected InterruptingSignalEventExecutionSet executionSet;
 
+    @PropertySet
+    @FormField(afterElement = "executionSet")
+    @Valid
+    protected DataIOSet dataIOSet;
+
     @NonPortable
     public static class StartSignalEventBuilder extends BaseStartEventBuilder<StartSignalEvent> {
 
         @Override
         public StartSignalEvent build() {
             return new StartSignalEvent(new BPMNGeneralSet(""),
-                                        new DataIOSet(),
                                         new BackgroundSet(BG_COLOR,
                                                           BORDER_COLOR,
                                                           BORDER_SIZE),
                                         new FontSet(),
                                         new CircleDimensionSet(new Radius(RADIUS)),
                                         new SimulationAttributeSet(),
+                                        new DataIOSet(),
                                         new InterruptingSignalEventExecutionSet());
         }
     }
@@ -84,18 +89,18 @@ public class StartSignalEvent extends BaseStartEvent {
     }
 
     public StartSignalEvent(final @MapsTo("general") BPMNGeneralSet general,
-                            final @MapsTo("dataIOSet") DataIOSet dataIOSet,
                             final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                             final @MapsTo("fontSet") FontSet fontSet,
                             final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet,
                             final @MapsTo("simulationSet") SimulationAttributeSet simulationSet,
+                            final @MapsTo("dataIOSet") DataIOSet dataIOSet,
                             final @MapsTo("executionSet") InterruptingSignalEventExecutionSet executionSet) {
         super(general,
-              dataIOSet,
               backgroundSet,
               fontSet,
               dimensionsSet,
               simulationSet);
+        this.dataIOSet = dataIOSet;
         this.executionSet = executionSet;
     }
 
@@ -116,9 +121,28 @@ public class StartSignalEvent extends BaseStartEvent {
         this.executionSet = executionSet;
     }
 
+    public DataIOSet getDataIOSet() {
+        return dataIOSet;
+    }
+
+    public void setDataIOSet(DataIOSet dataIOSet) {
+        this.dataIOSet = dataIOSet;
+    }
+
+    @Override
+    public boolean hasOutputVars() {
+        return true;
+    }
+
+    @Override
+    public boolean isSingleOutputVar() {
+        return true;
+    }
+
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
+                                         dataIOSet.hashCode(),
                                          executionSet.hashCode());
     }
 
@@ -127,6 +151,7 @@ public class StartSignalEvent extends BaseStartEvent {
         if (o instanceof StartSignalEvent) {
             StartSignalEvent other = (StartSignalEvent) o;
             return super.equals(other) &&
+                    dataIOSet.equals(other.dataIOSet) &&
                     executionSet.equals(other.executionSet);
         }
         return false;

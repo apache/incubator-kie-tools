@@ -69,7 +69,6 @@ public class StartTimerEvent extends BaseStartEvent {
         @Override
         public StartTimerEvent build() {
             return new StartTimerEvent(new BPMNGeneralSet(""),
-                                       new DataIOSet(),
                                        new BackgroundSet(BG_COLOR,
                                                          BORDER_COLOR,
                                                          BORDER_SIZE),
@@ -84,14 +83,12 @@ public class StartTimerEvent extends BaseStartEvent {
     }
 
     public StartTimerEvent(final @MapsTo("general") BPMNGeneralSet general,
-                           final @MapsTo("dataIOSet") DataIOSet dataIOSet,
                            final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                            final @MapsTo("fontSet") FontSet fontSet,
                            final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet,
                            final @MapsTo("simulationSet") SimulationAttributeSet simulationSet,
                            final @MapsTo("executionSet") InterruptingTimerEventExecutionSet executionSet) {
         super(general,
-              dataIOSet,
               backgroundSet,
               fontSet,
               dimensionsSet,

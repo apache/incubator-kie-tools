@@ -169,7 +169,7 @@ public class BPMNDiagramMarshallerTest {
     private static final String BPMN_PROCESSVARIABLES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/processVariables.bpmn";
     private static final String BPMN_USERTASKASSIGNMENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/userTaskAssignments.bpmn";
     private static final String BPMN_BUSINESSRULETASKASSIGNMENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/businessRuleTaskAssignments.bpmn";
-    private static final String BPMN_STARTEVENTASSIGNMENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startEventAssignments.bpmn";
+    private static final String BPMN_STARTNONEEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startNoneEvent.bpmn";
     private static final String BPMN_STARTTIMEREVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startTimerEvent.bpmn";
     private static final String BPMN_STARTSIGNALEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startSignalEvent.bpmn";
     private static final String BPMN_INTERMEDIATE_SIGNAL_EVENTCATCHING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateSignalEventCatching.bpmn";
@@ -533,6 +533,23 @@ public class BPMNDiagramMarshallerTest {
 
     @Test
     @SuppressWarnings("unchecked")
+    public void testUnmarshallStartNoneEvent() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_STARTNONEEVENT);
+        assertDiagram(diagram,
+                      4);
+        assertEquals("startNoneEvent",
+                     diagram.getMetadata().getTitle());
+        Node<? extends Definition, ?> startNoneEventNode = diagram.getGraph().getNode("processStartEvent");
+        StartNoneEvent startNoneEvent = (StartNoneEvent) startNoneEventNode.getContent().getDefinition();
+        assertNotNull(startNoneEvent.getGeneral());
+        assertEquals("MyStartNoneEvent",
+                     startNoneEvent.getGeneral().getName().getValue());
+        assertEquals("MyStartNoneEventDocumentation",
+                     startNoneEvent.getGeneral().getDocumentation().getValue());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void testUnmarshallStartTimerEvent() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_STARTTIMEREVENT);
         assertDiagram(diagram,
@@ -638,22 +655,6 @@ public class BPMNDiagramMarshallerTest {
         AssignmentsInfo assignmentsInfo = dataIOSet.getAssignmentsinfo();
         assertEquals("_input1:String||||[din]var1->_input1",
                      assignmentsInfo.getValue());
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testUnmarshallStartEventAssignments() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_STARTEVENTASSIGNMENTS);
-        assertDiagram(diagram,
-                      8);
-        assertEquals("StartEventAssignments",
-                     diagram.getMetadata().getTitle());
-        Node<? extends Definition, ?> startEventNode = diagram.getGraph().getNode("_106AADA7-E381-4736-8BD6-7EB47A1D096B");
-        StartNoneEvent startNoneEvent = (StartNoneEvent) startEventNode.getContent().getDefinition();
-        DataIOSet dataIOSet = startNoneEvent.getDataIOSet();
-        AssignmentsInfo assignmentsinfo = dataIOSet.getAssignmentsinfo();
-        assertEquals("||StartEventOutput1:String||[dout]StartEventOutput1->employee",
-                     assignmentsinfo.getValue());
     }
 
     @Test
@@ -1643,6 +1644,22 @@ public class BPMNDiagramMarshallerTest {
     }
 
     @Test
+    public void testMarshallStartNoneEvent() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_STARTNONEEVENT);
+        String result = tested.marshall(diagram);
+        assertDiagram(result,
+                      1,
+                      3,
+                      2);
+
+        assertTrue(result.contains("<bpmn2:startEvent"));
+        assertTrue(result.contains("name=\"MyStartNoneEvent\""));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[MyStartNoneEvent]]></drools:metaValue>"));
+        assertTrue(result.contains("<![CDATA[MyStartNoneEventDocumentation]]></bpmn2:documentation>"));
+        assertTrue(result.contains("</bpmn2:startEvent>"));
+    }
+
+    @Test
     public void testMarshallStartTimerEvent() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_STARTTIMEREVENT);
         String result = tested.marshall(diagram);
@@ -1723,20 +1740,6 @@ public class BPMNDiagramMarshallerTest {
         assertTrue(result.contains("name=\"MySignal\""));
         assertTrue(result.contains("<drools:metaData name=\"customScope\">"));
         assertTrue(result.contains("<drools:metaValue><![CDATA[processInstance]]></drools:metaValue>"));
-    }
-
-    @Test
-    public void testMarshallStartEventAssignments() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_STARTEVENTASSIGNMENTS);
-        String result = tested.marshall(diagram);
-        assertDiagram(result,
-                      1,
-                      7,
-                      7);
-        assertTrue(result.contains("<bpmn2:dataOutput id=\"_106AADA7-E381-4736-8BD6-7EB47A1D096B_StartEventOutput1\" drools:dtype=\"String\" name=\"StartEventOutput1\"/>"));
-        assertTrue(result.contains("<bpmn2:sourceRef>_106AADA7-E381-4736-8BD6-7EB47A1D096B_StartEventOutput1</bpmn2:sourceRef>"));
-        assertTrue(result.contains("<bpmn2:targetRef>employee</bpmn2:targetRef>"));
-        assertTrue(result.contains("<bpmn2:dataOutputRefs>_106AADA7-E381-4736-8BD6-7EB47A1D096B_StartEventOutput1</bpmn2:dataOutputRefs>"));
     }
 
     @Test
