@@ -16,40 +16,43 @@
 
 package org.drools.workbench.screens.testscenario.backend.server.model;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 public class Molecule implements java.io.Serializable {
 
     static final long serialVersionUID = 1L;
 
-    private java.math.BigInteger countOfAtoms;
-    private java.lang.String name;
-    private java.math.BigDecimal weightInKilograms;
+    private BigInteger countOfAtoms;
+    private String name;
+    private BigDecimal weightInKilograms;
 
     private boolean reactable;
 
     public Molecule() {
     }
 
-    public java.math.BigInteger getCountOfAtoms() {
+    public BigInteger getCountOfAtoms() {
         return this.countOfAtoms;
     }
 
-    public void setCountOfAtoms(java.math.BigInteger countOfAtoms) {
+    public void setCountOfAtoms(BigInteger countOfAtoms) {
         this.countOfAtoms = countOfAtoms;
     }
 
-    public java.lang.String getName() {
+    public String getName() {
         return this.name;
     }
 
-    public void setName(java.lang.String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public java.math.BigDecimal getWeightInKilograms() {
+    public BigDecimal getWeightInKilograms() {
         return this.weightInKilograms;
     }
 
-    public void setWeightInKilograms(java.math.BigDecimal weightInKilograms) {
+    public void setWeightInKilograms(BigDecimal weightInKilograms) {
         this.weightInKilograms = weightInKilograms;
     }
 
@@ -61,8 +64,8 @@ public class Molecule implements java.io.Serializable {
         this.reactable = reactable;
     }
 
-    public Molecule(java.math.BigInteger countOfAtoms, java.lang.String name,
-                    java.math.BigDecimal weightInKilograms, boolean reactable) {
+    public Molecule(BigInteger countOfAtoms, String name,
+                    BigDecimal weightInKilograms, boolean reactable) {
         this.countOfAtoms = countOfAtoms;
         this.name = name;
         this.weightInKilograms = weightInKilograms;

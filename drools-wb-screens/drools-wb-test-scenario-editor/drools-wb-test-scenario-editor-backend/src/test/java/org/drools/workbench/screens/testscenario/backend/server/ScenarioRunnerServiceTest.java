@@ -188,6 +188,18 @@ public class ScenarioRunnerServiceTest {
     }
 
     @Test
+    public void testAcidReactions() throws Exception {
+        initKieSession("acidReactions.gdst");
+        testScenario("testAcid.scenario", true);
+    }
+
+    @Test
+    public void testAcidReactionsNegative() throws Exception {
+        initKieSession("acidReactions.gdst");
+        testScenario("testAcidNegative.scenario", false);
+    }
+
+    @Test
     public void testRunSeveralScenarios() throws Exception {
         initKieSession();
         Path path = mock(Path.class);
