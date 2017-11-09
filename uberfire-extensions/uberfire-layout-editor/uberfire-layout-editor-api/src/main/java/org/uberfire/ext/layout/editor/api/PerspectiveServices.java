@@ -42,5 +42,5 @@ public interface PerspectiveServices
 
     LayoutTemplate convertToLayoutTemplate(String layoutModel);
 
-    void saveLayoutTemplate(Path perspectivePath, LayoutTemplate layoutTemplate, String commitMessage);
+    Path saveLayoutTemplate(Path perspectivePath, LayoutTemplate layoutTemplate, String commitMessage);
 }

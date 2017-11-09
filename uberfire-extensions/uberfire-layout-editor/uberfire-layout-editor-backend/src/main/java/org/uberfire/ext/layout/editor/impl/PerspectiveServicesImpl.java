@@ -83,10 +83,11 @@ public class PerspectiveServicesImpl implements PerspectiveServices {
     }
 
     @Override
-    public void saveLayoutTemplate(Path perspectivePath, LayoutTemplate layoutTemplate, String commitMessage) {
+    public Path saveLayoutTemplate(Path perspectivePath, LayoutTemplate layoutTemplate, String commitMessage) {
         String layoutModel = layoutServices.convertLayoutToString(layoutTemplate);
         LayoutEditorModel plugin = new LayoutEditorModel(layoutTemplate.getName(), PluginType.PERSPECTIVE_LAYOUT, perspectivePath, layoutModel);
         pluginServices.saveLayout(plugin, commitMessage);
+        return perspectivePath;
     }
 
     @Override

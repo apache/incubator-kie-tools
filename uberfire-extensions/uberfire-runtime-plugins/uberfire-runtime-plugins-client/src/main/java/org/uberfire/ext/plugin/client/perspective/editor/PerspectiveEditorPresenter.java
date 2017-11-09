@@ -243,15 +243,6 @@ public class PerspectiveEditorPresenter extends BaseEditor {
         concurrentUpdateSessionInfo = null;
     }
 
-    @Override
-    protected RemoteCallback<Path> getSaveSuccessCallback(final int newHash) {
-        return path -> {
-            RemoteCallback<Path> saveSuccessCallback = PerspectiveEditorPresenter.super
-                    .getSaveSuccessCallback(getCurrentModelHash());
-            saveSuccessCallback.callback(path);
-        };
-    }
-
     public int getCurrentModelHash() {
         return layoutEditorPlugin.getLayout().hashCode();
     }

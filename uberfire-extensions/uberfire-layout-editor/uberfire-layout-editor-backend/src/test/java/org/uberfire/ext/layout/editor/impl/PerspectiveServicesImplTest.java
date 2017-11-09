@@ -78,7 +78,8 @@ public class PerspectiveServicesImplTest {
     @Test
     public void testSave() {
         LayoutTemplate layoutTemplate = new LayoutTemplate("newName");
-        perspectiveServices.saveLayoutTemplate(path, layoutTemplate, "save");
+        Path savedPath = perspectiveServices.saveLayoutTemplate(path, layoutTemplate, "save");
+        assertEquals(savedPath, path);
         ArgumentCaptor<LayoutEditorModel> layoutModelArg = ArgumentCaptor.forClass(LayoutEditorModel.class);
         ArgumentCaptor<String> commitArg = ArgumentCaptor.forClass(String.class);
         verify(pluginServices).saveLayout(layoutModelArg.capture(), commitArg.capture());
