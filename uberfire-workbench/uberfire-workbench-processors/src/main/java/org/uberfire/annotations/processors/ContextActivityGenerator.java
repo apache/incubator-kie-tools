@@ -70,9 +70,7 @@ public class ContextActivityGenerator extends AbstractGenerator {
         final ExecutableElement getWidgetMethod = GeneratorUtils.getWidgetMethodName(classElement,
                                                                                      processingEnvironment);
         final String getWidgetMethodName = getWidgetMethod == null ? null : getWidgetMethod.getSimpleName().toString();
-        final boolean hasUberView = GeneratorUtils.hasUberViewReference(classElement,
-                                                                        processingEnvironment,
-                                                                        getWidgetMethod);
+        final boolean hasUberView = GeneratorUtils.hasPresenterInitMethod(classElement, processingEnvironment, getWidgetMethod);
         final boolean isWidget = GeneratorUtils.getIsWidget(classElement,
                                                             processingEnvironment);
         if (GeneratorUtils.debugLoggingEnabled()) {

@@ -24,14 +24,9 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import com.google.gwt.user.client.ui.InlineLabel;
 
-<#if hasUberView>
+<#if hasPresenterInitMethod>
 import javax.annotation.PostConstruct;
-import org.uberfire.client.mvp.UberView;
-
-</#if>
-<#if hasUberElement>
-import javax.annotation.PostConstruct;
-import org.uberfire.client.mvp.UberElement;
+import org.uberfire.client.mvp.HasPresenter;
 
 </#if>
 <#if needsElementWrapper>
@@ -98,18 +93,11 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
     public ${className}(<#if isDynamic>@Shared </#if>final PlaceManager placeManager) {
         super( placeManager );
     }
-    <#if hasUberView>
+    <#if hasPresenterInitMethod>
 
     @PostConstruct
     public void init() {
-        ((UberView) realPresenter.${getWidgetMethodName}()).init( realPresenter );
-    }
-    </#if>
-    <#if hasUberElement>
-
-    @PostConstruct
-    public void init() {
-        ((UberElement) realPresenter.${getWidgetMethodName}()).init( realPresenter );
+        ((HasPresenter) realPresenter.${getWidgetMethodName}()).init( realPresenter );
     }
     </#if>
     <#if preferredHeight??>

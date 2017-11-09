@@ -24,7 +24,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import javax.annotation.PostConstruct;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.HasPresenter;
 
 import javax.inject.Named;
 import org.uberfire.client.workbench.annotations.AssociatedResources;
@@ -62,7 +62,7 @@ public class WorkbenchEditorTest10Activity extends AbstractWorkbenchEditorActivi
 
     @PostConstruct
     public void init() {
-        ((UberView) realPresenter.getView()).init( realPresenter );
+        ((HasPresenter) realPresenter.getView()).init( realPresenter );
     }
 
     @Override

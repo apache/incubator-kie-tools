@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.InlineLabel;
 
 import javax.annotation.PostConstruct;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.HasPresenter;
 
 import javax.inject.Named;
 import org.uberfire.client.mvp.AbstractWorkbenchScreenActivity;
@@ -54,7 +54,7 @@ public class WorkbenchScreenTest10Activity extends AbstractWorkbenchScreenActivi
 
     @PostConstruct
     public void init() {
-        ((UberView) realPresenter.getView()).init( realPresenter );
+        ((HasPresenter) realPresenter.getView()).init( realPresenter );
     }
 
     @Override

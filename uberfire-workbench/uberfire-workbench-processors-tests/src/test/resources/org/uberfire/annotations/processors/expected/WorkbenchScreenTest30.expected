@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.InlineLabel;
 
 import javax.annotation.PostConstruct;
-import org.uberfire.client.mvp.UberElement;
+import org.uberfire.client.mvp.HasPresenter;
 
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import javax.inject.Named;
@@ -55,7 +55,7 @@ public class WorkbenchScreenTest30Activity extends AbstractWorkbenchScreenActivi
 
     @PostConstruct
     public void init() {
-        ((UberElement) realPresenter.getView()).init( realPresenter );
+        ((HasPresenter) realPresenter.getView()).init( realPresenter );
     }
 
     @Override

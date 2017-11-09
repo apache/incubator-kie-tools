@@ -377,34 +377,21 @@ public class GeneratorUtils {
                                        final ProcessingEnvironment processingEnvironment) {
         final Types typeUtils = processingEnvironment.getTypeUtils();
         final Elements elementUtils = processingEnvironment.getElementUtils();
-        final TypeMirror requiredReturnType = elementUtils.getTypeElement("org.jboss.errai.common.client.api.IsElement").asType();
+        final TypeMirror deprecatedIsElement = elementUtils.getTypeElement("org.jboss.errai.common.client.api.IsElement").asType();
+        final TypeMirror elemental2IsElement = elementUtils.getTypeElement("org.jboss.errai.common.client.api.elemental2.IsElement").asType();
         return typeUtils.isAssignable(type,
-                                      requiredReturnType);
+                                      deprecatedIsElement) || typeUtils.isAssignable(type, elemental2IsElement);
     }
 
-    public static boolean hasUberViewReference(final TypeElement classElement,
-                                               final ProcessingEnvironment processingEnvironment,
-                                               final ExecutableElement getWidgetMethod) {
+    public static boolean hasPresenterInitMethod(final TypeElement classElement,
+                                                 final ProcessingEnvironment processingEnvironment,
+                                                 final ExecutableElement getWidgetMethod) {
         if (getWidgetMethod == null) {
             return false;
         }
         final Types typeUtils = processingEnvironment.getTypeUtils();
         final Elements elementUtils = processingEnvironment.getElementUtils();
-        final TypeMirror requiredReturnType = elementUtils.getTypeElement("org.uberfire.client.mvp.UberView").asType();
-
-        return typeUtils.isAssignable(typeUtils.erasure(getWidgetMethod.getReturnType()),
-                                      requiredReturnType);
-    }
-
-    public static boolean hasUberElementReference(final TypeElement classElement,
-                                                  final ProcessingEnvironment processingEnvironment,
-                                                  final ExecutableElement getWidgetMethod) {
-        if (getWidgetMethod == null) {
-            return false;
-        }
-        final Types typeUtils = processingEnvironment.getTypeUtils();
-        final Elements elementUtils = processingEnvironment.getElementUtils();
-        final TypeMirror requiredReturnType = elementUtils.getTypeElement("org.uberfire.client.mvp.UberElement").asType();
+        final TypeMirror requiredReturnType = elementUtils.getTypeElement("org.uberfire.client.mvp.HasPresenter").asType();
 
         return typeUtils.isAssignable(typeUtils.erasure(getWidgetMethod.getReturnType()),
                                       requiredReturnType);

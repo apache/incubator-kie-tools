@@ -139,13 +139,7 @@ public class ScreenActivityGenerator extends AbstractGenerator {
         final boolean isWidgetMethodReturnTypeElement = getWidgetMethod != null && GeneratorUtils.getIsElement(getWidgetMethod.getReturnType(),
                                                                                                                processingEnvironment);
 
-        final boolean hasUberView = GeneratorUtils.hasUberViewReference(classElement,
-                                                                        processingEnvironment,
-                                                                        getWidgetMethod);
-
-        final boolean hasUberElement = GeneratorUtils.hasUberElementReference(classElement,
-                                                                              processingEnvironment,
-                                                                              getWidgetMethod);
+        final boolean hasPresenterInitMethod = GeneratorUtils.hasPresenterInitMethod(classElement, processingEnvironment, getWidgetMethod);
 
         final boolean isWidget = GeneratorUtils.getIsWidget(classElement,
                                                             processingEnvironment);
@@ -204,9 +198,7 @@ public class ScreenActivityGenerator extends AbstractGenerator {
             messager.printMessage(Kind.NOTE,
                                   "isWidget: " + Boolean.toString(isWidget));
             messager.printMessage(Kind.NOTE,
-                                  "hasUberView: " + Boolean.toString(hasUberView));
-            messager.printMessage(Kind.NOTE,
-                                  "hasUberElement: " + Boolean.toString(hasUberElement));
+                                  "hasPresenterInitMethod: " + Boolean.toString(hasPresenterInitMethod));
             messager.printMessage(Kind.NOTE,
                                   "needsElementWrapper: " + Boolean.toString(needsElementWrapper));
             messager.printMessage(Kind.NOTE,
@@ -286,10 +278,8 @@ public class ScreenActivityGenerator extends AbstractGenerator {
                  isWidgetMethodReturnTypeElement);
         root.put("isWidget",
                  isWidget);
-        root.put("hasUberView",
-                 hasUberView);
-        root.put("hasUberElement",
-                 hasUberElement);
+        root.put("hasPresenterInitMethod",
+                 hasPresenterInitMethod);
         root.put("needsElementWrapper",
                  needsElementWrapper);
         root.put("getMenuBarMethodName",

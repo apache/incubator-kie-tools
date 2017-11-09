@@ -27,8 +27,8 @@ import org.jboss.errai.common.client.api.IsElement;
  * their View implement this interface if they require access to the appropriate
  * Presenter.
  * @param <T> The Presenter type
+ * @deprecated Use {@link UberElemental} and elemental2 instead.
  */
-public interface UberElement<T> extends IsElement {
-
-    void init(T presenter);
+@Deprecated
+public interface UberElement<T> extends IsElement, HasPresenter<T> {
 }

@@ -30,7 +30,7 @@ import org.jboss.errai.ioc.client.api.ActivatedBy;
 </#if>
 <#if hasUberView>
 import javax.annotation.PostConstruct;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.HasPresenter;
 
 </#if>
 import org.uberfire.client.mvp.PlaceManager;
@@ -73,7 +73,7 @@ public class ${className} extends AbstractSplashScreenActivity {
     <#if hasUberView>
     @PostConstruct
     public void init() {
-        ((UberView) realPresenter.${getWidgetMethodName}()).init( realPresenter );
+        ((HasPresenter) realPresenter.${getWidgetMethodName}()).init( realPresenter );
     }
 
     </#if>

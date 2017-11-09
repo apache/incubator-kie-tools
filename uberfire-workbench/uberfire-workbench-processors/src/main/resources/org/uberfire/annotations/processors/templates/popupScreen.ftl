@@ -26,7 +26,7 @@ import com.google.gwt.user.client.ui.InlineLabel;
 
 <#if hasUberView>
 import javax.annotation.PostConstruct;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.HasPresenter;
 
 </#if>
 <#if size?has_content>
@@ -74,7 +74,7 @@ public class ${className} extends AbstractPopupActivity {
     <#if hasUberView>
     @PostConstruct
     public void init() {
-        ((UberView) realPresenter.${getWidgetMethodName}()).init( realPresenter );
+        ((HasPresenter) realPresenter.${getWidgetMethodName}()).init( realPresenter );
     }
 
     </#if>
