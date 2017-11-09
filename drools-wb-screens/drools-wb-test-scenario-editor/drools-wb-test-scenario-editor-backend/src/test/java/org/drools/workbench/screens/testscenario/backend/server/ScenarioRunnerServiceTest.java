@@ -176,6 +176,18 @@ public class ScenarioRunnerServiceTest {
     }
 
     @Test
+    public void testIsGithubContributor() throws Exception {
+        initKieSession("isGithubContributor.gdst");
+        testScenario("testContributors.scenario", true);
+    }
+
+    @Test
+    public void testIsGithubContributorNegative() throws Exception {
+        initKieSession("isGithubContributor.gdst");
+        testScenario("testContributorsNegative.scenario", false);
+    }
+
+    @Test
     public void testMergeMolecules() throws Exception {
         initKieSession("mergeMolecules.gdst");
         testScenario("testMergedMolecules.scenario", true);
@@ -257,7 +269,8 @@ public class ScenarioRunnerServiceTest {
         kieBaseModel.newKieSessionModel("defaultKieSession")
                 .setDefault(true)
                 .setType(KieSessionModel.KieSessionType.STATEFUL)
-                .setClockType(ClockTypeOption.get("pseudo"));
+                .setClockType(ClockTypeOption.get("pseudo"))
+                .newWorkItemHandlerModel("Rest", "org.drools.workbench.screens.testscenario.backend.server.GithubContributorsWIH");
 
         final KieFileSystem kfs = kieServices.newKieFileSystem();
         kfs.writeKModuleXML(kieModuleModel.toXML());
