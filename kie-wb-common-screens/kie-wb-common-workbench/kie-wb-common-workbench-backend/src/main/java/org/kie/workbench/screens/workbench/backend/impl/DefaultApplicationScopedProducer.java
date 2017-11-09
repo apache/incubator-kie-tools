@@ -31,7 +31,6 @@ import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.kie.workbench.screens.workbench.backend.ApplicationScopedProducer;
 import org.uberfire.backend.server.IOWatchServiceNonDotImpl;
-import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.commons.concurrent.Unmanaged;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
@@ -41,7 +40,6 @@ import org.uberfire.ext.metadata.io.IOServiceIndexedImpl;
 import org.uberfire.ext.metadata.search.IOSearchService;
 import org.uberfire.io.IOService;
 import org.uberfire.io.attribute.DublinCoreView;
-import org.uberfire.io.impl.cluster.IOServiceClusterImpl;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 
 /**
@@ -55,7 +53,6 @@ public class DefaultApplicationScopedProducer implements ApplicationScopedProduc
     private IOService ioService;
     private IOSearchService ioSearchService;
     private LuceneConfig config;
-    private ClusterServiceFactory clusterServiceFactory;
     private IOWatchServiceNonDotImpl watchService;
     private AuthenticationService authenticationService;
     private DefaultIndexEngineObserver defaultIndexEngineObserver;
@@ -75,14 +72,12 @@ public class DefaultApplicationScopedProducer implements ApplicationScopedProduc
 
     @Inject
     public DefaultApplicationScopedProducer(@Named("luceneConfig") LuceneConfig config,
-                                            @Named("clusterServiceFactory") ClusterServiceFactory clusterServiceFactory,
                                             IOWatchServiceNonDotImpl watchService,
                                             AuthenticationService authenticationService,
                                             DefaultIndexEngineObserver defaultIndexEngineObserver,
                                             @Unmanaged ExecutorService executorService) {
         this();
         this.config = config;
-        this.clusterServiceFactory = clusterServiceFactory;
         this.watchService = watchService;
         this.authenticationService = authenticationService;
         this.defaultIndexEngineObserver = defaultIndexEngineObserver;
@@ -91,22 +86,13 @@ public class DefaultApplicationScopedProducer implements ApplicationScopedProduc
 
     @PostConstruct
     public void setup() {
-        final IOService service = new IOServiceIndexedImpl(watchService,
+        this.ioService = new IOServiceIndexedImpl(watchService,
                                                            config.getIndexEngine(),
                                                            defaultIndexEngineObserver,
                                                            executorService,
                                                            DublinCoreView.class,
                                                            VersionAttributeView.class,
                                                            OtherMetaView.class);
-
-        if (clusterServiceFactory == null) {
-            ioService = service;
-        } else {
-            ioService = new IOServiceClusterImpl(service,
-                                                 clusterServiceFactory,
-                                                 false,
-                                                 executorService);
-        }
 
         this.ioSearchService = new IOSearchServiceImpl(config.getSearchIndex(),
                                                        ioService);
