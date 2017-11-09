@@ -22,7 +22,6 @@ import org.guvnor.m2repo.client.event.M2RepoSearchEvent;
 import org.gwtbootstrap3.client.shared.event.ModalHideEvent;
 import org.gwtbootstrap3.client.shared.event.ModalHideHandler;
 import org.gwtbootstrap3.client.ui.base.form.AbstractForm;
-import org.gwtbootstrap3.client.ui.gwt.FormPanel;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -72,7 +71,7 @@ public class UploadFormTest {
     @Test
     public void emptyFilenameTest() {
         when(view.getFileName()).thenReturn(null);
-        uploadFormPresenter.handleSubmit(new FormPanel.SubmitEvent());
+        uploadFormPresenter.isFileNameValid();
 
         verify(view).showSelectFileUploadWarning();
         verify(view,
@@ -82,7 +81,7 @@ public class UploadFormTest {
     @Test
     public void nullFilenameTest() {
         when(view.getFileName()).thenReturn("");
-        uploadFormPresenter.handleSubmit(new FormPanel.SubmitEvent());
+        uploadFormPresenter.isFileNameValid();
 
         verify(view).showSelectFileUploadWarning();
         verify(view,
@@ -92,7 +91,7 @@ public class UploadFormTest {
     @Test
     public void unsupportedFilenameTest() {
         when(view.getFileName()).thenReturn("//!#@%^&*()\\23\\(0");
-        uploadFormPresenter.handleSubmit(new FormPanel.SubmitEvent());
+        uploadFormPresenter.isFileNameValid();
 
         verify(view).showUnsupportedFileTypeWarning();
         verify(view,
@@ -102,7 +101,7 @@ public class UploadFormTest {
     @Test
     public void correctFilenameTest() {
         when(view.getFileName()).thenReturn("/home/user/something/pom.xml");
-        uploadFormPresenter.handleSubmit(new FormPanel.SubmitEvent());
+        uploadFormPresenter.isFileNameValid();
 
         verify(view).showUploadingBusy();
     }

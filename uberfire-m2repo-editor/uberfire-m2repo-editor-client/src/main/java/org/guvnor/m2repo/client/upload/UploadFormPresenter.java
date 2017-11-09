@@ -24,7 +24,6 @@ import org.guvnor.m2repo.client.event.M2RepoSearchEvent;
 import org.gwtbootstrap3.client.shared.event.ModalHideEvent;
 import org.gwtbootstrap3.client.shared.event.ModalHideHandler;
 import org.gwtbootstrap3.client.ui.base.form.AbstractForm;
-import org.gwtbootstrap3.client.ui.gwt.FormPanel;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 
 import static org.guvnor.m2repo.model.HTMLFileManagerFields.UPLOAD_MISSING_POM;
@@ -80,21 +79,18 @@ public class UploadFormPresenter implements UploadFormView.Presenter {
         }
     }
 
-    /*
-     * After upgrade of GWT-BOOTSTRAP3 version, will be needed to handle
-     * org.gwtbootstrap3.client.ui.Form.SubmitEvent
-     */
     @Override
-    public void handleSubmit(final FormPanel.SubmitEvent event) {
+    public boolean isFileNameValid() {
         String fileName = view.getFileName();
         if (fileName == null || "".equals(fileName)) {
             view.showSelectFileUploadWarning();
-            event.cancel();
+            return false;
         } else if (!(isValid(fileName))) {
             view.showUnsupportedFileTypeWarning();
-            event.cancel();
+            return false;
         } else {
             view.showUploadingBusy();
+            return true;
         }
     }
 

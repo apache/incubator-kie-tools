@@ -34,7 +34,6 @@ import org.uberfire.ext.widgets.common.client.common.FormStyleItem;
 import org.uberfire.ext.widgets.common.client.common.FormStyleLayout;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
-import org.uberfire.mvp.Command;
 
 public class UploadFormViewImpl
         extends BaseModal implements UploadFormView {
@@ -73,27 +72,14 @@ public class UploadFormViewImpl
         form.setMethod(FormPanel.METHOD_POST);
         form.setType(FormType.HORIZONTAL);
 
-        /*
-         * After upgrade of GWT-BOOTSTRAP3 version, will be needed to register
-         * org.gwtbootstrap3.client.ui.Form.SubmitHandler
-         */
-        form.addHandler(new FormPanel.SubmitHandler() {
-                            @Override
-                            public void onSubmit(com.google.gwt.user.client.ui.FormPanel.SubmitEvent submitEvent) {
-                                presenter.handleSubmit(submitEvent);
-                            }
-                        },
-                        FormPanel.SubmitEvent.getType());
-
         form.addSubmitCompleteHandler(new Form.SubmitCompleteHandler() {
             public void onSubmitComplete(final Form.SubmitCompleteEvent event) {
                 presenter.handleSubmitComplete(event);
             }
         });
 
-        uploader = new FileUpload(new Command() {
-            @Override
-            public void execute() {
+        uploader = new FileUpload(() -> {
+            if (presenter.isFileNameValid()) {
                 form.submit();
             }
         });
