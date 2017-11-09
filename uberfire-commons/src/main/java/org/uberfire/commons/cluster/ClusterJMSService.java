@@ -19,11 +19,13 @@ package org.uberfire.commons.cluster;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.ExceptionListener;
 import javax.jms.JMSException;
+import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
@@ -34,7 +36,7 @@ import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ClusterJMSService {
+public class ClusterJMSService implements ClusterService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClusterJMSService.class);
 
@@ -46,6 +48,7 @@ public class ClusterJMSService {
         clusterParameters = loadParameters();
     }
 
+    @Override
     public void connect() {
         String jmsURL = clusterParameters.getJmsURL();
         String jmsUserName = clusterParameters.getJmsUserName();
@@ -65,8 +68,8 @@ public class ClusterJMSService {
     }
 
     ActiveMQConnectionFactory createConnectionFactory(String jmsURL,
-                                                              String jmsUserName,
-                                                              String jmsPassword) {
+                                                      String jmsUserName,
+                                                      String jmsPassword) {
         return new ActiveMQConnectionFactory(jmsURL,
                                              jmsUserName,
                                              jmsPassword);
@@ -76,24 +79,38 @@ public class ClusterJMSService {
         return new ClusterParameters();
     }
 
-    public void createConsumer(DESTINATION_TYPE type,
-                               String destinationName,
-                               MessageListener listener) {
+    @Override
+    public <T> void createConsumer(DestinationType type,
+                                   String channel,
+                                   Class<T> objectMessageClass,
+                                   Consumer<T> listener) {
         try {
-
             Session session = createConsumerSession();
             Destination topic = createDestination(type,
-                                                  destinationName,
+                                                  channel,
                                                   session);
             MessageConsumer messageConsumer = session.createConsumer(topic);
-            messageConsumer.setMessageListener(listener);
+
+            messageConsumer.setMessageListener(message -> {
+                if (message instanceof ObjectMessage) {
+                    try {
+                        Serializable object = ((ObjectMessage) message).getObject();
+                        if (objectMessageClass.isInstance(object)) {
+                            listener.accept((T) object);
+                        }
+                    } catch (JMSException e) {
+                        LOGGER.error("Exception receiving JMS message: " + e.getMessage());
+                    }
+                }
+            });
         } catch (Exception e) {
             LOGGER.error("Error creating JMS Watch Service: " + e.getMessage());
         }
     }
 
-    public synchronized void broadcast(DESTINATION_TYPE type,
-                                       String destinationName,
+    @Override
+    public synchronized void broadcast(DestinationType type,
+                                       String channel,
                                        Serializable object) {
 
         Session session = null;
@@ -101,7 +118,7 @@ public class ClusterJMSService {
             session = connection.createSession(false,
                                                Session.AUTO_ACKNOWLEDGE);
             Destination destination = createDestination(type,
-                                                        destinationName,
+                                                        channel,
                                                         session);
             ObjectMessage objectMessage = session.createObjectMessage(object);
             MessageProducer messageProducer = session.createProducer(destination);
@@ -119,13 +136,13 @@ public class ClusterJMSService {
         }
     }
 
-    private Destination createDestination(DESTINATION_TYPE type,
-                                          String destinationName,
+    private Destination createDestination(DestinationType type,
+                                          String channel,
                                           Session session) throws JMSException {
-        if (type.equals(DESTINATION_TYPE.QUEUE)) {
-            return session.createQueue(destinationName);
+        if (type.equals(DestinationType.LoadBalancer)) {
+            return session.createQueue(channel);
         }
-        return session.createTopic(destinationName);
+        return session.createTopic(channel);
     }
 
     private Session createConsumerSession() {
@@ -140,6 +157,7 @@ public class ClusterJMSService {
         }
     }
 
+    @Override
     public boolean isAppFormerClustered() {
         return clusterParameters.isAppFormerClustered();
     }
@@ -152,6 +170,7 @@ public class ClusterJMSService {
         }
     }
 
+    @Override
     public void close() {
         try {
             for (Session s : consumerSessions) {
@@ -161,10 +180,5 @@ public class ClusterJMSService {
         } catch (JMSException e) {
             LOGGER.error("Exception closing JMS connection and consumerSessions: " + e.getMessage());
         }
-    }
-
-    public enum DESTINATION_TYPE {
-        TOPIC,
-        QUEUE
     }
 }

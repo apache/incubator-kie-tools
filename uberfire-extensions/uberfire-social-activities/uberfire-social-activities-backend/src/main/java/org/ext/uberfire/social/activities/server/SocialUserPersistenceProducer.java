@@ -36,6 +36,7 @@ import org.ext.uberfire.social.activities.service.SocialUserPersistenceAPI;
 import org.uberfire.backend.server.UserServicesImpl;
 import org.uberfire.backend.server.io.ConfigIOServiceProducer;
 import org.uberfire.commons.cluster.ClusterJMSService;
+import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
 import org.uberfire.io.IOService;
@@ -74,12 +75,12 @@ public class SocialUserPersistenceProducer {
     @Inject
     private SocialUserClusterMessaging socialUserClusterMessaging;
 
-    private ClusterJMSService clusterJMSService;
+    private ClusterService clusterService;
 
     @PostConstruct
     public void setup() {
         gsonFactory();
-        clusterJMSService = new ClusterJMSService();
+        clusterService = new ClusterJMSService();
         final IOService _ioService = getConfigIOServiceProducer().configIOService();
         final SocialUserServicesExtendedBackEndImpl userServicesBackend = new SocialUserServicesExtendedBackEndImpl(fileSystem);
 
@@ -89,7 +90,7 @@ public class SocialUserPersistenceProducer {
 
     void setupSocialUserPersistenceAPI(IOService _ioService,
                                        SocialUserServicesExtendedBackEndImpl userServicesBackend) {
-        if (!clusterJMSService.isAppFormerClustered()) {
+        if (!clusterService.isAppFormerClustered()) {
             socialUserPersistenceAPI = new SocialUserInstancePersistence(userServicesBackend,
                                                                          userServices,
                                                                          _ioService,
@@ -100,7 +101,7 @@ public class SocialUserPersistenceProducer {
                                                                         _ioService,
                                                                         gson,
                                                                         socialUserClusterMessaging);
-            socialUserClusterMessaging.setup(clusterJMSService, socialUserPersistenceAPI);
+            socialUserClusterMessaging.setup(clusterService, socialUserPersistenceAPI);
         }
         socialUserPersistenceAPI.setup();
     }

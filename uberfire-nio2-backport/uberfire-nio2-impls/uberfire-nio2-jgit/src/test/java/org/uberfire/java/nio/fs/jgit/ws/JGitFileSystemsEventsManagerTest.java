@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.commons.cluster.ClusterJMSService;
 import org.uberfire.commons.cluster.ClusterParameters;
+import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.file.WatchService;
@@ -59,7 +60,7 @@ public class JGitFileSystemsEventsManagerTest {
         JGitFileSystemsEventsManager another = new JGitFileSystemsEventsManager() {
 
             @Override
-            ClusterJMSService createClusterJMSService() {
+            ClusterService createClusterJMSService() {
                 return mock(ClusterJMSService.class);
             }
         };

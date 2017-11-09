@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.cluster.ClusterJMSService;
-import org.uberfire.commons.cluster.ClusterParameters;
+import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.WatchEvent;
@@ -35,24 +35,24 @@ public class JGitFileSystemsEventsManager {
 
     private final Map<String, JGitFileSystemWatchServices> fsWatchServices = new ConcurrentHashMap<>();
 
-    private final ClusterJMSService clusterJMSService;
+    private final ClusterService clusterService;
 
     JGitEventsBroadcast jGitEventsBroadcast;
 
     public JGitFileSystemsEventsManager() {
-        clusterJMSService = createClusterJMSService();
+        clusterService = createClusterJMSService();
 
-        if (clusterJMSService.isAppFormerClustered()) {
+        if (clusterService.isAppFormerClustered()) {
             setupJGitEventsBroadcast();
         }
     }
 
-    ClusterJMSService createClusterJMSService() {
+    ClusterService createClusterJMSService() {
         return new ClusterJMSService();
     }
 
     void setupJGitEventsBroadcast() {
-        jGitEventsBroadcast = new JGitEventsBroadcast(clusterJMSService,
+        jGitEventsBroadcast = new JGitEventsBroadcast(clusterService,
                                                       w -> publishEvents(w.getFsName(),
                                                                          w.getWatchable(),
                                                                          w.getEvents(),

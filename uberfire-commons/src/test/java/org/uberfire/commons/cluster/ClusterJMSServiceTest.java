@@ -30,7 +30,7 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class ClusterJMSServiceTest {
 
-    private ClusterJMSService clusterJMSService;
+    private ClusterService clusterService;
     private ActiveMQConnectionFactory factory;
     private Connection connection;
     private Session session1;
@@ -47,7 +47,7 @@ public class ClusterJMSServiceTest {
         when(connection.createSession(eq(false),
                                       eq(Session.AUTO_ACKNOWLEDGE)))
                 .thenReturn(session1, session2);
-        clusterJMSService = new ClusterJMSService() {
+        clusterService = new ClusterJMSService() {
             @Override
             ActiveMQConnectionFactory createConnectionFactory(String jmsURL,
                                                               String jmsUserName,
@@ -59,25 +59,27 @@ public class ClusterJMSServiceTest {
 
     @Test
     public void connectTest() throws JMSException {
-        clusterJMSService.connect();
+        clusterService.connect();
         verify(connection).setExceptionListener(any());
         verify(connection).start();
     }
 
     @Test
     public void sessionConsumersCreatedShouldBeClosed() throws JMSException {
-        clusterJMSService.connect();
+        clusterService.connect();
 
-        clusterJMSService.createConsumer(ClusterJMSService.DESTINATION_TYPE.TOPIC,
-                                         "doraestination",
+        clusterService.createConsumer(ClusterJMSService.DestinationType.PubSub,
+                                      "dora_destination",
+                                      Object.class,
                                          l -> {
                                          });
-        clusterJMSService.createConsumer(ClusterJMSService.DESTINATION_TYPE.TOPIC,
-                                         "doraestination",
+        clusterService.createConsumer(ClusterJMSService.DestinationType.PubSub,
+                                      "dora_destination",
+                                      Object.class,
                                          l -> {
                                          });
 
-        clusterJMSService.close();
+        clusterService.close();
         verify(session1).close();
         verify(session2).close();
         verify(connection).close();

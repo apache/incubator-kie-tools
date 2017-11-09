@@ -15,15 +15,10 @@
 
 package org.ext.uberfire.social.activities.persistence;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.ObjectMessage;
 
 import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.ext.uberfire.social.activities.model.SocialEventType;
@@ -34,16 +29,14 @@ import org.ext.uberfire.social.activities.service.SocialUserPersistenceAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.cluster.ClusterJMSService;
-import org.uberfire.commons.message.MessageType;
+import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.commons.services.cdi.Startup;
 
 @ApplicationScoped
 @Startup
 public class SocialClusterMessaging {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SocialClusterMessaging.class);
-
-    public static final String topicName = "SOCIAL_CLUSTER_MESSAGE";
+    public static final String CHANNEL_NAME = "SOCIAL_CLUSTER_MESSAGE";
 
     private SocialTimelinePersistenceAPI socialTimelinePersistence;
 
@@ -52,47 +45,36 @@ public class SocialClusterMessaging {
 
     private SocialUserPersistenceAPI socialUserPersistenceAPI;
 
-    private ClusterJMSService clusterJMSService;
+    private ClusterService clusterService;
 
     private String nodeId = UUID.randomUUID().toString();
 
-    private void topicMessageListener(Message message) {
-        if (message instanceof ObjectMessage) {
-            try {
-                Serializable object = ((ObjectMessage) message).getObject();
-                if (object instanceof SocialMessageWrapper) {
-                    SocialMessageWrapper messageWrapper = (SocialMessageWrapper) object;
-                    if (!messageWrapper.getNodeId().equals(nodeId)) {
-                        SocialClusterMessage strType = messageWrapper.getMessageType();
-                        if (strType.equals(SocialClusterMessage.SOCIAL_EVENT.name())) {
-                            handleSocialEvent(messageWrapper);
-                        }
-                        if (strType.equals(SocialClusterMessage.SOCIAL_FILE_SYSTEM_PERSISTENCE.name())) {
-                            handleSocialPersistenceEvent(messageWrapper);
-                        }
-                        if (strType.equals(SocialClusterMessage.CLUSTER_SHUTDOWN.name())) {
-                            handleClusterShutdown();
-                        }
-                    }
-                }
-            } catch (JMSException e) {
-                LOGGER.error("Exception receiving JMS message: " + e.getMessage());
-            }
-        }
-    }
-
-    public void setup(ClusterJMSService clusterJMSService,
+    public void setup(ClusterService clusterService,
                       SocialTimelinePersistenceAPI socialTimelinePersistenceAPI,
                       SocialUserPersistenceAPI socialUserPersistenceAPI) {
-        this.clusterJMSService = clusterJMSService;
+        this.clusterService = clusterService;
         this.socialTimelinePersistence = socialTimelinePersistenceAPI;
         this.socialUserPersistenceAPI = socialUserPersistenceAPI;
 
-        if (this.clusterJMSService.isAppFormerClustered()) {
-            this.clusterJMSService.connect();
-            this.clusterJMSService.createConsumer(ClusterJMSService.DESTINATION_TYPE.TOPIC,
-                                                  topicName,
-                                                  message -> topicMessageListener(message));
+        if (this.clusterService.isAppFormerClustered()) {
+            this.clusterService.connect();
+            this.clusterService.createConsumer(ClusterJMSService.DestinationType.PubSub,
+                                               CHANNEL_NAME,
+                                               SocialMessageWrapper.class,
+                                               message -> {
+                                                   if (!message.getNodeId().equals(nodeId)) {
+                                                       SocialClusterMessage strType = message.getMessageType();
+                                                       if (strType.equals(SocialClusterMessage.SOCIAL_EVENT.name())) {
+                                                           handleSocialEvent(message);
+                                                       }
+                                                       if (strType.equals(SocialClusterMessage.SOCIAL_FILE_SYSTEM_PERSISTENCE.name())) {
+                                                           handleSocialPersistenceEvent(message);
+                                                       }
+                                                       if (strType.equals(SocialClusterMessage.CLUSTER_SHUTDOWN.name())) {
+                                                           handleClusterShutdown();
+                                                       }
+                                                   }
+                                               });
         }
     }
 
@@ -145,52 +127,51 @@ public class SocialClusterMessaging {
     }
 
     public void notify(SocialActivitiesEvent event) {
-        if (!clusterJMSService.isAppFormerClustered()) {
+        if (!clusterService.isAppFormerClustered()) {
             return;
         }
-        clusterJMSService.broadcast(ClusterJMSService.DESTINATION_TYPE.TOPIC,
-                                    topicName,
-                                    new SocialMessageWrapper(nodeId,
-                                                             SocialClusterMessage.SOCIAL_EVENT,
-                                                             event,
-                                                             event.getSocialUser()));
+        clusterService.broadcast(ClusterService.DestinationType.PubSub,
+                                 CHANNEL_NAME,
+                                 new SocialMessageWrapper(nodeId,
+                                                          SocialClusterMessage.SOCIAL_EVENT,
+                                                          event,
+                                                          event.getSocialUser()));
     }
 
     public void notifyTimeLineUpdate(SocialActivitiesEvent event) {
-        if (!clusterJMSService.isAppFormerClustered()) {
+        if (!clusterService.isAppFormerClustered()) {
             return;
         }
-        clusterJMSService.broadcast(ClusterJMSService.DESTINATION_TYPE.TOPIC,
-                                    topicName,
-                                    new SocialMessageWrapper(nodeId,
-                                                             SocialClusterMessage.SOCIAL_FILE_SYSTEM_PERSISTENCE,
-                                                             event,
-                                                             null,
-                                                             SocialClusterMessage.UPDATE_TYPE_EVENT));
+        clusterService.broadcast(ClusterService.DestinationType.PubSub,
+                                 CHANNEL_NAME,
+                                 new SocialMessageWrapper(nodeId,
+                                                          SocialClusterMessage.SOCIAL_FILE_SYSTEM_PERSISTENCE,
+                                                          event,
+                                                          null,
+                                                          SocialClusterMessage.UPDATE_TYPE_EVENT));
     }
 
     public void notifyTimeLineUpdate(SocialUser user,
                                      List<SocialActivitiesEvent> storedEvents) {
-        if (!clusterJMSService.isAppFormerClustered()) {
+        if (!clusterService.isAppFormerClustered()) {
             return;
         }
-        clusterJMSService.broadcast(ClusterJMSService.DESTINATION_TYPE.TOPIC,
-                                    topicName,
-                                    new SocialMessageWrapper(nodeId,
-                                                             SocialClusterMessage.SOCIAL_FILE_SYSTEM_PERSISTENCE,
-                                                             null,
-                                                             user,
-                                                             SocialClusterMessage.UPDATE_USER_EVENT));
+        clusterService.broadcast(ClusterService.DestinationType.PubSub,
+                                 CHANNEL_NAME,
+                                 new SocialMessageWrapper(nodeId,
+                                                          SocialClusterMessage.SOCIAL_FILE_SYSTEM_PERSISTENCE,
+                                                          null,
+                                                          user,
+                                                          SocialClusterMessage.UPDATE_USER_EVENT));
     }
 
     public void notifySomeInstanceIsOnShutdown() {
-        if (!clusterJMSService.isAppFormerClustered()) {
+        if (!clusterService.isAppFormerClustered()) {
             return;
         }
-        clusterJMSService.broadcast(ClusterJMSService.DESTINATION_TYPE.TOPIC,
-                                    topicName,
-                                    new SocialMessageWrapper(nodeId,
-                                                             SocialClusterMessage.CLUSTER_SHUTDOWN));
+        clusterService.broadcast(ClusterService.DestinationType.PubSub,
+                                 CHANNEL_NAME,
+                                 new SocialMessageWrapper(nodeId,
+                                                          SocialClusterMessage.CLUSTER_SHUTDOWN));
     }
-
 }

@@ -15,71 +15,52 @@
 
 package org.ext.uberfire.social.activities.persistence;
 
-import java.io.Serializable;
 import java.util.UUID;
 import javax.enterprise.context.ApplicationScoped;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.ObjectMessage;
 
 import org.ext.uberfire.social.activities.model.SocialUser;
 import org.ext.uberfire.social.activities.service.SocialUserPersistenceAPI;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.uberfire.commons.cluster.ClusterJMSService;
+import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.commons.services.cdi.Startup;
 
 @ApplicationScoped
 @Startup
 public class SocialUserClusterMessaging {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SocialUserClusterMessaging.class);
-
-    public static final String topicName = "SOCIAL_USER_MESSAGE";
+    public static final String CHANNEL_NAME = "SOCIAL_USER_MESSAGE";
 
     private SocialUserPersistenceAPI socialUserPersistenceAPI;
 
-    private ClusterJMSService clusterJMSService;
+    private ClusterService clusterService;
 
     private String nodeId = UUID.randomUUID().toString();
 
-    public void setup(ClusterJMSService clusterJMSService,
+    public void setup(ClusterService clusterService,
                       SocialUserPersistenceAPI socialUserPersistenceAPI) {
-        this.clusterJMSService = clusterJMSService;
+        this.clusterService = clusterService;
         this.socialUserPersistenceAPI = socialUserPersistenceAPI;
-        if (clusterJMSService.isAppFormerClustered()) {
-            clusterJMSService.connect();
+        if (clusterService.isAppFormerClustered()) {
+            clusterService.connect();
 
-            clusterJMSService.createConsumer(ClusterJMSService.DESTINATION_TYPE.TOPIC,
-                                             topicName,
-                                             message -> topicMessageListener(message));
-        }
-    }
-
-    private void topicMessageListener(Message message) {
-        if (message instanceof ObjectMessage) {
-            try {
-                Serializable object = ((ObjectMessage) message).getObject();
-                if (object instanceof SocialUserClusterMessageWrapper) {
-                    SocialUserClusterMessageWrapper messageWrapper = (SocialUserClusterMessageWrapper) object;
-                    if (!messageWrapper.getNodeId().equals(nodeId)) {
-                        SocialUserClusterPersistence socialUserClusterPersistence = (SocialUserClusterPersistence) socialUserPersistenceAPI;
-                        socialUserClusterPersistence.sync(messageWrapper.getUser());
-                    }
-                }
-            } catch (JMSException e) {
-                LOGGER.error("Exception receiving JMS message: " + e.getMessage());
-            }
+            clusterService.createConsumer(ClusterService.DestinationType.PubSub,
+                                          CHANNEL_NAME,
+                                          SocialUserClusterMessageWrapper.class,
+                                          message -> {
+                                              if (!message.getNodeId().equals(nodeId)) {
+                                                  SocialUserClusterPersistence socialUserClusterPersistence = (SocialUserClusterPersistence) socialUserPersistenceAPI;
+                                                  socialUserClusterPersistence.sync(message.getUser());
+                                              }
+                                          });
         }
     }
 
     public void notify(SocialUser user) {
-        if (!clusterJMSService.isAppFormerClustered()) {
+        if (!clusterService.isAppFormerClustered()) {
             return;
         }
-        clusterJMSService.broadcast(ClusterJMSService.DESTINATION_TYPE.TOPIC,
-                                    topicName,
-                                    new SocialUserClusterMessageWrapper(nodeId,
-                                                                        user));
+        clusterService.broadcast(ClusterService.DestinationType.PubSub,
+                                 CHANNEL_NAME,
+                                 new SocialUserClusterMessageWrapper(nodeId,
+                                                                     user));
     }
 }
