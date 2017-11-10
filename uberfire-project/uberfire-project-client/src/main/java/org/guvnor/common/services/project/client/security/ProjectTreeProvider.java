@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -102,7 +103,8 @@ public class ProjectTreeProvider implements PermissionTreeProvider {
         rootNode.addDependencies(readPermission,
                                  updatePermission,
                                  deletePermission,
-                                 buildPermission);
+                                 buildPermission,
+                                 createPermission);
         return rootNode;
     }
 

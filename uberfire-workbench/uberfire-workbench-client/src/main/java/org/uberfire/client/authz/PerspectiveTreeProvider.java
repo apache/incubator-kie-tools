@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -140,7 +141,8 @@ public class PerspectiveTreeProvider implements PermissionTreeProvider {
 
         rootNode.addDependencies(readPermission,
                                  updatePermission,
-                                 deletePermission);
+                                 deletePermission,
+                                 createPermission);
 
         return rootNode;
     }

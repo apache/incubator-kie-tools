@@ -34,8 +34,15 @@ import org.uberfire.security.client.authz.tree.PermissionNode;
 import org.uberfire.security.client.authz.tree.PermissionTree;
 import org.uberfire.security.impl.authz.DefaultPermissionManager;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ProjectTreeProviderTest {
@@ -81,7 +88,7 @@ public class ProjectTreeProviderTest {
     public void testRootNode() {
         assertEquals(rootNode.getPermissionList().size(),
                      5);
-        checkDependencies(rootNode);
+        checkDependencies(rootNode, 4);
     }
 
     @Test
@@ -94,7 +101,7 @@ public class ProjectTreeProviderTest {
                 List<Permission> permissionList = child.getPermissionList();
                 assertEquals(permissionList.size(),
                              4);
-                checkDependencies(child);
+                checkDependencies(child, 3);
 
                 List<String> permissionNames = permissionList.stream()
                         .map(Permission::getName)
@@ -108,13 +115,13 @@ public class ProjectTreeProviderTest {
         });
     }
 
-    protected void checkDependencies(PermissionNode permissionNode) {
+    protected void checkDependencies(PermissionNode permissionNode, int numberOfDependencies) {
         for (Permission permission : permissionNode.getPermissionList()) {
             Collection<Permission> dependencies = permissionNode.getDependencies(permission);
 
             if (permission.getName().startsWith("project.read")) {
                 assertEquals(dependencies.size(),
-                             3);
+                             numberOfDependencies);
             } else {
                 assertNull(dependencies);
             }

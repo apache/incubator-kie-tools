@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -96,7 +97,8 @@ public class OrganizationalUnitTreeProvider implements PermissionTreeProvider {
 
         rootNode.addDependencies(readPermission,
                                  updatePermission,
-                                 deletePermission);
+                                 deletePermission,
+                                 createPermission);
         return rootNode;
     }
 

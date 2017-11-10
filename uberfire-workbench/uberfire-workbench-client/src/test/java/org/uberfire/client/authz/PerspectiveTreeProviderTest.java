@@ -39,8 +39,10 @@ import org.uberfire.security.client.authz.tree.PermissionTree;
 import org.uberfire.security.client.authz.tree.impl.DefaultLoadOptions;
 import org.uberfire.security.impl.authz.DefaultPermissionManager;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PerspectiveTreeProviderTest {
@@ -188,7 +190,7 @@ public class PerspectiveTreeProviderTest {
     public void testRootNode() {
         assertEquals(root.getPermissionList().size(),
                      4);
-        checkDependencies(root);
+        checkDependencies(root, 3);
     }
 
     @Test
@@ -197,7 +199,7 @@ public class PerspectiveTreeProviderTest {
             for (PermissionNode child : children) {
                 assertEquals(child.getPermissionList().size(),
                              3);
-                checkDependencies(child);
+                checkDependencies(child, 2);
             }
         });
     }
@@ -214,13 +216,13 @@ public class PerspectiveTreeProviderTest {
         assertEquals(name, "Perspective4");
     }
 
-    protected void checkDependencies(PermissionNode permissionNode) {
+    protected void checkDependencies(PermissionNode permissionNode, int numberOfDependencies) {
         for (Permission permission : permissionNode.getPermissionList()) {
             Collection<Permission> dependencies = permissionNode.getDependencies(permission);
 
             if (permission.getName().startsWith("perspective.read")) {
                 assertEquals(dependencies.size(),
-                             2);
+                             numberOfDependencies);
             } else {
                 assertNull(dependencies);
             }
