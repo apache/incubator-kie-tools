@@ -176,8 +176,9 @@ public class BPMNDiagramMarshallerTest {
     private static final String BPMN_INTERMEDIATE_SIGNAL_EVENTCATCHING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateSignalEventCatching.bpmn";
     private static final String BPMN_INTERMEDIATE_SIGNAL_EVENTTHROWING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateSignalEventThrowing.bpmn";
     private static final String BPMN_INTERMEDIATE_TIMER_EVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateTimerEvent.bpmn";
-    private static final String BPMN_ENDEVENTASSIGNMENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endEventAssignments.bpmn";
     private static final String BPMN_ENDSIGNALEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endSignalEvent.bpmn";
+    private static final String BPMN_ENDNONEEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endNoneEvent.bpmn";
+    private static final String BPMN_ENDTERMINATEEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endTerminateEvent.bpmn";
     private static final String BPMN_PROCESSPROPERTIES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/processProperties.bpmn";
     private static final String BPMN_BUSINESSRULETASKRULEFLOWGROUP = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/businessRuleTask.bpmn";
     private static final String BPMN_REUSABLE_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/reusableSubprocessCalledElement.bpmn";
@@ -661,26 +662,36 @@ public class BPMNDiagramMarshallerTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testUnmarshallEndEventAssignments() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_ENDEVENTASSIGNMENTS);
+    public void testUnmarshallEndNoneEvent() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_ENDNONEEVENT);
         assertDiagram(diagram,
-                      8);
-        assertEquals("EndEventAssignments",
+                      3);
+        assertEquals("endNoneEvent",
                      diagram.getMetadata().getTitle());
-
-        Node<? extends Definition, ?> endTerminateEventNode = diagram.getGraph().getNode("_0493ECBF-3C0F-4086-9979-2391CE740AA8");
-        EndTerminateEvent endTerminateEvent = (EndTerminateEvent) endTerminateEventNode.getContent().getDefinition();
-        DataIOSet dataIOSet = endTerminateEvent.getDataIOSet();
-        AssignmentsInfo assignmentsinfo = dataIOSet.getAssignmentsinfo();
-        assertEquals("EndTermEventInput1:String||||[din]employee->EndTermEventInput1",
-                     assignmentsinfo.getValue());
-
-        Node<? extends Definition, ?> endNoneEventNode = diagram.getGraph().getNode("_4824B9FD-6097-4E06-9E7E-2CE5E7601BC5");
+        Node<? extends Definition, ?> endNoneEventNode = diagram.getGraph().getNode("_9DF2C9D3-15DF-4436-B6C6-85B58B8696B6");
         EndNoneEvent endNoneEvent = (EndNoneEvent) endNoneEventNode.getContent().getDefinition();
-        DataIOSet dataIOSet2 = endNoneEvent.getDataIOSet();
-        AssignmentsInfo assignmentsinfo2 = dataIOSet2.getAssignmentsinfo();
-        assertEquals("EndNoneEventInput1:String||||[din]reason->EndNoneEventInput1",
-                     assignmentsinfo2.getValue());
+        assertNotNull(endNoneEvent.getGeneral());
+        assertEquals("MyEndNoneEvent",
+                     endNoneEvent.getGeneral().getName().getValue());
+        assertEquals("MyEndNoneEventDocumentation",
+                     endNoneEvent.getGeneral().getDocumentation().getValue());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnmarshallEndTerminateEvent() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_ENDTERMINATEEVENT);
+        assertDiagram(diagram,
+                      3);
+        assertEquals("endTerminateEvent",
+                     diagram.getMetadata().getTitle());
+        Node<? extends Definition, ?> endNoneEventNode = diagram.getGraph().getNode("_1B379E3E-E4ED-4BD2-AEE8-CD85374CEC78");
+        EndTerminateEvent endTerminateEvent = (EndTerminateEvent) endNoneEventNode.getContent().getDefinition();
+        assertNotNull(endTerminateEvent.getGeneral());
+        assertEquals("MyEndTerminateEvent",
+                     endTerminateEvent.getGeneral().getName().getValue());
+        assertEquals("MyEndTerminateEventDocumentation",
+                     endTerminateEvent.getGeneral().getDocumentation().getValue());
     }
 
     @Test
@@ -698,8 +709,10 @@ public class BPMNDiagramMarshallerTest {
         AssignmentsInfo assignmentsinfo = dataIOSet.getAssignmentsinfo();
         assertEquals("EndSignalEventInput1:String||||[din]employee->EndSignalEventInput1",
                      assignmentsinfo.getValue());
-        assertEquals("project", endSignalEvent.getExecutionSet().getSignalScope().getValue());
-        assertEquals("employee", endSignalEvent.getExecutionSet().getSignalRef().getValue());
+        assertEquals("project",
+                     endSignalEvent.getExecutionSet().getSignalScope().getValue());
+        assertEquals("employee",
+                     endSignalEvent.getExecutionSet().getSignalRef().getValue());
     }
 
     @Test
@@ -1780,22 +1793,38 @@ public class BPMNDiagramMarshallerTest {
     }
 
     @Test
-    public void testMarshallEndEventAssignments() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_ENDEVENTASSIGNMENTS);
+    public void testMarshallEndNoneEvent() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_ENDNONEEVENT);
         String result = tested.marshall(diagram);
         assertDiagram(result,
                       1,
-                      7,
-                      6);
-        assertTrue(result.contains("<bpmn2:dataInput id=\"_0493ECBF-3C0F-4086-9979-2391CE740AA8_EndTermEventInput1InputX\" drools:dtype=\"String\" name=\"EndTermEventInput1\"/>"));
-        assertTrue(result.contains("<bpmn2:sourceRef>employee</bpmn2:sourceRef>"));
-        assertTrue(result.contains("<bpmn2:targetRef>_0493ECBF-3C0F-4086-9979-2391CE740AA8_EndTermEventInput1InputX</bpmn2:targetRef>"));
-        assertTrue(result.contains("<bpmn2:dataInputRefs>_0493ECBF-3C0F-4086-9979-2391CE740AA8_EndTermEventInput1InputX</bpmn2:dataInputRefs>"));
+                      2,
+                      1);
 
-        assertTrue(result.contains("<bpmn2:dataInput id=\"_4824B9FD-6097-4E06-9E7E-2CE5E7601BC5_EndNoneEventInput1InputX\" drools:dtype=\"String\" name=\"EndNoneEventInput1\"/>"));
-        assertTrue(result.contains("<bpmn2:sourceRef>reason</bpmn2:sourceRef>"));
-        assertTrue(result.contains("<bpmn2:targetRef>_4824B9FD-6097-4E06-9E7E-2CE5E7601BC5_EndNoneEventInput1InputX</bpmn2:targetRef>"));
-        assertTrue(result.contains("<bpmn2:dataInputRefs>_4824B9FD-6097-4E06-9E7E-2CE5E7601BC5_EndNoneEventInput1InputX</bpmn2:dataInputRefs>"));
+        assertTrue(result.contains("<bpmn2:endEvent"));
+        assertTrue(result.contains(" id=\"_9DF2C9D3-15DF-4436-B6C6-85B58B8696B6\""));
+        assertTrue(result.contains("name=\"MyEndNoneEvent\""));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[MyEndNoneEvent]]></drools:metaValue>"));
+        assertTrue(result.contains("<![CDATA[MyEndNoneEventDocumentation]]></bpmn2:documentation>"));
+        assertTrue(result.contains("</bpmn2:endEvent>"));
+    }
+
+    @Test
+    public void testMarshallEndTerminateEvent() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_ENDTERMINATEEVENT);
+        String result = tested.marshall(diagram);
+        assertDiagram(result,
+                      1,
+                      2,
+                      1);
+
+        assertTrue(result.contains("<bpmn2:endEvent"));
+        assertTrue(result.contains(" id=\"_1B379E3E-E4ED-4BD2-AEE8-CD85374CEC78\""));
+        assertTrue(result.contains("name=\"MyEndTerminateEvent\""));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[MyEndTerminateEvent]]></drools:metaValue>"));
+        assertTrue(result.contains("<![CDATA[MyEndTerminateEventDocumentation]]></bpmn2:documentation>"));
+        assertTrue(result.contains("<bpmn2:terminateEventDefinition"));
+        assertTrue(result.contains("</bpmn2:endEvent>"));
     }
 
     @Test

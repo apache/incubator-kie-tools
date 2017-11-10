@@ -23,7 +23,6 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radius;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
@@ -57,7 +56,6 @@ public class EndTerminateEvent extends BaseEndEvent {
         @Override
         public EndTerminateEvent build() {
             return new EndTerminateEvent(new BPMNGeneralSet(""),
-                                         new DataIOSet(),
                                          new BackgroundSet(BG_COLOR,
                                                            BORDER_COLOR,
                                                            BORDER_SIZE),
@@ -70,12 +68,10 @@ public class EndTerminateEvent extends BaseEndEvent {
     }
 
     public EndTerminateEvent(final @MapsTo("general") BPMNGeneralSet general,
-                             final @MapsTo("dataIOSet") DataIOSet dataIOSet,
                              final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                              final @MapsTo("fontSet") FontSet fontSet,
                              final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet) {
         super(general,
-              dataIOSet,
               backgroundSet,
               fontSet,
               dimensionsSet);

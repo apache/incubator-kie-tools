@@ -55,34 +55,31 @@ public class EndSignalEvent extends BaseEndEvent {
 
     @Description
     public static final transient String description = "At the end of the process, a signal is thrown. (One signal thrown can be caught multiple times";
+
     @PropertySet
     @FormField(afterElement = "general")
     @Valid
     protected ScopedSignalEventExecutionSet executionSet;
 
+    @PropertySet
+    @FormField(afterElement = "executionSet")
+    protected DataIOSet dataIOSet;
+
     public EndSignalEvent() {
     }
 
     public EndSignalEvent(final @MapsTo("general") BPMNGeneralSet general,
-                          final @MapsTo("dataIOSet") DataIOSet dataIOSet,
                           final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                           final @MapsTo("fontSet") FontSet fontSet,
                           final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet,
-                          final @MapsTo("executionSet") ScopedSignalEventExecutionSet executionSet) {
+                          final @MapsTo("executionSet") ScopedSignalEventExecutionSet executionSet,
+                          final @MapsTo("dataIOSet") DataIOSet dataIOSet) {
         super(general,
-              dataIOSet,
               backgroundSet,
               fontSet,
               dimensionsSet);
         this.executionSet = executionSet;
-    }
-
-    public ScopedSignalEventExecutionSet getExecutionSet() {
-        return executionSet;
-    }
-
-    public void setExecutionSet(ScopedSignalEventExecutionSet executionSet) {
-        this.executionSet = executionSet;
+        this.dataIOSet = dataIOSet;
     }
 
     @Override
@@ -95,9 +92,36 @@ public class EndSignalEvent extends BaseEndEvent {
     }
 
     @Override
+    public boolean hasInputVars() {
+        return true;
+    }
+
+    @Override
+    public boolean isSingleInputVar() {
+        return true;
+    }
+
+    public ScopedSignalEventExecutionSet getExecutionSet() {
+        return executionSet;
+    }
+
+    public void setExecutionSet(ScopedSignalEventExecutionSet executionSet) {
+        this.executionSet = executionSet;
+    }
+
+    public DataIOSet getDataIOSet() {
+        return dataIOSet;
+    }
+
+    public void setDataIOSet(DataIOSet dataIOSet) {
+        this.dataIOSet = dataIOSet;
+    }
+
+    @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
-                                         executionSet.hashCode());
+                                         executionSet.hashCode(),
+                                         dataIOSet.hashCode());
     }
 
     @Override
@@ -105,7 +129,8 @@ public class EndSignalEvent extends BaseEndEvent {
         if (o instanceof EndSignalEvent) {
             EndSignalEvent other = (EndSignalEvent) o;
             return super.equals(other) &&
-                    executionSet.equals(other.executionSet);
+                    executionSet.equals(other.executionSet) &&
+                    dataIOSet.equals(other.dataIOSet);
         }
         return false;
     }
@@ -116,13 +141,13 @@ public class EndSignalEvent extends BaseEndEvent {
         @Override
         public EndSignalEvent build() {
             return new EndSignalEvent(new BPMNGeneralSet(""),
-                                      new DataIOSet(),
                                       new BackgroundSet(BG_COLOR,
                                                         BORDER_COLOR,
                                                         BORDER_SIZE),
                                       new FontSet(),
                                       new CircleDimensionSet(new Radius(RADIUS)),
-                                      new ScopedSignalEventExecutionSet());
+                                      new ScopedSignalEventExecutionSet(),
+                                      new DataIOSet());
         }
     }
 }

@@ -351,9 +351,9 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
     @Test
     public void testSetBPMNModelEndTerminateEvent() {
         widget.setBPMNModel(endTerminateEvent);
-        assertEquals(true,
+        assertEquals(false,
                      widget.hasInputVars);
-        assertEquals(true,
+        assertEquals(false,
                      widget.isSingleInputVar);
         assertEquals(false,
                      widget.hasOutputVars);
@@ -367,16 +367,16 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
                                                                       PROCESS_VARS,
                                                                       ASSIGNMENTS_SINGLE_OUTPUT,
                                                                       widget.getDisallowedPropertyNames());
-        assertEquals("1 Data_Input",
+        assertEquals("",
                      assignmentsInfoString);
     }
 
     @Test
     public void testSetBPMNModelEndNoneEvent() {
         widget.setBPMNModel(endNoneEvent);
-        assertEquals(true,
+        assertEquals(false,
                      widget.hasInputVars);
-        assertEquals(true,
+        assertEquals(false,
                      widget.isSingleInputVar);
         assertEquals(false,
                      widget.hasOutputVars);
@@ -390,7 +390,7 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
                                                                       PROCESS_VARS,
                                                                       ASSIGNMENTS_SINGLE_OUTPUT,
                                                                       widget.getDisallowedPropertyNames());
-        assertEquals("1 Data_Input",
+        assertEquals("",
                      assignmentsInfoString);
     }
 
