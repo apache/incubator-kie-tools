@@ -946,11 +946,6 @@
         <artifactId>wildfly-elytron</artifactId>
         <version>${version.org.wildfly.security}</version>
       </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-internal</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
       <!-- Apache ActiveMQ/Artemis -->
       <dependency>
         <groupId>org.apache.activemq</groupId>
