@@ -36,6 +36,7 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.ComponentDropEvent;
+import org.uberfire.ext.layout.editor.client.api.ComponentDropType;
 import org.uberfire.ext.layout.editor.client.api.ComponentRemovedEvent;
 import org.uberfire.ext.layout.editor.client.components.columns.Column;
 import org.uberfire.ext.layout.editor.client.components.columns.ColumnWithComponents;
@@ -279,15 +280,16 @@ public class Row {
             if (dropFromMoveComponent(drop)) {
                 removeOldComponent(drop);
             }
-            notifyDrop(drop.getComponent());
+            notifyDrop(drop);
             Row.this.columns = updateColumns(drop,
                                              Row.this.columns);
             updateView();
         };
     }
 
-    private void notifyDrop(LayoutComponent component) {
-        componentDropEvent.fire(new ComponentDropEvent(component));
+    private void notifyDrop(ColumnDrop columnDrop) {
+        componentDropEvent.fire(new ComponentDropEvent(columnDrop.getComponent(),
+                                                       columnDrop.getType().equals(ComponentDropType.FROM_MOVE)));
     }
 
     private void removeOldComponent(ColumnDrop drop) {
@@ -299,7 +301,7 @@ public class Row {
     }
 
     ParameterizedCommand<Column> removeColumnCommand() {
-        if(parentColumnWithComponents != null) {
+        if (parentColumnWithComponents != null) {
             return parentColumnWithComponents.getRemoveColumnCommand();
         }
         return (targetCol) -> {
@@ -357,7 +359,8 @@ public class Row {
     }
 
     private void notifyRemoval(LayoutComponent layoutComponent) {
-        componentRemovedEvent.fire(new ComponentRemovedEvent(layoutComponent));
+        componentRemovedEvent.fire(new ComponentRemovedEvent(layoutComponent,
+                                                             dndManager.isOnComponentMove()));
     }
 
     private boolean isAChildColumn(Column targetColumn) {
@@ -475,7 +478,6 @@ public class Row {
             dndManager.endRowMove(id,
                                   orientation);
         } else if (dndManager.isOnComponentMove()) {
-            dndManager.endComponentMove();
             dropOnRowCommand
                     .execute(new RowDrop(dndManager.getLayoutComponentMove(),
                                          id,

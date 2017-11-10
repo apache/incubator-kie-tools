@@ -19,16 +19,23 @@ package org.uberfire.ext.layout.editor.client.components.rows;
 import java.util.List;
 
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.AbstractLayoutEditorTest;
+import org.uberfire.ext.layout.editor.client.api.ComponentDropEvent;
+import org.uberfire.ext.layout.editor.client.api.ComponentRemovedEvent;
 import org.uberfire.ext.layout.editor.client.components.columns.Column;
 import org.uberfire.ext.layout.editor.client.components.columns.ColumnWithComponents;
 import org.uberfire.ext.layout.editor.client.components.columns.ComponentColumn;
 import org.uberfire.ext.layout.editor.client.infra.ColumnDrop;
 import org.uberfire.ext.layout.editor.client.infra.ColumnResizeEvent;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.jgroups.util.Util.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class RowTest extends AbstractLayoutEditorTest {
 
@@ -198,6 +205,8 @@ public class RowTest extends AbstractLayoutEditorTest {
     @Test
     public void testRemoveElementInColumnWithComponents() throws Exception {
 
+        ArgumentCaptor<ComponentRemovedEvent> removeEventCaptor = ArgumentCaptor.forClass(ComponentRemovedEvent.class);
+
         loadLayout(SAMPLE_COLUMN_WITH_COMPONENTS_LAYOUT);
 
         Row row = getRowByIndex(FIRST_ROW);
@@ -223,6 +232,10 @@ public class RowTest extends AbstractLayoutEditorTest {
         rowColumn = row.getColumns().get(0);
         assertThat(rowColumn).isNotNull().isInstanceOf(ColumnWithComponents.class);
 
+        verify(componentRemoveEventMock,
+               times(1)).fire(removeEventCaptor.capture());
+        assertFalse(removeEventCaptor.getValue().getFromMove());
+
         columnWithComponents = (ColumnWithComponents) rowColumn;
         assertThat(columnWithComponents.getRow().getColumns()).hasSize(2).contains(firstColumn,
                                                                                    secondColumn);
@@ -230,6 +243,10 @@ public class RowTest extends AbstractLayoutEditorTest {
         // Remove firstColumn -> since rowColumn will have onlye one ComponentColumn the expected result is that
         // rowColumn will be a ComponentColumn copy of secondColumn
         row.removeColumn(firstColumn);
+
+        verify(componentRemoveEventMock,
+               times(2)).fire(removeEventCaptor.capture());
+        assertFalse(removeEventCaptor.getValue().getFromMove());
 
         assertThat(row.getColumns()).hasSize(1);
 
@@ -241,5 +258,47 @@ public class RowTest extends AbstractLayoutEditorTest {
                                                                 "columnWidth",
                                                                 "columnHeight",
                                                                 "layoutComponent");
+    }
+
+    @Test
+    public void moveElementInRow() throws Exception {
+
+        loadLayout(SAMPLE_COLUMN_WITH_COMPONENTS_LAYOUT);
+
+        Row row = getRowByIndex(FIRST_ROW);
+        assertThat(row.getColumns()).hasSize(1);
+
+        Column rowColumn = row.getColumns().get(0);
+        assertThat(rowColumn).isNotNull().isInstanceOf(ColumnWithComponents.class);
+
+        ColumnWithComponents columnWithComponents = (ColumnWithComponents) rowColumn;
+        assertThat(columnWithComponents.getRow().getColumns()).hasSize(3);
+
+        Column column = columnWithComponents.getRow().getColumns().get(0);
+        assertThat(column).isNotNull().isInstanceOf(ComponentColumn.class);
+
+        // Dragging thirdColumn
+        dnDManager.dragComponent(column.getLayoutComponent(),
+                                 columnWithComponents.getRow().getId(),
+                                 column);
+        row.removeColumn(column);
+        rowColumn = row.getColumns().get(0);
+        assertThat(rowColumn).isNotNull().isInstanceOf(ColumnWithComponents.class);
+
+        ArgumentCaptor<ComponentRemovedEvent> removeEventCaptor = ArgumentCaptor.forClass(ComponentRemovedEvent.class);
+        verify(componentRemoveEventMock,
+               times(1)).fire(removeEventCaptor.capture());
+
+        assertTrue(removeEventCaptor.getValue().getFromMove());
+        assertTrue(dnDManager.isOnComponentMove());
+
+        // Dropping (we don't need any dropData for this test)
+        row.drop("", RowDrop.Orientation.BEFORE);
+        ArgumentCaptor<ComponentDropEvent> dropEventCaptor = ArgumentCaptor.forClass(ComponentDropEvent.class);
+
+        verify(componentDropEventMock).fire(dropEventCaptor.capture());
+        assertTrue(dropEventCaptor.getValue().getFromMove());
+        assertTrue(dnDManager.isOnComponentMove());
+
     }
 }

@@ -28,6 +28,7 @@ import com.google.gson.GsonBuilder;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.ComponentDropEvent;
@@ -79,7 +80,9 @@ public abstract class AbstractLayoutEditorTest {
     protected EventSourceMock<ComponentRemovedEvent> componentRemoveEventMock;
     protected EmptyDropRow emptyDropRow = new EmptyDropRow(mock(EmptyDropRow.View.class),
                                                            helper);
-    protected DnDManager dnDManager = new DnDManager();
+
+    @Spy
+    protected DnDManager dnDManager;
     protected Container container;
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 

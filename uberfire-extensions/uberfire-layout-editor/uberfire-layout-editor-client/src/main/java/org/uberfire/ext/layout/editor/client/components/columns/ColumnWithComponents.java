@@ -121,7 +121,6 @@ public class ColumnWithComponents implements Column {
     public void onDrop(ColumnDrop.Orientation orientation,
                        String dndData) {
         if (dndManager.isOnComponentMove()) {
-            dndManager.endComponentMove();
             dropCommand.execute(new ColumnDrop(dndManager.getLayoutComponentMove(),
                                                id,
                                                orientation)

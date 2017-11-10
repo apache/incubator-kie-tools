@@ -21,13 +21,23 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 public class ComponentDropEvent {
 
     private LayoutComponent component;
+    private Boolean fromMove;
 
     public ComponentDropEvent(LayoutComponent component) {
+        this.component = component;
+    }
+
+    public ComponentDropEvent(LayoutComponent component, Boolean fromMove) {
 
         this.component = component;
+        this.fromMove = fromMove;
     }
 
     public LayoutComponent getComponent() {
         return component;
+    }
+
+    public Boolean getFromMove() {
+        return fromMove;
     }
 }

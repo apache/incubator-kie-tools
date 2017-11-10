@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
@@ -30,10 +31,10 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.ComponentDropEvent;
+import org.uberfire.ext.layout.editor.client.api.ComponentDropType;
 import org.uberfire.ext.layout.editor.client.components.columns.Column;
 import org.uberfire.ext.layout.editor.client.components.rows.EmptyDropRow;
 import org.uberfire.ext.layout.editor.client.components.rows.Row;
@@ -167,15 +168,16 @@ public class Container {
     public ParameterizedCommand<RowDrop> createEmptyDropCommand() {
         return (drop) -> {
             destroy(emptyDropRow);
-            notifyDrop(drop.getComponent());
+            notifyDrop(drop);
             rows.add(createRow(drop,
                                Row.ROW_DEFAULT_HEIGHT));
             updateView();
         };
     }
 
-    private void notifyDrop(LayoutComponent component) {
-        componentDropEvent.fire(new ComponentDropEvent(component));
+    private void notifyDrop(RowDrop rowDrop) {
+        componentDropEvent.fire(new ComponentDropEvent(rowDrop.getComponent(),
+                                                       rowDrop.getType().equals(ComponentDropType.FROM_MOVE)));
     }
 
     private Row createRow(RowDrop drop,
@@ -286,7 +288,6 @@ public class Container {
     }
 
     private void removeOldComponent(Column column) {
-        Row rowToRemove = null;
         for (Row row : rows) {
             row.removeChildColumn(column);
         }
@@ -320,7 +321,7 @@ public class Container {
                 setupRowSize(currentRow);
             }
         }
-        notifyDrop(dropRow.getComponent());
+        notifyDrop(dropRow);
     }
 
     private void setupRowSize(Row currentRow) {

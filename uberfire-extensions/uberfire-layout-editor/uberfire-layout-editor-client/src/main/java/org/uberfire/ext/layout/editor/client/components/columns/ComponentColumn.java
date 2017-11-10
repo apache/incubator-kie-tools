@@ -252,7 +252,6 @@ public class ComponentColumn implements Column {
     }
 
     private void moveDrop(ColumnDrop.Orientation orientation) {
-        dndManager.endComponentMove();
         if (!dropInTheSameColumn()) {
             dropCommand.execute(new ColumnDrop(dndManager.getLayoutComponentMove(),
                                                id,

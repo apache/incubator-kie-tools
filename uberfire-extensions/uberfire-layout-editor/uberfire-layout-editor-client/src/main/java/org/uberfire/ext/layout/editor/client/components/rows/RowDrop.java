@@ -17,6 +17,7 @@
 package org.uberfire.ext.layout.editor.client.components.rows;
 
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
+import org.uberfire.ext.layout.editor.client.api.ComponentDropType;
 import org.uberfire.ext.layout.editor.client.components.columns.Column;
 
 public class RowDrop {
@@ -25,7 +26,7 @@ public class RowDrop {
     private final String rowId;
     private final Orientation orientation;
     private String originRowOldColumnId;
-    private Type type;
+    private ComponentDropType type;
     private Column oldColumn;
 
     public RowDrop(LayoutComponent component,
@@ -34,7 +35,7 @@ public class RowDrop {
         this.component = component;
         this.rowId = rowId;
         this.orientation = orientation;
-        this.type = Type.NEW;
+        this.type = ComponentDropType.NEW;
     }
 
     public String getRowId() {
@@ -53,18 +54,18 @@ public class RowDrop {
         return oldColumn;
     }
 
-    public Type getType() {
+    public ComponentDropType getType() {
         return type;
     }
 
     public boolean newComponent() {
-        return type == Type.NEW;
+        return type == ComponentDropType.NEW;
     }
 
     public RowDrop fromMove(String originRowOldColumnId,
                             Column oldColumn) {
         this.oldColumn = oldColumn;
-        this.type = Type.FROM_MOVE;
+        this.type = ComponentDropType.FROM_MOVE;
         this.originRowOldColumnId = originRowOldColumnId;
         return this;
     }
@@ -72,10 +73,5 @@ public class RowDrop {
     public enum Orientation {
         BEFORE,
         AFTER
-    }
-
-    public enum Type {
-        NEW,
-        FROM_MOVE
     }
 }
