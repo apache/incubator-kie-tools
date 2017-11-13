@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss, by Red Hat, Inc
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.plugin.client.perspective.editor.api;
 
-import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
+package org.uberfire.ext.plugin.client.resources.i18n;
 
 /**
- * Base class for implementing custom Perspective Editor's component. Any components extending this abstract class
- * will be added to the Perspective Editor's widget palette.
+ * Perspective Editor's component palette i18n literals
  */
-public interface PerspectiveEditorDragComponent extends LayoutDragComponent {
+public interface PerspectiveEditorPaletteI18n {
 
+    String coreComponentGroupName();
+
+    String navComponentGroupName();
 }

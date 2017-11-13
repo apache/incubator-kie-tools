@@ -533,8 +533,9 @@ public class ComponentColumnView
     }
 
     @Override
-    public void setup(LayoutComponent layoutComponent) {
-        helper.setLayoutComponent(layoutComponent);
+    public void setup(LayoutComponent layoutComponent,
+                      LayoutTemplate.Style pageStyle) {
+        helper.setup(layoutComponent, pageStyle);
     }
 
     private HTMLElement getPreviewElement() {

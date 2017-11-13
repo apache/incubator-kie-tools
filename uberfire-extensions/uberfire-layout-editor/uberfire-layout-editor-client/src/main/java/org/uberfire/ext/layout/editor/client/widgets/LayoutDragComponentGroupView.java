@@ -102,6 +102,21 @@ public class LayoutDragComponentGroupView implements UberElement<LayoutDragCompo
         return componentsMap.containsKey(componentId);
     }
 
+    @Override
+    public void setComponentVisible(String componentId, boolean visible) {
+        LayoutDragComponentWidget widget = componentsMap.get(componentId);
+        if (widget != null) {
+            widget.getElement().setHidden(!visible);
+        }
+    }
+
+    @Override
+    public void setExpanded(boolean expanded) {
+        groupTitle.setClassName(expanded ? "" : "collapsed");
+        groupTitle.setAttribute("aria-expanded", Boolean.toString(expanded));
+        collapse.setClassName("panel-collapse collapse"  + (expanded ? " in" : ""));
+    }
+
     private LayoutDragComponentWidget createDragComponentWidget(LayoutDragComponent dragComponent) {
         LayoutDragComponentWidget widget = layoutDragComponentWidgets.get();
         widget.init(dragComponent);

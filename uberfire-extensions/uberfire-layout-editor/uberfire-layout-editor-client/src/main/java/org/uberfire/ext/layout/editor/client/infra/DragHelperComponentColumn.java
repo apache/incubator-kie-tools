@@ -50,6 +50,8 @@ public class DragHelperComponentColumn {
 
     private LayoutComponent layoutComponent;
 
+    private LayoutTemplate.Style pageStyle;
+
     public LayoutDragComponent getLayoutDragComponent() {
         if (layoutDragComponent == null) {
             layoutDragComponent =
@@ -62,16 +64,21 @@ public class DragHelperComponentColumn {
         return getLayoutDragComponent() instanceof HasModalConfiguration;
     }
 
-    public void setLayoutComponent(LayoutComponent layoutComponent) {
+    public void setup(LayoutComponent layoutComponent,
+                      LayoutTemplate.Style pageStyle) {
         this.layoutComponent = layoutComponent;
+        this.pageStyle = pageStyle;
     }
 
     public HTMLElement getPreviewElement(Widget context) {
         HTMLElement div = document.createElement("div");
         addCSSClass(div,
                     "uf-perspective-col");
-        addCSSClass(div,
+
+        if (LayoutTemplate.Style.PAGE == pageStyle) {
+            addCSSClass(div,
                     "uf-le-overflow");
+        }
         FlowPanel gwtDivWrapper = GWT.create(FlowPanel.class);
         gwtDivWrapper.getElement().addClassName("uf-perspective-col");
         gwtDivWrapper.add(getLayoutDragComponent()

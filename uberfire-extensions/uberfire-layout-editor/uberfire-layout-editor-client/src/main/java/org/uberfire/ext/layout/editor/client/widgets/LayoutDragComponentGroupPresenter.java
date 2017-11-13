@@ -42,24 +42,34 @@ public class LayoutDragComponentGroupPresenter {
         this.group = group;
         view.setTitle(idGenerator.createAccordionID(group.getName()),
                       group.getName());
+        view.setExpanded(group.isExpandeByDefault());
         view.addComponents(group.getComponents());
     }
 
-    public void add(String componentId,
-                    LayoutDragComponent component) {
-        view.addComponent(componentId,
-                          component);
+    public void setExpanded(boolean expanded) {
+        view.setExpanded(expanded);
     }
 
-    public void removeDraggableComponentFromGroup(String componentId) {
-        view.removeComponent(componentId);
+    public void addComponent(String componentId,
+                             LayoutDragComponent component) {
+        if (view.hasComponent(componentId)) {
+            view.setComponentVisible(componentId, true);
+        } else {
+            view.addComponent(componentId, component);
+        }
+    }
+
+    public void removeComponent(String componentId) {
+        if (view.hasComponent(componentId)) {
+            view.setComponentVisible(componentId, false);
+        }
     }
 
     public boolean hasComponent(String componentId) {
         return view.hasComponent(componentId);
     }
 
-    public UberElement<LayoutDragComponentGroupPresenter> getView() {
+    public LayoutDragComponentGroupPresenter.View getView() {
         return view;
     }
 
@@ -75,6 +85,10 @@ public class LayoutDragComponentGroupPresenter {
 
         void removeComponent(String componentId);
 
+        void setComponentVisible(String componentId, boolean visible);
+
         boolean hasComponent(String componentId);
+
+        void setExpanded(boolean expanded);
     }
 }

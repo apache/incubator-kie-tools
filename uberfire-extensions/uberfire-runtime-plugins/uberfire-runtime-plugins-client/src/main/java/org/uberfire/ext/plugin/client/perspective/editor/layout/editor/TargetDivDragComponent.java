@@ -30,14 +30,14 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.layout.editor.client.api.HasModalConfiguration;
 import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
-import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorDragComponent;
+import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorNavComponent;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.popups.EditTargetDiv;
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.properties.editor.model.PropertyEditorChangeEvent;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
 
 @ApplicationScoped
-public class TargetDivDragComponent implements PerspectiveEditorDragComponent,
+public class TargetDivDragComponent implements PerspectiveEditorNavComponent,
                                                HasModalConfiguration {
 
     public static final String ID_PARAMETER = "ID_PARAMETER";

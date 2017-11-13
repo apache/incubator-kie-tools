@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -29,21 +28,18 @@ import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
+import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentPalette;
 import org.uberfire.ext.layout.editor.client.components.container.Container;
 import org.uberfire.ext.layout.editor.client.widgets.LayoutDragComponentGroupPresenter;
-import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
-public class LayoutEditorPresenter {
+public class LayoutEditorPresenter implements LayoutDragComponentPalette {
 
     private final View view;
     private LayoutTemplate.Style pageStyle = LayoutTemplate.Style.FLUID;
     protected Map<String, LayoutDragComponentGroupPresenter> layoutDragComponentGroups = new HashMap<>();
-    ManagedInstance<LayoutDragComponentGroupPresenter> layoutDragComponentGroupInstance;
-    @Inject
+    private ManagedInstance<LayoutDragComponentGroupPresenter> layoutDragComponentGroupInstance;
     private Container container;
-    @Inject
-    private Event<NotificationEvent> ufNotification;
 
     @Inject
     public LayoutEditorPresenter(final View view,
@@ -101,58 +97,9 @@ public class LayoutEditorPresenter {
         return container.getProperty(key);
     }
 
-    public void addDraggableComponentGroup(LayoutDragComponentGroup group) {
-        LayoutDragComponentGroupPresenter layoutDragComponentGroupPresenter = createLayoutDragComponentPresenter(
-                group);
-        view.addDraggableComponentGroup(layoutDragComponentGroupPresenter.getView());
-    }
-
-    private LayoutDragComponentGroupPresenter createLayoutDragComponentPresenter(LayoutDragComponentGroup group) {
-        LayoutDragComponentGroupPresenter layoutDragComponentGroupPresenter = layoutDragComponentGroupInstance.get();
-        layoutDragComponentGroups.put(group.getName(),
-                                      layoutDragComponentGroupPresenter);
-        layoutDragComponentGroupPresenter.init(group);
-        return layoutDragComponentGroupPresenter;
-    }
-
-    public void addDraggableComponentToGroup(String groupName,
-                                             String componentId,
-                                             LayoutDragComponent component) {
-        LayoutDragComponentGroupPresenter layoutDragComponentGroupPresenter = layoutDragComponentGroups
-                .get(groupName);
-        layoutDragComponentGroupPresenter.add(componentId,
-                                              component);
-    }
-
-    public void removeDraggableGroup(String groupName) {
-        LayoutDragComponentGroupPresenter layoutDragComponentGroupPresenter = layoutDragComponentGroups
-                .remove(groupName);
-        if (layoutDragComponentGroupPresenter != null) {
-            view.removeDraggableComponentGroup(layoutDragComponentGroupPresenter.getView());
-        }
-    }
-
-    public void removeDraggableComponentFromGroup(String groupName,
-                                                  String componentId) {
-        LayoutDragComponentGroupPresenter layoutDragComponentGroupPresenter = layoutDragComponentGroups
-                .get(groupName);
-        if (layoutDragComponentGroupPresenter != null) {
-            layoutDragComponentGroupPresenter.removeDraggableComponentFromGroup(componentId);
-        }
-    }
 
     public void setPageStyle(LayoutTemplate.Style pageStyle) {
         this.pageStyle = pageStyle;
-    }
-
-    public boolean hasDraggableGroup(String groupName) {
-        return layoutDragComponentGroups.containsKey(groupName);
-    }
-
-    public boolean hasDraggableComponent(String groupName,
-                                         String componentId) {
-        return hasDraggableGroup(groupName) && layoutDragComponentGroups
-                .get(groupName).hasComponent(componentId);
     }
 
     public interface View extends UberElement<LayoutEditorPresenter> {
@@ -162,5 +109,63 @@ public class LayoutEditorPresenter {
         void addDraggableComponentGroup(UberElement<LayoutDragComponentGroupPresenter> group);
 
         void removeDraggableComponentGroup(UberElement<LayoutDragComponentGroupPresenter> id);
+    }
+
+    // LayoutEditorComponentPalette
+
+    @Override
+    public void addDraggableGroup(LayoutDragComponentGroup group) {
+        LayoutDragComponentGroupPresenter layoutDragComponentGroupPresenter = createComponentGroupPresenter(
+                group);
+        view.addDraggableComponentGroup(layoutDragComponentGroupPresenter.getView());
+    }
+
+    private LayoutDragComponentGroupPresenter createComponentGroupPresenter(LayoutDragComponentGroup group) {
+        LayoutDragComponentGroupPresenter layoutDragComponentGroupPresenter = layoutDragComponentGroupInstance.get();
+        layoutDragComponentGroups.put(group.getName(),
+                                      layoutDragComponentGroupPresenter);
+        layoutDragComponentGroupPresenter.init(group);
+        return layoutDragComponentGroupPresenter;
+    }
+
+    @Override
+    public void removeDraggableGroup(String groupName) {
+        LayoutDragComponentGroupPresenter layoutDragComponentGroupPresenter = layoutDragComponentGroups
+                .remove(groupName);
+        if (layoutDragComponentGroupPresenter != null) {
+            view.removeDraggableComponentGroup(layoutDragComponentGroupPresenter.getView());
+        }
+    }
+
+    @Override
+    public boolean hasDraggableGroup(String groupName) {
+        return layoutDragComponentGroups.containsKey(groupName);
+    }
+
+    @Override
+    public void addDraggableComponent(String groupName,
+                                      String componentId,
+                                      LayoutDragComponent component) {
+        LayoutDragComponentGroupPresenter layoutDragComponentGroupPresenter = layoutDragComponentGroups
+                .get(groupName);
+        layoutDragComponentGroupPresenter.addComponent(componentId,
+                component);
+    }
+
+    @Override
+    public void removeDraggableComponent(String groupName,
+                                         String componentId) {
+        LayoutDragComponentGroupPresenter layoutDragComponentGroupPresenter = layoutDragComponentGroups
+                .get(groupName);
+        if (layoutDragComponentGroupPresenter != null) {
+            layoutDragComponentGroupPresenter.removeComponent(componentId);
+        }
+    }
+
+    @Override
+    public boolean hasDraggableComponent(String groupName,
+                                         String componentId) {
+        return hasDraggableGroup(groupName) && layoutDragComponentGroups
+                .get(groupName).hasComponent(componentId);
     }
 }

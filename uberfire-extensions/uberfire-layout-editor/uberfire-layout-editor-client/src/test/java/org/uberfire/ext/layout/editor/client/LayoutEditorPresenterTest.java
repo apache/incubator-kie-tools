@@ -49,9 +49,11 @@ public class LayoutEditorPresenterTest {
     private LayoutEditorPresenter.View view;
 
     @Mock
-    private LayoutDragComponentGroupPresenter dragComponentGroupPresenter;
+    private LayoutDragComponentGroupPresenter.View dragComponentGroupView;
 
     private LayoutTemplate testTemplate = new LayoutTemplate(LAYOUT_NAME);
+
+    private LayoutDragComponentGroupPresenter dragComponentGroupPresenter;
 
     private TestLayoutEditorPresenter presenter;
 
@@ -59,6 +61,7 @@ public class LayoutEditorPresenterTest {
     public void initialize() {
         ManagedInstance<LayoutDragComponentGroupPresenter> instance = mock(ManagedInstance.class);
 
+        dragComponentGroupPresenter = spy(new LayoutDragComponentGroupPresenter(dragComponentGroupView));
         when(instance.get()).thenReturn(dragComponentGroupPresenter);
 
         presenter = new TestLayoutEditorPresenter(view,
@@ -100,25 +103,25 @@ public class LayoutEditorPresenterTest {
 
     @Test
     public void testAddDraggableGroups() {
-        LayoutDragComponentGroup dragGroup = new LayoutDragComponentGroup(DRAGGABLE_GROUP_NAME);
-        presenter.addDraggableComponentGroup(dragGroup);
+        LayoutDragComponentGroup dragGroup = new LayoutDragComponentGroup(DRAGGABLE_GROUP_NAME, true);
+        presenter.addDraggableGroup(dragGroup);
         verify(dragComponentGroupPresenter).init(dragGroup);
         verify(dragComponentGroupPresenter).getView();
+        verify(dragComponentGroupView).setExpanded(true);
         verify(view).addDraggableComponentGroup(any());
         assertEquals(1,
                      presenter.getLayoutDragComponentGroups().size());
         assertNotNull(presenter.getLayoutDragComponentGroups().get(DRAGGABLE_GROUP_NAME));
 
         LayoutDragComponent dragComponent = mock(LayoutDragComponent.class);
-        presenter.addDraggableComponentToGroup(DRAGGABLE_GROUP_NAME,
+        presenter.addDraggableComponent(DRAGGABLE_GROUP_NAME,
                                                DRAGGABLE_COMPONENT_NAME,
                                                dragComponent);
-        verify(dragComponentGroupPresenter).add(DRAGGABLE_COMPONENT_NAME,
+        verify(dragComponentGroupPresenter).addComponent(DRAGGABLE_COMPONENT_NAME,
                                                 dragComponent);
 
-        presenter.removeDraggableComponentFromGroup(DRAGGABLE_GROUP_NAME,
-                                                    DRAGGABLE_COMPONENT_NAME);
-        verify(dragComponentGroupPresenter).removeDraggableComponentFromGroup(DRAGGABLE_COMPONENT_NAME);
+        presenter.removeDraggableComponent(DRAGGABLE_GROUP_NAME, DRAGGABLE_COMPONENT_NAME);
+        verify(dragComponentGroupPresenter).removeComponent(DRAGGABLE_COMPONENT_NAME);
     }
 
     @Test
@@ -163,25 +166,45 @@ public class LayoutEditorPresenterTest {
 
     @Test
     public void testHasDraggableComponent() {
-        boolean result = presenter.hasDraggableComponent(DRAGGABLE_GROUP_NAME,
-                                                         DRAGGABLE_COMPONENT_NAME);
+        boolean result = presenter.hasDraggableComponent(DRAGGABLE_GROUP_NAME, DRAGGABLE_COMPONENT_NAME);
         assertFalse(result);
 
         LayoutDragComponentGroup dragGroup = new LayoutDragComponentGroup(DRAGGABLE_GROUP_NAME);
-        presenter.addDraggableComponentGroup(dragGroup);
+        presenter.addDraggableGroup(dragGroup);
 
-        result = presenter.hasDraggableComponent(DRAGGABLE_GROUP_NAME,
-                                                 DRAGGABLE_COMPONENT_NAME);
+        result = presenter.hasDraggableComponent(DRAGGABLE_GROUP_NAME, DRAGGABLE_COMPONENT_NAME);
         assertFalse(result);
 
         LayoutDragComponent dragComponent = mock(LayoutDragComponent.class);
-        presenter.addDraggableComponentToGroup(DRAGGABLE_GROUP_NAME,
+        presenter.addDraggableComponent(DRAGGABLE_GROUP_NAME,
                                                DRAGGABLE_COMPONENT_NAME,
                                                dragComponent);
         when(dragComponentGroupPresenter.hasComponent(DRAGGABLE_COMPONENT_NAME)).thenReturn(true);
 
-        result = presenter.hasDraggableComponent(DRAGGABLE_GROUP_NAME,
-                                                 DRAGGABLE_COMPONENT_NAME);
+        result = presenter.hasDraggableComponent(DRAGGABLE_GROUP_NAME, DRAGGABLE_COMPONENT_NAME);
         assertTrue(result);
+    }
+
+    @Test
+    public void testRemoveComponent() {
+        LayoutDragComponentGroup dragGroup = new LayoutDragComponentGroup(DRAGGABLE_GROUP_NAME);
+        LayoutDragComponent dragComponent = mock(LayoutDragComponent.class);
+
+        // Add component
+        presenter.addDraggableGroup(dragGroup);
+        presenter.addDraggableComponent(DRAGGABLE_GROUP_NAME, DRAGGABLE_COMPONENT_NAME, dragComponent);
+        verify(dragComponentGroupView, never()).setComponentVisible(anyString(), anyBoolean());
+
+        // Add same component again
+        reset(dragComponentGroupView);
+        when(dragComponentGroupView.hasComponent(DRAGGABLE_COMPONENT_NAME)).thenReturn(true);
+        presenter.addDraggableComponent(DRAGGABLE_GROUP_NAME, DRAGGABLE_COMPONENT_NAME, dragComponent);
+        verify(dragComponentGroupView, never()).addComponent(anyString(), any());
+        verify(dragComponentGroupView).setComponentVisible(DRAGGABLE_COMPONENT_NAME, true);
+
+        // Remove existing component (the component is not removed but remains hidden)
+        presenter.removeDraggableComponent(DRAGGABLE_GROUP_NAME, DRAGGABLE_COMPONENT_NAME);
+        verify(dragComponentGroupView).setComponentVisible(DRAGGABLE_COMPONENT_NAME, false);
+        verify(dragComponentGroupView, never()).removeComponent(DRAGGABLE_COMPONENT_NAME);
     }
 }

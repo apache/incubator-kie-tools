@@ -26,12 +26,12 @@ import org.gwtbootstrap3.client.ui.Modal;
 import org.uberfire.ext.layout.editor.client.api.HasModalConfiguration;
 import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
-import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorDragComponent;
+import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorCoreComponent;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.popups.EditHTMLPresenter;
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 
 @Dependent
-public class HTMLLayoutDragComponent implements PerspectiveEditorDragComponent,
+public class HTMLLayoutDragComponent implements PerspectiveEditorCoreComponent,
                                                 HasModalConfiguration {
 
     public static final String HTML_CODE_PARAMETER = "HTML_CODE";

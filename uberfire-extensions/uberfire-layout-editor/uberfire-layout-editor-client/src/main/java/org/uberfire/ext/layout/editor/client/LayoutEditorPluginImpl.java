@@ -16,6 +16,7 @@
 
 package org.uberfire.ext.layout.editor.client;
 
+import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -28,8 +29,8 @@ import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.layout.editor.api.PerspectiveServices;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
-import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
+import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentPalette;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditorPlugin;
 import org.uberfire.mvp.Command;
 
@@ -51,26 +52,14 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
 
     @Override
     public void init(String layoutName,
-                     LayoutDragComponentGroup layoutDragComponentGroup,
-                     String emptyTitleText,
-                     String emptySubTitleText) {
-        this.pluginName = layoutName;
-        this.emptyTitleText = emptyTitleText;
-        this.emptySubTitleText = emptySubTitleText;
-        layoutEditorPresenter.addDraggableComponentGroup(layoutDragComponentGroup);
-        layoutEditorPresenter.setPageStyle(LayoutTemplate.Style.FLUID);
-    }
-
-    @Override
-    public void init(String layoutName,
-                     LayoutDragComponentGroup layoutDragComponentGroup,
+                     List<LayoutDragComponentGroup> layoutDragComponentGroupList,
                      String emptyTitleText,
                      String emptySubTitleText,
                      LayoutTemplate.Style style) {
         this.pluginName = layoutName;
         this.emptyTitleText = emptyTitleText;
         this.emptySubTitleText = emptySubTitleText;
-        layoutEditorPresenter.addDraggableComponentGroup(layoutDragComponentGroup);
+        layoutDragComponentGroupList.forEach(layoutEditorPresenter::addDraggableGroup);
         layoutEditorPresenter.setPageStyle(style);
     }
 
@@ -148,35 +137,7 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
     }
 
     @Override
-    public void addDraggableComponentGroup(LayoutDragComponentGroup group) {
-        layoutEditorPresenter.addDraggableComponentGroup(group);
-    }
-
-    @Override
-    public void addDraggableComponentToGroup(String groupId,
-                                             String componentId,
-                                             LayoutDragComponent component) {
-        layoutEditorPresenter.addDraggableComponentToGroup(groupId,
-                                                           componentId,
-                                                           component);
-    }
-
-    @Override
-    public void removeDraggableComponentGroup(String groupId) {
-        layoutEditorPresenter.removeDraggableGroup(groupId);
-    }
-
-    @Override
-    public void removeDraggableGroupComponent(String groupId,
-                                              String componentId) {
-        layoutEditorPresenter.removeDraggableComponentFromGroup(groupId,
-                                                                componentId);
-    }
-
-    @Override
-    public boolean hasDraggableGroupComponent(String groupId,
-                                              String componentId) {
-        return layoutEditorPresenter.hasDraggableComponent(groupId,
-                                                           componentId);
+    public LayoutDragComponentPalette getDragComponentPalette() {
+        return layoutEditorPresenter;
     }
 }

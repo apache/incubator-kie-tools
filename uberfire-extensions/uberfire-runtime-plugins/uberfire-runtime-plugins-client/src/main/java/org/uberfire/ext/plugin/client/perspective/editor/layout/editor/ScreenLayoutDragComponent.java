@@ -36,7 +36,7 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.layout.editor.client.api.HasModalConfiguration;
 import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
-import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorDragComponent;
+import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorCoreComponent;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.popups.EditScreen;
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.plugin.event.NewPluginRegistered;
@@ -47,7 +47,7 @@ import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 @ApplicationScoped
-public class ScreenLayoutDragComponent implements PerspectiveEditorDragComponent,
+public class ScreenLayoutDragComponent implements PerspectiveEditorCoreComponent,
                                                   HasModalConfiguration {
 
     public static final String PLACE_NAME_PARAMETER = "Place Name";

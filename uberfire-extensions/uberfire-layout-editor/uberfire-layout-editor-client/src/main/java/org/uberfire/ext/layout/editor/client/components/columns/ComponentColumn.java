@@ -79,7 +79,7 @@ public class ComponentColumn implements Column {
                      boolean newComponent) {
         this.layoutComponent = layoutComponent;
         this.currentLayoutTemplateSupplier = currentLayoutTemplateSupplier;
-        view.setup(layoutComponent);
+        view.setup(layoutComponent, pageStyle);
         this.parentId = parentId;
         this.columnWidth = columnWidth;
         this.dropCommand = dropCommand;
@@ -341,7 +341,8 @@ public class ComponentColumn implements Column {
 
         boolean hasModalConfiguration();
 
-        void setup(LayoutComponent layoutComponent);
+        void setup(LayoutComponent layoutComponent,
+                   LayoutTemplate.Style pageStyle);
 
         void setupWidget();
 

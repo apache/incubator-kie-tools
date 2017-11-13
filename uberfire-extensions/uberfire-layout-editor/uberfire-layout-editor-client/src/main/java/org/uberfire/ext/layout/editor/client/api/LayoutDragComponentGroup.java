@@ -25,12 +25,23 @@ public class LayoutDragComponentGroup {
 
     private Map<String, LayoutDragComponent> components = new HashMap<String, LayoutDragComponent>();
 
+    private boolean expandeByDefault = false;
+
     public LayoutDragComponentGroup(String name) {
         this.name = name;
     }
 
+    public LayoutDragComponentGroup(String name, boolean expandeByDefault) {
+        this.name = name;
+        this.expandeByDefault = expandeByDefault;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public boolean isExpandeByDefault() {
+        return expandeByDefault;
     }
 
     public void addLayoutDragComponent(String id,
