@@ -380,7 +380,8 @@ public class GeneratorUtils {
         final TypeMirror deprecatedIsElement = elementUtils.getTypeElement("org.jboss.errai.common.client.api.IsElement").asType();
         final TypeMirror elemental2IsElement = elementUtils.getTypeElement("org.jboss.errai.common.client.api.elemental2.IsElement").asType();
         return typeUtils.isAssignable(type,
-                                      deprecatedIsElement) || typeUtils.isAssignable(type, elemental2IsElement);
+                                      deprecatedIsElement) || typeUtils.isAssignable(type,
+                                                                                     elemental2IsElement);
     }
 
     public static boolean hasPresenterInitMethod(final TypeElement classElement,
@@ -781,7 +782,8 @@ public class GeneratorUtils {
                                         annotationName,
                                         new TypeMirror[]{
                                                 elementUtils.getTypeElement("com.google.gwt.user.client.ui.IsWidget").asType(),
-                                                elementUtils.getTypeElement("org.jboss.errai.common.client.api.IsElement").asType()
+                                                elementUtils.getTypeElement("org.jboss.errai.common.client.api.IsElement").asType(),
+                                                elementUtils.getTypeElement("org.jboss.errai.common.client.api.elemental2.IsElement").asType()
                                         },
                                         NO_PARAMS);
     }
