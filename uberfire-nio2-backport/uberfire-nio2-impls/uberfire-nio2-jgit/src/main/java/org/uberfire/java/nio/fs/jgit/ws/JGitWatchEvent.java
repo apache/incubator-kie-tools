@@ -47,12 +47,6 @@ public class JGitWatchEvent implements WatchEvent {
         this.userName = userName;
         this.message = message;
         this.changeType = changeType;
-        if (oldPath != null) {
-            System.out.println(oldPath.toUri().toString());
-        }
-        if (newPath != null) {
-            System.out.println(newPath.toUri().toString());
-        }
         this.oldPath = oldPath != null ? oldPath.toUri() : null;
         this.newPath = newPath != null ? newPath.toUri() : null;
     }
