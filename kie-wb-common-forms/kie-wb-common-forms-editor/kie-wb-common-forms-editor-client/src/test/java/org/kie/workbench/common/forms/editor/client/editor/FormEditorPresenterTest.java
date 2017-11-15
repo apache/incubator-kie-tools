@@ -83,8 +83,8 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
         presenterSpy.loadContent();
 
         verify(presenterSpy).loadAvailableFields();
-        verify(layoutEditorMock,
-               times(2)).addDraggableComponentGroup(any());
+        verify(layoutDragComponentPaletteMock,
+               times(2)).addDraggableGroup(any());
 
         verify(layoutEditorMock,
                times(3)).clear();
@@ -316,7 +316,7 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
     public void testRemoveAllDraggableGroupComponent() {
         loadContent();
         addAllFields();
-        when(layoutEditorMock.hasDraggableGroupComponent(anyString(),
+        when(layoutDragComponentPaletteMock.hasDraggableComponent(anyString(),
                                                          anyString())).thenReturn(true);
         List<FieldDefinition> fieldList = presenter.getFormDefinition().getFields();
 
@@ -325,9 +325,9 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
         verify(translationService,
                times(2)).getTranslation(FormEditorConstants.FormEditorPresenterModelFields);
 
-        verify(layoutEditorMock,
-               times(fieldList.size())).removeDraggableGroupComponent(anyString(),
-                                                                      anyString());
+        verify(layoutDragComponentPaletteMock,
+               times(fieldList.size())).removeDraggableComponent(anyString(),
+                                                        anyString());
     }
 
     @Test
@@ -336,10 +336,10 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
 
         List<FieldDefinition> fieldList = presenter.getFormDefinition().getFields();
         presenter.addAllDraggableGroupComponent(fieldList);
-        verify(layoutEditorMock,
-               times(fieldList.size())).addDraggableComponentToGroup(anyString(),
-                                                                     anyString(),
-                                                                     any());
+        verify(layoutDragComponentPaletteMock,
+               times(fieldList.size())).addDraggableComponent(anyString(),
+                                                    anyString(),
+                                                    any());
     }
 
     @Test

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.forms.editor.client.editor;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 
 import javax.annotation.PreDestroy;
@@ -184,11 +185,10 @@ public class FormEditorPresenter extends KieEditor {
         loadAvailableFields();
 
         layoutEditor.init(editorHelper.getContent().getDefinition().getName(),
-                          getLayoutComponent(),
-                          translationService
-                                  .getTranslation(FormEditorConstants.FormEditorPresenterLayoutTitle),
-                          translationService
-                                  .getTranslation(FormEditorConstants.FormEditorPresenterLayoutSubTitle));
+                Collections.singletonList(getLayoutComponent()),
+                translationService.getTranslation(FormEditorConstants.FormEditorPresenterLayoutTitle),
+                translationService.getTranslation(FormEditorConstants.FormEditorPresenterLayoutSubTitle),
+                LayoutTemplate.Style.FLUID);
 
         layoutEditor.loadLayout(editorHelper.getContent().getDefinition().getLayoutTemplate());
     }
@@ -336,7 +336,7 @@ public class FormEditorPresenter extends KieEditor {
             }
         });
 
-        layoutEditor.addDraggableComponentGroup(group);
+        layoutEditor.getDragComponentPalette().addDraggableGroup(group);
     }
 
     public void onRemoveComponent(@Observes ComponentRemovedEvent event) {
@@ -364,10 +364,8 @@ public class FormEditorPresenter extends KieEditor {
         Iterator<FieldDefinition> it = fields.iterator();
         while (it.hasNext()) {
             FieldDefinition field = it.next();
-            if (layoutEditor.hasDraggableGroupComponent(groupId,
-                                                        field.getId())) {
-                layoutEditor.removeDraggableGroupComponent(groupId,
-                                                           field.getId());
+            if (layoutEditor.getDragComponentPalette().hasDraggableComponent(groupId, field.getId())) {
+                layoutEditor.getDragComponentPalette().removeDraggableComponent(groupId, field.getId());
             }
         }
     }
@@ -383,9 +381,9 @@ public class FormEditorPresenter extends KieEditor {
             if (layoutFieldComponent != null) {
                 layoutFieldComponent.init(editorHelper.getRenderingContext(),
                                           field);
-                layoutEditor.addDraggableComponentToGroup(groupId,
-                                                          field.getId(),
-                                                          layoutFieldComponent);
+                layoutEditor.getDragComponentPalette().addDraggableComponent(groupId,
+                                                 field.getId(),
+                                                 layoutFieldComponent);
             }
         }
     }

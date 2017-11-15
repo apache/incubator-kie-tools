@@ -36,16 +36,11 @@ import org.kie.workbench.common.forms.editor.client.type.FormDefinitionResourceT
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
 import org.kie.workbench.common.forms.editor.model.impl.FormModelSynchronizationResultImpl;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorService;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.definition.CheckBoxFieldDefinition;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.datePicker.definition.DatePickerFieldDefinition;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.definition.TextBoxFieldDefinition;
 import org.kie.workbench.common.forms.fields.test.TestFieldManager;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.ModelProperty;
-import org.kie.workbench.common.forms.model.impl.ModelPropertyImpl;
 import org.kie.workbench.common.forms.model.impl.PortableJavaModel;
-import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
 import org.kie.workbench.common.services.refactoring.client.usages.ShowAssetUsagesDisplayer;
 import org.kie.workbench.common.services.refactoring.client.usages.ShowAssetUsagesDisplayerView;
 import org.kie.workbench.common.services.refactoring.service.AssetsUsageService;
@@ -62,6 +57,7 @@ import org.uberfire.ext.editor.commons.client.file.popups.commons.ToggleCommentP
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
+import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentPalette;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditor;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
@@ -116,6 +112,9 @@ public class FormEditorPresenterAbstractTest {
 
     @Mock
     protected LayoutEditor layoutEditorMock;
+
+    @Mock
+    protected LayoutDragComponentPalette layoutDragComponentPaletteMock;
 
     @Mock
     protected HTMLLayoutDragComponent htmlLayoutDragComponent;
@@ -209,6 +208,7 @@ public class FormEditorPresenterAbstractTest {
                                                     editorFieldLayoutComponents));
 
         when(layoutEditorMock.getLayout()).thenReturn(new LayoutTemplate());
+        when(layoutEditorMock.getDragComponentPalette()).thenReturn(layoutDragComponentPaletteMock);
 
         when(menuBuilderMock.addSave(any(MenuItem.class))).thenReturn(menuBuilderMock);
         when(menuBuilderMock.addCopy(any(ObservablePath.class),
