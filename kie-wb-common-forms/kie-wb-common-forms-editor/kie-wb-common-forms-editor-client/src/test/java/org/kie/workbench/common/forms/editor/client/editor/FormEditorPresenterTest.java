@@ -233,7 +233,8 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
                                                                 FieldDefinition field) {
 
         return new ComponentRemovedEvent(createLayoutComponent(form,
-                                                               field));
+                                                               field),
+                                         false);
     }
 
     protected LayoutComponent createLayoutComponent(FormDefinition form,
@@ -300,7 +301,8 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
 
         Collection<FieldDefinition> availableFieldsValues = editorHelper.getAvailableFields().values();
 
-        verify(translationService, atLeastOnce())
+        verify(translationService,
+               atLeastOnce())
                 .getTranslation(FormEditorConstants.FormEditorPresenterModelFields);
         verify(presenterSpy,
                count).removeAllDraggableGroupComponent(presenter.getFormDefinition().getFields());
@@ -364,7 +366,8 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
         FieldDefinition field = editorHelper.getFormDefinition().getFields().get(0);
 
         ComponentRemovedEvent event = new ComponentRemovedEvent(createLayoutComponent(presenter.getFormDefinition(),
-                                                                                      field));
+                                                                                      field),
+                                                                false);
         presenterSpy.onRemoveComponent(event);
 
         verify(presenterSpy,
@@ -384,6 +387,30 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
 
         ComponentRemovedEvent event = new ComponentRemovedEvent(null);
         presenterSpy.onRemoveComponent(event);
+
+        verify(presenterSpy,
+               never()).onSyncPalette(anyString());
+        verify(editorHelper,
+               never()).removeField(anyString(),
+                                    anyBoolean());
+    }
+
+    @Test
+    public void testRemoveEventWhenMovingFieldOnLayout() {
+        loadContent();
+        loadAvailableFields();
+        addAllFields();
+
+        FormEditorPresenter presenterSpy = spy(presenter);
+
+        FieldDefinition field = editorHelper.getFormDefinition().getFields().get(0);
+
+        ComponentRemovedEvent event = new ComponentRemovedEvent(createLayoutComponent(presenter.getFormDefinition(),
+                                                                                      field),
+                                                                true);
+        presenterSpy.onRemoveComponent(event);
+
+        assertNotNull(editorHelper.getFormDefinition().getFieldById(field.getId()));
 
         verify(presenterSpy,
                never()).onSyncPalette(anyString());

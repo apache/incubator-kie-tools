@@ -348,9 +348,14 @@ public class FormEditorPresenter extends KieEditor {
 
         if (editorHelper.getFormDefinition().getId().equals(formId)) {
             String fieldId = event.getLayoutComponent().getProperties().get(FieldLayoutComponent.FIELD_ID);
-            editorHelper.removeField(fieldId,
-                                     true);
-            onSyncPalette(formId);
+
+            // If the event is caused by a element move we must hold the field on the form.
+            // If not it means that it should be removed.
+            if(!event.getFromMove()) {
+                editorHelper.removeField(fieldId,
+                                         true);
+                onSyncPalette(formId);
+            }
         }
     }
 
