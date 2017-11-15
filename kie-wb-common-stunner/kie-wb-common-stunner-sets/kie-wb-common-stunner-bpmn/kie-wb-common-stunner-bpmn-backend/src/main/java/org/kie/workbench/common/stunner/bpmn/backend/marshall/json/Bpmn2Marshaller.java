@@ -56,8 +56,7 @@ public class Bpmn2Marshaller extends Bpmn2JsonUnmarshaller {
         DroolsFactoryImpl.init();
         BpsimFactoryImpl.init();
         BPMN2JsonParser parser = createParser(diagram);
-        return (JBPMBpmn2ResourceImpl) super.unmarshall(parser,
-                                                        null);
+        return (JBPMBpmn2ResourceImpl) super.unmarshall(parser, null);
     }
 
     private BPMN2JsonParser createParser(final Diagram<Graph, Metadata> diagram) {

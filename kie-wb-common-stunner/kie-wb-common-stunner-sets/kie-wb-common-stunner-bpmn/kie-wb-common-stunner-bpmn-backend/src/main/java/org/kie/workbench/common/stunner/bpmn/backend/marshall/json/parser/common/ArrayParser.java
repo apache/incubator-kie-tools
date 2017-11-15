@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser.commo
 
 import java.util.Queue;
 
-import org.codehaus.jackson.JsonToken;
+import com.fasterxml.jackson.core.JsonToken;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser.Parser;
 
 public class ArrayParser extends CompositeParser<ArrayParser> {

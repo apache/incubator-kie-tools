@@ -24,14 +24,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import org.codehaus.jackson.Base64Variant;
-import org.codehaus.jackson.JsonLocation;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonStreamContext;
-import org.codehaus.jackson.JsonToken;
-import org.codehaus.jackson.ObjectCodec;
-import org.codehaus.jackson.impl.JsonParserMinimalBase;
+import com.fasterxml.jackson.core.Base64Variant;
+import com.fasterxml.jackson.core.JsonLocation;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonStreamContext;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.ObjectCodec;
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.core.base.ParserMinimalBase;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -46,7 +47,7 @@ import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.C
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
 // See org.codehaus.jackson.impl.ReaderBasedParser
 
-public class BPMN2JsonParser extends JsonParserMinimalBase {
+public class BPMN2JsonParser extends ParserMinimalBase {
 
     private Diagram<Graph, Metadata> diagram;
     private NodeParser rootParser;
@@ -270,6 +271,21 @@ public class BPMN2JsonParser extends JsonParserMinimalBase {
 
     @Override
     public JsonParser skipChildren() throws IOException, JsonParseException {
+        return null;
+    }
+
+    @Override
+    public void overrideCurrentName(String name) {
+
+    }
+
+    @Override
+    public Version version() {
+        return null;
+    }
+
+    @Override
+    public Object getEmbeddedObject() throws IOException {
         return null;
     }
 }

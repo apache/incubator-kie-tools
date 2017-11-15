@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.JsonToken;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonToken;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser.Parser;
 
 public abstract class CompositeParser<T> extends AbstractParser {

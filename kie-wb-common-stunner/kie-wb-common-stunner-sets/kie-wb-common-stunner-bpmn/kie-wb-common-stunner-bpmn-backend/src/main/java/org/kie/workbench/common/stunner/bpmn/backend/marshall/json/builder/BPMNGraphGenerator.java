@@ -17,20 +17,23 @@
 package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.builder;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Stack;
 
-import org.codehaus.jackson.Base64Variant;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.JsonStreamContext;
-import org.codehaus.jackson.ObjectCodec;
+import com.fasterxml.jackson.core.Base64Variant;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonStreamContext;
+import com.fasterxml.jackson.core.ObjectCodec;
+import com.fasterxml.jackson.core.SerializableString;
+import com.fasterxml.jackson.core.TreeNode;
+import com.fasterxml.jackson.core.Version;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxManager;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
@@ -688,13 +691,6 @@ public class BPMNGraphGenerator extends JsonGenerator {
     }
 
     @Override
-    public void writeBinary(final Base64Variant base64Variant,
-                            final byte[] bytes,
-                            final int i,
-                            final int i1) throws IOException, JsonGenerationException {
-    }
-
-    @Override
     public void writeNumber(final int i) throws IOException, JsonGenerationException {
     }
 
@@ -731,7 +727,7 @@ public class BPMNGraphGenerator extends JsonGenerator {
     }
 
     @Override
-    public void writeTree(final JsonNode jsonNode) throws IOException, JsonProcessingException {
+    public void writeTree(final TreeNode treeNode) throws IOException, JsonProcessingException {
     }
 
     @Override
@@ -746,4 +742,47 @@ public class BPMNGraphGenerator extends JsonGenerator {
     public JsonStreamContext getOutputContext() {
         return null;
     }
+
+    @Override
+    public Version version() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int getFeatureMask() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public JsonGenerator setFeatureMask(int values) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void writeFieldName(SerializableString name) throws IOException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void writeString(SerializableString text) throws IOException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void writeBinary(Base64Variant bv, byte[] data, int offset, int len) throws IOException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public int writeBinary(Base64Variant bv, InputStream data, int dataLength) throws IOException {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 }
+

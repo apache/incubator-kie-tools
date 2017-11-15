@@ -18,8 +18,8 @@ package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser.commo
 
 import java.io.IOException;
 
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.JsonToken;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonToken;
 
 public class IntegerFieldParser extends AbstractParser {
 
