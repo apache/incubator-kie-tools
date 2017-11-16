@@ -40,6 +40,7 @@ import org.gwtbootstrap3.client.ui.DropDownMenu;
 import org.gwtbootstrap3.client.ui.NavTabs;
 import org.gwtbootstrap3.client.ui.TabContent;
 import org.gwtbootstrap3.client.ui.TabListItem;
+import org.gwtbootstrap3.client.ui.TabPane;
 import org.gwtbootstrap3.client.ui.TabPanel;
 import org.gwtbootstrap3.client.ui.constants.IconPosition;
 import org.gwtbootstrap3.client.ui.constants.IconType;
@@ -147,19 +148,76 @@ public class TabPanelWithDropdowns extends Composite {
     }
 
     /**
-     * Adds a normal tab (not a dropdown) with the given label and contents.
+     * Adds a normal tab (not a dropdown) with the given label and contents (at the end of the tab bar).
      * @param tab the label and contents associated with the new tab.
      */
-    public void addItem(TabPanelEntry tab) {
-        allContentTabs.add(tab);
-        tabHandlerRegistrations.put(tab,
-                                    tab.getTabWidget().addShowHandler(individualTabShowHandler));
-        tabHandlerRegistrations.put(tab,
-                                    tab.getTabWidget().addShownHandler(individualTabShownHandler));
-        activatableWidgets.add(tab.getTabWidget());
-        tabBar.add(tab.getTabWidget());
-        tabContent.add(tab.getContentPane());
+    public void addItem(final TabPanelEntry tab) {
+
+        final int index = getAllContentTabs().size();
+
+        insertItem(tab, index);
+    }
+
+    /**
+     * Adds a normal tab (not a dropdown) with the given label and contents (in a specific index).
+     * @param tab the label and contents associated with the new tab.
+     */
+    public void insertItem(final TabPanelEntry tab,
+                           final int index) {
+
+        registerTabHandlers(tab);
+        insertTabAndContent(tab, index);
         resizeTabContent();
+    }
+
+    void insertTabAndContent(final TabPanelEntry tab,
+                             final int index) {
+
+        final TabPanelEntry.DropDownTabListItem tabWidget = tab.getTabWidget();
+        final TabPane tabContentPane = tab.getContentPane();
+
+        getTabBar().insert(tab.getTabWidget(), index);
+
+        getAllContentTabs().add(tab);
+        getTabContent().add(tabContentPane);
+        getActivatableWidgets().add(tabWidget);
+    }
+
+    void registerTabHandlers(final TabPanelEntry tab) {
+
+        final Multimap<TabPanelEntry, HandlerRegistration> registrations = getTabHandlerRegistrations();
+        final TabPanelEntry.DropDownTabListItem tabWidget = tab.getTabWidget();
+
+        registrations.put(tab, tabWidget.addShowHandler(getIndividualTabShowHandler()));
+        registrations.put(tab, tabWidget.addShownHandler(getIndividualTabShownHandler()));
+    }
+
+    TabShowHandler getIndividualTabShowHandler() {
+        return individualTabShowHandler;
+    }
+
+    TabShownHandler getIndividualTabShownHandler() {
+        return individualTabShownHandler;
+    }
+
+    Multimap<TabPanelEntry, HandlerRegistration> getTabHandlerRegistrations() {
+        return tabHandlerRegistrations;
+    }
+
+    Set<TabPanelEntry> getAllContentTabs() {
+        return allContentTabs;
+    }
+
+    Set<Widget> getActivatableWidgets() {
+        return activatableWidgets;
+    }
+
+    public NavTabs getTabBar() {
+        return tabBar;
+    }
+
+    TabContent getTabContent() {
+        return tabContent;
     }
 
     /**
@@ -179,7 +237,7 @@ public class TabPanelWithDropdowns extends Composite {
         return removed;
     }
 
-    private void resizeTabContent() {
+    void resizeTabContent() {
         //When an Item is added to the TabBar recalculate the TabContent size.
         //This cannot be performed in either the @PostConstruct or onAttach() methods as at
         //these times the TabBar may not have any content and hence have no size.

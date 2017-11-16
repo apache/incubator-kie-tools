@@ -16,49 +16,150 @@
 
 package org.uberfire.client.views.pfly.multipage;
 
-import com.google.gwtmockito.GwtMock;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.gwtbootstrap3.client.ui.NavTabs;
 import org.gwtbootstrap3.client.ui.TabPane;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.uberfire.client.views.pfly.tab.TabPanelEntry;
 import org.uberfire.client.workbench.widgets.multipage.Page;
 import org.uberfire.client.workbench.widgets.multipage.PageView;
 
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class MultiPageEditorViewImplTest {
 
-    @GwtMock
-    TabPanelEntry.DropDownTabListItem dropDownTabListItem;
+    @Mock
+    private TabPanelEntry.DropDownTabListItem dropDownTabListItem;
 
-    @GwtMock
-    TabPane contentPane;
+    @Mock
+    private TabPane contentPane;
 
-    MultiPageEditorViewImpl multiPageEditorView;
+    @Mock
+    private Page page;
+
+    @Mock
+    private TabPanelEntry tab;
+
+    private MultiPageEditorViewImpl view;
 
     @Before
     public void setup() {
-        multiPageEditorView = new MultiPageEditorViewImpl();
-        multiPageEditorView.init();
+        view = spy(new MultiPageEditorViewImpl());
+        view.init();
     }
 
     @Test
     public void testAddPage() {
-        final Page page = mock(Page.class);
-        when(page.getLabel()).thenReturn("label1",
-                                         "label2");
-        when(page.getView()).thenReturn(mock(PageView.class));
-        when(contentPane.isActive()).thenReturn(false,
-                                                true);
 
-        multiPageEditorView.addPage(page);
+        doReturn(tab).when(view).makeTabPanelEntry(page);
+        doNothing().when(view).addItem(any());
+        doNothing().when(view).setAsActive(any());
 
-        multiPageEditorView.addPage(page);
+        view.addPage(page);
 
-        verify(dropDownTabListItem).showTab(false);
-        verify(dropDownTabListItem).setActive(true);
+        verify(view).addItem(tab);
+        verify(view).setAsActive(tab);
+    }
+
+    @Test
+    public void testAddPageWithIndex() {
+
+        final int index = 1;
+
+        doReturn(tab).when(view).makeTabPanelEntry(page);
+        doNothing().when(view).insertItem(any(), anyInt());
+        doNothing().when(view).setAsActive(any());
+
+        view.addPage(index, page);
+
+        verify(view).insertItem(tab, index);
+        verify(view).setAsActive(tab);
+    }
+
+    @Test
+    public void testMakeTabPanelEntry() {
+
+        final String title = "";
+        final PageView pageView = mock(PageView.class);
+        final Widget widget = mock(Widget.class);
+
+        doReturn(title).when(page).getLabel();
+        doReturn(pageView).when(page).getView();
+        doReturn(widget).when(pageView).asWidget();
+
+        final TabPanelEntry tabPanelEntry = view.makeTabPanelEntry(page);
+
+        assertEquals(title, tabPanelEntry.getTitle());
+        assertEquals(widget, tabPanelEntry.getContents());
+    }
+
+    @Test
+    public void testSetAsActiveWhenActiveTabIsNull() {
+
+        doReturn(null).when(view).getActiveTab();
+
+        view.setAsActive(tab);
+
+        verify(tab).showTab();
+        verify(tab).setActive(true);
+    }
+
+    @Test
+    public void testSetAsActiveWhenActiveTabIsNotNull() {
+
+        doReturn(mock(TabPanelEntry.class)).when(view).getActiveTab();
+
+        view.setAsActive(tab);
+
+        verify(tab, never()).showTab();
+        verify(tab, never()).setActive(true);
+    }
+
+    @Test
+    public void testDisablePage() {
+
+        final int index = 1;
+        final Widget widget = mock(Widget.class);
+        final NavTabs navTabs = mock(NavTabs.class);
+        final Element element = mock(Element.class);
+        final Style style = mock(Style.class);
+
+        doReturn(navTabs).when(view).getTabBar();
+        doReturn(widget).when(navTabs).getWidget(index);
+        doReturn(element).when(widget).getElement();
+        doReturn(style).when(element).getStyle();
+
+        view.disablePage(index);
+
+        verify(widget).addStyleName("disabled");
+        verify(style).setProperty("pointerEvents", "none");
+    }
+
+    @Test
+    public void testEnablePage() {
+
+        final int index = 1;
+        final Widget widget = mock(Widget.class);
+        final NavTabs navTabs = mock(NavTabs.class);
+        final Element element = mock(Element.class);
+        final Style style = mock(Style.class);
+
+        doReturn(navTabs).when(view).getTabBar();
+        doReturn(widget).when(navTabs).getWidget(index);
+        doReturn(element).when(widget).getElement();
+        doReturn(style).when(element).getStyle();
+
+        view.enablePage(index);
+
+        verify(widget).removeStyleName("disabled");
+        verify(style).clearProperty("pointerEvents");
     }
 }

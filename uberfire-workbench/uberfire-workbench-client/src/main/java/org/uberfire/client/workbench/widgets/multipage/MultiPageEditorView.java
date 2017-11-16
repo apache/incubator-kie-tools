@@ -21,4 +21,10 @@ import com.google.gwt.user.client.ui.IsWidget;
 public interface MultiPageEditorView extends IsWidget {
 
     void clear();
+
+    void addPage(final int index, final Page page);
+
+    void disablePage(final int index);
+
+    void enablePage(final int index);
 }

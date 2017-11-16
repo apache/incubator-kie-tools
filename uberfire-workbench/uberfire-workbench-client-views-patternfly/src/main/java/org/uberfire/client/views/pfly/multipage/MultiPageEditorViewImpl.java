@@ -18,6 +18,8 @@ package org.uberfire.client.views.pfly.multipage;
 
 import javax.enterprise.context.Dependent;
 
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.shared.event.TabShowEvent;
 import org.gwtbootstrap3.client.shared.event.TabShowHandler;
 import org.gwtbootstrap3.client.shared.event.TabShownEvent;
@@ -63,9 +65,31 @@ public class MultiPageEditorViewImpl extends ResizeTabPanel implements MultiPage
     }
 
     public void addPage(final Page page) {
-        final TabPanelEntry tab = new TabPanelEntry(page.getLabel(),
-                                                    page.getView().asWidget());
-        this.addItem(tab);
+
+        final TabPanelEntry tab = makeTabPanelEntry(page);
+
+        addItem(tab);
+        setAsActive(tab);
+    }
+
+    @Override
+    public void addPage(int index, final Page page) {
+
+        final TabPanelEntry tab = makeTabPanelEntry(page);
+
+        insertItem(tab, index);
+        setAsActive(tab);
+    }
+
+    TabPanelEntry makeTabPanelEntry(final Page page) {
+
+        final String title = page.getLabel();
+        final Widget contents = page.getView().asWidget();
+
+        return new TabPanelEntry(title, contents);
+    }
+
+    void setAsActive(final TabPanelEntry tab) {
         if (this.getActiveTab() == null) {
             tab.showTab();
             tab.setActive(true);
@@ -78,5 +102,35 @@ public class MultiPageEditorViewImpl extends ResizeTabPanel implements MultiPage
 
     public int selectedPage() {
         return this.getSelectedTabIndex();
+    }
+
+    @Override
+    public void disablePage(int index) {
+
+        final Widget tab = getTabBar().getWidget(index);
+
+        tab.addStyleName("disabled");
+        disableWidget(tab);
+    }
+
+    @Override
+    public void enablePage(int index) {
+
+        final Widget tab = getTabBar().getWidget(index);
+
+        tab.removeStyleName("disabled");
+        enableWidget(tab);
+    }
+
+    private void enableWidget(final Widget tab) {
+        style(tab).clearProperty("pointerEvents");
+    }
+
+    private void disableWidget(final Widget tab) {
+        style(tab).setProperty("pointerEvents", "none");
+    }
+
+    private Style style(final Widget tab) {
+        return tab.getElement().getStyle();
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,112 +16,134 @@
 
 package org.uberfire.client.views.pfly.tab;
 
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RootPanel;
-import org.gwtbootstrap3.client.GwtBootstrap3EntryPoint;
-import org.jboss.errai.enterprise.client.cdi.AbstractErraiCDITest;
-import org.uberfire.client.views.pfly.mock.CountingTabShowHandler;
-import org.uberfire.client.views.pfly.mock.CountingTabShownHandler;
+import java.util.HashSet;
+import java.util.Set;
 
-public class TabPanelWithDropdownsTest extends AbstractErraiCDITest {
+import com.google.common.collect.Multimap;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.gwtbootstrap3.client.shared.event.TabShowHandler;
+import org.gwtbootstrap3.client.shared.event.TabShownHandler;
+import org.gwtbootstrap3.client.ui.NavTabs;
+import org.gwtbootstrap3.client.ui.TabContent;
+import org.gwtbootstrap3.client.ui.TabPane;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.*;
+
+@RunWith(GwtMockitoTestRunner.class)
+public class TabPanelWithDropdownsTest {
+
+    @Mock
+    private TabPanelEntry tab;
+
+    @Mock
+    private Multimap<TabPanelEntry, HandlerRegistration> registrations;
+
+    @Mock
+    private TabPanelEntry.DropDownTabListItem tabWidget;
+
+    @Mock
+    private TabShowHandler tabShowHandler;
+
+    @Mock
+    private TabShownHandler tabShownHandler;
+
+    @Mock
+    private HandlerRegistration showHandlerRegistration;
+
+    @Mock
+    private HandlerRegistration shownHandlerRegistration;
+
+    @Mock
+    private TabPanelEntry tabPanelEntry;
+
+    private Set<TabPanelEntry> tabPanelEntries;
 
     private TabPanelWithDropdowns tabPanel;
 
-    @Override
-    public String getModuleName() {
-        return "org.uberfire.client.views.pfly.PatternFlyTabTests";
+    @Before
+    public void setUp() {
+        tabPanel = spy(new TabPanelWithDropdowns());
+
+        tabPanelEntries = new HashSet<TabPanelEntry>() {{
+            add(tabPanelEntry);
+        }};
     }
 
-    @Override
-    protected void gwtSetUp() throws Exception {
-        super.gwtSetUp();
-        tabPanel = new TabPanelWithDropdowns();
-        tabPanel.init();
+    @Test
+    public void testAddItem() {
 
-        new GwtBootstrap3EntryPoint().onModuleLoad();
+        final int index = 1;
+
+        doNothing().when(tabPanel).insertItem(any(), anyInt());
+        doReturn(tabPanelEntries).when(tabPanel).getAllContentTabs();
+
+        tabPanel.addItem(tab);
+
+        verify(tabPanel).insertItem(tab, index);
     }
 
-    public void testAddTabByTitleAndContent() throws Exception {
-        Label content = new Label("First tab's content");
-        TabPanelEntry item = tabPanel.addItem("First Tab",
-                                              content);
+    @Test
+    public void testInsertItem() {
 
-        assertNotNull(item.getTabWidget());
-        assertNotNull(item.getContents());
-        assertEquals(item.getTitle(),
-                     "First Tab");
+        final int index = 1;
 
-        // the content should be attached
-        assertNotNull(content.getParent());
+        doNothing().when(tabPanel).registerTabHandlers(any());
+        doNothing().when(tabPanel).insertTabAndContent(any(), anyInt());
+        doNothing().when(tabPanel).resizeTabContent();
+
+        tabPanel.insertItem(tabPanelEntry, index);
+
+        verify(tabPanel).registerTabHandlers(tabPanelEntry);
+        verify(tabPanel).insertTabAndContent(tabPanelEntry, index);
+        verify(tabPanel).resizeTabContent();
     }
 
-    public void testShowTab() throws Exception {
-        RootPanel.get().add(tabPanel);
+    @Test
+    public void testInsertTabAndContent() {
 
-        TabPanelEntry item1 = tabPanel.addItem("First Tab",
-                                               new Label("First tab's content"));
-        TabPanelEntry item2 = tabPanel.addItem("Second Tab",
-                                               new Label("Second tab's content"));
+        final int index = 1;
+        final TabPane tabContentPane = mock(TabPane.class);
+        final NavTabs tabBar = mock(NavTabs.class);
+        final TabContent tabContent = mock(TabContent.class);
+        final Set<TabPanelEntry> allContentTabs = spy(new HashSet<>());
+        final Set<Widget> activatableWidgets = spy(new HashSet<>());
 
-        item2.showTab();
-        item1.showTab();
+        doReturn(tabWidget).when(tab).getTabWidget();
+        doReturn(tabContentPane).when(tab).getContentPane();
+        doReturn(tabBar).when(tabPanel).getTabBar();
+        doReturn(tabContent).when(tabPanel).getTabContent();
+        doReturn(allContentTabs).when(tabPanel).getAllContentTabs();
+        doReturn(activatableWidgets).when(tabPanel).getActivatableWidgets();
 
-        assertTrue(item1.getContentPane().isActive());
-        assertTrue(item1.getTabWidget().isActive());
-        assertEquals(item1,
-                     tabPanel.getActiveTab());
+        tabPanel.insertTabAndContent(tab, index);
 
-        assertFalse(item2.getContentPane().isActive());
-        assertFalse(item2.getTabWidget().isActive());
+        verify(tabBar).insert(tab.getTabWidget(), index);
+        verify(allContentTabs).add(tab);
+        verify(tabContent).add(tabContentPane);
+        verify(activatableWidgets).add(tabWidget);
     }
 
-    public void testRemoveActiveTab() throws Exception {
-        RootPanel.get().add(tabPanel);
+    @Test
+    public void testRegisterTabHandlers() {
 
-        TabPanelEntry item1 = tabPanel.addItem("First Tab",
-                                               new Label("First tab's content"));
-        TabPanelEntry item2 = tabPanel.addItem("Second Tab",
-                                               new Label("Second tab's content"));
+        doReturn(registrations).when(tabPanel).getTabHandlerRegistrations();
+        doReturn(tabWidget).when(tab).getTabWidget();
+        doReturn(tabShowHandler).when(tabPanel).getIndividualTabShowHandler();
+        doReturn(tabShownHandler).when(tabPanel).getIndividualTabShownHandler();
+        doReturn(showHandlerRegistration).when(tabWidget).addShowHandler(tabShowHandler);
+        doReturn(shownHandlerRegistration).when(tabWidget).addShownHandler(tabShownHandler);
 
-        item2.showTab();
-        item1.showTab();
-        tabPanel.remove(item1);
+        tabPanel.registerTabHandlers(tab);
 
-        // must not upset the active state when removing an item (UberTabPanel.updateDisplayedTabs relies on this)
-        assertTrue(item1.getTabWidget().isActive());
-
-        // but the tab panel itself should no longer consider the removed item as active
-        assertNull(tabPanel.getActiveTab());
-
-        // checking that the content _pane_ was removed, and the content itself is still parented to the content pane.
-        // this rule could be changed if the tab panel would always reconnect the tab item's content to its content pane
-        // when adding an entry back to the panel. Feel free to change this if necessary/convenient.
-        assertEquals(item1.getContentPane(),
-                     item1.getContents().getParent());
-        assertNull(item1.getContentPane().getParent());
-
-        assertFalse(item2.getContentPane().isActive());
-        assertFalse(item2.getTabWidget().isActive());
-    }
-
-    public void testRebroadcastShowEvents() throws Exception {
-        RootPanel.get().add(tabPanel);
-
-        CountingTabShowHandler showHandler = new CountingTabShowHandler();
-        CountingTabShownHandler shownHandler = new CountingTabShownHandler();
-        tabPanel.addShowHandler(showHandler);
-        tabPanel.addShownHandler(shownHandler);
-
-        // this test leaves it intentionally ambiguous if the show[n] events come from adding the tab or from showing it later
-        TabPanelEntry item1 = tabPanel.addItem("First Tab",
-                                               new Label("First tab's content"));
-        assertNull(tabPanel.getActiveTab());
-        item1.showTab();
-        assertNotNull(tabPanel.getActiveTab());
-
-        assertEquals(1,
-                     showHandler.getEventCount());
-        assertEquals(1,
-                     shownHandler.getEventCount());
+        verify(registrations).put(tab, shownHandlerRegistration);
+        verify(registrations).put(tab, showHandlerRegistration);
     }
 }

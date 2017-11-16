@@ -22,6 +22,12 @@ public interface MultiPageEditor extends IsWidget {
 
     void addPage(final Page page);
 
+    void addPage(int index, final Page page);
+
+    void disablePage(int index);
+
+    void enablePage(int index);
+
     void selectPage(final int index);
 
     int selectedPage();
