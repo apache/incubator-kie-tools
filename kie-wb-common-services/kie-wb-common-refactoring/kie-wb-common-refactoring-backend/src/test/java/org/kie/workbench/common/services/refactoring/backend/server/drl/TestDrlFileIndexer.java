@@ -16,7 +16,6 @@
 package org.kie.workbench.common.services.refactoring.backend.server.drl;
 
 import java.util.HashMap;
-
 import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.soup.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;

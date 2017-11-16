@@ -17,7 +17,6 @@ package org.kie.workbench.common.services.refactoring.backend.server.drl;
 
 import java.util.HashMap;
 import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
 
 import org.drools.compiler.compiler.DrlParser;

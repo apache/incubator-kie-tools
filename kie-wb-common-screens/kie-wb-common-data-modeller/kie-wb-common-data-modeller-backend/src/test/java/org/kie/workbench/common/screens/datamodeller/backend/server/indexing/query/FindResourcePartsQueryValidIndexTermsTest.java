@@ -15,28 +15,16 @@
  */
 package org.kie.workbench.common.screens.datamodeller.backend.server.indexing.query;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.enterprise.inject.Instance;
-
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.index.IndexableField;
-import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopScoreDocCollector;
 import org.junit.Test;
 import org.kie.workbench.common.screens.datamodeller.backend.server.indexing.TestJavaFileIndexer;
 import org.kie.workbench.common.screens.javaeditor.type.JavaResourceTypeDefinition;
@@ -57,11 +45,13 @@ import org.kie.workbench.common.services.refactoring.model.query.RefactoringPage
 import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.uberfire.commons.data.Pair;
-import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
-import org.uberfire.ext.metadata.engine.Index;
 import org.uberfire.ext.metadata.io.KObjectUtil;
+import org.uberfire.ext.metadata.model.KObject;
+import org.uberfire.ext.metadata.model.KProperty;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.paging.PageResponse;
+
+import static org.junit.Assert.*;
 
 public class FindResourcePartsQueryValidIndexTermsTest extends BaseIndexingTest<JavaResourceTypeDefinition> {
 
@@ -91,26 +81,24 @@ public class FindResourcePartsQueryValidIndexTermsTest extends BaseIndexingTest<
         // wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
         Thread.sleep(5000);
 
-        final Index index = getConfig().getIndexManager().get( KObjectUtil.toKCluster( basePath.getFileSystem() ) );
+        List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath.getFileSystem()).getClusterId());
 
         {
-            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10 );
             final Query query = new SingleTermQueryBuilder( new ValueResourceIndexTerm( "*", ResourceType.JAVA, TermSearchType.WILDCARD ) ).build();
 
-            searcher.search( query,
-                             collector );
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
+            List<KObject> hits = getConfig().getIndexProvider().findByQuery(index,
+                                                                                query,
+                                                                                10);
 
-            assertEquals( 1, hits.length );
+            assertEquals( 1, hits.size() );
 
             List<Pair<String, String>> expectedValues = initExpectedValues();
 
-            Document doc = null;
-            for( ScoreDoc scoreDoc : hits ) {
-               doc = searcher.doc(scoreDoc.doc);
-               for( IndexableField indField : doc.getFields() ) {
-                   String fieldVal = indField.stringValue();
+            KObject doc = null;
+            for( KObject kObject : hits ) {
+                doc = kObject;
+               for( KProperty<?> property : doc.getProperties() ) {
+                   String fieldVal = property.getValue().toString();
                   if( fieldVal.startsWith("git://" ) ) {
                       if( fieldVal.contains(pojo1FileName) ) {
                           break;
@@ -123,7 +111,6 @@ public class FindResourcePartsQueryValidIndexTermsTest extends BaseIndexingTest<
 
             assertContains( expectedValues, doc );
 
-            ( (LuceneIndex) index ).nrtRelease( searcher );
         }
 
         {
@@ -152,11 +139,11 @@ public class FindResourcePartsQueryValidIndexTermsTest extends BaseIndexingTest<
     }
 
     private void assertContains( List<Pair<String, String>> expectedValues,
-                                 Document doc ) {
+                                 KObject doc ) {
 
         List<Pair<String, String>> returnedValues = new ArrayList<Pair<String, String>>();
-        for ( IndexableField field : doc.getFields() ) {
-            returnedValues.add( new Pair<String, String>( field.name(), field.stringValue() ) );
+        for ( KProperty<?> field : doc.getProperties() ) {
+            returnedValues.add( new Pair<>( field.getName(), field.getValue().toString() ) );
         }
 
         //assertEquals( expectedValues.size(), returnedValues.size() );

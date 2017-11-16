@@ -15,10 +15,6 @@
 
 package org.kie.workbench.common.services.refactoring.backend.server.query.findresources;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -40,6 +36,8 @@ import org.kie.workbench.common.services.refactoring.model.query.RefactoringPage
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.paging.PageResponse;
+
+import static org.junit.Assert.*;
 
 public class FindResourcesQueryValidIndexTermsTest extends BaseIndexingTest<TestDrlFileTypeDefinition> {
 

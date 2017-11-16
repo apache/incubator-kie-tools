@@ -15,18 +15,10 @@
 
 package org.kie.workbench.common.services.refactoring.backend.server.impact;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.enterprise.inject.Instance;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -45,6 +37,8 @@ import org.kie.workbench.common.services.refactoring.model.query.RefactoringPage
 import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.impact.QueryOperationRequest;
 import org.uberfire.java.nio.file.Path;
+
+import static org.junit.Assert.*;
 
 /**
  * This test is focused on making sure that the {@link PackageDescrIndexVisitor} is able to find and collect the data that it needs to.

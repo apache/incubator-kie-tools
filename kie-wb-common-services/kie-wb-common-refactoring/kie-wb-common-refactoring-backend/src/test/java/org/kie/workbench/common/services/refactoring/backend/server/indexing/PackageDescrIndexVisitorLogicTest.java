@@ -15,11 +15,6 @@
 
 package org.kie.workbench.common.services.refactoring.backend.server.indexing;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -30,6 +25,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.google.common.collect.Sets;
+import com.google.common.collect.Sets.SetView;
+import javassist.Modifier;
 import org.drools.compiler.compiler.ReturnValueDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
@@ -39,7 +37,6 @@ import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.compiler.lang.descr.ProcessDescr;
 import org.drools.compiler.lang.descr.RestrictionDescr;
 import org.junit.Test;
-import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.mvel2.asm.ClassReader;
 import org.mvel2.asm.ClassVisitor;
 import org.mvel2.asm.MethodVisitor;
@@ -51,10 +48,7 @@ import org.reflections.util.ClasspathHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Sets;
-import com.google.common.collect.Sets.SetView;
-
-import javassist.Modifier;
+import static org.junit.Assert.*;
 
 /**
  * This test is focused on reflection-based code that inspects the {@link PackageDescrIndexVisitor} logic for inconsistencies.

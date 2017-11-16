@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.services.refactoring.backend.server.resources;
 
-import static org.mockito.Mockito.mock;
-
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -32,8 +32,9 @@ import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.TestPropertiesFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.TestPropertiesFileTypeDefinition;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
-import org.uberfire.ext.metadata.engine.Index;
 import org.uberfire.ext.metadata.io.KObjectUtil;
+
+import static org.mockito.Mockito.*;
 
 public class IndexUpdatedResourcesTest extends BaseIndexingTest {
 
@@ -51,7 +52,7 @@ public class IndexUpdatedResourcesTest extends BaseIndexingTest {
 
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        final Index index = getConfig().getIndexManager().get( KObjectUtil.toKCluster( basePath.getFileSystem() ) );
+        List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath.getFileSystem()).getClusterId());
 
         searchFor(index,
                   new TermQuery( new Term( "title", "lucene" ) ),

@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.services.refactoring.backend.server.resources;
 
-import static org.mockito.Mockito.mock;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
@@ -32,6 +30,8 @@ import org.kie.workbench.common.services.refactoring.backend.server.TestProperti
 import org.kie.workbench.common.services.refactoring.backend.server.TestPropertiesFileTypeDefinition;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 
+import static org.mockito.Mockito.*;
+
 public class MultipleRepositoryAddedResourcesTest extends MultipleRepositoryBaseIndexingTest<TestPropertiesFileTypeDefinition> {
 
     @Test
@@ -44,6 +44,7 @@ public class MultipleRepositoryAddedResourcesTest extends MultipleRepositoryBase
                         getBasePath( this.getClass().getSimpleName() + "_2" ) );
 
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+
 
         searchFor( new TermQuery( new Term( "title", "lucene" ) ), 2);
     }

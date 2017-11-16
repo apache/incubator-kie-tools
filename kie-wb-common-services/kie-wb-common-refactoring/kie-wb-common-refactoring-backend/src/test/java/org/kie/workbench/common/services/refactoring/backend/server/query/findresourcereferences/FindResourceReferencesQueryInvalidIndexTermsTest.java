@@ -15,9 +15,6 @@
 
 package org.kie.workbench.common.services.refactoring.backend.server.query.findresourcereferences;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -33,6 +30,8 @@ import org.kie.workbench.common.services.refactoring.backend.server.query.respon
 import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindResourceReferencesQuery;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
+
+import static org.junit.Assert.*;
 
 public class FindResourceReferencesQueryInvalidIndexTermsTest extends BaseIndexingTest<TestDrlFileTypeDefinition> {
 

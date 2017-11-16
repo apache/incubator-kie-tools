@@ -30,10 +30,10 @@ import org.kie.workbench.common.services.refactoring.backend.server.indexing.Imp
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.LowerCaseOnlyAnalyzer;
 import org.kie.workbench.common.services.refactoring.model.index.terms.PackageNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
-import org.uberfire.ext.metadata.backend.lucene.LuceneConfig;
-import org.uberfire.ext.metadata.backend.lucene.LuceneConfigBuilder;
+import org.uberfire.ext.metadata.MetadataConfig;
 import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
+import org.uberfire.ext.metadata.io.MetadataConfigBuilder;
 
 /**
  * This class contains the default Lucene configuration, and can be
@@ -42,12 +42,12 @@ import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
 @ApplicationScoped
 public class DefaultLuceneConfigProducer {
 
-    private LuceneConfig config;
+    private MetadataConfig config;
 
     @PostConstruct
     public void setup() {
         final Map<String, Analyzer> analyzers = getAnalyzers();
-        this.config = new LuceneConfigBuilder().withInMemoryMetaModelStore()
+        this.config = new MetadataConfigBuilder().withInMemoryMetaModelStore()
                 .usingAnalyzers(analyzers)
                 .usingAnalyzerWrapperFactory(ImpactAnalysisAnalyzerWrapperFactory.getInstance())
                 .useDirectoryBasedIndex()
@@ -57,7 +57,7 @@ public class DefaultLuceneConfigProducer {
 
     @Produces
     @Named("luceneConfig")
-    public LuceneConfig configProducer() {
+    public MetadataConfig configProducer() {
         return this.config;
     }
 

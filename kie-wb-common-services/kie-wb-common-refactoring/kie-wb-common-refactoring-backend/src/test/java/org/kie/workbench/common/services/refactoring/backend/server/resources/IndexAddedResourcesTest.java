@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.services.refactoring.backend.server.resources;
 
-import static org.mockito.Mockito.mock;
-
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -32,30 +32,32 @@ import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.TestPropertiesFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.TestPropertiesFileTypeDefinition;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
-import org.uberfire.ext.metadata.engine.Index;
 import org.uberfire.ext.metadata.io.KObjectUtil;
+
+import static org.mockito.Mockito.*;
 
 public class IndexAddedResourcesTest extends BaseIndexingTest<TestPropertiesFileTypeDefinition> {
 
     @Test
     public void testIndexingAddedResources() throws IOException, InterruptedException {
         //Add test files
-        loadProperties( "file1.properties",
-                        basePath );
-        loadProperties( "file2.properties",
-                        basePath );
-        loadProperties( "file3.properties",
-                        basePath );
-        loadProperties( "file4.properties",
-                        basePath );
+        loadProperties("file1.properties",
+                       basePath);
+        loadProperties("file2.properties",
+                       basePath);
+        loadProperties("file3.properties",
+                       basePath);
+        loadProperties("file4.properties",
+                       basePath);
 
-        Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+        Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        final Index index = getConfig().getIndexManager().get( KObjectUtil.toKCluster( basePath.getFileSystem() ) );
+        List<String> indices = Arrays.asList(KObjectUtil.toKCluster(basePath.getFileSystem()).getClusterId());
 
-        searchFor(index,
-                 (Query) new TermQuery( new Term( "title", "lucene" ) ),
-                 2);
+        searchFor(indices,
+                  (Query) new TermQuery(new Term("title",
+                                                 "lucene")),
+                  2);
     }
 
     @Override
@@ -80,7 +82,6 @@ public class IndexAddedResourcesTest extends BaseIndexingTest<TestPropertiesFile
 
     @Override
     protected KieProjectService getProjectService() {
-        return mock( KieProjectService.class );
+        return mock(KieProjectService.class);
     }
-
 }

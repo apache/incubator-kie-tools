@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.services.refactoring.backend.server.resources;
 
-import static org.mockito.Mockito.mock;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
@@ -31,6 +29,8 @@ import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.TestPropertiesFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.TestPropertiesFileTypeDefinition;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
+
+import static org.mockito.Mockito.*;
 
 public class MultipleRepositoryCopiedResourcesTest extends MultipleRepositoryBaseIndexingTest<TestPropertiesFileTypeDefinition> {
 

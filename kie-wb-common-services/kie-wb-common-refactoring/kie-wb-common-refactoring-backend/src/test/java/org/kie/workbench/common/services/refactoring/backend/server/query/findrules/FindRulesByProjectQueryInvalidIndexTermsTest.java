@@ -15,16 +15,9 @@
 
 package org.kie.workbench.common.services.refactoring.backend.server.query.findrules;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.enterprise.inject.Instance;
 
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
@@ -37,10 +30,9 @@ import org.kie.workbench.common.services.refactoring.backend.server.query.respon
 import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindRulesByProjectQuery;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValuePackageNameIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueProjectRootPathIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueReferenceIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
-import org.kie.workbench.common.services.refactoring.service.ResourceType;
+
+import static org.junit.Assert.*;
 
 public class FindRulesByProjectQueryInvalidIndexTermsTest
         extends BaseIndexingTest<TestDrlFileTypeDefinition> {

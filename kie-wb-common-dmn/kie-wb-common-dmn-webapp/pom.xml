@@ -87,6 +87,17 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-metadata-backend-elasticsearch</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>jakarta-regexp</groupId>
+          <artifactId>jakarta-regexp</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-metadata-commons-io</artifactId>
     </dependency>
 
@@ -536,7 +547,7 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-backend</artifactId>
-    </dependency>    
+    </dependency>
     <dependency>
       <groupId>org.kie.workbench</groupId>
       <artifactId>kie-wb-common-dmn-api</artifactId>

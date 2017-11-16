@@ -17,7 +17,9 @@
 package org.kie.workbench.common.services.refactoring.backend.server.drl;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -29,7 +31,7 @@ import org.kie.workbench.common.services.refactoring.backend.server.query.builde
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm.TermSearchType;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueReferenceIndexTerm;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
-import org.uberfire.ext.metadata.engine.Index;
+import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.java.nio.file.Path;
 
 public class IndexDrlLHSTypeTest extends BaseIndexingTest<TestDrlFileTypeDefinition> {
@@ -52,9 +54,9 @@ public class IndexDrlLHSTypeTest extends BaseIndexingTest<TestDrlFileTypeDefinit
                            drl3 );
         ioService().endBatch();
 
-        Thread.sleep( 7000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+        Thread.sleep( 12000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        final Index index = getConfig().getIndexManager().get( org.uberfire.ext.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
+        List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath.getFileSystem()).getClusterId());
 
         //Check type extraction (with wildcards)
         {

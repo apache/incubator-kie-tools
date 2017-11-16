@@ -17,10 +17,8 @@
 package org.kie.workbench.common.screens.datasource.management.backend.integration.wildfly;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import org.apache.regexp.RE;
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.dmr.ModelNode;
 

@@ -16,7 +16,7 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.workbench.services</groupId>
@@ -74,6 +74,10 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-metadata-backend-elasticsearch</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-backend-server</artifactId>
     </dependency>
     <dependency>
@@ -115,6 +119,10 @@
       <artifactId>commons-codec</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-commons</artifactId>
+    </dependency>
     <!-- drools -->
     <dependency>
       <groupId>org.drools</groupId>
@@ -175,7 +183,7 @@
       <artifactId>reflections</artifactId>
       <scope>test</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>simple-jndi</groupId>
       <artifactId>simple-jndi</artifactId>

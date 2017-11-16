@@ -15,22 +15,13 @@
 
 package org.kie.workbench.common.services.refactoring.backend.server.query;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.enterprise.inject.Instance;
-
 import org.apache.lucene.analysis.Analyzer;
-import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
@@ -39,6 +30,8 @@ import org.kie.workbench.common.services.refactoring.backend.server.drl.TestDrlF
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.DefaultResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindResourceReferencesQuery;
+
+import static org.junit.Assert.*;
 
 public class RefactoringQueryServiceImplGeneralTest extends BaseIndexingTest<TestDrlFileTypeDefinition> {
 

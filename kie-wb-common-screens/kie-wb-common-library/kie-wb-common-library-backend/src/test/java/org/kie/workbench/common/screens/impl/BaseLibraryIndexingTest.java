@@ -57,12 +57,12 @@ import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.async.DescriptiveThreadFactory;
-import org.uberfire.ext.metadata.backend.lucene.LuceneConfig;
-import org.uberfire.ext.metadata.backend.lucene.LuceneConfigBuilder;
+import org.uberfire.ext.metadata.MetadataConfig;
 import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
 import org.uberfire.ext.metadata.io.IOServiceIndexedImpl;
 import org.uberfire.ext.metadata.io.IndexersFactory;
+import org.uberfire.ext.metadata.io.MetadataConfigBuilder;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 
@@ -76,7 +76,7 @@ public abstract class BaseLibraryIndexingTest {
 
     private static final List<File> tempFiles = new ArrayList<>();
 
-    private static LuceneConfig config;
+    private static MetadataConfig config;
     protected int seed = new Random(10L).nextInt();
     protected boolean created = false;
     protected Path basePath;
@@ -212,7 +212,7 @@ public abstract class BaseLibraryIndexingTest {
     protected IOService ioService() {
         if (ioService == null) {
             final Map<String, Analyzer> analyzers = getAnalyzers();
-            LuceneConfigBuilder configBuilder = new LuceneConfigBuilder()
+            MetadataConfigBuilder configBuilder = new MetadataConfigBuilder()
                     .withInMemoryMetaModelStore()
                     .usingAnalyzers(analyzers)
                     .usingAnalyzerWrapperFactory(ImpactAnalysisAnalyzerWrapperFactory.getInstance())

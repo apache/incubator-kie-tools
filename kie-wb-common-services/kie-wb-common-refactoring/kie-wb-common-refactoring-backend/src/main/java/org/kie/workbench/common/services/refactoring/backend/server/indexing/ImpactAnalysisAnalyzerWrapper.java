@@ -30,15 +30,18 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.Reference
 import org.kie.workbench.common.services.refactoring.model.index.terms.SharedPartIndexTerm;
 import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
+import org.uberfire.ext.metadata.analyzer.ElasticSearchAnalyzer;
+import org.uberfire.ext.metadata.analyzer.ElasticSearchAnalyzerWrapper;
+import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
 
 /**
  * This analyzer is based on the {@link PerFieldAnalyzerWrapper} class, which
  * was build for cases when fields require different analysis techniques.
- *
+ * <p>
  * <p>A {@link ImpactAnalysisAnalyzerWrapper} can be used like any other analyzer, for both indexing
  * and query parsing.
  */
-public final class ImpactAnalysisAnalyzerWrapper extends DelegatingAnalyzerWrapper {
+public final class ImpactAnalysisAnalyzerWrapper extends DelegatingAnalyzerWrapper implements ElasticSearchAnalyzerWrapper {
 
     private final LowerCaseOnlyAnalyzer lowerCaseOnlyAnalyzer = new LowerCaseOnlyAnalyzer();
 
@@ -48,23 +51,24 @@ public final class ImpactAnalysisAnalyzerWrapper extends DelegatingAnalyzerWrapp
     /**
      * Constructs with default analyzer and a map of analyzers to use for
      * specific fields.
-     *
+     * <p>
      * Any fields not specifically defined to use a different analyzer will use the {@link StandardAnalyzer}.
      */
     public ImpactAnalysisAnalyzerWrapper() {
-        this(new StandardAnalyzer(CharArraySet.EMPTY_SET), Collections.EMPTY_MAP);
+        this(new StandardAnalyzer(CharArraySet.EMPTY_SET),
+             Collections.EMPTY_MAP);
     }
 
     /**
      * Constructs with default analyzer and a map of analyzers to use for
      * specific fields.
-     *
      * @param defaultAnalyzer Any fields not specifically
      * defined to use a different analyzer will use the one provided here.
      * @param fieldAnalyzers a Map (String field name to the Analyzer) to be
      * used for those fields
      */
-    public ImpactAnalysisAnalyzerWrapper(Analyzer defaultAnalyzer, Map<String, Analyzer> fieldAnalyzers) {
+    public ImpactAnalysisAnalyzerWrapper(Analyzer defaultAnalyzer,
+                                         Map<String, Analyzer> fieldAnalyzers) {
         super(PER_FIELD_REUSE_STRATEGY);
         this.defaultAnalyzer = defaultAnalyzer;
         this.fieldAnalyzers = (fieldAnalyzers != null) ? fieldAnalyzers : Collections.<String, Analyzer>emptyMap();
@@ -75,20 +79,23 @@ public final class ImpactAnalysisAnalyzerWrapper extends DelegatingAnalyzerWrapp
     private static final String PACKAGE_NAME_FIELD_NAME = PackageNameIndexTerm.TERM;
     private static final String PROJECT_NAME_FIELD_NAME = ProjectNameIndexTerm.TERM;
     private static final String PROJECT_ROOT_PATH_FIELD_NAME = ProjectRootPathIndexTerm.TERM;
-    private static final String [] PART_FIELD_NAME_BEGINS;
+    private static final String[] PART_FIELD_NAME_BEGINS;
+
     static {
-        PartType [] partTypes = PartType.values();
+        PartType[] partTypes = PartType.values();
         PART_FIELD_NAME_BEGINS = new String[partTypes.length];
-        for( int i = 0; i < partTypes.length; ++i ) {
-           PART_FIELD_NAME_BEGINS[i] = partTypes[i].toString() + ":";
+        for (int i = 0; i < partTypes.length; ++i) {
+            PART_FIELD_NAME_BEGINS[i] = partTypes[i].toString() + ":";
         }
     }
-    private static final String [] RESOURCE_FIELD_NAME_BEGINS;
+
+    private static final String[] RESOURCE_FIELD_NAME_BEGINS;
+
     static {
-        ResourceType [] resTypes = ResourceType.values();
+        ResourceType[] resTypes = ResourceType.values();
         RESOURCE_FIELD_NAME_BEGINS = new String[resTypes.length];
-        for( int i = 0; i < resTypes.length; ++i ) {
-           RESOURCE_FIELD_NAME_BEGINS[i] = resTypes[i].toString() + ":";
+        for (int i = 0; i < resTypes.length; ++i) {
+            RESOURCE_FIELD_NAME_BEGINS[i] = resTypes[i].toString() + ":";
         }
     }
 
@@ -96,34 +103,34 @@ public final class ImpactAnalysisAnalyzerWrapper extends DelegatingAnalyzerWrapp
     protected Analyzer getWrappedAnalyzer(String fieldName) {
         Analyzer analyzer = fieldAnalyzers.get(fieldName);
 
-        if( analyzer == null ) {
+        if (analyzer == null) {
             // referenced resources and referenced parts
             if (fieldName.startsWith(RESOURCE_REF_FIELD_NAME_BEGIN)) {
                 analyzer = lowerCaseOnlyAnalyzer;
-            // shared parts
+                // shared parts
             } else if (fieldName.startsWith(SHARED_PART_REF_FIELD_NAME_BEGIN)) {
                 analyzer = lowerCaseOnlyAnalyzer;
-            // package name
+                // package name
             } else if (fieldName.startsWith(PACKAGE_NAME_FIELD_NAME)) {
                 analyzer = lowerCaseOnlyAnalyzer;
-            // project name
+                // project name
             } else if (fieldName.startsWith(PROJECT_NAME_FIELD_NAME)) {
                 analyzer = lowerCaseOnlyAnalyzer;
-            // project root path URI
+                // project root path URI
             } else if (fieldName.startsWith(PROJECT_ROOT_PATH_FIELD_NAME)) {
                 analyzer = lowerCaseOnlyAnalyzer;
-            // resources and parts
+                // resources and parts
             } else {
                 boolean found = false;
-                for (String typeFieldNameStart : RESOURCE_FIELD_NAME_BEGINS ) {
+                for (String typeFieldNameStart : RESOURCE_FIELD_NAME_BEGINS) {
                     if (fieldName.startsWith(typeFieldNameStart)) {
                         analyzer = lowerCaseOnlyAnalyzer;
                         found = true;
                         break;
                     }
                 }
-                if( ! found ) {
-                    for (String typeFieldNameStart : PART_FIELD_NAME_BEGINS ) {
+                if (!found) {
+                    for (String typeFieldNameStart : PART_FIELD_NAME_BEGINS) {
                         if (fieldName.startsWith(typeFieldNameStart)) {
                             analyzer = lowerCaseOnlyAnalyzer;
                             break;
@@ -137,8 +144,19 @@ public final class ImpactAnalysisAnalyzerWrapper extends DelegatingAnalyzerWrapp
     }
 
     @Override
+    public String getFieldAnalyzer(String fieldName) {
+        Analyzer analyzer = this.getWrappedAnalyzer(fieldName);
+        Class<?> analyzerClass = analyzer.getClass();
+        if (analyzerClass.equals(LowerCaseOnlyAnalyzer.class) ||
+                analyzerClass.equals(FilenameAnalyzer.class)) {
+            return ElasticSearchAnalyzer.SIMPLE.toString();
+        } else {
+            return ElasticSearchAnalyzer.STANDARD.toString();
+        }
+    }
+
+    @Override
     public String toString() {
         return "ImpactAnalysisAnalyzerWrapper(" + fieldAnalyzers + ", default=" + defaultAnalyzer + ")";
-  }
-
+    }
 }

@@ -16,26 +16,21 @@
 package org.kie.workbench.common.services.refactoring.backend.server.query;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
-
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.TopFieldDocs;
-import org.apache.lucene.search.TopScoreDocCollector;
-import org.apache.lucene.search.TotalHitCountCollector;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
@@ -48,19 +43,16 @@ import org.kie.workbench.common.services.refactoring.model.query.RefactoringPage
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
 import org.kie.workbench.common.services.refactoring.service.RefactoringQueryService;
 import org.kie.workbench.common.services.refactoring.service.impact.QueryOperationRequest;
-import org.uberfire.ext.metadata.backend.lucene.LuceneConfig;
-import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndexManager;
+import org.uberfire.ext.metadata.MetadataConfig;
 import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.search.ClusterSegment;
 import org.uberfire.paging.PageResponse;
-
-import static org.uberfire.ext.metadata.backend.lucene.util.KObjectUtil.toKObject;
 
 @Service
 @ApplicationScoped
 public class RefactoringQueryServiceImpl implements RefactoringQueryService {
 
-    private LuceneConfig config;
+    private MetadataConfig config;
     private NamedQueries namedQueries;
     private PageResponse<RefactoringPageRow> emptyResponse;
 
@@ -69,7 +61,7 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
     }
 
     @Inject
-    public RefactoringQueryServiceImpl(@Named("luceneConfig") final LuceneConfig config,
+    public RefactoringQueryServiceImpl(@Named("luceneConfig") final MetadataConfig config,
                                        final NamedQueries namedQueries) {
         this.config = PortablePreconditions.checkNotNull("config",
                                                          config);
@@ -166,35 +158,28 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
                                  final IntFunction<Integer> numOfHitsToReturnSupplier,
                                  final ClusterSegment... clusterSegments) {
 
-        final LuceneIndexManager indexManager = ((LuceneIndexManager) config.getIndexManager());
-        final IndexSearcher index = indexManager.getIndexSearcher(clusterSegments);
-
         final List<KObject> result = new ArrayList<KObject>();
         try {
-            final TotalHitCountCollector totalHitCountCollector = new TotalHitCountCollector();
-            index.search(query,
-                         totalHitCountCollector);
+            List<String> indices = Arrays.stream(clusterSegments)
+                    .map(clusterSegment -> clusterSegment.getClusterId())
+                    .collect(Collectors.toList());
 
-            int numHits = totalHitCountCollector.getTotalHits();
-            if (numHits > 0) {
-                final TopFieldDocs docsHit = index.search(query,
-                                                          Integer.MAX_VALUE,
-                                                          sort);
-                final int startIndex = startIndexSupplier.get();
-                final int numOfHitsToReturn = numOfHitsToReturnSupplier.apply(docsHit.totalHits);
+            List<KObject> found = config.getIndexProvider().findByQuery(indices,
+                                                                        query,
+                                                                        sort,
+                                                                        0);
+            final int startIndex = startIndexSupplier.get();
+            final int numOfHitsToReturn = numOfHitsToReturnSupplier.apply(found.size());
 
-                for (int i = startIndex; i < startIndex + numOfHitsToReturn; i++) {
-                    result.add(toKObject(index.doc(docsHit.scoreDocs[i].doc)));
-                }
-            }
-        } catch (final Exception ex) {
+            return found.subList(startIndex,
+                                 startIndex + numOfHitsToReturn);
+        } catch (
+                final Exception ex)
+
+        {
             throw new RuntimeException("Error during Query!",
                                        ex);
-        } finally {
-            indexManager.release(index);
         }
-
-        return result;
     }
 
     /* (non-Javadoc)
