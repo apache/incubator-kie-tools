@@ -17,12 +17,15 @@
 package org.drools.workbench.screens.drltext.backend.server.indexing;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.search.Query;
 import org.drools.workbench.screens.drltext.type.DRLResourceTypeDefinition;
@@ -36,7 +39,6 @@ import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.mockito.ArgumentMatcher;
 import org.slf4j.LoggerFactory;
 import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
-import org.uberfire.ext.metadata.engine.Index;
 import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.java.nio.file.Path;
 
@@ -63,7 +65,7 @@ public class IndexRuleInvalidDrlTest extends BaseIndexingTest<DRLResourceTypeDef
 
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        final Index index = getConfig().getIndexManager().get( KObjectUtil.toKCluster( basePath.getFileSystem() ) );
+        List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath.getFileSystem()).getClusterId());
 
         {
             final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "org.drools.workbench.screens.drltext.backend.server.indexing.classes.Applicant", ResourceType.JAVA ) )

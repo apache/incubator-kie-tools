@@ -19,6 +19,8 @@ package org.drools.workbench.screens.dtablexls.backend.server.indexing;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.lucene.index.Term;
@@ -32,7 +34,7 @@ import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueSharedPartIndexTerm;
 import org.kie.workbench.common.services.refactoring.service.PartType;
-import org.uberfire.ext.metadata.engine.Index;
+import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.java.nio.file.Path;
 
 public class IndexDecisionTableXLSAttributeNameAndValueTest extends BaseIndexingTest<DecisionTableXLSResourceTypeDefinition> {
@@ -47,14 +49,14 @@ public class IndexDecisionTableXLSAttributeNameAndValueTest extends BaseIndexing
 
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        final Index index = getConfig().getIndexManager().get( org.uberfire.ext.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
+        List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath.getFileSystem()).getClusterId());
 
         //This simply checks whether there is a Rule Attribute "ruleflow-group" with a Rule Attribute Value "myRuleflowGroup"
         {
-            final BooleanQuery query = new BooleanQuery();
+            final BooleanQuery.Builder query = new BooleanQuery.Builder();
             ValueIndexTerm valTerm = new ValueSharedPartIndexTerm("myruleflowgroup", PartType.RULEFLOW_GROUP);
             query.add( new TermQuery( new Term( valTerm.getTerm(), valTerm.getValue())), BooleanClause.Occur.MUST );
-            searchFor(index, query, 1, path1);
+            searchFor(index, query.build(), 1, path1);
         }
     }
 

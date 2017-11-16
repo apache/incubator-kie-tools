@@ -17,7 +17,9 @@
 package org.drools.workbench.screens.drltext.backend.server.indexing;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -29,7 +31,7 @@ import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.query.builder.SingleTermQueryBuilder;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueSharedPartIndexTerm;
 import org.kie.workbench.common.services.refactoring.service.PartType;
-import org.uberfire.ext.metadata.engine.Index;
+import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.java.nio.file.Path;
 
 public class IndexRuleAttributeNameAndValueCompositionTest extends BaseIndexingTest<DRLResourceTypeDefinition> {
@@ -44,7 +46,7 @@ public class IndexRuleAttributeNameAndValueCompositionTest extends BaseIndexingT
 
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        final Index index = getConfig().getIndexManager().get( org.uberfire.ext.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
+        List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath.getFileSystem()).getClusterId());
 
         //DRL defining a RuleFlow-Group named myRuleFlowGroup. This should match drl5.drl
         //This checks whether there is a Rule Attribute "ruleflow-group" and its Value is "myRuleflowGroup"

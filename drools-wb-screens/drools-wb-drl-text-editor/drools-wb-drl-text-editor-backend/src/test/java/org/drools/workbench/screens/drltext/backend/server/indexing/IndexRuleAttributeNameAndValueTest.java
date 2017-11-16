@@ -17,10 +17,9 @@
 package org.drools.workbench.screens.drltext.backend.server.indexing;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.List;
 
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
@@ -29,13 +28,10 @@ import org.drools.workbench.screens.drltext.type.DRLResourceTypeDefinition;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
-import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.SharedPartIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueSharedPartIndexTerm;
 import org.kie.workbench.common.services.refactoring.service.PartType;
-import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
-import org.uberfire.ext.metadata.engine.Index;
 import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.java.nio.file.Path;
 
@@ -51,7 +47,7 @@ public class IndexRuleAttributeNameAndValueTest extends BaseIndexingTest<DRLReso
 
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        final Index index = getConfig().getIndexManager().get( KObjectUtil.toKCluster( basePath.getFileSystem() ) );
+        List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath.getFileSystem()).getClusterId());
 
         {
             final BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();

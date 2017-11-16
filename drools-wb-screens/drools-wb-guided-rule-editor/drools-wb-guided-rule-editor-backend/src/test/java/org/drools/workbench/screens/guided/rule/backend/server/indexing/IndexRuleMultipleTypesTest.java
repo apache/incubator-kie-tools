@@ -17,6 +17,8 @@
 package org.drools.workbench.screens.guided.rule.backend.server.indexing;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.lucene.search.Query;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDRLResourceTypeDefinition;
@@ -26,7 +28,7 @@ import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.query.builder.SingleTermQueryBuilder;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueReferenceIndexTerm;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
-import org.uberfire.ext.metadata.engine.Index;
+import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.java.nio.file.Path;
 
 public class IndexRuleMultipleTypesTest extends BaseIndexingTest<GuidedRuleDRLResourceTypeDefinition> {
@@ -45,7 +47,7 @@ public class IndexRuleMultipleTypesTest extends BaseIndexingTest<GuidedRuleDRLRe
 
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        final Index index = getConfig().getIndexManager().get( org.uberfire.ext.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
+        List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath.getFileSystem()).getClusterId());
 
         {
             final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "org.drools.workbench.screens.guided.rule.backend.server.indexing.classes.Applicant", ResourceType.JAVA ) )

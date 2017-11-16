@@ -19,6 +19,8 @@ package org.drools.workbench.screens.dtablexls.backend.server.indexing;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.lucene.search.Query;
@@ -30,7 +32,7 @@ import org.kie.workbench.common.services.refactoring.backend.server.query.builde
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm.TermSearchType;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueSharedPartIndexTerm;
 import org.kie.workbench.common.services.refactoring.service.PartType;
-import org.uberfire.ext.metadata.engine.Index;
+import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.java.nio.file.Path;
 
 public class IndexDecisionTableXLSAttributeNameTest extends BaseIndexingTest<DecisionTableXLSResourceTypeDefinition> {
@@ -45,7 +47,7 @@ public class IndexDecisionTableXLSAttributeNameTest extends BaseIndexingTest<Dec
 
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        final Index index = getConfig().getIndexManager().get( org.uberfire.ext.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
+        List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath.getFileSystem()).getClusterId());
 
         {
             final Query query = new SingleTermQueryBuilder( new ValueSharedPartIndexTerm( "*", PartType.RULEFLOW_GROUP, TermSearchType.WILDCARD ) )
