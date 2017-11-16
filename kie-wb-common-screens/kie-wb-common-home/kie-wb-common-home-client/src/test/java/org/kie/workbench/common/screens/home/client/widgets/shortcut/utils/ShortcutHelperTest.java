@@ -19,17 +19,23 @@ package org.kie.workbench.common.screens.home.client.widgets.shortcut.utils;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.security.ResourceRef;
 import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.workbench.model.ActivityResourceType;
 
-import static org.jgroups.util.Util.assertEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ShortcutHelperTest {
@@ -115,5 +121,25 @@ public class ShortcutHelperTest {
 
         verify(placeManager,
                never()).goTo(perspectiveIdentifier);
+    }
+
+    @Test
+    public void testAuthorizePositive() throws Exception {
+        final String perspectiveId = "perspectiveId";
+        final ArgumentCaptor<ResourceRef> resourceRefArgumentCaptor = ArgumentCaptor.forClass(ResourceRef.class);
+        doReturn(true).when(authorizationManager).authorize(any(ResourceRef.class), eq(user));
+
+        assertTrue(shortcutHelper.authorize(perspectiveId));
+        verify(authorizationManager).authorize(resourceRefArgumentCaptor.capture(), eq(user));
+        assertEquals(perspectiveId, resourceRefArgumentCaptor.getValue().getIdentifier());
+        assertEquals(ActivityResourceType.PERSPECTIVE, resourceRefArgumentCaptor.getValue().getResourceType());
+    }
+
+    @Test
+    public void testAuthorizeNegative() throws Exception {
+        final String perspectiveId = "perspectiveId";
+        doReturn(false).when(authorizationManager).authorize(any(ResourceRef.class), eq(user));
+        
+        assertFalse(shortcutHelper.authorize(perspectiveId));
     }
 }
