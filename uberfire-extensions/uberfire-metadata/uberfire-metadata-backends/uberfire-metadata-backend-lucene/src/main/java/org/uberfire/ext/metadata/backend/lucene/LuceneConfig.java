@@ -20,13 +20,13 @@ import org.apache.lucene.analysis.Analyzer;
 import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
 import org.uberfire.ext.metadata.MetadataConfig;
 import org.uberfire.ext.metadata.backend.lucene.fields.FieldFactory;
-import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndexEngine;
-import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndexFactory;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndexManager;
+import org.uberfire.ext.metadata.backend.lucene.provider.LuceneIndexProvider;
 import org.uberfire.ext.metadata.backend.lucene.search.LuceneSearchIndex;
 import org.uberfire.ext.metadata.engine.IndexManager;
 import org.uberfire.ext.metadata.engine.MetaIndexEngine;
 import org.uberfire.ext.metadata.engine.MetaModelStore;
+import org.uberfire.ext.metadata.provider.IndexProvider;
 import org.uberfire.ext.metadata.search.SearchIndex;
 
 public class LuceneConfig implements MetadataConfig {
@@ -36,22 +36,29 @@ public class LuceneConfig implements MetadataConfig {
     private final LuceneIndexManager indexManager;
     private final Analyzer analyzer;
     private final LuceneSearchIndex searchIndex;
-    private final LuceneIndexEngine indexEngine;
+    private final MetaIndexEngine indexEngine;
+    private final LuceneIndexProvider indexProvider;
 
     public LuceneConfig(final MetaModelStore metaModelStore,
                         final FieldFactory fieldFactory,
-                        final LuceneIndexFactory indexFactory,
+                        final LuceneIndexManager indexManager,
+                        final MetaIndexEngine metaIndexEngine,
                         final Analyzer analyzer) {
         this.metaModelStore = metaModelStore;
         this.fieldFactory = fieldFactory;
-        this.indexManager = new LuceneIndexManager(indexFactory);
         this.analyzer = analyzer;
+        this.indexManager = indexManager;
         this.searchIndex = new LuceneSearchIndex(this.indexManager,
                                                  this.analyzer);
-        this.indexEngine = new LuceneIndexEngine(this.fieldFactory,
-                                                 this.metaModelStore,
-                                                 this.indexManager);
+        this.indexEngine = metaIndexEngine;
+        this.indexProvider = new LuceneIndexProvider(indexManager,
+                                                     fieldFactory);
         PriorityDisposableRegistry.register(this);
+    }
+
+    @Override
+    public IndexProvider getIndexProvider() {
+        return this.indexProvider;
     }
 
     @Override
@@ -64,7 +71,6 @@ public class LuceneConfig implements MetadataConfig {
         return indexEngine;
     }
 
-    @Override
     public IndexManager getIndexManager() {
         return indexManager;
     }

@@ -35,6 +35,7 @@ import org.apache.lucene.search.TotalHitCountCollector;
 import org.apache.lucene.search.WildcardQuery;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndexManager;
 import org.uberfire.ext.metadata.model.KObject;
+import org.uberfire.ext.metadata.model.schema.MetaObject;
 import org.uberfire.ext.metadata.search.ClusterSegment;
 import org.uberfire.ext.metadata.search.DateRange;
 import org.uberfire.ext.metadata.search.IOSearchService;
@@ -43,7 +44,7 @@ import org.uberfire.ext.metadata.search.SearchIndex;
 import static java.util.Collections.emptyList;
 import static org.apache.lucene.search.BooleanClause.Occur.MUST;
 import static org.apache.lucene.search.BooleanClause.Occur.SHOULD;
-import static org.apache.lucene.search.NumericRangeQuery.newLongRange;
+import static org.apache.lucene.search.LegacyNumericRangeQuery.newLongRange;
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.ext.metadata.backend.lucene.util.KObjectUtil.toKObject;
 import static org.uberfire.ext.metadata.engine.MetaIndexEngine.FULL_TEXT_FIELD;
@@ -170,7 +171,7 @@ public class LuceneSearchIndex implements SearchIndex {
 
     private Query buildQuery(final Map<String, ?> attrs,
                              final ClusterSegment... clusterSegments) {
-        final BooleanQuery query = new BooleanQuery();
+        final BooleanQuery.Builder query = new BooleanQuery.Builder();
         for (final Map.Entry<String, ?> entry : attrs.entrySet()) {
             if (entry.getValue() instanceof DateRange) {
                 final Long from = ((DateRange) entry.getValue()).after().getTime();
@@ -191,7 +192,7 @@ public class LuceneSearchIndex implements SearchIndex {
                           MUST);
             }
         }
-        return composeQuery(query,
+        return composeQuery(query.build(),
                             clusterSegments);
     }
 
@@ -220,54 +221,53 @@ public class LuceneSearchIndex implements SearchIndex {
             return query;
         }
 
-        final BooleanQuery booleanQuery = new BooleanQuery();
+        final BooleanQuery.Builder booleanQuery = new BooleanQuery.Builder();
         booleanQuery.add(query,
                          MUST);
 
         final BooleanClause.Occur occur = (clusterSegments.length == 1 ? MUST : SHOULD);
         for (ClusterSegment clusterSegment : clusterSegments) {
-            final BooleanQuery clusterSegmentQuery = new BooleanQuery();
+            final BooleanQuery.Builder clusterSegmentQuery = new BooleanQuery.Builder();
             addClusterIdTerms(clusterSegmentQuery,
                               clusterSegment);
             addSegmentIdTerms(clusterSegmentQuery,
                               clusterSegment);
-            booleanQuery.add(clusterSegmentQuery,
+            booleanQuery.add(clusterSegmentQuery.build(),
                              occur);
         }
 
-        return booleanQuery;
+        return booleanQuery.build();
     }
 
-    private void addClusterIdTerms(final BooleanQuery query,
+    private void addClusterIdTerms(final BooleanQuery.Builder query,
                                    final ClusterSegment clusterSegment) {
         if (clusterSegment.getClusterId() != null) {
-            final Query cluster = new TermQuery(new Term("cluster.id",
+            final Query cluster = new TermQuery(new Term(MetaObject.META_OBJECT_CLUSTER_ID,
                                                          clusterSegment.getClusterId()));
             query.add(cluster,
                       MUST);
         }
     }
 
-    private void addSegmentIdTerms(final BooleanQuery query,
+    private void addSegmentIdTerms(final BooleanQuery.Builder query,
                                    final ClusterSegment clusterSegment) {
         if (clusterSegment.segmentIds() == null || clusterSegment.segmentIds().length == 0) {
             return;
         }
-
         if (clusterSegment.segmentIds().length == 1) {
-            final Query segment = new TermQuery(new Term("segment.id",
+            final Query segment = new TermQuery(new Term(MetaObject.META_OBJECT_SEGMENT_ID,
                                                          clusterSegment.segmentIds()[0]));
             query.add(segment,
                       MUST);
         } else {
-            final BooleanQuery segments = new BooleanQuery();
+            final BooleanQuery.Builder segments = new BooleanQuery.Builder();
             for (final String segmentId : clusterSegment.segmentIds()) {
-                final Query segment = new TermQuery(new Term("segment.id",
+                final Query segment = new TermQuery(new Term(MetaObject.META_OBJECT_SEGMENT_ID,
                                                              segmentId));
                 segments.add(segment,
                              SHOULD);
             }
-            query.add(segments,
+            query.add(segments.build(),
                       MUST);
         }
     }

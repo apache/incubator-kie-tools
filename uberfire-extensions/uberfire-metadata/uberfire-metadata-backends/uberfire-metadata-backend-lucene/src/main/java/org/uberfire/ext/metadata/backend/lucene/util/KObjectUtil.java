@@ -23,6 +23,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexableField;
 import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.model.KProperty;
+import org.uberfire.ext.metadata.model.schema.MetaObject;
 import org.uberfire.ext.metadata.model.schema.MetaType;
 
 /**
@@ -35,32 +36,27 @@ public final class KObjectUtil {
 
             @Override
             public String getId() {
-                return document.get("id");
+                return document.get(MetaObject.META_OBJECT_ID);
             }
 
             @Override
             public MetaType getType() {
-                return new MetaType() {
-                    @Override
-                    public String getName() {
-                        return document.get("type");
-                    }
-                };
+                return () -> document.get(MetaObject.META_OBJECT_TYPE);
             }
 
             @Override
             public String getClusterId() {
-                return document.get("cluster.id");
+                return document.get(MetaObject.META_OBJECT_CLUSTER_ID);
             }
 
             @Override
             public String getSegmentId() {
-                return document.get("segment.id");
+                return document.get(MetaObject.META_OBJECT_SEGMENT_ID);
             }
 
             @Override
             public String getKey() {
-                return document.get("key");
+                return document.get(MetaObject.META_OBJECT_KEY);
             }
 
             @Override
@@ -120,7 +116,11 @@ public final class KObjectUtil {
             }
 
             private boolean isExtension(final String name) {
-                return !(name.equals("id") || name.equals("type") || name.equals("cluster.id") || name.equals("segment.id") || name.equals("key"));
+                return !(name.equals(MetaObject.META_OBJECT_ID) ||
+                        name.equals(MetaObject.META_OBJECT_TYPE) ||
+                        name.equals(MetaObject.META_OBJECT_CLUSTER_ID) ||
+                        name.equals(MetaObject.META_OBJECT_SEGMENT_ID) ||
+                        name.equals(MetaObject.META_OBJECT_KEY));
             }
         };
     }

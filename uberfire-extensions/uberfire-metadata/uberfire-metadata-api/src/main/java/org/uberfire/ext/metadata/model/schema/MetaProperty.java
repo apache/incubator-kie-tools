@@ -31,5 +31,9 @@ public interface MetaProperty {
 
     void setAsSearchable();
 
+    boolean isSortable();
+
+    void setAsSortable();
+
     void addType(final Class<?> aClass);
 }

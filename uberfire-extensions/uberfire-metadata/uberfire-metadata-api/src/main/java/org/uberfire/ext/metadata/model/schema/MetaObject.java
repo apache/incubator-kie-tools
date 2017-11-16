@@ -17,17 +17,24 @@
 package org.uberfire.ext.metadata.model.schema;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  *
  */
 public interface MetaObject {
 
+    String META_OBJECT_ID = "id";
+    String META_OBJECT_CLUSTER_ID = "cluster.id";
+    String META_OBJECT_TYPE = "type";
+    String META_OBJECT_KEY = "key";
+    String META_OBJECT_SEGMENT_ID = "segment.id";
+
     MetaType getType();
 
     Collection<MetaProperty> getProperties();
 
-    MetaProperty getProperty(final String name);
+    Optional<MetaProperty> getProperty(final String name);
 
     void addProperty(final MetaProperty metaProperty);
 }

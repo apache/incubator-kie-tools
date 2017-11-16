@@ -52,9 +52,9 @@ public abstract class BaseLuceneIndex implements LuceneIndex {
                                                   docIds);
             for (final int docId : answers) {
                 if (docId != -1) {
-                    boolean result = writer().tryDeleteDocument(searcher.getIndexReader(),
-                                                                docId);
-                    if (result) {
+                    long result = writer().tryDeleteDocument(searcher.getIndexReader(),
+                                                             docId);
+                    if (result >= 0) {
                         deletedSomething = true;
                     }
                 }

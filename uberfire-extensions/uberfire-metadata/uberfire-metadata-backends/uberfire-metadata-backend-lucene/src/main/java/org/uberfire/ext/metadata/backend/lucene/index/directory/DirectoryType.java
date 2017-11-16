@@ -21,13 +21,17 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.MMapDirectory;
 import org.apache.lucene.store.NIOFSDirectory;
 import org.apache.lucene.store.RAMDirectory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
 import org.uberfire.ext.metadata.model.KCluster;
 
 public enum DirectoryType {
+
     INMEMORY {
         @Override
         public LuceneIndex newIndex(final KCluster cluster,
@@ -61,7 +65,7 @@ public enum DirectoryType {
                                                       new DeleteCommand() {
                                                           @Override
                                                           public void execute(org.apache.lucene.store.Directory directory) {
-                                                              ((NIOFSDirectory) directory).close();
+                                                              close((NIOFSDirectory) directory);
                                                               FileDeleteStrategy.FORCE.deleteQuietly(clusterDir);
                                                           }
                                                       },
@@ -87,7 +91,7 @@ public enum DirectoryType {
                                                       new DeleteCommand() {
                                                           @Override
                                                           public void execute(org.apache.lucene.store.Directory directory) {
-                                                              ((MMapDirectory) directory).close();
+                                                              close((MMapDirectory) directory);
                                                               FileDeleteStrategy.FORCE.deleteQuietly(clusterDir);
                                                           }
                                                       },
@@ -99,10 +103,21 @@ public enum DirectoryType {
         }
     };
 
+    private static void close(FSDirectory directory) {
+        try {
+            directory.close();
+        } catch (IOException e) {
+            logger.warn("Can't close directory",
+                        e);
+        }
+    }
+
     private static File clusterDir(final String clusterId) {
         return new File(DirectoryFactory.defaultHostingDir(),
                         clusterId);
     }
+
+    private static Logger logger = LoggerFactory.getLogger(DirectoryType.class);
 
     private static boolean freshIndex(final File clusterDir) {
         return !clusterDir.exists();

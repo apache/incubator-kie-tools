@@ -17,18 +17,18 @@
 package org.uberfire.ext.metadata;
 
 import org.uberfire.commons.lifecycle.PriorityDisposable;
-import org.uberfire.ext.metadata.engine.IndexManager;
 import org.uberfire.ext.metadata.engine.MetaIndexEngine;
 import org.uberfire.ext.metadata.engine.MetaModelStore;
+import org.uberfire.ext.metadata.provider.IndexProvider;
 import org.uberfire.ext.metadata.search.SearchIndex;
 
 public interface MetadataConfig extends PriorityDisposable {
 
+    IndexProvider getIndexProvider();
+
     SearchIndex getSearchIndex();
 
     MetaIndexEngine getIndexEngine();
-
-    IndexManager getIndexManager();
 
     MetaModelStore getMetaModelStore();
 }

@@ -30,6 +30,7 @@
   <name>Uberfire Metadata Backends</name>
 
   <modules>
+    <module>uberfire-metadata-backend-elasticsearch</module>
     <module>uberfire-metadata-backend-lucene</module>
   </modules>
 </project>

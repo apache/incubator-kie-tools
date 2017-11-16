@@ -70,8 +70,7 @@ public class DirectoryLuceneIndex extends BaseLuceneIndex {
     @Override
     public IndexReader nrtReader() {
         try {
-            return DirectoryReader.open(writer,
-                                        true);
+            return DirectoryReader.open(writer);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -214,7 +214,7 @@
         <artifactId>uberfire-workbench-client</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
-      </dependency>      
+      </dependency>
       <dependency>
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
@@ -466,7 +466,7 @@
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
-      
+
       <!-- Social Activities -->
 
       <dependency>
@@ -574,6 +574,19 @@
       <dependency>
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-metadata-backend-lucene</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-metadata-backend-elasticsearch</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-metadata-backend-elasticsearch</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>

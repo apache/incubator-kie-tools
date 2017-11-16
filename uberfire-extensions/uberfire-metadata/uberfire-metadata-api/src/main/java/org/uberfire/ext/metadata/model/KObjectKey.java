@@ -18,9 +18,8 @@ package org.uberfire.ext.metadata.model;
 
 import org.uberfire.ext.metadata.model.schema.MetaType;
 
-public interface KObjectKey extends KObjectSimpleKey {
-
-    String getId();
+public interface KObjectKey extends KObjectSimpleKey,
+                                    KObjectId {
 
     MetaType getType();
 }

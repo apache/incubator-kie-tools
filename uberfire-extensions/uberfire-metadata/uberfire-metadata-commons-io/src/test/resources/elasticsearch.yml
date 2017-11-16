@@ -1,0 +1,6 @@
+cluster.name: kie-cluster
+transport.host: 0.0.0.0
+http.host: 0.0.0.0
+transport.tcp.port: 9300
+xpack.security.enabled: false
+discovery.zen.minimum_master_nodes: 1

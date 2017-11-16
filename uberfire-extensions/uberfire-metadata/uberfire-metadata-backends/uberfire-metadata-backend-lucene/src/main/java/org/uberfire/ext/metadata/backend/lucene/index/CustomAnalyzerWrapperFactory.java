@@ -18,7 +18,6 @@ package org.uberfire.ext.metadata.backend.lucene.index;
 import java.util.Map;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.uberfire.ext.metadata.backend.lucene.LuceneConfigBuilder;
 import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
 
 /**

@@ -20,9 +20,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.MultiReader;
@@ -35,7 +37,7 @@ import org.uberfire.ext.metadata.model.KCluster;
 import org.uberfire.ext.metadata.model.KObjectKey;
 import org.uberfire.ext.metadata.search.ClusterSegment;
 
-import static org.kie.soup.commons.validation.Preconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public class LuceneIndexManager implements IndexManager {
 
@@ -125,5 +127,10 @@ public class LuceneIndexManager implements IndexManager {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public List<String> getIndices() {
+        return indexes.keySet().stream().map(kCluster -> kCluster.getClusterId()).collect(Collectors.toList());
     }
 }

@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.codecs.Codec;
 import org.apache.lucene.codecs.PostingsFormat;
-import org.apache.lucene.codecs.lucene53.Lucene53Codec;
+import org.apache.lucene.codecs.lucene62.Lucene62Codec;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndexFactory;
@@ -71,7 +71,7 @@ public class DirectoryFactory implements LuceneIndexFactory {
 
     private IndexWriterConfig newConfig(final Analyzer analyzer) {
         final IndexWriterConfig config = new IndexWriterConfig(analyzer);
-        final Codec codec = new Lucene53Codec() {
+        final Codec codec = new Lucene62Codec() {
             @Override
             public PostingsFormat getPostingsFormatForField(String field) {
                 if (field.equals("id")) {
