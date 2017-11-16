@@ -259,4 +259,7 @@ public class GuidedDecisionTableErraiConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String GuidedDecisionTableAccordionItem_Action = "GuidedDecisionTableAccordionItem.Action";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ColumnsPage_Columns = "ColumnsPage.Columns";
 }

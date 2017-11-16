@@ -624,8 +624,15 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
             } else {
                 access.setLock(NOBODY);
             }
-            parent.onLockStatusUpdated(this);
+            refreshColumnsPage();
         }
+    }
+
+    void refreshColumnsPage() {
+        refreshAttributesPanelEvent.fire(new RefreshAttributesPanelEvent(this, model.getAttributeCols()));
+        refreshMetaDataPanelEvent.fire(new RefreshMetaDataPanelEvent(this, model.getMetadataCols()));
+        refreshConditionsPanelEvent.fire(new RefreshConditionsPanelEvent(this, model.getConditions()));
+        refreshActionsPanelEvent.fire(new RefreshActionsPanelEvent(this, model.getActionCols()));
     }
 
     void onIssueSelectedEvent(final @Observes IssueSelectedEvent event) {
@@ -721,7 +728,13 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public boolean hasColumnDefinitions() {
-        return model.getAttributeCols().size() > 0 || model.getConditionsCount() > 0 || model.getActionCols().size() > 0;
+
+        final boolean hasAttributeCols = model.getAttributeCols().size() > 0;
+        final boolean hasMetadataCols = model.getMetadataCols().size() > 0;
+        final boolean hasConditionCols = model.getConditionsCount() > 0;
+        final boolean hasActionCols = model.getActionCols().size() > 0;
+
+        return hasAttributeCols || hasConditionCols || hasActionCols || hasMetadataCols;
     }
 
     @Override

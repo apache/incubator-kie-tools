@@ -18,7 +18,6 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.event.Event;
@@ -33,20 +32,11 @@ import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
-import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.RadarMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableColumnSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTablePinnedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshActionsPanelEvent;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshAttributesPanelEvent;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshConditionsPanelEvent;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMetaDataPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.popovers.ColumnHeaderPopOver;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
@@ -68,7 +58,6 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.mocks.EventSourceMock;
-import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 
 import static org.junit.Assert.assertEquals;
@@ -304,58 +293,10 @@ public class GuidedDecisionTableModellerPresenterTest {
         assertNotNull(afterRemovalCommand);
         afterRemovalCommand.execute();
 
-        verify(view,
-               times(1)).disableColumnOperationsMenu();
-        verify(view,
-               times(1)).refreshAttributeWidget(eq(Collections.emptyList()));
-        verify(view,
-               times(1)).refreshMetaDataWidget(eq(Collections.emptyList()));
-        verify(view,
-               times(1)).refreshConditionsWidget(eq(Collections.emptyList()));
-        verify(view,
-               times(1)).refreshActionsWidget(eq(Collections.emptyList()));
-        verify(view,
-               times(1)).refreshColumnsNote(eq(false));
         verify(dtPresenter,
                times(1)).onClose();
         verify(presenter,
                times(1)).removeLinksForDecisionTable(eq(dtPresenter));
-    }
-
-    @Test
-    public void onLockStatusUpdatedWithNullDecisionTable() {
-        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
-
-        when(presenter.getActiveDecisionTable()).thenReturn(dtPresenter);
-
-        presenter.onLockStatusUpdated(null);
-
-        verify(presenter,
-               never()).refreshDefinitionsPanel(any(GuidedDecisionTableView.Presenter.class));
-    }
-
-    @Test
-    public void onLockStatusUpdatedWithActiveDecisionTable() {
-        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
-
-        when(presenter.getActiveDecisionTable()).thenReturn(dtPresenter);
-
-        presenter.onLockStatusUpdated(dtPresenter);
-
-        verify(presenter,
-               times(1)).refreshDefinitionsPanel(eq(dtPresenter));
-    }
-
-    @Test
-    public void onLockStatusUpdatedWithAnotherActiveDecisionTable() {
-        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
-
-        when(presenter.getActiveDecisionTable()).thenReturn(mock(GuidedDecisionTableView.Presenter.class));
-
-        presenter.onLockStatusUpdated(dtPresenter);
-
-        verify(presenter,
-               never()).refreshDefinitionsPanel(eq(dtPresenter));
     }
 
     @Test
@@ -404,26 +345,6 @@ public class GuidedDecisionTableModellerPresenterTest {
         when(dtPresenter.getAccess()).thenReturn(access);
 
         assertFalse(presenter.isActiveDecisionTableEditable());
-    }
-
-    @Test
-    public void onInsertColumnWithNullActiveDecisionTable() {
-        presenter.onInsertColumn();
-
-        verify(view,
-               never()).onInsertColumn();
-    }
-
-    @Test
-    public void onInsertColumnWithNonNullActiveDecisionTable() {
-        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
-
-        when(presenter.getActiveDecisionTable()).thenReturn(dtPresenter);
-
-        presenter.onInsertColumn();
-
-        verify(view,
-               times(1)).onInsertColumn();
     }
 
     @Test
@@ -501,7 +422,6 @@ public class GuidedDecisionTableModellerPresenterTest {
         final GuidedDecisionTableView.Presenter dtPresenter1 = makeDecisionTable();
         final GuidedDecisionTableView.Presenter dtPresenter2 = makeDecisionTable();
         final DecisionTableSelectedEvent event = new DecisionTableSelectedEvent(dtPresenter1);
-        final List<String> parentRuleNames = Collections.emptyList();
 
         when(gridLayer.isGridPinned()).thenReturn(true);
 
@@ -511,26 +431,12 @@ public class GuidedDecisionTableModellerPresenterTest {
             add(dtPresenter2);
         }});
 
-        final ArgumentCaptor<ParameterizedCommand> parentRuleNamesCommandCaptor = ArgumentCaptor.forClass(ParameterizedCommand.class);
-
         presenter.onDecisionTableSelected(event);
 
         verify(dtPresenter1,
                times(1)).initialiseAnalysis();
-        verify(presenter,
-               times(1)).refreshDefinitionsPanel(eq(dtPresenter1));
         verify(view,
                times(1)).select(dtPresenter1.getView());
-
-        verify(dtPresenter1,
-               times(1)).getPackageParentRuleNames(parentRuleNamesCommandCaptor.capture());
-        final ParameterizedCommand parentRuleNamesCommand = parentRuleNamesCommandCaptor.getValue();
-        assertNotNull(parentRuleNamesCommand);
-        parentRuleNamesCommand.execute(parentRuleNames);
-
-        verify(view,
-               times(1)).refreshRuleInheritance(any(String.class),
-                                                eq(parentRuleNames));
         verify(gridLayer,
                times(1)).flipToGridWidget(eq(dtPresenter1.getView()));
     }
@@ -541,7 +447,6 @@ public class GuidedDecisionTableModellerPresenterTest {
         final GuidedDecisionTableView.Presenter dtPresenter1 = makeDecisionTable();
         final GuidedDecisionTableView.Presenter dtPresenter2 = makeDecisionTable();
         final DecisionTableSelectedEvent event = new DecisionTableSelectedEvent(dtPresenter1);
-        final List<String> parentRuleNames = Collections.emptyList();
 
         when(presenter.isDecisionTableAvailable(eq(dtPresenter1))).thenReturn(true);
         when(presenter.getAvailableDecisionTables()).thenReturn(new HashSet<GuidedDecisionTableView.Presenter>() {{
@@ -549,26 +454,12 @@ public class GuidedDecisionTableModellerPresenterTest {
             add(dtPresenter2);
         }});
 
-        final ArgumentCaptor<ParameterizedCommand> parentRuleNamesCommandCaptor = ArgumentCaptor.forClass(ParameterizedCommand.class);
-
         presenter.onDecisionTableSelected(event);
 
         verify(dtPresenter1,
                times(1)).initialiseAnalysis();
-        verify(presenter,
-               times(1)).refreshDefinitionsPanel(eq(dtPresenter1));
         verify(view,
                times(1)).select(dtPresenter1.getView());
-
-        verify(dtPresenter1,
-               times(1)).getPackageParentRuleNames(parentRuleNamesCommandCaptor.capture());
-        final ParameterizedCommand parentRuleNamesCommand = parentRuleNamesCommandCaptor.getValue();
-        assertNotNull(parentRuleNamesCommand);
-        parentRuleNamesCommand.execute(parentRuleNames);
-
-        verify(view,
-               times(1)).refreshRuleInheritance(any(String.class),
-                                                eq(parentRuleNames));
         verify(gridLayer,
                never()).flipToGridWidget(any(GuidedDecisionTableView.class));
     }
@@ -610,130 +501,6 @@ public class GuidedDecisionTableModellerPresenterTest {
 
         verify(view,
                times(1)).selectLinkedColumn(eq(gridColumn));
-    }
-
-    @Test
-    public void onRefreshAttributesPanelEventWithDecisionTableAvailable() {
-        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
-        final List<AttributeCol52> columns = Collections.emptyList();
-        final RefreshAttributesPanelEvent event = new RefreshAttributesPanelEvent(dtPresenter,
-                                                                                  columns);
-
-        when(presenter.isDecisionTableAvailable(dtPresenter)).thenReturn(true);
-
-        presenter.onRefreshAttributesPanelEvent(event);
-
-        verify(view,
-               times(1)).refreshAttributeWidget(eq(columns));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void onRefreshAttributesPanelEventWithDecisionTableUnavailable() {
-        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
-        final List<AttributeCol52> columns = Collections.emptyList();
-        final RefreshAttributesPanelEvent event = new RefreshAttributesPanelEvent(dtPresenter,
-                                                                                  columns);
-
-        when(presenter.isDecisionTableAvailable(dtPresenter)).thenReturn(false);
-
-        presenter.onRefreshAttributesPanelEvent(event);
-
-        verify(view,
-               never()).refreshAttributeWidget(any(List.class));
-    }
-
-    @Test
-    public void onRefreshMetaDataPanelEventWithDecisionTableAvailable() {
-        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
-        final List<MetadataCol52> columns = Collections.emptyList();
-        final RefreshMetaDataPanelEvent event = new RefreshMetaDataPanelEvent(dtPresenter,
-                                                                              columns);
-
-        when(presenter.isDecisionTableAvailable(dtPresenter)).thenReturn(true);
-
-        presenter.onRefreshMetaDataPanelEvent(event);
-
-        verify(view,
-               times(1)).refreshMetaDataWidget(eq(columns));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void onRefreshMetaDataPanelEventWithDecisionTableUnavailable() {
-        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
-        final List<MetadataCol52> columns = Collections.emptyList();
-        final RefreshMetaDataPanelEvent event = new RefreshMetaDataPanelEvent(dtPresenter,
-                                                                              columns);
-
-        when(presenter.isDecisionTableAvailable(dtPresenter)).thenReturn(false);
-
-        presenter.onRefreshMetaDataPanelEvent(event);
-
-        verify(view,
-               never()).refreshMetaDataWidget(any(List.class));
-    }
-
-    @Test
-    public void onRefreshConditionsPanelEventWithDecisionTableAvailable() {
-        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
-        final List<CompositeColumn<? extends BaseColumn>> columns = Collections.emptyList();
-        final RefreshConditionsPanelEvent event = new RefreshConditionsPanelEvent(dtPresenter,
-                                                                                  columns);
-
-        when(presenter.isDecisionTableAvailable(dtPresenter)).thenReturn(true);
-
-        presenter.onRefreshConditionsPanelEvent(event);
-
-        verify(view,
-               times(1)).refreshConditionsWidget(eq(columns));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void onRefreshConditionsPanelEventWithDecisionTableUnavailable() {
-        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
-        final List<CompositeColumn<? extends BaseColumn>> columns = Collections.emptyList();
-        final RefreshConditionsPanelEvent event = new RefreshConditionsPanelEvent(dtPresenter,
-                                                                                  columns);
-
-        when(presenter.isDecisionTableAvailable(dtPresenter)).thenReturn(false);
-
-        presenter.onRefreshConditionsPanelEvent(event);
-
-        verify(view,
-               never()).refreshConditionsWidget(any(List.class));
-    }
-
-    @Test
-    public void onRefreshActionsPanelEventWithDecisionTableAvailable() {
-        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
-        final List<ActionCol52> columns = Collections.emptyList();
-        final RefreshActionsPanelEvent event = new RefreshActionsPanelEvent(dtPresenter,
-                                                                            columns);
-
-        when(presenter.isDecisionTableAvailable(dtPresenter)).thenReturn(true);
-
-        presenter.onRefreshActionsPanelEvent(event);
-
-        verify(view,
-               times(1)).refreshActionsWidget(eq(columns));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void onRefreshActionsPanelEventWithDecisionTableUnavailable() {
-        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
-        final List<ActionCol52> columns = Collections.emptyList();
-        final RefreshActionsPanelEvent event = new RefreshActionsPanelEvent(dtPresenter,
-                                                                            columns);
-
-        when(presenter.isDecisionTableAvailable(dtPresenter)).thenReturn(false);
-
-        presenter.onRefreshActionsPanelEvent(event);
-
-        verify(view,
-               never()).refreshActionsWidget(any(List.class));
     }
 
     @Test
@@ -872,122 +639,5 @@ public class GuidedDecisionTableModellerPresenterTest {
                times(1)).setLink(eq(null));
         verify(dtPresenter2Column2,
                never()).setLink(any());
-    }
-
-    @Test
-    public void testHandlePermissionsWhenGuidedDecisionTableHasEditableColumns() {
-
-        doReturn(true).when(dtablePresenter).hasEditableColumns();
-
-        presenter.handlePermissions(dtablePresenter);
-
-        verify(view).enableColumnOperationsMenu();
-    }
-
-    @Test
-    public void testHandlePermissionsWhenGuidedDecisionTableDoesNotHaveEditableColumns() {
-
-        doReturn(false).when(dtablePresenter).hasEditableColumns();
-
-        presenter.handlePermissions(dtablePresenter);
-
-        verify(view, never()).enableColumnOperationsMenu();
-    }
-
-    @Test
-    public void testIsColumnCreationEnabledWhenGuidedDecisionTableIsEditableAndHasEditableColumns() {
-
-        doReturn(false).when(dtablePresenter).isReadOnly();
-        doReturn(true).when(dtablePresenter).hasEditableColumns();
-
-        final boolean isEnabled = presenter.isColumnCreationEnabled(dtablePresenter);
-
-        assertTrue(isEnabled);
-    }
-
-    @Test
-    public void testIsColumnCreationEnabledWhenGuidedDecisionTableDoesNotHaveEditableColumns() {
-
-        doReturn(false).when(dtablePresenter).isReadOnly();
-        doReturn(false).when(dtablePresenter).hasEditableColumns();
-
-        final boolean isEnabled = presenter.isColumnCreationEnabled(dtablePresenter);
-
-        assertFalse(isEnabled);
-    }
-
-    @Test
-    public void testIsColumnCreationEnabledWhenGuidedDecisionTableIsNotEditable() {
-
-        doReturn(true).when(dtablePresenter).isReadOnly();
-        doReturn(true).when(dtablePresenter).hasEditableColumns();
-
-        final boolean isEnabled = presenter.isColumnCreationEnabled(dtablePresenter);
-
-        assertFalse(isEnabled);
-    }
-
-    @Test
-    public void testIsColumnCreationEnabledWhenGuidedDecisionTableIsNotEditableNeitherHasEditableColumns() {
-
-        doReturn(true).when(dtablePresenter).isReadOnly();
-        doReturn(false).when(dtablePresenter).hasEditableColumns();
-
-        final boolean isEnabled = presenter.isColumnCreationEnabled(dtablePresenter);
-
-        assertFalse(isEnabled);
-    }
-
-    @Test
-    public void testRefreshDefinitionsPanelColumnCreationEnabled() {
-        testRefreshDefinitionsPanel(true);
-    }
-
-    @Test
-    public void testRefreshDefinitionsPanelColumnCreationDisabled() {
-        testRefreshDefinitionsPanel(false);
-    }
-
-    @Test
-    public void testIsColumnCreationEnabledToActiveDecisionTableWhenActiveDecisionTableIsNull() {
-
-        doReturn(null).when(presenter).getActiveDecisionTable();
-        doReturn(true).when(presenter).isColumnCreationEnabled(any());
-
-        final boolean isEnabled = presenter.isColumnCreationEnabledToActiveDecisionTable();
-
-        assertFalse(isEnabled);
-    }
-
-    @Test
-    public void testIsColumnCreationEnabledToActiveDecisionTableWhenActiveDecisionTableIsNotNull() {
-
-        doReturn(dtablePresenter).when(presenter).getActiveDecisionTable();
-        doReturn(true).when(presenter).isColumnCreationEnabled(dtablePresenter);
-
-        final boolean isEnabled = presenter.isColumnCreationEnabledToActiveDecisionTable();
-
-        assertTrue(isEnabled);
-    }
-
-    private void testRefreshDefinitionsPanel(final boolean columnCreationEnabled) {
-        doReturn(model).when(dtablePresenter).getModel();
-        doReturn(columnCreationEnabled).when(presenter).isColumnCreationEnabled(dtablePresenter);
-
-        presenter.refreshDefinitionsPanel(dtablePresenter);
-
-        if (columnCreationEnabled) {
-            verify(view).enableColumnOperationsMenu();
-            verify(view, never()).disableColumnOperationsMenu();
-        } else {
-            verify(view, never()).enableColumnOperationsMenu();
-            verify(view).disableColumnOperationsMenu();
-        }
-
-        verify(view).refreshAttributeWidget(model.getAttributeCols());
-        verify(view).refreshMetaDataWidget(model.getMetadataCols());
-        verify(view).refreshConditionsWidget(model.getConditions());
-        verify(view).refreshActionsWidget(model.getActionCols());
-        verify(view).refreshColumnsNote(dtablePresenter.hasColumnDefinitions());
     }
 }

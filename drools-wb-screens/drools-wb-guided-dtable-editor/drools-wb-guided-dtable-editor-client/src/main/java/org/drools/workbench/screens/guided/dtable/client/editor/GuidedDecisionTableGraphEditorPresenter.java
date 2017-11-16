@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -35,6 +36,7 @@ import org.drools.workbench.screens.guided.dtable.client.editor.menu.EditMenuBui
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.InsertMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.RadarMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.ViewMenuBuilder;
+import org.drools.workbench.screens.guided.dtable.client.editor.page.ColumnsPage;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableGraphResourceType;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
@@ -132,7 +134,8 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
                                                    final NewGuidedDecisionTableWizardHelper helper,
                                                    final SyncBeanManager beanManager,
                                                    final PlaceManager placeManager,
-                                                   final LockManager lockManager) {
+                                                   final LockManager lockManager,
+                                                   final ColumnsPage columnsPage) {
         super(view,
               service,
               notification,
@@ -145,7 +148,8 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
               radarMenuBuilder,
               modeller,
               beanManager,
-              placeManager);
+              placeManager,
+              columnsPage);
         this.graphService = graphService;
         this.projectService = projectService;
         this.saveInProgressEvent = saveInProgressEvent;
@@ -352,6 +356,13 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
 
     @Override
     protected void onDecisionTableSelected(final @Observes DecisionTableSelectedEvent event) {
+
+        final Optional<GuidedDecisionTableView.Presenter> dtPresenter = event.getPresenter();
+
+        if (!dtPresenter.isPresent()) {
+            initialiseEditorTabsWhenNoDocuments();
+        }
+
         super.onDecisionTableSelected(event);
 
         if (event.isLockRequired()) {
@@ -576,6 +587,9 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
     }
 
     void onUpdatedLockStatusEvent(final @Observes UpdatedLockStatusEvent event) {
+
+        super.onUpdatedLockStatusEvent(event);
+
         if (editorPath == null) {
             return;
         }

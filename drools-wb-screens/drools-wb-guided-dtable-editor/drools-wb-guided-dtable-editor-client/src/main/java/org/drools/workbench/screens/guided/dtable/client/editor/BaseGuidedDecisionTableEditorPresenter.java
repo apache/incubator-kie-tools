@@ -30,7 +30,9 @@ import org.drools.workbench.screens.guided.dtable.client.editor.menu.EditMenuBui
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.InsertMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.RadarMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.ViewMenuBuilder;
+import org.drools.workbench.screens.guided.dtable.client.editor.page.ColumnsPage;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
@@ -53,8 +55,11 @@ import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateVa
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.mvp.UpdatedLockStatusEvent;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
+import org.uberfire.client.workbench.widgets.multipage.Page;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
@@ -69,13 +74,7 @@ import org.uberfire.workbench.model.menu.MenuItem;
  */
 public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultipleDocumentEditor<GuidedDecisionTableView.Presenter> {
 
-    public interface View extends RequiresResize,
-                                  ProvidesResize,
-                                  KieEditorView,
-                                  IsWidget {
-
-        void setModellerView(final GuidedDecisionTableModellerView view);
-    }
+    static final int COLUMNS_TAB_INDEX = 1;
 
     protected View view;
     protected Caller<GuidedDecisionTableEditorService> service;
@@ -99,6 +98,8 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
     protected SyncBeanManager beanManager;
     protected PlaceManager placeManager;
 
+    private ColumnsPage columnsPage;
+
     public BaseGuidedDecisionTableEditorPresenter(final View view,
                                                   final Caller<GuidedDecisionTableEditorService> service,
                                                   final Event<NotificationEvent> notification,
@@ -111,7 +112,8 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
                                                   final RadarMenuBuilder radarMenuBuilder,
                                                   final GuidedDecisionTableModellerView.Presenter modeller,
                                                   final SyncBeanManager beanManager,
-                                                  final PlaceManager placeManager) {
+                                                  final PlaceManager placeManager,
+                                                  final ColumnsPage columnsPage) {
         super(view);
         this.view = view;
         this.service = service;
@@ -126,6 +128,7 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
         this.modeller = modeller;
         this.beanManager = beanManager;
         this.placeManager = placeManager;
+        this.columnsPage = columnsPage;
     }
 
     @Override
@@ -286,6 +289,79 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
                          dtPresenter.getDataModelOracle(),
                          dtPresenter.getModel().getImports(),
                          !dtPresenter.getAccess().isEditable());
+
+        addColumnsTab();
+
+        columnsTabToggle(dtPresenter);
+    }
+
+    void columnsTabToggle(final GuidedDecisionTableView.Presenter decisionTablePresenter) {
+        columnsTabToggle(isGuidedDecisionTableEditable(decisionTablePresenter));
+    }
+
+    boolean isGuidedDecisionTableEditable(final GuidedDecisionTableView.Presenter decisionTablePresenter) {
+
+        final GuidedDecisionTablePresenter.Access access = decisionTablePresenter.getAccess();
+        final boolean decisionTableIsEditable = !access.isReadOnly();
+        final boolean decisionTableHasEditableColumns = access.hasEditableColumns();
+
+        return decisionTableIsEditable && decisionTableHasEditableColumns;
+    }
+
+    void columnsTabToggle(final boolean disableColumnsPage) {
+        if (disableColumnsPage) {
+            disableColumnsPage();
+        } else {
+            enableColumnsPage();
+        }
+    }
+
+    void onUpdatedLockStatusEvent(final UpdatedLockStatusEvent event) {
+
+        final Optional<GuidedDecisionTableView.Presenter> activeDecisionTable = Optional.ofNullable(modeller.getActiveDecisionTable());
+
+        if (!activeDecisionTable.isPresent()) {
+            return;
+        }
+
+        final boolean isEditable = isGuidedDecisionTableEditable(activeDecisionTable.get());
+        final boolean isLocked = event.isLocked() && !event.isLockedByCurrentUser();
+        final boolean disableColumnsPage = isLocked || !isEditable;
+
+        columnsTabToggle(disableColumnsPage);
+    }
+
+    void addColumnsTab() {
+
+        columnsPage.init(modeller);
+
+        addEditorPage(COLUMNS_TAB_INDEX, columnsPage);
+    }
+
+    void addEditorPage(final int index,
+                       final Page page) {
+
+        final MultiPageEditor multiPage = getKieEditorWrapperMultiPage();
+
+        multiPage.addPage(index, page);
+    }
+
+    void disableColumnsPage() {
+
+        final MultiPageEditor multiPage = getKieEditorWrapperMultiPage();
+
+        multiPage.disablePage(COLUMNS_TAB_INDEX);
+    }
+
+    void enableColumnsPage() {
+
+        final MultiPageEditor multiPage = getKieEditorWrapperMultiPage();
+
+        multiPage.enablePage(COLUMNS_TAB_INDEX);
+    }
+
+    MultiPageEditor getKieEditorWrapperMultiPage() {
+        return kieEditorWrapperView.getMultiPage();
     }
 
     @Override
@@ -421,5 +497,13 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
         getViewMenuItem().setEnabled(enabled);
         getInsertMenuItem().setEnabled(enabled);
         getRadarMenuItem().setEnabled(enabled);
+    }
+
+    public interface View extends RequiresResize,
+                                  ProvidesResize,
+                                  KieEditorView,
+                                  IsWidget {
+
+        void setModellerView(final GuidedDecisionTableModellerView view);
     }
 }

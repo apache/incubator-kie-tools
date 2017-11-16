@@ -15,10 +15,8 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.table;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -30,15 +28,10 @@ import javax.inject.Inject;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
-import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.RadarMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableColumnSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTablePinnedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshActionsPanelEvent;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshAttributesPanelEvent;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshConditionsPanelEvent;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMetaDataPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.keyboard.DeleteAndEditCell;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.keyboard.DeleteCell;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.keyboard.EditCell;
@@ -68,21 +61,27 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperati
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveUp;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
-import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
 public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTableModellerView.Presenter {
 
     private final GuidedDecisionTableModellerView view;
+
     private final ManagedInstance<GuidedDecisionTableView.Presenter> dtPresenterProvider;
+
     private final Event<RadarMenuBuilder.UpdateRadarEvent> updateRadarEvent;
+
     private final Event<DecisionTablePinnedEvent> pinnedEvent;
+
     private final ColumnHeaderPopOver columnHeaderPopOver;
+
     private final ManagedInstance<NewGuidedDecisionTableColumnWizard> wizardManagedInstance;
 
     private GuidedDecisionTableView.Presenter activeDecisionTable = null;
-    private Set<GuidedDecisionTableView.Presenter> availableDecisionTables = new HashSet<GuidedDecisionTableView.Presenter>();
+
+    private Set<GuidedDecisionTableView.Presenter> availableDecisionTables = new HashSet<>();
+
     private Set<HandlerRegistration> handlerRegistrations = new HashSet<>();
 
     @Inject
@@ -144,14 +143,14 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
     @Override
     public void releaseDecisionTables() {
         //Release objects created manually with BeanManager
-        availableDecisionTables.stream().forEach(GuidedDecisionTableView.Presenter::onClose);
+        availableDecisionTables.forEach(GuidedDecisionTableView.Presenter::onClose);
         availableDecisionTables.clear();
     }
 
     @Override
     public void releaseHandlerRegistrations() {
         //Release HandlerRegistrations
-        handlerRegistrations.stream().forEach(HandlerRegistration::removeHandler);
+        handlerRegistrations.forEach(HandlerRegistration::removeHandler);
         handlerRegistrations.clear();
     }
 
@@ -230,12 +229,6 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
     @Override
     public void removeDecisionTable(final GuidedDecisionTableView.Presenter dtPresenter) {
         final Command afterRemovalCommand = () -> {
-            view.disableColumnOperationsMenu();
-            view.refreshAttributeWidget(Collections.emptyList());
-            view.refreshMetaDataWidget(Collections.emptyList());
-            view.refreshConditionsWidget(Collections.emptyList());
-            view.refreshActionsWidget(Collections.emptyList());
-            view.refreshColumnsNote(false);
 
             availableDecisionTables.remove(dtPresenter);
 
@@ -259,18 +252,6 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
                         .filter(GridColumn::isLinked)
                         .filter(column -> dtPresenter.getView().getModel().getColumns().contains(column.getLink()))
                         .forEach(column -> column.setLink(null)));
-    }
-
-    @Override
-    public void onLockStatusUpdated(final GuidedDecisionTableView.Presenter dtPresenter) {
-        if (dtPresenter == null) {
-            return;
-        }
-
-        //Update Definitions Panel if active Decision Table's lock has changed
-        if (dtPresenter.equals(getActiveDecisionTable())) {
-            refreshDefinitionsPanel(dtPresenter);
-        }
     }
 
     @Override
@@ -305,15 +286,6 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
     @Override
     public void setZoom(final int zoom) {
         view.setZoom(zoom);
-    }
-
-    @Override
-    public void onInsertColumn() {
-        final GuidedDecisionTableView.Presenter dtPresenter = getActiveDecisionTable();
-        if (dtPresenter == null) {
-            return;
-        }
-        view.onInsertColumn();
     }
 
     @Override
@@ -379,14 +351,6 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
         doDecisionTableSelected(presenter);
     }
 
-    @Override
-    public void openNewGuidedDecisionTableColumnWizard() {
-        final NewGuidedDecisionTableColumnWizard wizard = wizardManagedInstance.get();
-
-        wizard.init(activeDecisionTable);
-        wizard.start();
-    }
-
     void doDecisionTableSelected(final GuidedDecisionTableView.Presenter dtPresenter) {
         //Store selected decision table
         activeDecisionTable = dtPresenter;
@@ -398,67 +362,12 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
             }
         }
 
-        //Update view with selected decision table detail
-        final GuidedDecisionTable52 model = dtPresenter.getModel();
-        dtPresenter.getPackageParentRuleNames(new ParameterizedCommand<Collection<String>>() {
-            @Override
-            public void execute(Collection<String> availableParentRuleNames) {
-                view.refreshRuleInheritance(model.getParentName(),
-                                            availableParentRuleNames);
-            }
-        });
-        refreshDefinitionsPanel(dtPresenter);
-
-        //Delegate highlighting of selected decision table to ISelectionManager
         view.select(dtPresenter.getView());
 
         //If the Layer is "pinned" flip to the selected Decision Table
         if (isGridPinned()) {
             view.getGridLayerView().flipToGridWidget(dtPresenter.getView());
         }
-
-        handlePermissions(dtPresenter);
-    }
-
-    void handlePermissions(final GuidedDecisionTableView.Presenter dtPresenter) {
-        if (dtPresenter.hasEditableColumns()) {
-            view.enableColumnOperationsMenu();
-        }
-    }
-
-    void refreshDefinitionsPanel(final GuidedDecisionTableView.Presenter dtPresenter) {
-        final GuidedDecisionTable52 model = dtPresenter.getModel();
-        final boolean isColumnCreationEnabled = isColumnCreationEnabled(dtPresenter);
-        if (isColumnCreationEnabled) {
-            view.enableColumnOperationsMenu();
-        } else {
-            view.disableColumnOperationsMenu();
-        }
-        view.refreshAttributeWidget(model.getAttributeCols());
-        view.refreshMetaDataWidget(model.getMetadataCols());
-        view.refreshConditionsWidget(model.getConditions());
-        view.refreshActionsWidget(model.getActionCols());
-        view.refreshColumnsNote(dtPresenter.hasColumnDefinitions());
-    }
-
-    boolean isColumnCreationEnabled(final GuidedDecisionTableView.Presenter dtPresenter) {
-
-        final boolean decisionTableIsEditable = !dtPresenter.isReadOnly();
-        final boolean decisionTableHasEditableColumns = dtPresenter.hasEditableColumns();
-
-        return decisionTableHasEditableColumns && decisionTableIsEditable;
-    }
-
-    @Override
-    public boolean isColumnCreationEnabledToActiveDecisionTable() {
-
-        final Optional<GuidedDecisionTableView.Presenter> decisionTable = Optional.ofNullable(getActiveDecisionTable());
-
-        if (!decisionTable.isPresent()) {
-            return false;
-        }
-
-        return isColumnCreationEnabled(decisionTable.get());
     }
 
     @Override
@@ -467,46 +376,6 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
             return;
         }
         view.selectLinkedColumn(event.getColumn());
-    }
-
-    @Override
-    public void onRefreshAttributesPanelEvent(final @Observes RefreshAttributesPanelEvent event) {
-        refreshPanel(event.getPresenter(),
-                     event.getColumns(),
-                     view::refreshAttributeWidget);
-    }
-
-    @Override
-    public void onRefreshMetaDataPanelEvent(final @Observes RefreshMetaDataPanelEvent event) {
-        refreshPanel(event.getPresenter(),
-                     event.getColumns(),
-                     view::refreshMetaDataWidget);
-    }
-
-    @Override
-    public void onRefreshConditionsPanelEvent(final @Observes RefreshConditionsPanelEvent event) {
-        refreshPanel(event.getPresenter(),
-                     event.getColumns(),
-                     view::refreshConditionsWidget);
-    }
-
-    @Override
-    public void onRefreshActionsPanelEvent(final @Observes RefreshActionsPanelEvent event) {
-        refreshPanel(event.getPresenter(),
-                     event.getColumns(),
-                     view::refreshActionsWidget);
-    }
-
-    private <C> void refreshPanel(final GuidedDecisionTableView.Presenter dtPresenter,
-                                  final List<C> columns,
-                                  final ParameterizedCommand<List<C>> command) {
-        if (dtPresenter == null) {
-            return;
-        }
-        if (!isDecisionTableAvailable(dtPresenter)) {
-            return;
-        }
-        command.execute(columns);
     }
 
     @Override

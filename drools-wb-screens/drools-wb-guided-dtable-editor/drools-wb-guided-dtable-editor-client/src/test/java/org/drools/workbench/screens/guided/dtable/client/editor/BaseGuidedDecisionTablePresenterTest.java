@@ -27,6 +27,7 @@ import org.drools.workbench.screens.guided.dtable.client.editor.menu.EditMenuBui
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.InsertMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.RadarMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.ViewMenuBuilder;
+import org.drools.workbench.screens.guided.dtable.client.editor.page.ColumnsPage;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
@@ -60,6 +61,7 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
 import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
@@ -223,6 +225,12 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
     protected PlaceManager placeManager;
 
     @Mock
+    protected ColumnsPage columnsPage;
+
+    @Mock
+    protected MultiPageEditor multiPageEditor;
+
+    @Mock
     protected ProjectController projectController;
 
     @Captor
@@ -264,6 +272,7 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
         when(insertMenuBuilder.build()).thenReturn(insertMenuItem);
         when(radarMenuBuilder.build()).thenReturn(radarMenuItem);
         when(registeredDocumentsMenuBuilder.build()).thenReturn(registeredDocumentsMenuItem);
+        when(presenter.getKieEditorWrapperMultiPage()).thenReturn(multiPageEditor);
 
         presenter.init();
         presenter.setupMenuBar();

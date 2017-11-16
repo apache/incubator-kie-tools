@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.guided.dtable.client.widget.table.accordion;
+package org.drools.workbench.screens.guided.dtable.client.editor.page.accordion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,8 +46,7 @@ public class GuidedDecisionTableAccordionTest {
 
     @Before
     public void setup() throws Exception {
-        accordion = spy(new GuidedDecisionTableAccordion(view,
-                                                         itemManagedInstance));
+        accordion = spy(new GuidedDecisionTableAccordion(view, itemManagedInstance));
     }
 
     @Test
@@ -69,15 +68,24 @@ public class GuidedDecisionTableAccordionTest {
         when(accordion.getItems()).thenReturn(itemsList);
         when(accordion.getParentId()).thenReturn(parentId);
 
-        accordion.addItem(type,
-                          widget);
+        accordion.addItem(type, widget);
 
         verify(view).addItem(item);
         verify(itemsList).add(item);
-        verify(item).init(parentId,
-                          type,
-                          widget
-        );
+        verify(item).init(parentId, type, widget);
+    }
+
+    @Test
+    public void testClear() throws Exception {
+
+        final List<GuidedDecisionTableAccordionItem> itemsList = spy(new ArrayList<>());
+
+        when(accordion.getItems()).thenReturn(itemsList);
+
+        accordion.clear();
+
+        verify(itemsList).clear();
+        verify(view).clear();
     }
 
     @Test
@@ -93,8 +101,7 @@ public class GuidedDecisionTableAccordionTest {
 
         final GuidedDecisionTableAccordionItem item = accordion.getItem(type);
 
-        assertEquals(expectedItem,
-                     item);
+        assertEquals(expectedItem, item);
     }
 
     @Test
@@ -108,8 +115,7 @@ public class GuidedDecisionTableAccordionTest {
 
         final GuidedDecisionTableAccordionItem item = accordion.getItem(type);
 
-        assertEquals(blankItem,
-                     item);
+        assertEquals(blankItem, item);
     }
 
     @Test
@@ -122,7 +128,6 @@ public class GuidedDecisionTableAccordionTest {
 
         verify(itemManagedInstance).get();
 
-        assertEquals(expectedItem,
-                     item);
+        assertEquals(expectedItem, item);
     }
 }

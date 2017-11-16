@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.guided.dtable.client.widget.table.accordion;
+package org.drools.workbench.screens.guided.dtable.client.editor.page.accordion;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -60,17 +60,12 @@ public class GuidedDecisionTableAccordionItemTest {
         final GuidedDecisionTableAccordionItem.Type type = GuidedDecisionTableAccordionItem.Type.CONDITION;
         final Widget widget = mock(Widget.class);
 
-        item.init("uuid",
-                  type,
-                  widget
-        );
+        item.init("uuid", type, widget);
 
         verify(item).refreshView();
 
-        assertEquals(type,
-                     item.getType());
-        assertEquals(widget,
-                     item.getContent());
+        assertEquals(type, item.getType());
+        assertEquals(widget, item.getContent());
     }
 
     @Test
@@ -83,8 +78,7 @@ public class GuidedDecisionTableAccordionItemTest {
 
         final String itemTitle = item.getTitle();
 
-        assertEquals(title,
-                     itemTitle);
+        assertEquals(title, itemTitle);
     }
 
     @Test

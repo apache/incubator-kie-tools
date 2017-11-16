@@ -16,12 +16,8 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table;
 
-import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -32,8 +28,7 @@ import com.ait.lienzo.client.core.types.Transform;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.event.dom.client.ContextMenuHandler;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -45,39 +40,13 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
-import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
-import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.accordion.GuidedDecisionTableAccordion;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.accordion.GuidedDecisionTableAccordionItem;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control.AttributeColumnConfigRow;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control.ColumnLabelWidget;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control.ColumnManagementView;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control.DeleteColumnManagementAnchorWidget;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
-import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTableColumnViewUtils;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.CheckBox;
-import org.gwtbootstrap3.client.ui.Icon;
-import org.gwtbootstrap3.client.ui.constants.IconSize;
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.kie.workbench.common.widgets.client.ruleselector.RuleSelector;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -95,21 +64,12 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
     private static GuidedDecisionTableModellerViewImplUiBinder uiBinder = GWT.create(GuidedDecisionTableModellerViewImplUiBinder.class);
 
-    private final RuleSelector ruleSelector = new RuleSelector();
-
     private final GuidedDecisionTableModellerBoundsHelper boundsHelper = new GuidedDecisionTableModellerBoundsHelper();
 
-    @UiField
-    FlowPanel accordionContainer;
+    private TranslationService translationService;
 
     @UiField
-    Button addColumn;
-
-    @UiField
-    Button editColumns;
-
-    @UiField
-    Icon pinnedModeIndicator;
+    HTMLPanel pinnedModeIndicator;
 
     @UiField(provided = true)
     GridLienzoPanel gridPanel = new GridLienzoPanel() {
@@ -132,16 +92,6 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
         }
     };
 
-    private VerticalPanel attributeConfigWidget = makeDefaultPanel();
-
-    private VerticalPanel metaDataConfigWidget = makeDefaultPanel();
-
-    private VerticalPanel conditionsConfigWidget = makeDefaultPanel();
-
-    private VerticalPanel actionsConfigWidget = makeDefaultPanel();
-
-    private GuidedDecisionTableAccordion accordion;
-
     private TransformMediator defaultTransformMediator;
 
     private GuidedDecisionTableModellerView.Presenter presenter;
@@ -150,38 +100,16 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
     private final RestrictedMousePanMediator mousePanMediator = restrictedMousePanMediator();
 
-    private ColumnManagementView actionsPanel;
-
-    private ColumnManagementView conditionsPanel;
-
-    private ManagedInstance<AttributeColumnConfigRow> attributeColumnConfigRows;
-
-    private ManagedInstance<DeleteColumnManagementAnchorWidget> deleteColumnManagementAnchorWidgets;
-
-    private GuidedDecisionTableAccordion guidedDecisionTableAccordion;
-
-    private TranslationService translationService;
-
     public GuidedDecisionTableModellerViewImpl() {
         //CDI proxy
     }
 
     @Inject
-    public GuidedDecisionTableModellerViewImpl(final ColumnManagementView actionsPanel,
-                                               final ColumnManagementView conditionsPanel,
-                                               final ManagedInstance<AttributeColumnConfigRow> attributeColumnConfigRows,
-                                               final ManagedInstance<DeleteColumnManagementAnchorWidget> deleteColumnManagementAnchorWidgets,
-                                               final GuidedDecisionTableAccordion guidedDecisionTableAccordion,
-                                               final TranslationService translationService) {
-        this.actionsPanel = actionsPanel;
-        this.conditionsPanel = conditionsPanel;
-        this.attributeColumnConfigRows = attributeColumnConfigRows;
-        this.deleteColumnManagementAnchorWidgets = deleteColumnManagementAnchorWidgets;
-        this.guidedDecisionTableAccordion = guidedDecisionTableAccordion;
+    public GuidedDecisionTableModellerViewImpl(final TranslationService translationService) {
+
         this.translationService = translationService;
 
         initWidget(uiBinder.createAndBindUi(this));
-        pinnedModeIndicator.setSize(IconSize.LARGE);
     }
 
     DefaultGridLayer defaultGridLayer() {
@@ -234,15 +162,10 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
     @Override
     public void init(final GuidedDecisionTableModellerView.Presenter presenter) {
         this.presenter = presenter;
-
-        getActionsPanel().init(presenter);
-        getConditionsPanel().init(presenter);
-        setupAccordion(presenter);
     }
 
     @PostConstruct
     public void setup() {
-        setupSubMenu();
         setupGridPanel();
     }
 
@@ -268,30 +191,6 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
         gridPanel.getElement().setId("dtable_container_" + Document.get().createUniqueId());
     }
 
-    void setupSubMenu() {
-        disableColumnOperationsMenu();
-        getAddColumn().addClickHandler((e) -> addColumn());
-        getEditColumns().addClickHandler((e) -> editColumns());
-    }
-
-    void addColumn() {
-        if (getPresenter().isColumnCreationEnabledToActiveDecisionTable()) {
-            getPresenter().openNewGuidedDecisionTableColumnWizard();
-        }
-    }
-
-    void editColumns() {
-        if (getPresenter().isColumnCreationEnabledToActiveDecisionTable()) {
-            toggleClassName(getAccordionContainer(), GuidedDecisionTableResources.INSTANCE.css().openedAccordion());
-            toggleClassName(getEditColumns(), "active");
-        }
-    }
-
-    void toggleClassName(final Widget widget,
-                         final String className) {
-        widget.getElement().toggleClassName(className);
-    }
-
     @Override
     public void onResize() {
         gridPanel.onResize();
@@ -301,18 +200,6 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
     @Override
     public HandlerRegistration addKeyDownHandler(final KeyDownHandler handler) {
         return gridPanel.addKeyDownHandler(handler);
-    }
-
-    @Override
-    public void enableColumnOperationsMenu() {
-        getAddColumn().setEnabled(true);
-        getEditColumns().setEnabled(true);
-    }
-
-    @Override
-    public void disableColumnOperationsMenu() {
-        getAddColumn().setEnabled(false);
-        getEditColumns().setEnabled(false);
     }
 
     @Override
@@ -329,38 +216,6 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
     RootPanel rootPanel() {
         return RootPanel.get();
-    }
-
-    Widget ruleInheritanceWidget() {
-        final FlowPanel result = makeFlowPanel();
-
-        result.setStyleName(GuidedDecisionTableResources.INSTANCE.css().ruleInheritance());
-        result.add(ruleInheritanceLabel());
-        result.add(ruleSelector());
-
-        return result;
-    }
-
-    FlowPanel makeFlowPanel() {
-        return new FlowPanel();
-    }
-
-    Widget ruleSelector() {
-        getRuleSelector().setEnabled(false);
-
-        getRuleSelector().addValueChangeHandler(e -> {
-            presenter.getActiveDecisionTable().setParentRuleName(e.getValue());
-        });
-
-        return getRuleSelector();
-    }
-
-    Label ruleInheritanceLabel() {
-        final Label label = new Label(GuidedDecisionTableConstants.INSTANCE.AllTheRulesInherit());
-
-        label.setStyleName(GuidedDecisionTableResources.INSTANCE.css().ruleInheritanceLabel());
-
-        return label;
     }
 
     @Override
@@ -404,7 +259,6 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
             gridLayer.remove(gridWidget);
 
             afterRemovalCommand.execute();
-            disableColumnOperationsMenu();
 
             gridLayer.batch();
         };
@@ -419,162 +273,8 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
     }
 
     @Override
-    public void refreshRuleInheritance(final String selectedParentRuleName,
-                                       final Collection<String> availableParentRuleNames) {
-        ruleSelector.setRuleName(selectedParentRuleName);
-        ruleSelector.setRuleNames(availableParentRuleNames);
-    }
-
-    @Override
     public void refreshScrollPosition() {
         gridPanel.refreshScrollPosition();
-    }
-
-    private VerticalPanel makeDefaultPanel() {
-        return new VerticalPanel() {{
-            add(blankSlate());
-        }};
-    }
-
-    Label blankSlate() {
-        final String disabledLabelStyle = "text-muted";
-        final String noColumns = GuidedDecisionTableConstants.INSTANCE.NoColumnsAvailable();
-
-        return new Label() {{
-            setText(noColumns);
-            setStyleName(disabledLabelStyle);
-        }};
-    }
-
-    @Override
-    public void refreshAttributeWidget(final List<AttributeCol52> attributeColumns) {
-        getAttributeConfigWidget().clear();
-
-        if (attributeColumns == null || attributeColumns.isEmpty()) {
-            getAccordion().getItem(GuidedDecisionTableAccordionItem.Type.ATTRIBUTE).setOpen(false);
-            getAttributeConfigWidget().add(blankSlate());
-            return;
-        }
-
-        for (AttributeCol52 attributeColumn : attributeColumns) {
-            AttributeColumnConfigRow attributeColumnConfigRow = getAttributeColumnConfigRows().get();
-            attributeColumnConfigRow.init(attributeColumn,
-                                          getPresenter());
-            getAttributeConfigWidget().add(attributeColumnConfigRow.getView());
-        }
-    }
-
-    @Override
-    public void refreshMetaDataWidget(final List<MetadataCol52> metaDataColumns) {
-        metaDataConfigWidget.clear();
-
-        if (metaDataColumns == null || metaDataColumns.isEmpty()) {
-            accordion.getItem(GuidedDecisionTableAccordionItem.Type.METADATA).setOpen(false);
-            metaDataConfigWidget.add(blankSlate());
-            return;
-        }
-
-        final boolean isEditable = presenter.isActiveDecisionTableEditable();
-        for (MetadataCol52 metaDataColumn : metaDataColumns) {
-            HorizontalPanel hp = new HorizontalPanel();
-            hp.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-
-            final ColumnLabelWidget label = makeColumnLabel(metaDataColumn);
-            hp.add(label);
-
-            final MetadataCol52 originalColumn = metaDataColumn;
-            final CheckBox chkHideColumn = new CheckBox(new StringBuilder(GuidedDecisionTableConstants.INSTANCE.HideThisColumn()).append(GuidedDecisionTableConstants.COLON).toString());
-            chkHideColumn.setValue(metaDataColumn.isHideColumn());
-            chkHideColumn.addClickHandler(new ClickHandler() {
-
-                @Override
-                public void onClick(final ClickEvent event) {
-                    final MetadataCol52 editedColumn = originalColumn.cloneColumn();
-                    editedColumn.setHideColumn(chkHideColumn.getValue());
-                    try {
-                        presenter.getActiveDecisionTable().updateColumn(originalColumn,
-                                                                        editedColumn);
-                    } catch (VetoException veto) {
-                        showGenericVetoMessage();
-                    }
-                }
-            });
-
-            hp.add(chkHideColumn);
-
-            if (isEditable) {
-                final DeleteColumnManagementAnchorWidget deleteWidget = deleteColumnManagementAnchorWidgets.get();
-                deleteWidget.init(metaDataColumn.getMetadata(),
-                                  () -> {
-                                      try {
-                                          presenter.getActiveDecisionTable().deleteColumn(metaDataColumn);
-                                      } catch (VetoException veto) {
-                                          showGenericVetoMessage();
-                                      }
-                                  });
-                hp.add(deleteWidget);
-            }
-
-            metaDataConfigWidget.add(hp);
-        }
-    }
-
-    private ColumnLabelWidget makeColumnLabel(final MetadataCol52 metaDataColumn) {
-        final ColumnLabelWidget label = new ColumnLabelWidget(metaDataColumn.getMetadata());
-        ColumnUtilities.setColumnLabelStyleWhenHidden(label,
-                                                      metaDataColumn.isHideColumn());
-        return label;
-    }
-
-    @Override
-    public void refreshConditionsWidget(final List<CompositeColumn<? extends BaseColumn>> conditionColumns) {
-        getConditionsConfigWidget().clear();
-
-        if (conditionColumns == null || conditionColumns.isEmpty()) {
-            getAccordion().getItem(GuidedDecisionTableAccordionItem.Type.CONDITION).setOpen(false);
-            getConditionsConfigWidget().add(blankSlate());
-            return;
-        }
-
-        getConditionsConfigWidget().add(getConditionsPanel());
-
-        final Map<String, List<BaseColumn>> columnGroups =
-                conditionColumns.stream().collect(
-                        Collectors.groupingBy(
-                                DecisionTableColumnViewUtils::getColumnManagementGroupTitle,
-                                Collectors.toList()
-                        )
-                );
-        getConditionsPanel().renderColumns(columnGroups);
-    }
-
-    @Override
-    public void refreshActionsWidget(final List<ActionCol52> actionColumns) {
-        getActionsConfigWidget().clear();
-
-        if (actionColumns == null || actionColumns.isEmpty()) {
-            getAccordion().getItem(GuidedDecisionTableAccordionItem.Type.ACTION).setOpen(false);
-            getActionsConfigWidget().add(blankSlate());
-            return;
-        }
-
-        //Each Action is a row in a vertical panel
-        getActionsConfigWidget().add(getActionsPanel());
-
-        //Add Actions to panel
-        final Map<String, List<BaseColumn>> columnGroups =
-                actionColumns.stream().collect(
-                        Collectors.groupingBy(
-                                DecisionTableColumnViewUtils::getColumnManagementGroupTitle,
-                                Collectors.toList()
-                        )
-                );
-        getActionsPanel().renderColumns(columnGroups);
-    }
-
-    @Override
-    public void refreshColumnsNote(final boolean hasColumnDefinitions) {
-        getGuidedDecisionTableAccordion().setColumnsNoteInfoHidden(hasColumnDefinitions);
     }
 
     @Override
@@ -599,11 +299,6 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
     }
 
     @Override
-    public void onInsertColumn() {
-        addColumn();
-    }
-
-    @Override
     public GridLayer getGridLayerView() {
         return gridLayer;
     }
@@ -615,6 +310,7 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
     @Override
     public Bounds getBounds() {
+
         if (presenter == null) {
             return boundsHelper.getBounds(Collections.emptySet());
         } else {
@@ -624,7 +320,6 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
     @Override
     public void select(final GridWidget selectedGridWidget) {
-        getRuleSelector().setEnabled(true);
         getGridLayer().select(selectedGridWidget);
     }
 
@@ -640,7 +335,11 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
     @Override
     public void setPinnedModeIndicatorVisibility(final boolean visibility) {
-        pinnedModeIndicator.setVisible(visibility);
+        style(pinnedModeIndicator).setTop(visibility ? 0.5 : -2.0, Style.Unit.EM);
+    }
+
+    private Style style(final HTMLPanel pinnedModeIndicator) {
+        return pinnedModeIndicator.getElement().getStyle();
     }
 
     @Override
@@ -661,83 +360,12 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
     }
 
     private String translate(final String key,
-                             final Object... args) {
-        return translationService.format(key,
-                                         args);
-    }
-
-    GuidedDecisionTableAccordion getGuidedDecisionTableAccordion() {
-        return guidedDecisionTableAccordion;
-    }
-
-    void setupAccordion(final Presenter presenter) {
-        accordion = makeAccordion(presenter);
-
-        final Widget widget = asWidget(accordion);
-
-        getAccordionContainer().add(widget);
-        getAccordionContainer().add(ruleInheritanceWidget());
-    }
-
-    FlowPanel getAccordionContainer() {
-        return accordionContainer;
-    }
-
-    Widget asWidget(final GuidedDecisionTableAccordion accordion) {
-        final GuidedDecisionTableAccordion.View accordionView = accordion.getView();
-
-        return ElementWrapperWidget.getWidget(accordionView.getElement());
-    }
-
-    GuidedDecisionTableAccordion makeAccordion(final Presenter presenter) {
-        final GuidedDecisionTableAccordion accordion = getGuidedDecisionTableAccordion();
-
-        accordion.addItem(GuidedDecisionTableAccordionItem.Type.ATTRIBUTE,
-                          getAttributeConfigWidget());
-        accordion.addItem(GuidedDecisionTableAccordionItem.Type.METADATA,
-                          getMetaDataConfigWidget());
-        accordion.addItem(GuidedDecisionTableAccordionItem.Type.CONDITION,
-                          getConditionsConfigWidget());
-        accordion.addItem(GuidedDecisionTableAccordionItem.Type.ACTION,
-                          getActionsConfigWidget());
-
-        return accordion;
-    }
-
-    VerticalPanel getAttributeConfigWidget() {
-        return attributeConfigWidget;
-    }
-
-    VerticalPanel getMetaDataConfigWidget() {
-        return metaDataConfigWidget;
-    }
-
-    VerticalPanel getConditionsConfigWidget() {
-        return conditionsConfigWidget;
-    }
-
-    VerticalPanel getActionsConfigWidget() {
-        return actionsConfigWidget;
-    }
-
-    RuleSelector getRuleSelector() {
-        return ruleSelector;
-    }
-
-    Button getAddColumn() {
-        return addColumn;
-    }
-
-    Button getEditColumns() {
-        return editColumns;
+                             final String... args) {
+        return translationService.format(key, args);
     }
 
     Presenter getPresenter() {
         return presenter;
-    }
-
-    GuidedDecisionTableAccordion getAccordion() {
-        return accordion;
     }
 
     DefaultGridLayer getGridLayer() {
@@ -746,18 +374,6 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
     Transform newTransform() {
         return new Transform();
-    }
-
-    ColumnManagementView getActionsPanel() {
-        return actionsPanel;
-    }
-
-    ColumnManagementView getConditionsPanel() {
-        return conditionsPanel;
-    }
-
-    ManagedInstance<AttributeColumnConfigRow> getAttributeColumnConfigRows() {
-        return attributeColumnConfigRows;
     }
 
     interface GuidedDecisionTableModellerViewImplUiBinder extends UiBinder<Widget, GuidedDecisionTableModellerViewImpl> {

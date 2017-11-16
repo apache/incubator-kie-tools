@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.guided.dtable.client.widget.table.accordion;
+package org.drools.workbench.screens.guided.dtable.client.editor.page.accordion;
 
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.common.client.dom.Anchor;
-import org.jboss.errai.common.client.dom.DOMTokenList;
-import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
+import elemental2.dom.DOMTokenList;
+import elemental2.dom.HTMLAnchorElement;
+import elemental2.dom.HTMLDivElement;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -32,18 +32,22 @@ public class GuidedDecisionTableAccordionItemView implements GuidedDecisionTable
                                                              IsElement {
 
     @DataField("title")
-    private Anchor title;
+    private HTMLAnchorElement title;
 
     @DataField("content")
-    private Div content;
+    private HTMLDivElement content;
+
+    private Elemental2DomUtil elemental2DomUtil;
 
     private GuidedDecisionTableAccordionItem presenter;
 
     @Inject
-    public GuidedDecisionTableAccordionItemView(final Anchor title,
-                                                final Div content) {
+    public GuidedDecisionTableAccordionItemView(final HTMLAnchorElement title,
+                                                final HTMLDivElement content,
+                                                final Elemental2DomUtil elemental2DomUtil) {
         this.title = title;
         this.content = content;
+        this.elemental2DomUtil = elemental2DomUtil;
     }
 
     @Override
@@ -53,24 +57,24 @@ public class GuidedDecisionTableAccordionItemView implements GuidedDecisionTable
 
     @Override
     public void setTitle(final String title) {
-        this.title.setTextContent(title);
+        this.title.textContent = title;
     }
 
     @Override
     public void setContent(final Widget widget) {
-        DOMUtil.appendWidgetToElement(content,
-                                      widget);
+        elemental2DomUtil.appendWidgetToElement(content, widget);
     }
 
     @Override
     public void setItemId(final String itemId) {
-        title.setHref("#" + itemId);
-        content.setId(itemId);
+        title.href = "#" + itemId;
+        content.id = itemId;
     }
 
     @Override
     public void setOpen(final boolean isOpen) {
-        final DOMTokenList classList = content.getClassList();
+
+        final DOMTokenList classList = content.classList;
         final String opened = "in";
 
         if (isOpen) {
@@ -82,7 +86,6 @@ public class GuidedDecisionTableAccordionItemView implements GuidedDecisionTable
 
     @Override
     public void setParentId(final String parentId) {
-        title.setAttribute("data-parent",
-                           "#" + parentId);
+        title.setAttribute("data-parent", "#" + parentId);
     }
 }

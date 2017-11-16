@@ -41,6 +41,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.IssueSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableColumnSelectedEvent;
@@ -49,6 +50,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshActionsPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshAttributesPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshConditionsPanelEvent;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMetaDataPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.DependentEnumsUtilities;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableLinkManager.LinkFoundCallback;
@@ -149,10 +151,8 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
 
         dtPresenter.onUpdatedLockStatusEvent(event);
 
-        verify(modellerPresenter,
-               times(1)).onLockStatusUpdated(eq(dtPresenter));
-        assertEquals(CURRENT_USER,
-                     dtPresenter.getAccess().getLock());
+        verify(dtPresenter).refreshColumnsPage();
+        assertEquals(CURRENT_USER, dtPresenter.getAccess().getLock());
     }
 
     @Test
@@ -164,10 +164,8 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
 
         dtPresenter.onUpdatedLockStatusEvent(event);
 
-        verify(modellerPresenter,
-               times(1)).onLockStatusUpdated(eq(dtPresenter));
-        assertEquals(OTHER_USER,
-                     dtPresenter.getAccess().getLock());
+        verify(dtPresenter).refreshColumnsPage();
+        assertEquals(OTHER_USER, dtPresenter.getAccess().getLock());
     }
 
     @Test
@@ -176,10 +174,8 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         when(event.getFile()).thenReturn(dtPath);
         dtPresenter.onUpdatedLockStatusEvent(event);
 
-        verify(modellerPresenter,
-               times(1)).onLockStatusUpdated(eq(dtPresenter));
-        assertEquals(NOBODY,
-                     dtPresenter.getAccess().getLock());
+        verify(dtPresenter).refreshColumnsPage();
+        assertEquals(NOBODY, dtPresenter.getAccess().getLock());
     }
 
     @Test
@@ -810,6 +806,15 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         pattern.getChildColumns().add(condition);
 
         dtPresenter.getModel().getConditions().add(pattern);
+
+        assertTrue(dtPresenter.hasColumnDefinitions());
+    }
+
+    @Test
+    public void hasColumnDefinitionsWithMetadataColumn() {
+        final MetadataCol52 metadataCol52 = new MetadataCol52();
+
+        dtPresenter.getModel().getMetadataCols().add(metadataCol52);
 
         assertTrue(dtPresenter.hasColumnDefinitions());
     }
@@ -1665,6 +1670,17 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
 
         assertTrue(hasEditableColumns);
         verify(access).hasEditableColumns();
+    }
+
+    @Test
+    public void testRefreshColumnsPage() {
+
+        dtPresenter.refreshColumnsPage();
+
+        verify(refreshAttributesPanelEvent).fire(any(RefreshAttributesPanelEvent.class));
+        verify(refreshMetaDataPanelEvent).fire(any(RefreshMetaDataPanelEvent.class));
+        verify(refreshConditionsPanelEvent).fire(any(RefreshConditionsPanelEvent.class));
+        verify(refreshActionsPanelEvent).fire(any(RefreshActionsPanelEvent.class));
     }
 
     /*

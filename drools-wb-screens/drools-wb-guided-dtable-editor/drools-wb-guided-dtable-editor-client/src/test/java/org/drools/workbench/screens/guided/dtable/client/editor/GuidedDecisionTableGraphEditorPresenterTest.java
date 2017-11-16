@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -201,7 +202,8 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                                                            helper,
                                                            beanManager,
                                                            placeManager,
-                                                           lockManager) {
+                                                           lockManager,
+                                                           columnsPage) {
             {
                 workbenchContext = GuidedDecisionTableGraphEditorPresenterTest.this.workbenchContext;
                 projectController = GuidedDecisionTableGraphEditorPresenterTest.this.projectController;
@@ -657,6 +659,32 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
         checkOnDecisionTableSelected((dtGraphPlaceRequest) -> {/*Nothing*/},
                                      () -> verify(lockManager,
                                                   times(1)).acquireLock());
+    }
+
+    @Test
+    public void testOnDecisionTableSelectedWhenPresenterIsNull() {
+
+        final DecisionTableSelectedEvent event = mock(DecisionTableSelectedEvent.class);
+
+        doReturn(Optional.empty()).when(event).getPresenter();
+        doNothing().when(presenter).initialiseEditorTabsWhenNoDocuments();
+
+        presenter.onDecisionTableSelected(event);
+
+        verify(presenter).initialiseEditorTabsWhenNoDocuments();
+    }
+
+    @Test
+    public void testOnDecisionTableSelectedWhenPresenterIsNotNull() {
+
+        final GuidedDecisionTableView.Presenter dtPresenter = mock(GuidedDecisionTableView.Presenter.class);
+        final DecisionTableSelectedEvent event = new DecisionTableSelectedEvent(dtPresenter);
+
+        doNothing().when(presenter).initialiseEditorTabsWhenNoDocuments();
+
+        presenter.onDecisionTableSelected(event);
+
+        verify(presenter, never()).initialiseEditorTabsWhenNoDocuments();
     }
 
     private void checkOnDecisionTableSelected(final ParameterizedCommand<PlaceRequest> setup,

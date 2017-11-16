@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.guided.dtable.client.widget.table.accordion;
+package org.drools.workbench.screens.guided.dtable.client.editor.page.accordion;
 
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.common.client.dom.UnorderedList;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLUListElement;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -31,33 +30,22 @@ public class GuidedDecisionTableAccordionView implements GuidedDecisionTableAcco
                                                          IsElement {
 
     @DataField("items")
-    private UnorderedList items;
-
-    @DataField("columnsNoteInfo")
-    private Div columnsNoteInfo;
-
-    private ManagedInstance<GuidedDecisionTableAccordionItem> itemManagedInstance;
+    private HTMLUListElement items;
 
     private GuidedDecisionTableAccordion presenter;
 
+    private Elemental2DomUtil elemental2DomUtil;
+
     @Inject
-    public GuidedDecisionTableAccordionView(final UnorderedList items,
-                                            final Div columnsNoteInfo,
-                                            final ManagedInstance<GuidedDecisionTableAccordionItem> itemManagedInstance) {
+    public GuidedDecisionTableAccordionView(final HTMLUListElement items,
+                                            final Elemental2DomUtil elemental2DomUtil) {
         this.items = items;
-        this.columnsNoteInfo = columnsNoteInfo;
-        this.itemManagedInstance = itemManagedInstance;
+        this.elemental2DomUtil = elemental2DomUtil;
     }
 
     @Override
     public void init(final GuidedDecisionTableAccordion presenter) {
         this.presenter = presenter;
-        this.columnsNoteInfo.setHidden(true);
-    }
-
-    @Override
-    public void setColumnsNoteInfoHidden(final boolean isHidden) {
-        columnsNoteInfo.setHidden(isHidden);
     }
 
     @Override
@@ -66,13 +54,19 @@ public class GuidedDecisionTableAccordionView implements GuidedDecisionTableAcco
     }
 
     @Override
+    public void clear() {
+        elemental2DomUtil.removeAllElementChildren(items);
+    }
+
+    @Override
     public void setParentId(final String parentId) {
-        items.setId(parentId);
+        items.id = parentId;
     }
 
     private HTMLElement getViewElement(final GuidedDecisionTableAccordionItem accordionItem) {
+
         final GuidedDecisionTableAccordionItem.View view = accordionItem.getView();
 
-        return view.getElement();
+        return elemental2DomUtil.asHTMLElement(view.getElement());
     }
 }

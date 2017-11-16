@@ -20,6 +20,7 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -31,6 +32,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectionsChangedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiModel;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
@@ -38,7 +40,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.widgets.common.client.menu.MenuItemFactory;
 import org.uberfire.ext.widgets.common.client.menu.MenuItemView;
 import org.uberfire.ext.widgets.common.client.menu.MenuItemWithIconView;
@@ -50,10 +51,14 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.Gr
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(GwtMockitoTestRunner.class)
 public class InsertMenuBuilderTest {
 
     private InsertMenuBuilder builder;
@@ -85,6 +90,9 @@ public class InsertMenuBuilderTest {
     @Mock
     private GuidedDecisionTableModellerView.Presenter modeller;
 
+    @Mock
+    private ManagedInstance<NewGuidedDecisionTableColumnWizard> wizardManagedInstance;
+
     @Before
     public void setup() {
         model = new GuidedDecisionTable52();
@@ -107,7 +115,7 @@ public class InsertMenuBuilderTest {
         uiModel.appendRow(new BaseGridRow());
         uiModel.appendRow(new BaseGridRow());
 
-        builder = new InsertMenuBuilder(translationService, menuItemFactory);
+        builder = spy(new InsertMenuBuilder(translationService, menuItemFactory, wizardManagedInstance));
         builder.setup();
         builder.setModeller(modeller);
     }
@@ -304,6 +312,48 @@ public class InsertMenuBuilderTest {
         assertFalse(builder.miInsertRowAbove.getMenuItem().isEnabled());
         assertFalse(builder.miInsertRowBelow.getMenuItem().isEnabled());
         assertFalse(builder.miInsertColumn.getMenuItem().isEnabled());
+    }
+
+    @Test
+    public void testOpenNewGuidedDecisionTableColumnWizard() {
+
+        final GuidedDecisionTableModellerView.Presenter modeller = mock(GuidedDecisionTableModellerView.Presenter.class);
+        final GuidedDecisionTableView.Presenter activeDecisionTable = mock(GuidedDecisionTableView.Presenter.class);
+        final NewGuidedDecisionTableColumnWizard wizard = mock(NewGuidedDecisionTableColumnWizard.class);
+
+        doReturn(wizard).when(wizardManagedInstance).get();
+        doReturn(activeDecisionTable).when(modeller).getActiveDecisionTable();
+
+        builder.openNewGuidedDecisionTableColumnWizard(modeller);
+
+        verify(wizard).init(activeDecisionTable);
+        verify(wizard).start();
+    }
+
+    @Test
+    public void testOnAppendColumnWhenModellerIsPresent() {
+
+        final NewGuidedDecisionTableColumnWizard wizard = mock(NewGuidedDecisionTableColumnWizard.class);
+
+        doReturn(wizard).when(wizardManagedInstance).get();
+
+        builder.setModeller(modeller);
+        builder.onAppendColumn();
+
+        verify(builder).openNewGuidedDecisionTableColumnWizard(modeller);
+    }
+
+    @Test
+    public void testOnAppendColumnWhenModellerIsNotPresent() {
+
+        final NewGuidedDecisionTableColumnWizard wizard = mock(NewGuidedDecisionTableColumnWizard.class);
+
+        doReturn(wizard).when(wizardManagedInstance).get();
+
+        builder.setModeller(null);
+        builder.onAppendColumn();
+
+        verify(builder, never()).openNewGuidedDecisionTableColumnWizard(any());
     }
 
     private Pattern52 makePattern52() {

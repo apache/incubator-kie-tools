@@ -24,28 +24,38 @@ import java.util.List;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.imports.Imports;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.UpdatedLockStatusEvent;
+import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
+import org.uberfire.client.workbench.widgets.multipage.Page;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
+import static org.drools.workbench.screens.guided.dtable.client.editor.BaseGuidedDecisionTableEditorPresenter.COLUMNS_TAB_INDEX;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -72,7 +82,8 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
                                                       radarMenuBuilder,
                                                       modeller,
                                                       beanManager,
-                                                      placeManager);
+                                                      placeManager,
+                                                      columnsPage);
     }
 
     @Test
@@ -240,14 +251,13 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
         final ObservablePath path = mock(ObservablePath.class);
         final PlaceRequest placeRequest = mock(PlaceRequest.class);
         final GuidedDecisionTableEditorContent content = makeDecisionTableContent();
-        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable(path,
-                                                                                path,
-                                                                                placeRequest,
-                                                                                content);
+        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable(path, path, placeRequest, content);
         final DecisionTableSelectedEvent event = new DecisionTableSelectedEvent(dtPresenter);
+        final MultiPageEditor pageEditor = mock(MultiPageEditor.class);
 
         when(modeller.isDecisionTableAvailable(any(GuidedDecisionTableView.Presenter.class))).thenReturn(true);
         when(presenter.getActiveDocument()).thenReturn(null);
+        when(presenter.getKieEditorWrapperMultiPage()).thenReturn(pageEditor);
 
         presenter.onStartup(path,
                             placeRequest);
@@ -300,10 +310,8 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
         final ObservablePath path = mock(ObservablePath.class);
         final PlaceRequest placeRequest = mock(PlaceRequest.class);
         final GuidedDecisionTableEditorContent content = makeDecisionTableContent();
-        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable(path,
-                                                                                path,
-                                                                                placeRequest,
-                                                                                content);
+        final MultiPageEditor pageEditor = mock(MultiPageEditor.class);
+        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable(path, path, placeRequest, content);
 
         presenter.onStartup(path,
                             placeRequest);
@@ -324,6 +332,7 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
                      dtSelectedEvent.getPresenter().get());
 
         when(dtPresenter.getCurrentPath()).thenReturn(path);
+        when(presenter.getKieEditorWrapperMultiPage()).thenReturn(pageEditor);
 
         presenter.refreshDocument(dtPresenter);
 
@@ -534,5 +543,228 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
 
         verify(presenter,
                times(1)).updateSource(eq(source));
+    }
+
+    @Test
+    public void testActivateDocument() {
+
+        final GuidedDecisionTableView.Presenter dtPresenter = mock(GuidedDecisionTableView.Presenter.class);
+        final Overview overview = mock(Overview.class);
+        final AsyncPackageDataModelOracle oracle = mock(AsyncPackageDataModelOracle.class);
+        final GuidedDecisionTable52 model = mock(GuidedDecisionTable52.class);
+        final Imports imports = mock(Imports.class);
+        final GuidedDecisionTablePresenter.Access access = mock(GuidedDecisionTablePresenter.Access.class);
+        final MultiPageEditor pageEditor = mock(MultiPageEditor.class);
+        final boolean isEditable = true;
+
+        doReturn(overview).when(dtPresenter).getOverview();
+        doReturn(oracle).when(dtPresenter).getDataModelOracle();
+        doReturn(model).when(dtPresenter).getModel();
+        doReturn(imports).when(model).getImports();
+        doReturn(access).when(dtPresenter).getAccess();
+        doReturn(isEditable).when(access).isEditable();
+        doReturn(pageEditor).when(presenter).getKieEditorWrapperMultiPage();
+        doNothing().when(presenter).activateDocument(any(), any(), any(), any(), anyBoolean());
+
+        presenter.activateDocument(dtPresenter);
+
+        verify(dtPresenter).activate();
+        verify(presenter).enableMenus(true);
+        verify(presenter).addColumnsTab();
+        verify(presenter).columnsTabToggle(dtPresenter);
+        verify(presenter).activateDocument(dtPresenter, overview, oracle, imports, !isEditable);
+    }
+
+    @Test
+    public void testColumnsTabToggle() {
+
+        final GuidedDecisionTableView.Presenter dtPresenter = mock(GuidedDecisionTableView.Presenter.class);
+        final boolean isGuidedDecisionTableEditable = true;
+
+        doReturn(isGuidedDecisionTableEditable).when(presenter).isGuidedDecisionTableEditable(any());
+
+        presenter.columnsTabToggle(dtPresenter);
+
+        verify(presenter).columnsTabToggle(isGuidedDecisionTableEditable);
+    }
+
+    @Test
+    public void testIsGuidedDecisionTableEditableWhenDecisionTableDoesNotHaveEditableColumns() {
+
+        final GuidedDecisionTableView.Presenter dtPresenter = mock(GuidedDecisionTableView.Presenter.class);
+        final GuidedDecisionTablePresenter.Access access = mock(GuidedDecisionTablePresenter.Access.class);
+
+        doReturn(access).when(dtPresenter).getAccess();
+        doReturn(false).when(access).isReadOnly();
+        doReturn(false).when(access).hasEditableColumns();
+
+        final boolean isGuidedDecisionTableEditable = presenter.isGuidedDecisionTableEditable(dtPresenter);
+
+        assertFalse(isGuidedDecisionTableEditable);
+    }
+
+    @Test
+    public void testIsGuidedDecisionTableEditableWhenDecisionTableIsNotEditable() {
+
+        final GuidedDecisionTableView.Presenter dtPresenter = mock(GuidedDecisionTableView.Presenter.class);
+        final GuidedDecisionTablePresenter.Access access = mock(GuidedDecisionTablePresenter.Access.class);
+
+        doReturn(access).when(dtPresenter).getAccess();
+        doReturn(true).when(access).isReadOnly();
+        doReturn(true).when(access).hasEditableColumns();
+
+        final boolean isGuidedDecisionTableEditable = presenter.isGuidedDecisionTableEditable(dtPresenter);
+
+        assertFalse(isGuidedDecisionTableEditable);
+    }
+
+    @Test
+    public void testIsGuidedDecisionTableEditableWhenDecisionTableIsEditable() {
+
+        final GuidedDecisionTableView.Presenter dtPresenter = mock(GuidedDecisionTableView.Presenter.class);
+        final GuidedDecisionTablePresenter.Access access = mock(GuidedDecisionTablePresenter.Access.class);
+
+        doReturn(access).when(dtPresenter).getAccess();
+        doReturn(false).when(access).isReadOnly();
+        doReturn(true).when(access).hasEditableColumns();
+
+        final boolean isGuidedDecisionTableEditable = presenter.isGuidedDecisionTableEditable(dtPresenter);
+
+        assertTrue(isGuidedDecisionTableEditable);
+    }
+
+    @Test
+    public void testAddColumnsTab() {
+
+        final MultiPageEditor pageEditor = mock(MultiPageEditor.class);
+
+        doReturn(pageEditor).when(presenter).getKieEditorWrapperMultiPage();
+
+        presenter.addColumnsTab();
+
+        verify(columnsPage).init(modeller);
+        verify(presenter).addEditorPage(COLUMNS_TAB_INDEX, columnsPage);
+    }
+
+    @Test
+    public void testAddEditorPage() {
+
+        final MultiPageEditor multiPage = mock(MultiPageEditor.class);
+        final Page page = mock(Page.class);
+        final int index = 1;
+
+        doReturn(multiPage).when(presenter).getKieEditorWrapperMultiPage();
+
+        presenter.addEditorPage(index, page);
+
+        verify(multiPage).addPage(index, page);
+    }
+
+    @Test
+    public void testDisableColumnsPage() {
+
+        final MultiPageEditor multiPage = mock(MultiPageEditor.class);
+
+        doReturn(multiPage).when(presenter).getKieEditorWrapperMultiPage();
+
+        presenter.disableColumnsPage();
+
+        verify(multiPage).disablePage(COLUMNS_TAB_INDEX);
+    }
+
+    @Test
+    public void testEnableColumnsPage() {
+
+        final MultiPageEditor multiPage = mock(MultiPageEditor.class);
+
+        doReturn(multiPage).when(presenter).getKieEditorWrapperMultiPage();
+
+        presenter.enableColumnsPage();
+
+        verify(multiPage).enablePage(COLUMNS_TAB_INDEX);
+    }
+
+    @Test
+    public void testOnUpdatedLockStatusEventWhenTableIsNotLockedAndIsEditable() {
+
+        final UpdatedLockStatusEvent event = mock(UpdatedLockStatusEvent.class);
+        final GuidedDecisionTableView.Presenter activeDecisionTable = mock(GuidedDecisionTableView.Presenter.class);
+        final boolean disableColumnsTab = false;
+
+        doReturn(false).when(event).isLocked();
+        doReturn(false).when(event).isLockedByCurrentUser();
+        doReturn(true).when(presenter).isGuidedDecisionTableEditable(activeDecisionTable);
+        doReturn(activeDecisionTable).when(modeller).getActiveDecisionTable();
+        doNothing().when(presenter).columnsTabToggle(anyBoolean());
+
+        presenter.onUpdatedLockStatusEvent(event);
+
+        verify(presenter).columnsTabToggle(disableColumnsTab);
+    }
+
+    @Test
+    public void testOnUpdatedLockStatusEventWhenTableIsNotLockedAndIsNotEditable() {
+
+        final UpdatedLockStatusEvent event = mock(UpdatedLockStatusEvent.class);
+        final GuidedDecisionTableView.Presenter activeDecisionTable = mock(GuidedDecisionTableView.Presenter.class);
+        final boolean disableColumnsTab = true;
+
+        doReturn(false).when(event).isLocked();
+        doReturn(false).when(event).isLockedByCurrentUser();
+        doReturn(false).when(presenter).isGuidedDecisionTableEditable(activeDecisionTable);
+        doReturn(activeDecisionTable).when(modeller).getActiveDecisionTable();
+        doNothing().when(presenter).columnsTabToggle(anyBoolean());
+
+        presenter.onUpdatedLockStatusEvent(event);
+
+        verify(presenter).columnsTabToggle(disableColumnsTab);
+    }
+
+    @Test
+    public void testOnUpdatedLockStatusEventWhenIsLockedByTheCurrentUser() {
+
+        final UpdatedLockStatusEvent event = mock(UpdatedLockStatusEvent.class);
+        final GuidedDecisionTableView.Presenter activeDecisionTable = mock(GuidedDecisionTableView.Presenter.class);
+        final boolean disableColumnsTab = false;
+
+        doReturn(true).when(event).isLocked();
+        doReturn(true).when(event).isLockedByCurrentUser();
+        doReturn(true).when(presenter).isGuidedDecisionTableEditable(activeDecisionTable);
+        doReturn(activeDecisionTable).when(modeller).getActiveDecisionTable();
+        doNothing().when(presenter).columnsTabToggle(anyBoolean());
+
+        presenter.onUpdatedLockStatusEvent(event);
+
+        verify(presenter).columnsTabToggle(disableColumnsTab);
+    }
+
+    @Test
+    public void testOnUpdatedLockStatusEventWhenIsLockedByAnotherUser() {
+
+        final UpdatedLockStatusEvent event = mock(UpdatedLockStatusEvent.class);
+        final GuidedDecisionTableView.Presenter activeDecisionTable = mock(GuidedDecisionTableView.Presenter.class);
+        final boolean disableColumnsTab = true;
+
+        doReturn(true).when(event).isLocked();
+        doReturn(false).when(event).isLockedByCurrentUser();
+        doReturn(true).when(presenter).isGuidedDecisionTableEditable(activeDecisionTable);
+        doReturn(activeDecisionTable).when(modeller).getActiveDecisionTable();
+        doNothing().when(presenter).columnsTabToggle(anyBoolean());
+
+        presenter.onUpdatedLockStatusEvent(event);
+
+        verify(presenter).columnsTabToggle(disableColumnsTab);
+    }
+
+    @Test
+    public void testOnUpdatedLockStatusEventWhenActiveDecisionTableIsNull() {
+
+        final UpdatedLockStatusEvent event = mock(UpdatedLockStatusEvent.class);
+
+        doReturn(null).when(modeller).getActiveDecisionTable();
+
+        presenter.onUpdatedLockStatusEvent(event);
+
+        verify(presenter, never()).columnsTabToggle(any());
     }
 }

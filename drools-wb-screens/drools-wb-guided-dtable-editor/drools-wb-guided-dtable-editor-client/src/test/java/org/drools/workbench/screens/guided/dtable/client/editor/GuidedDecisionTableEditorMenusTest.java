@@ -27,9 +27,11 @@ import org.drools.workbench.screens.guided.dtable.client.editor.menu.InsertMenuB
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.RadarMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.RadarMenuView;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.ViewMenuBuilder;
+import org.drools.workbench.screens.guided.dtable.client.editor.page.ColumnsPage;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTablePopoverUtils;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.guvnor.common.services.project.context.ProjectContext;
@@ -131,6 +133,9 @@ public class GuidedDecisionTableEditorMenusTest {
     @Mock
     private ManagedInstance<MenuItemView> menuItemViewDividerProducer;
 
+    @Mock
+    private ManagedInstance<NewGuidedDecisionTableColumnWizard> wizardManagedInstance;
+
     private MenuItemFactory menuItemFactory;
 
     protected EditMenuBuilder editMenuBuilder;
@@ -225,6 +230,9 @@ public class GuidedDecisionTableEditorMenusTest {
     protected PlaceManager placeManager;
 
     @Mock
+    protected ColumnsPage columnsPage;
+
+    @Mock
     protected MenuItemWithIconView menuItemWithIconView;
 
     @Mock
@@ -293,8 +301,7 @@ public class GuidedDecisionTableEditorMenusTest {
                                                    menuItemFactory,
                                                    popoverUtils);
         this.editMenuBuilder.setup();
-        this.insertMenuBuilder = new InsertMenuBuilder(ts,
-                                                       menuItemFactory);
+        this.insertMenuBuilder = new InsertMenuBuilder(ts, menuItemFactory, wizardManagedInstance);
         this.insertMenuBuilder.setup();
         this.insertMenuBuilder.setModeller(modeller);
         this.viewMenuBuilder = new ViewMenuBuilder(ts,
@@ -317,7 +324,8 @@ public class GuidedDecisionTableEditorMenusTest {
                                                                                                   radarMenuBuilder,
                                                                                                   modeller,
                                                                                                   beanManager,
-                                                                                                  placeManager);
+                                                                                                  placeManager,
+                                                                                                  columnsPage);
 
         wrapped.setKieEditorWrapperView(kieEditorWrapperView);
         wrapped.setOverviewWidget(overviewWidget);

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.guided.dtable.client.widget.table.accordion;
+package org.drools.workbench.screens.guided.dtable.client.editor.page.accordion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,18 +65,15 @@ public class GuidedDecisionTableAccordion {
 
     public void addItem(final GuidedDecisionTableAccordionItem.Type type,
                         final Widget widget) {
-        addItem(makeItem(type,
-                         widget));
+        addItem(makeItem(type, widget));
     }
 
     private GuidedDecisionTableAccordionItem makeItem(final GuidedDecisionTableAccordionItem.Type type,
                                                       final Widget widget) {
+
         final GuidedDecisionTableAccordionItem accordionItem = blankAccordionItem();
 
-        accordionItem.init(getParentId(),
-                           type,
-                           widget
-        );
+        accordionItem.init(getParentId(), type, widget);
 
         return accordionItem;
     }
@@ -94,6 +91,11 @@ public class GuidedDecisionTableAccordion {
         getView().addItem(item);
     }
 
+    public void clear() {
+        getItems().clear();
+        getView().clear();
+    }
+
     public GuidedDecisionTableAccordionItem getItem(final GuidedDecisionTableAccordionItem.Type type) {
         return getItems()
                 .stream()
@@ -102,19 +104,15 @@ public class GuidedDecisionTableAccordion {
                 .orElse(blankAccordionItem());
     }
 
-    public void setColumnsNoteInfoHidden(final boolean isHidden) {
-        view.setColumnsNoteInfoHidden(isHidden);
-    }
-
     String getParentId() {
         return parentId;
     }
 
     public interface View extends UberElement<GuidedDecisionTableAccordion> {
 
-        void setColumnsNoteInfoHidden(final boolean isHidden);
-
         void addItem(final GuidedDecisionTableAccordionItem item);
+
+        void clear();
 
         void setParentId(final String parentId);
     }

@@ -19,6 +19,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.event.Observes;
+
 import com.google.gwt.event.dom.client.HasContextMenuHandlers;
 import com.google.gwt.event.dom.client.HasKeyDownHandlers;
 import com.google.gwt.event.dom.client.HasMouseDownHandlers;
@@ -56,12 +58,7 @@ public interface GuidedDecisionTableModellerView extends UberView<GuidedDecision
                                                          HasKeyDownHandlers,
                                                          HasMouseDownHandlers,
                                                          HasContextMenuHandlers,
-                                                         ViewMenuBuilder.SupportsZoom,
-                                                         InsertMenuBuilder.SupportsInsertColumn {
-
-    void enableColumnOperationsMenu();
-
-    void disableColumnOperationsMenu();
+                                                         ViewMenuBuilder.SupportsZoom {
 
     void clear();
 
@@ -70,20 +67,7 @@ public interface GuidedDecisionTableModellerView extends UberView<GuidedDecision
     void removeDecisionTable(final GuidedDecisionTableView gridWidget,
                              final Command afterRemovalCommand);
 
-    void refreshRuleInheritance(final String selectedParentRuleName,
-                                final Collection<String> availableParentRuleNames);
-
     void refreshScrollPosition();
-
-    void refreshAttributeWidget(final List<AttributeCol52> attributeColumns);
-
-    void refreshMetaDataWidget(final List<MetadataCol52> metaDataColumns);
-
-    void refreshConditionsWidget(final List<CompositeColumn<? extends BaseColumn>> columns);
-
-    void refreshActionsWidget(final List<ActionCol52> actions);
-
-    void refreshColumnsNote(final boolean hasColumnDefinitions);
 
     GridLayer getGridLayerView();
 
@@ -100,8 +84,7 @@ public interface GuidedDecisionTableModellerView extends UberView<GuidedDecision
     void showUnableToDeleteColumnMessage(final ActionCol52 column);
 
     interface Presenter extends GridPinnedModeManager,
-                                ViewMenuBuilder.SupportsZoom,
-                                InsertMenuBuilder.SupportsInsertColumn {
+                                ViewMenuBuilder.SupportsZoom {
 
         void onClose();
 
@@ -134,19 +117,9 @@ public interface GuidedDecisionTableModellerView extends UberView<GuidedDecision
 
         GuidedDecisionTableModellerView getView();
 
-        void onLockStatusUpdated(final GuidedDecisionTableView.Presenter dtPresenter);
+        void onDecisionTableSelected(@Observes DecisionTableSelectedEvent event);
 
-        void onDecisionTableSelected(final DecisionTableSelectedEvent event);
-
-        void onDecisionTableLinkedColumnSelected(final DecisionTableColumnSelectedEvent event);
-
-        void onRefreshAttributesPanelEvent(final RefreshAttributesPanelEvent event);
-
-        void onRefreshMetaDataPanelEvent(final RefreshMetaDataPanelEvent event);
-
-        void onRefreshConditionsPanelEvent(final RefreshConditionsPanelEvent event);
-
-        void onRefreshActionsPanelEvent(final RefreshActionsPanelEvent event);
+        void onDecisionTableLinkedColumnSelected(@Observes DecisionTableColumnSelectedEvent event);
 
         void updateRadar();
 
@@ -155,9 +128,5 @@ public interface GuidedDecisionTableModellerView extends UberView<GuidedDecision
         void refreshScrollPosition();
 
         void updateLinks();
-
-        void openNewGuidedDecisionTableColumnWizard();
-
-        boolean isColumnCreationEnabledToActiveDecisionTable();
     }
 }

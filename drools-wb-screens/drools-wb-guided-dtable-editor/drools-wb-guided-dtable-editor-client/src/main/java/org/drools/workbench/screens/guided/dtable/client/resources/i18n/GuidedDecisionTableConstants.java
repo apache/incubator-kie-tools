@@ -362,9 +362,7 @@ public interface GuidedDecisionTableConstants
 
     String NoColumnsAvailable();
 
-    String AddColumn();
-
-    String EditColumns();
-
     String TablePinnedModeHelp();
+
+    String PinnedMode();
 }

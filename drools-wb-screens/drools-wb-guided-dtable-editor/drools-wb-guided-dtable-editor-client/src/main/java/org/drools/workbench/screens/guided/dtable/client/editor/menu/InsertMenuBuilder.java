@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -28,8 +29,11 @@ import javax.inject.Inject;
 
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectionsChangedEvent;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.uberfire.ext.widgets.common.client.menu.MenuItemFactory;
 import org.uberfire.ext.widgets.common.client.menu.MenuItemFactory.MenuItemViewHolder;
@@ -41,40 +45,22 @@ import org.uberfire.workbench.model.menu.MenuItem;
 @Dependent
 public class InsertMenuBuilder extends BaseMenu implements MenuFactory.CustomMenuBuilder {
 
-    public interface SupportsAppendRow {
-
-        void onAppendRow();
-    }
-
-    public interface SupportsInsertRowAbove {
-
-        void onInsertRowAbove();
-    }
-
-    public interface SupportsInsertRowBelow {
-
-        void onInsertRowBelow();
-    }
-
-    public interface SupportsInsertColumn {
-
-        void onInsertColumn();
-    }
-
-    private TranslationService ts;
-    private MenuItemFactory menuItemFactory;
-    private GuidedDecisionTableModellerView.Presenter modeller;
-
     MenuItemViewHolder<MenuItemWithIconView> miAppendRow;
     MenuItemViewHolder<MenuItemWithIconView> miInsertRowAbove;
     MenuItemViewHolder<MenuItemWithIconView> miInsertRowBelow;
     MenuItemViewHolder<MenuItemWithIconView> miInsertColumn;
+    private TranslationService ts;
+    private MenuItemFactory menuItemFactory;
+    private ManagedInstance<NewGuidedDecisionTableColumnWizard> wizardManagedInstance;
+    private GuidedDecisionTableModellerView.Presenter modeller;
 
     @Inject
     public InsertMenuBuilder(final TranslationService ts,
-                             final MenuItemFactory menuItemFactory) {
+                             final MenuItemFactory menuItemFactory,
+                             final ManagedInstance<NewGuidedDecisionTableColumnWizard> wizardManagedInstance) {
         this.ts = ts;
         this.menuItemFactory = menuItemFactory;
+        this.wizardManagedInstance = wizardManagedInstance;
     }
 
     @PostConstruct
@@ -88,10 +74,6 @@ public class InsertMenuBuilder extends BaseMenu implements MenuFactory.CustomMen
                                                                 this::onInsertRowBelow);
         miInsertColumn = menuItemFactory.makeMenuItemWithIcon(ts.getTranslation(GuidedDecisionTableErraiConstants.InsertMenu_insertColumn),
                                                               this::onAppendColumn);
-    }
-
-    public void setModeller(final GuidedDecisionTableModellerView.Presenter modeller) {
-        this.modeller = modeller;
     }
 
     @Override
@@ -174,9 +156,29 @@ public class InsertMenuBuilder extends BaseMenu implements MenuFactory.CustomMen
     }
 
     void onAppendColumn() {
-        if (modeller != null) {
-            modeller.onInsertColumn();
+
+        final Optional<GuidedDecisionTableModellerView.Presenter> modeller = Optional.ofNullable(getModeller());
+
+        if (modeller.isPresent()) {
+            openNewGuidedDecisionTableColumnWizard(modeller.get());
         }
+    }
+
+    GuidedDecisionTableModellerView.Presenter getModeller() {
+        return modeller;
+    }
+
+    public void setModeller(final GuidedDecisionTableModellerView.Presenter modeller) {
+        this.modeller = modeller;
+    }
+
+    void openNewGuidedDecisionTableColumnWizard(final GuidedDecisionTableModellerView.Presenter modeller) {
+
+        final NewGuidedDecisionTableColumnWizard wizard = wizardManagedInstance.get();
+        final GuidedDecisionTableView.Presenter activeDecisionTable = modeller.getActiveDecisionTable();
+
+        wizard.init(activeDecisionTable);
+        wizard.start();
     }
 
     private void enableMenuItemsForAppendingRows(final boolean enabled) {
@@ -190,5 +192,20 @@ public class InsertMenuBuilder extends BaseMenu implements MenuFactory.CustomMen
     private void enableMenuItemsForInsertingRows(final boolean enabled) {
         miInsertRowAbove.getMenuItem().setEnabled(enabled);
         miInsertRowBelow.getMenuItem().setEnabled(enabled);
+    }
+
+    public interface SupportsAppendRow {
+
+        void onAppendRow();
+    }
+
+    public interface SupportsInsertRowAbove {
+
+        void onInsertRowAbove();
+    }
+
+    public interface SupportsInsertRowBelow {
+
+        void onInsertRowBelow();
     }
 }

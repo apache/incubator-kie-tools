@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.guided.dtable.client.widget.table.accordion;
+package org.drools.workbench.screens.guided.dtable.client.editor.page.accordion;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -57,6 +57,7 @@ public class GuidedDecisionTableAccordionItem {
     public void init(final String parentId,
                      final Type type,
                      final Widget content) {
+
         this.parentId = parentId;
         this.type = type;
         this.content = content;
@@ -98,6 +99,7 @@ public class GuidedDecisionTableAccordionItem {
     }
 
     public enum Type {
+
         METADATA(GuidedDecisionTableErraiConstants.GuidedDecisionTableAccordionItem_Metadata),
         ATTRIBUTE(GuidedDecisionTableErraiConstants.GuidedDecisionTableAccordionItem_Attribute),
         CONDITION(GuidedDecisionTableErraiConstants.GuidedDecisionTableAccordionItem_Condition),

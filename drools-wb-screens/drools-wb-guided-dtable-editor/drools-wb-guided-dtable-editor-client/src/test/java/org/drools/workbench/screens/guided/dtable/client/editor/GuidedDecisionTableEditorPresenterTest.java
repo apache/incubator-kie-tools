@@ -66,7 +66,8 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
                                                       radarMenuBuilder,
                                                       modeller,
                                                       beanManager,
-                                                      placeManager) {
+                                                      placeManager,
+                                                      columnsPage) {
             {
                 workbenchContext = GuidedDecisionTableEditorPresenterTest.this.workbenchContext;
                 projectController = GuidedDecisionTableEditorPresenterTest.this.projectController;

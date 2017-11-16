@@ -31,6 +31,7 @@ import org.drools.workbench.screens.guided.dtable.client.editor.menu.EditMenuBui
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.InsertMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.RadarMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.ViewMenuBuilder;
+import org.drools.workbench.screens.guided.dtable.client.editor.page.ColumnsPage;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
@@ -49,6 +50,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.mvp.UpdatedLockStatusEvent;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnFocus;
 import org.uberfire.lifecycle.OnMayClose;
@@ -79,7 +81,8 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
                                               final RadarMenuBuilder radarMenuBuilder,
                                               final GuidedDecisionTableModellerView.Presenter modeller,
                                               final SyncBeanManager beanManager,
-                                              final PlaceManager placeManager) {
+                                              final PlaceManager placeManager,
+                                              final ColumnsPage columnsPage) {
         super(view,
               service,
               notification,
@@ -92,7 +95,8 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
               radarMenuBuilder,
               modeller,
               beanManager,
-              placeManager);
+              placeManager,
+              columnsPage);
     }
 
     @Override
@@ -225,6 +229,10 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
     public void removeDocument(GuidedDecisionTableView.Presenter dtPresenter) {
         super.removeDocument(dtPresenter);
         scheduleClosure(() -> placeManager.forceClosePlace(editorPlaceRequest));
+    }
+
+    void onUpdatedLockStatusEvent(final @Observes UpdatedLockStatusEvent event) {
+        super.onUpdatedLockStatusEvent(event);
     }
 
     void scheduleClosure(final Scheduler.ScheduledCommand command) {

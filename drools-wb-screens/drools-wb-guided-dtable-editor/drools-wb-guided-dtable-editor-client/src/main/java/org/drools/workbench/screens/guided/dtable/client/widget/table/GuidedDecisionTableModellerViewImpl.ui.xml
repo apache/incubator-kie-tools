@@ -21,37 +21,6 @@
   <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants"/>
 
   <ui:style field="css">
-    .accordion-container {
-      position: absolute;
-      width: 100%;
-      height: 0;
-      flex-grow: 1;
-      z-index: 2;
-      background: #fff;
-      transition: height 0.25s cubic-bezier(0.22, 0.71, 0.49, 1);
-      overflow: hidden;
-      border-bottom: 1px solid #DDD;
-    }
-
-    .buttonMenu {
-      background: white;
-      padding: 10px;
-      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-      z-index: 3;
-    }
-
-    .buttonMenu button {
-      padding: 3px 10px;
-    }
-
-    .buttonMenu button:focus,
-    .buttonMenu button:active {
-      outline: none !important;
-    }
-
-    .buttonMenu i {
-      margin-left: 10px;
-    }
 
     .container {
       display: flex;
@@ -75,6 +44,16 @@
       outline: none;
     }
 
+    .pinnedModeIndicator {
+      position: absolute;
+      left: 18em;
+      top: -2em;
+      transition: top 0.5s linear;
+      height: 1.5em;
+      cursor: default;
+      z-index: 2;
+    }
+
     .font-loader {
       /*
       This is a hack to pre-load the "Glyphicons Halflings" font-family before they are rendered to the canvas
@@ -89,15 +68,10 @@
 
   <g:HTMLPanel styleName="{css.container}">
 
-    <g:FlowPanel styleName="{css.buttonMenu}">
-      <b:Button ui:field="addColumn" text="{i18n.AddColumn}"/>
-      <b:Button ui:field="editColumns" text="{i18n.EditColumns}"/>
-      <b:Icon ui:field="pinnedModeIndicator" type="THUMB_TACK" title="{i18n.TablePinnedModeHelp}" visible="false"/>
-    </g:FlowPanel>
-
-    <g:FlowPanel>
-      <g:FlowPanel ui:field="accordionContainer" styleName="{css.accordion-container}"/>
-    </g:FlowPanel>
+    <g:HTMLPanel ui:field="pinnedModeIndicator" styleName="{css.pinnedModeIndicator}" title="{i18n.TablePinnedModeHelp}">
+      <b:Icon type="THUMB_TACK"/>
+      <ui:text from="{i18n.PinnedMode}"/>
+    </g:HTMLPanel>
 
     <g:HTMLPanel styleName="{css.font-loader}">
       <div class="glyphicon-triangle-top"></div>
