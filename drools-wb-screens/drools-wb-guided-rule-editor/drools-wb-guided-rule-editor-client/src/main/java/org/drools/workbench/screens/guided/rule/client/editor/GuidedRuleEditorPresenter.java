@@ -123,13 +123,13 @@ public class GuidedRuleEditorPresenter
 
     protected void loadContent() {
         view.showLoading();
-        service.call(getModelSuccessCallback(),
-                     getNoSuchFileExceptionErrorCallback()).loadContent(versionRecordManager.getCurrentPath());
+        getService().call(getModelSuccessCallback(),
+                          getNoSuchFileExceptionErrorCallback()).loadContent(getVersionRecordManager().getCurrentPath());
     }
 
     @Override
     public void onSourceTabSelected() {
-        service.call(new RemoteCallback<String>() {
+        getService().call(new RemoteCallback<String>() {
             @Override
             public void callback(String source) {
                 updateSource(source);
@@ -199,7 +199,7 @@ public class GuidedRuleEditorPresenter
         return new Command() {
             @Override
             public void execute() {
-                service.call(new RemoteCallback<List<ValidationMessage>>() {
+                getService().call(new RemoteCallback<List<ValidationMessage>>() {
                     @Override
                     public void callback(final List<ValidationMessage> results) {
                         if (results == null || results.isEmpty()) {
@@ -237,11 +237,10 @@ public class GuidedRuleEditorPresenter
 
     @Override
     protected void save(String commitMessage) {
-        service.call(getSaveSuccessCallback(model.hashCode()),
-                     new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
-                                                                          view.getContent(),
-                                                                          metadata,
-                                                                          commitMessage);
+        getService().call(getSaveSuccessCallback(model.hashCode()),
+                          new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
+                                                                               view.getContent(),
+                                                                               metadata, commitMessage);
     }
 
     @OnClose
@@ -281,5 +280,12 @@ public class GuidedRuleEditorPresenter
     @WorkbenchMenu
     public Menus getMenus() {
         return menus;
+    }
+
+    /*
+     * Getter due to test purposes
+     */
+    Caller<GuidedRuleEditorService> getService() {
+        return service;
     }
 }

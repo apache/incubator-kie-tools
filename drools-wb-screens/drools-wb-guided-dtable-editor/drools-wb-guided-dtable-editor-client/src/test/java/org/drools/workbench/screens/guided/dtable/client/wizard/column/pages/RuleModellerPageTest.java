@@ -16,17 +16,24 @@
 
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.pages;
 
+import java.util.Collections;
+
 import com.google.gwt.junit.GWTMockUtilities;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
+import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.BRLActionColumnPlugin;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.BRLConditionColumnPlugin;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
+import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerConfiguration;
+import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
+import org.drools.workbench.screens.guided.template.client.editor.TemplateModellerWidgetFactory;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -38,7 +45,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -46,7 +55,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-@WithClassesToStub(RuleModeller.class)
+@WithClassesToStub({GuidedRuleEditorImages508.class, FlexTable.class})
 public class RuleModellerPageTest {
 
     @Mock
@@ -103,12 +112,20 @@ public class RuleModellerPageTest {
 
     @Test
     public void testRuleModeller() throws Exception {
+        when(brlActionPlugin.getRuleModel()).thenReturn(new RuleModel());
         when(brlActionPlugin.tableFormat()).thenReturn(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY);
+        when(brlActionPlugin.getRuleModellerActionPlugins()).thenReturn(Collections.emptyList());
+        when(brlActionPlugin.getRuleModellerConfiguration()).thenReturn(mock(RuleModellerConfiguration.class));
         when(presenter.getDataModelOracle()).thenReturn(mock(AsyncPackageDataModelOracle.class));
 
         final RuleModeller ruleModeller = brlActionPage.ruleModeller();
 
         assertNotNull(ruleModeller);
+        assertEquals(brlActionPlugin.getRuleModel(), ruleModeller.getModel());
+        assertEquals(Collections.emptyList(), ruleModeller.getActionPlugins());
+        assertEquals(presenter.getDataModelOracle(), ruleModeller.getDataModelOracle());
+        assertTrue(ruleModeller.getWidgetFactory() instanceof TemplateModellerWidgetFactory);
+        assertFalse(ruleModeller.isReadOnly());
     }
 
     @Test
@@ -126,7 +143,9 @@ public class RuleModellerPageTest {
 
     @Test
     public void testPrepareViewBrlAction() throws Exception {
+        when(brlActionPlugin.getRuleModel()).thenReturn(new RuleModel());
         when(brlActionPlugin.tableFormat()).thenReturn(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY);
+        when(brlActionPlugin.getRuleModellerConfiguration()).thenReturn(mock(RuleModellerConfiguration.class));
 
         brlActionPage.prepareView();
 
@@ -139,7 +158,9 @@ public class RuleModellerPageTest {
 
     @Test
     public void testPrepareViewBrlCondition() throws Exception {
+        when(brlConditionPlugin.getRuleModel()).thenReturn(new RuleModel());
         when(brlConditionPlugin.tableFormat()).thenReturn(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY);
+        when(brlConditionPlugin.getRuleModellerConfiguration()).thenReturn(mock(RuleModellerConfiguration.class));
 
         brlConditionPage.prepareView();
 
