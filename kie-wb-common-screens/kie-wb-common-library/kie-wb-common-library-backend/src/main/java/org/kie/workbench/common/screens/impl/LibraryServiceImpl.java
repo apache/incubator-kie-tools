@@ -26,11 +26,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.ext.uberfire.social.activities.model.SocialUser;
+import org.ext.uberfire.social.activities.service.SocialUserRepositoryAPI;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
@@ -101,6 +102,7 @@ public class LibraryServiceImpl implements LibraryService {
     private KieProjectService projectService;
     private ExamplesService examplesService;
     private IOService ioService;
+    private SocialUserRepositoryAPI socialUserRepositoryAPI;
 
     public LibraryServiceImpl() {
     }
@@ -117,7 +119,8 @@ public class LibraryServiceImpl implements LibraryService {
                               final KieProjectService projectService,
                               final ExamplesService examplesService,
                               @Named("ioStrategy") final IOService ioService,
-                              final LibraryInternalPreferences internalPreferences) {
+                              final LibraryInternalPreferences internalPreferences,
+                              final SocialUserRepositoryAPI socialUserRepositoryAPI) {
         this.ouService = ouService;
         this.repositoryService = repositoryService;
         this.kieProjectService = kieProjectService;
@@ -130,6 +133,7 @@ public class LibraryServiceImpl implements LibraryService {
         this.examplesService = examplesService;
         this.ioService = ioService;
         this.internalPreferences = internalPreferences;
+        this.socialUserRepositoryAPI = socialUserRepositoryAPI;
     }
 
     @Override
@@ -177,6 +181,33 @@ public class LibraryServiceImpl implements LibraryService {
                                   selectedOrganizationalUnit);
         final POM pom = createPOM(projectName,
                                   projectDescription,
+                                  gav);
+
+        final KieProject kieProject = kieProjectService.newProject(selectedRepositoryRootPath,
+                                                                   pom,
+                                                                   baseURL,
+                                                                   mode);
+
+        return kieProject;
+    }
+
+    @Override
+    public KieProject createProject(final String name,
+                                    final String description,
+                                    final String groupId,
+                                    final String artifactId,
+                                    final String version,
+                                    final OrganizationalUnit selectedOrganizationalUnit,
+                                    final Repository selectedRepository,
+                                    final String baseURL,
+                                    final DeploymentMode mode) {
+        final Path selectedRepositoryRootPath = selectedRepository.getRoot();
+
+        final GAV gav = new GAV(groupId,
+                                artifactId,
+                                version);
+        final POM pom = createPOM(name,
+                                  description,
                                   gav);
 
         final KieProject kieProject = kieProjectService.newProject(selectedRepositoryRootPath,
@@ -273,6 +304,12 @@ public class LibraryServiceImpl implements LibraryService {
     public Boolean hasAssets(final Project project) {
         checkNotNull("project",
                      project);
+
+        final boolean projectStillExists = ioService.exists(Paths.convert(project.getRootPath()));
+        if (!projectStillExists) {
+            return false;
+        }
+
         final Package defaultPackage = projectService.resolveDefaultPackage(project);
         return explorerServiceHelper.hasAssets(defaultPackage);
     }
@@ -284,6 +321,16 @@ public class LibraryServiceImpl implements LibraryService {
                 ? examplesService.getPlaygroundRepository()
                 : new ExampleRepository(importProjectsUrl);
 
+        return examplesService.getProjects(repository);
+    }
+
+    @Override
+    public Set<ExampleProject> getProjects(final String repositoryUrl) {
+        if (repositoryUrl == null) {
+            return getExampleProjects();
+        }
+
+        final ExampleRepository repository = new ExampleRepository(repositoryUrl);
         return examplesService.getProjects(repository);
     }
 
@@ -328,6 +375,13 @@ public class LibraryServiceImpl implements LibraryService {
                        preferences.getProjectPreferences().getVersion());
     }
 
+    @Override
+    public List<SocialUser> getAllUsers() {
+        return socialUserRepositoryAPI.findAllUsers().stream()
+                .filter(user -> !user.getUserName().equals("system"))
+                .collect(Collectors.toList());
+    }
+
     String getCustomImportProjectsUrl() {
         return System.getProperty("org.kie.project.examples.repository.url");
     }
@@ -360,8 +414,21 @@ public class LibraryServiceImpl implements LibraryService {
 
     private List<Project> getProjects(final Repository repository,
                                       final String branch) {
-        return new ArrayList<>(kieProjectService.getProjects(repository,
-                                                             branch));
+        final List<Project> projects = new ArrayList<>(kieProjectService.getProjects(repository,
+                                                                                     branch));
+        projects.forEach(project -> project.setNumberOfAssets(getNumberOfAssets(project)));
+
+        return projects;
+    }
+
+    private int getNumberOfAssets(final Project project) {
+        final HashSet<ValueIndexTerm> queryTerms = new HashSet<>();
+        queryTerms.add(new LibraryValueProjectRootPathIndexTerm(project.getRootPath().toURI()));
+
+        return refactoringQueryService.queryHitCount(new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
+                                                                                queryTerms,
+                                                                                0,
+                                                                                null));
     }
 
     private OrganizationalUnit getDefaultOrganizationalUnit() {
@@ -436,9 +503,15 @@ public class LibraryServiceImpl implements LibraryService {
         }
 
         final LibraryPreferences preferences = getPreferences();
+
+        final List<String> contributors = new ArrayList<>();
+        contributors.add(preferences.getOrganizationalUnitPreferences().getOwner());
+
         return ouService.createOrganizationalUnit(preferences.getOrganizationalUnitPreferences().getName(),
                                                   preferences.getOrganizationalUnitPreferences().getOwner(),
-                                                  preferences.getOrganizationalUnitPreferences().getGroupId());
+                                                  preferences.getOrganizationalUnitPreferences().getGroupId(),
+                                                  Collections.emptyList(),
+                                                  contributors);
     }
 
     private Repository createDefaultRepository(final OrganizationalUnit ou,

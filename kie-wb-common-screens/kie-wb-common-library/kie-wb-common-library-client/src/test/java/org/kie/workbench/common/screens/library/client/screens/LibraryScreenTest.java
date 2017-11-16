@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,28 +17,28 @@ package org.kie.workbench.common.screens.library.client.screens;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.client.security.ProjectController;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.structure.repositories.Repository;
+import org.guvnor.common.services.project.context.ProjectContext;
+import org.guvnor.structure.client.security.OrganizationalUnitController;
+import org.guvnor.structure.events.AfterEditOrganizationalUnitEvent;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
-import org.kie.workbench.common.screens.library.api.ProjectInfo;
-import org.kie.workbench.common.screens.library.api.search.FilterUpdateEvent;
-import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
+import org.kie.workbench.common.screens.library.client.screens.importrepository.ImportRepositoryPopUpPresenter;
+import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.edit.EditContributorsPopUpPresenter;
+import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.ContributorsListPresenter;
+import org.kie.workbench.common.screens.library.client.screens.organizationalunit.delete.DeleteOrganizationalUnitPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mocks.CallerMock;
-import org.uberfire.mvp.Command;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -48,131 +48,202 @@ public class LibraryScreenTest {
     private LibraryScreen.View view;
 
     @Mock
-    private PlaceManager placeManager;
+    private ManagedInstance<EditContributorsPopUpPresenter> editContributorsPopUpPresenters;
 
     @Mock
-    private LibraryPlaces libraryPlaces;
+    private ManagedInstance<DeleteOrganizationalUnitPopUpPresenter> deleteOrganizationalUnitPopUpPresenters;
 
     @Mock
-    private Event<ProjectDetailEvent> projectDetailEvent;
+    private ManagedInstance<ImportRepositoryPopUpPresenter> importRepositoryPopUpPresenters;
+
+    @Mock
+    private ProjectContext projectContext;
+
+    @Mock
+    private OrganizationalUnitController organizationalUnitController;
+
+    @Mock
+    private ProjectController projectController;
+
+    @Mock
+    private EmptyLibraryScreen emptyLibraryScreen;
+
+    @Mock
+    private PopulatedLibraryScreen populatedLibraryScreen;
+
+    @Mock
+    private OrgUnitsMetricsScreen orgUnitsMetricsScreen;
+
+    @Mock
+    private ContributorsListPresenter contributorsListPresenter;
 
     @Mock
     private LibraryService libraryService;
     private Caller<LibraryService> libraryServiceCaller;
 
     @Mock
-    private ProjectController projectController;
+    private LibraryPlaces libraryPlaces;
+
+    @Mock
+    private EditContributorsPopUpPresenter editContributorsPopUpPresenter;
+
+    @Mock
+    private DeleteOrganizationalUnitPopUpPresenter deleteOrganizationalUnitPopUpPresenter;
+
+    @Mock
+    private ImportRepositoryPopUpPresenter importRepositoryPopUpPresenter;
 
     private LibraryScreen libraryScreen;
-
-    private Project project1;
-    private Project project2;
-    private Project project3;
 
     @Before
     public void setup() {
         libraryServiceCaller = new CallerMock<>(libraryService);
 
-        libraryScreen = spy(new LibraryScreen(view,
-                                              placeManager,
-                                              libraryPlaces,
-                                              projectDetailEvent,
-                                              libraryServiceCaller,
-                                              projectController));
-
-        project1 = mock(Project.class);
-        doReturn("project1Name").when(project1).getProjectName();
-        project2 = mock(Project.class);
-        doReturn("project2Name").when(project2).getProjectName();
-        project3 = mock(Project.class);
-        doReturn("project3Name").when(project3).getProjectName();
-
-        final List<Project> projects = new ArrayList<>();
-        projects.add(project1);
-        projects.add(project2);
-        projects.add(project3);
-
-        final LibraryInfo libraryInfo = new LibraryInfo("master",
-                                                        projects);
-        doReturn(libraryInfo).when(libraryService).getLibraryInfo(any(Repository.class),
-                                                                  anyString());
+        doReturn(importRepositoryPopUpPresenter).when(importRepositoryPopUpPresenters).get();
+        doReturn(editContributorsPopUpPresenter).when(editContributorsPopUpPresenters).get();
+        doReturn(deleteOrganizationalUnitPopUpPresenter).when(deleteOrganizationalUnitPopUpPresenters).get();
 
         doReturn(true).when(projectController).canCreateProjects();
-        doReturn(true).when(projectController).canReadProjects();
-        doReturn(true).when(projectController).canReadProject(any());
-        doReturn(false).when(projectController).canReadProject(project2);
+        doReturn(true).when(organizationalUnitController).canUpdateOrgUnit(any());
+        doReturn(true).when(organizationalUnitController).canDeleteOrgUnit(any());
 
-        libraryScreen.setup();
+        doReturn(mock(PopulatedLibraryScreen.View.class)).when(populatedLibraryScreen).getView();
+        doReturn(mock(EmptyLibraryScreen.View.class)).when(emptyLibraryScreen).getView();
+
+        libraryScreen = new LibraryScreen(view,
+                                          deleteOrganizationalUnitPopUpPresenters,
+                                          editContributorsPopUpPresenters,
+                                          importRepositoryPopUpPresenters,
+                                          projectContext,
+                                          organizationalUnitController,
+                                          projectController,
+                                          emptyLibraryScreen,
+                                          populatedLibraryScreen,
+                                          orgUnitsMetricsScreen,
+                                          contributorsListPresenter,
+                                          libraryServiceCaller,
+                                          libraryPlaces);
     }
 
     @Test
     public void setupTest() {
-        verify(view).clearFilterText();
-        verify(view).clearProjects();
-        verify(placeManager).closePlace(LibraryPlaces.EMPTY_LIBRARY_SCREEN);
+        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
+        doReturn("name").when(organizationalUnit).getName();
+        doReturn(organizationalUnit).when(libraryPlaces).getSelectedOrganizationalUnit();
+        doReturn(12).when(contributorsListPresenter).getContributorsCount();
 
-        verify(view,
-               times(2)).addProject(anyString(),
-                                    any(Command.class),
-                                    any(Command.class));
+        libraryScreen.init();
 
-        verify(view,
-               times(1)).addProject(eq("project1Name"),
-                                    any(Command.class),
-                                    any(Command.class));
-        verify(view,
-               never()).addProject(eq("project2Name"),
-                                   any(Command.class),
-                                   any(Command.class));
-        verify(view,
-               times(1)).addProject(eq("project3Name"),
-                                    any(Command.class),
-                                    any(Command.class));
+        verify(view).init(libraryScreen);
+        verify(view).setTitle("name");
+        verify(view).setContributorsCount(12);
     }
 
     @Test
-    public void selectCommandTest() {
-        libraryScreen.selectCommand(project1).execute();
+    public void trySamplesWithPermissionTest() {
+        libraryScreen.trySamples();
 
-        verify(libraryPlaces).goToProject(any(ProjectInfo.class));
+        verify(libraryPlaces).goToTrySamples();
     }
 
     @Test
-    public void detailsCommandTest() {
-        libraryScreen.detailsCommand(project1).execute();
+    public void trySamplesWithoutPermissionTest() {
+        doReturn(false).when(projectController).canCreateProjects();
 
-        verify(projectDetailEvent).fire(any(ProjectDetailEvent.class));
+        libraryScreen.trySamples();
+
+        verify(libraryPlaces,
+               never()).goToTrySamples();
     }
 
     @Test
-    public void filterProjectsTest() {
-        assertEquals(2,
-                     libraryScreen.projects.size());
-        assertEquals(1,
-                     libraryScreen.filterProjects("project1").size());
-        assertEquals(1,
-                     libraryScreen.filterProjects("roject1").size());
-        assertEquals(0,
-                     libraryScreen.filterProjects("unexistent").size());
+    public void importProjectWithPermissionTest() {
+        libraryScreen.importProject();
+
+        verify(importRepositoryPopUpPresenter).show();
     }
 
     @Test
-    public void filterUpdateTest() {
-        libraryScreen.filterUpdate(new FilterUpdateEvent("name"));
+    public void importProjectWithoutPermissionTest() {
+        doReturn(false).when(projectController).canCreateProjects();
 
-        verify(view).setFilterName("name");
-        verify(libraryScreen).filterProjects("name");
+        libraryScreen.importProject();
+
+        verify(importRepositoryPopUpPresenter,
+               never()).show();
     }
 
     @Test
-    public void projectsAreNotNullAfterInjection() {
-        final LibraryScreen libraryScreen = spy(new LibraryScreen(view,
-                                                                  placeManager,
-                                                                  libraryPlaces,
-                                                                  projectDetailEvent,
-                                                                  libraryServiceCaller,
-                                                                  projectController));
+    public void editContributorsWithPermissionTest() {
+        libraryScreen.editContributors();
 
-        assertNotNull(libraryScreen.projects);
+        verify(editContributorsPopUpPresenter).show(any());
+    }
+
+    @Test
+    public void editContributorsWithoutPermissionTest() {
+        doReturn(false).when(organizationalUnitController).canUpdateOrgUnit(any());
+
+        libraryScreen.editContributors();
+
+        verify(editContributorsPopUpPresenter,
+               never()).show(any());
+    }
+
+    @Test
+    public void deleteWithPermissionTest() {
+        libraryScreen.delete();
+
+        verify(deleteOrganizationalUnitPopUpPresenter).show(any());
+    }
+
+    @Test
+    public void deleteWithoutPermissionTest() {
+        doReturn(false).when(organizationalUnitController).canDeleteOrgUnit(any());
+
+        libraryScreen.delete();
+
+        verify(deleteOrganizationalUnitPopUpPresenter,
+               never()).show(any());
+    }
+
+    @Test
+    public void showProjectsTest() {
+        doReturn(true).when(libraryService).hasProjects(any(),
+                                                        any());
+        final HTMLElement populatedLibraryScreenElement = mock(HTMLElement.class);
+        when(populatedLibraryScreen.getView().getElement()).thenReturn(populatedLibraryScreenElement);
+        doReturn(3).when(populatedLibraryScreen).getProjectsCount();
+
+        libraryScreen.showProjects();
+
+        verify(view).updateContent(populatedLibraryScreenElement);
+        verify(view).setProjectsCount(3);
+    }
+
+    @Test
+    public void showNoProjectsTest() {
+        doReturn(false).when(libraryService).hasProjects(any(),
+                                                         any());
+        final HTMLElement emptyLibraryScreenElement = mock(HTMLElement.class);
+        when(emptyLibraryScreen.getView().getElement()).thenReturn(emptyLibraryScreenElement);
+
+        libraryScreen.showProjects();
+
+        verify(view).updateContent(emptyLibraryScreenElement);
+        verify(view).setProjectsCount(0);
+    }
+
+    @Test
+    public void organizationalUnitEditedTest() {
+        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
+        final List<String> contributors = new ArrayList<>();
+        contributors.add("admin");
+        doReturn(contributors).when(organizationalUnit).getContributors();
+
+        libraryScreen.organizationalUnitEdited(new AfterEditOrganizationalUnitEvent(mock(OrganizationalUnit.class),
+                                                                                    organizationalUnit));
+
+        verify(view).setContributorsCount(contributors.size());
     }
 }

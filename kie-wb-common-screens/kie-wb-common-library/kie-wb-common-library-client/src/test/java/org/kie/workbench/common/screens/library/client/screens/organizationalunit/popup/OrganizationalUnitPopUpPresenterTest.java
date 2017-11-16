@@ -26,10 +26,13 @@ import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.widget.ContributorsManagementPresenter;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.mocks.SessionInfoMock;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.mockito.Matchers.any;
@@ -58,6 +61,11 @@ public class OrganizationalUnitPopUpPresenterTest {
     @Mock
     private EventSourceMock<NotificationEvent> notificationEvent;
 
+    @Mock
+    private ContributorsManagementPresenter contributorsManagementPresenter;
+
+    private SessionInfo sessionInfo = new SessionInfoMock();
+
     private OrganizationalUnitPopUpPresenter presenter;
 
     @Before
@@ -77,61 +85,45 @@ public class OrganizationalUnitPopUpPresenterTest {
                 .when(organizationalUnitService).createOrganizationalUnit(anyString(),
                                                                           anyString(),
                                                                           anyString(),
+                                                                          any(),
                                                                           any());
-        doAnswer(invocationOnMock -> new OrganizationalUnitImpl((String) invocationOnMock.getArguments()[0],
-                                                                (String) invocationOnMock.getArguments()[1],
-                                                                (String) invocationOnMock.getArguments()[2]))
-                .when(organizationalUnitService).updateOrganizationalUnit(anyString(),
-                                                                          anyString(),
-                                                                          anyString());
+
+        doReturn(mock(ContributorsManagementPresenter.View.class)).when(contributorsManagementPresenter).getView();
 
         presenter = spy(new OrganizationalUnitPopUpPresenter(view,
                                                              organizationalUnitServiceCaller,
                                                              afterCreateOrganizationalUnitEvent,
                                                              afterEditOrganizationalUnitEvent,
                                                              notificationEvent,
-                                                             organizationalUnitController));
+                                                             organizationalUnitController,
+                                                             contributorsManagementPresenter,
+                                                             sessionInfo));
     }
 
     @Test
-    public void showAddPopUpWithPermissionTest() {
-        presenter.showAddPopUp();
+    public void showWithPermissionTest() {
+        presenter.show();
 
+        verify(contributorsManagementPresenter).setup();
+        verify(view).append(any());
         verify(view).clear();
-        verify(view).showAddPopUp();
+        verify(view).show();
     }
 
     @Test
-    public void showAddPopUpWithoutPermissionTest() {
+    public void showWithoutPermissionTest() {
         doReturn(false).when(organizationalUnitController).canCreateOrgUnits();
 
-        presenter.showAddPopUp();
+        presenter.show();
 
+        verify(contributorsManagementPresenter,
+               never()).setup();
+        verify(view,
+               never()).append(any());
         verify(view,
                never()).clear();
         verify(view,
-               never()).showAddPopUp();
-    }
-
-    @Test
-    public void showEditPopUpWithPermissionTest() {
-        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
-
-        presenter.showEditPopUp(organizationalUnit);
-
-        verify(view).showEditPopUp(organizationalUnit);
-    }
-
-    @Test
-    public void showEditPopUpWithoutPermissionTest() {
-        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
-
-        doReturn(false).when(organizationalUnitController).canUpdateOrgUnit(organizationalUnit);
-
-        presenter.showEditPopUp(organizationalUnit);
-
-        verify(view,
-               never()).showEditPopUp(organizationalUnit);
+               never()).show();
     }
 
     @Test
@@ -149,34 +141,8 @@ public class OrganizationalUnitPopUpPresenterTest {
                never()).createOrganizationalUnit(anyString(),
                                                  anyString(),
                                                  anyString(),
+                                                 any(),
                                                  any());
-        verify(organizationalUnitService,
-               never()).updateOrganizationalUnit(anyString(),
-                                                 anyString(),
-                                                 anyString());
-    }
-
-    @Test
-    public void saveWithEmptyDefaultGroupIdTest() {
-        doReturn("name").when(view).getName();
-        doReturn("").when(view).getDefaultGroupId();
-
-        presenter.save();
-
-        verify(view).showBusyIndicator(anyString());
-        verify(view).getEmptyDefaultGroupIdValidationMessage();
-        verify(view).hideBusyIndicator();
-        verify(view).showError(anyString());
-
-        verify(organizationalUnitService,
-               never()).createOrganizationalUnit(anyString(),
-                                                 anyString(),
-                                                 anyString(),
-                                                 any());
-        verify(organizationalUnitService,
-               never()).updateOrganizationalUnit(anyString(),
-                                                 anyString(),
-                                                 anyString());
     }
 
     @Test
@@ -184,12 +150,11 @@ public class OrganizationalUnitPopUpPresenterTest {
         doReturn(false).when(organizationalUnitService).isValidGroupId(anyString());
 
         doReturn("name").when(view).getName();
-        doReturn("defaultGroupId").when(view).getDefaultGroupId();
 
         presenter.save();
 
         verify(view).showBusyIndicator(anyString());
-        verify(view).getInvalidDefaultGroupIdValidationMessage();
+        verify(view).getInvalidNameValidationMessage();
         verify(view).hideBusyIndicator();
         verify(view).showError(anyString());
 
@@ -197,42 +162,15 @@ public class OrganizationalUnitPopUpPresenterTest {
                never()).createOrganizationalUnit(anyString(),
                                                  anyString(),
                                                  anyString(),
+                                                 any(),
                                                  any());
-        verify(organizationalUnitService,
-               never()).updateOrganizationalUnit(anyString(),
-                                                 anyString(),
-                                                 anyString());
     }
 
     @Test
-    public void saveWithEmptyOwnerTest() {
-        doReturn("name").when(view).getName();
-        doReturn("defaultGroupId").when(view).getDefaultGroupId();
-        doReturn("").when(view).getOwner();
-
-        presenter.save();
-
-        verify(view).showBusyIndicator(anyString());
-        verify(view).hideBusyIndicator();
-
-        verify(organizationalUnitService).createOrganizationalUnit(eq("name"),
-                                                                   eq(""),
-                                                                   eq("defaultGroupId"),
-                                                                   any());
-
-        verify(organizationalUnitService,
-               never()).updateOrganizationalUnit(anyString(),
-                                                 anyString(),
-                                                 anyString());
-    }
-
-    @Test
-    public void saveCreationWithDuplicatedNameTest() {
+    public void saveWithDuplicatedNameTest() {
         doReturn(mock(OrganizationalUnit.class)).when(organizationalUnitService).getOrganizationalUnit(anyString());
 
         doReturn("name").when(view).getName();
-        doReturn("defaultGroupId").when(view).getDefaultGroupId();
-        doReturn("").when(view).getOwner();
 
         presenter.save();
 
@@ -245,67 +183,13 @@ public class OrganizationalUnitPopUpPresenterTest {
                never()).createOrganizationalUnit(anyString(),
                                                  anyString(),
                                                  anyString(),
+                                                 any(),
                                                  any());
-        verify(organizationalUnitService,
-               never()).updateOrganizationalUnit(anyString(),
-                                                 anyString(),
-                                                 anyString());
     }
 
     @Test
-    public void saveEditionWithSameNameTest() {
-        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
-        doReturn(organizationalUnit).when(organizationalUnitService).getOrganizationalUnit(anyString());
-
+    public void saveTest() {
         doReturn("name").when(view).getName();
-        doReturn("defaultGroupId").when(view).getDefaultGroupId();
-        doReturn("owner").when(view).getOwner();
-
-        presenter.showEditPopUp(organizationalUnit);
-        presenter.save();
-
-        verify(view).showBusyIndicator(anyString());
-        verify(view).hideBusyIndicator();
-
-        verify(organizationalUnitService,
-               never()).createOrganizationalUnit(anyString(),
-                                                 anyString(),
-                                                 anyString(),
-                                                 any());
-        verify(organizationalUnitService).updateOrganizationalUnit("name",
-                                                                   "owner",
-                                                                   "defaultGroupId");
-    }
-
-    @Test
-    public void saveEditionTest() {
-        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
-
-        doReturn("name").when(view).getName();
-        doReturn("defaultGroupId").when(view).getDefaultGroupId();
-        doReturn("owner").when(view).getOwner();
-
-        presenter.showEditPopUp(organizationalUnit);
-        presenter.save();
-
-        verify(view).showBusyIndicator(anyString());
-        verify(view).hideBusyIndicator();
-
-        verify(organizationalUnitService,
-               never()).createOrganizationalUnit(anyString(),
-                                                 anyString(),
-                                                 anyString(),
-                                                 any());
-        verify(organizationalUnitService).updateOrganizationalUnit("name",
-                                                                   "owner",
-                                                                   "defaultGroupId");
-    }
-
-    @Test
-    public void saveCreationTest() {
-        doReturn("name").when(view).getName();
-        doReturn("defaultGroupId").when(view).getDefaultGroupId();
-        doReturn("owner").when(view).getOwner();
 
         presenter.save();
 
@@ -315,11 +199,8 @@ public class OrganizationalUnitPopUpPresenterTest {
         verify(organizationalUnitService).createOrganizationalUnit(anyString(),
                                                                    anyString(),
                                                                    anyString(),
+                                                                   any(),
                                                                    any());
-        verify(organizationalUnitService,
-               never()).updateOrganizationalUnit(anyString(),
-                                                 anyString(),
-                                                 anyString());
     }
 
     @Test

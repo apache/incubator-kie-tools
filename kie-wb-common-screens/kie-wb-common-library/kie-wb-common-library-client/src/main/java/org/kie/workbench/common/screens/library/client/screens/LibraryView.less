@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 @import "/org/uberfire/client/views/static/uberfire-variables.less";
 
 .library {
@@ -37,7 +53,7 @@
     }
 
     .toolbar-pf {
-        padding: .5em 1em;
+        padding: .8em 1em;
     }
 
     .toolbar-kie {
@@ -77,19 +93,13 @@
         box-shadow: none;
     }
 
-    .dropdown-kebab-pf .dropdown-menu {
-        left: calc(~'50% - 80px');
-    }
-
-    .dropdown-kebab-pf .dropdown-menu:after,
-    .dropdown-kebab-pf .dropdown-menu:before {
-        left: calc(~'50% - 10px');
-        right: auto;
+    .dropdown-kebab-pf .dropdown-menu-right {
+        left: auto;
+        right: 0;
     }
 
     .toolbar-btn-group-kie {
         float:right;
-        margin-top: .5em;
     }
 
     // TOOLBAR
@@ -121,39 +131,14 @@
         margin-bottom: .5em;
     }
 
-    // switch to flex display for toolbar
-    @media (min-width: @screen-sm-min) {
-        // Use flex to vertically center toolbar items
-        .toolbar-pf-actions {
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-        }
-        // Push the button group to the right when flexed
-        .btn-group-kie-right {
-            margin-left: auto;
-        }
-        //remove the margin needed when items were stacked
-        .input-group-kie {
-            margin-bottom: auto;
-        }
-    }
-
     // Page Content
     .page-content-kie {
         background-color: @well-bg;
         padding-bottom: 1em;
-        padding-top: 1em;
     }
 
     .main-content-kie {
         box-shadow: 0 1px 1px fade(@color-pf-black, 17.5%);
-    }
-
-    // Blank slate
-    .blank-slate-pf {
-        background-color: @color-pf-white;
-        border: 0;
     }
 
     // Makes a big card-looking button
@@ -264,8 +249,9 @@
     }
 
     .toolbar-pf-actions {
+        margin-bottom: 0;
         display: flex;
-        justify-content: flex-start;
+        justify-content: space-between;
         align-items: center;
     }
 
@@ -283,7 +269,6 @@
         /* i cannot override flex size check with designers*/
     }
 
-    .list-group-item,
     a {
         cursor: pointer;
     }
@@ -341,24 +326,6 @@
         clear: both;
     }
 
-    .card-action {
-        text-align: center;
-        display: inline-block;
-    }
-
-    .card-action .card-pf-body {
-        display: table-cell;
-        vertical-align: middle;
-        margin: 0;
-        padding: 0;
-        height: 228px;
-    }
-
-    .card-action .card-pf-body .card-pf-icon-circle {
-        border: 0;
-        font-size: 72px;
-    }
-
     .kie-background--settings {
         background-color: @well-bg;
     }
@@ -375,45 +342,6 @@
         justify-content: center;
     }
 
-    .card-pf-view .card-pf-top-element .kie-card-pf-icon-circle--disabled {
-        background: @card-pf-container-bg-color;
-        color: @color-pf-white;
-        border-color: transparent;
-    }
-
-    .card-pf-view > .card-pf-body > .card-pf-top-element > .fa + .fa,
-    .card-pf-view:hover > .card-pf-body > .card-pf-top-element > .fa {
-        display: none;
-    }
-
-    .card-pf-view:hover > .card-pf-body > .card-pf-top-element > .fa + .fa {
-        display: inherit;
-    }
-
-    .card-actions {
-        position: absolute;
-        top: 0;
-        right: 0;
-        font-size: 1.5em;
-        z-index: 5;
-        cursor: pointer;
-        margin: 0.2em 0.5em;
-
-        .fa {
-            display: block;
-            padding: 0.3em 0.5em;
-            color: #DDD;
-        }
-    }
-
-    div:hover > .card-actions .fa {
-        color: #999;
-
-        &:hover {
-            color: #000;
-        }
-    }
-
     .required:after {
         content: "*";
         font-size: 80%;
@@ -423,23 +351,75 @@
         vertical-align: super;
     }
 
-    .page-content-kie > .toolbar-pf {
-        margin-top: -1em;
-    }
-
-    .card-pf-item .bold {
-        font-weight: bold;
-    }
-
-    .card-pf-item.small {
-        font-size: 1.1em;
+    .main-container .toolbar-pf {
+        background-color: @color-pf-black-150;
+        padding: .8em 0;
+        border: 0;
     }
 
     .toolbar-pf .form-group {
-        margin-right: 20px;
+        padding: 0;
     }
 
     [hidden] {
         display: none !important;
+    }
+
+    .card-pf-body {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .card-pf-view .card-pf-title {
+        margin: 0;
+    }
+
+    .card-pf-view .card-pf-title + h5 {
+        color: @color-pf-black-500;
+        min-height: 16px;
+    }
+
+    .card-pf-icon-circle {
+        border: 3px solid @color-pf-blue-500;
+        border-radius: 50%;
+        color: @color-pf-blue-500;
+        display: block;
+        font-size: 16px;
+        font-weight: bold;
+        height: 48px;
+        line-height: 44px;
+        margin: 0 auto;
+        text-align: center;
+        width: 48px;
+    }
+
+    .card-pf-body .right {
+        float: right;
+        margin-left: 1em;
+    }
+
+    .card-pf-body h5 {
+        -o-text-overflow: ellipsis;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        width: 170px;
+    }
+
+    .kie-page-header {
+        margin: 0;
+    }
+
+    .active .badge {
+        background-color: @color-pf-blue-400;
+    }
+
+    .blank-slate-pf {
+        background-color: @color-pf-white;
+    }
+
+    .nav-tabs {
+        margin-bottom: 10px;
     }
 }

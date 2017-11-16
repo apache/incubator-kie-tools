@@ -16,24 +16,16 @@
 package org.kie.workbench.common.screens.library.client.screens;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
-import com.google.gwt.user.client.Event;
-import org.jboss.errai.common.client.dom.Anchor;
+import com.google.gwt.event.dom.client.ClickEvent;
+import org.jboss.errai.common.client.dom.Button;
 import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Heading;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.SinkNative;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.screens.examples.model.ExampleProject;
-import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
-import org.kie.workbench.common.screens.library.client.widgets.library.ImportExampleButtonWidget;
-import org.kie.workbench.common.screens.library.client.widgets.library.ImportProjectButtonWidget;
-import org.kie.workbench.common.screens.library.client.widgets.library.NewProjectButtonWidget;
 
 @Templated
 public class EmptyLibraryView implements EmptyLibraryScreen.View,
@@ -45,78 +37,38 @@ public class EmptyLibraryView implements EmptyLibraryScreen.View,
     private TranslationService ts;
 
     @Inject
-    private ManagedInstance<ImportExampleButtonWidget> importExampleButtonWidgets;
+    @DataField("main-actions")
+    Div mainActions;
 
     @Inject
-    private NewProjectButtonWidget newProjectButtonWidget;
+    @DataField("try-samples")
+    Button trySamples;
 
     @Inject
-    private ImportProjectButtonWidget importProjectButtonWidget;
-
-    @Inject
-    @Named("h1")
-    @DataField
-    private Heading welcome;
-
-    @Inject
-    @DataField("import-examples-container")
-    private Div importExamplesContainer;
-
-    @Inject
-    @DataField("import-examples-buttons-container")
-    private Div importExamplesButtonsContainer;
-
-    @Inject
-    @DataField("new-project-link")
-    Anchor newProjectLink;
-
-    @Inject
-    @DataField("create-project-container")
-    Div createProjectContainer;
-
-    @Inject
-    @DataField("projects-container")
-    private Div projectsContainer;
+    @DataField("import-project")
+    Button importProject;
 
     @Override
-    public void init(EmptyLibraryScreen presenter) {
+    public void init(final EmptyLibraryScreen presenter) {
         this.presenter = presenter;
+
+        final boolean userCanCreateProjects = presenter.userCanCreateProjects();
+        trySamples.setHidden(!userCanCreateProjects);
+        importProject.setHidden(!userCanCreateProjects);
     }
 
     @Override
-    public void setup(String username) {
-        welcome.setInnerHTML(ts.getTranslation(LibraryConstants.EmptyLibraryView_Welcome) + " " + username + ".");
-        if (presenter.userCanCreateProjects()) {
-            createProjectContainer.appendChild(newProjectButtonWidget.getView().getElement());
-            createProjectContainer.appendChild(importProjectButtonWidget.getView().getElement());
-        } else {
-            projectsContainer.setTextContent("");
-        }
+    public void addAction(final HTMLElement action) {
+        mainActions.appendChild(action);
     }
 
-    @Override
-    public void addProjectToImport(final ExampleProject exampleProject) {
-        final ImportExampleButtonWidget importExampleButton = importExampleButtonWidgets.get();
-        importExampleButton.init(exampleProject.getName(),
-                                 exampleProject.getDescription(),
-                                 () -> presenter.importProject(exampleProject));
-
-        importExamplesButtonsContainer.appendChild(importExampleButton.getElement());
+    @EventHandler("try-samples")
+    public void trySamples(final ClickEvent event) {
+        presenter.trySamples();
     }
 
-    @Override
-    public void clearImportExamplesButtonsContainer() {
-        importExamplesButtonsContainer.setInnerHTML("");
-    }
-
-    @Override
-    public void clearImportExamplesContainer() {
-        importExamplesContainer.setInnerHTML("");
-    }
-
-    @SinkNative(Event.ONCLICK)
-    @EventHandler("new-project-link")
-    public void newProjectLink(Event e) {
-        presenter.newProject();
+    @EventHandler("import-project")
+    public void importProject(final ClickEvent event) {
+        presenter.importProject();
     }
 }

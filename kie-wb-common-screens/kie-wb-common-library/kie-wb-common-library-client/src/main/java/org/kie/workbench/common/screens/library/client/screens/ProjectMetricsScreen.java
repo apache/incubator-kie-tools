@@ -58,14 +58,15 @@ public class ProjectMetricsScreen {
         void setAllCommitsDisplayer(Displayer displayer);
 
         void clear();
-
     }
 
     View view;
     TranslationService translationService;
-    DisplayerCoordinator displayerCoordinator;
     ProjectMetricsFactory metricsFactory;
+    DisplayerCoordinator displayerCoordinator;
+
     ProjectInfo projectInfo;
+
     Displayer commitsOverTimeDisplayer;
     Displayer commitsPerAuthorDisplayer;
     Displayer commitsByYearDisplayer;
@@ -84,7 +85,6 @@ public class ProjectMetricsScreen {
         this.translationService = translationService;
         this.metricsFactory = metricsFactory;
         this.displayerCoordinator = displayerCoordinator;
-        this.view.init(this);
     }
 
     @WorkbenchPartTitle
@@ -98,7 +98,10 @@ public class ProjectMetricsScreen {
     }
 
     public void onStartup(@Observes final ProjectMetricsEvent event) {
+        this.view.init(this);
+
         this.projectInfo = event.getProjectInfo();
+
         this.commitsOverTimeDisplayer = metricsFactory.lookupCommitsOverTimeDisplayer(projectInfo);
         this.commitsPerAuthorDisplayer = metricsFactory.lookupCommitsPerAuthorDisplayer(projectInfo);
         this.commitsByYearDisplayer = metricsFactory.lookupCommitsByYearDisplayer(projectInfo);
@@ -109,7 +112,6 @@ public class ProjectMetricsScreen {
         this.dateSelectorDisplayer = metricsFactory.lookupDateSelectorDisplayer(projectInfo);
 
         view.clear();
-        view.setHeaderTitle(translationService.format(LibraryConstants.MetricsTitle, projectInfo.getProject().getProjectName()));
         view.setCommitsPerAuthorDisplayer(commitsPerAuthorDisplayer);
         view.setCommitsOverTimeDisplayer(commitsOverTimeDisplayer);
         view.setCommitsByYearDisplayer(commitsByYearDisplayer);

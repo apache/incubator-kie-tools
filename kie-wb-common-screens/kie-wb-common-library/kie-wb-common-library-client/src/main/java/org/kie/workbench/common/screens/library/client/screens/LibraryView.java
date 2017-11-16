@@ -17,23 +17,17 @@ package org.kie.workbench.common.screens.library.client.screens;
 
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Event;
-import org.jboss.errai.common.client.dom.DOMUtil;
+import com.google.gwt.event.dom.client.ClickEvent;
+import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Input;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.dom.ListItem;
 import org.jboss.errai.common.client.dom.Span;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.SinkNative;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
-import org.kie.workbench.common.screens.library.client.widgets.library.ImportProjectButtonWidget;
-import org.kie.workbench.common.screens.library.client.widgets.library.NewProjectButtonWidget;
-import org.kie.workbench.common.screens.library.client.widgets.library.ProjectItemWidget;
-import org.uberfire.mvp.Command;
 
 @Templated
 public class LibraryView implements LibraryScreen.View,
@@ -48,115 +42,146 @@ public class LibraryView implements LibraryScreen.View,
     private TranslationService ts;
 
     @Inject
-    private ManagedInstance<ProjectItemWidget> itemWidgetsInstances;
+    @DataField("title")
+    Div title;
 
     @Inject
-    private NewProjectButtonWidget newProjectButtonWidget;
+    @DataField("actions")
+    Div actions;
 
     @Inject
-    private ImportProjectButtonWidget importProjectButtonWidget;
+    @DataField("try-samples")
+    Anchor trySamples;
+
+    @Inject
+    @DataField("import-project")
+    Anchor importProject;
+
+    @Inject
+    @DataField("edit-contributors")
+    Anchor editContributors;
+
+    @Inject
+    @DataField("delete-project")
+    Anchor deleteProject;
+
+    @Inject
+    @DataField("projects-tab-container")
+    ListItem projectsTabContainer;
+
+    @Inject
+    @DataField("projects-tab")
+    Anchor projectsTab;
+
+    @Inject
+    @DataField("projects-count")
+    Span projectsCount;
+
+    @Inject
+    @DataField("contributors-tab-container")
+    ListItem contributorsTabContainer;
+
+    @Inject
+    @DataField("contributors-tab")
+    Anchor contributorsTab;
+
+    @Inject
+    @DataField("contributors-count")
+    Span contributorsCount;
+
+    @Inject
+    @DataField("metrics-tab-container")
+    ListItem metricsTabContainer;
+
+    @Inject
+    @DataField("metrics-tab")
+    Anchor metricsTab;
 
     @Inject
     @DataField("main-container")
     Div mainContainer;
 
-    @Inject
-    @DataField("details-container")
-    Div detailsContainer;
-
-    @Inject
-    @DataField("project-list")
-    Div projectList;
-
-    @Inject
-    @DataField("filter-text")
-    Input filterText;
-
-    @Inject
-    @DataField("create-project-container")
-    Span createProjectContainer;
-
-    private ProjectItemWidget selectedProjectItemWidget;
-
-    private boolean importProjectLoaded = false;
-
     @Override
-    public void init(LibraryScreen presenter) {
+    public void init(final LibraryScreen presenter) {
         this.presenter = presenter;
-        this.selectedProjectItemWidget = null;
-        filterText.setAttribute("placeholder",
-                                ts.getTranslation(LibraryConstants.FilterByName));
-        detailsContainer.appendChild(projectsDetailScreen.getView().getElement());
-        if (presenter.userCanCreateProjects()) {
-            createProjectContainer.appendChild(newProjectButtonWidget.getView().getElement());
-            createProjectContainer.appendChild(importProjectButtonWidget.getView().getElement());
-        }
+
+        final boolean userCanCreateProjects = presenter.userCanCreateProjects();
+        final boolean userCanUpdateOrganizationalUnit = presenter.userCanUpdateOrganizationalUnit();
+        final boolean userCanDeleteOrganizationalUnit = presenter.userCanDeleteOrganizationalUnit();
+
+        trySamples.setHidden(!userCanCreateProjects);
+        importProject.setHidden(!userCanCreateProjects);
+        editContributors.setHidden(!userCanUpdateOrganizationalUnit);
+        deleteProject.setHidden(!userCanDeleteOrganizationalUnit);
+
+        actions.setHidden(!userCanCreateProjects && !userCanUpdateOrganizationalUnit && !userCanDeleteOrganizationalUnit);
+    }
+
+    @EventHandler("try-samples")
+    public void trySamples(final ClickEvent event) {
+        presenter.trySamples();
+    }
+
+    @EventHandler("import-project")
+    public void importProject(final ClickEvent event) {
+        presenter.importProject();
+    }
+
+    @EventHandler("edit-contributors")
+    public void editContributors(final ClickEvent event) {
+        presenter.editContributors();
+    }
+
+    @EventHandler("delete-project")
+    public void delete(final ClickEvent event) {
+        presenter.delete();
+    }
+
+    @EventHandler("projects-tab")
+    public void showProjects(final ClickEvent event) {
+        projectsTabContainer.getClassList().add("active");
+        contributorsTabContainer.getClassList().remove("active");
+        metricsTabContainer.getClassList().remove("active");
+
+        presenter.showProjects();
+    }
+
+    @EventHandler("contributors-tab")
+    public void showContributors(final ClickEvent event) {
+        projectsTabContainer.getClassList().remove("active");
+        contributorsTabContainer.getClassList().add("active");
+        metricsTabContainer.getClassList().remove("active");
+
+        presenter.showContributors();
+    }
+
+    @EventHandler("metrics-tab")
+    public void showMetrics(final ClickEvent event) {
+        projectsTabContainer.getClassList().remove("active");
+        contributorsTabContainer.getClassList().remove("active");
+        metricsTabContainer.getClassList().add("active");
+
+        presenter.showMetrics();
     }
 
     @Override
-    public void clearProjects() {
-        DOMUtil.removeAllChildren(projectList);
+    public void setTitle(final String title) {
+        this.title.setTextContent(title);
     }
 
     @Override
-    public void addProject(final String project,
-                           final Command details,
-                           final Command select) {
-        ProjectItemWidget projectItemWidget = itemWidgetsInstances.get();
-        projectItemWidget.init(project,
-                               detailsCommand(details,
-                                              projectItemWidget),
-                               select);
-        projectList.appendChild(projectItemWidget.getElement());
-    }
-
-    private Command detailsCommand(final Command details,
-                                   final ProjectItemWidget projectItemWidget) {
-        return () -> {
-            details.execute();
-
-            if (projectItemWidget.equals(selectedProjectItemWidget)) {
-                mainContainer.getClassList().add("col-md-12");
-                mainContainer.getClassList().add("col-lg-12");
-                mainContainer.getClassList().remove("col-md-8");
-                mainContainer.getClassList().remove("col-lg-9");
-                detailsContainer.getClassList().add("hidden");
-                detailsContainer.getClassList().remove("col-md-4");
-                detailsContainer.getClassList().remove("col-lg-3");
-                projectItemWidget.unselect();
-                this.selectedProjectItemWidget = null;
-            } else {
-                if (selectedProjectItemWidget == null) {
-                    mainContainer.getClassList().remove("col-md-12");
-                    mainContainer.getClassList().remove("col-lg-12");
-                    mainContainer.getClassList().add("col-md-8");
-                    mainContainer.getClassList().add("col-lg-9");
-                    detailsContainer.getClassList().remove("hidden");
-                    detailsContainer.getClassList().add("col-md-4");
-                    detailsContainer.getClassList().add("col-lg-3");
-                } else {
-                    selectedProjectItemWidget.unselect();
-                }
-
-                projectItemWidget.select();
-                this.selectedProjectItemWidget = projectItemWidget;
-            }
-        };
+    public void setProjectsCount(int count) {
+        projectsCount.setTextContent(String.valueOf(count));
     }
 
     @Override
-    public void clearFilterText() {
-        this.filterText.setValue("");
+    public void setContributorsCount(int count) {
+        contributorsCount.setTextContent(String.valueOf(count));
     }
 
     @Override
-    public void setFilterName(String name) {
-        this.filterText.setValue(name);
-    }
-
-    @SinkNative(Event.ONKEYUP)
-    @EventHandler("filter-text")
-    public void filterTextChange(Event e) {
-        presenter.filterProjects(filterText.getValue());
+    public void updateContent(HTMLElement content) {
+        mainContainer.setTextContent("");
+        mainContainer.appendChild(content);
     }
 }

@@ -15,24 +15,11 @@
 
 package org.kie.workbench.common.screens.library.client;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
-import org.kie.workbench.common.screens.library.client.util.ExamplesUtils;
 
 @EntryPoint
-@Bundle( "resources/i18n/Library.properties" )
+@Bundle("resources/i18n/Library.properties")
 public class LibraryEntryPoint {
 
-    @Inject
-    private ExamplesUtils examplesUtils;
-
-    @PostConstruct
-    public void init() {
-        examplesUtils.refresh();
-        examplesUtils.getExampleProjects(projects -> {
-        });
-    }
 }

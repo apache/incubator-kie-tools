@@ -19,14 +19,9 @@ package org.kie.workbench.common.screens.library.client.screens.organizationalun
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import org.dashbuilder.displayer.client.Displayer;
-import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.Button;
-import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Input;
-import org.jboss.errai.common.client.dom.Node;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -34,7 +29,7 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.util.TranslationUtils;
-import org.kie.workbench.common.screens.library.client.widgets.organizationalunit.OrganizationalUnitTileWidget;
+import org.kie.workbench.common.screens.library.client.widgets.common.TileWidget;
 
 @Templated
 public class OrganizationalUnitsView implements OrganizationalUnitsScreen.View,
@@ -53,10 +48,6 @@ public class OrganizationalUnitsView implements OrganizationalUnitsScreen.View,
     Div title;
 
     @Inject
-    @DataField("filter-name")
-    Input filterName;
-
-    @Inject
     @DataField("create-organizational-unit")
     Button createOrganizationalUnit;
 
@@ -64,22 +55,12 @@ public class OrganizationalUnitsView implements OrganizationalUnitsScreen.View,
     @DataField("cards-container")
     Div cardsContainer;
 
-    @Inject
-    @DataField("contributions-div")
-    Div contributionsDiv;
-
-    @Inject
-    @DataField("view-all-metrics")
-    Anchor viewAllAnchor;
-
     @Override
     public void init(OrganizationalUnitsScreen presenter) {
         this.presenter = presenter;
         createOrganizationalUnit.setTextContent(ts.format(LibraryConstants.CreateOrganizationalUnit,
                                                           translationUtils.getOrganizationalUnitAliasInSingular()));
         title.setTextContent(translationUtils.getOrganizationalUnitAliasInPlural());
-        filterName.setAttribute("placeholder",
-                                ts.getTranslation(LibraryConstants.FilterByName));
     }
 
     @Override
@@ -88,43 +69,34 @@ public class OrganizationalUnitsView implements OrganizationalUnitsScreen.View,
     }
 
     @Override
-    public String getFilterName() {
-        return filterName.getValue();
-    }
-
-    @Override
-    public void setFilterName(final String name) {
-        filterName.setValue(name);
-    }
-
-    @Override
     public void hideCreateOrganizationalUnitAction() {
         createOrganizationalUnit.setHidden(true);
     }
 
     @Override
-    public void addOrganizationalUnit(final OrganizationalUnitTileWidget organizationalUnitTileWidget) {
-        cardsContainer.appendChild(organizationalUnitTileWidget.getView().getElement());
+    public void addOrganizationalUnit(final TileWidget tileWidget) {
+        cardsContainer.appendChild(tileWidget.getView().getElement());
     }
 
     @Override
-    public void updateContributionsMetric(Displayer metric) {
-        DOMUtil.removeAllChildren(contributionsDiv);
-        contributionsDiv.appendChild((Node) metric.asWidget().getElement());
+    public String getNumberOfContributorsLabel(int numberOfContributors) {
+        return ts.format(LibraryConstants.NumberOfContributors,
+                         numberOfContributors);
+    }
+
+    @Override
+    public String getNumberOfRepositoriesLabel(int numberOfRepositories) {
+        return ts.format(LibraryConstants.NumberOfRepositories,
+                         numberOfRepositories);
+    }
+
+    @Override
+    public void showNoOrganizationalUnits(final HTMLElement view) {
+        cardsContainer.appendChild(view);
     }
 
     @EventHandler("create-organizational-unit")
     public void createOrganizationalUnit(final ClickEvent event) {
         presenter.createOrganizationalUnit();
-    }
-
-    @EventHandler("filter-name")
-    public void filterTextChange(final KeyUpEvent event) {
-        presenter.refresh();
-    }
-
-    @EventHandler("view-all-metrics")
-    public void viewAllMetrics(ClickEvent clickEvent) {
-        presenter.gotoOrgUnitsMetrics();
     }
 }

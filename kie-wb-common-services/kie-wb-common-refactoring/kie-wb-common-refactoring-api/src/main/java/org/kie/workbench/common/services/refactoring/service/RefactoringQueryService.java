@@ -28,11 +28,14 @@ import org.uberfire.paging.PageResponse;
 @Remote
 public interface RefactoringQueryService {
 
-    PageResponse<RefactoringPageRow> query( final RefactoringPageRequest request );
+    int queryHitCount(final RefactoringPageRequest request);
 
-    List<RefactoringPageRow> query( final String queryName, final Set<ValueIndexTerm> queryTerms );
+    PageResponse<RefactoringPageRow> query(final RefactoringPageRequest request);
 
-    PageResponse<RefactoringPageRow> queryToPageResponse( final QueryOperationRequest request );
-    List<RefactoringPageRow> queryToList( final QueryOperationRequest request );
+    List<RefactoringPageRow> query(final String queryName,
+                                   final Set<ValueIndexTerm> queryTerms);
 
+    PageResponse<RefactoringPageRow> queryToPageResponse(final QueryOperationRequest request);
+
+    List<RefactoringPageRow> queryToList(final QueryOperationRequest request);
 }

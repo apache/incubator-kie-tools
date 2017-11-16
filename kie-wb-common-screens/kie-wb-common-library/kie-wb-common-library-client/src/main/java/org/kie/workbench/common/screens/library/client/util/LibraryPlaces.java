@@ -79,10 +79,9 @@ import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 public class LibraryPlaces {
 
     public static final String LIBRARY_PERSPECTIVE = "LibraryPerspective";
-    public static final String NEW_PROJECT_SCREEN = "NewProjectScreen";
-    public static final String EMPTY_LIBRARY_SCREEN = "EmptyLibraryScreen";
     public static final String LIBRARY_SCREEN = "LibraryScreen";
     public static final String EMPTY_PROJECT_SCREEN = "EmptyProjectScreen";
+    public static final String IMPORT_PROJECTS_SCREEN = "TrySamplesScreen";
     public static final String PROJECT_SCREEN = "ProjectScreen";
     public static final String PROJECT_DETAIL_SCREEN = "ProjectsDetailScreen";
     public static final String ORG_UNITS_METRICS_SCREEN = "OrgUnitsMetricsScreen";
@@ -94,10 +93,9 @@ public class LibraryPlaces {
     public static final String REPOSITORY_STRUCTURE_SCREEN = "repositoryStructureScreen";
 
     public static final List<String> LIBRARY_PLACES = Collections.unmodifiableList(new ArrayList<String>(7) {{
-        add(NEW_PROJECT_SCREEN);
-        add(EMPTY_LIBRARY_SCREEN);
         add(LIBRARY_SCREEN);
         add(EMPTY_PROJECT_SCREEN);
+        add(IMPORT_PROJECTS_SCREEN);
         add(ORG_UNITS_METRICS_SCREEN);
         add(PROJECT_SCREEN);
         add(PROJECT_METRICS_SCREEN);
@@ -132,8 +130,6 @@ public class LibraryPlaces {
     private AuthoringWorkbenchDocks docks;
 
     private Event<ProjectContextChangeEvent> projectContextChangeEvent;
-
-    private ExamplesUtils examplesUtils;
 
     private Event<NotificationEvent> notificationEvent;
 
@@ -171,7 +167,6 @@ public class LibraryPlaces {
                          final LibraryToolbarPresenter libraryToolbar,
                          final AuthoringWorkbenchDocks docks,
                          final Event<ProjectContextChangeEvent> projectContextChangeEvent,
-                         final ExamplesUtils examplesUtils,
                          final Event<NotificationEvent> notificationEvent,
                          final ManagedInstance<ExamplesWizard> examplesWizards,
                          final TranslationUtils translationUtils,
@@ -192,7 +187,6 @@ public class LibraryPlaces {
         this.libraryToolbar = libraryToolbar;
         this.docks = docks;
         this.projectContextChangeEvent = projectContextChangeEvent;
-        this.examplesUtils = examplesUtils;
         this.notificationEvent = notificationEvent;
         this.examplesWizards = examplesWizards;
         this.translationUtils = translationUtils;
@@ -228,8 +222,7 @@ public class LibraryPlaces {
                         && (place.getIdentifier().equals(LibraryPlaces.PROJECT_SCREEN)
                         || place.getIdentifier().equals(LibraryPlaces.EMPTY_PROJECT_SCREEN))) {
                     setupLibraryBreadCrumbsForProject(projectInfo);
-                } else if (place.getIdentifier().equals(LibraryPlaces.LIBRARY_SCREEN)
-                        || place.getIdentifier().equals(LibraryPlaces.EMPTY_LIBRARY_SCREEN)) {
+                } else if (place.getIdentifier().equals(LibraryPlaces.LIBRARY_SCREEN)) {
                     setupLibraryBreadCrumbs();
                 }
             }
@@ -436,7 +429,7 @@ public class LibraryPlaces {
                                   () -> goToLibrary());
     }
 
-    public void setupLibraryBreadCrumbsForNewProject() {
+    public void setupLibraryBreadCrumbsForTrySamples() {
         breadcrumbs.clearBreadcrumbs(LibraryPlaces.LIBRARY_PERSPECTIVE);
         breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
                                   translationUtils.getOrganizationalUnitAliasInPlural(),
@@ -445,8 +438,21 @@ public class LibraryPlaces {
                                   getSelectedOrganizationalUnit().getName(),
                                   () -> goToLibrary());
         breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
-                                  ts.getTranslation(LibraryConstants.NewProject),
-                                  () -> goToNewProject());
+                                  ts.getTranslation(LibraryConstants.TrySamples),
+                                  () -> goToTrySamples());
+    }
+
+    public void setupLibraryBreadCrumbsForImportProjects(final String repositoryUrl) {
+        breadcrumbs.clearBreadcrumbs(LibraryPlaces.LIBRARY_PERSPECTIVE);
+        breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
+                                  translationUtils.getOrganizationalUnitAliasInPlural(),
+                                  () -> goToOrganizationalUnits());
+        breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
+                                  getSelectedOrganizationalUnit().getName(),
+                                  () -> goToLibrary());
+        breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
+                                  ts.getTranslation(LibraryConstants.ImportProjects),
+                                  () -> goToImportProjects(repositoryUrl));
     }
 
     public void setupLibraryBreadCrumbsForProject(final ProjectInfo projectInfo) {
@@ -557,36 +563,25 @@ public class LibraryPlaces {
     }
 
     public void goToLibrary(final Command callback) {
-        libraryService.call(new RemoteCallback<Boolean>() {
-            @Override
-            public void callback(final Boolean hasProjects) {
-                libraryService.call(libraryInfo -> {
-                    final PlaceRequest placeRequest = new ConditionalPlaceRequest(LibraryPlaces.LIBRARY_SCREEN)
-                            .when(p -> hasProjects)
-                            .orElse(new DefaultPlaceRequest(LibraryPlaces.EMPTY_LIBRARY_SCREEN));
-                    final PartDefinitionImpl part = new PartDefinitionImpl(placeRequest);
-                    part.setSelectable(false);
+        final PlaceRequest placeRequest = new DefaultPlaceRequest(LibraryPlaces.LIBRARY_SCREEN);
+        final PartDefinitionImpl part = new PartDefinitionImpl(placeRequest);
+        part.setSelectable(false);
 
-                    closeLibraryPlaces();
-                    placeManager.goTo(part,
-                                      libraryPerspective.getRootPanel());
+        closeLibraryPlaces();
+        placeManager.goTo(part,
+                          libraryPerspective.getRootPanel());
 
-                    setupLibraryBreadCrumbs();
+        setupLibraryBreadCrumbs();
 
-                    hideDocks();
+        hideDocks();
 
-                    if (callback != null) {
-                        callback.execute();
-                    } else {
-                        projectContextChangeEvent.fire(new ProjectContextChangeEvent(getSelectedOrganizationalUnit(),
-                                                                                     getSelectedRepository(),
-                                                                                     getSelectedBranch()));
-                    }
-                }).getLibraryInfo(getSelectedRepository(),
-                                  getSelectedBranch());
-            }
-        }).hasProjects(getSelectedRepository(),
-                       getSelectedBranch());
+        if (callback != null) {
+            callback.execute();
+        } else {
+            projectContextChangeEvent.fire(new ProjectContextChangeEvent(getSelectedOrganizationalUnit(),
+                                                                         getSelectedRepository(),
+                                                                         getSelectedBranch()));
+        }
     }
 
     public void goToProject(final ProjectInfo projectInfo) {
@@ -671,15 +666,32 @@ public class LibraryPlaces {
         }
     }
 
-    public void goToNewProject() {
-        final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest(LibraryPlaces.NEW_PROJECT_SCREEN);
+    public void goToTrySamples() {
+        final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest(LibraryPlaces.IMPORT_PROJECTS_SCREEN);
         final PartDefinitionImpl part = new PartDefinitionImpl(placeRequest);
         part.setSelectable(false);
 
         closeLibraryPlaces();
         placeManager.goTo(part,
                           libraryPerspective.getRootPanel());
-        setupLibraryBreadCrumbsForNewProject();
+        setupLibraryBreadCrumbsForTrySamples();
+    }
+
+    public void goToImportProjects(final String repositoryUrl) {
+        Map<String, String> params = new HashMap<>();
+        params.put("title",
+                   ts.getTranslation(LibraryConstants.ImportProjects));
+        params.put("repositoryUrl",
+                   repositoryUrl);
+        final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest(LibraryPlaces.IMPORT_PROJECTS_SCREEN,
+                                                                         params);
+        final PartDefinitionImpl part = new PartDefinitionImpl(placeRequest);
+        part.setSelectable(false);
+
+        closeLibraryPlaces();
+        placeManager.goTo(part,
+                          libraryPerspective.getRootPanel());
+        setupLibraryBreadCrumbsForImportProjects(repositoryUrl);
     }
 
     public void goToSettings(final ProjectInfo projectInfo) {

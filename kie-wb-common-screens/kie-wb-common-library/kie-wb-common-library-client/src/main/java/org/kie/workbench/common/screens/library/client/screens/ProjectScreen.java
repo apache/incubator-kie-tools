@@ -37,7 +37,6 @@ import org.kie.workbench.common.screens.library.api.AssetInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
 import org.kie.workbench.common.screens.library.api.ProjectInfo;
-import org.kie.workbench.common.screens.library.api.search.FilterUpdateEvent;
 import org.kie.workbench.common.screens.library.client.events.AssetDetailEvent;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
@@ -266,11 +265,6 @@ public class ProjectScreen {
                 }
             });
         }
-    }
-
-    public void filterUpdate(@Observes final FilterUpdateEvent event) {
-        view.setFilterName(event.getName());
-        onFilterChange();
     }
 
     private boolean isFilterEmpty() {

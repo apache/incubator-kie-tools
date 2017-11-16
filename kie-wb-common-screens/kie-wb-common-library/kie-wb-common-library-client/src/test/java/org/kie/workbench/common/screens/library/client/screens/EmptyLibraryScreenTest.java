@@ -15,22 +15,17 @@
  */
 package org.kie.workbench.common.screens.library.client.screens;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.guvnor.common.services.project.client.security.ProjectController;
-import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.examples.model.ExampleProject;
-import org.kie.workbench.common.screens.library.client.util.ExamplesUtils;
+import org.kie.workbench.common.screens.library.client.screens.importrepository.ImportRepositoryPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
+import org.kie.workbench.common.screens.library.client.widgets.library.AddProjectButtonPresenter;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.uberfire.mvp.ParameterizedCommand;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -40,111 +35,88 @@ public class EmptyLibraryScreenTest {
     private EmptyLibraryScreen.View view;
 
     @Mock
-    private User user;
+    private AddProjectButtonPresenter addProjectButtonPresenter;
+
+    @Mock
+    private ProjectController projectController;
 
     @Mock
     private LibraryPlaces libraryPlaces;
 
     @Mock
-    private ExamplesUtils examplesUtils;
+    private ManagedInstance<ImportRepositoryPopUpPresenter> importRepositoryPopUpPresenters;
 
     @Mock
-    private ProjectController projectController;
+    private ImportRepositoryPopUpPresenter importRepositoryPopUpPresenter;
 
     private EmptyLibraryScreen emptyLibraryScreen;
 
     @Before
     public void setup() {
-        emptyLibraryScreen = new EmptyLibraryScreen(view,
-                                                    user,
-                                                    libraryPlaces,
-                                                    examplesUtils,
-                                                    projectController);
+        doReturn(importRepositoryPopUpPresenter).when(importRepositoryPopUpPresenters).get();
+        doReturn(mock(AddProjectButtonPresenter.View.class)).when(addProjectButtonPresenter).getView();
+        doReturn(true).when(projectController).canCreateProjects();
 
-        doReturn("user").when(user).getIdentifier();
+        emptyLibraryScreen = new EmptyLibraryScreen(view,
+                                                    addProjectButtonPresenter,
+                                                    projectController,
+                                                    libraryPlaces,
+                                                    importRepositoryPopUpPresenters);
     }
 
     @Test
     public void setupTest() {
-        final ExampleProject exampleProject1 = mock(ExampleProject.class);
-        final ExampleProject exampleProject2 = mock(ExampleProject.class);
-
-        final Set<ExampleProject> exampleProjects = new HashSet<>();
-        exampleProjects.add(exampleProject1);
-        exampleProjects.add(exampleProject2);
-
-        doAnswer(invocationOnMock -> {
-            final ParameterizedCommand<Set<ExampleProject>> callback = (ParameterizedCommand<Set<ExampleProject>>) invocationOnMock.getArguments()[0];
-            callback.execute(exampleProjects);
-            return null;
-        }).when(examplesUtils).getExampleProjects(any());
-
         emptyLibraryScreen.setup();
 
         verify(view).init(emptyLibraryScreen);
-        verify(view).setup("user");
-        verify(view).clearImportExamplesButtonsContainer();
-
-        verify(view,
-               times(2)).addProjectToImport(any(ExampleProject.class));
-        verify(view).addProjectToImport(exampleProject1);
-        verify(view).addProjectToImport(exampleProject2);
+        verify(addProjectButtonPresenter).getView();
+        verify(view).addAction(any());
     }
 
     @Test
-    public void setupWithoutExamplesTest() {
-        doAnswer(invocationOnMock -> {
-            final ParameterizedCommand<Set<ExampleProject>> callback = (ParameterizedCommand<Set<ExampleProject>>) invocationOnMock.getArguments()[0];
-            callback.execute(null);
-            return null;
-        }).when(examplesUtils).getExampleProjects(any());
-
-        emptyLibraryScreen.setup();
-
-        verify(view).init(emptyLibraryScreen);
-        verify(view).setup("user");
-        verify(view).clearImportExamplesContainer();
-    }
-
-    @Test
-    public void canCreateNewProjectTest() {
-        doReturn(true).when(projectController).canCreateProjects();
-
-        emptyLibraryScreen.newProject();
-
-        verify(libraryPlaces).goToNewProject();
-    }
-
-    @Test
-    public void cannotCreateNewProjectTest() {
+    public void setupWithoutProjectCreationPermissionTest() {
         doReturn(false).when(projectController).canCreateProjects();
 
-        emptyLibraryScreen.newProject();
+        emptyLibraryScreen.setup();
+
+        verify(view).init(emptyLibraryScreen);
+        verify(addProjectButtonPresenter,
+               never()).getView();
+        verify(view,
+               never()).addAction(any());
+    }
+
+    @Test
+    public void trySamplesWithPermissionTest() {
+        emptyLibraryScreen.trySamples();
+
+        verify(libraryPlaces).goToTrySamples();
+    }
+
+    @Test
+    public void trySamplesWithoutPermissionTest() {
+        doReturn(false).when(projectController).canCreateProjects();
+
+        emptyLibraryScreen.trySamples();
 
         verify(libraryPlaces,
-               never()).goToNewProject();
+               never()).goToTrySamples();
     }
 
     @Test
-    public void canImportProjectTest() {
-        doReturn(true).when(projectController).canCreateProjects();
+    public void importProjectWithPermissionTest() {
+        emptyLibraryScreen.importProject();
 
-        final ExampleProject exampleProject = mock(ExampleProject.class);
-
-        emptyLibraryScreen.importProject(exampleProject);
-
-        verify(examplesUtils).importProject(exampleProject);
+        verify(importRepositoryPopUpPresenter).show();
     }
 
     @Test
-    public void cannotImportProjectTest() {
+    public void importProjectWithoutPermissionTest() {
         doReturn(false).when(projectController).canCreateProjects();
 
-        final ExampleProject exampleProject = mock(ExampleProject.class);
+        emptyLibraryScreen.importProject();
 
-        emptyLibraryScreen.importProject(exampleProject);
-
-        verify(examplesUtils,
-               never()).importProject(exampleProject);
+        verify(importRepositoryPopUpPresenter,
+               never()).show();
     }
 }

@@ -19,6 +19,7 @@ package org.kie.workbench.common.screens.library.api;
 import java.util.List;
 import java.util.Set;
 
+import org.ext.uberfire.social.activities.model.SocialUser;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.DeploymentMode;
@@ -48,6 +49,16 @@ public interface LibraryService {
                              final String projectDescription,
                              final DeploymentMode mode);
 
+    KieProject createProject(final String name,
+                             final String description,
+                             final String groupId,
+                             final String artifactId,
+                             final String version,
+                             final OrganizationalUnit selectedOrganizationalUnit,
+                             final Repository selectedRepository,
+                             final String baseURL,
+                             final DeploymentMode mode);
+
     Boolean thereIsAProjectInTheWorkbench();
 
     List<AssetInfo> getProjectAssets(final ProjectAssetsQuery query);
@@ -58,6 +69,8 @@ public interface LibraryService {
     Boolean hasAssets(final Project project);
 
     Set<ExampleProject> getExampleProjects();
+
+    Set<ExampleProject> getProjects(final String repositoryUrl);
 
     Project importProject(final OrganizationalUnit organizationalUnit,
                           final Repository repository,
@@ -70,4 +83,6 @@ public interface LibraryService {
 
     GAV createGAV(final String projectName,
                   final OrganizationalUnit selectedOrganizationalUnit);
+
+    List<SocialUser> getAllUsers();
 }

@@ -17,34 +17,29 @@
 package org.kie.workbench.common.screens.library.client.screens.organizationalunit;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.annotation.PostConstruct;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.dashbuilder.dataset.events.DataSetModifiedEvent;
-import org.dashbuilder.displayer.client.Displayer;
+import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.events.AfterCreateOrganizationalUnitEvent;
-import org.guvnor.structure.events.AfterDeleteOrganizationalUnitEvent;
-import org.guvnor.structure.events.AfterEditOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.screens.contributors.model.ContributorsDataSets;
 import org.kie.workbench.common.screens.library.api.LibraryService;
-import org.kie.workbench.common.screens.library.api.search.FilterUpdateEvent;
+import org.kie.workbench.common.screens.library.api.OrganizationalUnitRepositoryInfo;
+import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.popup.OrganizationalUnitPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
-import org.kie.workbench.common.screens.library.client.util.OrgUnitsMetricsFactory;
-import org.kie.workbench.common.screens.library.client.widgets.organizationalunit.OrganizationalUnitTileWidget;
+import org.kie.workbench.common.screens.library.client.widgets.common.TileWidget;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.lifecycle.OnClose;
 
 @WorkbenchScreen(identifier = LibraryPlaces.ORGANIZATIONAL_UNITS_SCREEN,
         owningPerspective = LibraryPerspective.class)
@@ -54,15 +49,15 @@ public class OrganizationalUnitsScreen {
 
         void clearOrganizationalUnits();
 
-        String getFilterName();
-
-        void setFilterName(String name);
-
         void hideCreateOrganizationalUnitAction();
 
-        void addOrganizationalUnit(OrganizationalUnitTileWidget organizationalUnitTileWidget);
+        void addOrganizationalUnit(TileWidget tileWidget);
 
-        void updateContributionsMetric(Displayer metric);
+        String getNumberOfContributorsLabel(int numberOfContributors);
+
+        String getNumberOfRepositoriesLabel(int numberOfRepositories);
+
+        void showNoOrganizationalUnits(HTMLElement view);
     }
 
     private View view;
@@ -75,13 +70,15 @@ public class OrganizationalUnitsScreen {
 
     private OrganizationalUnitController organizationalUnitController;
 
-    private ManagedInstance<OrganizationalUnitTileWidget> organizationalUnitTileWidgets;
+    private ManagedInstance<TileWidget> organizationalUnitTileWidgets;
+
+    private Event<ProjectContextChangeEvent> projectContextChangeEvent;
+
+    private LibraryInternalPreferences libraryInternalPreferences;
+
+    private EmptyOrganizationalUnitsScreen emptyOrganizationalUnitsScreen;
 
     List<OrganizationalUnit> organizationalUnits;
-
-    private OrgUnitsMetricsFactory orgUnitsMetricsFactory;
-
-    private Displayer commitsDisplayer;
 
     @Inject
     public OrganizationalUnitsScreen(final View view,
@@ -89,22 +86,25 @@ public class OrganizationalUnitsScreen {
                                      final Caller<LibraryService> libraryService,
                                      final OrganizationalUnitPopUpPresenter organizationalUnitPopUpPresenter,
                                      final OrganizationalUnitController organizationalUnitController,
-                                     final ManagedInstance<OrganizationalUnitTileWidget> organizationalUnitTileWidgets,
-                                     final OrgUnitsMetricsFactory orgUnitsMetricsFactory) {
+                                     final ManagedInstance<TileWidget> organizationalUnitTileWidgets,
+                                     final Event<ProjectContextChangeEvent> projectContextChangeEvent,
+                                     final LibraryInternalPreferences libraryInternalPreferences,
+                                     final EmptyOrganizationalUnitsScreen emptyOrganizationalUnitsScreen) {
         this.view = view;
         this.libraryPlaces = libraryPlaces;
         this.libraryService = libraryService;
         this.organizationalUnitPopUpPresenter = organizationalUnitPopUpPresenter;
         this.organizationalUnitController = organizationalUnitController;
         this.organizationalUnitTileWidgets = organizationalUnitTileWidgets;
-        this.orgUnitsMetricsFactory = orgUnitsMetricsFactory;
+        this.projectContextChangeEvent = projectContextChangeEvent;
+        this.libraryInternalPreferences = libraryInternalPreferences;
+        this.emptyOrganizationalUnitsScreen = emptyOrganizationalUnitsScreen;
     }
 
     @PostConstruct
     public void init() {
         setupView();
         setupOrganizationalUnits();
-        setupMetrics();
     }
 
     private void setupView() {
@@ -117,28 +117,58 @@ public class OrganizationalUnitsScreen {
         if (organizationalUnitController.canReadOrgUnits()) {
             libraryService.call((List<OrganizationalUnit> allOrganizationalUnits) -> {
                 organizationalUnits = allOrganizationalUnits;
-                refreshOrganizationalUnits(organizationalUnits);
+                if (allOrganizationalUnits.isEmpty()) {
+                    view.showNoOrganizationalUnits(emptyOrganizationalUnitsScreen.getView().getElement());
+                } else {
+                    refresh();
+                }
             }).getOrganizationalUnits();
         }
     }
 
-    private void setupMetrics() {
-        commitsDisplayer = orgUnitsMetricsFactory.lookupCommitsOverTimeDisplayer_small();
-        commitsDisplayer.draw();
-        view.updateContributionsMetric(commitsDisplayer);
-    }
-
-    private void refreshOrganizationalUnits(final List<OrganizationalUnit> organizationalUnits) {
+    public void refresh() {
         view.clearOrganizationalUnits();
         organizationalUnits.forEach(organizationalUnit -> {
-            final OrganizationalUnitTileWidget organizationalUnitTileWidget = organizationalUnitTileWidgets.get();
-            organizationalUnitTileWidget.init(organizationalUnit);
-            view.addOrganizationalUnit(organizationalUnitTileWidget);
+            final TileWidget tileWidget = organizationalUnitTileWidgets.get();
+            tileWidget.init(organizationalUnit.getName(),
+                            view.getNumberOfContributorsLabel(organizationalUnit.getContributors().size()),
+                            String.valueOf(organizationalUnit.getRepositories().size()),
+                            view.getNumberOfRepositoriesLabel(organizationalUnit.getRepositories().size()),
+                            () -> open(organizationalUnit));
+            view.addOrganizationalUnit(tileWidget);
         });
     }
 
+    public OrganizationalUnitRepositoryInfo open(OrganizationalUnit organizationalUnit) {
+        return libraryService.call((OrganizationalUnitRepositoryInfo info) -> {
+            libraryInternalPreferences.load(loadedLibraryInternalPreferences -> {
+                                                loadedLibraryInternalPreferences.setLastOpenedOrganizationalUnit(info.getSelectedOrganizationalUnit().getIdentifier());
+                                                loadedLibraryInternalPreferences.setLastOpenedRepository(info.getSelectedRepository().getAlias());
+                                                loadedLibraryInternalPreferences.save();
+                                            },
+                                            error -> {
+                                            });
+
+            if (teamAlreadySelected(info)) {
+                libraryPlaces.goToLibrary(() -> {
+                });
+            } else {
+                final ProjectContextChangeEvent event = new ProjectContextChangeEvent(info.getSelectedOrganizationalUnit(),
+                                                                                      info.getSelectedRepository(),
+                                                                                      info.getSelectedRepository().getDefaultBranch());
+                projectContextChangeEvent.fire(event);
+            }
+        }).getOrganizationalUnitRepositoryInfo(organizationalUnit);
+    }
+
+    private boolean teamAlreadySelected(OrganizationalUnitRepositoryInfo info) {
+        return info.getSelectedOrganizationalUnit().equals(libraryPlaces.getSelectedOrganizationalUnit())
+                && info.getSelectedRepository().equals(libraryPlaces.getSelectedRepository())
+                && info.getSelectedRepository().getDefaultBranch().equals(libraryPlaces.getSelectedBranch());
+    }
+
     public void createOrganizationalUnit() {
-        organizationalUnitPopUpPresenter.showAddPopUp();
+        organizationalUnitPopUpPresenter.show();
     }
 
     public void organizationalUnitCreated(@Observes final AfterCreateOrganizationalUnitEvent afterCreateOrganizationalUnitEvent) {
@@ -146,44 +176,8 @@ public class OrganizationalUnitsScreen {
         refresh();
     }
 
-    public void organizationalUnitEdited(@Observes final AfterEditOrganizationalUnitEvent afterEditOrganizationalUnitEvent) {
-        organizationalUnits.remove(afterEditOrganizationalUnitEvent.getPreviousOrganizationalUnit());
-        organizationalUnits.add(afterEditOrganizationalUnitEvent.getEditedOrganizationalUnit());
-        refresh();
-    }
-
-    public void organizationalUnitDeleted(@Observes final AfterDeleteOrganizationalUnitEvent afterDeleteOrganizationalUnitEvent) {
-        organizationalUnits.remove(afterDeleteOrganizationalUnitEvent.getOrganizationalUnit());
-        refresh();
-    }
-
-    public void onContributionsUpdated(@Observes DataSetModifiedEvent event) {
-        String dsetId = event.getDataSetDef().getUUID();
-        if (ContributorsDataSets.GIT_CONTRIB.equals(dsetId) && commitsDisplayer != null) {
-            commitsDisplayer.redraw();
-        }
-    }
-
-    public void refresh() {
-        final String filterName = view.getFilterName().toUpperCase();
-        final List<OrganizationalUnit> filteredOrganizationalUnits = organizationalUnits.stream()
-                .filter(ou -> ou.getName().toUpperCase().contains(filterName))
-                .collect(Collectors.toList());
-        filteredOrganizationalUnits.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
-        refreshOrganizationalUnits(filteredOrganizationalUnits);
-    }
-
-    public void filterUpdate(@Observes final FilterUpdateEvent event) {
-        view.setFilterName(event.getName());
-        refresh();
-    }
-
     public boolean canCreateOrganizationalUnit() {
         return organizationalUnitController.canCreateOrgUnits();
-    }
-
-    public void gotoOrgUnitsMetrics() {
-        libraryPlaces.goToOrgUnitsMetrics();
     }
 
     @WorkbenchPartTitle
@@ -194,12 +188,5 @@ public class OrganizationalUnitsScreen {
     @WorkbenchPartView
     public UberElement<OrganizationalUnitsScreen> getView() {
         return view;
-    }
-
-    @OnClose
-    public void dispose() {
-        if (commitsDisplayer != null) {
-            commitsDisplayer.close();
-        }
     }
 }

@@ -16,32 +16,29 @@
 
 package org.kie.workbench.common.screens.library.client.screens;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
-import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.client.security.ProjectController;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.structure.repositories.Repository;
+import org.guvnor.common.services.project.context.ProjectContext;
+import org.guvnor.structure.client.security.OrganizationalUnitController;
+import org.guvnor.structure.events.AfterEditOrganizationalUnitEvent;
 import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.workbench.common.screens.library.api.LibraryInfo;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.library.api.LibraryService;
-import org.kie.workbench.common.screens.library.api.ProjectInfo;
-import org.kie.workbench.common.screens.library.api.search.FilterUpdateEvent;
-import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
+import org.kie.workbench.common.screens.library.client.screens.importrepository.ImportRepositoryPopUpPresenter;
+import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.edit.EditContributorsPopUpPresenter;
+import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.ContributorsListPresenter;
+import org.kie.workbench.common.screens.library.client.screens.organizationalunit.delete.DeleteOrganizationalUnitPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.mvp.Command;
+import org.uberfire.lifecycle.OnClose;
 
 @WorkbenchScreen(identifier = LibraryPlaces.LIBRARY_SCREEN,
         owningPerspective = LibraryPerspective.class)
@@ -49,121 +46,145 @@ public class LibraryScreen {
 
     public interface View extends UberElement<LibraryScreen> {
 
-        void clearProjects();
+        void setTitle(String title);
 
-        void addProject(String project,
-                        Command details,
-                        Command select);
+        void setProjectsCount(int count);
 
-        void clearFilterText();
+        void setContributorsCount(int count);
 
-        void setFilterName(String name);
+        void updateContent(HTMLElement content);
     }
 
     private View view;
 
-    private PlaceManager placeManager;
+    private ManagedInstance<EditContributorsPopUpPresenter> editContributorsPopUpPresenters;
 
-    private LibraryPlaces libraryPlaces;
+    private ManagedInstance<DeleteOrganizationalUnitPopUpPresenter> deleteOrganizationalUnitPopUpPresenters;
 
-    private Event<ProjectDetailEvent> projectDetailEvent;
+    private ManagedInstance<ImportRepositoryPopUpPresenter> importRepositoryPopUpPresenters;
 
-    private Caller<LibraryService> libraryService;
+    private ProjectContext projectContext;
+
+    private OrganizationalUnitController organizationalUnitController;
 
     private ProjectController projectController;
 
-    List<Project> projects;
+    private EmptyLibraryScreen emptyLibraryScreen;
+
+    private PopulatedLibraryScreen populatedLibraryScreen;
+
+    private OrgUnitsMetricsScreen orgUnitsMetricsScreen;
+
+    private ContributorsListPresenter contributorsListPresenter;
+
+    private Caller<LibraryService> libraryService;
+
+    private LibraryPlaces libraryPlaces;
 
     @Inject
     public LibraryScreen(final View view,
-                         final PlaceManager placeManager,
-                         final LibraryPlaces libraryPlaces,
-                         final Event<ProjectDetailEvent> projectDetailEvent,
+                         final ManagedInstance<DeleteOrganizationalUnitPopUpPresenter> deleteOrganizationalUnitPopUpPresenters,
+                         final ManagedInstance<EditContributorsPopUpPresenter> editContributorsPopUpPresenters,
+                         final ManagedInstance<ImportRepositoryPopUpPresenter> importRepositoryPopUpPresenters,
+                         final ProjectContext projectContext,
+                         final OrganizationalUnitController organizationalUnitController,
+                         final ProjectController projectController,
+                         final EmptyLibraryScreen emptyLibraryScreen,
+                         final PopulatedLibraryScreen populatedLibraryScreen,
+                         final OrgUnitsMetricsScreen orgUnitsMetricsScreen,
+                         final ContributorsListPresenter contributorsListPresenter,
                          final Caller<LibraryService> libraryService,
-                         final ProjectController projectController) {
+                         final LibraryPlaces libraryPlaces) {
         this.view = view;
-        this.placeManager = placeManager;
-        this.libraryPlaces = libraryPlaces;
-        this.projectDetailEvent = projectDetailEvent;
-        this.libraryService = libraryService;
+        this.deleteOrganizationalUnitPopUpPresenters = deleteOrganizationalUnitPopUpPresenters;
+        this.editContributorsPopUpPresenters = editContributorsPopUpPresenters;
+        this.importRepositoryPopUpPresenters = importRepositoryPopUpPresenters;
+        this.projectContext = projectContext;
+        this.organizationalUnitController = organizationalUnitController;
         this.projectController = projectController;
-        this.projects = Collections.emptyList();
+        this.emptyLibraryScreen = emptyLibraryScreen;
+        this.populatedLibraryScreen = populatedLibraryScreen;
+        this.orgUnitsMetricsScreen = orgUnitsMetricsScreen;
+        this.contributorsListPresenter = contributorsListPresenter;
+        this.libraryService = libraryService;
+        this.libraryPlaces = libraryPlaces;
     }
 
     @PostConstruct
-    public void setup() {
-        Repository selectedRepository = libraryPlaces.getSelectedRepository();
-        String selectedBranch = libraryPlaces.getSelectedBranch();
-
-        libraryService.call((RemoteCallback<LibraryInfo>) this::updateLibrary)
-                .getLibraryInfo(selectedRepository,
-                                selectedBranch);
-
-        placeManager.closePlace(LibraryPlaces.EMPTY_LIBRARY_SCREEN);
+    public void init() {
+        view.init(this);
+        view.setTitle(libraryPlaces.getSelectedOrganizationalUnit().getName());
+        showProjects();
+        view.setContributorsCount(contributorsListPresenter.getContributorsCount());
     }
 
-    private void updateLibrary(final LibraryInfo libraryInfo) {
-        projects = libraryInfo.getProjects();
-        view.clearFilterText();
-        setupProjects();
-    }
-
-    private void setupProjects() {
-        if (projectController.canReadProjects()) {
-            projects = projects.stream()
-                    .filter(p -> projectController.canReadProject(p))
-                    .collect(Collectors.toList());
-            projects.sort((p1, p2) -> p1.getProjectName().compareTo(p2.getProjectName()));
-
-            updateView(projects);
+    public void trySamples() {
+        if (userCanCreateProjects()) {
+            libraryPlaces.goToTrySamples();
         }
     }
 
-    public List<Project> filterProjects(final String filter) {
-        List<Project> filteredProjects = projects.stream()
-                .filter(p -> p.getProjectName().toUpperCase().contains(filter.toUpperCase()))
-                .collect(Collectors.toList());
-
-        updateView(filteredProjects);
-
-        return filteredProjects;
+    public void importProject() {
+        if (userCanCreateProjects()) {
+            final ImportRepositoryPopUpPresenter importRepositoryPopUpPresenter = importRepositoryPopUpPresenters.get();
+            importRepositoryPopUpPresenter.show();
+        }
     }
 
-    private void updateView(final List<Project> projects) {
-        view.clearProjects();
-        projects.stream().forEach(p -> view.addProject(p.getProjectName(),
-                                                       detailsCommand(p),
-                                                       selectCommand(p)));
+    public void editContributors() {
+        if (userCanUpdateOrganizationalUnit()) {
+            final EditContributorsPopUpPresenter editContributorsPopUpPresenter = editContributorsPopUpPresenters.get();
+            editContributorsPopUpPresenter.show(projectContext.getActiveOrganizationalUnit());
+        }
     }
 
-    public void filterUpdate(@Observes final FilterUpdateEvent event) {
-        view.setFilterName(event.getName());
-        filterProjects(event.getName());
+    public void delete() {
+        if (userCanDeleteOrganizationalUnit()) {
+            final DeleteOrganizationalUnitPopUpPresenter deleteOrganizationalUnitPopUpPresenter = deleteOrganizationalUnitPopUpPresenters.get();
+            deleteOrganizationalUnitPopUpPresenter.show(projectContext.getActiveOrganizationalUnit());
+        }
+    }
+
+    public void showProjects() {
+        libraryService.call((Boolean hasProjects) -> {
+            if (hasProjects) {
+                view.updateContent(populatedLibraryScreen.getView().getElement());
+                view.setProjectsCount(populatedLibraryScreen.getProjectsCount());
+            } else {
+                view.updateContent(emptyLibraryScreen.getView().getElement());
+                view.setProjectsCount(0);
+            }
+        }).hasProjects(libraryPlaces.getSelectedRepository(),
+                       libraryPlaces.getSelectedBranch());
+    }
+
+    public void showContributors() {
+        view.updateContent(contributorsListPresenter.getView().getElement());
+    }
+
+    public void showMetrics() {
+        view.updateContent(orgUnitsMetricsScreen.getView().getElement());
     }
 
     public boolean userCanCreateProjects() {
         return projectController.canCreateProjects();
     }
 
-    Command selectCommand(final Project project) {
-        return () -> {
-            final ProjectInfo projectInfo = getProjectInfo(project);
-            libraryPlaces.goToProject(projectInfo);
-        };
+    public boolean userCanUpdateOrganizationalUnit() {
+        return organizationalUnitController.canUpdateOrgUnit(projectContext.getActiveOrganizationalUnit());
     }
 
-    Command detailsCommand(final Project project) {
-        return () -> {
-            final ProjectInfo projectInfo = getProjectInfo(project);
-            projectDetailEvent.fire(new ProjectDetailEvent(projectInfo));
-        };
+    public boolean userCanDeleteOrganizationalUnit() {
+        return organizationalUnitController.canDeleteOrgUnit(projectContext.getActiveOrganizationalUnit());
     }
 
-    private ProjectInfo getProjectInfo(final Project project) {
-        return new ProjectInfo(libraryPlaces.getSelectedOrganizationalUnit(),
-                               libraryPlaces.getSelectedRepository(),
-                               libraryPlaces.getSelectedBranch(),
-                               project);
+    public void organizationalUnitEdited(@Observes final AfterEditOrganizationalUnitEvent afterEditOrganizationalUnitEvent) {
+        view.setContributorsCount(afterEditOrganizationalUnitEvent.getEditedOrganizationalUnit().getContributors().size());
+    }
+
+    @OnClose
+    public void onClose() {
+        orgUnitsMetricsScreen.onClose();
     }
 
     @WorkbenchPartTitle
@@ -172,7 +193,7 @@ public class LibraryScreen {
     }
 
     @WorkbenchPartView
-    public UberElement<LibraryScreen> getView() {
+    public View getView() {
         return view;
     }
 }

@@ -16,35 +16,23 @@
 package org.kie.workbench.common.screens.library.client.screens;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.dashbuilder.displayer.client.Displayer;
 import org.dashbuilder.displayer.client.DisplayerCoordinator;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.util.OrgUnitsMetricsFactory;
-import org.kie.workbench.common.screens.library.client.util.TranslationUtils;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.lifecycle.OnClose;
 
-@Dependent
-@WorkbenchScreen(identifier = LibraryPlaces.ORG_UNITS_METRICS_SCREEN)
 public class OrgUnitsMetricsScreen {
 
     public interface View extends UberElement<OrgUnitsMetricsScreen> {
 
-        void setHeaderTitle(String title);
-
         void setCommitsOverTimeDisplayer(Displayer displayer);
 
         void setCommitsPerAuthorDisplayer(Displayer displayer);
-
-        void setCommitsPerOrgUnitDisplayer(Displayer displayer, String title);
 
         void setCommitsPerProjectDisplayer(Displayer displayer);
 
@@ -56,8 +44,6 @@ public class OrgUnitsMetricsScreen {
 
         void setTopContribSelectorDisplayer(Displayer displayer);
 
-        void setOrgUnitSelectorDisplayer(Displayer displayer);
-
         void setProjectSelectorDisplayer(Displayer displayer);
 
         void setDateSelectorDisplayer(Displayer displayer);
@@ -65,86 +51,70 @@ public class OrgUnitsMetricsScreen {
         void setAllCommitsDisplayer(Displayer displayer);
 
         void clear();
-
     }
 
     View view;
     TranslationService translationService;
-    TranslationUtils translationUtils;
-    DisplayerCoordinator displayerCoordinator;
     OrgUnitsMetricsFactory metricsFactory;
+    DisplayerCoordinator displayerCoordinator;
+    LibraryPlaces libraryPlaces;
+
+    OrganizationalUnit organizationalUnit;
+
     Displayer commitsOverTimeDisplayer;
     Displayer commitsPerAuthorDisplayer;
-    Displayer commitsPerOrgUnitDisplayer;
     Displayer commitsPerProjectDisplayer;
     Displayer commitsByYearDisplayer;
     Displayer commitsByQuarterDisplayer;
     Displayer commitsByDayOfWeekDisplayer;
     Displayer topAuthorSelectorDisplayer;
-    Displayer orgUnitSelectorDisplayer;
     Displayer projectSelectorDisplayer;
     Displayer dateSelectorDisplayer;
     Displayer allCommitsDisplayer;
 
     @Inject
-    public OrgUnitsMetricsScreen(View view,
-                                 TranslationService translationService,
-                                 TranslationUtils translationUtils,
-                                 OrgUnitsMetricsFactory metricsFactory,
-                                 DisplayerCoordinator displayerCoordinator) {
+    public OrgUnitsMetricsScreen(final View view,
+                                 final TranslationService translationService,
+                                 final OrgUnitsMetricsFactory metricsFactory,
+                                 final DisplayerCoordinator displayerCoordinator,
+                                 final LibraryPlaces libraryPlaces) {
         this.view = view;
         this.translationService = translationService;
-        this.translationUtils = translationUtils;
         this.metricsFactory = metricsFactory;
         this.displayerCoordinator = displayerCoordinator;
-        this.view.init(this);
-    }
-
-    @WorkbenchPartTitle
-    public String getTitle() {
-        return translationService.format(LibraryConstants.OrgUnitsMetrics, translationUtils.getOrganizationalUnitAliasInPlural());
-    }
-
-    @WorkbenchPartView
-    public UberElement<OrgUnitsMetricsScreen> getView() {
-        return view;
+        this.libraryPlaces = libraryPlaces;
     }
 
     @PostConstruct
     public void init() {
-        String orgUnitsAlias = translationUtils.getOrganizationalUnitAliasInPlural();
-        String orgUnitAlias = translationUtils.getOrganizationalUnitAliasInSingular();
+        this.view.init(this);
 
-        this.commitsOverTimeDisplayer = metricsFactory.lookupCommitsOverTimeDisplayer();
-        this.commitsPerOrgUnitDisplayer = metricsFactory.lookupCommitsPerOrgUnitDisplayer();
-        this.commitsPerAuthorDisplayer = metricsFactory.lookupCommitsPerAuthorDisplayer();
-        this.commitsPerProjectDisplayer = metricsFactory.lookupCommitsPerProjectDisplayer();
-        this.commitsByYearDisplayer = metricsFactory.lookupCommitsByYearDisplayer();
-        this.commitsByQuarterDisplayer = metricsFactory.lookupCommitsByQuarterDisplayer();
-        this.commitsByDayOfWeekDisplayer = metricsFactory.lookupCommitsByDayOfWeekDisplayer();
-        this.allCommitsDisplayer = metricsFactory.lookupAllCommitsDisplayer();
-        this.projectSelectorDisplayer = metricsFactory.lookupProjectSelectorDisplayer();
-        this.orgUnitSelectorDisplayer = metricsFactory.lookupOrgUnitSelectorDisplayer();
-        this.topAuthorSelectorDisplayer = metricsFactory.lookupTopContributorSelectorDisplayer();
-        this.dateSelectorDisplayer = metricsFactory.lookupDateSelectorDisplayer();
+        this.organizationalUnit = libraryPlaces.getSelectedOrganizationalUnit();
+
+        this.commitsOverTimeDisplayer = metricsFactory.lookupCommitsOverTimeDisplayer(organizationalUnit);
+        this.commitsPerAuthorDisplayer = metricsFactory.lookupCommitsPerAuthorDisplayer(organizationalUnit);
+        this.commitsPerProjectDisplayer = metricsFactory.lookupCommitsPerProjectDisplayer(organizationalUnit);
+        this.commitsByYearDisplayer = metricsFactory.lookupCommitsByYearDisplayer(organizationalUnit);
+        this.commitsByQuarterDisplayer = metricsFactory.lookupCommitsByQuarterDisplayer(organizationalUnit);
+        this.commitsByDayOfWeekDisplayer = metricsFactory.lookupCommitsByDayOfWeekDisplayer(organizationalUnit);
+        this.allCommitsDisplayer = metricsFactory.lookupAllCommitsDisplayer(organizationalUnit);
+        this.projectSelectorDisplayer = metricsFactory.lookupProjectSelectorDisplayer(organizationalUnit);
+        this.topAuthorSelectorDisplayer = metricsFactory.lookupTopContributorSelectorDisplayer(organizationalUnit);
+        this.dateSelectorDisplayer = metricsFactory.lookupDateSelectorDisplayer(organizationalUnit);
 
         view.clear();
-        view.setHeaderTitle(translationService.format(LibraryConstants.MetricsTitle, orgUnitsAlias));
         view.setCommitsPerAuthorDisplayer(commitsPerAuthorDisplayer);
-        view.setCommitsPerOrgUnitDisplayer(commitsPerOrgUnitDisplayer, translationService.format(LibraryConstants.PerOrgUnit, orgUnitAlias));
         view.setCommitsPerProjectDisplayer(commitsPerProjectDisplayer);
         view.setCommitsOverTimeDisplayer(commitsOverTimeDisplayer);
         view.setCommitsByYearDisplayer(commitsByYearDisplayer);
         view.setCommitsByQuarterDisplayer(commitsByQuarterDisplayer);
         view.setCommitsByDayOfWeekDisplayer(commitsByDayOfWeekDisplayer);
         view.setAllCommitsDisplayer(allCommitsDisplayer);
-        view.setOrgUnitSelectorDisplayer(orgUnitSelectorDisplayer);
         view.setProjectSelectorDisplayer(projectSelectorDisplayer);
         view.setTopContribSelectorDisplayer(topAuthorSelectorDisplayer);
         view.setDateSelectorDisplayer(dateSelectorDisplayer);
 
         displayerCoordinator.addDisplayer(commitsPerAuthorDisplayer);
-        displayerCoordinator.addDisplayer(commitsPerOrgUnitDisplayer);
         displayerCoordinator.addDisplayer(commitsPerProjectDisplayer);
         displayerCoordinator.addDisplayer(commitsOverTimeDisplayer);
         displayerCoordinator.addDisplayer(commitsByYearDisplayer);
@@ -152,13 +122,11 @@ public class OrgUnitsMetricsScreen {
         displayerCoordinator.addDisplayer(commitsByDayOfWeekDisplayer);
         displayerCoordinator.addDisplayer(allCommitsDisplayer);
         displayerCoordinator.addDisplayer(topAuthorSelectorDisplayer);
-        displayerCoordinator.addDisplayer(orgUnitSelectorDisplayer);
         displayerCoordinator.addDisplayer(projectSelectorDisplayer);
         displayerCoordinator.addDisplayer(dateSelectorDisplayer);
         displayerCoordinator.drawAll();
     }
 
-    @OnClose
     public void onClose() {
         displayerCoordinator.closeAll();
         view.clear();
@@ -202,5 +170,9 @@ public class OrgUnitsMetricsScreen {
 
     public Displayer getAllCommitsDisplayer() {
         return allCommitsDisplayer;
+    }
+
+    public View getView() {
+        return view;
     }
 }

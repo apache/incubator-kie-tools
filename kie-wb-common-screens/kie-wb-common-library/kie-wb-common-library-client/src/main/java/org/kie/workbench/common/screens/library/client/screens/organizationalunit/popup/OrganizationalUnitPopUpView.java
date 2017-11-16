@@ -18,11 +18,11 @@ package org.kie.workbench.common.screens.library.client.screens.organizationalun
 
 import javax.inject.Inject;
 
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.Input;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.api.IsElement;
@@ -67,14 +67,6 @@ public class OrganizationalUnitPopUpView implements OrganizationalUnitPopUpPrese
     @DataField("name")
     Input name;
 
-    @Inject
-    @DataField("default-group-id")
-    Input defaultGroupId;
-
-    @Inject
-    @DataField("owner")
-    Input owner;
-
     @Override
     public void init(OrganizationalUnitPopUpPresenter presenter) {
         this.presenter = presenter;
@@ -82,19 +74,9 @@ public class OrganizationalUnitPopUpView implements OrganizationalUnitPopUpPrese
     }
 
     @Override
-    public void showAddPopUp() {
+    public void show() {
         errorSetup();
         modal.show();
-    }
-
-    @Override
-    public void showEditPopUp(final OrganizationalUnit organizationalUnit) {
-        this.name.setValue(organizationalUnit.getName());
-        this.name.setDisabled(true);
-        this.defaultGroupId.setValue(organizationalUnit.getDefaultGroupId());
-        this.owner.setValue(organizationalUnit.getOwner());
-
-        showAddPopUp();
     }
 
     @Override
@@ -105,8 +87,6 @@ public class OrganizationalUnitPopUpView implements OrganizationalUnitPopUpPrese
     @Override
     public void clear() {
         name.setValue("");
-        defaultGroupId.setValue("");
-        owner.setValue("");
     }
 
     @Override
@@ -121,33 +101,9 @@ public class OrganizationalUnitPopUpView implements OrganizationalUnitPopUpPrese
     }
 
     @Override
-    public String getDefaultGroupId() {
-        return this.defaultGroupId.getValue();
-    }
-
-    @Override
-    public String getOwner() {
-        return this.owner.getValue();
-    }
-
-    @Override
     public String getEmptyNameValidationMessage() {
         final String name = ts.format(LibraryConstants.Name);
         return ts.format(LibraryConstants.EmptyFieldValidation,
-                         name);
-    }
-
-    @Override
-    public String getEmptyDefaultGroupIdValidationMessage() {
-        final String name = ts.format(LibraryConstants.DefaultGroupId);
-        return ts.format(LibraryConstants.EmptyFieldValidation,
-                         name);
-    }
-
-    @Override
-    public String getInvalidDefaultGroupIdValidationMessage() {
-        final String name = ts.format(LibraryConstants.DefaultGroupId);
-        return ts.format(LibraryConstants.InvalidFieldValidation,
                          name);
     }
 
@@ -174,9 +130,15 @@ public class OrganizationalUnitPopUpView implements OrganizationalUnitPopUpPrese
                          LibraryConstants.Name);
     }
 
+    @Override
+    public void append(final HTMLElement child) {
+        body.appendChild(child);
+    }
+
     private void modalSetup() {
         this.modal = new CommonModalBuilder()
-                .addHeader(translationUtils.getOrganizationalUnitAliasInSingular())
+                .addHeader(ts.format(LibraryConstants.CreateOrganizationalUnit,
+                                     translationUtils.getOrganizationalUnitAliasInSingular()))
                 .addBody(body)
                 .addFooter(footer())
                 .build();

@@ -116,9 +116,6 @@ public class LibraryPlacesTest {
     private Event<ProjectContextChangeEvent> projectContextChangeEvent;
 
     @Mock
-    private ExamplesUtils examplesUtils;
-
-    @Mock
     private Event<NotificationEvent> notificationEvent;
 
     @Mock
@@ -169,7 +166,6 @@ public class LibraryPlacesTest {
                                               libraryToolbar,
                                               docks,
                                               projectContextChangeEvent,
-                                              examplesUtils,
                                               notificationEvent,
                                               examplesWizards,
                                               translationUtils,
@@ -197,7 +193,7 @@ public class LibraryPlacesTest {
 
         doNothing().when(libraryPlaces).setupToolBar();
         doNothing().when(libraryPlaces).setupLibraryBreadCrumbs();
-        doNothing().when(libraryPlaces).setupLibraryBreadCrumbsForNewProject();
+        doNothing().when(libraryPlaces).setupLibraryBreadCrumbsForTrySamples();
         doNothing().when(libraryPlaces).setupLibraryBreadCrumbsForProject(any(ProjectInfo.class));
         doNothing().when(libraryPlaces).setupLibraryBreadCrumbsForAsset(any(ProjectInfo.class),
                                                                         any(Path.class));
@@ -447,7 +443,6 @@ public class LibraryPlacesTest {
         verify(placeManager).closeAllPlacesOrNothing();
         verify(placeManager).goTo(eq(part),
                                   any(PanelDefinition.class));
-        verify(libraryPlaces).setupLibraryBreadCrumbsForOrganizationUnits();
     }
 
     @Test
@@ -475,9 +470,7 @@ public class LibraryPlacesTest {
 
     @Test
     public void goToLibraryTest() {
-        final PlaceRequest placeRequest = new ConditionalPlaceRequest(LibraryPlaces.LIBRARY_SCREEN)
-                .when(p -> false)
-                .orElse(new DefaultPlaceRequest(LibraryPlaces.EMPTY_LIBRARY_SCREEN));
+        final PlaceRequest placeRequest = new DefaultPlaceRequest(LibraryPlaces.LIBRARY_SCREEN);
         final PartDefinitionImpl part = new PartDefinitionImpl(placeRequest);
         part.setSelectable(false);
 
@@ -488,20 +481,6 @@ public class LibraryPlacesTest {
                                   any(PanelDefinition.class));
         verify(libraryPlaces).setupLibraryBreadCrumbs();
         verify(projectContextChangeEvent).fire(any(ProjectContextChangeEvent.class));
-    }
-
-    @Test
-    public void goToNewProjectTest() {
-        final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest(LibraryPlaces.NEW_PROJECT_SCREEN);
-        final PartDefinitionImpl part = new PartDefinitionImpl(placeRequest);
-        part.setSelectable(false);
-
-        libraryPlaces.goToNewProject();
-
-        verify(libraryPlaces).closeLibraryPlaces();
-        verify(placeManager).goTo(eq(part),
-                                  any(PanelDefinition.class));
-        verify(libraryPlaces).setupLibraryBreadCrumbsForNewProject();
     }
 
     @Test
@@ -535,7 +514,8 @@ public class LibraryPlacesTest {
 
         libraryPlaces.goToOrgUnitsMetrics();
 
-        verify(placeManager).goTo(eq(part), any(PanelDefinition.class));
+        verify(placeManager).goTo(eq(part),
+                                  any(PanelDefinition.class));
         verify(libraryPlaces).setupLibraryBreadCrumbsForOrgUnitsMetrics();
     }
 
@@ -551,7 +531,8 @@ public class LibraryPlacesTest {
 
         libraryPlaces.goToProjectMetrics(projectInfo);
 
-        verify(placeManager).goTo(eq(part), any(PanelDefinition.class));
+        verify(placeManager).goTo(eq(part),
+                                  any(PanelDefinition.class));
         verify(projectMetricsEvent).fire(any(ProjectMetricsEvent.class));
         verify(libraryPlaces).setupLibraryBreadCrumbsForProjectMetrics(projectInfo);
     }
@@ -559,8 +540,6 @@ public class LibraryPlacesTest {
     @Test
     public void closeLibraryPlacesTest() {
         libraryPlaces.closeLibraryPlaces();
-        verify(placeManager).closePlace(LibraryPlaces.NEW_PROJECT_SCREEN);
-        verify(placeManager).closePlace(LibraryPlaces.EMPTY_LIBRARY_SCREEN);
         verify(placeManager).closePlace(LibraryPlaces.LIBRARY_SCREEN);
         verify(placeManager).closePlace(LibraryPlaces.EMPTY_PROJECT_SCREEN);
         verify(placeManager).closePlace(LibraryPlaces.PROJECT_SCREEN);
@@ -569,8 +548,8 @@ public class LibraryPlacesTest {
         verify(placeManager).closePlace(LibraryPlaces.ORGANIZATIONAL_UNITS_SCREEN);
         verify(placeManager).closePlace(LibraryPlaces.PROJECT_SETTINGS);
         verify(placeManager).closePlace(PreferencesRootScreen.IDENTIFIER);
-
     }
+
     @Test
     public void goToSameProjectTest() {
         final ProjectInfo projectInfo = new ProjectInfo(activeOrganizationalUnit,

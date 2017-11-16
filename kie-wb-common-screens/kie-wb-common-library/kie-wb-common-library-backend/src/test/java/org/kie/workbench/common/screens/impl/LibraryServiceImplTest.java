@@ -22,6 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.ext.uberfire.social.activities.model.SocialUser;
+import org.ext.uberfire.social.activities.service.SocialUserRepositoryAPI;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
@@ -114,6 +116,9 @@ public class LibraryServiceImplTest {
     private IOService ioService;
 
     @Mock
+    private SocialUserRepositoryAPI socialUserRepositoryAPI;
+
+    @Mock
     private OrganizationalUnit ou1;
 
     @Mock
@@ -178,7 +183,8 @@ public class LibraryServiceImplTest {
                                                     projectService,
                                                     examplesService,
                                                     ioService,
-                                                    internalPreferences
+                                                    internalPreferences,
+                                                    socialUserRepositoryAPI
         ));
     }
 
@@ -246,9 +252,14 @@ public class LibraryServiceImplTest {
 
     @Test
     public void getLibraryInfoTest() {
+        final Path path = mockPath("file://the_project");
+        final Project project = mock(Project.class);
+        when(project.getRootPath()).thenReturn(path);
+        doReturn(true).when(ioService).exists(any());
+
         final Repository repository = mock(Repository.class);
         final Set<Project> projects = new HashSet<>();
-        projects.add(mock(Project.class));
+        projects.add(project);
         doReturn(projects).when(kieProjectService).getProjects(eq(repository),
                                                                anyString());
 
@@ -467,10 +478,15 @@ public class LibraryServiceImplTest {
 
     @Test
     public void hasProjectsTest() {
+        final Path path = mockPath("file://the_project");
+        final Project project = mock(Project.class);
+        when(project.getRootPath()).thenReturn(path);
+        doReturn(true).when(ioService).exists(any());
+
         final Repository emptyRepository = mock(Repository.class);
         final Repository repository = mock(Repository.class);
         final Set<Project> projects = new HashSet<>();
-        projects.add(mock(Project.class));
+        projects.add(project);
         doReturn(projects).when(kieProjectService).getProjects(eq(repository),
                                                                anyString());
 
@@ -482,6 +498,8 @@ public class LibraryServiceImplTest {
 
     @Test
     public void hasAssetsTest() {
+        doReturn(true).when(ioService).exists(any());
+
         final Package package1 = mock(Package.class);
         final Project project1 = mock(Project.class);
         doReturn(package1).when(projectService).resolveDefaultPackage(project1);
@@ -494,6 +512,20 @@ public class LibraryServiceImplTest {
 
         assertTrue(libraryService.hasAssets(project1));
         assertFalse(libraryService.hasAssets(project2));
+    }
+
+    @Test
+    public void unexistentProjectDosNotHaveAssetsTest() {
+        final Path path = mockPath("file://the_project");
+        final Package package1 = mock(Package.class);
+        final Project project1 = mock(Project.class);
+
+        when(project1.getRootPath()).thenReturn(path);
+        doReturn(false).when(ioService).exists(any());
+        doReturn(package1).when(projectService).resolveDefaultPackage(project1);
+        doReturn(true).when(explorerServiceHelper).hasAssets(package1);
+
+        assertFalse(libraryService.hasAssets(project1));
     }
 
     @Test
@@ -628,6 +660,24 @@ public class LibraryServiceImplTest {
                      libraryService.getSecondaryDefaultRepositoryName(getOrganizationalUnit("myalias")));
         assertEquals("my-alias-myrepo",
                      libraryService.getSecondaryDefaultRepositoryName(getOrganizationalUnit("my alias")));
+    }
+
+    @Test
+    public void getAllUsersTest() {
+        List<SocialUser> allUsers = new ArrayList<>();
+        allUsers.add(new SocialUser("system"));
+        allUsers.add(new SocialUser("admin"));
+        allUsers.add(new SocialUser("user"));
+        doReturn(allUsers).when(socialUserRepositoryAPI).findAllUsers();
+
+        final List<SocialUser> users = libraryService.getAllUsers();
+
+        assertEquals(2,
+                     users.size());
+        assertEquals("admin",
+                     users.get(0).getUserName());
+        assertEquals("user",
+                     users.get(1).getUserName());
     }
 
     private void organizationalUnitWithSecondaryRepositoryExistent(final OrganizationalUnit organizationalUnit,

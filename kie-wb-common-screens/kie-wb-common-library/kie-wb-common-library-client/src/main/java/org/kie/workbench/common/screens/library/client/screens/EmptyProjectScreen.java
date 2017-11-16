@@ -19,7 +19,9 @@ package org.kie.workbench.common.screens.library.client.screens;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.IsElement;
+import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
@@ -64,6 +66,8 @@ public class EmptyProjectScreen {
 
     private ProjectsDetailScreen projectsDetailScreen;
 
+    private Caller<LibraryService> libraryService;
+
     ProjectInfo projectInfo;
 
     @Inject
@@ -72,13 +76,15 @@ public class EmptyProjectScreen {
                               final NewResourcePresenter newResourcePresenter,
                               final PlaceManager placeManager,
                               final LibraryPlaces libraryPlaces,
-                              final ProjectsDetailScreen projectsDetailScreen) {
+                              final ProjectsDetailScreen projectsDetailScreen,
+                              final Caller<LibraryService> libraryService) {
         this.view = view;
         this.resourceUtils = resourceUtils;
         this.newResourcePresenter = newResourcePresenter;
         this.placeManager = placeManager;
         this.libraryPlaces = libraryPlaces;
         this.projectsDetailScreen = projectsDetailScreen;
+        this.libraryService = libraryService;
     }
 
     public void onStartup(@Observes final ProjectDetailEvent projectDetailEvent) {
@@ -104,7 +110,11 @@ public class EmptyProjectScreen {
     public void refreshOnFocus(@Observes final PlaceGainFocusEvent placeGainFocusEvent) {
         final PlaceRequest place = placeGainFocusEvent.getPlace();
         if (projectInfo != null && place.getIdentifier().equals(LibraryPlaces.EMPTY_PROJECT_SCREEN)) {
-            libraryPlaces.goToProject(projectInfo);
+            libraryService.call((Boolean hasAssets) -> {
+                if (hasAssets) {
+                    libraryPlaces.goToProject(projectInfo);
+                }
+            }).hasAssets(projectInfo.getProject());
         }
     }
 

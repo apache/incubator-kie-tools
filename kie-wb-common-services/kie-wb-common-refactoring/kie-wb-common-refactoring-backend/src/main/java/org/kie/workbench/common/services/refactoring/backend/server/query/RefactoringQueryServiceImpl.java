@@ -84,6 +84,32 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
     }
 
     @Override
+    public int queryHitCount(final RefactoringPageRequest request) {
+        PortablePreconditions.checkNotNull("request",
+                                           request);
+        final String queryName = PortablePreconditions.checkNotNull("queryName",
+                                                                    request.getQueryName());
+        final NamedQuery namedQuery = namedQueries.findNamedQuery(queryName);
+
+        //Validate provided terms against those required for the named query
+        namedQuery.validateTerms(request.getQueryTerms());
+
+        final Query query = namedQuery.toQuery(request.getQueryTerms());
+        final Sort sort = namedQuery.getSortOrder();
+
+        try {
+            List<KObject> found = config.getIndexProvider().findByQuery(Collections.EMPTY_LIST,
+                                                                        query,
+                                                                        sort,
+                                                                        0);
+            return found.size();
+        } catch (final Exception ex) {
+            throw new RuntimeException("Error during Query!",
+                                       ex);
+        }
+    }
+
+    @Override
     public PageResponse<RefactoringPageRow> query(final RefactoringPageRequest request) {
         PortablePreconditions.checkNotNull("request",
                                            request);

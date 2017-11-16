@@ -20,91 +20,70 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.client.security.ProjectController;
-import org.jboss.errai.security.shared.api.identity.User;
-import org.kie.workbench.common.screens.examples.model.ExampleProject;
-import org.kie.workbench.common.screens.library.client.util.ExamplesUtils;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.screens.library.client.screens.importrepository.ImportRepositoryPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.annotations.WorkbenchScreen;
+import org.kie.workbench.common.screens.library.client.widgets.library.AddProjectButtonPresenter;
 import org.uberfire.client.mvp.UberElement;
 
-@WorkbenchScreen(identifier = LibraryPlaces.EMPTY_LIBRARY_SCREEN)
 public class EmptyLibraryScreen {
 
     public interface View extends UberElement<EmptyLibraryScreen> {
 
-        void setup(String username);
-
-        void addProjectToImport(ExampleProject exampleProject);
-
-        void clearImportExamplesButtonsContainer();
-
-        void clearImportExamplesContainer();
+        void addAction(HTMLElement action);
     }
 
     private View view;
 
-    private User user;
-
-    private LibraryPlaces libraryPlaces;
-
-    private ExamplesUtils examplesUtils;
+    private AddProjectButtonPresenter addProjectButtonPresenter;
 
     private ProjectController projectController;
 
+    private LibraryPlaces libraryPlaces;
+
+    private ManagedInstance<ImportRepositoryPopUpPresenter> importRepositoryPopUpPresenters;
+
     @Inject
     public EmptyLibraryScreen(final View view,
-                              final User user,
+                              final AddProjectButtonPresenter addProjectButtonPresenter,
+                              final ProjectController projectController,
                               final LibraryPlaces libraryPlaces,
-                              final ExamplesUtils examplesUtils,
-                              final ProjectController projectController) {
+                              final ManagedInstance<ImportRepositoryPopUpPresenter> importRepositoryPopUpPresenters) {
         this.view = view;
-        this.user = user;
-        this.libraryPlaces = libraryPlaces;
-        this.examplesUtils = examplesUtils;
+        this.addProjectButtonPresenter = addProjectButtonPresenter;
         this.projectController = projectController;
+        this.libraryPlaces = libraryPlaces;
+        this.importRepositoryPopUpPresenters = importRepositoryPopUpPresenters;
     }
 
     @PostConstruct
     public void setup() {
         view.init(this);
-        view.setup(user.getIdentifier());
-        examplesUtils.getExampleProjects(exampleProjects -> {
-            if (exampleProjects != null && !exampleProjects.isEmpty()) {
-                view.clearImportExamplesButtonsContainer();
-                for (ExampleProject exampleProject : exampleProjects) {
-                    view.addProjectToImport(exampleProject);
-                }
-            } else {
-                view.clearImportExamplesContainer();
-            }
-        });
-    }
 
-    public void newProject() {
         if (userCanCreateProjects()) {
-            libraryPlaces.goToNewProject();
+            view.addAction(addProjectButtonPresenter.getView().getElement());
         }
     }
 
-    public void importProject(final ExampleProject exampleProject) {
+    public void trySamples() {
         if (userCanCreateProjects()) {
-            examplesUtils.importProject(exampleProject);
+            libraryPlaces.goToTrySamples();
         }
     }
 
-    public boolean userCanCreateProjects() {
+    public void importProject() {
+        if (userCanCreateProjects()) {
+            final ImportRepositoryPopUpPresenter importRepositoryPopUpPresenter = importRepositoryPopUpPresenters.get();
+            importRepositoryPopUpPresenter.show();
+        }
+    }
+
+    boolean userCanCreateProjects() {
         return projectController.canCreateProjects();
     }
 
-    @WorkbenchPartTitle
-    public String getTitle() {
-        return "Empty Library Screen";
-    }
-
-    @WorkbenchPartView
-    public UberElement<EmptyLibraryScreen> getView() {
+    public View getView() {
         return view;
     }
 }

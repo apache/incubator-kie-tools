@@ -24,22 +24,13 @@ import org.dashbuilder.displayer.client.Displayer;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Element;
-import org.jboss.errai.common.client.dom.Label;
-import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated
-public class OrgUnitsMetricsView implements OrgUnitsMetricsScreen.View, IsElement {
-
-    @Inject
-    @DataField
-    Label headerTitle;
-
-    @Inject
-    @DataField
-    Div orgUnitSelectorDiv;
+public class OrgUnitsMetricsView implements OrgUnitsMetricsScreen.View,
+                                            IsElement {
 
     @Inject
     @DataField
@@ -52,14 +43,6 @@ public class OrgUnitsMetricsView implements OrgUnitsMetricsScreen.View, IsElemen
     @Inject
     @DataField
     Div dateSelectorDiv;
-
-    @Inject
-    @DataField
-    Span perOrgUnitTitleSpan;
-
-    @Inject
-    @DataField
-    Div commitsPerOrgUnitDiv;
 
     @Inject
     @DataField
@@ -89,7 +72,7 @@ public class OrgUnitsMetricsView implements OrgUnitsMetricsScreen.View, IsElemen
     @DataField
     Div commitsAllDiv;
 
-    private Map<Element,IsWidget> widgetMap = new HashMap<>();
+    private Map<Element, IsWidget> widgetMap = new HashMap<>();
     private OrgUnitsMetricsScreen presenter;
 
     @Override
@@ -98,69 +81,63 @@ public class OrgUnitsMetricsView implements OrgUnitsMetricsScreen.View, IsElemen
     }
 
     @Override
-    public void setHeaderTitle(String title) {
-        headerTitle.setTextContent(title);
-    }
-
-    @Override
     public void setCommitsOverTimeDisplayer(Displayer displayer) {
-        updateDisplayer(commitsOverTimeDiv, displayer);
-    }
-
-    @Override
-    public void setCommitsPerOrgUnitDisplayer(Displayer displayer, String title) {
-        this.perOrgUnitTitleSpan.setTextContent(title);
-        updateDisplayer(commitsPerOrgUnitDiv, displayer);
+        updateDisplayer(commitsOverTimeDiv,
+                        displayer);
     }
 
     @Override
     public void setCommitsPerProjectDisplayer(Displayer displayer) {
-        updateDisplayer(commitsPerProjectDiv, displayer);
+        updateDisplayer(commitsPerProjectDiv,
+                        displayer);
     }
 
     @Override
     public void setCommitsPerAuthorDisplayer(Displayer displayer) {
-        updateDisplayer(commitsPerAuthorDiv, displayer);
+        updateDisplayer(commitsPerAuthorDiv,
+                        displayer);
     }
 
     @Override
     public void setCommitsByYearDisplayer(Displayer displayer) {
-        updateDisplayer(commitsByYearDiv, displayer);
+        updateDisplayer(commitsByYearDiv,
+                        displayer);
     }
 
     @Override
     public void setCommitsByQuarterDisplayer(Displayer displayer) {
-        updateDisplayer(commitsByQuarterDiv, displayer);
+        updateDisplayer(commitsByQuarterDiv,
+                        displayer);
     }
 
     @Override
     public void setCommitsByDayOfWeekDisplayer(Displayer displayer) {
-        updateDisplayer(commitsByDayDiv, displayer);
+        updateDisplayer(commitsByDayDiv,
+                        displayer);
     }
 
     @Override
     public void setAllCommitsDisplayer(Displayer displayer) {
-        updateDisplayer(commitsAllDiv, displayer);
+        updateDisplayer(commitsAllDiv,
+                        displayer);
     }
 
     @Override
     public void setTopContribSelectorDisplayer(Displayer displayer) {
-        updateDisplayer(topContribSelectorDiv, displayer);
-    }
-
-    @Override
-    public void setOrgUnitSelectorDisplayer(Displayer displayer) {
-        updateDisplayer(orgUnitSelectorDiv, displayer);
+        updateDisplayer(topContribSelectorDiv,
+                        displayer);
     }
 
     @Override
     public void setProjectSelectorDisplayer(Displayer displayer) {
-        updateDisplayer(projectSelectorDiv, displayer);
+        updateDisplayer(projectSelectorDiv,
+                        displayer);
     }
 
     @Override
     public void setDateSelectorDisplayer(Displayer displayer) {
-        updateDisplayer(dateSelectorDiv, displayer);
+        updateDisplayer(dateSelectorDiv,
+                        displayer);
     }
 
     @Override
@@ -174,12 +151,15 @@ public class OrgUnitsMetricsView implements OrgUnitsMetricsScreen.View, IsElemen
         widgetMap.clear();
     }
 
-    private void updateDisplayer(Div div, Displayer displayer) {
+    private void updateDisplayer(Div div,
+                                 Displayer displayer) {
         if (widgetMap.containsKey(div)) {
             DOMUtil.removeFromParent(widgetMap.get(div));
         }
-        widgetMap.put(div, displayer);
+        widgetMap.put(div,
+                      displayer);
         DOMUtil.removeAllChildren(div);
-        DOMUtil.appendWidgetToElement(div, displayer);
+        DOMUtil.appendWidgetToElement(div,
+                                      displayer);
     }
 }

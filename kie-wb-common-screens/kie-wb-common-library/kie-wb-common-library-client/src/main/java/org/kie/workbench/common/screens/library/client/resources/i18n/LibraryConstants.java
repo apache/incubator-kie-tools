@@ -21,15 +21,6 @@ import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
 public class LibraryConstants {
 
     @TranslationKey(defaultValue = "")
-    public static final String EmptyLibraryView_Welcome = "EmptyLibraryView.Welcome";
-
-    @TranslationKey(defaultValue = "")
-    public static final String NewProjectScreen_Saving = "NewProjectScreen.Saving";
-
-    @TranslationKey(defaultValue = "")
-    public static final String NewProjectScreen_Error = "NewProjectScreen.Error";
-
-    @TranslationKey(defaultValue = "")
     public static final String NewProject = "NewProject";
 
     @TranslationKey(defaultValue = "")
@@ -87,13 +78,7 @@ public class LibraryConstants {
     public static final String Cancel = "Cancel";
 
     @TranslationKey(defaultValue = "")
-    public static final String Removing = "Removing";
-
-    @TranslationKey(defaultValue = "")
-    public static final String RemoveOrganizationalUnitWarningMessage = "RemoveOrganizationalUnitWarningMessage";
-
-    @TranslationKey(defaultValue = "")
-    public static final String RemoveOrganizationalUnitSuccess = "RemoveOrganizationalUnitSuccess";
+    public static final String DeleteOrganizationalUnitSuccess = "DeleteOrganizationalUnitSuccess";
 
     @TranslationKey(defaultValue = "")
     public static final String EmptyFieldValidation = "EmptyFieldValidation";
@@ -159,9 +144,6 @@ public class LibraryConstants {
     public static final String DuplicatedProjectValidation = "DuplicatedProjectValidation";
 
     @TranslationKey(defaultValue = "")
-    public static final String ProjectName = "ProjectName";
-
-    @TranslationKey(defaultValue = "")
     public static final String OrgUnitsMetrics = "OrgUnitsMetrics";
 
     @TranslationKey(defaultValue = "")
@@ -169,9 +151,6 @@ public class LibraryConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String ProjectMetrics = "ProjectMetrics";
-
-    @TranslationKey(defaultValue = "")
-    public static final String MetricsTitle = "MetricsTitle";
 
     @TranslationKey(defaultValue = "")
     public static final String Metrics = "Metrics";
@@ -211,4 +190,94 @@ public class LibraryConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String NotEnoughPermissionsToAccessLibrary = "NotEnoughPermissionsToAccessLibrary";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Search = "Search";
+
+    @TranslationKey(defaultValue = "")
+    public static final String NumberOfContributors = "NumberOfContributors";
+
+    @TranslationKey(defaultValue = "")
+    public static final String NumberOfRepositories = "NumberOfRepositories";
+
+    @TranslationKey(defaultValue = "")
+    public static final String NumberOfAssets = "NumberOfAssets";
+
+    @TranslationKey(defaultValue = "")
+    public static final String WrongOrganizationalUnitConfirmedName = "WrongOrganizationalUnitConfirmedName";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DeletingOrganizationalUnit = "DeletingOrganizationalUnit";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DeleteOrganizationalUnit = "DeleteOrganizationalUnit";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DeleteOrganizationalUnitDescription = "DeleteOrganizationalUnitDescription";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ConfirmOrganizationalUnitName = "ConfirmOrganizationalUnitName";
+
+    @TranslationKey(defaultValue = "")
+    public static final String EditOrganizationalUnitContributors = "EditOrganizationalUnitContributors";
+
+    @TranslationKey(defaultValue = "")
+    public static final String EditOrganizationalUnitContributorsSaveSuccess = "EditOrganizationalUnitContributorsSaveSuccess";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Add = "Add";
+
+    @TranslationKey(defaultValue = "")
+    public static final String AddProject = "AddProject";
+
+    @TranslationKey(defaultValue = "")
+    public static final String AddProjectSuccess = "AddProjectSuccess";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ShowAdvancedOptions = "ShowAdvancedOptions";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HideAdvancedOptions = "HideAdvancedOptions";
+
+    @TranslationKey(defaultValue = "")
+    public static final String GroupId = "GroupId";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ArtifactId = "ArtifactId";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Version = "Version";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ImportProject = "ImportProject";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Import = "Import";
+
+    @TranslationKey(defaultValue = "")
+    public static final String TrySamples = "TrySamples";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Owner = "Owner";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Contributor = "Contributor";
+
+    @TranslationKey(defaultValue = "")
+    public static final String NoProjectsToImport = "NoProjectsToImport";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Loading = "Loading";
+
+    @TranslationKey(defaultValue = "")
+    public static final String NoProjectsSelected = "NoProjectsSelected";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ImportProjectsSuccess = "ImportProjectsSuccess";
+
+    @TranslationKey(defaultValue = "")
+    public static final String NoOrganizationalUnits = "NoOrganizationalUnits";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RepositoryURL = "RepositoryURL";
 }

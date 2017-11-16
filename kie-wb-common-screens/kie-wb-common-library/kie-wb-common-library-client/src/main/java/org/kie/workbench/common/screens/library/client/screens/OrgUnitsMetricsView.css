@@ -18,10 +18,6 @@
     background-color: #f5f5f5;
 }
 
-.pm-row {
-    margin-left: -10px;
-}
-
 .pm-time-div {
     float: left;
 }
@@ -47,4 +43,8 @@
 .pm-card-metric {
     overflow-x: auto;
     overflow-y: hidden;
+}
+
+.pm-container .pm-row .card-pf-body {
+    display: block;
 }

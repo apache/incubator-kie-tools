@@ -38,9 +38,14 @@ import org.kie.workbench.common.screens.library.client.util.ProjectMetricsFactor
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.dashbuilder.dataset.Assertions.*;
+import static org.dashbuilder.dataset.Assertions.assertDataSetValues;
 import static org.junit.Assert.*;
-import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.*;
+import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.COLUMN_AUTHOR;
+import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.COLUMN_DATE;
+import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.COLUMN_MSG;
+import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.COLUMN_ORG;
+import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.COLUMN_PROJECT;
+import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.COLUMN_REPO;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -49,22 +54,26 @@ public class ProjectMetricsScreenTest extends AbstractDisplayerTest {
     public static class ContributorsData extends RawDataSet {
 
         public static final ContributorsData INSTANCE = new ContributorsData(
-                new String[] {COLUMN_ORG, COLUMN_REPO, COLUMN_PROJECT, COLUMN_AUTHOR, COLUMN_DATE, COLUMN_MSG},
-                new Class[] {String.class, String.class, String.class, String.class, Date.class, String.class}, new String[][] {
-                {"org1", "repo", "project1", "user1", "01/01/19 12:00", "Commit 1"},
-                {"org1", "repo", "project1", "user1", "03/02/19 12:00", "Commit 2"},
-                {"org1", "repo", "project1", "user2", "04/03/19 12:00", "Commit 3"},
-                {"org1", "repo", "project1", "user2", "06/04/19 12:00", "Commit 4"},
-                {"org2", "repo", "project2", "user3", "07/05/19 12:00", "Commit 5"},
-                {"org2", "repo", "project2", "user3", "09/06/19 12:00", "Commit 6"},
-                {"org2", "repo", "project2", "user4", "11/07/19 12:00", "Commit 7"},
-                {"org2", "repo", "project2", "user4", "02/08/20 12:00", "Commit 8"},
-                {"emptyOrg", null, null, null, null, null, null}});
+                new String[]{COLUMN_ORG, COLUMN_REPO, COLUMN_PROJECT, COLUMN_AUTHOR, COLUMN_DATE, COLUMN_MSG},
+                new Class[]{String.class, String.class, String.class, String.class, Date.class, String.class},
+                new String[][]{
+                        {"org1", "repo", "project1", "user1", "01/01/19 12:00", "Commit 1"},
+                        {"org1", "repo", "project1", "user1", "03/02/19 12:00", "Commit 2"},
+                        {"org1", "repo", "project1", "user2", "04/03/19 12:00", "Commit 3"},
+                        {"org1", "repo", "project1", "user2", "06/04/19 12:00", "Commit 4"},
+                        {"org2", "repo", "project2", "user3", "07/05/19 12:00", "Commit 5"},
+                        {"org2", "repo", "project2", "user3", "09/06/19 12:00", "Commit 6"},
+                        {"org2", "repo", "project2", "user4", "11/07/19 12:00", "Commit 7"},
+                        {"org2", "repo", "project2", "user4", "02/08/20 12:00", "Commit 8"},
+                        {"emptyOrg", null, null, null, null, null, null}});
 
-        public ContributorsData(String[] columnIds, Class[] types, String[][] data) {
-            super(columnIds, types, data);
+        public ContributorsData(String[] columnIds,
+                                Class[] types,
+                                String[][] data) {
+            super(columnIds,
+                  types,
+                  data);
         }
-
     }
 
     @Mock
@@ -106,9 +115,13 @@ public class ProjectMetricsScreenTest extends AbstractDisplayerTest {
         displayerCoordinator = new DisplayerCoordinator(rendererManager);
         displayerCoordinator.addListener(displayerListener);
 
-        metricsFactory = new ProjectMetricsFactory(i18n, displayerLocator);
+        metricsFactory = new ProjectMetricsFactory(i18n,
+                                                   displayerLocator);
 
-        presenter = new ProjectMetricsScreen(view, i18n, metricsFactory, displayerCoordinator);
+        presenter = new ProjectMetricsScreen(view,
+                                             i18n,
+                                             metricsFactory,
+                                             displayerCoordinator);
         presenter.onStartup(new ProjectMetricsEvent(projectInfo));
     }
 
@@ -139,10 +152,12 @@ public class ProjectMetricsScreenTest extends AbstractDisplayerTest {
         Displayer displayer = presenter.getCommitsPerAuthorDisplayer();
         DataSet dataSet = displayer.getDataSetHandler().getLastDataSet();
 
-        assertDataSetValues(dataSet, new String[][]{
-                {"user1", "2.00", "2.00", "user1", "1.00"},
-                {"user2", "2.00", "2.00", "user2", "1.00"}
-        }, 0);
+        assertDataSetValues(dataSet,
+                            new String[][]{
+                                    {"user1", "2.00", "2.00", "user1", "1.00"},
+                                    {"user2", "2.00", "2.00", "user2", "1.00"}
+                            },
+                            0);
     }
 
     @Test
@@ -150,14 +165,16 @@ public class ProjectMetricsScreenTest extends AbstractDisplayerTest {
         Displayer displayer = presenter.getCommitsOverTimeDisplayer();
         DataSet dataSet = displayer.getDataSetHandler().getLastDataSet();
 
-        assertDataSetValues(dataSet, new String[][]{
-                {"2019-01", "1.00"},
-                {"2019-02", "0.00"},
-                {"2019-03", "1.00"},
-                {"2019-04", "1.00"},
-                {"2019-05", "0.00"},
-                {"2019-06", "1.00"},
-        }, 0);
+        assertDataSetValues(dataSet,
+                            new String[][]{
+                                    {"2019-01", "1.00"},
+                                    {"2019-02", "0.00"},
+                                    {"2019-03", "1.00"},
+                                    {"2019-04", "1.00"},
+                                    {"2019-05", "0.00"},
+                                    {"2019-06", "1.00"},
+                            },
+                            0);
     }
 
     @Test
@@ -165,10 +182,12 @@ public class ProjectMetricsScreenTest extends AbstractDisplayerTest {
         Displayer displayer = presenter.getTopAuthorSelectorDisplayer();
         DataSet dataSet = displayer.getDataSetHandler().getLastDataSet();
 
-        assertDataSetValues(dataSet, new String[][]{
-                {"user1", "2.00"},
-                {"user2", "2.00"}
-        }, 0);
+        assertDataSetValues(dataSet,
+                            new String[][]{
+                                    {"user1", "2.00"},
+                                    {"user2", "2.00"}
+                            },
+                            0);
     }
 
     @Test
@@ -176,9 +195,11 @@ public class ProjectMetricsScreenTest extends AbstractDisplayerTest {
         Displayer displayer = presenter.getCommitsByYearDisplayer();
         DataSet dataSet = displayer.getDataSetHandler().getLastDataSet();
 
-        assertDataSetValues(dataSet, new String[][]{
-                {"2019", "4.00"}
-        }, 0);
+        assertDataSetValues(dataSet,
+                            new String[][]{
+                                    {"2019", "4.00"}
+                            },
+                            0);
     }
 
     @Test
@@ -186,10 +207,12 @@ public class ProjectMetricsScreenTest extends AbstractDisplayerTest {
         Displayer displayer = presenter.getCommitsByQuarterDisplayer();
         DataSet dataSet = displayer.getDataSetHandler().getLastDataSet();
 
-        assertDataSetValues(dataSet, new String[][]{
-                {"1", "2.00"},
-                {"2", "2.00"}
-        }, 0);
+        assertDataSetValues(dataSet,
+                            new String[][]{
+                                    {"1", "2.00"},
+                                    {"2", "2.00"}
+                            },
+                            0);
     }
 
     @Test
@@ -197,15 +220,17 @@ public class ProjectMetricsScreenTest extends AbstractDisplayerTest {
         Displayer displayer = presenter.getCommitsByDayOfWeekDisplayer();
         DataSet dataSet = displayer.getDataSetHandler().getLastDataSet();
 
-        assertDataSetValues(dataSet, new String[][]{
-                {"1", "0.00"},
-                {"2", "0.00"},
-                {"3", "2.00"},
-                {"4", "1.00"},
-                {"5", "0.00"},
-                {"6", "0.00"},
-                {"7", "1.00"}
-        }, 0);
+        assertDataSetValues(dataSet,
+                            new String[][]{
+                                    {"1", "0.00"},
+                                    {"2", "0.00"},
+                                    {"3", "2.00"},
+                                    {"4", "1.00"},
+                                    {"5", "0.00"},
+                                    {"6", "0.00"},
+                                    {"7", "1.00"}
+                            },
+                            0);
     }
 
     @Test
@@ -213,59 +238,73 @@ public class ProjectMetricsScreenTest extends AbstractDisplayerTest {
         Displayer displayer = presenter.getAllCommitsDisplayer();
         DataSet dataSet = displayer.getDataSetHandler().getLastDataSet();
 
-        assertDataSetValues(dataSet, new String[][]{
-                {"user2", "06/04/19 12:00", "Commit 4"},
-                {"user2", "04/03/19 12:00", "Commit 3"},
-                {"user1", "03/02/19 12:00", "Commit 2"},
-                {"user1", "01/01/19 12:00", "Commit 1"}
-        }, 0);
+        assertDataSetValues(dataSet,
+                            new String[][]{
+                                    {"user2", "06/04/19 12:00", "Commit 4"},
+                                    {"user2", "04/03/19 12:00", "Commit 3"},
+                                    {"user1", "03/02/19 12:00", "Commit 2"},
+                                    {"user1", "01/01/19 12:00", "Commit 1"}
+                            },
+                            0);
     }
 
     @Test
     public void testSelectYear() throws Exception {
         AbstractDisplayer displayer = (AbstractDisplayer) presenter.getCommitsByYearDisplayer();
-        displayer.filterUpdate(COLUMN_DATE, 0); // "2019" selected
+        displayer.filterUpdate(COLUMN_DATE,
+                               0); // "2019" selected
         DataSet dataSet = presenter.getAllCommitsDisplayer().getDataSetHandler().getLastDataSet();
-        assertEquals(dataSet.getRowCount(), 4);
+        assertEquals(dataSet.getRowCount(),
+                     4);
     }
 
     @Test
     public void testSelectWeekOfDay() throws Exception {
         AbstractDisplayer displayer = (AbstractDisplayer) presenter.getCommitsByDayOfWeekDisplayer();
-        displayer.filterUpdate(COLUMN_DATE, 2); // "Tuesday" selected
+        displayer.filterUpdate(COLUMN_DATE,
+                               2); // "Tuesday" selected
         DataSet dataSet = presenter.getAllCommitsDisplayer().getDataSetHandler().getLastDataSet();
-        assertEquals(dataSet.getRowCount(), 2);
+        assertEquals(dataSet.getRowCount(),
+                     2);
     }
 
     @Test
     public void testAlwaysShow7Days() throws Exception {
         AbstractDisplayer displayer = (AbstractDisplayer) presenter.getTopAuthorSelectorDisplayer();
-        displayer.filterUpdate(COLUMN_AUTHOR, 1); // "user" selected
+        displayer.filterUpdate(COLUMN_AUTHOR,
+                               1); // "user" selected
         DataSet dataSet = presenter.getAllCommitsDisplayer().getDataSetHandler().getLastDataSet();
-        assertEquals(dataSet.getRowCount(), 2);
+        assertEquals(dataSet.getRowCount(),
+                     2);
 
         // Bar chart must always show 7 bars, one per day of week
         dataSet = presenter.getCommitsByDayOfWeekDisplayer().getDataSetHandler().getLastDataSet();
-        assertEquals(dataSet.getRowCount(), 7);
+        assertEquals(dataSet.getRowCount(),
+                     7);
     }
 
     @Test
     public void testSelectAuthorAndWeekOfDay() throws Exception {
         AbstractDisplayer displayer = (AbstractDisplayer) presenter.getTopAuthorSelectorDisplayer();
-        displayer.filterUpdate(COLUMN_AUTHOR, 1); // "user" selected
+        displayer.filterUpdate(COLUMN_AUTHOR,
+                               1); // "user" selected
         DataSet dataSet = presenter.getAllCommitsDisplayer().getDataSetHandler().getLastDataSet();
-        assertEquals(dataSet.getRowCount(), 2);
+        assertEquals(dataSet.getRowCount(),
+                     2);
 
         displayer = (AbstractDisplayer) presenter.getCommitsByDayOfWeekDisplayer();
-        displayer.filterUpdate(COLUMN_DATE, 2); // "Tuesday" selected
+        displayer.filterUpdate(COLUMN_DATE,
+                               2); // "Tuesday" selected
         dataSet = presenter.getAllCommitsDisplayer().getDataSetHandler().getLastDataSet();
-        assertEquals(dataSet.getRowCount(), 1);
+        assertEquals(dataSet.getRowCount(),
+                     1);
     }
 
     @Test
     public void dateSelectorFormatTest() {
         DisplayerSettings settings = metricsFactory.buildDateSelectorSettings(projectInfo);
-        assertEquals(settings.getColumnSettings(COLUMN_DATE).getValuePattern(), "dd MMM, yyyy HH:mm");
+        assertEquals(settings.getColumnSettings(COLUMN_DATE).getValuePattern(),
+                     "dd MMM, yyyy HH:mm");
     }
 
     @Test

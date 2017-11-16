@@ -20,10 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.guvnor.common.services.project.model.Project;
+import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.defaulteditor.client.editor.NewFileUploader;
+import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
@@ -36,6 +38,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
+import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
@@ -64,16 +67,22 @@ public class EmptyProjectScreenTest {
     @Mock
     private ProjectsDetailScreen projectsDetailScreen;
 
+    @Mock
+    private LibraryService libraryService;
+    private Caller<LibraryService> libraryServiceCaller;
+
     private EmptyProjectScreen emptyProjectScreen;
 
     @Before
     public void setup() {
+        libraryServiceCaller = new CallerMock<>(libraryService);
         emptyProjectScreen = spy(new EmptyProjectScreen(view,
                                                         resourceUtils,
                                                         newResourcePresenter,
                                                         placeManager,
                                                         libraryPlaces,
-                                                        projectsDetailScreen));
+                                                        projectsDetailScreen,
+                                                        libraryServiceCaller));
     }
 
     @Test
@@ -119,7 +128,23 @@ public class EmptyProjectScreenTest {
     }
 
     @Test
-    public void refreshOnFocusTest() {
+    public void refreshOnFocusProjectWithoutAssetsTest() {
+        doReturn(false).when(libraryService).hasAssets(any());
+
+        final PlaceRequest place = new DefaultPlaceRequest(LibraryPlaces.EMPTY_PROJECT_SCREEN);
+        final PlaceGainFocusEvent placeGainFocusEvent = new PlaceGainFocusEvent(place);
+
+        emptyProjectScreen.projectInfo = mock(ProjectInfo.class);
+        emptyProjectScreen.refreshOnFocus(placeGainFocusEvent);
+
+        verify(libraryPlaces,
+               never()).goToProject(any(ProjectInfo.class));
+    }
+
+    @Test
+    public void refreshOnFocusProjectWithAssetsTest() {
+        doReturn(true).when(libraryService).hasAssets(any());
+
         final PlaceRequest place = new DefaultPlaceRequest(LibraryPlaces.EMPTY_PROJECT_SCREEN);
         final PlaceGainFocusEvent placeGainFocusEvent = new PlaceGainFocusEvent(place);
 
