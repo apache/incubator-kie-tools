@@ -36,4 +36,6 @@ public interface OrganizationalUnit extends RuntimeContentResource,
     Collection<Repository> getRepositories();
 
     Collection<String> getGroups();
+
+    Collection<String> getContributors();
 }

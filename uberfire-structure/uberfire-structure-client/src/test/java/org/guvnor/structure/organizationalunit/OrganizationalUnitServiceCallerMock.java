@@ -118,12 +118,40 @@ public class OrganizationalUnitServiceCallerMock
         }
 
         @Override
+        public OrganizationalUnit createOrganizationalUnit(String name,
+                                                           String owner,
+                                                           String defaultGroupId,
+                                                           Collection<Repository> repositories,
+                                                           Collection<String> contributors) {
+            OrganizationalUnit result = organizationalUnitService.createOrganizationalUnit(name,
+                                                                                           owner,
+                                                                                           defaultGroupId,
+                                                                                           repositories,
+                                                                                           contributors);
+            remoteCallback.callback(result);
+            return result;
+        }
+
+        @Override
         public OrganizationalUnit updateOrganizationalUnit(String name,
                                                            String owner,
                                                            String defaultGroupId) {
             OrganizationalUnit result = organizationalUnitService.updateOrganizationalUnit(name,
                                                                                            owner,
                                                                                            defaultGroupId);
+            remoteCallback.callback(result);
+            return result;
+        }
+
+        @Override
+        public OrganizationalUnit updateOrganizationalUnit(String name,
+                                                           String owner,
+                                                           String defaultGroupId,
+                                                           Collection<String> contributors) {
+            OrganizationalUnit result = organizationalUnitService.updateOrganizationalUnit(name,
+                                                                                           owner,
+                                                                                           defaultGroupId,
+                                                                                           contributors);
             remoteCallback.callback(result);
             return result;
         }

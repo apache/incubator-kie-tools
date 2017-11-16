@@ -44,9 +44,20 @@ public interface OrganizationalUnitService {
                                                 final String defaultGroupId,
                                                 final Collection<Repository> repositories);
 
+    OrganizationalUnit createOrganizationalUnit(final String name,
+                                                final String owner,
+                                                final String defaultGroupId,
+                                                final Collection<Repository> repositories,
+                                                final Collection<String> contributors);
+
     OrganizationalUnit updateOrganizationalUnit(final String name,
                                                 final String owner,
                                                 final String defaultGroupId);
+
+    OrganizationalUnit updateOrganizationalUnit(final String name,
+                                                final String owner,
+                                                final String defaultGroupId,
+                                                final Collection<String> contributors);
 
     void addRepository(final OrganizationalUnit organizationalUnit,
                        final Repository repository);

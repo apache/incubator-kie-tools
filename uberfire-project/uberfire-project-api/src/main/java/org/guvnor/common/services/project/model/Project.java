@@ -48,6 +48,9 @@ public class Project implements RuntimeContentResource,
     // only loaded by ProjectService.getProjects()
     private POM pom;
 
+    // only loaded when listing projects
+    private int numberOfAssets;
+
     public Project() {
         //For Errai-marshalling
     }
@@ -123,6 +126,14 @@ public class Project implements RuntimeContentResource,
 
     public void setPom(POM pom) {
         this.pom = pom;
+    }
+
+    public int getNumberOfAssets() {
+        return numberOfAssets;
+    }
+
+    public void setNumberOfAssets(int numberOfAssets) {
+        this.numberOfAssets = numberOfAssets;
     }
 
     @Override

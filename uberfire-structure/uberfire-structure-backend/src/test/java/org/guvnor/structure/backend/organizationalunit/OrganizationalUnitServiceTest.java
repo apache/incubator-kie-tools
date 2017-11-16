@@ -16,19 +16,21 @@
 
 package org.guvnor.structure.backend.organizationalunit;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import javax.enterprise.event.Event;
 
 import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
+import org.guvnor.structure.backend.config.ConfigurationFactoryImpl;
 import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.RepoAddedToOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.RepoRemovedFromOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.UpdatedOrganizationalUnitEvent;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.security.OrganizationalUnitAction;
-import org.guvnor.structure.server.config.ConfigGroup;
-import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.guvnor.structure.server.organizationalunit.OrganizationalUnitFactory;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -37,6 +39,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Resource;
@@ -49,15 +52,17 @@ import static org.mockito.Mockito.*;
 public class OrganizationalUnitServiceTest {
 
     @Mock
+    private RepositoryService repositoryService;
+
+    @Mock
     private ConfigurationService configurationService;
 
-    @Mock
-    private ConfigurationFactory configurationFactory;
+    @Spy
+    @InjectMocks
+    private ConfigurationFactoryImpl configurationFactory;
 
-    @Mock
     private OrganizationalUnitFactory organizationalUnitFactory;
 
-    @Mock
     private BackwardCompatibleUtil backward;
 
     @Mock
@@ -81,21 +86,29 @@ public class OrganizationalUnitServiceTest {
     @Mock
     private SessionInfo sessionInfo;
 
-    @InjectMocks
     private OrganizationalUnitServiceImpl organizationalUnitService;
 
     @Before
     public void setUp() throws Exception {
+        backward = new BackwardCompatibleUtil(configurationFactory);
+        organizationalUnitFactory = spy(new OrganizationalUnitFactoryImpl(repositoryService,
+                                                                          backward));
+        organizationalUnitService = new OrganizationalUnitServiceImpl(configurationService,
+                                                                      configurationFactory,
+                                                                      organizationalUnitFactory,
+                                                                      backward,
+                                                                      newOrganizationalUnitEvent,
+                                                                      removeOrganizationalUnitEvent,
+                                                                      repoAddedToOrgUnitEvent,
+                                                                      repoRemovedFromOrgUnitEvent,
+                                                                      updatedOrganizationalUnitEvent,
+                                                                      authorizationManager,
+                                                                      sessionInfo);
+
         organizationalUnitService.registeredOrganizationalUnits.put("A",
                                                                     mock(OrganizationalUnit.class));
         when(authorizationManager.authorize(any(Resource.class),
                                             any(User.class))).thenReturn(false);
-        doReturn(mock(ConfigGroup.class)).when(configurationFactory).newConfigGroup(any(),
-                                                                                    any(),
-                                                                                    any());
-        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
-        doReturn("name").when(organizationalUnit).getName();
-        doReturn(organizationalUnit).when(organizationalUnitFactory).newOrganizationalUnit(any());
     }
 
     @Test
@@ -128,14 +141,27 @@ public class OrganizationalUnitServiceTest {
 
     @Test
     public void createValidOrganizationalUnitTest() {
+        List<String> contributors = new ArrayList<>();
+        contributors.add("admin");
+
         setOUCreationPermission(true);
 
         final OrganizationalUnit ou = organizationalUnitService.createOrganizationalUnit("name",
                                                                                          "owner",
-                                                                                         "default.group.id");
+                                                                                         "default.group.id",
+                                                                                         new ArrayList<>(),
+                                                                                         contributors);
 
         assertNotNull(ou);
         verify(organizationalUnitFactory).newOrganizationalUnit(any());
+        assertEquals("name",
+                     ou.getName());
+        assertEquals("owner",
+                     ou.getOwner());
+        assertEquals("default.group.id",
+                     ou.getDefaultGroupId());
+        assertEquals(contributors,
+                     ou.getContributors());
     }
 
     private void setOUCreationPermission(final boolean hasPermission) {

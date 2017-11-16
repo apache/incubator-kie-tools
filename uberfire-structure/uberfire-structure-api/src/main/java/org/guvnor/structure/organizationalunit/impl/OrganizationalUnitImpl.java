@@ -30,8 +30,9 @@ public class OrganizationalUnitImpl implements OrganizationalUnit {
     private String defaultGroupId;
     private String owner;
 
-    private Collection<Repository> repositories = new ArrayList<Repository>();
-    private Collection<String> groups = new ArrayList<String>();
+    private Collection<Repository> repositories = new ArrayList<>();
+    private Collection<String> groups = new ArrayList<>();
+    private Collection<String> contributors = new ArrayList<>();
     private boolean requiresRefresh = true;
 
     public OrganizationalUnitImpl() {
@@ -128,5 +129,9 @@ public class OrganizationalUnitImpl implements OrganizationalUnit {
 
     public Collection<String> getGroups() {
         return groups;
+    }
+
+    public Collection<String> getContributors() {
+        return contributors;
     }
 }

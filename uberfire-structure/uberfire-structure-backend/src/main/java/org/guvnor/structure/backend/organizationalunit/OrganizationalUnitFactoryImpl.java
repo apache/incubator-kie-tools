@@ -29,11 +29,16 @@ import org.guvnor.structure.server.organizationalunit.OrganizationalUnitFactory;
 
 public class OrganizationalUnitFactoryImpl implements OrganizationalUnitFactory {
 
-    @Inject
     private RepositoryService repositoryService;
 
-    @Inject
     private BackwardCompatibleUtil backward;
+
+    @Inject
+    public OrganizationalUnitFactoryImpl(final RepositoryService repositoryService,
+                                         final BackwardCompatibleUtil backward) {
+        this.repositoryService = repositoryService;
+        this.backward = backward;
+    }
 
     @Override
     public OrganizationalUnit newOrganizationalUnit(ConfigGroup groupConfig) {
@@ -59,6 +64,14 @@ public class OrganizationalUnitFactoryImpl implements OrganizationalUnitFactory 
                 organizationalUnit.getGroups().add(group);
             }
         }
+
+        ConfigItem<List<String>> contributors = groupConfig.getConfigItem("contributors");
+        if (contributors != null) {
+            for (String userName : contributors.getValue()) {
+                organizationalUnit.getContributors().add(userName);
+            }
+        }
+
         return organizationalUnit;
     }
 }

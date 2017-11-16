@@ -52,40 +52,54 @@ import org.uberfire.security.authz.AuthorizationManager;
 @ApplicationScoped
 public class OrganizationalUnitServiceImpl implements OrganizationalUnitService {
 
-    @Inject
     private ConfigurationService configurationService;
 
-    @Inject
     private ConfigurationFactory configurationFactory;
 
-    @Inject
     private OrganizationalUnitFactory organizationalUnitFactory;
 
-    @Inject
     private BackwardCompatibleUtil backward;
 
-    @Inject
     private Event<NewOrganizationalUnitEvent> newOrganizationalUnitEvent;
 
-    @Inject
     private Event<RemoveOrganizationalUnitEvent> removeOrganizationalUnitEvent;
 
-    @Inject
     private Event<RepoAddedToOrganizationalUnitEvent> repoAddedToOrgUnitEvent;
 
-    @Inject
     private Event<RepoRemovedFromOrganizationalUnitEvent> repoRemovedFromOrgUnitEvent;
 
-    @Inject
     private Event<UpdatedOrganizationalUnitEvent> updatedOrganizationalUnitEvent;
+
+    private AuthorizationManager authorizationManager;
+
+    private SessionInfo sessionInfo;
 
     Map<String, OrganizationalUnit> registeredOrganizationalUnits = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
     @Inject
-    private AuthorizationManager authorizationManager;
-
-    @Inject
-    private SessionInfo sessionInfo;
+    public OrganizationalUnitServiceImpl(final ConfigurationService configurationService,
+                                         final ConfigurationFactory configurationFactory,
+                                         final OrganizationalUnitFactory organizationalUnitFactory,
+                                         final BackwardCompatibleUtil backward,
+                                         final Event<NewOrganizationalUnitEvent> newOrganizationalUnitEvent,
+                                         final Event<RemoveOrganizationalUnitEvent> removeOrganizationalUnitEvent,
+                                         final Event<RepoAddedToOrganizationalUnitEvent> repoAddedToOrgUnitEvent,
+                                         final Event<RepoRemovedFromOrganizationalUnitEvent> repoRemovedFromOrgUnitEvent,
+                                         final Event<UpdatedOrganizationalUnitEvent> updatedOrganizationalUnitEvent,
+                                         final AuthorizationManager authorizationManager,
+                                         final SessionInfo sessionInfo) {
+        this.configurationService = configurationService;
+        this.configurationFactory = configurationFactory;
+        this.organizationalUnitFactory = organizationalUnitFactory;
+        this.backward = backward;
+        this.newOrganizationalUnitEvent = newOrganizationalUnitEvent;
+        this.removeOrganizationalUnitEvent = removeOrganizationalUnitEvent;
+        this.repoAddedToOrgUnitEvent = repoAddedToOrgUnitEvent;
+        this.repoRemovedFromOrgUnitEvent = repoRemovedFromOrgUnitEvent;
+        this.updatedOrganizationalUnitEvent = updatedOrganizationalUnitEvent;
+        this.authorizationManager = authorizationManager;
+        this.sessionInfo = sessionInfo;
+    }
 
     @PostConstruct
     public void loadOrganizationalUnits() {
@@ -146,6 +160,20 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
                                                        final String owner,
                                                        final String defaultGroupId,
                                                        final Collection<Repository> repositories) {
+
+        return createOrganizationalUnit(name,
+                                        owner,
+                                        defaultGroupId,
+                                        repositories,
+                                        new ArrayList<>());
+    }
+
+    @Override
+    public OrganizationalUnit createOrganizationalUnit(final String name,
+                                                       final String owner,
+                                                       final String defaultGroupId,
+                                                       final Collection<Repository> repositories,
+                                                       final Collection<String> contributors) {
         if (registeredOrganizationalUnits.containsKey(name)) {
             return null;
         }
@@ -166,6 +194,8 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
                                                                          getRepositoryAliases(repositories)));
             groupConfig.addConfigItem(configurationFactory.newConfigItem("security:groups",
                                                                          new ArrayList<String>()));
+            groupConfig.addConfigItem(configurationFactory.newConfigItem("contributors",
+                                                                         contributors));
             configurationService.addConfiguration(groupConfig);
 
             newOrganizationalUnit = organizationalUnitFactory.newOrganizationalUnit(groupConfig);
@@ -194,6 +224,17 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
     public OrganizationalUnit updateOrganizationalUnit(final String name,
                                                        final String owner,
                                                        final String defaultGroupId) {
+        return updateOrganizationalUnit(name,
+                                        owner,
+                                        defaultGroupId,
+                                        null);
+    }
+
+    @Override
+    public OrganizationalUnit updateOrganizationalUnit(String name,
+                                                       String owner,
+                                                       String defaultGroupId,
+                                                       Collection<String> contributors) {
         final ConfigGroup thisGroupConfig = findGroupConfig(name);
 
         if (thisGroupConfig != null) {
@@ -207,6 +248,11 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
                         thisGroupConfig.getConfigItemValue("defaultGroupId") : defaultGroupId;
                 thisGroupConfig.setConfigItem(configurationFactory.newConfigItem("defaultGroupId",
                                                                                  _defaultGroupId));
+
+                if (contributors != null) {
+                    thisGroupConfig.setConfigItem(configurationFactory.newConfigItem("contributors",
+                                                                                     contributors));
+                }
 
                 configurationService.updateConfiguration(thisGroupConfig);
 
