@@ -18,6 +18,26 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
+import com.ait.lienzo.client.core.Context2D;
+import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
+import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.Viewport;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndEvent;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeHandler;
+import com.ait.lienzo.client.core.util.ScratchPad;
+import com.ait.lienzo.client.widget.DragContext;
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+import com.google.gwt.event.shared.HandlerRegistration;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -31,26 +51,6 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
-import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
-import com.ait.lienzo.client.core.shape.Group;
-import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.lienzo.client.core.shape.MultiPath;
-import com.ait.lienzo.client.core.shape.Viewport;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndEvent;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
-import com.ait.lienzo.client.core.util.ScratchPad;
-import com.ait.lienzo.client.widget.DragContext;
-import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
-import com.google.gwt.event.shared.HandlerRegistration;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresManagerTest
@@ -107,9 +107,7 @@ public class WiresManagerTest
         final WiresShapeControl shapeControl = spied.register(shape);
         assertNotNull(shapeControl);
         assertNotNull(tested.getShape(shape.uuid()));
-        verify(shape, times(1)).setContainmentAcceptor(eq(containmentAcceptor));
-        verify(shape, times(1)).setDockingAcceptor(eq(dockingAcceptor));
-        verify(shape, times(1)).addWiresShapeHandler(eq(handlerRegistrationManager), any(WiresShape.WiresShapeHandler.class));
+        verify(shape, times(1)).setWiresShapeControl(any(WiresShapeControl.class));
         verify(layer, times(1)).add(eq(shape.getGroup()));
         verify(handlerRegistrationManager, times(4)).register(any(HandlerRegistration.class));
     }
@@ -150,10 +148,6 @@ public class WiresManagerTest
         shape.getHandlerManager().fireEvent(new WiresResizeEndEvent(shape, new NodeDragMoveEvent(mock(DragContext.class)), 1, 1, 11, 11));
         // group.getBoundingBoxAttributes are used for box calculation during shape registration AND trigger re-calculation during shape resize
         verify(group, times(2)).getBoundingBoxAttributes();
-
-        // Not possible to check used values during drag and drop for now. AlignAndDistributeControls stores calculated primitives (numbers with type double) after registration/re-sizing.
-        // But calculations based on AlignAndDistribute#getBoundingBox(group); method  and use plain JSO for calculations, so we will have 0 for any calculations in our's tests.
-        shapeControl.dragStart(mock(DragContext.class));
     }
 
     @Test

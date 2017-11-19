@@ -18,22 +18,6 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
 import com.ait.lienzo.client.core.event.NodeDragStartHandler;
@@ -52,11 +36,29 @@ import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartHandler;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepHandler;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresMagnetsControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeHandler;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresShapeControlHandleListTest
@@ -65,6 +67,15 @@ public class WiresShapeControlHandleListTest
 
     @Mock
     private WiresShape                       shape;
+
+    @Mock
+    private WiresShapeHandler                handler;
+
+    @Mock
+    private WiresShapeControl                control;
+
+    @Mock
+    private WiresMagnetsControl              magnetsControl;
 
     @Mock
     private HandlerRegistrationManager       handlerRegistrationManager;
@@ -100,6 +111,9 @@ public class WiresShapeControlHandleListTest
         final Layer layer = new Layer();
         final Group group = new Group();
         layer.add(group);
+        doReturn(magnetsControl).when(control).getMagnetsControl();
+        doReturn(control).when(handler).getControl();
+        doReturn(control).when(shape).getControl();
         doReturn(group).when(shape).getGroup();
         doReturn(children).when(shape).getChildShapes();
         doReturn(false).when(controlHandleList).isEmpty();
@@ -153,6 +167,9 @@ public class WiresShapeControlHandleListTest
     {
         final WiresShape realShape = new WiresShape(new MultiPath().rect(0, 0, 10, 10));
         tested = new WiresShapeControlHandleList(realShape, IControlHandle.ControlHandleStandardType.RESIZE, controlHandleList, handlerRegistrationManager);
+        WiresManager.setWiresShapeHandler(realShape,
+                                          handlerRegistrationManager,
+                                          handler);
 
         setCPLocations(1, 2, 11, 12, 3, 13, 14, 4);
 
@@ -347,6 +364,7 @@ public class WiresShapeControlHandleListTest
 
         tested = spy(tested);
         tested.refresh();
+        verify(magnetsControl).shapeChanged();
         verify(tested).resize(null, null, 10.0, 12.0, true);
     }
 
