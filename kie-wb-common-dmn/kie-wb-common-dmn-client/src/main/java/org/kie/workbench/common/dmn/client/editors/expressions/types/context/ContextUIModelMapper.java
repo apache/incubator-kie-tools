@@ -49,14 +49,20 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
     public void fromDMNModel(final int rowIndex,
                              final int columnIndex) {
         dmnModel.get().ifPresent(context -> {
-            switch (columnIndex) {
-                case 0:
+            final ContextUIModelMapperHelper.ContextSection section = ContextUIModelMapperHelper.getSection(columnIndex);
+            switch (section) {
+                case ROW_INDEX:
+                    uiModel.get().setCell(rowIndex,
+                                          columnIndex,
+                                          new BaseGridCellValue<>(rowIndex + 1));
+                    break;
+                case NAME:
                     final String name = context.getContextEntry().get(rowIndex).getVariable().getName().getValue();
                     uiModel.get().setCell(rowIndex,
                                           columnIndex,
                                           new BaseGridCellValue<>(name));
                     break;
-                case 1:
+                case EXPRESSION:
                     final ContextEntry ce = context.getContextEntry().get(rowIndex);
                     final Optional<Expression> expression = Optional.ofNullable(ce.getExpression());
 
@@ -82,14 +88,17 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
                            final int columnIndex,
                            final Supplier<Optional<GridCellValue<?>>> cell) {
         dmnModel.get().ifPresent(context -> {
-            switch (columnIndex) {
-                case 0:
+            final ContextUIModelMapperHelper.ContextSection section = ContextUIModelMapperHelper.getSection(columnIndex);
+            switch (section) {
+                case ROW_INDEX:
+                    break;
+                case NAME:
                     context.getContextEntry()
                             .get(rowIndex)
                             .getVariable()
                             .setName(new Name(cell.get().orElse(new BaseGridCellValue<>("")).getValue().toString()));
                     break;
-                case 1:
+                case EXPRESSION:
                     cell.get().ifPresent(ecv -> {
                         context.getContextEntry()
                                 .get(rowIndex)

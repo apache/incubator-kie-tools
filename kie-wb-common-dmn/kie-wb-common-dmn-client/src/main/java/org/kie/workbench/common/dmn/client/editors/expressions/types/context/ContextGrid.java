@@ -42,6 +42,7 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMapper> implements ContextGridControls.Presenter {
 
@@ -123,11 +124,12 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
                                                                                   headerFactory),
                                                      factory,
                                                      this);
-        model.appendColumn(nameColumn);
-
         final ExpressionEditorColumn expressionColumn = new ExpressionEditorColumn(new BaseHeaderMetaData("",
                                                                                                           EXPRESSION_COLUMN_GROUP),
                                                                                    this);
+
+        model.appendColumn(new RowNumberColumn());
+        model.appendColumn(nameColumn);
         model.appendColumn(expressionColumn);
 
         getRenderer().setColumnRenderConstraint((isSelectionLayer, gridColumn) -> !isSelectionLayer || gridColumn.equals(expressionColumn));
@@ -142,6 +144,8 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
                                            0);
                 uiModelMapper.fromDMNModel(model.getRowCount() - 1,
                                            1);
+                uiModelMapper.fromDMNModel(model.getRowCount() - 1,
+                                           2);
             });
         });
     }

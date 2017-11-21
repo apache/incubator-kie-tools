@@ -92,6 +92,8 @@ public class AddContextEntryCommand extends AbstractCanvasGraphCommand implement
                                            0);
                 uiModelMapper.fromDMNModel(uiModel.getRowCount() - 1,
                                            1);
+                uiModelMapper.fromDMNModel(uiModel.getRowCount() - 1,
+                                           2);
                 canvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;

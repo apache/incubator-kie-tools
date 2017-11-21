@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
@@ -147,11 +146,11 @@ public class MoveRowsCommand extends AbstractCanvasGraphCommand implements VetoE
 
                 rowNumberColumn.ifPresent(c -> {
                     final int columnIndex = uiModel.getColumns().indexOf(c);
-                    IntStream.range(0,
-                                    uiModel.getRowCount())
-                            .forEach(rowIndex -> uiModel.setCell(rowIndex,
-                                                                 columnIndex,
-                                                                 new BaseGridCellValue<>(rowIndex + 1)));
+                    for (int rowIndex = 0; rowIndex < uiModel.getRowCount(); rowIndex++) {
+                        uiModel.setCell(rowIndex,
+                                        columnIndex,
+                                        new BaseGridCellValue<>(rowIndex + 1));
+                    }
                 });
             }
         };

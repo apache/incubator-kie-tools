@@ -21,8 +21,8 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 public class GridCellTuple implements RequiresResize {
 
-    private final int rowIndex;
-    private final int columnIndex;
+    private int rowIndex;
+    private int columnIndex;
     private final GridData uiModel;
 
     public static GridCellTuple make(final int rowIndex,
@@ -45,8 +45,16 @@ public class GridCellTuple implements RequiresResize {
         return rowIndex;
     }
 
+    public void setRowIndex(final int rowIndex) {
+        this.rowIndex = rowIndex;
+    }
+
     public int getColumnIndex() {
         return columnIndex;
+    }
+
+    public void setColumnIndex(final int columnIndex) {
+        this.columnIndex = columnIndex;
     }
 
     public GridData getGridData() {

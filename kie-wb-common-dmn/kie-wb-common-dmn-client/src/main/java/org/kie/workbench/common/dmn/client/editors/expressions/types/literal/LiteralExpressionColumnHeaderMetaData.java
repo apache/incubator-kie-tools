@@ -36,4 +36,10 @@ public class LiteralExpressionColumnHeaderMetaData extends EditableHeaderMetaDat
               factory,
               NAME_COLUMN_GROUP);
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        // No implementation of equals/hashCode as each instance is considered different to another
+        return this == o;
+    }
 }

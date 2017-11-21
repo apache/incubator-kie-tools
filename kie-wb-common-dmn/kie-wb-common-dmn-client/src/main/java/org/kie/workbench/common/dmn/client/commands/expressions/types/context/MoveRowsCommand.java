@@ -18,12 +18,16 @@ package org.kie.workbench.common.dmn.client.commands.expressions.types.context;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommand;
@@ -36,7 +40,12 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.command.impl.AbstractGraphCommand;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.uberfire.ext.wires.core.grids.client.model.GridCell;
+import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 public class MoveRowsCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
                                                                            VetoUndoCommand {
@@ -115,6 +124,8 @@ public class MoveRowsCommand extends AbstractCanvasGraphCommand implements VetoE
             public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler ach) {
                 uiModel.moveRowsTo(index,
                                    rows);
+                updateRowNumbers();
+                updateParentInformation();
 
                 canvasOperation.execute();
 
@@ -125,10 +136,57 @@ public class MoveRowsCommand extends AbstractCanvasGraphCommand implements VetoE
             public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler ach) {
                 uiModel.moveRowsTo(oldIndex,
                                    rows);
+                updateRowNumbers();
+                updateParentInformation();
 
                 canvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
+            }
+
+            private void updateRowNumbers() {
+                final Optional<RowNumberColumn> rowNumberColumn = uiModel
+                        .getColumns()
+                        .stream()
+                        .filter(c -> c instanceof RowNumberColumn)
+                        .map(c -> (RowNumberColumn) c)
+                        .findFirst();
+
+                rowNumberColumn.ifPresent(c -> {
+                    final int columnIndex = uiModel.getColumns().indexOf(c);
+                    for (int rowIndex = 0; rowIndex < uiModel.getRowCount(); rowIndex++) {
+                        uiModel.setCell(rowIndex,
+                                        columnIndex,
+                                        new BaseGridCellValue<>(rowIndex + 1));
+                    }
+                });
+            }
+
+            private void updateParentInformation() {
+                final Optional<ExpressionEditorColumn> expressionColumn = uiModel
+                        .getColumns()
+                        .stream()
+                        .filter(c -> c instanceof ExpressionEditorColumn)
+                        .map(c -> (ExpressionEditorColumn) c)
+                        .findFirst();
+
+                expressionColumn.ifPresent(c -> {
+                    final int columnIndex = uiModel.getColumns().indexOf(c);
+                    for (int rowIndex = 0; rowIndex < uiModel.getRowCount(); rowIndex++) {
+                        final GridCell<?> cell = uiModel.getCell(rowIndex, columnIndex);
+                        final GridCellValue<?> value = cell.getValue();
+                        if (value instanceof DMNExpressionCellValue) {
+                            final DMNExpressionCellValue ecv = (DMNExpressionCellValue) value;
+                            if (ecv.getValue().isPresent()) {
+                                final GridWidget gw = ecv.getValue().get();
+                                if (gw instanceof BaseExpressionGrid) {
+                                    final BaseExpressionGrid beg = (BaseExpressionGrid) gw;
+                                    beg.getParentInformation().setRowIndex(rowIndex);
+                                }
+                            }
+                        }
+                    }
+                });
             }
         };
     }
