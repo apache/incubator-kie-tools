@@ -88,7 +88,7 @@ public class CoordinateUtilities {
             offsetY = offsetY - row.getHeight();
             uiRowIndex++;
         }
-        if (uiRowIndex < 0 || uiRowIndex > gridModel.getRowCount() - 1) {
+        if (uiRowIndex > gridModel.getRowCount() - 1) {
             return null;
         }
 

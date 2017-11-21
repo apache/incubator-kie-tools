@@ -377,7 +377,7 @@ public class BaseGridRendererHelper {
      * @return
      */
     private Bounds getVisibleBounds() {
-        final GridLayer gridLayer = ((DefaultGridLayer) view.getLayer());
+        final GridLayer gridLayer = ((GridLayer) view.getLayer());
         final Bounds bounds = gridLayer.getVisibleBounds();
         return bounds;
     }

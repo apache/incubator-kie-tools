@@ -25,9 +25,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.impl.GreenTheme;
@@ -36,12 +40,16 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLay
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.DefaultPinnedModeManager;
 
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class CoordinateUtilitiesTest {
+
+    private static final double DEFAULT_ROW_HEIGHT = 20D;
+    private static final double COLUMN_WIDTH = 50D;
 
     private GridData gridData;
 
@@ -50,6 +58,8 @@ public class CoordinateUtilitiesTest {
     private GridPinnedModeManager gridPinnedModeManager;
 
     private GridRenderer gridRenderer;
+
+    private GridColumnRenderer gridColumnRenderer;
 
     private Point2D point;
 
@@ -63,6 +73,7 @@ public class CoordinateUtilitiesTest {
         gridSelectionManager = new DefaultGridLayer();
         gridPinnedModeManager = new DefaultPinnedModeManager((DefaultGridLayer) gridSelectionManager);
         gridRenderer = new BaseGridRenderer(new GreenTheme());
+        gridColumnRenderer = mock(GridColumnRenderer.class);
     }
 
     @Test
@@ -115,5 +126,85 @@ public class CoordinateUtilitiesTest {
         Assertions.assertThat(convertedPoint).isNotNull();
         Assertions.assertThat(Double.valueOf(convertedPoint.getX()).intValue()).isEqualTo(-5);
         Assertions.assertThat(Double.valueOf(convertedPoint.getY()).intValue()).isEqualTo(-10);
+    }
+
+    @Test
+    public void testGetUiRowIndexOverHeader() throws Exception {
+        view = new BaseGridWidget(gridData, gridSelectionManager, gridPinnedModeManager, gridRenderer);
+        final Integer rowIndex = CoordinateUtilities.getUiRowIndex(view, -1);
+        Assertions.assertThat(rowIndex).isNull();
+    }
+
+    @Test
+    public void testGetUiRowIndexInHeader() throws Exception {
+        view = new BaseGridWidget(gridData, gridSelectionManager, gridPinnedModeManager, gridRenderer);
+        final Integer rowIndex = CoordinateUtilities.getUiRowIndex(view, gridRenderer.getHeaderHeight() - 1);
+        Assertions.assertThat(rowIndex).isNull();
+    }
+
+    @Test
+    public void testGetUiRowIndexInHeaderInFirstRow() throws Exception {
+        // one row has height 20
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
+        view = new BaseGridWidget(gridData, gridSelectionManager, gridPinnedModeManager, gridRenderer);
+        final Integer rowIndex = CoordinateUtilities.getUiRowIndex(view, gridRenderer.getHeaderHeight() + 1);
+        Assertions.assertThat(rowIndex).isEqualTo(0);
+    }
+
+    @Test
+    public void testGetUiRowIndexInHeaderInSecondRow() throws Exception {
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
+        view = new BaseGridWidget(gridData, gridSelectionManager, gridPinnedModeManager, gridRenderer);
+        final Integer rowIndex = CoordinateUtilities.getUiRowIndex(view, gridRenderer.getHeaderHeight() + DEFAULT_ROW_HEIGHT + 1);
+        Assertions.assertThat(rowIndex).isEqualTo(1);
+    }
+
+    @Test
+    public void testGetUiRowIndexInHeaderInThirdRow() throws Exception {
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
+        view = new BaseGridWidget(gridData, gridSelectionManager, gridPinnedModeManager, gridRenderer);
+        final Integer rowIndex = CoordinateUtilities.getUiRowIndex(view, gridRenderer.getHeaderHeight() + (DEFAULT_ROW_HEIGHT * 2) + 1);
+        Assertions.assertThat(rowIndex).isEqualTo(2);
+    }
+
+    @Test
+    public void testGetUiRowIndexInHeaderBelowLastRow() throws Exception {
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
+        view = new BaseGridWidget(gridData, gridSelectionManager, gridPinnedModeManager, gridRenderer);
+        final Integer rowIndex = CoordinateUtilities.getUiRowIndex(view, gridRenderer.getHeaderHeight() + (DEFAULT_ROW_HEIGHT * 3) + 1);
+        Assertions.assertThat(rowIndex).isNull();
+    }
+
+    @Test
+    public void testGetUiColumnIndexBeforeWidget() throws Exception {
+        view = new BaseGridWidget(gridData, gridSelectionManager, gridPinnedModeManager, gridRenderer);
+        final Integer columnIndex = CoordinateUtilities.getUiColumnIndex(view, -1);
+        Assertions.assertThat(columnIndex).isNull();
+    }
+
+    @Test
+    public void testGetUiColumnIndexAfterWidgetHeader() throws Exception {
+        view = new BaseGridWidget(gridData, gridSelectionManager, gridPinnedModeManager, gridRenderer);
+        final Integer columnIndex = CoordinateUtilities.getUiColumnIndex(view, view.getWidth() + 1);
+        Assertions.assertThat(columnIndex).isNull();
+    }
+
+    @Test
+    public void testGetUiColumnIndexInHeaderAfterLastColumn() throws Exception {
+        gridData.appendColumn(new BaseGridColumn<Object>(new BaseHeaderMetaData("first"), gridColumnRenderer, COLUMN_WIDTH));
+        gridData.appendColumn(new BaseGridColumn<Object>(new BaseHeaderMetaData("second"), gridColumnRenderer, COLUMN_WIDTH));
+        gridData.appendColumn(new BaseGridColumn<Object>(new BaseHeaderMetaData("third"), gridColumnRenderer, COLUMN_WIDTH));
+        view = spy(new BaseGridWidget(gridData, gridSelectionManager, gridPinnedModeManager, gridRenderer));
+        doReturn(gridSelectionManager).when(view).getLayer();
+        final Integer columnIndex = CoordinateUtilities.getUiColumnIndex(view, (COLUMN_WIDTH * 3) + 1);
+        Assertions.assertThat(columnIndex).isNull();
     }
 }
