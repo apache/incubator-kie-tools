@@ -576,6 +576,22 @@ public class ConditionColumnPluginTest {
     }
 
     @Test
+    public void testIsBindableWhenTableIsAnExtendedEntryAndConstraintValueIsTypeFormula() {
+        doReturn(BaseSingleFieldConstraint.TYPE_RET_VALUE).when(plugin).constraintValue();
+        doReturn(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY).when(model).getTableFormat();
+
+        assertTrue(plugin.isBindable());
+    }
+
+    @Test
+    public void testIsBindableWhenTableIsAnExtendedEntryAndConstraintValueIsTypePredicate() {
+        doReturn(BaseSingleFieldConstraint.TYPE_PREDICATE).when(plugin).constraintValue();
+        doReturn(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY).when(model).getTableFormat();
+
+        assertFalse(plugin.isBindable());
+    }
+
+    @Test
     public void testIsBindableWhenTableIsALimitedEntry() {
         doReturn(GuidedDecisionTable52.TableFormat.LIMITED_ENTRY).when(model).getTableFormat();
 

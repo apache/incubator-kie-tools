@@ -19,6 +19,7 @@ package org.drools.workbench.screens.guided.dtable.client.wizard.column.pages;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.CEPWindow;
@@ -166,11 +167,6 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
     }
 
     void setupBinding() {
-        if (!isBindingEnabled()) {
-            view.hideBinding();
-            return;
-        }
-
         if (canSetupBinding()) {
             view.setupBinding(newBindingTextBox());
         } else {
@@ -179,10 +175,9 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
     }
 
     private TextBox disabledTextBox() {
-        return new TextBox() {{
-            getElement().setAttribute("disabled",
-                                      "disabled");
-        }};
+        final TextBox textBox = GWT.create(TextBox.class);
+        textBox.setEnabled(false);
+        return textBox;
     }
 
     boolean isValueListEnabled() {
@@ -248,7 +243,7 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
     }
 
     private TextBox newBindingTextBox() {
-        final BindingTextBox bindingTextBox = new BindingTextBox();
+        final BindingTextBox bindingTextBox = GWT.create(BindingTextBox.class);
 
         bindingTextBox.setText(plugin().getBinding());
         bindingTextBox.addKeyUpHandler(event -> {
@@ -405,8 +400,6 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
         void hideLimitedValue();
 
         void setupBinding(IsWidget widget);
-
-        void hideBinding();
 
         void hideCepOperators();
 

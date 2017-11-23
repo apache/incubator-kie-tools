@@ -416,6 +416,23 @@ public class FieldPageTest {
     }
 
     @Test
+    public void testSetupFieldWhenConstraintValueIsFormula() {
+        final String factField = "age";
+        doReturn(oracle).when(presenter).getDataModelOracle();
+        doReturn(BaseSingleFieldConstraint.TYPE_RET_VALUE).when(plugin).constraintValue();
+        doReturn(new PatternWrapper("Person", "p")).when(plugin).patternWrapper();
+        doReturn(factField).when(page).getFactField();
+
+        page.setupField();
+
+        verify(view).enableListFieldView();
+        verify(view).setupEmptyFieldList();
+        verify(page).forEachFactField(any(Consumer.class));
+        verify(view).selectField(factField);
+        verify(view, never()).enablePredicateFieldView();
+    }
+
+    @Test
     public void testSetupPatternWarningMessagesWhenFactTypeIsNotNil() {
 
         final String factType = "factType";

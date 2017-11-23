@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
@@ -85,7 +86,7 @@ public class GuidedDecisionTableSourceServiceTest {
 
     Pattern52 pattern;
 
-    ConditionCol52 condition;
+    ConditionCol52 nameEqualToLiteralCondition;
 
     List<List<DTCellValue52>> data;
 
@@ -109,7 +110,7 @@ public class GuidedDecisionTableSourceServiceTest {
 
         model = new GuidedDecisionTable52();
 
-        model.setPackageName("som.sample");
+        model.setPackageName("com.sample");
         model.setImports(new Imports(Arrays.asList(new Import("com.sample.Person"))));
         model.setRowNumberCol(new RowNumberCol52());
         model.setDescriptionCol(new DescriptionCol52());
@@ -118,13 +119,13 @@ public class GuidedDecisionTableSourceServiceTest {
         pattern.setBoundName("$p");
         pattern.setFactType("Person");
 
-        condition = new ConditionCol52();
-        condition.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
-        condition.setHeader("name equals to");
-        condition.setFactField("name");
-        condition.setOperator("==");
+        nameEqualToLiteralCondition = new ConditionCol52();
+        nameEqualToLiteralCondition.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        nameEqualToLiteralCondition.setHeader("name equals to");
+        nameEqualToLiteralCondition.setFactField("name");
+        nameEqualToLiteralCondition.setOperator("==");
 
-        pattern.setChildColumns(Arrays.asList(condition));
+        pattern.setChildColumns(Arrays.asList(nameEqualToLiteralCondition));
 
         model.setConditionPatterns(Arrays.asList(pattern));
 
@@ -242,19 +243,46 @@ public class GuidedDecisionTableSourceServiceTest {
                    source.contains("$p : Person( name not in ( \"John\", \"Peter\" )"));
     }
 
+    @Test
+    public void testFormulaFieldBinding() throws Exception {
+        final ConditionCol52 ageEqualToFormulaCondition = new ConditionCol52();
+        ageEqualToFormulaCondition.setConstraintValueType(BaseSingleFieldConstraint.TYPE_RET_VALUE);
+        ageEqualToFormulaCondition.setHeader("age equals to");
+        ageEqualToFormulaCondition.setFactField("age");
+        ageEqualToFormulaCondition.setOperator("==");
+        ageEqualToFormulaCondition.setBinding("$age");
+
+        pattern.setChildColumns(Arrays.asList(ageEqualToFormulaCondition));
+        model.setConditionPatterns(Arrays.asList(pattern));
+        addRow(1, "1 + 1");
+        model.setData(data);
+
+        final String source = service.getSource(path, model);
+        assertTrue(source.contains("$p : Person( $age : age == ( 1 + 1 ) )"));
+    }
+
     private void addRow(int rowNumber,
-                        String conditionValue,
+                        String nameEqualToCostraint,
                         boolean isOtherwise) {
         data.add(new ArrayList<DTCellValue52>() {{
             add(new DTCellValue52(rowNumber));
             add(new DTCellValue52("row " + rowNumber));
             if (!isOtherwise) {
-                add(new DTCellValue52(conditionValue));
+                add(new DTCellValue52(nameEqualToCostraint));
             } else {
                 DTCellValue52 otherwise = new DTCellValue52();
                 otherwise.setOtherwise(true);
                 add(otherwise);
             }
+        }});
+    }
+
+    private void addRow(int rowNumber,
+                        String... constraintValues) {
+        data.add(new ArrayList<DTCellValue52>() {{
+            add(new DTCellValue52(rowNumber));
+            add(new DTCellValue52("row " + rowNumber));
+            Stream.of(constraintValues).forEach(value -> add(new DTCellValue52(value)));
         }});
     }
 }

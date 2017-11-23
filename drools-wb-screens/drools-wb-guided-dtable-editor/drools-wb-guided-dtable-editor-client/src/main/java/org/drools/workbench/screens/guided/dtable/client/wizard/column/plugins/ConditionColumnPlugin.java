@@ -415,7 +415,9 @@ public class ConditionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
 
     @Override
     public boolean isBindable() {
-        return tableFormat() == LIMITED_ENTRY || constraintValue() == BaseSingleFieldConstraint.TYPE_LITERAL;
+        return tableFormat() == LIMITED_ENTRY
+                || constraintValue() == BaseSingleFieldConstraint.TYPE_LITERAL
+                || constraintValue() == BaseSingleFieldConstraint.TYPE_RET_VALUE;
     }
 
     @Override

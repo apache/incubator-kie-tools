@@ -18,8 +18,8 @@ package org.drools.workbench.screens.guided.dtable.client.wizard.column.pages;
 
 import java.util.HashMap;
 
-import com.google.gwt.junit.GWTMockUtilities;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwtmockito.GwtMockito;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
@@ -30,6 +30,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.ConditionColumnPlugin;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.PatternWrapper;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -39,6 +40,7 @@ import org.junit.runner.RunWith;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.widget.BindingTextBox;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -86,15 +88,18 @@ public class ValueOptionsPageTest {
     @Mock
     private TranslationService translationService;
 
+    @Mock
+    private BindingTextBox bindingTextBox;
+
+    @Mock
+    private TextBox disabledTextBox;
+
     @InjectMocks
     private ValueOptionsPage<ConditionColumnPlugin> page = spy(new ValueOptionsPage<ConditionColumnPlugin>(view,
                                                                                                            translationService));
 
     @BeforeClass
     public static void staticSetup() {
-        // Prevent runtime GWT.create() error at 'content = new SimplePanel()'
-        GWTMockUtilities.disarm();
-
         ApplicationPreferences.setUp(new HashMap<String, String>() {{
             put(ApplicationPreferences.DATE_FORMAT,
                 "dd-MM-yyyy");
@@ -103,6 +108,9 @@ public class ValueOptionsPageTest {
 
     @Before
     public void setup() {
+        GwtMockito.useProviderForType(BindingTextBox.class, (aClass -> bindingTextBox));
+        GwtMockito.useProviderForType(TextBox.class, (aClass -> disabledTextBox));
+
         when(defaultValue.getDataType()).thenReturn(DataType.DataTypes.STRING);
         when(editingCol.getDefaultValue()).thenReturn(defaultValue);
         when(presenter.getModel()).thenReturn(model);
@@ -363,6 +371,16 @@ public class ValueOptionsPageTest {
     }
 
     @Test
+    public void testSetupPredicateBindingInfoBoxWhenConstraintValueIsFormula() {
+
+        doReturn(BaseSingleFieldConstraint.TYPE_RET_VALUE).when(page).constraintValue();
+
+        page.setupPredicateBindingInfoBox();
+
+        verify(view).hidePredicateBindingInfo();
+    }
+
+    @Test
     public void testSetupValueListWhenValueListIsNotEnabled() throws Exception {
         doReturn(false).when(page).isValueListEnabled();
 
@@ -426,5 +444,42 @@ public class ValueOptionsPageTest {
         page.isComplete(Assert::assertFalse);
 
         verify(view).showFieldBindingWarning();
+    }
+
+    @Test
+    public void testSetupBindingIfBindingEnabledAndFieldBindable() throws Exception {
+        page.enableBinding();
+        when(plugin.isBindable()).thenReturn(true);
+
+        page.setupBinding();
+        verify(view).setupBinding(bindingTextBox);
+    }
+
+    @Test
+    public void testSetupBindingIfBindingEnabledAndFieldNotBindable() throws Exception {
+        page.enableBinding();
+        when(plugin.isBindable()).thenReturn(false);
+
+        page.setupBinding();
+        verify(view).setupBinding(disabledTextBox);
+        verify(disabledTextBox).setEnabled(false);
+    }
+
+    @Test
+    public void testSetupBindingIfBindingDisabledAndFieldBindable() throws Exception {
+        when(plugin.isBindable()).thenReturn(true);
+
+        page.setupBinding();
+        verify(view).setupBinding(disabledTextBox);
+        verify(disabledTextBox).setEnabled(false);
+    }
+
+    @Test
+    public void testSetupBindingIfBindingDisabledAndFieldNotBindable() throws Exception {
+        when(plugin.isBindable()).thenReturn(false);
+
+        page.setupBinding();
+        verify(view).setupBinding(disabledTextBox);
+        verify(disabledTextBox).setEnabled(false);
     }
 }

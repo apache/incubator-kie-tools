@@ -51,9 +51,6 @@ public class ValueOptionsPageView implements IsElement,
     @DataField("limitedValueGroupContainer")
     private Div limitedValueGroupContainer;
 
-    @DataField("bindingGroupContainer")
-    private Div bindingGroupContainer;
-
     @DataField("valueList")
     private TextBox valueList;
 
@@ -86,7 +83,6 @@ public class ValueOptionsPageView implements IsElement,
                                 final Div cepWindowOperatorsGroupContainer,
                                 final Div defaultValueGroupContainer,
                                 final Div limitedValueGroupContainer,
-                                final Div bindingGroupContainer,
                                 final TextBox valueList,
                                 final Div cepWindowOperatorsContainer,
                                 final Div defaultValueContainer,
@@ -100,7 +96,6 @@ public class ValueOptionsPageView implements IsElement,
         this.cepWindowOperatorsGroupContainer = cepWindowOperatorsGroupContainer;
         this.defaultValueGroupContainer = defaultValueGroupContainer;
         this.limitedValueGroupContainer = limitedValueGroupContainer;
-        this.bindingGroupContainer = bindingGroupContainer;
         this.valueList = valueList;
         this.cepWindowOperatorsContainer = cepWindowOperatorsContainer;
         this.defaultValueContainer = defaultValueContainer;
@@ -179,11 +174,6 @@ public class ValueOptionsPageView implements IsElement,
     public void setupBinding(final IsWidget widget) {
         addWidgetToContainer(widget,
                              bindingContainer);
-    }
-
-    @Override
-    public void hideBinding() {
-        bindingGroupContainer.setHidden(true);
     }
 
     @Override
