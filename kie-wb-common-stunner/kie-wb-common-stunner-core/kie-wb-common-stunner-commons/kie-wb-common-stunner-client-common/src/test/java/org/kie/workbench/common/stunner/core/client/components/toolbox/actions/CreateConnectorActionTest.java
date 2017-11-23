@@ -44,6 +44,7 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
@@ -122,13 +123,13 @@ public class CreateConnectorActionTest {
     private Node<View<?>, Edge> element;
 
     @Mock
-    private Edge<View<?>, Node> edge;
+    private Edge<ViewConnector<?>, Node> edge;
 
     @Mock
     private Node<View<?>, Edge> targetNode;
 
     @Mock
-    private Index<?, ?> graphIndex;
+    private Index<Node<View<?>, Edge>, Edge<ViewConnector<?>, Node>> graphIndex;
 
     @Mock
     private CancelCanvasAction cancelCanvasAction;
@@ -304,7 +305,7 @@ public class CreateConnectorActionTest {
     }
 
     @Test
-    public void testCancelConnector(){
+    public void testCancelConnector() {
         DragProxyCallback callback = testStartDrag();
 
         assertTrue(dragProxy == tested.getDragProxy());

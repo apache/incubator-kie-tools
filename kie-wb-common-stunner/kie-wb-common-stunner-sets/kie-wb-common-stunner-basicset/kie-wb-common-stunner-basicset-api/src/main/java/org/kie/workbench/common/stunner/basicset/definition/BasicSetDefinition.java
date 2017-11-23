@@ -16,6 +16,12 @@
 
 package org.kie.workbench.common.stunner.basicset.definition;
 
+import org.kie.workbench.common.stunner.basicset.definition.property.background.BackgroundAndBorderSet;
+import org.kie.workbench.common.stunner.basicset.definition.property.font.FontSet;
+
 public interface BasicSetDefinition {
 
+    BackgroundAndBorderSet getBackgroundSet();
+
+    FontSet getFontSet();
 }

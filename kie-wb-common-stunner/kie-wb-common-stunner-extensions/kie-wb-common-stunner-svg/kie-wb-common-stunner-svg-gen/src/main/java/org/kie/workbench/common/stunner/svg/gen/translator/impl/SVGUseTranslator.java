@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.svg.gen.translator.impl;
 
+import java.nio.file.Paths;
+
 import org.kie.workbench.common.stunner.svg.gen.exception.TranslatorException;
 import org.kie.workbench.common.stunner.svg.gen.model.ViewRefDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.ViewRefDefinitionImpl;
@@ -41,15 +43,18 @@ public class SVGUseTranslator implements SVGElementTranslator<Element, ViewRefDe
                                                    HREF);
         // task-manual.svg#shape
         final int i2 = href.lastIndexOf("#");
-        final String viewName = href.substring(0,
+        final String filePath = href.substring(0,
                                                i2);
         final String refViewId = href.substring(i2 + 1,
                                                 href.length());
         final String parent = getId((Element) element.getParentNode());
+        final String path = context.getPath().trim().length() > 0 ?
+                Paths.get(context.getPath() + "/" + filePath).toString() :
+                filePath;
         return new ViewRefDefinitionImpl(href,
                                          parent,
-                                         viewName,
-                                         refViewId);
+                                         refViewId,
+                                         path);
     }
 
     @Override

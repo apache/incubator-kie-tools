@@ -16,11 +16,12 @@
 
 package org.kie.workbench.common.stunner.shapes.def;
 
+import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 
-public interface PolygonShapeDef<W> extends BasicMutableShapeDef<W> {
+public interface PolygonShapeDef<W, V extends ShapeView> extends BasicShapeViewDef<W, V> {
 
-    double getRadius(final W element);
+    Double getRadius(final W element);
 
     @Override
     default Class<? extends ShapeDef> getType() {

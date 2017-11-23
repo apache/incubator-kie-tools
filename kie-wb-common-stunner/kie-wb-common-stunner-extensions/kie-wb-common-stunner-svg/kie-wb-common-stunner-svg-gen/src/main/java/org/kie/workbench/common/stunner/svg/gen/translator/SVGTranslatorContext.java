@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.svg.gen.translator;
 
+import java.util.Optional;
+
+import org.kie.workbench.common.stunner.svg.gen.model.StyleSheetDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.ViewRefDefinition;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -23,6 +26,14 @@ import org.w3c.dom.Element;
 public interface SVGTranslatorContext {
 
     Document getRoot();
+
+    String getViewId();
+
+    String getSVGId();
+
+    String getPath();
+
+    Optional<StyleSheetDefinition> getGlobalStyleSheet();
 
     SVGElementTranslator<Element, Object> getElementTranslator(final String tagName);
 

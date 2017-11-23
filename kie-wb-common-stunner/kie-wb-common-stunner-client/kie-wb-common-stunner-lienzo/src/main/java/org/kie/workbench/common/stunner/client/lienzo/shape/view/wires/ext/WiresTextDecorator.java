@@ -16,13 +16,14 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext;
 
+import java.util.function.Supplier;
+
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.TextBoundsWrap;
 import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.google.gwt.event.shared.HandlerRegistration;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager;
@@ -44,7 +45,17 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler
  */
 public class WiresTextDecorator {
 
-    private final ViewEventHandlerManager eventHandlerManager;
+    // Default text attribute values.
+    private static final double TEXT_ALPHA = 1d;
+    private static final String TEXT_FONT_FAMILY = "Verdana";
+    private static final double TEXT_FONT_SIZE = 10d;
+    private static final String TEXT_FILL_COLOR = "#000000";
+    private static final String TEXT_STROKE_COLOR = "#000000";
+    private static final double TEXT_STROKE_WIDTH = 0.5d;
+    private static final TextAlign TEXT_ALIGN = TextAlign.CENTER;
+    private static final LayoutContainer.Layout TEXT_LAYOUT_ALIGN = LayoutContainer.Layout.CENTER;
+
+    private final Supplier<ViewEventHandlerManager> eventHandlerManager;
     private final Group textContainer = new Group();
     private ViewHandler<TextEnterEvent> textOverHandlerViewHandler;
     private ViewHandler<TextExitEvent> textOutEventViewHandler;
@@ -53,8 +64,10 @@ public class WiresTextDecorator {
     private Text text;
     private TextBoundsWrap textWrapper;
     private LayoutContainer.Layout currentTextLayout;
+    private double width;
+    private double height;
 
-    public WiresTextDecorator(final ViewEventHandlerManager eventHandlerManager) {
+    public WiresTextDecorator(final Supplier<ViewEventHandlerManager> eventHandlerManager) {
         this.eventHandlerManager = eventHandlerManager;
         initialize();
     }
@@ -77,19 +90,21 @@ public class WiresTextDecorator {
 
     private void initialize() {
         this.text = new Text("")
-                .setFontSize(14)
-                .setFillColor(ColorName.BLACK)
-                .setStrokeWidth(1)
-                .setDraggable(false)
-                .setAlpha(0)
-                .setTextAlign(TextAlign.CENTER);
+                .setAlpha(TEXT_ALPHA)
+                .setFontFamily(TEXT_FONT_FAMILY)
+                .setFontSize(TEXT_FONT_SIZE)
+                .setFillColor(TEXT_FILL_COLOR)
+                .setStrokeColor(TEXT_STROKE_COLOR)
+                .setStrokeWidth(TEXT_STROKE_WIDTH)
+                .setTextAlign(TEXT_ALIGN)
+                .setDraggable(false);
         this.textWrapper = new TextBoundsWrap(text,
                                               new BoundingBox(0,
                                                               0,
-                                                              100,
-                                                              100));
+                                                              1,
+                                                              1));
         this.text.setWrapper(textWrapper);
-        this.currentTextLayout = LayoutContainer.Layout.CENTER;
+        this.currentTextLayout = TEXT_LAYOUT_ALIGN;
         textContainer.add(text);
         // Ensure path bounds are available on the selection context.
         text.setFillBoundsForSelection(true);
@@ -106,33 +121,33 @@ public class WiresTextDecorator {
     private void registerClickHandler() {
         HandlerRegistration registration = text.addNodeMouseClickHandler(event -> {
             if (null != textClickEventViewHandler) {
-                eventHandlerManager.skipClickHandler();
+                eventHandlerManager.get().skipClickHandler();
                 final TextClickEvent e = new TextClickEvent(event.getX(),
                                                             event.getY(),
                                                             event.getMouseEvent().getClientX(),
                                                             event.getMouseEvent().getClientY());
                 textClickEventViewHandler.handle(e);
-                eventHandlerManager.restoreClickHandler();
+                eventHandlerManager.get().restoreClickHandler();
             }
         });
-        eventHandlerManager.addHandlersRegistration(ViewEventType.TEXT_CLICK,
-                                                    registration);
+        eventHandlerManager.get().addHandlersRegistration(ViewEventType.TEXT_CLICK,
+                                                          registration);
     }
 
     private void registerDoubleClickHandler() {
         HandlerRegistration registration = text.addNodeMouseDoubleClickHandler(event -> {
             if (null != textDblClickEventViewHandler) {
-                eventHandlerManager.skipClickHandler();
+                eventHandlerManager.get().skipClickHandler();
                 final TextDoubleClickEvent e = new TextDoubleClickEvent(event.getX(),
                                                                         event.getY(),
                                                                         event.getMouseEvent().getClientX(),
                                                                         event.getMouseEvent().getClientY());
                 textDblClickEventViewHandler.handle(e);
-                eventHandlerManager.restoreClickHandler();
+                eventHandlerManager.get().restoreClickHandler();
             }
         });
-        eventHandlerManager.addHandlersRegistration(ViewEventType.TEXT_DBL_CLICK,
-                                                    registration);
+        eventHandlerManager.get().addHandlersRegistration(ViewEventType.TEXT_DBL_CLICK,
+                                                          registration);
     }
 
     private void registerTextEnterHandler() {
@@ -145,8 +160,8 @@ public class WiresTextDecorator {
                 textOverHandlerViewHandler.handle(textOverEvent);
             }
         });
-        eventHandlerManager.addHandlersRegistration(ViewEventType.TEXT_ENTER,
-                                                    registration);
+        eventHandlerManager.get().addHandlersRegistration(ViewEventType.TEXT_ENTER,
+                                                          registration);
     }
 
     private void registerTextExitHandler() {
@@ -159,8 +174,8 @@ public class WiresTextDecorator {
                 textOutEventViewHandler.handle(textOutEvent);
             }
         });
-        eventHandlerManager.addHandlersRegistration(ViewEventType.TEXT_EXIT,
-                                                    registration);
+        eventHandlerManager.get().addHandlersRegistration(ViewEventType.TEXT_EXIT,
+                                                          registration);
     }
 
     @SuppressWarnings("unchecked")
@@ -191,7 +206,6 @@ public class WiresTextDecorator {
         }
         final boolean changed = !currentTextLayout.equals(layout);
         this.currentTextLayout = layout;
-        setTextBoundaries(textWrapper.getWrapBoundaries());
         return changed;
     }
 
@@ -243,6 +257,16 @@ public class WiresTextDecorator {
         return currentTextLayout;
     }
 
+    public void update() {
+        updateTextBoundaries();
+    }
+
+    public void resize(final double width,
+                       final double height) {
+        this.width = width;
+        this.height = height;
+    }
+
     public void destroy() {
         if (null != text) {
             text.removeFromParent();
@@ -257,7 +281,7 @@ public class WiresTextDecorator {
 
     private void deregisterHandler(final ViewHandler<?> handler) {
         if (null != handler) {
-            eventHandlerManager.removeHandler(handler);
+            eventHandlerManager.get().removeHandler(handler);
         }
     }
 
@@ -266,7 +290,14 @@ public class WiresTextDecorator {
         return null != text && text.trim().length() > 0;
     }
 
-    public void setTextBoundaries(BoundingBox boundaries) {
+    private void updateTextBoundaries() {
+        setTextBoundaries(new BoundingBox(0d,
+                                          9d,
+                                          width,
+                                          height));
+    }
+
+    void setTextBoundaries(BoundingBox boundaries) {
         switch (getLayout()) {
             case LEFT:
                 if (null != boundaries) {

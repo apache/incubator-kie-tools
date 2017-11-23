@@ -18,5 +18,7 @@ package org.kie.workbench.common.stunner.svg.gen.model;
 
 public interface ShapeDefinition<V> extends PrimitiveDefinition<V> {
 
+    ShapePolicyDefinition getShapePolicyDefinition();
+
     StyleDefinition getStyleDefinition();
 }

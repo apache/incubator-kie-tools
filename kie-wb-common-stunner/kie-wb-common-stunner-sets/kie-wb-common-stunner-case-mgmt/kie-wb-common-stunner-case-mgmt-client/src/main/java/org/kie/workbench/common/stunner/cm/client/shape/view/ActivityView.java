@@ -52,8 +52,9 @@ public class ActivityView extends AbstractCaseManagementShape<ActivityView> {
                               w,
                               h,
                               0.0);
-        path.setFillColor(ColorName.LIME);
-        return path;
+        return path
+                .setFillColor(ColorName.LIGHTGOLDENRODYELLOW)
+                .setStrokeColor(ColorName.BLACK);
     }
 
     @Override

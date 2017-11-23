@@ -33,7 +33,7 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandListener;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.CommandRegistryListener;
-import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 
@@ -78,7 +78,7 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
     /**
      * The current command builder instance for each client request. It aggregates the commands executed during the request.
      */
-    private CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation> currentCommandBuilder;
+    private CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> currentCommandBuilder;
 
     /**
      * The custom command registry listener implementation - instead of adding commands into session's registry
@@ -189,8 +189,7 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
         }
         LOGGER.log(Level.FINEST,
                    "New client request started.");
-        currentCommandBuilder = new CompositeCommandImpl
-                .CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation>()
+        currentCommandBuilder = new CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation>()
                 .forward();
     }
 

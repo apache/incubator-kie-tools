@@ -75,10 +75,8 @@ public class ShapeViewFactory {
         return new RingView(outer);
     }
 
-    public PolygonView polygon(final double radius,
-                               final String fillColor) {
-        return new PolygonView(radius,
-                               fillColor);
+    public PolygonView polygon(final double radius) {
+        return new PolygonView(radius);
     }
 
     public ConnectorView connector(final double... points) {

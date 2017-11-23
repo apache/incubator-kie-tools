@@ -23,25 +23,19 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.shapes.client.view.RingView;
 import org.kie.workbench.common.stunner.shapes.def.RingShapeDef;
 
-// TODO
-public class RingShape<W> extends BasicContainerShape<W, RingShapeDef<W>, RingView> {
+public class RingShape<W> extends BasicContainerShape<W, RingShapeDef<W, RingView>, RingView> {
 
-    public RingShape(final RingShapeDef<W> shapeDef,
+    public RingShape(final RingShapeDef<W, RingView> shapeDef,
                      final RingView view) {
         super(shapeDef,
               view);
     }
 
     @Override
-    public void applyProperties(final Node<View<W>, Edge> element,
-                                final MutationContext mutationContext) {
-        super.applyProperties(element,
-                              mutationContext);
-        // Outer Radius.
-        final Double outerRadius = getShapeDefinition().getOuterRadius(getDefinition(element));
-        _applyOuterRadius(element,
-                          outerRadius,
-                          mutationContext);
+    public void applyCustomProperties(final Node<View<W>, Edge> element,
+                                      final MutationContext mutationContext) {
+        super.applyCustomProperties(element,
+                                    mutationContext);
         // Inner Radius.
         final Double innerRadius = getShapeDefinition().getInnerRadius(getDefinition(element));
         _applyInnerRadius(element,
@@ -49,22 +43,12 @@ public class RingShape<W> extends BasicContainerShape<W, RingShapeDef<W>, RingVi
                           mutationContext);
     }
 
-    protected RingShape<W> _applyOuterRadius(final Node<View<W>, Edge> element,
-                                             final Double radius,
-                                             final MutationContext mutationContext) {
-        if (null != radius) {
-            getShapeView().setOuterRadius(radius);
-        }
-        return this;
-    }
-
-    protected RingShape<W> _applyInnerRadius(final Node<View<W>, Edge> element,
-                                             final Double radius,
-                                             final MutationContext mutationContext) {
+    private void _applyInnerRadius(final Node<View<W>, Edge> element,
+                                   final Double radius,
+                                   final MutationContext mutationContext) {
         if (null != radius) {
             getShapeView().setInnerRadius(radius);
         }
-        return this;
     }
 
     @Override

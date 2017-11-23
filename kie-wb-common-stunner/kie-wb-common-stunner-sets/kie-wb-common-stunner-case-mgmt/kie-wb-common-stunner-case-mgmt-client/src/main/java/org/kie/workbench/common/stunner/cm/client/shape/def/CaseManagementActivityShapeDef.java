@@ -16,12 +16,44 @@
 
 package org.kie.workbench.common.stunner.cm.client.shape.def;
 
+import java.util.Optional;
+import java.util.function.BiConsumer;
+
 import com.google.gwt.safehtml.shared.SafeUri;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
+import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.shapes.def.RectangleShapeDef;
 
-public interface CaseManagementActivityShapeDef<W extends BPMNDefinition> extends RectangleShapeDef<W>,
-                                                                                  CaseManagementShapeDef<W> {
+public interface CaseManagementActivityShapeDef<W extends BPMNViewDefinition, V extends ShapeView>
+        extends RectangleShapeDef<W, V>,
+                CaseManagementShapeDef<W, V> {
+
+    double WIDTH = 136d;
+    double HEIGHT = 48d;
+
+    @Override
+    default Optional<BiConsumer<View<W>, V>> sizeHandler() {
+        return Optional.of(newSizeHandlerBuilder()
+                                   .width(this::getWidth)
+                                   .height(this::getHeight)
+                                   .build()::handle);
+    }
+
+    @Override
+    default Double getWidth(final W element) {
+        return WIDTH;
+    }
+
+    @Override
+    default Double getHeight(final W element) {
+        return HEIGHT;
+    }
+
+    @Override
+    default double getCornerRadius(final W element) {
+        return 5;
+    }
 
     SafeUri getIconUri(final Class<? extends W> task);
 }

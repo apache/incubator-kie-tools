@@ -21,14 +21,15 @@ import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 public interface ConnectorDragProxy<H extends CanvasHandler> extends DragProxy<H, ConnectorDragProxy.Item, DragProxyCallback> {
 
     interface Item<H> {
 
-        Edge<View<?>, Node> getEdge();
+        Edge<? extends ViewConnector<?>, Node> getEdge();
 
-        Node<View<?>, Edge> getSourceNode();
+        Node<? extends View<?>, Edge> getSourceNode();
 
         ShapeFactory<?, ?> getShapeFactory();
     }

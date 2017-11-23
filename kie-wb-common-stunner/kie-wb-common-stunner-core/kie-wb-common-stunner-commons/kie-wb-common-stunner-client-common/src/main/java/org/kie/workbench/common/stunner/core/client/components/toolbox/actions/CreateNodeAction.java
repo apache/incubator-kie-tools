@@ -16,31 +16,31 @@
 
 package org.kie.workbench.common.stunner.core.client.components.toolbox.actions;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.api.ClientFactoryManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.BuilderControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.NodeBuildRequestImpl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickEvent;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.impl.DeferredCompositeCommand;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
+import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 import org.kie.workbench.common.stunner.core.util.UUID;
@@ -53,12 +53,12 @@ import org.kie.workbench.common.stunner.core.util.UUID;
 public class CreateNodeAction extends AbstractToolboxAction {
 
     static final String KEY_TITLE = "org.kie.workbench.common.stunner.core.client.toolbox.createNewNode";
-    private static Logger LOGGER = Logger.getLogger(CreateNodeAction.class.getName());
+
     private final ClientFactoryManager clientFactoryManager;
-    private final NodeBuilderControl<AbstractCanvasHandler> nodeBuilderControl;
     private final CanvasLayoutUtils canvasLayoutUtils;
     private final Event<CanvasElementSelectedEvent> elementSelectedEvent;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+    private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
 
     private String nodeId;
     private String edgeId;
@@ -66,18 +66,18 @@ public class CreateNodeAction extends AbstractToolboxAction {
     @Inject
     public CreateNodeAction(final DefinitionUtils definitionUtils,
                             final ClientFactoryManager clientFactoryManager,
-                            final NodeBuilderControl<AbstractCanvasHandler> nodeBuilderControl,
                             final CanvasLayoutUtils canvasLayoutUtils,
                             final Event<CanvasElementSelectedEvent> elementSelectedEvent,
                             final ClientTranslationService translationService,
-                            final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager) {
+                            final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                            final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory) {
         super(definitionUtils,
               translationService);
         this.clientFactoryManager = clientFactoryManager;
-        this.nodeBuilderControl = nodeBuilderControl;
         this.canvasLayoutUtils = canvasLayoutUtils;
         this.elementSelectedEvent = elementSelectedEvent;
         this.sessionCommandManager = sessionCommandManager;
+        this.canvasCommandFactory = canvasCommandFactory;
     }
 
     public String getNodeId() {
@@ -126,8 +126,8 @@ public class CreateNodeAction extends AbstractToolboxAction {
         final Element<View<?>> element = (Element<View<?>>) getElement(canvasHandler,
                                                                        uuid);
         final Node<View<?>, Edge> sourceNode = element.asNode();
-        final Edge<View<?>, Node> connector =
-                (Edge<View<?>, Node>) clientFactoryManager
+        final Edge<? extends ViewConnector<?>, Node> connector =
+                (Edge<? extends ViewConnector<?>, Node>) clientFactoryManager
                         .newElement(UUID.uuid(),
                                     edgeId)
                         .asEdge();
@@ -137,58 +137,74 @@ public class CreateNodeAction extends AbstractToolboxAction {
                                     nodeId)
                         .asNode();
 
-        // Set the transient connections to the source/target nodes, for further rule evaluations.
-        connector.setSourceNode(sourceNode);
-        connector.setTargetNode(targetNode);
+        final DeferredCompositeCommand.Builder builder =
+                new DeferredCompositeCommand.Builder()
+                        .deferCommand(() -> addNode(canvasHandler,
+                                                    sourceNode,
+                                                    targetNode))
+                        .deferCommand(() -> updateNodeLocation(canvasHandler,
+                                                               sourceNode,
+                                                               targetNode))
+                        .deferCommand(() -> addEdge(canvasHandler,
+                                                    sourceNode,
+                                                    connector))
+                        .deferCommand(() -> setEdgeTarget(canvasHandler,
+                                                          connector,
+                                                          targetNode));
 
-        // Obtain the candidate locatrions for the target node.
-        final Point2D location = canvasLayoutUtils.getNext(canvasHandler,
-                                                           sourceNode,
-                                                           targetNode);
+        final CommandResult result =
+                sessionCommandManager.execute(canvasHandler,
+                                              builder.build());
 
-        // Build both node and connector elements, shapes, etc etc.
-        final MagnetConnection sourceConnection = MagnetConnection.Builder.forElement(element);
-        final MagnetConnection targetConnection = MagnetConnection.Builder.forElement(targetNode);
-        final NodeBuildRequestImpl buildRequest =
-                new NodeBuildRequestImpl(location.getX(),
-                                         location.getY(),
-                                         targetNode,
-                                         connector,
-                                         sourceConnection,
-                                         targetConnection);
-        start(canvasHandler);
-        nodeBuilderControl.build(buildRequest,
-                                 new BuilderControl.BuildCallback() {
-                                     @Override
-                                     public void onSuccess(final String newNodeUUID) {
-                                         fireElementSelectedEvent(elementSelectedEvent,
-                                                                  canvasHandler,
-                                                                  newNodeUUID);
-                                         complete();
-                                     }
+        if (!CommandUtils.isError(result)) {
+            fireElementSelectedEvent(elementSelectedEvent,
+                                     canvasHandler,
+                                     targetNode.getUUID());
+        }
 
-                                     @Override
-                                     public void onError(final ClientRuntimeError error) {
-                                         error(error);
-                                     }
-                                 });
         return this;
     }
 
-    private void start(final AbstractCanvasHandler canvasHandler) {
-        nodeBuilderControl.enable(canvasHandler);
-        nodeBuilderControl.setCommandManagerProvider(() -> sessionCommandManager);
+    private CanvasCommand<AbstractCanvasHandler> updateNodeLocation(final AbstractCanvasHandler canvasHandler,
+                                                                    final Node<View<?>, Edge> sourceNode,
+                                                                    final Node<View<?>, Edge> targetNode) {
+        // Obtain the candidate locations for the target node.
+        final Point2D location = canvasLayoutUtils.getNext(canvasHandler,
+                                                           sourceNode,
+                                                           targetNode);
+        return canvasCommandFactory.updatePosition(targetNode,
+                                                   location);
     }
 
-    private void complete() {
-        nodeBuilderControl.setCommandManagerProvider(null);
-        nodeBuilderControl.disable();
+    private CanvasCommand<AbstractCanvasHandler> addEdge(final AbstractCanvasHandler canvasHandler,
+                                                         final Node<View<?>, Edge> sourceNode,
+                                                         final Edge<? extends ViewConnector<?>, Node> connector) {
+        return canvasCommandFactory.addConnector(sourceNode,
+                                                 connector,
+                                                 MagnetConnection.Builder.forElement(sourceNode),
+                                                 canvasHandler.getDiagram().getMetadata().getShapeSetId());
     }
 
-    private void error(final ClientRuntimeError error) {
-        complete();
-        LOGGER.log(Level.SEVERE,
-                   error.toString());
+    private CanvasCommand<AbstractCanvasHandler> setEdgeTarget(final AbstractCanvasHandler canvasHandler,
+                                                               final Edge<? extends ViewConnector<?>, Node> connector,
+                                                               final Node<View<?>, Edge> targetNode) {
+        return canvasCommandFactory.setTargetNode(targetNode,
+                                                  connector,
+                                                  MagnetConnection.Builder.forElement(targetNode));
+    }
+
+    private CanvasCommand<AbstractCanvasHandler> addNode(final AbstractCanvasHandler canvasHandler,
+                                                         final Node<View<?>, Edge> sourceNode,
+                                                         final Node<View<?>, Edge> targetNode) {
+        final Node parent = (Node) GraphUtils.getParent(sourceNode);
+        final String shapeSetId = canvasHandler.getDiagram().getMetadata().getShapeSetId();
+        if (null != parent) {
+            return canvasCommandFactory.addChildNode(parent,
+                                                     targetNode,
+                                                     shapeSetId);
+        }
+        return canvasCommandFactory.addNode(targetNode,
+                                            shapeSetId);
     }
 
     @Override

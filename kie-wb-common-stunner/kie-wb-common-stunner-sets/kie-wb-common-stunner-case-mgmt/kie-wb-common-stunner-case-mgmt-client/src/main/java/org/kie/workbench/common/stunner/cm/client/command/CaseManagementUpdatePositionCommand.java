@@ -24,17 +24,16 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public class CaseManagementUpdatePositionCommand extends org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPositionCommand {
 
     public CaseManagementUpdatePositionCommand(final Node<View<?>, Edge> element,
-                                               final Double x,
-                                               final Double y) {
+                                               final Point2D location) {
         super(element,
-              x,
-              y);
+              location);
     }
 
     @Override

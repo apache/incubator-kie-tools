@@ -35,12 +35,13 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 @Dependent
 public class EdgeBuilderControlImpl extends AbstractCanvasHandlerControl<AbstractCanvasHandler> implements EdgeBuilderControl<AbstractCanvasHandler> {
@@ -76,10 +77,10 @@ public class EdgeBuilderControlImpl extends AbstractCanvasHandlerControl<Abstrac
     public boolean allows(final EdgeBuildRequest request) {
         final double x = request.getX();
         final double y = request.getY();
-        final Edge<View<?>, Node> edge = request.getEdge();
+        final Edge<? extends ViewConnector<?>, Node> edge = (Edge<? extends ViewConnector<?>, Node>) request.getEdge();
         final AbstractCanvasHandler<?, ?> wch = canvasHandler;
-        final Node<View<?>, Edge> inNode = request.getInNode();
-        final Node<View<?>, Edge> outNode = request.getOutNode();
+        final Node<? extends View<?>, Edge> inNode = request.getInNode();
+        final Node<? extends View<?>, Edge> outNode = request.getOutNode();
         boolean allowsSourceConn = true;
         if (null != inNode) {
             final CommandResult<CanvasViolation> cr1 = getCommandManager().allow(wch,
@@ -105,16 +106,16 @@ public class EdgeBuilderControlImpl extends AbstractCanvasHandlerControl<Abstrac
                       final BuildCallback buildCallback) {
         final double x = request.getX();
         final double y = request.getY();
-        final Edge<View<?>, Node> edge = request.getEdge();
+        final Edge<? extends ViewConnector<?>, Node> edge = request.getEdge();
         final AbstractCanvasHandler<?, ?> wch = canvasHandler;
-        final Node<View<?>, Edge> inNode = request.getInNode();
-        final Node<View<?>, Edge> outNode = request.getOutNode();
+        final Node<? extends View<?>, Edge> inNode = request.getInNode();
+        final Node<? extends View<?>, Edge> outNode = request.getOutNode();
         final Canvas canvas = canvasHandler.getCanvas();
         if (null == inNode) {
             throw new RuntimeException(" An edge must be into the outgoing edges list from a node.");
         }
         final String ssid = canvasHandler.getDiagram().getMetadata().getShapeSetId();
-        final CompositeCommandImpl.CompositeCommandBuilder commandBuilder = new CompositeCommandImpl.CompositeCommandBuilder()
+        final CompositeCommand.Builder commandBuilder = new CompositeCommand.Builder()
                 .addCommand(commandFactory.addConnector(inNode,
                                                         edge,
                                                         MagnetConnection.Builder.forElement(inNode),

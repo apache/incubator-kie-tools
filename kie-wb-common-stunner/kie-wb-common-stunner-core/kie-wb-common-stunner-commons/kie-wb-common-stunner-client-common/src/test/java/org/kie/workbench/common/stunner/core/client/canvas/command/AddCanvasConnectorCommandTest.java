@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
+import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +28,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -45,6 +48,8 @@ public class AddCanvasConnectorCommandTest extends AbstractCanvasCommandTest {
     @Mock
     private Edge candidate;
     @Mock
+    private ViewConnector candidateContent;
+    @Mock
     private Node source;
     @Mock
     private EdgeShape candidateShape;
@@ -59,6 +64,9 @@ public class AddCanvasConnectorCommandTest extends AbstractCanvasCommandTest {
     public void setup() throws Exception {
         super.setup();
         when(candidate.getUUID()).thenReturn(EDGE_ID);
+        when(candidate.getContent()).thenReturn(candidateContent);
+        when(candidateContent.getSourceConnection()).thenReturn(Optional.empty());
+        when(candidateContent.getTargetConnection()).thenReturn(Optional.empty());
         when(source.getUUID()).thenReturn(SOURCE_ID);
         when(candidate.getSourceNode()).thenReturn(source);
         when(canvas.getShape(eq(EDGE_ID))).thenReturn(candidateShape);

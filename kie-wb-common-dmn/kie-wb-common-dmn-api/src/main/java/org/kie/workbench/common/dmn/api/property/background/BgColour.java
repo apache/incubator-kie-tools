@@ -62,7 +62,7 @@ public class BgColour implements DMNProperty {
 
     @Value
     @FieldValue
-    private String value = defaultValue;
+    private String value;
 
     public BgColour() {
     }

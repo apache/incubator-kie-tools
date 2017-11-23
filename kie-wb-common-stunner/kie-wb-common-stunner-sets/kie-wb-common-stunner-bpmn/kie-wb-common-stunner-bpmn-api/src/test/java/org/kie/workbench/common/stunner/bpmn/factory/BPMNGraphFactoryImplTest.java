@@ -24,13 +24,14 @@ import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.command.Command;
-import org.kie.workbench.common.stunner.core.command.CompositeCommand;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.mockito.ArgumentCaptor;
@@ -105,8 +106,8 @@ public class BPMNGraphFactoryImplTest {
         verify(graphCommandFactory,
                times(1)).addChildNode(eq(diagramNode),
                                       eq(startEventNode),
-                                      eq(BPMNGraphFactoryImpl.START_X),
-                                      eq(BPMNGraphFactoryImpl.START_Y));
+                                      eq(new Point2D(BPMNGraphFactoryImpl.START_X,
+                                                     BPMNGraphFactoryImpl.START_Y)));
         verify(graphCommandManager,
                times(1)).execute(any(GraphCommandExecutionContext.class),
                                  commandCaptor.capture());

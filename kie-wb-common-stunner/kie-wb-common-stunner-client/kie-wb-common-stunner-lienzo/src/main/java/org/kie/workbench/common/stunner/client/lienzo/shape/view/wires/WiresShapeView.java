@@ -26,6 +26,7 @@ import com.ait.lienzo.client.core.shape.wires.WiresLayoutContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.types.DragBounds;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
+import org.kie.workbench.common.stunner.core.client.shape.view.BoundingBox;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasDecorators;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasDragBounds;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
@@ -213,6 +214,15 @@ public class WiresShapeView<T> extends WiresShape
     public T moveDown() {
         getContainer().moveDown();
         return cast();
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        final com.ait.lienzo.client.core.types.BoundingBox bb = getGroup().getBoundingBox();
+        return new BoundingBox(bb.getMinX(),
+                               bb.getMinY(),
+                               bb.getMaxX(),
+                               bb.getMaxY());
     }
 
     @Override

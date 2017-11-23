@@ -19,56 +19,73 @@ package org.kie.workbench.common.stunner.svg.client.shape.view.impl;
 import java.util.Collection;
 
 import com.ait.lienzo.client.core.shape.Group;
-import com.ait.lienzo.client.core.shape.IContainer;
-import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGBasicShapeView;
-import org.mockito.Mock;
+import org.kie.workbench.common.stunner.svg.client.shape.view.SVGContainer;
+import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitive;
+import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitiveShape;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class SVGBasicShapeViewImplTest {
 
-    @Mock
-    SVGBasicShapeView child;
-
-    private Rectangle theShape;
-    private Group svgParent;
-    private IPrimitive childContainer;
     private SVGBasicShapeViewImpl tested;
+    private SVGPrimitiveShape shape;
+    private Rectangle rectangle;
+    private SVGContainer parent;
+    private SVGBasicShapeView child;
+    private SVGPrimitiveShape childShape;
 
     @Before
     public void setup() throws Exception {
-        this.theShape = new Rectangle(50,
-                                      50);
-        this.svgParent = new Group().setID("theParent");
-        this.childContainer = spy(new Group().setID("childGroup"));
-        when(child.getContainer()).thenReturn((IContainer) childContainer);
+        this.parent = new SVGContainer("parent",
+                                       new Group().setID("parent"),
+                                       false,
+                                       null);
+        rectangle = new Rectangle(10d, 10d);
+        this.shape = new SVGPrimitiveShape(rectangle,
+                                           SVGPrimitivePolicies.Builder.buildNonePolicy());
+        this.childShape = new SVGPrimitiveShape(new Rectangle(10d, 10d),
+                                                SVGPrimitivePolicies.Builder.buildNonePolicy());
+        this.child = new SVGBasicShapeViewImpl("svgChild1",
+                                               childShape,
+                                               50d,
+                                               23d);
         this.tested = new SVGBasicShapeViewImpl("svg-test1",
-                                                theShape,
+                                                shape,
                                                 100,
                                                 340);
-        tested.addChild(svgParent);
     }
 
     @Test
     public void testGetters() {
         assertEquals("svg-test1",
                      tested.getName());
-        assertEquals(theShape,
+        assertEquals(rectangle,
                      tested.getShape());
+        assertEquals(shape,
+                     tested.getPrimitive());
+    }
+
+    @Test
+    public void testAddChild() {
+        tested.addChild(childShape);
+        final Collection<SVGPrimitive<?>> svgChildren = tested.getChildren();
+        assertEquals(1,
+                     svgChildren.size());
+        assertEquals(childShape,
+                     svgChildren.iterator().next());
     }
 
     @Test
     public void testSVGChild() {
-        tested.addSVGChild("theParent",
+        this.tested.addChild(parent);
+        tested.addSVGChild(parent,
                            child);
         final Collection<SVGBasicShapeView> svgChildren = tested.getSVGChildren();
         assertEquals(1,

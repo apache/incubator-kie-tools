@@ -18,63 +18,26 @@ package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNImageResources;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
-import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontFamily;
 import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
+import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
+import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.shapes.def.ConnectorShapeDef;
 
 public final class SequenceFlowConnectorDef
-        implements BPMNShapeDef<SequenceFlow>,
-                   ConnectorShapeDef<SequenceFlow> {
+        implements BPMNShapeDef<SequenceFlow, ShapeView>,
+                   ConnectorShapeDef<SequenceFlow, ShapeView> {
 
     @Override
-    public String getBackgroundColor(final SequenceFlow element) {
-        return element.getBackgroundSet().getBgColor().getValue();
+    public FontHandler<SequenceFlow, ShapeView> newFontHandler() {
+        return newFontHandlerBuilder()
+                .positon(c -> HasTitle.Position.BOTTOM)
+                .build();
     }
 
     @Override
-    public double getBackgroundAlpha(final SequenceFlow element) {
-        return 1;
-    }
-
-    @Override
-    public String getBorderColor(final SequenceFlow element) {
-        return element.getBackgroundSet().getBorderColor().getValue();
-    }
-
-    @Override
-    public double getBorderSize(final SequenceFlow element) {
-        return element.getBackgroundSet().getBorderSize().getValue();
-    }
-
-    @Override
-    public double getBorderAlpha(final SequenceFlow element) {
-        return 1;
-    }
-
-    @Override
-    public String getFontFamily(final SequenceFlow element) {
-        return FontFamily.defaultValue;
-    }
-
-    @Override
-    public String getFontBorderColor(final SequenceFlow element) {
-        return element.getFontSet().getFontBorderColor().getValue();
-    }
-
-    @Override
-    public HasTitle.Position getFontPosition(final SequenceFlow element) {
-        return HasTitle.Position.TOP;
-    }
-
-    @Override
-    public double getFontRotation(final SequenceFlow element) {
-        return 0;
-    }
-
-    @Override
-    public Glyph getGlyph(final Class<? extends SequenceFlow> type) {
+    public Glyph getGlyph(Class type) {
         return SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.sequenceFlow().getSafeUri());
     }
 }

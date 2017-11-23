@@ -26,5 +26,7 @@ public interface ViewFactory {
 
     String getImplementedType();
 
+    StyleSheetDefinition getStyleSheetDefinition();
+
     List<ViewDefinition<?>> getViewDefinitions();
 }

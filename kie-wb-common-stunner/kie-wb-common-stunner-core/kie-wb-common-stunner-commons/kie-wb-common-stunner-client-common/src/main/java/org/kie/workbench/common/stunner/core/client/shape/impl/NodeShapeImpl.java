@@ -22,7 +22,7 @@ import org.kie.workbench.common.stunner.core.client.shape.NodeShape;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
-import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.ShapeViewDef;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
@@ -39,7 +39,7 @@ import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
  * @param <V> The view type.
  * @param <D> The mutable shape definition type..
  */
-public class NodeShapeImpl<W, D extends MutableShapeDef<W>, V extends ShapeView<?>>
+public class NodeShapeImpl<W, D extends ShapeViewDef<W, V>, V extends ShapeView>
         extends AbstractElementShape<W, View<W>, Node<View<W>, Edge>, D, V>
         implements NodeShape<W, View<W>, Node<View<W>, Edge>, V>,
                    Lifecycle {
@@ -52,7 +52,7 @@ public class NodeShapeImpl<W, D extends MutableShapeDef<W>, V extends ShapeView<
 
     public NodeShapeImpl(final D shapeDef,
                          final V view,
-                         final ShapeStateHelper<V, Shape<V>> shapeStateHelper) {
+                         final ShapeStateHandler<V, Shape<V>> shapeStateHelper) {
         super(shapeDef,
               view,
               shapeStateHelper);

@@ -24,11 +24,11 @@ import org.kie.workbench.common.stunner.svg.gen.codegen.impl.SVGViewFactoryGener
 import org.kie.workbench.common.stunner.svg.gen.model.ViewFactory;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.ViewDefinitionImpl;
 import org.kie.workbench.common.stunner.svg.gen.translator.SVGDocumentTranslator;
+import org.kie.workbench.common.stunner.svg.gen.translator.SVGTranslatorContext;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
-import org.w3c.dom.Document;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -61,7 +61,7 @@ public class SVGGeneratorImplTest {
 
     @Before
     public void setup() throws Exception {
-        when(translator.translate(any(Document.class))).thenReturn(viewDefinition);
+        when(translator.translate(any(SVGTranslatorContext.class))).thenReturn(viewDefinition);
         tested = new SVGGeneratorImpl(translator,
                                       viewFactoryGenerator);
     }
@@ -87,7 +87,8 @@ public class SVGGeneratorImplTest {
         }).when(viewFactoryGenerator).generate(any(ViewFactory.class));
         final SVGGeneratorRequest request = new SVGGeneratorRequest(SVG_NAME,
                                                                     SVG_PKG,
-                                                                    SVG_FQCN);
+                                                                    SVG_FQCN,
+                                                                    "");
         request.getViewSources().put(SVG_CANCEL_NAME,
                                      SVG_CANCEL_PATH);
         tested.generate(request);

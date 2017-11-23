@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.cm.client.CaseManagementShapeSet;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessor;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessorImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ViewTraverseProcessor;
@@ -115,8 +116,8 @@ public class CaseManagementCanvasCommandFactoryTest {
     public void checkUpdatePositionCommandType() {
         //Checks the command is a specific sub-class for Case Management
         final CanvasCommand<AbstractCanvasHandler> command = factory.updatePosition(child,
-                                                                                    0.0,
-                                                                                    0.0);
+                                                                                    new Point2D(0.0,
+                                                                                                0.0));
         assertNotNull(command);
         assertTrue(command instanceof CaseManagementUpdatePositionCommand);
     }

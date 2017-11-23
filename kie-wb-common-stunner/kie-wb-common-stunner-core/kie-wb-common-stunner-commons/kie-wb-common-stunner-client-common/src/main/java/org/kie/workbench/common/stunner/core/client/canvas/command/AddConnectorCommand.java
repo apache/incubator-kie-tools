@@ -55,4 +55,20 @@ public class AddConnectorCommand extends AbstractCanvasGraphCommand {
         return new AddCanvasConnectorCommand(candidate,
                                              shapeSetId);
     }
+
+    public Node getSource() {
+        return source;
+    }
+
+    public Edge getCandidate() {
+        return candidate;
+    }
+
+    public Connection getConnection() {
+        return connection;
+    }
+
+    public String getShapeSetId() {
+        return shapeSetId;
+    }
 }

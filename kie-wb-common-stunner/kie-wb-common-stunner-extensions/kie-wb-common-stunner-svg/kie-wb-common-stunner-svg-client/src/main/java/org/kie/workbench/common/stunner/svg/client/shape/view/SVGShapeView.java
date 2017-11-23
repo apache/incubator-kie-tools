@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.svg.client.shape.view;
 
 import com.ait.lienzo.client.core.shape.Shape;
-import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasFillGradient;
@@ -38,9 +37,4 @@ public interface SVGShapeView<T extends SVGShapeView>
         HasFillGradient<T>,
         HasSize<T> {
 
-    /**
-     * An SVG shape view can contain visual definition states
-     * as for the different shape states,
-     */
-    boolean applyState(final ShapeState shapeState);
 }

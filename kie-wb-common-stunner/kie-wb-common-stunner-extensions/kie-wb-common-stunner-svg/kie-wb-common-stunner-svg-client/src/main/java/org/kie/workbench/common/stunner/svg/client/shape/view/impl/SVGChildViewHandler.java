@@ -19,83 +19,70 @@ package org.kie.workbench.common.stunner.svg.client.shape.view.impl;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.ait.lienzo.client.core.shape.ContainerNode;
 import com.ait.lienzo.client.core.shape.IContainer;
 import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresShapeView;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.DecoratedShapeView;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGBasicShapeView;
+import org.kie.workbench.common.stunner.svg.client.shape.view.SVGContainer;
+import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitive;
 
 public class SVGChildViewHandler {
 
     private static Logger LOGGER = Logger.getLogger(SVGChildViewHandler.class.getName());
 
-    private final IContainer<?, IPrimitive<?>> svgContainer;
-    private final double width;
-    private final double height;
-    private final List<SVGBasicShapeView> children = new LinkedList<>();
+    private final WiresShapeView<?> view;
+    private final List<SVGPrimitive<?>> primChildren = new LinkedList<>();
+    private final List<SVGBasicShapeView> svgChildren = new LinkedList<>();
 
-    public SVGChildViewHandler(final IContainer<?, IPrimitive<?>> svgContainer,
-                               final double width,
-                               final double height) {
-        this.svgContainer = svgContainer;
-        this.width = width;
-        this.height = height;
+    public SVGChildViewHandler(final WiresShapeView<?> view) {
+        this.view = view;
     }
 
     @SuppressWarnings("unchecked")
-    public void addSVGChild(final String parent,
-                            final SVGBasicShapeView child) {
-        if (!hasChild(child)) {
-            children.add(child);
-            final ContainerNode container = (ContainerNode) getPrimitive(parent);
-            if (null != container) {
-                final IPrimitive childContainer = (IPrimitive) child.getContainer();
-                container.add(childContainer);
-            } else {
-                LOGGER.log(Level.SEVERE,
-                           "The expected container node [" + parent + "] has not been found.");
-            }
+    public void addChild(final SVGPrimitive<?> child) {
+        final IPrimitive<?> primitive = child.get();
+        primChildren.add(child);
+        if (child.isScalable()
+                && view instanceof DecoratedShapeView) {
+            ((DecoratedShapeView) view).addScalableChild(primitive);
+        } else if (null != child.getLayout()) {
+            view.addChild(primitive, child.getLayout());
+        } else {
+            view.addChild(primitive);
         }
     }
 
-    public Collection<SVGBasicShapeView> getSVGChildren() {
-        return children;
+    @SuppressWarnings("unchecked")
+    public void addSVGChild(final SVGContainer parent,
+                            final SVGBasicShapeView child) {
+        if (!hasSvgChild(child)) {
+            svgChildren.add(child);
+            parent.addPrimitive((IPrimitive<?>) child.getContainer());
+        }
     }
 
     public void clear() {
-        children.clear();
+        primChildren.clear();
+        svgChildren.clear();
     }
 
-    private boolean hasChild(final SVGBasicShapeView child) {
+    public Collection<SVGPrimitive<?>> getChildren() {
+        return primChildren;
+    }
+
+    public Collection<SVGBasicShapeView> getSVGChildren() {
+        return svgChildren;
+    }
+
+    private IContainer<?, IPrimitive<?>> getContainer() {
+        return view.getGroup();
+    }
+
+    private boolean hasSvgChild(final SVGBasicShapeView child) {
         final String name = child.getName();
-        return children.stream().filter(c -> name.equals(c.getName())).findAny().isPresent();
-    }
-
-    private IPrimitive getPrimitive(final String uuid) {
-        return getPrimitive(svgContainer,
-                            uuid);
-    }
-
-    @SuppressWarnings("unchecked")
-    private IPrimitive getPrimitive(final IContainer<?, IPrimitive<?>> container,
-                                    final String uuid) {
-        final NFastArrayList<IPrimitive<?>> childNodes = container.getChildNodes();
-        if (null != childNodes) {
-            for (final IPrimitive node : childNodes) {
-                if (null != node.getID() && node.getID().equals(uuid)) {
-                    return node;
-                } else if (node instanceof IContainer) {
-                    final IPrimitive p = getPrimitive((IContainer<?, IPrimitive<?>>) node,
-                                                      uuid);
-                    if (null != p) {
-                        return p;
-                    }
-                }
-            }
-        }
-        return null;
+        return svgChildren.stream().anyMatch(c -> name.equals(c.getName()));
     }
 }

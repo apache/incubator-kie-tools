@@ -23,6 +23,7 @@ import org.kie.workbench.common.stunner.cm.client.command.canvas.CaseManagementU
 import org.kie.workbench.common.stunner.cm.client.command.graph.CaseManagementUpdatePositionGraphCommand;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -47,8 +48,8 @@ public class CaseManagementUpdatePositionCommandTest extends AbstractCommandTest
                                                    50.0);
 
         this.command = new CaseManagementUpdatePositionCommand(candidate,
-                                                               100.0,
-                                                               200.0);
+                                                               new Point2D(100.0,
+                                                                           200.0));
     }
 
     @Test

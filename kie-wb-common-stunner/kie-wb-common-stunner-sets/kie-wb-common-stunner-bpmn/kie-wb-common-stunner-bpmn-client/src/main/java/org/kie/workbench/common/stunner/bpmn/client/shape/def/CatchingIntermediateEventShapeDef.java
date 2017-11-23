@@ -13,135 +13,74 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
-import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNImageResources;
+import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
+import org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.EventCancelActivityViewHandler;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseCatchingIntermediateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
+import org.kie.workbench.common.stunner.core.client.shape.view.handler.CompositeShapeViewHandler;
+import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
+import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
+import org.kie.workbench.common.stunner.svg.client.shape.factory.SVGShapeViewResources;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
 public class CatchingIntermediateEventShapeDef
         implements BPMNSvgShapeDef<BaseCatchingIntermediateEvent> {
 
-    public final static Map<Class<? extends BaseCatchingIntermediateEvent>, String> VIEWS = new HashMap<Class<? extends BaseCatchingIntermediateEvent>, String>(2) {{
-        put(IntermediateTimerEvent.class,
-            BPMNSVGViewFactory.VIEW_EVENT_TIMER);
-        put(IntermediateSignalEventCatching.class,
-            BPMNSVGViewFactory.VIEW_EVENT_SIGNAL);
-    }};
+    public static final SVGShapeViewResources<BaseCatchingIntermediateEvent, BPMNSVGViewFactory> VIEW_RESOURCES =
+            new SVGShapeViewResources<BaseCatchingIntermediateEvent, BPMNSVGViewFactory>()
+                    .put(IntermediateTimerEvent.class, BPMNSVGViewFactory::intermediateTimerEvent)
+                    .put(IntermediateSignalEventCatching.class, BPMNSVGViewFactory::intermediateSignalCatchingEvent);
 
-    private static final SvgDataUriGlyph.Builder GLYPH_BUILDER =
-            SvgDataUriGlyph.Builder.create()
-                    .setUri(BPMNImageResources.INSTANCE.eventIntermediate().getSafeUri())
-                    .addUri(BPMNSVGViewFactory.VIEW_EVENT_TIMER,
-                            BPMNImageResources.INSTANCE.eventTimer().getSafeUri())
-                    .addUri(BPMNSVGViewFactory.VIEW_EVENT_SIGNAL,
-                            BPMNImageResources.INSTANCE.eventSignal().getSafeUri());
+    public static final Map<Class<? extends BaseCatchingIntermediateEvent>, SvgDataUriGlyph> GLYPHS =
+            new HashMap<Class<? extends BaseCatchingIntermediateEvent>, SvgDataUriGlyph>() {{
+                put(IntermediateTimerEvent.class, BPMNSVGGlyphFactory.INTERMEDIATE_TIMER_EVENT_GLYPH);
+                put(IntermediateSignalEventCatching.class, BPMNSVGGlyphFactory.INTERMEDIATE_SIGNAL_EVENT_GLYPH);
+            }};
 
     @Override
-    public double getAlpha(final BaseCatchingIntermediateEvent element) {
-        return 1d;
+    public FontHandler<BaseCatchingIntermediateEvent, SVGShapeView> newFontHandler() {
+        return newFontHandlerBuilder()
+                .positon(event -> HasTitle.Position.BOTTOM)
+                .build();
     }
 
     @Override
-    public String getBackgroundColor(final BaseCatchingIntermediateEvent element) {
-        return element.getBackgroundSet().getBgColor().getValue();
+    public SizeHandler<BaseCatchingIntermediateEvent, SVGShapeView> newSizeHandler() {
+        return newSizeHandlerBuilder()
+                .radius(task -> task.getDimensionsSet().getRadius().getValue())
+                .build();
     }
 
     @Override
-    public double getBackgroundAlpha(final BaseCatchingIntermediateEvent element) {
-        return 1;
-    }
-
-    @Override
-    public String getBorderColor(final BaseCatchingIntermediateEvent element) {
-        return element.getBackgroundSet().getBorderColor().getValue();
-    }
-
-    @Override
-    public double getBorderSize(final BaseCatchingIntermediateEvent element) {
-        return element.getBackgroundSet().getBorderSize().getValue();
-    }
-
-    @Override
-    public double getBorderAlpha(final BaseCatchingIntermediateEvent element) {
-        return 1;
-    }
-
-    @Override
-    public String getFontFamily(final BaseCatchingIntermediateEvent element) {
-        return element.getFontSet().getFontFamily().getValue();
-    }
-
-    @Override
-    public String getFontColor(final BaseCatchingIntermediateEvent element) {
-        return element.getFontSet().getFontColor().getValue();
-    }
-
-    @Override
-    public String getFontBorderColor(final BaseCatchingIntermediateEvent element) {
-        return element.getFontSet().getFontBorderColor().getValue();
-    }
-
-    @Override
-    public double getFontSize(final BaseCatchingIntermediateEvent element) {
-        return element.getFontSet().getFontSize().getValue();
-    }
-
-    @Override
-    public double getFontBorderSize(final BaseCatchingIntermediateEvent element) {
-        return element.getFontSet().getFontBorderSize().getValue();
-    }
-
-    @Override
-    public HasTitle.Position getFontPosition(final BaseCatchingIntermediateEvent element) {
-        return HasTitle.Position.BOTTOM;
-    }
-
-    @Override
-    public double getFontRotation(final BaseCatchingIntermediateEvent element) {
-        return 0;
-    }
-
-    @Override
-    public double getWidth(final BaseCatchingIntermediateEvent element) {
-        return element.getDimensionsSet().getRadius().getValue() * 2;
-    }
-
-    @Override
-    public double getHeight(final BaseCatchingIntermediateEvent element) {
-        return element.getDimensionsSet().getRadius().getValue() * 2;
-    }
-
-    @Override
-    public boolean isSVGViewVisible(final String viewName,
-                                    final BaseCatchingIntermediateEvent element) {
-        return viewName.equals(VIEWS.get(element.getClass()));
+    @SuppressWarnings("unchecked")
+    public BiConsumer<BaseCatchingIntermediateEvent, SVGShapeView> viewHandler() {
+        return new CompositeShapeViewHandler<BaseCatchingIntermediateEvent, SVGShapeView>()
+                .register(newViewAttributesHandler())
+                .register(new EventCancelActivityViewHandler())::handle;
     }
 
     @Override
     public SVGShapeView<?> newViewInstance(final BPMNSVGViewFactory factory,
-                                           final BaseCatchingIntermediateEvent intermediateTimerEvent) {
-        return factory.eventIntermediate(getWidth(intermediateTimerEvent),
-                                         getHeight(intermediateTimerEvent),
-                                         false);
-    }
-
-    @Override
-    public Class<BPMNSVGViewFactory> getViewFactoryType() {
-        return BPMNSVGViewFactory.class;
+                                           final BaseCatchingIntermediateEvent task) {
+        return VIEW_RESOURCES
+                .getResource(factory, task)
+                .build(false);
     }
 
     @Override
     public Glyph getGlyph(final Class<? extends BaseCatchingIntermediateEvent> type) {
-        return GLYPH_BUILDER.build(VIEWS.get(type));
+        return GLYPHS.get(type);
     }
 }

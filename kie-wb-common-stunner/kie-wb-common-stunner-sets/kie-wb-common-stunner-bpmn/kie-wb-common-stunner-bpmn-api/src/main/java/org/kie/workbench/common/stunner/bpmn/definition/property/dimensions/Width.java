@@ -69,7 +69,7 @@ public class Width implements BPMNProperty {
     @Max(300)
     @Min(100)
     @FieldValue
-    private Double value = defaultValue;
+    private Double value;
 
     public Width() {
     }

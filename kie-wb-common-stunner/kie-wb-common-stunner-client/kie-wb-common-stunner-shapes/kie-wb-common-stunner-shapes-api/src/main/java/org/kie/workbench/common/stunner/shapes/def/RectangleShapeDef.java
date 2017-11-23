@@ -16,13 +16,14 @@
 
 package org.kie.workbench.common.stunner.shapes.def;
 
+import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 
-public interface RectangleShapeDef<W> extends BasicMutableShapeDef<W> {
+public interface RectangleShapeDef<W, V extends ShapeView> extends BasicShapeViewDef<W, V> {
 
-    double getWidth(final W element);
+    Double getWidth(final W element);
 
-    double getHeight(final W element);
+    Double getHeight(final W element);
 
     double getCornerRadius(final W element);
 

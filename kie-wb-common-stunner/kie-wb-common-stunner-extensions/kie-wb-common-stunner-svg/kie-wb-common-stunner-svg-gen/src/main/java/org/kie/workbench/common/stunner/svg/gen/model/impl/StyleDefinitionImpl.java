@@ -20,29 +20,35 @@ import org.kie.workbench.common.stunner.svg.gen.model.StyleDefinition;
 
 public class StyleDefinitionImpl implements StyleDefinition {
 
-    private final double alpha;
-    private final String fillColor;
-    private final double fillAlpha;
-    private final String strokeColor;
-    private final double strokeAlpha;
-    private final double strokeWidth;
+    private Double alpha;
+    private String fillColor;
+    private Double fillAlpha;
+    private String strokeColor;
+    private Double strokeAlpha;
+    private Double strokeWidth;
+    private String fontFamily;
+    private Double fontSize;
 
-    private StyleDefinitionImpl(final double alpha,
+    private StyleDefinitionImpl(final Double alpha,
                                 final String fillColor,
-                                final double fillAlpha,
+                                final Double fillAlpha,
                                 final String strokeColor,
-                                final double strokeAlpha,
-                                final double strokeWidth) {
+                                final Double strokeAlpha,
+                                final Double strokeWidth,
+                                final String fontFamily,
+                                final Double fontSize) {
         this.alpha = alpha;
         this.fillColor = fillColor;
         this.fillAlpha = fillAlpha;
         this.strokeColor = strokeColor;
         this.strokeAlpha = strokeAlpha;
         this.strokeWidth = strokeWidth;
+        this.fontFamily = fontFamily;
+        this.fontSize = fontSize;
     }
 
     @Override
-    public double getAlpha() {
+    public Double getAlpha() {
         return alpha;
     }
 
@@ -52,7 +58,7 @@ public class StyleDefinitionImpl implements StyleDefinition {
     }
 
     @Override
-    public double getFillAlpha() {
+    public Double getFillAlpha() {
         return fillAlpha;
     }
 
@@ -62,29 +68,76 @@ public class StyleDefinitionImpl implements StyleDefinition {
     }
 
     @Override
-    public double getStrokeWidth() {
+    public Double getStrokeWidth() {
         return strokeWidth;
     }
 
     @Override
-    public double getStrokeAlpha() {
+    public Double getStrokeAlpha() {
         return strokeAlpha;
+    }
+
+    @Override
+    public String getFontFamily() {
+        return fontFamily;
+    }
+
+    @Override
+    public Double getFontSize() {
+        return fontSize;
+    }
+
+    @Override
+    public StyleDefinition add(final StyleDefinition other) {
+        if (null != other.getAlpha()) {
+            alpha = other.getAlpha();
+        }
+        if (null != other.getFillAlpha()) {
+            fillAlpha = other.getFillAlpha();
+        }
+        if (null != other.getFillColor()) {
+            fillColor = other.getFillColor();
+        }
+        if (null != other.getStrokeAlpha()) {
+            strokeAlpha = other.getStrokeAlpha();
+        }
+        if (null != other.getStrokeWidth()) {
+            strokeWidth = other.getStrokeWidth();
+        }
+        if (null != other.getStrokeColor()) {
+            strokeColor = other.getStrokeColor();
+        }
+        if (null != other.getFontFamily()) {
+            fontFamily = other.getFontFamily();
+        }
+        if (null != other.getFontSize()) {
+            fontSize = other.getFontSize();
+        }
+        return this;
+    }
+
+    @Override
+    public StyleDefinition copy() {
+        return new StyleDefinitionImpl(alpha,
+                                       fillColor,
+                                       fillAlpha,
+                                       strokeColor,
+                                       strokeAlpha,
+                                       strokeWidth,
+                                       fontFamily,
+                                       fontSize);
     }
 
     public static final class Builder {
 
-        public static final double ATTR_OPACITY_DEFAULT = 1d;
-        public static final String ATTR_FILL_DEFAULT = "#000000";
-        public static final String ATTR_STROKE_DEFAULT = "#000000";
-        public static final double ATTR_STROKE_OPACITY_DEFAULT = 1d;
-        public static final double ATTR_STROKE_WIDTH_DEFAULT = 1d;
-
-        private double alpha = ATTR_OPACITY_DEFAULT;
-        private String fillColor = ATTR_FILL_DEFAULT;
-        private double fillAlpha = ATTR_OPACITY_DEFAULT;
-        private String strokeColor = ATTR_STROKE_DEFAULT;
-        private double strokeAlpha = ATTR_STROKE_OPACITY_DEFAULT;
-        private double strokeWidth = ATTR_STROKE_WIDTH_DEFAULT;
+        private Double alpha;
+        private String fillColor;
+        private Double fillAlpha;
+        private String strokeColor;
+        private Double strokeAlpha;
+        private Double strokeWidth;
+        private String fontFamily;
+        private Double fontSize;
 
         public Builder setAlpha(final double alpha) {
             this.alpha = alpha;
@@ -116,13 +169,25 @@ public class StyleDefinitionImpl implements StyleDefinition {
             return this;
         }
 
+        public Builder setFontFamily(final String family) {
+            this.fontFamily = family;
+            return this;
+        }
+
+        public Builder setFontSize(final double size) {
+            this.fontSize = size;
+            return this;
+        }
+
         public StyleDefinitionImpl build() {
             return new StyleDefinitionImpl(alpha,
                                            fillColor,
                                            fillAlpha,
                                            strokeColor,
                                            strokeAlpha,
-                                           strokeWidth);
+                                           strokeWidth,
+                                           fontFamily,
+                                           fontSize);
         }
     }
 }

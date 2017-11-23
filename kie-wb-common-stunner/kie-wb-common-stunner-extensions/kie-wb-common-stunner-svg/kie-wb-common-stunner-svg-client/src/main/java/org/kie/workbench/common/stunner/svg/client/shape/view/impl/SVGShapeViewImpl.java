@@ -18,12 +18,13 @@ package org.kie.workbench.common.stunner.svg.client.shape.view.impl;
 
 import java.util.Collection;
 
-import com.ait.lienzo.client.core.shape.Shape;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresScalableContainer;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.DecoratedShapeView;
-import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGBasicShapeView;
+import org.kie.workbench.common.stunner.svg.client.shape.view.SVGContainer;
+import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitive;
+import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitiveShape;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
 public class SVGShapeViewImpl
@@ -31,24 +32,24 @@ public class SVGShapeViewImpl
         implements SVGShapeView<SVGShapeViewImpl> {
 
     private final String name;
+    private final SVGPrimitiveShape svgPrimitive;
     private final SVGChildViewHandler childViewHandler;
     private final SVGShapeStateHandler shapeStateHandler;
 
     public SVGShapeViewImpl(final String name,
-                            final Shape<?> theShape,
+                            final SVGPrimitiveShape svgPrimitive,
                             final double width,
                             final double height,
                             final boolean resizable) {
         super(resizable ? ShapeViewSupportedEvents.ALL_DESKTOP_EVENT_TYPES : ShapeViewSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
               new WiresScalableContainer(),
-              theShape,
+              svgPrimitive.get(),
               width,
               height);
         this.name = name;
-        this.childViewHandler = new SVGChildViewHandler(getGroup(),
-                                                        width,
-                                                        height);
-        this.shapeStateHandler = new SVGShapeStateHandler(this);
+        this.svgPrimitive = svgPrimitive;
+        this.childViewHandler = new SVGChildViewHandler(this);
+        this.shapeStateHandler = new SVGShapeStateHandler();
     }
 
     @Override
@@ -57,11 +58,27 @@ public class SVGShapeViewImpl
     }
 
     @Override
-    public SVGBasicShapeView addSVGChild(final String parent,
-                                         final SVGBasicShapeView child) {
+    public SVGPrimitive getPrimitive() {
+        return svgPrimitive;
+    }
+
+    @Override
+    public SVGShapeViewImpl addChild(final SVGPrimitive<?> child) {
+        childViewHandler.addChild(child);
+        return this;
+    }
+
+    @Override
+    public SVGShapeViewImpl addSVGChild(final SVGContainer parent,
+                                        final SVGBasicShapeView child) {
         childViewHandler.addSVGChild(parent,
                                      child);
         return this;
+    }
+
+    @Override
+    public Collection<SVGPrimitive<?>> getChildren() {
+        return childViewHandler.getChildren();
     }
 
     @Override
@@ -69,8 +86,7 @@ public class SVGShapeViewImpl
         return childViewHandler.getSVGChildren();
     }
 
-    @Override
-    public boolean applyState(final ShapeState shapeState) {
-        return shapeStateHandler.applyState(shapeState);
+    public SVGShapeStateHandler getShapeStateHandler() {
+        return shapeStateHandler;
     }
 }

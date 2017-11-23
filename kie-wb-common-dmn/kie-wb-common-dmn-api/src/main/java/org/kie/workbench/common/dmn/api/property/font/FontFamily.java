@@ -62,7 +62,7 @@ public class FontFamily implements DMNProperty {
 
     @Value
     @FieldValue
-    private String value = defaultValue;
+    private String value;
 
     public FontFamily() {
     }

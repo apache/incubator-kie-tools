@@ -16,12 +16,6 @@
 
 package org.kie.workbench.common.stunner.svg.client.shape.view;
 
-import java.util.Collection;
-
-import com.ait.lienzo.client.core.shape.IContainer;
-import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.lienzo.client.core.shape.Shape;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.svg.annotation.SVGSource;
 import org.kie.workbench.common.stunner.svg.annotation.SVGViewFactory;
 
@@ -47,7 +41,7 @@ import org.kie.workbench.common.stunner.svg.annotation.SVGViewFactory;
  */
 public interface SVGBasicShapeView<T extends SVGBasicShapeView>
         extends
-        ShapeView<T> {
+        SVGContainerShapeView<T> {
 
     /**
      * Returns a unique SVGShapeView name.
@@ -55,32 +49,12 @@ public interface SVGBasicShapeView<T extends SVGBasicShapeView>
     String getName();
 
     /**
-     * Return the main shape in the view.
+     * Return the main svg shape in the view.
      * As SVGView instances are usually generated from
      * SVG structures, they can contain several shapes
      * and other composite view children. The shape
      * instance returned by this method is the instance
      * used by Stunner to change the view's state.
      */
-    Shape<?> getShape();
-
-    /**
-     * Returns the container instance for this view.
-     * This method is used to provide the children
-     * for other composite SVG views.
-     */
-    IContainer<?, IPrimitive<?>> getContainer();
-
-    /**
-     * Adds an SVG shape view instance as a child for this view.
-     * @param parent The target parent element used for adding the child view's container.
-     * @param child The SVGShapeView instance.
-     */
-    SVGBasicShapeView addSVGChild(final String parent,
-                                  final SVGBasicShapeView child);
-
-    /**
-     * Returns the SVGShapeView's children for this view.
-     */
-    Collection getSVGChildren();
+    SVGPrimitive getPrimitive();
 }

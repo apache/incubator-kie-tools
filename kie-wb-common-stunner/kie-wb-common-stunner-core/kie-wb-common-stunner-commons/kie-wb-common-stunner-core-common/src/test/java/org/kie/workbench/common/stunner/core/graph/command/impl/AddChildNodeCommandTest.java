@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
 import org.kie.workbench.common.stunner.core.rule.RuleSet;
@@ -55,8 +56,7 @@ public class AddChildNodeCommandTest extends AbstractGraphCommandTest {
 
     private static final String PARENT_UUID = "parentUUID";
     private static final String CANDIDATE_UUID = "candidateUUID";
-    private static final Double x = 100d;
-    private static final Double y = 200d;
+    private static final Point2D LOCATION = new Point2D(100d, 200d);
 
     private Node parent;
     private Node candidate;
@@ -84,8 +84,7 @@ public class AddChildNodeCommandTest extends AbstractGraphCommandTest {
         when(graphIndex.getNode(eq(PARENT_UUID))).thenReturn(parent);
         this.tested = new AddChildNodeCommand(PARENT_UUID,
                                               candidate,
-                                              x,
-                                              y);
+                                              LOCATION);
     }
 
     @Test
@@ -109,7 +108,6 @@ public class AddChildNodeCommandTest extends AbstractGraphCommandTest {
     public void testInitializeWithNoPositionCommands() {
         this.tested = spy(new AddChildNodeCommand(PARENT_UUID,
                                                   candidate,
-                                                  null,
                                                   null));
         tested.initialize(graphCommandExecutionContext);
         ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass(Command.class);

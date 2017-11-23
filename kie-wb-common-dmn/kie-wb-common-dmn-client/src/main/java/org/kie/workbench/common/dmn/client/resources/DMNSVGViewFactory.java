@@ -17,10 +17,14 @@ package org.kie.workbench.common.dmn.client.resources;
 
 import org.kie.workbench.common.stunner.svg.annotation.SVGSource;
 import org.kie.workbench.common.stunner.svg.annotation.SVGViewFactory;
-import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
+import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeViewResource;
 
-@SVGViewFactory
+import static org.kie.workbench.common.dmn.client.resources.DMNSVGViewFactory.PATH_CSS;
+
+@SVGViewFactory(PATH_CSS)
 public interface DMNSVGViewFactory {
+
+    String PATH_CSS = "images/shapes/dmn-shapes.css";
 
     String DIAGRAM = "images/shapes/diagram.svg";
 
@@ -35,33 +39,21 @@ public interface DMNSVGViewFactory {
     String TEXT_ANNOTATION = "images/shapes/text-annotation.svg";
 
     @SVGSource(DIAGRAM)
-    SVGShapeView diagram(final double width,
-                         final double height,
-                         final boolean resizable);
+    SVGShapeViewResource diagram();
 
     @SVGSource(INPUT_DATA)
-    SVGShapeView inputData(final double width,
-                           final double height,
-                           final boolean resizable);
+    SVGShapeViewResource inputData();
 
     @SVGSource(KNOWLEDGE_SOURCE)
-    SVGShapeView knowledgeSource(final double width,
-                                 final double height,
-                                 final boolean resizable);
+    SVGShapeViewResource knowledgeSource();
 
     @SVGSource(BUSINESS_KNOWLEDGE_MODEL)
-    SVGShapeView businessKnowledgeModel(final double width,
-                                        final double height,
-                                        final boolean resizable);
+    SVGShapeViewResource businessKnowledgeModel();
 
     @SVGSource(DECISION)
-    SVGShapeView decision(final double width,
-                          final double height,
-                          final boolean resizable);
+    SVGShapeViewResource decision();
 
     @SVGSource(TEXT_ANNOTATION)
-    SVGShapeView textAnnotation(final double width,
-                                final double height,
-                                final boolean resizable);
+    SVGShapeViewResource textAnnotation();
 }
 

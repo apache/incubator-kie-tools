@@ -63,7 +63,7 @@ public class FontSize implements BPMNProperty {
 
     @Value
     @FieldValue
-    private Double value = defaultValue;
+    private Double value = null;
 
     public FontSize() {
     }

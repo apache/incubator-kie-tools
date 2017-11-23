@@ -23,6 +23,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 @ApplicationScoped
@@ -35,21 +36,18 @@ public class GraphCommandFactory {
     @SuppressWarnings("unchecked")
     public AddChildNodeCommand addChildNode(final Node parent,
                                             final Node candidate) {
-        return new AddChildNodeCommand(parent,
-                                       candidate,
-                                       null,
-                                       null);
+        return addChildNode(parent,
+                            candidate,
+                            null);
     }
 
     @SuppressWarnings("unchecked")
     public AddChildNodeCommand addChildNode(final Node parent,
                                             final Node candidate,
-                                            final Double x,
-                                            final Double y) {
+                                            final Point2D location) {
         return new AddChildNodeCommand(parent,
                                        candidate,
-                                       x,
-                                       y);
+                                       location);
     }
 
     @SuppressWarnings("unchecked")
@@ -114,11 +112,9 @@ public class GraphCommandFactory {
     }
 
     public UpdateElementPositionCommand updatePosition(final Node<? extends View<?>, Edge> element,
-                                                       final Double x,
-                                                       final Double y) {
+                                                       final Point2D location) {
         return new UpdateElementPositionCommand(element,
-                                                x,
-                                                y);
+                                                location);
     }
 
     @SuppressWarnings("unchecked")

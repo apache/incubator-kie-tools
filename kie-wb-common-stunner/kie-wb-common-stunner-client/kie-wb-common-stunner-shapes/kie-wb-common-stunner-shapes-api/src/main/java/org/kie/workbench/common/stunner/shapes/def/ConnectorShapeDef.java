@@ -16,10 +16,12 @@
 
 package org.kie.workbench.common.stunner.shapes.def;
 
+import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 
-public interface ConnectorShapeDef<W> extends BasicMutableShapeDef<W> {
+public interface ConnectorShapeDef<W, V extends ShapeView>
+        extends BasicShapeViewDef<W, V> {
 
     ConnectorGlyph GLYPH = ConnectorGlyph.create();
 

@@ -22,10 +22,10 @@ import javax.inject.Inject;
 
 import com.google.gwt.safehtml.shared.SafeUri;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
 import org.kie.workbench.common.stunner.cm.client.shape.ActivityShape;
-import org.kie.workbench.common.stunner.cm.client.shape.DiagramShape;
+import org.kie.workbench.common.stunner.cm.client.shape.CMContainerShape;
 import org.kie.workbench.common.stunner.cm.client.shape.NullShape;
-import org.kie.workbench.common.stunner.cm.client.shape.StageShape;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementActivityShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementDiagramShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementReusableSubprocessTaskShapeDef;
@@ -103,14 +103,14 @@ public class CaseManagementShapeDefFactory implements ShapeDefFactory<BPMNDefini
         final double height = cmShapeDef.getHeight(diagram);
         final DiagramView view = cmShapeViewFactory.newDiagramView(width,
                                                                    height);
-        return new DiagramShape(cmShapeDef,
-                                view);
+        return new CMContainerShape(cmShapeDef,
+                                    view);
     }
 
     @SuppressWarnings("unchecked")
     private Shape newStageShape(final Object instance,
                                 final ShapeDef shapeDef) {
-        final BPMNDefinition bpmnDefinition = (BPMNDefinition) instance;
+        final BPMNViewDefinition bpmnDefinition = (BPMNViewDefinition) instance;
         final StageShapeDef cmShapeDef = (StageShapeDef) shapeDef;
         final double width = cmShapeDef.getWidth(bpmnDefinition);
         final double height = cmShapeDef.getHeight(bpmnDefinition);
@@ -118,16 +118,17 @@ public class CaseManagementShapeDefFactory implements ShapeDefFactory<BPMNDefini
         final StageView view = cmShapeViewFactory.newStageView(width,
                                                                height,
                                                                voffset);
-        return new StageShape<>(cmShapeDef,
-                                view);
+        return new CMContainerShape(cmShapeDef,
+                                    view);
     }
 
     @SuppressWarnings("unchecked")
     private Shape newActivityShape(final Object instance,
                                    final ShapeDef shapeDef) {
+        final BPMNViewDefinition bpmnDefinition = (BPMNViewDefinition) instance;
         final CaseManagementActivityShapeDef cmShapeDef = (CaseManagementActivityShapeDef) shapeDef;
-        final double width = cmShapeDef.getWidth(instance);
-        final double height = cmShapeDef.getHeight(instance);
+        final double width = cmShapeDef.getWidth(bpmnDefinition);
+        final double height = cmShapeDef.getHeight(bpmnDefinition);
         final ActivityView view = cmShapeViewFactory.newActivityView(width,
                                                                      height);
         final SafeUri iconUri = cmShapeDef.getIconUri(instance.getClass());

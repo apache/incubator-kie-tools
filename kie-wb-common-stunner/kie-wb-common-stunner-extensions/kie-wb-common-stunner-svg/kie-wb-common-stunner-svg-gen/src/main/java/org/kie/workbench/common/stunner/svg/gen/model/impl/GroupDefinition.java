@@ -16,12 +16,23 @@
 
 package org.kie.workbench.common.stunner.svg.gen.model.impl;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import com.ait.lienzo.client.core.shape.Group;
+import org.kie.workbench.common.stunner.svg.gen.model.PrimitiveDefinition;
 
 public class GroupDefinition extends AbstractPrimitiveDefinition<Group> {
 
+    private final List<PrimitiveDefinition> children;
+
     public GroupDefinition(final String id) {
         super(id);
+        children = new LinkedList<>();
+    }
+
+    public List<PrimitiveDefinition> getChildren() {
+        return children;
     }
 
     @Override

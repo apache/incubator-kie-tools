@@ -68,7 +68,7 @@ public class Height implements DMNProperty {
     @Min(50)
     @Max(200)
     @FieldValue
-    private Double value = defaultValue;
+    private Double value;
 
     public Height() {
     }

@@ -16,9 +16,53 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
-import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
+import java.util.Optional;
+import java.util.function.BiConsumer;
 
-public interface BPMNShapeDef<W extends BPMNDefinition> extends MutableShapeDef<W> {
+import org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.BPMNViewHandlers;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
+import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
+import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
+import org.kie.workbench.common.stunner.core.client.shape.view.handler.TitleHandler;
+import org.kie.workbench.common.stunner.core.client.shape.view.handler.ViewAttributesHandler;
+import org.kie.workbench.common.stunner.core.definition.shape.ShapeViewDef;
 
+public interface BPMNShapeDef<W extends BPMNViewDefinition, V extends ShapeView>
+        extends ShapeViewDef<W, V> {
+
+    @Override
+    default Optional<BiConsumer<String, V>> titleHandler() {
+        return Optional.of(newTitleHandler()::handle);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    default Optional<BiConsumer<W, V>> fontHandler() {
+        return Optional.of(newFontHandler()::handle);
+    }
+
+    @Override
+    default BiConsumer<W, V> viewHandler() {
+        return newViewAttributesHandler()::handle;
+    }
+
+    default TitleHandler<ShapeView> newTitleHandler() {
+        return BPMNViewHandlers.TITLE_HANDLER;
+    }
+
+    default BPMNViewHandlers.FontHandlerBuilder<W, V> newFontHandlerBuilder() {
+        return new BPMNViewHandlers.FontHandlerBuilder<>();
+    }
+
+    default BPMNViewHandlers.ViewAttributesHandlerBuilder<W, V> newViewAttributesHandlerBuilder() {
+        return new BPMNViewHandlers.ViewAttributesHandlerBuilder<W, V>();
+    }
+
+    default FontHandler<W, V> newFontHandler() {
+        return newFontHandlerBuilder().build();
+    }
+
+    default ViewAttributesHandler<W, V> newViewAttributesHandler() {
+        return newViewAttributesHandlerBuilder().build();
+    }
 }

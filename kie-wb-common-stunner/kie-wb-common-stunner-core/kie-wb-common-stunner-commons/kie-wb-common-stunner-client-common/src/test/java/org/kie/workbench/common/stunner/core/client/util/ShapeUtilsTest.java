@@ -50,16 +50,16 @@ public class ShapeUtilsTest {
     private AbstractCanvas canvas;
 
     @Mock
-    private Shape<?> edge1Shape;
+    private Shape edge1Shape;
 
     @Mock
-    private ShapeView<?> edge1ShapeView;
+    private ShapeView edge1ShapeView;
 
     @Mock
-    private Shape<?> edge2Shape;
+    private Shape edge2Shape;
 
     @Mock
-    private ShapeView<?> edge2ShapeView;
+    private ShapeView edge2ShapeView;
 
     private TestingGraphInstanceBuilder.TestGraph2 instance2;
 
@@ -82,10 +82,10 @@ public class ShapeUtilsTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testApplyConnections() {
-        final Shape<?> startNodeShape = mock(Shape.class);
-        final ShapeView<?> startNodeShapeView = mock(ShapeView.class);
-        final Shape<?> intermNodeShape = mock(Shape.class);
-        final ShapeView<?> intermNodeShapeView = mock(ShapeView.class);
+        final Shape startNodeShape = mock(Shape.class);
+        final ShapeView startNodeShapeView = mock(ShapeView.class);
+        final Shape intermNodeShape = mock(Shape.class);
+        final ShapeView intermNodeShapeView = mock(ShapeView.class);
         final EdgeShape edge1EdgeShape = mock(EdgeShape.class);
         when(canvas.getShape(eq(instance2.startNode.getUUID()))).thenReturn(startNodeShape);
         when(canvas.getShape(eq(instance2.intermNode.getUUID()))).thenReturn(intermNodeShape);

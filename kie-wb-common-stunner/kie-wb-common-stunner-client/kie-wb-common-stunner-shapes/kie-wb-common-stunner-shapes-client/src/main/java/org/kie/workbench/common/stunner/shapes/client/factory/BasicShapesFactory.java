@@ -24,11 +24,9 @@ import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeDefFactory;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeDefFunctionalFactory;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
-import org.kie.workbench.common.stunner.shapes.client.CircleShape;
-import org.kie.workbench.common.stunner.shapes.client.ConnectorShape;
+import org.kie.workbench.common.stunner.shapes.client.BasicConnectorShape;
+import org.kie.workbench.common.stunner.shapes.client.BasicContainerShape;
 import org.kie.workbench.common.stunner.shapes.client.PictureShape;
-import org.kie.workbench.common.stunner.shapes.client.PolygonShape;
-import org.kie.workbench.common.stunner.shapes.client.RectangleShape;
 import org.kie.workbench.common.stunner.shapes.client.RingShape;
 import org.kie.workbench.common.stunner.shapes.client.view.CircleView;
 import org.kie.workbench.common.stunner.shapes.client.view.ConnectorView;
@@ -97,8 +95,8 @@ public class BasicShapesFactory
         final CircleShapeDef circleShapeDef = (CircleShapeDef) shapeDef;
         final double radius = circleShapeDef.getRadius(instance);
         final CircleView view = shapeViewFactory.circle(radius);
-        return new CircleShape(circleShapeDef,
-                               view);
+        return new BasicContainerShape(circleShapeDef,
+                                       view);
     }
 
     @SuppressWarnings("unchecked")
@@ -121,8 +119,8 @@ public class BasicShapesFactory
         final RectangleView view = shapeViewFactory.rectangle(width,
                                                               height,
                                                               cr);
-        return new RectangleShape(rectShapeDef,
-                                  view);
+        return new BasicContainerShape(rectShapeDef,
+                                       view);
     }
 
     @SuppressWarnings("unchecked")
@@ -130,11 +128,9 @@ public class BasicShapesFactory
                                         final BasicShapeDef shapeDef) {
         final PolygonShapeDef polygonShapeDef = (PolygonShapeDef) shapeDef;
         final double radius = polygonShapeDef.getRadius(instance);
-        final String fillColor = polygonShapeDef.getBackgroundColor(instance);
-        final PolygonView view = shapeViewFactory.polygon(radius,
-                                                          fillColor);
-        return new PolygonShape(polygonShapeDef,
-                                view);
+        final PolygonView view = shapeViewFactory.polygon(radius);
+        return new BasicContainerShape(polygonShapeDef,
+                                       view);
     }
 
     @SuppressWarnings("unchecked")
@@ -145,8 +141,8 @@ public class BasicShapesFactory
                                                               0,
                                                               100,
                                                               100);
-        return new ConnectorShape(cShapeDef,
-                                  view);
+        return new BasicConnectorShape(cShapeDef,
+                                       view);
     }
 
     @SuppressWarnings("unchecked")

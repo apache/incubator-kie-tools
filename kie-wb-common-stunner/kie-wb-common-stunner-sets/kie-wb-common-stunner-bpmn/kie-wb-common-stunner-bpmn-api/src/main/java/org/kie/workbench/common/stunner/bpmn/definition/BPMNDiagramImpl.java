@@ -93,9 +93,6 @@ public class BPMNDiagramImpl implements BPMNDiagram {
     @NonPortable
     public static class BPMNDiagramBuilder implements Builder<BPMNDiagramImpl> {
 
-        public static final transient String COLOR = "#FFFFFF";
-        public static final transient String BORDER_COLOR = "#000000";
-        public static final Double BORDER_SIZE = 1d;
         public static final Double WIDTH = 950d;
         public static final Double HEIGHT = 950d;
 
@@ -103,9 +100,7 @@ public class BPMNDiagramImpl implements BPMNDiagram {
         public BPMNDiagramImpl build() {
             return new BPMNDiagramImpl(new DiagramSet(""),
                                        new ProcessData(),
-                                       new BackgroundSet(COLOR,
-                                                         BORDER_COLOR,
-                                                         BORDER_SIZE),
+                                       new BackgroundSet(),
                                        new FontSet(),
                                        new RectangleDimensionsSet(WIDTH,
                                                                   HEIGHT));

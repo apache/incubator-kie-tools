@@ -17,12 +17,14 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.font.FontSet;
@@ -53,7 +55,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
         "knowledge-requirement",
         "authority-requirement"
 })
-public class DMNDiagram extends DMNModelInstrumentedBase {
+public class DMNDiagram extends DMNModelInstrumentedBase implements DMNViewDefinition {
 
     @Category
     public static final transient String stunnerCategory = Categories.DIAGRAM;

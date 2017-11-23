@@ -16,18 +16,14 @@
 
 package org.kie.workbench.common.stunner.cm.client.shape;
 
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
-import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementActivityShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.view.ActivityView;
-import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
-import org.kie.workbench.common.stunner.core.graph.Edge;
-import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.shapes.client.PictureShape;
 import org.kie.workbench.common.stunner.shapes.client.view.PictureShapeView;
 
-public class ActivityShape extends AbstractCMContainerShape<BPMNDefinition, CaseManagementActivityShapeDef<BPMNDefinition>, ActivityView> {
+public class ActivityShape
+        extends AbstractCMContainerShape<BPMNViewDefinition, CaseManagementActivityShapeDef<BPMNViewDefinition, ActivityView>, ActivityView> {
 
     private final PictureShape iconShape;
 
@@ -39,17 +35,4 @@ public class ActivityShape extends AbstractCMContainerShape<BPMNDefinition, Case
         this.iconShape = new PictureShape(iconView);
         addChild(iconShape, Layout.TOP);
     }
-
-    @Override
-    public void applyProperties(final Node<View<BPMNDefinition>, Edge> element,
-                                final MutationContext mutationContext) {
-        super.applyProperties(element,
-                              mutationContext);
-        final Double width = BaseTask.BaseTaskBuilder.WIDTH;
-        final Double height = BaseTask.BaseTaskBuilder.HEIGHT;
-        getDefViewHandler().getViewHandler().applySize(width,
-                                                       height,
-                                                       mutationContext);
-    }
-
 }

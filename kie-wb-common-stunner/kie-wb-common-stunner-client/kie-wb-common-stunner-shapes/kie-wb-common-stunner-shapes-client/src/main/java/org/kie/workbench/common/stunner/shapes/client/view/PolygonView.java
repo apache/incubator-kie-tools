@@ -29,8 +29,7 @@ public class PolygonView extends WiresContainerShapeView<PolygonView>
     private static final int SIDES = 4;
     private static final double CORNER = 0;
 
-    public PolygonView(final double radius,
-                       final String fillColor) {
+    public PolygonView(final double radius) {
         super(ShapeViewSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
               create(new MultiPath(),
                      SIDES,

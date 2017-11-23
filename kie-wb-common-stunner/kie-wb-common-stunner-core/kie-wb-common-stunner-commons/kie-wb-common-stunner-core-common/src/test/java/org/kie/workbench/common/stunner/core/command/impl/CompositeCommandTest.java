@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.command.impl;
 
+import java.util.Collections;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +27,7 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.command.impl.AbstractGraphCommand;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.rule.violations.RuleViolationImpl;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -33,9 +36,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CompositeCommandTest {
@@ -79,6 +85,34 @@ public class CompositeCommandTest {
                times(1)).addCommand(any(CommandStub.class));
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testExecuteFailedThenUndo() {
+        Command c1 = mock(Command.class);
+        when(c1.allow(eq(commandExecutionContext))).thenReturn(GraphCommandResultBuilder.SUCCESS);
+        when(c1.execute(eq(commandExecutionContext))).thenReturn(GraphCommandResultBuilder.SUCCESS);
+        Command c2 = mock(Command.class);
+        when(c2.allow(eq(commandExecutionContext))).thenReturn(GraphCommandResultBuilder.SUCCESS);
+        when(c2.execute(eq(commandExecutionContext))).thenReturn(GraphCommandResultBuilder.SUCCESS);
+        CommandResult<RuleViolation> failed =
+                new CommandResultImpl<>(CommandResult.Type.ERROR,
+                                        Collections.singletonList(new RuleViolationImpl("failed")));
+        Command c3 = mock(Command.class);
+        when(c3.allow(eq(commandExecutionContext))).thenReturn(GraphCommandResultBuilder.SUCCESS);
+        when(c3.execute(eq(commandExecutionContext))).thenReturn(failed);
+        CompositeCommand composite = new CompositeCommand.Builder<>()
+                .addCommand(c1)
+                .addCommand(c2)
+                .addCommand(c3)
+                .build();
+        CommandResult result = composite.execute(commandExecutionContext);
+        assertEquals(CommandResult.Type.ERROR,
+                     result.getType());
+        verify(c1, times(1)).undo(eq(commandExecutionContext));
+        verify(c2, times(1)).undo(eq(commandExecutionContext));
+        verify(c3, times(1)).undo(eq(commandExecutionContext));
+    }
+
     private static class CompositeCommandStub extends AbstractCompositeCommand<GraphCommandExecutionContext, RuleViolation> {
 
         @Override
@@ -109,6 +143,16 @@ public class CompositeCommandTest {
 
     private static class CommandStub extends AbstractGraphCommand {
 
+        private final CommandResult<RuleViolation> executeResult;
+
+        private CommandStub() {
+            this.executeResult = GraphCommandResultBuilder.SUCCESS;
+        }
+
+        public CommandStub(CommandResult<RuleViolation> executeResult) {
+            this.executeResult = executeResult;
+        }
+
         @Override
         protected CommandResult<RuleViolation> check(GraphCommandExecutionContext context) {
             return GraphCommandResultBuilder.SUCCESS;
@@ -121,7 +165,7 @@ public class CompositeCommandTest {
 
         @Override
         public CommandResult<RuleViolation> execute(GraphCommandExecutionContext context) {
-            return GraphCommandResultBuilder.SUCCESS;
+            return executeResult;
         }
 
         @Override

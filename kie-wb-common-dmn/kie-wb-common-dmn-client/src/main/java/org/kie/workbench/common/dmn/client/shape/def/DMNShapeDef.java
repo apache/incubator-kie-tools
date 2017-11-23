@@ -16,8 +16,10 @@
 package org.kie.workbench.common.dmn.client.shape.def;
 
 import org.kie.workbench.common.dmn.api.definition.DMNDefinition;
-import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
+import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
+import org.kie.workbench.common.stunner.core.definition.shape.ShapeViewDef;
 
-public interface DMNShapeDef<W extends DMNDefinition> extends MutableShapeDef<W> {
+public interface DMNShapeDef<W extends DMNDefinition, V extends ShapeView>
+        extends ShapeViewDef<W, V> {
 
 }

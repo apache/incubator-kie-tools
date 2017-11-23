@@ -22,6 +22,7 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.exception.BadCommandArgumentsException;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
@@ -41,12 +42,10 @@ import static org.mockito.Mockito.when;
 public class UpdateElementPositionCommandTest extends AbstractGraphCommandTest {
 
     private static final String UUID = "testUUID";
-    private static final Double X = 100d;
-    private static final Double Y = 100d;
+    private static final Point2D PREVIOUS_LOCATION = new Point2D(100d, 100d);
+    private static final Point2D LOCATION = new Point2D(200d, 200d);
     private static final Double W = 50d;
     private static final Double H = 50d;
-    private static final Double TX = 200d;
-    private static final Double TY = 200d;
 
     @Mock
     Node candidate;
@@ -58,16 +57,15 @@ public class UpdateElementPositionCommandTest extends AbstractGraphCommandTest {
     public void setup() throws Exception {
         super.init(500,
                    500);
-        content = mockView(X,
-                           Y,
+        content = mockView(PREVIOUS_LOCATION.getX(),
+                           PREVIOUS_LOCATION.getY(),
                            W,
                            H);
         when(candidate.getUUID()).thenReturn(UUID);
         when(candidate.getContent()).thenReturn(content);
         when(graphIndex.getNode(eq(UUID))).thenReturn(candidate);
         this.tested = new UpdateElementPositionCommand(candidate,
-                                                       TX,
-                                                       TY);
+                                                       LOCATION);
     }
 
     @Test
@@ -84,10 +82,8 @@ public class UpdateElementPositionCommandTest extends AbstractGraphCommandTest {
     @Test(expected = BadCommandArgumentsException.class)
     public void testAllowNodeNotFound() {
         this.tested = new UpdateElementPositionCommand(UUID,
-                                                       X,
-                                                       Y,
-                                                       TX,
-                                                       TY);
+                                                       LOCATION,
+                                                       PREVIOUS_LOCATION);
         when(graphIndex.getNode(eq(UUID))).thenReturn(null);
         tested.allow(graphCommandExecutionContext);
     }
@@ -103,34 +99,33 @@ public class UpdateElementPositionCommandTest extends AbstractGraphCommandTest {
         Bounds b = bounds.getValue();
         assertEquals(UUID,
                      tested.getUuid());
-        assertEquals(X,
-                     tested.getOldX());
-        assertEquals(Y,
-                     tested.getOldY());
-        assertEquals(TY,
-                     b.getUpperLeft().getY());
-        assertEquals(Double.valueOf(TX + W),
+        assertEquals(LOCATION,
+                     tested.getLocation());
+        assertEquals(PREVIOUS_LOCATION,
+                     tested.getPreviousLocation());
+        assertEquals(PREVIOUS_LOCATION.getY(),
+                     tested.getPreviousLocation().getY()
+                , 0d);
+        assertEquals(Double.valueOf(LOCATION.getX() + W),
                      b.getLowerRight().getX());
-        assertEquals(Double.valueOf(TY + H),
+        assertEquals(Double.valueOf(LOCATION.getY() + H),
                      b.getLowerRight().getY());
     }
 
     @Test(expected = BadCommandArgumentsException.class)
     public void testExecuteNodeNotFound() {
         this.tested = new UpdateElementPositionCommand(UUID,
-                                                       X,
-                                                       Y,
-                                                       TX,
-                                                       TY);
+                                                       LOCATION,
+                                                       PREVIOUS_LOCATION);
         when(graphIndex.getNode(eq(UUID))).thenReturn(null);
         tested.execute(graphCommandExecutionContext);
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testAllowBadBounds() {
         this.tested = new UpdateElementPositionCommand(candidate,
-                                                       600d,
-                                                       600d);
+                                                       new Point2D(600d, 600d));
         final CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
         verify(content,
                never()).setBounds(any(Bounds.class));
@@ -139,10 +134,10 @@ public class UpdateElementPositionCommandTest extends AbstractGraphCommandTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testExecuteBadBounds() {
         this.tested = new UpdateElementPositionCommand(candidate,
-                                                       600d,
-                                                       600d);
+                                                       new Point2D(600d, 600d));
         final CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);
         verify(content,
                never()).setBounds(any(Bounds.class));

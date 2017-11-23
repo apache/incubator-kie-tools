@@ -23,6 +23,7 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radius;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
@@ -31,6 +32,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
+import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 
 @Portable
@@ -50,16 +52,14 @@ public class EndNoneEvent extends BaseEndEvent {
     public static final transient String description = "The untyped end event typically marks the standard end of a process.";
 
     @NonPortable
-    public static class EndNoneEventBuilder extends BaseEndEventBuilder<EndNoneEvent> {
+    public static class EndNoneEventBuilder implements Builder<EndNoneEvent> {
 
         @Override
         public EndNoneEvent build() {
             return new EndNoneEvent(new BPMNGeneralSet(""),
-                                    new BackgroundSet(BG_COLOR,
-                                                      BORDER_COLOR,
-                                                      BORDER_SIZE),
+                                    new BackgroundSet(),
                                     new FontSet(),
-                                    new CircleDimensionSet(new Radius(RADIUS)));
+                                    new CircleDimensionSet(new Radius()));
         }
     }
 

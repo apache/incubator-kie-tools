@@ -20,46 +20,47 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.graph.Node;
 
 /**
  * Registers the child shape into the canvas and  add it into the parent's one  as well.
  */
-public class AddCanvasChildNodeCommand extends AbstractCanvasCommand {
+public class AddCanvasChildNodeCommand extends AbstractRegistrationCanvasNodeCommand {
 
     private final Node parent;
-    private final Node candidate;
-    private final String shapeSetId;
 
     public AddCanvasChildNodeCommand(final Node parent,
                                      final Node candidate,
                                      final String shapeSetId) {
+        super(candidate,
+              shapeSetId);
         this.parent = parent;
-        this.candidate = candidate;
-        this.shapeSetId = shapeSetId;
+    }
+
+    @Override
+    protected void register(final AbstractCanvasHandler context) {
+        super.register(context);
+        context.addChild(parent,
+                         getCandidate());
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
-        context.register(shapeSetId,
-                         candidate);
-        context.addChild(parent,
-                         candidate);
+        final CommandResult<CanvasViolation> result = super.execute(context);
         context.applyElementMutation(parent,
                                      MutationContext.STATIC);
-        context.applyElementMutation(candidate,
-                                     MutationContext.STATIC);
-        return buildResult();
+
+        return result;
     }
 
     @Override
     public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
-        return new CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation>()
+        return new CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation>()
                 .addCommand(new RemoveCanvasChildCommand(parent,
-                                                         candidate))
-                .addCommand(new DeleteCanvasNodeCommand(candidate,
+                                                         getCandidate()))
+                .addCommand(new DeleteCanvasNodeCommand(getCandidate(),
                                                         parent))
                 .build()
                 .execute(context);
@@ -69,19 +70,11 @@ public class AddCanvasChildNodeCommand extends AbstractCanvasCommand {
         return parent;
     }
 
-    public Node getCandidate() {
-        return candidate;
-    }
-
-    public String getShapeSetId() {
-        return shapeSetId;
-    }
-
     @Override
     public String toString() {
         return getClass().getName() +
                 " [parent=" + getUUID(parent) + "," +
-                " candidate=" + getUUID(candidate) + "," +
-                " shapeSet=" + shapeSetId + "]";
+                " candidate=" + getUUID(getCandidate()) + "," +
+                " shapeSet=" + getShapeSetId() + "]";
     }
 }

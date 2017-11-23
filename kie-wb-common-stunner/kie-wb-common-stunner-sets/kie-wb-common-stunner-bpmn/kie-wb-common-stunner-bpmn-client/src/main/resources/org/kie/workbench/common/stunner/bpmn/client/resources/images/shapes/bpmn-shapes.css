@@ -1,0 +1,351 @@
+/*
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+    ******************
+    BPMN shape styles.
+    ******************
+ */
+.gateway {
+    fill: #FDF4EA;
+    stroke: #EC7A08;
+    stroke-width: 5px;
+}
+
+.gateway_group_parallel_multiple {
+    opacity: 0;
+}
+
+.gateway_parallelMultipleIcon {
+    fill: #EC7A08;
+    stroke: #EC7A08;
+}
+
+.gateway_exclusiveIcon {
+    fill: #EC7A08;
+    stroke: #EC7A08;
+}
+
+.gateway_group_exclusive {
+    opacity: 0;
+}
+
+#parallelMultipleGateway .gateway_group_parallel_multiple {
+    opacity: 1;
+}
+
+#exclusiveGateway .gateway_group_exclusive {
+    opacity: 1;
+}
+
+.lane {
+    fill: #FAFAFA;
+    stroke: #000000;
+    stroke-width: 0.5px;
+}
+
+.task {
+    fill: white;
+    stroke: black;
+    stroke-width: 1.5px;
+}
+
+.task_group_user {
+    opacity: 0;
+}
+
+.task_user_icon {
+    stroke: #000000;
+    fill: #000000;
+}
+
+.task_group_script {
+    opacity: 0;
+}
+
+.task_script_icon {
+    stroke: #000000;
+    fill: #000000;
+}
+
+.task_group_business_rule {
+    opacity: 0;
+}
+
+.task_business_rule_icon {
+    stroke: #000000;
+    fill: #000000;
+}
+
+#userTask .task_group_user {
+    opacity: 1;
+}
+
+#scriptTask .task_group_script {
+    opacity: 1;
+}
+
+#businessRuleTask .task_group_business_rule {
+    opacity: 1;
+}
+
+.eventAll {
+    stroke-width: 1.5px;
+}
+
+.eventAll_interm_circle {
+    stroke-width: 1.5px;
+    fill-opacity: 0;
+    opacity: 0;
+}
+
+.eventAll_group_timer {
+    opacity: 0;
+}
+
+.eventAll_timerIcon {
+
+}
+
+.eventAll_group_signal {
+    opacity: 0;
+}
+
+.eventAll_signalIcon {
+
+}
+
+.eventAll_group_terminate {
+    opacity: 0;
+}
+
+.eventAll_terminateIcon {
+
+}
+
+#startNoneEvent .eventAll {
+    fill: #E8FAE6;
+    stroke: #4AA241;
+}
+
+#startSignalEvent .eventAll {
+    fill: #E8FAE6;
+    stroke: #4AA241;
+}
+
+#startSignalEvent .eventAll_group_signal {
+    opacity: 1;
+}
+
+#startSignalEvent .eventAll_signalIcon {
+    fill: #4AA241;
+    stroke: #4AA241;
+}
+
+#startTimerEvent .eventAll {
+    fill: #E8FAE6;
+    stroke: #4AA241;
+}
+
+#startTimerEvent .eventAll_timerIcon {
+    fill: #4AA241;
+    stroke: #4AA241;
+}
+
+#startTimerEvent .eventAll_group_timer {
+    opacity: 1;
+}
+
+#intermediateNoneEvent .eventAll {
+    fill: #FBEFCF;
+    stroke: #F0AB00;
+}
+
+#intermediateNoneEvent .eventAll_interm_circle {
+    stroke: #F0AB00;
+    opacity: 1;
+}
+
+#intermediateSignalCatchingEvent .eventAll {
+    fill: #FBEFCF;
+    stroke: #F0AB00;
+}
+
+#intermediateSignalCatchingEvent .eventAll_interm_circle {
+    stroke: #F0AB00;
+    opacity: 1;
+}
+
+#intermediateSignalCatchingEvent .eventAll_signalIcon {
+    fill: #F0AB00;
+    stroke: #F0AB00;
+}
+
+#intermediateSignalCatchingEvent .eventAll_group_signal {
+    opacity: 1;
+}
+
+#intermediateSignalThrowingEvent .eventAll {
+    fill: #8cabff;
+    fill-opacity: 0.5;
+    stroke: #008cec;
+}
+
+#intermediateSignalThrowingEvent .eventAll_interm_circle {
+    stroke: #008cec;
+    opacity: 1;
+}
+
+#intermediateSignalThrowingEvent .eventAll_signalIcon {
+    fill: #008cec;
+    stroke: #008cec;
+}
+
+#intermediateSignalThrowingEvent .eventAll_group_signal {
+    opacity: 1;
+}
+
+#intermediateTimerEvent .eventAll {
+    fill: #FBEFCF;
+    stroke: #F0AB00;
+}
+
+#intermediateTimerEvent .eventAll_interm_circle {
+    stroke: #F0AB00;
+    opacity: 1;
+}
+
+#intermediateTimerEvent .eventAll_timerIcon {
+    fill: #F0AB00;
+    stroke: #F0AB00;
+}
+
+#intermediateTimerEvent .eventAll_group_timer {
+    opacity: 1;
+}
+
+#endNoneEvent .eventAll {
+    fill: #FCE7E7;
+    stroke: #A30000;
+}
+
+#endSignalEvent .eventAll {
+    fill: #FCE7E7;
+    stroke: #A30000;
+}
+
+#endSignalEvent .eventAll_signalIcon {
+    fill: #A30000;
+    stroke: #A30000;
+}
+
+#endSignalEvent .eventAll_group_signal {
+    opacity: 1;
+}
+
+#endTerminateEvent .eventAll {
+    fill: #FCE7E7;
+    stroke: #A30000;
+}
+
+#endTerminateEvent .eventAll_terminateIcon {
+    fill: #A30000;
+}
+
+#endTerminateEvent .eventAll_group_terminate {
+    opacity: 1;
+}
+
+.subProcess {
+    fill: #FFFFFF;
+    stroke: #000000;
+    stroke-width: 1.5px;
+}
+
+.subProcess_group_reusable {
+    opacity: 0;
+}
+
+.subProcess_reusable_icon {
+    stroke: #000000;
+    fill: #000000;
+}
+
+.subProcess_reusable_boundingbox {
+    fill:none;
+    stroke: black;
+    stroke-width: 10px;
+}
+
+.subProcess_group_adHoc {
+    opacity: 0;
+}
+
+.subProcess_adHoc_icon {
+    stroke: #000000;
+    fill: #000000;
+}
+
+#reusableSubProcess .subProcess {
+    stroke-width: 3px;
+}
+
+#reusableSubProcess .subProcess_group_reusable {
+    opacity: 1;
+}
+
+#adHocSubProcess .subProcess {
+    fill: #FAFAFA;
+}
+
+#adHocSubProcess .subProcess_group_adHoc {
+    opacity: 1;
+}
+
+#embeddedSubProcess .subProcess {
+    fill: #FAFAFA;
+}
+
+
+
+/*
+    *******************************
+    Global BPMN text styles.
+    *******************************
+ */
+#text {
+    opacity: 1;
+    font-family: Verdana;
+    font-size: 10px;
+    fill: #000000;
+    stroke: #000000;
+    stroke-width: 0.5px;
+}
+
+/*
+    *******************************
+    Global BPMN shape state styles.
+    *******************************
+ */
+.shape-state-selected {
+    stroke: blue;
+}
+.shape-state-highlight{
+    stroke: blue;
+}
+.shape-state-invalid {
+    stroke: red;
+}

@@ -24,19 +24,35 @@ public class FontSetPropertyConverter {
 
     public static FontSet wbFromDMN(final DMNStyle dmn) {
         FontSet result = new FontSet();
-        result.getFontFamily().setValue( dmn.getFontName() );
-        result.getFontSize().setValue( dmn.getFontSize() );
-        result.getFontColour().setValue( ColorUtils.wbFromDMN( dmn.getFontColor() ) );
-        result.getFontBorderSize().setValue( dmn.getFontBorderSize() );
+        if (null != dmn.getFontName()) {
+            result.getFontFamily().setValue(dmn.getFontName());
+        }
+        if (null != dmn.getFontSize()) {
+            result.getFontSize().setValue(dmn.getFontSize());
+        }
+        if (null != dmn.getFontColor()) {
+            result.getFontColour().setValue(ColorUtils.wbFromDMN(dmn.getFontColor()));
+        }
+        if (null != dmn.getFontBorderSize()) {
+            result.getFontBorderSize().setValue(dmn.getFontBorderSize());
+        }
         return result;
     }
 
     public static DMNStyle dmnFromWB(final FontSet wb) {
         DMNStyle result = new DMNStyle();
-        result.setFontName( wb.getFontFamily().getValue() );
-        result.setFontSize( wb.getFontSize().getValue());
-        result.setFontColor( ColorUtils.dmnFromWB( wb.getFontColour().getValue() ) );
-        result.setFontBorderSize( wb.getFontBorderSize().getValue() );
+        if (null != wb.getFontFamily().getValue()) {
+            result.setFontName(wb.getFontFamily().getValue());
+        }
+        if (null != wb.getFontSize().getValue()) {
+            result.setFontSize(wb.getFontSize().getValue());
+        }
+        if (null != wb.getFontColour().getValue()) {
+            result.setFontColor(ColorUtils.dmnFromWB(wb.getFontColour().getValue()));
+        }
+        if (null != wb.getFontBorderSize().getValue()) {
+            result.setFontBorderSize(wb.getFontBorderSize().getValue());
+        }
         return result;
     }
 }

@@ -1,0 +1,159 @@
+{
+  "name": "BPMN",
+  "path": ".",
+  "css": "bpmn-shapes.css",
+  "stencils": [
+      {
+        "id": "parallelMultipleGateway",
+        "name": "Gateway - Parallel Multiple",
+        "shape": {
+          "path": ".",
+          "file": "gateway.svg"
+        }
+      },
+    {
+      "id": "exclusiveGateway",
+      "name": "Gateway - Exclusive",
+      "shape": {
+        "path": ".",
+        "file": "gateway.svg"
+      }
+    },
+    {
+      "id": "lane",
+      "name": "Lane",
+      "shape": {
+        "path": ".",
+        "file": "lane.svg"
+      }
+    },
+    {
+      "id": "noneTask",
+      "name": "Task",
+      "shape": {
+        "path": ".",
+        "file": "task.svg"
+      }
+    },
+    {
+      "id": "userTask",
+      "name": "Task - User",
+      "shape": {
+        "path": ".",
+        "file": "task.svg"
+      }
+    },
+    {
+      "id": "scriptTask",
+      "name": "Task - Script",
+      "shape": {
+        "path": ".",
+        "file": "task.svg"
+      }
+    },
+    {
+      "id": "businessRuleTask",
+      "name": "Task - Business Rule",
+      "shape": {
+        "path": ".",
+        "file": "task.svg"
+      }
+    },
+    {
+      "id": "reusableSubProcess",
+      "name": "Subprocess - Reusable",
+      "shape": {
+        "path": ".",
+        "file": "subprocess.svg"
+      }
+    },
+    {
+      "id": "adHocSubProcess",
+      "name": "Subprocess - AdHoc",
+      "shape": {
+        "path": ".",
+        "file": "subprocess-adhoc.svg"
+      }
+    },
+    {
+      "id": "embeddedSubProcess",
+      "name": "Subprocess - Embedded",
+      "shape": {
+        "path": ".",
+        "file": "subprocess-adhoc.svg"
+      }
+    },
+    {
+      "id": "startNoneEvent",
+      "name": "Start Event",
+      "shape": {
+        "path": ".",
+        "file": "event-all.svg"
+      }
+    },
+    {
+      "id": "startSignalEvent",
+      "name": "Start Event - Signal",
+      "shape": {
+        "path": ".",
+        "file": "event-all.svg"
+      }
+    },
+    {
+      "id": "startTimerEvent",
+      "name": "Start Event - Timer",
+      "shape": {
+        "path": ".",
+        "file": "event-all.svg"
+      }
+    },
+    {
+      "id": "intermediateTimerEvent",
+      "name": "Intermediate Event - Timer",
+      "shape": {
+        "path": ".",
+        "file": "event-all.svg"
+      }
+    },
+    {
+      "id": "intermediateSignalCatchingEvent",
+      "name": "Catching Intermediate Event - Signal",
+      "shape": {
+        "path": ".",
+        "file": "event-all.svg"
+      }
+    },
+    {
+      "id": "intermediateSignalThrowingEvent",
+      "name": "Throwing Intermediate Event - Signal",
+      "shape": {
+        "path": ".",
+        "file": "event-all.svg"
+      }
+    },
+    {
+      "id": "endNoneEvent",
+      "name": "End Event",
+      "shape": {
+        "path": ".",
+        "file": "event-all.svg"
+      }
+    },
+    {
+      "id": "endSignalEvent",
+      "name": "End Event- Signal",
+      "shape": {
+        "path": ".",
+        "file": "event-all.svg"
+      }
+    },
+    {
+      "id": "endTerminateEvent",
+      "name": "End Event - Terminate",
+      "shape": {
+        "path": ".",
+        "file": "event-all.svg"
+      }
+    }
+  ]
+}

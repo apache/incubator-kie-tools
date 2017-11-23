@@ -17,12 +17,14 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
@@ -46,7 +48,7 @@ import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 @Bindable
 @Definition(graphFactory = NodeFactory.class, builder = KnowledgeSource.KnowledgeSourceBuilder.class)
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED, startElement = "id")
-public class KnowledgeSource extends DRGElement {
+public class KnowledgeSource extends DRGElement implements DMNViewDefinition {
 
     @Category
     public static final transient String stunnerCategory = Categories.NODES;

@@ -16,76 +16,11 @@
 
 package org.kie.workbench.common.stunner.cm.client.shape.def;
 
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
-import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
+import org.kie.workbench.common.stunner.cm.client.shape.view.NullView;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 
-public class NullShapeDef implements CaseManagementShapeDef<BPMNDefinition> {
-
-    @Override
-    public double getAlpha(final BPMNDefinition element) {
-        return 1d;
-    }
-
-    @Override
-    public String getBackgroundColor(final BPMNDefinition element) {
-        return "";
-    }
-
-    @Override
-    public double getBackgroundAlpha(final BPMNDefinition element) {
-        return 1d;
-    }
-
-    @Override
-    public String getBorderColor(final BPMNDefinition element) {
-        return "";
-    }
-
-    @Override
-    public double getBorderSize(final BPMNDefinition element) {
-        return 1d;
-    }
-
-    @Override
-    public double getBorderAlpha(final BPMNDefinition element) {
-        return 1d;
-    }
-
-    @Override
-    public String getFontFamily(final BPMNDefinition element) {
-        return "";
-    }
-
-    @Override
-    public String getFontColor(final BPMNDefinition element) {
-        return "";
-    }
-
-    @Override
-    public String getFontBorderColor(final BPMNDefinition element) {
-        return "";
-    }
-
-    @Override
-    public double getFontSize(final BPMNDefinition element) {
-        return 0;
-    }
-
-    @Override
-    public double getFontBorderSize(final BPMNDefinition element) {
-        return 0;
-    }
-
-    @Override
-    public HasTitle.Position getFontPosition(final BPMNDefinition element) {
-        return HasTitle.Position.CENTER;
-    }
-
-    @Override
-    public double getFontRotation(final BPMNDefinition element) {
-        return 0;
-    }
+public class NullShapeDef implements CaseManagementShapeDef<BPMNViewDefinition, NullView> {
 
     @Override
     public Class<? extends ShapeDef> getType() {

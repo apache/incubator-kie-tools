@@ -18,19 +18,24 @@ package org.kie.workbench.common.stunner.core.client.util;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import com.google.gwt.core.client.GWT;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.shape.EdgeShape;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
+import org.kie.workbench.common.stunner.core.client.shape.view.BoundingBox;
+import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
+import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.AbstractChildrenTraverseCallback;
@@ -38,10 +43,6 @@ import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.C
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
 
 public class ShapeUtils {
-
-    public static String getModuleAbsolutePath(final String path) {
-        return GWT.getModuleBaseURL() + path;
-    }
 
     @SuppressWarnings("unchecked")
     public static void applyConnections(final Edge<?, ?> edge,
@@ -57,6 +58,39 @@ public class ShapeUtils {
                                    source != null ? source.getShapeView() : null,
                                    target != null ? target.getShapeView() : null,
                                    mutationContext);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void updateEdgeConnections(final Edge<? extends ViewConnector<?>, Node> edge,
+                                             final AbstractCanvasHandler context) {
+        final Node source = edge.getSourceNode();
+        final Node target = edge.getTargetNode();
+        edge.getContent().getSourceConnection()
+                .ifPresent(connection -> updateEdgeConnection(context,
+                                                              connection,
+                                                              source));
+        edge.getContent().getTargetConnection()
+                .ifPresent(connection -> updateEdgeConnection(context,
+                                                              connection,
+                                                              target));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void updateEdgeConnection(final AbstractCanvasHandler context,
+                                            final Connection connection,
+                                            final Node<? extends View<?>, Edge> node) {
+        if (null != node &&
+                null == connection.getLocation() &&
+                connection instanceof MagnetConnection) {
+            final MagnetConnection magnetConnection = (MagnetConnection) connection;
+            final OptionalInt magnetIndex = magnetConnection.getMagnetIndex();
+            if (magnetIndex.orElse(-1) == MagnetConnection.MAGNET_CENTER) {
+                final Shape<ShapeView<?>> nodeShape = context.getCanvas().getShape(node.getUUID());
+                final BoundingBox boundingBox = nodeShape.getShapeView().getBoundingBox();
+                magnetConnection.setLocation(new Point2D(boundingBox.getWidth() / 2,
+                                                         boundingBox.getHeight() / 2));
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")

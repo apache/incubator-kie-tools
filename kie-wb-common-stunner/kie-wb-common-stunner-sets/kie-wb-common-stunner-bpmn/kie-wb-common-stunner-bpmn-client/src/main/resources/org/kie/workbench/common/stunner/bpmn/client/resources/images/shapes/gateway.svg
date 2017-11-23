@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2017 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<svg id="gateway" version="1.1" xmlns="http://www.w3.org/2000/svg"
+     xmlns:stunner="http://kiegroup.org/2017/stunner"
+     x="0" y="0" width="56px" height="56px" viewBox="0 0 56 56">
+  <path class="gateway"
+        transform="translate(1,1) scale(0.12,0.12)"
+        d="M224.4,0.5c-8.1,0-16.3,3.1-22.5,9.3l-192,192c-12.4,12.4-12.4,32.6,0,45l192,192c6.2,6.2,14.4,9.3,22.5,9.3
+	s16.3-3.1,22.5-9.3l192-192c12.4-12.4,12.4-32.6,0-45l-192-192C240.7,3.6,232.5,0.5,224.4,0.5L224.4,0.5z"/>
+  <g class="gateway_group_parallel_multiple" stunner:transform="scalable" transform="translate(14.5,12) scale(0.08,0.08)">
+    <path class="gateway_parallelMultipleIcon" d="M352,184v48c0,6.7-2.3,12.3-7,17s-10.3,7-17,7H224v104c0,6.7-2.3,12.3-7,17s-10.3,7-17,7h-48c-6.7,0-12.3-2.3-17-7
+    s-7-10.3-7-17V256H24c-6.7,0-12.3-2.3-17-7s-7-10.3-7-17v-48c0-6.7,2.3-12.3,7-17s10.3-7,17-7h104V56c0-6.7,2.3-12.3,7-17
+    s10.3-7,17-7h48c6.7,0,12.3,2.3,17,7s7,10.3,7,17v104h104c6.7,0,12.3,2.3,17,7S352,177.3,352,184z"/>
+  </g>
+  <g class="gateway_group_exclusive" stunner:transform="scalable" transform="translate(10.5,10.5) scale(0.08,0.08)">
+    <path class="gateway_exclusiveIcon" d="M372.5,314.5c0,6.7-2.3,12.3-7,17l-34,34c-4.7,4.7-10.3,7-17,7s-12.3-2.3-17-7L224,292l-73.5,73.5c-4.7,4.7-10.3,7-17,7
+		s-12.3-2.3-17-7l-34-34c-4.7-4.7-7-10.3-7-17s2.3-12.3,7-17L156,224l-73.5-73.5c-4.7-4.7-7-10.3-7-17s2.3-12.3,7-17l34-34
+		c4.7-4.7,10.3-7,17-7s12.3,2.3,17,7L224,156l73.5-73.5c4.7-4.7,10.3-7,17-7s12.3,2.3,17,7l34,34c4.7,4.7,7,10.3,7,17
+		s-2.3,12.3-7,17L292,224l73.5,73.5C370.2,302.2,372.5,307.8,372.5,314.5z"/>
+  </g>
+</svg>

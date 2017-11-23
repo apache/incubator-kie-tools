@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,14 +29,13 @@ import java.util.stream.Collectors;
 
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.CompositeCommand;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
 import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
-public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand<T, V> {
+public abstract class AbstractCompositeCommand<T, V> implements Command<T, V> {
 
     private static Logger LOGGER = Logger.getLogger(AbstractCompositeCommand.class.getName());
 
@@ -47,8 +47,10 @@ public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand
         return this;
     }
 
-    protected abstract CommandResult<V> doAllow(final T context,
-                                                final Command<T, V> command);
+    protected CommandResult<V> doAllow(final T context,
+                                       final Command<T, V> command) {
+        return command.allow(context);
+    }
 
     protected abstract CommandResult<V> doExecute(final T context,
                                                   final Command<T, V> command);
@@ -75,23 +77,28 @@ public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand
     public CommandResult<V> execute(final T context) {
         final CommandResult<V> allowResult = this.allow(context);
         if (!CommandUtils.isError(allowResult)) {
-            final Stack<Command<T, V>> executedCommands = new Stack<>();
-            final List<CommandResult<V>> results = new LinkedList<>();
-            for (final Command<T, V> command : commands) {
-                final CommandResult<V> violations = doExecute(context,
-                                                              command);
-                LOGGER.log(Level.FINEST,
-                           "Execution of command [" + command + "] finished - Violations [" + violations + "]");
-                results.add(violations);
-                if (CommandResult.Type.ERROR.equals(violations.getType())) {
-                    undoMultipleExecutedCommands(context,
-                                                 executedCommands);
-                    break;
-                }
-            }
-            return buildResult(results);
+            return executeCommands(context);
         }
         return allowResult;
+    }
+
+    protected CommandResult<V> executeCommands(final T context) {
+        final Stack<Command<T, V>> executedCommands = new Stack<>();
+        final List<CommandResult<V>> results = new LinkedList<>();
+        for (final Command<T, V> command : commands) {
+            final CommandResult<V> violations = doExecute(context,
+                                                          command);
+            executedCommands.push(command);
+            LOGGER.log(Level.FINEST,
+                       "Execution of command [" + command + "] finished - Violations [" + violations + "]");
+            results.add(violations);
+            if (CommandResult.Type.ERROR.equals(violations.getType())) {
+                undoMultipleExecutedCommands(context,
+                                             executedCommands);
+                break;
+            }
+        }
+        return buildResult(results);
     }
 
     @Override
@@ -100,7 +107,6 @@ public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand
                     isUndoReverse());
     }
 
-    @Override
     public int size() {
         return commands.size();
     }
@@ -156,16 +162,18 @@ public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand
     private CommandResult<V> buildResult(final List<CommandResult<V>> results) {
         final CommandResult.Type[] type = {CommandResult.Type.INFO};
         final List<V> violations = new LinkedList<>();
-        results.stream().forEach(rr -> {
-            if (hasMoreSeverity(rr.getType(),
-                                type[0])) {
-                type[0] = rr.getType();
-            }
-            final Iterable<V> rrIter = rr.getViolations();
-            if (null != rrIter) {
-                rrIter.forEach(violations::add);
-            }
-        });
+        results.stream()
+                .filter(Objects::nonNull)
+                .forEach(rr -> {
+                    if (hasMoreSeverity(rr.getType(),
+                                        type[0])) {
+                        type[0] = rr.getType();
+                    }
+                    final Iterable<V> rrIter = rr.getViolations();
+                    if (null != rrIter) {
+                        rrIter.forEach(violations::add);
+                    }
+                });
         return new CommandResultImpl<>(type[0],
                                        violations);
     }
@@ -178,8 +186,8 @@ public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand
     private CommandResult<V> undoMultipleExecutedCommands(final T context,
                                                           final List<Command<T, V>> commandStack) {
         final List<CommandResult<V>> results = new LinkedList<>();
-        commandStack.stream().forEach(command -> results.add(doUndo(context,
-                                                                    command)));
+        commandStack.forEach(command -> results.add(doUndo(context,
+                                                           command)));
         return buildResult(results);
     }
 

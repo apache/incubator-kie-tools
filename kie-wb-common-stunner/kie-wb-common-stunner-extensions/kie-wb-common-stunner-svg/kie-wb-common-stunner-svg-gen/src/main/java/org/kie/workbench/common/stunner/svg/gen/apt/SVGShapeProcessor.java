@@ -29,12 +29,12 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 
 import org.kie.workbench.common.stunner.svg.annotation.SVGSource;
+import org.kie.workbench.common.stunner.svg.annotation.SVGViewFactory;
 import org.kie.workbench.common.stunner.svg.gen.SVGGenerator;
 import org.kie.workbench.common.stunner.svg.gen.SVGGeneratorRequest;
 import org.kie.workbench.common.stunner.svg.gen.impl.SVGGeneratorFactory;
@@ -90,17 +90,15 @@ public class SVGShapeProcessor extends AbstractErrorAbsorbingProcessor {
             String absPkgPath = packageName.replaceAll("\\.",
                                                        "/");
             note("Discovered @SVGViewFactory for type [" + fqcn + "]");
+            SVGViewFactory svgViewFactoryAnn = classElement.getAnnotation(SVGViewFactory.class);
             final SVGGeneratorRequest request = new SVGGeneratorRequest(name + GENERATED_TYPE_SUFFIX,
                                                                         packageName,
-                                                                        fqcn);
+                                                                        fqcn,
+                                                                        absPkgPath + "/" + svgViewFactoryAnn.value());
             context.setGeneratorRequest(request);
             // Find and process method annotation as @SVGSource.
             List<ExecutableElement> methodElements = ElementFilter.methodsIn(classElement.getEnclosedElements());
             methodElements.forEach(methodElement -> {
-                final List<? extends VariableElement> parameters = methodElement.getParameters();
-                if (null == parameters || parameters.size() != 3) {
-                    throw new IllegalArgumentException("Missing any of the arguments for view factory method [" + methodElement.getSimpleName().toString() + "]");
-                }
                 SVGSource svgSourceAnnotation = methodElement.getAnnotation(SVGSource.class);
                 if (null != svgSourceAnnotation) {
                     String fileName = svgSourceAnnotation.value();

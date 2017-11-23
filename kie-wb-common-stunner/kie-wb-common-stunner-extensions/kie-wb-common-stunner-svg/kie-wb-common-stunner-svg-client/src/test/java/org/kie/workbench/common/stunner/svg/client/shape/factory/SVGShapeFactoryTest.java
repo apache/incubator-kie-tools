@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.svg.client.shape.factory;
 
+import java.util.Optional;
+import java.util.function.BiConsumer;
+
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
@@ -23,11 +26,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeDefFunctionalFactory;
 import org.kie.workbench.common.stunner.svg.client.shape.SVGShape;
-import org.kie.workbench.common.stunner.svg.client.shape.def.SVGMutableShapeDef;
 import org.kie.workbench.common.stunner.svg.client.shape.def.SVGShapeDef;
+import org.kie.workbench.common.stunner.svg.client.shape.def.SVGShapeViewDef;
 import org.kie.workbench.common.stunner.svg.client.shape.impl.SVGMutableShapeImpl;
 import org.kie.workbench.common.stunner.svg.client.shape.impl.SVGShapeImpl;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
+import org.kie.workbench.common.stunner.svg.client.shape.view.impl.SVGShapeStateHandler;
 import org.kie.workbench.common.stunner.svg.client.shape.view.impl.SVGShapeViewImpl;
 import org.mockito.Mock;
 
@@ -44,20 +48,34 @@ import static org.mockito.Mockito.when;
 public class SVGShapeFactoryTest {
 
     @Mock
-    SyncBeanManager beanManager;
-    @Mock
-    Object definition;
-    @Mock
-    Object viewFactory;
-    @Mock
-    SVGShapeDef<Object, Object> svgShapeDef;
-    @Mock
-    SVGMutableShapeDef<Object, Object> svgMutableShapeDef;
-    @Mock
-    SVGShapeView shapeView;
+    private SyncBeanManager beanManager;
 
     @Mock
-    SVGShapeViewImpl shapeViewImpl;
+    private Object definition;
+
+    @Mock
+    private Object viewFactory;
+
+    @Mock
+    private SVGShapeDef<Object, Object> svgShapeDef;
+
+    @Mock
+    private SVGShapeViewDef<Object, Object> svgMutableShapeDef;
+
+    @Mock
+    private SVGShapeViewImpl shapeView;
+
+    @Mock
+    private SVGShapeStateHandler shapeViewStateHandler;
+
+    @Mock
+    private SVGShapeViewImpl shapeViewImpl;
+
+    @Mock
+    private SVGShapeStateHandler shapeViewImplStateHandler;
+
+    @Mock
+    private BiConsumer<Object, SVGShapeView> viewHandler;
 
     private SVGShapeFactory tested;
     private ShapeDefFunctionalFactory functionalFactory;
@@ -71,8 +89,14 @@ public class SVGShapeFactoryTest {
         this.tested.init();
         when(svgShapeDef.getViewFactoryType()).thenReturn(Object.class);
         when(svgMutableShapeDef.getViewFactoryType()).thenReturn(Object.class);
+        when(svgMutableShapeDef.titleHandler()).thenReturn(Optional.empty());
+        when(svgMutableShapeDef.fontHandler()).thenReturn(Optional.empty());
+        when(svgMutableShapeDef.sizeHandler()).thenReturn(Optional.empty());
+        when(svgMutableShapeDef.viewHandler()).thenReturn(viewHandler);
+        when(shapeView.getShapeStateHandler()).thenReturn(shapeViewStateHandler);
+        when(shapeViewImpl.getShapeStateHandler()).thenReturn(shapeViewImplStateHandler);
         doAnswer(invocationOnMock -> SVGShapeDef.class).when(svgShapeDef).getType();
-        doAnswer(invocationOnMock -> SVGMutableShapeDef.class).when(svgMutableShapeDef).getType();
+        doAnswer(invocationOnMock -> SVGShapeViewDef.class).when(svgMutableShapeDef).getType();
         doAnswer(invocationOnMock -> shapeView).when(svgShapeDef).newViewInstance(eq(viewFactory),
                                                                                   any(Object.class));
         doAnswer(invocationOnMock -> shapeViewImpl).when(svgMutableShapeDef).newViewInstance(eq(viewFactory),

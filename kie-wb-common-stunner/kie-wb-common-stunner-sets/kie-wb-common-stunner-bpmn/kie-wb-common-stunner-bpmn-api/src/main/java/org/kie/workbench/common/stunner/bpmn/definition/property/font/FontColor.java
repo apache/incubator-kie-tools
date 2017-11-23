@@ -63,7 +63,7 @@ public class FontColor implements BPMNProperty {
 
     @Value
     @FieldValue
-    private String value = defaultValue;
+    private String value = null;
 
     public FontColor() {
     }

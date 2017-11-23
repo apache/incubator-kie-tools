@@ -20,40 +20,19 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 public final class NodeBuildRequestImpl extends AbstractBuildRequest implements NodeBuildRequest {
 
-    private final Node<View<?>, Edge> node;
-    private Edge<View<?>, Node> inEdge;
+    private final Node<? extends View<?>, Edge> node;
+    private Edge<? extends ViewConnector<?>, Node> inEdge;
     private final Connection sourceConnection;
     private final Connection targetConnection;
 
     public NodeBuildRequestImpl(final double x,
                                 final double y,
-                                final Node<View<?>, Edge> node) {
-        super(x,
-              y);
-        this.node = node;
-        this.sourceConnection = null;
-        this.targetConnection = null;
-    }
-
-    public NodeBuildRequestImpl(final double x,
-                                final double y,
-                                final Node<View<?>, Edge> node,
-                                final Edge<View<?>, Node> inEdge) {
-        super(x,
-              y);
-        this.node = node;
-        this.inEdge = inEdge;
-        this.sourceConnection = null;
-        this.targetConnection = null;
-    }
-
-    public NodeBuildRequestImpl(final double x,
-                                final double y,
-                                final Node<View<?>, Edge> node,
-                                final Edge<View<?>, Node> inEdge,
+                                final Node<? extends View<?>, Edge> node,
+                                final Edge<? extends ViewConnector<?>, Node> inEdge,
                                 final Connection sourceConnection,
                                 final Connection targetConnection) {
         super(x,
@@ -65,12 +44,12 @@ public final class NodeBuildRequestImpl extends AbstractBuildRequest implements 
     }
 
     @Override
-    public Node<View<?>, Edge> getNode() {
+    public Node<? extends View<?>, Edge> getNode() {
         return node;
     }
 
     @Override
-    public Edge<View<?>, Node> getInEdge() {
+    public Edge<? extends ViewConnector<?>, Node> getInEdge() {
         return inEdge;
     }
 

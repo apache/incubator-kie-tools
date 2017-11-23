@@ -44,6 +44,8 @@ public class AddCanvasConnectorCommand extends AbstractCanvasCommand {
                          candidate);
         context.applyElementMutation(candidate,
                                      MutationContext.STATIC);
+        ShapeUtils.updateEdgeConnections(candidate,
+                                         context);
         ShapeUtils.applyConnections(candidate,
                                     context,
                                     MutationContext.STATIC);

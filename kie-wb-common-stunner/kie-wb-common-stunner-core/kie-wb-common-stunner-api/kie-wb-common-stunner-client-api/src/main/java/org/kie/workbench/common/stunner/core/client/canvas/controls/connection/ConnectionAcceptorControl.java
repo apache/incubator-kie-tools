@@ -23,25 +23,25 @@ import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
-import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 public interface ConnectionAcceptorControl<H extends CanvasHandler> extends CanvasControl<H>,
                                                                             RequiresCommandManager<H>,
                                                                             CanvasControl.SessionAware<ClientFullSession> {
 
     boolean allowSource(final Node source,
-                        final Edge<View<?>, Node> connector,
+                        final Edge<ViewConnector<?>, Node> connector,
                         final Connection connection);
 
     boolean allowTarget(final Node source,
-                        final Edge<View<?>, Node> connector,
+                        final Edge<ViewConnector<?>, Node> connector,
                         final Connection connection);
 
     boolean acceptSource(final Node source,
-                         final Edge<View<?>, Node> connector,
+                         final Edge<ViewConnector<?>, Node> connector,
                          final Connection connection);
 
     boolean acceptTarget(final Node source,
-                         final Edge<View<?>, Node> connector,
+                         final Edge<ViewConnector<?>, Node> connector,
                          final Connection connection);
 }

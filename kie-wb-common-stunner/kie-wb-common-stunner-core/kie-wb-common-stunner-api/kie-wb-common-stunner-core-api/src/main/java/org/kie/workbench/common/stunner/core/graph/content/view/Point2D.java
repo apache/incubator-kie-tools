@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.graph.content.view;
 
+import java.util.Objects;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
@@ -54,6 +56,24 @@ public final class Point2D {
 
     public void setY(double y) {
         this.y = y;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Point2D point2D = (Point2D) o;
+        return Double.compare(point2D.x, x) == 0 &&
+                Double.compare(point2D.y, y) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 
     @Override

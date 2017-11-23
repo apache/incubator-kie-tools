@@ -38,6 +38,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
+import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -61,19 +62,16 @@ public class NoneTask extends BaseTask {
     protected EmptyTaskExecutionSet executionSet;
 
     @NonPortable
-    public static class NoneTaskBuilder extends BaseTaskBuilder<NoneTask> {
+    public static class NoneTaskBuilder implements Builder<NoneTask> {
 
         @Override
         public NoneTask build() {
             return new NoneTask(new TaskGeneralSet(new Name("Task"),
                                                    new Documentation("")),
                                 new EmptyTaskExecutionSet(),
-                                new BackgroundSet(COLOR,
-                                                  BORDER_COLOR,
-                                                  BORDER_SIZE),
+                                new BackgroundSet(),
                                 new FontSet(),
-                                new RectangleDimensionsSet(WIDTH,
-                                                           HEIGHT),
+                                new RectangleDimensionsSet(),
                                 new SimulationSet(),
                                 new TaskType(TaskTypes.NONE));
         }

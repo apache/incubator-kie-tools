@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.graph.content.view;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
+import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -26,6 +27,17 @@ public final class BoundsImpl implements Bounds {
 
     private BoundImpl lr;
     private BoundImpl ul;
+
+    public static BoundsImpl build() {
+        return new BoundsImpl(new BoundImpl(0d, 0d),new BoundImpl(0d, 0d));
+    }
+
+    public static BoundsImpl build(final double x1,
+                                   final double y1,
+                                   final double x2,
+                                   final double y2) {
+        return new BoundsImpl(new BoundImpl(x1, y1),new BoundImpl(x2, y2));
+    }
 
     public BoundsImpl(final @MapsTo("ul") BoundImpl ul,
                       final @MapsTo("lr") BoundImpl lr) {

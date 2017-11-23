@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 20.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 <svg version="1.1" id="circle" xmlns="http://www.w3.org/2000/svg"
+		 stunner:shape="exclude"
 	 x="0" y="0" width="448px" height="448px"
 	 viewBox="0 0 448 448" style="enable-background:new 0 0 448 448;" xml:space="preserve">
 <style type="text/css">
@@ -8,7 +9,7 @@
 	.st1{display:inline;}
 	.st2{fill:none;}
 </style>
-<g id="Grid" class="st0">
+<g xmlns:stunner="http://kiegroup.org/2017/stunner" id="Grid" class="st0">
 	<g id="icomoon-ignore" class="st1">
 		<line class="st2" x1="16" y1="0" x2="16" y2="448"/>
 		<line class="st2" x1="32" y1="0" x2="32" y2="448"/>

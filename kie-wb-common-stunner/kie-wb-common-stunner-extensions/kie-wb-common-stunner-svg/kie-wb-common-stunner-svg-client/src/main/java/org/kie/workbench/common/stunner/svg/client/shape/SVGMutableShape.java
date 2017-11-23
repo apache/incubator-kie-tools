@@ -37,7 +37,7 @@ import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
  * @param <W> The definition type.
  * @param <V> The SVGShapeView type.
  */
-public interface SVGMutableShape<W, V extends SVGShapeView<?>>
+public interface SVGMutableShape<W, V extends SVGShapeView>
         extends
         SVGShape<V>,
         NodeShape<W, View<W>, Node<View<W>, Edge>, V>,

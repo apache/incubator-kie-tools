@@ -16,7 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.impl;
 
-import java.util.function.Predicate;
+import java.util.Optional;
+import java.util.function.BiConsumer;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +27,7 @@ import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.view.IsConnector;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
-import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.ShapeViewDef;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
@@ -38,22 +39,25 @@ import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ConnectorShapeTest {
 
     @Mock
-    private MutableShapeDef shapeDef;
+    private ShapeViewDef shapeDef;
 
     @Mock
-    private ShapeStateHelper shapeStateHelper;
+    private BiConsumer<Object, ShapeView> viewHandler;
+
+    @Mock
+    private ShapeStateStrokeHandler shapeStateHandler;
 
     private ConnectorShape tested;
     private ShapeView<?> shapeView;
@@ -62,18 +66,22 @@ public class ConnectorShapeTest {
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         shapeView = spy(new ConnectorViewStub());
+        when(shapeDef.fontHandler()).thenReturn(Optional.empty());
+        when(shapeDef.titleHandler()).thenReturn(Optional.empty());
+        when(shapeDef.sizeHandler()).thenReturn(Optional.empty());
+        when(shapeDef.viewHandler()).thenReturn(viewHandler);
         this.tested = new ConnectorShape(shapeDef,
                                          shapeView,
-                                         shapeStateHelper);
+                                         shapeStateHandler);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testApplyState() {
         tested.applyState(ShapeState.NONE);
-        verify(shapeStateHelper,
-               never()).save(any(Predicate.class));
-        verify(shapeStateHelper,
+        verify(shapeStateHandler,
+               never()).shapeUpdated();
+        verify(shapeStateHandler,
                times(1)).applyState(eq(ShapeState.NONE));
     }
 

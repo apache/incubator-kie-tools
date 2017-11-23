@@ -68,7 +68,7 @@ public class Width implements DMNProperty {
     @Min(50)
     @Max(200)
     @FieldValue
-    private Double value = defaultValue;
+    private Double value;
 
     public Width() {
     }

@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
@@ -46,60 +47,41 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
     private static Logger LOGGER = Logger.getLogger(UpdateElementPositionCommand.class.getName());
 
     private final String uuid;
-    private final Double x;
-    private final Double y;
-    private final Double oldX;
-    private final Double oldY;
+    private final Point2D location;
+    private final Point2D previousLocation;
     private transient Node<? extends View<?>, Edge> node;
 
     public UpdateElementPositionCommand(final @MapsTo("uuid") String uuid,
-                                        final @MapsTo("x") Double x,
-                                        final @MapsTo("y") Double y,
-                                        final @MapsTo("oldX") Double oldX,
-                                        final @MapsTo("oldY") Double oldY) {
+                                        final @MapsTo("location") Point2D location,
+                                        final @MapsTo("previousLocation") Point2D previousLocation) {
         this.uuid = PortablePreconditions.checkNotNull("uuid",
                                                        uuid);
-        this.x = PortablePreconditions.checkNotNull("x",
-                                                    x);
-        this.y = PortablePreconditions.checkNotNull("y",
-                                                    y);
-        this.oldX = PortablePreconditions.checkNotNull("oldX",
-                                                       oldX);
-        this.oldY = PortablePreconditions.checkNotNull("oldY",
-                                                       oldY);
+        this.location = PortablePreconditions.checkNotNull("location",
+                                                           location);
+        this.previousLocation = PortablePreconditions.checkNotNull("previousLocation",
+                                                                   previousLocation);
         this.node = null;
     }
 
     public UpdateElementPositionCommand(final Node<? extends View<?>, Edge> node,
-                                        final Double x,
-                                        final Double y) {
+                                        final Point2D location) {
         this(node.getUUID(),
-             x,
-             y,
-             GraphUtils.getPosition(node.getContent()).getX(),
-             GraphUtils.getPosition(node.getContent()).getY());
+             location,
+             GraphUtils.getPosition(node.getContent()));
         this.node = PortablePreconditions.checkNotNull("node",
                                                        node);
     }
 
-    public Double getX() {
-        return x;
+    public Point2D getLocation() {
+        return location;
     }
 
-    public Double getY() {
-        return y;
+    public Point2D getPreviousLocation() {
+        return previousLocation;
     }
 
     public Node<?, Edge> getNode() {
         return node;
-    }
-
-    public Double getOldX() {
-        return oldX;
-    }
-
-    public Double getOldY() {
-        return oldY;
     }
 
     public String getUuid() {
@@ -145,10 +127,10 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
         final double[] oldSize = GraphUtils.getNodeSize(element.getContent());
         final double w = oldSize[0];
         final double h = oldSize[1];
-        return new BoundsImpl(new BoundImpl(x,
-                                            y),
-                              new BoundImpl(x + w,
-                                            y + h));
+        return new BoundsImpl(new BoundImpl(location.getX(),
+                                            location.getY()),
+                              new BoundImpl(location.getX() + w,
+                                            location.getY() + h));
     }
 
     @SuppressWarnings("unchecked")
@@ -161,8 +143,7 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
     @Override
     public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
         final UpdateElementPositionCommand undoCommand = new UpdateElementPositionCommand(getNodeNotNull(context),
-                                                                                          oldX,
-                                                                                          oldY);
+                                                                                          previousLocation);
         return undoCommand.execute(context);
     }
 
@@ -178,10 +159,8 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
     public String toString() {
         return "UpdateElementPositionCommand " +
                 "[element=" + uuid +
-                ", x=" + x +
-                ", y=" + y +
-                ", oldX=" + oldX +
-                ", oldY=" + oldY +
+                ", location=" + location +
+                ", previousLocation=" + previousLocation +
                 "]";
     }
 }

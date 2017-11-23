@@ -20,93 +20,64 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.client.lienzo.shape.impl.AnimatedShapeStateStrokeHandler;
+import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
-import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 import org.mockito.Mock;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyDouble;
-import static org.mockito.Matchers.anyString;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class SVGShapeStateHandlerTest {
 
-    private final SVGShapeStateHolderImpl STATE_HOLDER1 =
-            new SVGShapeStateHolderImpl(ShapeState.SELECTED,
-                                        1d,
-                                        "#FF55AA",
-                                        0.8d,
-                                        "#0099FF",
-                                        0.5d,
-                                        5d);
-
-    private final SVGShapeStateHolderImpl STATE_HOLDER2 =
-            new SVGShapeStateHolderImpl(ShapeState.INVALID,
-                                        1d,
-                                        null,
-                                        0.4d,
-                                        "#0099FF",
-                                        null,
-                                        null);
-
     @Mock
-    SVGShapeView<?> view;
+    private AnimatedShapeStateStrokeHandler strokeHandler;
 
     private SVGShapeStateHandler tested;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() throws Exception {
-        this.tested = new SVGShapeStateHandler(view);
+        tested = new SVGShapeStateHandler(strokeHandler);
     }
 
     @Test
-    public void testNoState() {
-        assertFalse(tested.applyState(ShapeState.SELECTED));
-        assertFalse(tested.applyState(ShapeState.INVALID));
-        assertFalse(tested.applyState(ShapeState.HIGHLIGHT));
+    @SuppressWarnings("unchecked")
+    public void testForShape() {
+        final Shape shape = mock(Shape.class);
+        assertEquals(tested, tested.forShape(shape));
+        verify(strokeHandler, times(1)).forShape(eq(shape));
     }
 
     @Test
-    public void testState1() {
-        tested.registerStateHolder(ShapeState.SELECTED,
-                                   STATE_HOLDER1);
-        final boolean result = tested.applyState(ShapeState.SELECTED);
-        assertTrue(result);
-        verify(view,
-               times(1)).setAlpha(eq(1d));
-        verify(view,
-               times(1)).setFillColor(eq("#FF55AA"));
-        verify(view,
-               times(1)).setFillAlpha(eq(0.8d));
-        verify(view,
-               times(1)).setStrokeColor(eq("#0099FF"));
-        verify(view,
-               times(1)).setStrokeAlpha(eq(0.5d));
-        verify(view,
-               times(1)).setStrokeWidth(eq(5d));
+    @SuppressWarnings("unchecked")
+    public void testApplyState() {
+        tested.applyState(ShapeState.SELECTED);
+        verify(strokeHandler, times(1)).applyState(eq(ShapeState.SELECTED));
     }
 
     @Test
-    public void testState2() {
-        tested.registerStateHolder(ShapeState.INVALID,
-                                   STATE_HOLDER2);
-        final boolean result = tested.applyState(ShapeState.INVALID);
-        assertTrue(result);
-        verify(view,
-               times(1)).setAlpha(eq(1d));
-        verify(view,
-               times(0)).setFillColor(anyString());
-        verify(view,
-               times(1)).setFillAlpha(eq(0.4d));
-        verify(view,
-               times(1)).setStrokeColor(eq("#0099FF"));
-        verify(view,
-               times(0)).setStrokeAlpha(anyDouble());
-        verify(view,
-               times(0)).setStrokeWidth(anyDouble());
+    @SuppressWarnings("unchecked")
+    public void testShapeUpdated() {
+        tested.shapeUpdated();
+        verify(strokeHandler, times(1)).shapeUpdated();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testReset() {
+        tested.reset();
+        verify(strokeHandler, times(1)).reset();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGetShapeState() {
+        tested.getShapeState();
+        verify(strokeHandler, times(1)).getShapeState();
     }
 }

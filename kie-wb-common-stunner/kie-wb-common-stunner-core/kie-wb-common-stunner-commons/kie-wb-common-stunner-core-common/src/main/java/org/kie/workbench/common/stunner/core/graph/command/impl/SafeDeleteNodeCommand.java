@@ -61,8 +61,8 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
     @NonPortable
     public interface SafeDeleteNodeCommandCallback extends SafeDeleteNodeProcessor.Callback {
 
-        void setEdgeTargetNode(final Node<?, Edge> targetNode,
-                               final Edge<? extends View<?>, Node> candidate);
+        void setEdgeTargetNode(final Node<? extends View<?>, Edge> targetNode,
+                               final Edge<? extends ViewConnector<?>, Node> candidate);
     }
 
     private String candidateUUID;

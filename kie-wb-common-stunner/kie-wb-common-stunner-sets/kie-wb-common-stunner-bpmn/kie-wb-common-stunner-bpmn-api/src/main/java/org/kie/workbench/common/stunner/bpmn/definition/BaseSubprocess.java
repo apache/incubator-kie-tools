@@ -21,7 +21,6 @@ import java.util.Set;
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
@@ -33,11 +32,10 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
-import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @MorphBase(defaultType = ReusableSubprocess.class, targets = {BaseTask.class})
-public abstract class BaseSubprocess implements BPMNDefinition {
+public abstract class BaseSubprocess implements BPMNViewDefinition {
 
     @Category
     public static final transient String category = Categories.ACTIVITIES;
@@ -65,16 +63,6 @@ public abstract class BaseSubprocess implements BPMNDefinition {
 
     @Labels
     protected final Set<String> labels = new HashSet<>();
-
-    @NonPortable
-    public static abstract class BaseSubprocessBuilder<T extends BaseSubprocess> implements Builder<T> {
-
-        public static final String COLOR = "#fafad2";
-        public static final Double WIDTH = 136d;
-        public static final Double HEIGHT = 48d;
-        public static final Double BORDER_SIZE = 1d;
-        public static final String BORDER_COLOR = "#000000";
-    }
 
     protected BaseSubprocess() {
         this.labels.addAll(makeLabels());

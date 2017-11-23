@@ -17,22 +17,30 @@
 package org.kie.workbench.common.stunner.svg.gen.impl;
 
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 import org.kie.workbench.common.stunner.svg.gen.SVGGenerator;
 import org.kie.workbench.common.stunner.svg.gen.SVGGeneratorRequest;
 import org.kie.workbench.common.stunner.svg.gen.codegen.impl.SVGViewFactoryGenerator;
 import org.kie.workbench.common.stunner.svg.gen.exception.GeneratorException;
+import org.kie.workbench.common.stunner.svg.gen.model.StyleSheetDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.ViewDefinition;
-import org.kie.workbench.common.stunner.svg.gen.model.ViewFactory;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.ViewDefinitionImpl;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.ViewFactoryImpl;
 import org.kie.workbench.common.stunner.svg.gen.translator.SVGDocumentTranslator;
+import org.kie.workbench.common.stunner.svg.gen.translator.css.SVGStyleTranslatorHelper;
+import org.kie.workbench.common.stunner.svg.gen.translator.impl.SVGTranslatorContextImpl;
 import org.w3c.dom.Document;
 
 public class SVGGeneratorImpl implements SVGGenerator {
@@ -53,40 +61,97 @@ public class SVGGeneratorImpl implements SVGGenerator {
         final String name = request.getName();
         final String pkg = request.getPkg();
         final String typeOf = request.getImplementedType();
+        final String cssPath = request.getCssPath();
         final Map<String, String> viewSources = request.getViewSources();
-        final ViewFactory viewFactory = new ViewFactoryImpl(name,
-                                                            pkg,
-                                                            typeOf);
-        viewSources.entrySet().forEach(svgEntry -> {
-            final String fMethodName = svgEntry.getKey();
-            final String svgPath = svgEntry.getValue();
-            final InputStream svgStream = getClass().getClassLoader().getResourceAsStream(svgPath);
-            if (null != svgStream) {
+        final ViewFactoryImpl viewFactory = new ViewFactoryImpl(name,
+                                                                pkg,
+                                                                typeOf);
+
+        // Process the global CSS declaration specified in the factory, if any.
+        final StyleSheetDefinition[] styleSheetDefinition = new StyleSheetDefinition[1];
+        if (null != cssPath && cssPath.trim().length() > 0) {
+            final InputStream cssStream = loadResource(cssPath);
+            if (null != cssStream) {
                 try {
-                    final ViewDefinition<SVGShapeView> viewDefinition = parseSVGView(fMethodName,
-                                                                                     svgPath,
-                                                                                     svgStream);
-                    viewFactory.getViewDefinitions().add(viewDefinition);
+                    styleSheetDefinition[0] = SVGStyleTranslatorHelper.parseStyleSheetDefinition(cssPath,
+                                                                                                 cssStream);
+                    viewFactory.setStyleSheetDefinition(styleSheetDefinition[0]);
                 } catch (Exception e) {
-                    throw new RuntimeException("Error while processing the SVG [" + svgPath + "]",
+                    throw new RuntimeException("Error while processing the glocal CSS file [" + cssPath + "]",
                                                e);
                 }
-            } else {
-                throw new RuntimeException("No SVG file found at [" + svgPath + "]");
             }
+        }
+
+        // Process all SVG files specified in the factory.
+        final Set<String> processedSvgIds = new LinkedHashSet<>(); // TODO: Hmmm
+        viewSources.forEach((fMethodName, svgPath) -> {
+            parseSVGViewSource(fMethodName,
+                               svgPath,
+                               styleSheetDefinition[0],
+                               result -> {
+                                   result.setId(fMethodName);
+                                   result.setFactoryMethodName(fMethodName);
+                                   viewFactory.getViewDefinitions().add(result);
+                               });
+            processedSvgIds.add(fMethodName);
         });
+
+        // Parse referenced svg files as well, if any.
+        final List<ViewDefinition<?>> referencedViewDefinitions = new LinkedList<>();
+        viewFactory.getViewDefinitions().stream()
+                .flatMap(v -> v.getSVGViewRefs().stream())
+                .filter(vd -> !processedSvgIds.contains(vd.getViewRefId()))
+                .forEach(vd -> parseSVGViewSource(vd.getViewRefId(),
+                                                  vd.getFilePath(),
+                                                  styleSheetDefinition[0],
+                                                  result -> {
+                                                      result.setFactoryMethodName(result.getId());
+                                                      referencedViewDefinitions.add(result);
+                                                      processedSvgIds.add(result.getId());
+                                                  }));
+        viewFactory.getViewDefinitions().addAll(referencedViewDefinitions);
+
         return viewFactoryGenerator.generate(viewFactory);
     }
 
-    private ViewDefinition<SVGShapeView> parseSVGView(final String fMethodName,
-                                                      final String svgPath,
-                                                      final InputStream svgStream) throws Exception {
-        ViewDefinition<SVGShapeView> svgShapeViewSource = null;
+    private void parseSVGViewSource(final String viewId,
+                                    final String svgPath,
+                                    final StyleSheetDefinition styleSheetDefinition,
+                                    final Consumer<ViewDefinitionImpl> viewDefinitionConsumer) {
+        final InputStream svgStream = loadResource(svgPath);
+        if (null != svgStream) {
+            try {
+                final ViewDefinitionImpl viewDefinition = parseSVGView(viewId,
+                                                                       svgPath,
+                                                                       svgStream,
+                                                                       styleSheetDefinition);
+                viewDefinitionConsumer.accept(viewDefinition);
+            } catch (Exception e) {
+                throw new RuntimeException("Error while processing the SVG file [" + svgPath + "]",
+                                           e);
+            }
+        } else {
+            throw new RuntimeException("No SVG file found at [" + svgPath + "]");
+        }
+        ;
+    }
+
+    private InputStream loadResource(final String path) {
+        return getClass().getClassLoader().getResourceAsStream(path);
+    }
+
+    private ViewDefinitionImpl parseSVGView(final String viewId,
+                                            final String svgPath,
+                                            final InputStream svgStream,
+                                            final StyleSheetDefinition styleSheetDefinition) throws Exception {
+        ViewDefinitionImpl svgShapeViewSource = null;
         try {
             Document root = parse(svgStream);
-            svgShapeViewSource = translate(fMethodName,
+            svgShapeViewSource = translate(viewId,
                                            svgPath,
-                                           root);
+                                           root,
+                                           styleSheetDefinition);
         } catch (final Exception e) {
             throw new GeneratorException(e);
         }
@@ -99,11 +164,21 @@ public class SVGGeneratorImpl implements SVGGenerator {
         return root;
     }
 
-    private ViewDefinition<SVGShapeView> translate(final String fMethodName,
-                                                   final String svgPath,
-                                                   final Document document) throws Exception {
-        final ViewDefinitionImpl viewDefinition = (ViewDefinitionImpl) translator.translate(document);
-        viewDefinition.setFactoryMethodName(fMethodName);
+    private ViewDefinitionImpl translate(final String viewId,
+                                         final String svgPath,
+                                         final Document document,
+                                         final StyleSheetDefinition styleSheetDefinition) throws Exception {
+        final Path path = Paths.get(svgPath);
+        final String relativePath = path.getNameCount() > 1 ?
+                path.subpath(0, path.getNameCount() - 1).toString() :
+                "";
+        final SVGTranslatorContextImpl context = new SVGTranslatorContextImpl(document,
+                                                                              relativePath,
+                                                                              styleSheetDefinition);
+        if (null != viewId) {
+            context.setViewId(viewId);
+        }
+        final ViewDefinitionImpl viewDefinition = (ViewDefinitionImpl) translator.translate(context);
         viewDefinition.setPath(svgPath);
         return viewDefinition;
     }

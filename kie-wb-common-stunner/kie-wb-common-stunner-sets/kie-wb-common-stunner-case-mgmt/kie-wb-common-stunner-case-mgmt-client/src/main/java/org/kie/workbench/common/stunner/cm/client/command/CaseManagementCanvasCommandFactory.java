@@ -28,6 +28,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvas
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessor;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ViewTraverseProcessor;
@@ -88,10 +89,8 @@ public class CaseManagementCanvasCommandFactory extends DefaultCanvasCommandFact
     //Case Management does not update the location of any Nodes, preserving the layout information that may have
     //been set using the full BPMN2 editor. This command equates to a NOP for Case Management.
     public CanvasCommand<AbstractCanvasHandler> updatePosition(final Node<View<?>, Edge> element,
-                                                               final Double x,
-                                                               final Double y) {
+                                                               final Point2D location) {
         return new CaseManagementUpdatePositionCommand(element,
-                                                       x,
-                                                       y);
+                                                       location);
     }
 }

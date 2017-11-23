@@ -1,21 +1,35 @@
-public SVGShapeView ${name}(final boolean resizable) {
-    return this.${name}(${width}d, ${height}d, resizable);
+public SVGShapeViewResource ${name}() {
+    return new SVGShapeViewResource(args -> {
+                                        if (null != args.width && null != args.heigth) {
+                                            return this.${name}View(args.width, args.heigth, args.resizable);
+                                        } else {
+                                            return this.${name}View(args.resizable);
+                                        }});
 }
 
-public SVGShapeView ${name}(final double width, final double height, final boolean resizable) {
+private SVGShapeView ${name}View(final boolean resizable) {
+    return this.${name}View(${width}d, ${height}d, resizable);
+}
 
-    final SVGShapeViewImpl view = new SVGShapeViewImpl("${viewId}", ${main}, width, height, resizable);
-    <#list scalableChildren as sc>
-        view.addScalableChild(${sc});
-    </#list>
+private SVGShapeView ${name}View(final double width, final double height, final boolean resizable) {
+
+    SVGPrimitiveShape mainShape = SVGPrimitiveFactory.newSVGPrimitiveShape(${mainShape}, true, ${layout}, SVGPrimitivePolicies.Builder.build(${policy}));
+
+    final SVGShapeViewImpl view = new SVGShapeViewImpl("${viewId}", mainShape, width, height, resizable);
 
     <#list children as c>
-        view.addChild(${c});
+        ${c}
     </#list>
 
-    <#list rawChildren as child>
+    <#list svgChildren as child>
         ${child}
     </#list>
+
+    ${text}
+
+    ${stateHolders}
+
+    view.refresh();
 
     return view;
 }
@@ -26,13 +40,15 @@ private SVGBasicShapeView ${name}BasicView() {
 
 private SVGBasicShapeView ${name}BasicView(final double width, final double height) {
 
-    final SVGBasicShapeViewImpl view = new SVGBasicShapeViewImpl("${viewId}", ${main}, width, height);
+    SVGPrimitiveShape mainShape = SVGPrimitiveFactory.newSVGPrimitiveShape(${mainShape}, false, ${layout}, SVGPrimitivePolicies.Builder.build(${policy}));
+
+    final SVGBasicShapeViewImpl view = new SVGBasicShapeViewImpl("${viewId}", mainShape, width, height);
 
     <#list children as c>
-        view.addChild(${c});
+        ${c}
     </#list>
 
-    <#list rawChildren as child>
+    <#list svgChildren as child>
         ${child}
     </#list>
 

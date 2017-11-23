@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.svg.gen.model.impl;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.kie.workbench.common.stunner.svg.gen.model.StyleSheetDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.ViewDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.ViewFactory;
 
@@ -27,6 +28,7 @@ public class ViewFactoryImpl implements ViewFactory {
     private final String name;
     private final String pkg;
     private final String typoF;
+    private StyleSheetDefinition styleSheetDefinition;
     private final List<ViewDefinition<?>> viewDefinitions = new LinkedList<>();
 
     public ViewFactoryImpl(final String name,
@@ -50,6 +52,15 @@ public class ViewFactoryImpl implements ViewFactory {
     @Override
     public String getImplementedType() {
         return typoF;
+    }
+
+    @Override
+    public StyleSheetDefinition getStyleSheetDefinition() {
+        return styleSheetDefinition;
+    }
+
+    public void setStyleSheetDefinition(final StyleSheetDefinition styleSheetDefinition) {
+        this.styleSheetDefinition = styleSheetDefinition;
     }
 
     @Override

@@ -16,21 +16,21 @@
 
 package org.kie.workbench.common.stunner.shapes.client;
 
-import org.kie.workbench.common.stunner.client.lienzo.shape.impl.AnimationShapeStateHelper;
+import org.kie.workbench.common.stunner.client.lienzo.shape.impl.AnimatedShapeStateStrokeHandler;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresConnectorViewExt;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ConnectorShape;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
-import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.ShapeViewDef;
 
-public class BasicConnectorShape<W, D extends MutableShapeDef<W>, V extends WiresConnectorViewExt<?>>
+public class BasicConnectorShape<W, D extends ShapeViewDef<W, V>, V extends WiresConnectorViewExt>
         extends ConnectorShape<W, D, V> {
 
     public BasicConnectorShape(D shapeDef,
                                V view) {
         super(shapeDef,
               view,
-              new AnimationShapeStateHelper<>());
+              new AnimatedShapeStateStrokeHandler<>());
     }
 
     @Override
@@ -44,6 +44,6 @@ public class BasicConnectorShape<W, D extends MutableShapeDef<W>, V extends Wire
     }
 
     private boolean isSelected() {
-        return ShapeState.SELECTED.equals(getShape().getShapeStateHelper().getState());
+        return ShapeState.SELECTED.equals(getShape().getShapeStateHandler().getShapeState());
     }
 }

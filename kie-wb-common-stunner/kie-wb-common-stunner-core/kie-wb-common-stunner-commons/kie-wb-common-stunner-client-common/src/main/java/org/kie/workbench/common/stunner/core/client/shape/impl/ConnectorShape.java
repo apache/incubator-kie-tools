@@ -23,7 +23,7 @@ import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.view.IsConnector;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
-import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.ShapeViewDef;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
@@ -41,8 +41,8 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
  * @param <V> The view type.
  * @param <D> The mutable shape definition type..
  */
-public class ConnectorShape<W, D extends MutableShapeDef<W>, V extends ShapeView<?>>
-        extends AbstractElementShape<W, ViewConnector<W>, Edge<ViewConnector<W>, Node>, MutableShapeDef<W>, V>
+public class ConnectorShape<W, D extends ShapeViewDef<W, V>, V extends ShapeView>
+        extends AbstractElementShape<W, ViewConnector<W>, Edge<ViewConnector<W>, Node>, D, V>
         implements EdgeShape<W, ViewConnector<W>, Edge<ViewConnector<W>, Node>, V>,
                    Lifecycle {
 
@@ -54,7 +54,7 @@ public class ConnectorShape<W, D extends MutableShapeDef<W>, V extends ShapeView
 
     public ConnectorShape(final D shapeDef,
                           final V view,
-                          final ShapeStateHelper<V, Shape<V>> shapeStateHelper) {
+                          final ShapeStateHandler<V, Shape<V>> shapeStateHelper) {
         super(shapeDef,
               view,
               shapeStateHelper);
@@ -65,7 +65,7 @@ public class ConnectorShape<W, D extends MutableShapeDef<W>, V extends ShapeView
                                  final ShapeView<?> source,
                                  final ShapeView<?> target,
                                  final MutationContext mutationContext) {
-        final ViewConnector connectionContent = (ViewConnector) element.getContent();
+        final ViewConnector connectionContent = element.getContent();
         final Connection sourceConnection = (Connection) connectionContent.getSourceConnection().orElse(null);
         final Connection targetConnection = (Connection) connectionContent.getTargetConnection().orElse(null);
         if (null != source && null != target) {

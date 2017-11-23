@@ -16,88 +16,38 @@
 
 package org.kie.workbench.common.stunner.cm.client.shape.def;
 
+import java.util.Optional;
+import java.util.function.BiConsumer;
+
+import org.kie.workbench.common.stunner.cm.client.shape.view.DiagramView;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
-import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.shapes.def.RectangleShapeDef;
 
 public final class CaseManagementDiagramShapeDef
-        implements RectangleShapeDef<CaseManagementDiagram>,
-                   CaseManagementShapeDef<CaseManagementDiagram> {
+        implements RectangleShapeDef<CaseManagementDiagram, DiagramView>,
+                   CaseManagementShapeDef<CaseManagementDiagram, DiagramView> {
+
+    public static final double WIDTH = 950;
+    public static final double HEIGHT = 950;
 
     @Override
-    public double getAlpha(final CaseManagementDiagram element) {
-        return 1d;
+    public Optional<BiConsumer<View<CaseManagementDiagram>, DiagramView>> sizeHandler() {
+        return Optional.of(newSizeHandlerBuilder()
+                                   .width(this::getWidth)
+                                   .height(this::getHeight)
+                                   .build()::handle);
     }
 
     @Override
-    public String getBackgroundColor(final CaseManagementDiagram element) {
-        return element.getBackgroundSet().getBgColor().getValue();
+    public Double getWidth(final CaseManagementDiagram element) {
+        return WIDTH;
     }
 
     @Override
-    public double getBackgroundAlpha(final CaseManagementDiagram element) {
-        return 0.8;
-    }
-
-    @Override
-    public String getBorderColor(final CaseManagementDiagram element) {
-        return element.getBackgroundSet().getBorderColor().getValue();
-    }
-
-    @Override
-    public double getBorderSize(final CaseManagementDiagram element) {
-        return element.getBackgroundSet().getBorderSize().getValue();
-    }
-
-    @Override
-    public double getBorderAlpha(final CaseManagementDiagram element) {
-        return 1;
-    }
-
-    @Override
-    public String getFontFamily(final CaseManagementDiagram element) {
-        return element.getFontSet().getFontFamily().getValue();
-    }
-
-    @Override
-    public String getFontColor(final CaseManagementDiagram element) {
-        return element.getFontSet().getFontColor().getValue();
-    }
-
-    @Override
-    public String getFontBorderColor(final CaseManagementDiagram element) {
-        return element.getFontSet().getFontBorderColor().getValue();
-    }
-
-    @Override
-    public double getFontSize(final CaseManagementDiagram element) {
-        return element.getFontSet().getFontSize().getValue();
-    }
-
-    @Override
-    public double getFontBorderSize(final CaseManagementDiagram element) {
-        return element.getFontSet().getFontBorderSize().getValue();
-    }
-
-    @Override
-    public HasTitle.Position getFontPosition(final CaseManagementDiagram element) {
-        return HasTitle.Position.CENTER;
-    }
-
-    @Override
-    public double getFontRotation(final CaseManagementDiagram element) {
-        return 0;
-    }
-
-    @Override
-    public double getWidth(final CaseManagementDiagram element) {
-        return element.getDimensionsSet().getWidth().getValue();
-    }
-
-    @Override
-    public double getHeight(final CaseManagementDiagram element) {
-        return element.getDimensionsSet().getHeight().getValue();
+    public Double getHeight(final CaseManagementDiagram element) {
+        return HEIGHT;
     }
 
     @Override

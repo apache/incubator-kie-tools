@@ -19,48 +19,68 @@ package org.kie.workbench.common.stunner.svg.client.shape.view.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.kie.workbench.common.stunner.client.lienzo.shape.impl.AnimatedShapeStateStrokeHandler;
+import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
+import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateHandler;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
-public class SVGShapeStateHandler {
+public class SVGShapeStateHandler<V extends SVGShapeView<?>, S extends Shape<V>>
+        implements ShapeStateHandler<V, S> {
 
-    private final SVGShapeView<?> view;
-    private Map<ShapeState, SVGShapeStateHolderImpl> stateHolderMap = new HashMap<>(4);
+    private final AnimatedShapeStateStrokeHandler<V, S> handler;
+    private Map<ShapeState, SVGShapeStateHolder> stateHolderMap = new HashMap<>(4);
 
-    public SVGShapeStateHandler(final SVGShapeView<?> view) {
-        this.view = view;
+    public SVGShapeStateHandler() {
+        this.handler = new AnimatedShapeStateStrokeHandler<V, S>(this::getStateStrokeColor);
     }
 
-    public SVGShapeStateHandler registerStateHolder(final ShapeState state,
-                                                    final SVGShapeStateHolderImpl holder) {
-        stateHolderMap.put(state,
+    SVGShapeStateHandler(final AnimatedShapeStateStrokeHandler<V, S> handler) {
+        this.handler = handler;
+    }
+
+    private String getStateStrokeColor(final ShapeState state) {
+        final SVGShapeStateHolder stateHolder = stateHolderMap.get(state);
+        if (null != stateHolder) {
+            return stateHolder.getStrokeColor();
+        }
+        return state.getColor();
+    }
+
+    public SVGShapeStateHandler registerStateHolder(final SVGShapeStateHolder holder) {
+        stateHolderMap.put(holder.getState(),
                            holder);
         return this;
     }
 
-    public boolean applyState(final ShapeState state) {
-        final SVGShapeStateHolderImpl holder = stateHolderMap.get(state);
-        if (null != holder) {
-            if (holder.hasAlpha()) {
-                view.setAlpha(holder.getAlpha());
-            }
-            if (holder.hasFillColor()) {
-                view.setFillColor(holder.getFillColor());
-            }
-            if (holder.hasFillAlpha()) {
-                view.setFillAlpha(holder.getFillAlpha());
-            }
-            if (holder.hasStrokeColor()) {
-                view.setStrokeColor(holder.getStrokeColor());
-            }
-            if (holder.hasStrokeAlpha()) {
-                view.setStrokeAlpha(holder.getStrokeAlpha());
-            }
-            if (holder.hasStrokeWidth()) {
-                view.setStrokeWidth(holder.getStrokeWidth());
-            }
-            return true;
-        }
-        return false;
+    @Override
+    public ShapeStateHandler<V, S> forShape(final S shape) {
+        handler.forShape(shape);
+        return this;
+    }
+
+    @Override
+    public ShapeStateHandler<V, S> shapeUpdated() {
+        handler.shapeUpdated();
+        return this;
+    }
+
+    @Override
+    public void applyState(final ShapeState shapeState) {
+        handler.applyState(shapeState);
+    }
+
+    @Override
+    public ShapeState reset() {
+        return handler.reset();
+    }
+
+    @Override
+    public ShapeState getShapeState() {
+        return handler.getShapeState();
+    }
+
+    public AnimatedShapeStateStrokeHandler<V, S> getWrapped() {
+        return handler;
     }
 }

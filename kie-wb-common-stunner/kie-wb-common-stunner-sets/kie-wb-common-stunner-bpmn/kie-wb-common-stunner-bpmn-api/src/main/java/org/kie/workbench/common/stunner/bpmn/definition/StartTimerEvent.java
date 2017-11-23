@@ -38,6 +38,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
+import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
@@ -64,16 +65,14 @@ public class StartTimerEvent extends BaseStartEvent {
     protected InterruptingTimerEventExecutionSet executionSet;
 
     @NonPortable
-    public static class StartTimerEventBuilder extends BaseStartEventBuilder<StartTimerEvent> {
+    public static class StartTimerEventBuilder implements Builder<StartTimerEvent> {
 
         @Override
         public StartTimerEvent build() {
             return new StartTimerEvent(new BPMNGeneralSet(""),
-                                       new BackgroundSet(BG_COLOR,
-                                                         BORDER_COLOR,
-                                                         BORDER_SIZE),
+                                       new BackgroundSet(),
                                        new FontSet(),
-                                       new CircleDimensionSet(new Radius(RADIUS)),
+                                       new CircleDimensionSet(new Radius()),
                                        new SimulationAttributeSet(),
                                        new InterruptingTimerEventExecutionSet());
         }

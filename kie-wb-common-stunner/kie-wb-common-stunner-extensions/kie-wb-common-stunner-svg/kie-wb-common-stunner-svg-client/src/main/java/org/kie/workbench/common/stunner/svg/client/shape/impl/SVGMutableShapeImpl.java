@@ -18,46 +18,50 @@ package org.kie.workbench.common.stunner.svg.client.shape.impl;
 
 import java.util.Collection;
 
-import org.kie.workbench.common.stunner.client.lienzo.shape.impl.AnimationShapeStateHelper;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.impl.NodeShapeImpl;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.svg.client.shape.SVGMutableShape;
-import org.kie.workbench.common.stunner.svg.client.shape.def.SVGMutableShapeDef;
+import org.kie.workbench.common.stunner.svg.client.shape.def.SVGShapeViewDef;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGBasicShapeView;
+import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitive;
+import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitiveShape;
+import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 import org.kie.workbench.common.stunner.svg.client.shape.view.impl.SVGShapeViewImpl;
 
-public class SVGMutableShapeImpl<W, D extends SVGMutableShapeDef<W, ?>>
-        extends NodeShapeImpl<W, D, SVGShapeViewImpl>
-        implements SVGMutableShape<W, SVGShapeViewImpl> {
+public class SVGMutableShapeImpl<W, D extends SVGShapeViewDef<W, ?>>
+        extends NodeShapeImpl<W, D, SVGShapeView>
+        implements SVGMutableShape<W, SVGShapeView> {
 
+    @SuppressWarnings("unchecked")
     public SVGMutableShapeImpl(final D shapeDef,
                                final SVGShapeViewImpl view) {
         super(shapeDef,
               view,
-              new AnimationShapeStateHelper<>());
+              view.getShapeStateHandler());
+        view.getShapeStateHandler().forShape(this);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public void applyProperties(final Node<View<W>, Edge> element,
-                                final MutationContext mutationContext) {
-        super.applyProperties(element,
-                              mutationContext);
-        // Handle the different svg sub-views display, if any.
+    public void applyCustomProperties(final Node<View<W>, Edge> element,
+                                      final MutationContext mutationContext) {
+        super.applyCustomProperties(element,
+                                    mutationContext);
+        // Handle the different svg primitive views, if any.
+        final Collection<SVGPrimitive<?>> svgPrimitives = getShapeView().getChildren();
+        svgPrimitives.forEach(this::updateSVGPrimitiveView);
+        // Handle the different svg children views, if any.
         final Collection<SVGBasicShapeView> svgViews = getShapeView().getSVGChildren();
-        svgViews.stream()
-                .forEach(view -> view.setAlpha(
-                        getShapeDefinition().isSVGViewVisible(view.getName(),
-                                                              getDefinition(element)) ? 1 : 0
-                ));
-        // Apply svg width and height values from the model instance.
-        final Double width = getShapeDefinition().getWidth(getDefinition(element));
-        final Double height = getShapeDefinition().getHeight(getDefinition(element));
-        getDefViewHandler().getViewHandler().applySize(width,
-                                                       height,
-                                                       mutationContext);
+        svgViews.forEach(view -> updateSVGPrimitiveView(view.getPrimitive()));
+    }
+
+    private void updateSVGPrimitiveView(final SVGPrimitive<?> primitive) {
+        if (primitive instanceof SVGPrimitiveShape) {
+            ((SVGPrimitiveShape) primitive).getPolicy().accept(getShapeView(),
+                                                               ((SVGPrimitiveShape) primitive).get());
+        }
     }
 }

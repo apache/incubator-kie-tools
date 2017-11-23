@@ -29,7 +29,9 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessor;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ViewTraverseProcessor;
 
@@ -158,7 +160,7 @@ public class DefaultCanvasCommandFactory implements CanvasCommandFactory<Abstrac
 
     @Override
     public CanvasCommand<AbstractCanvasHandler> setSourceNode(final Node<? extends View<?>, Edge> node,
-                                                              final Edge<? extends View<?>, Node> edge,
+                                                              final Edge<? extends ViewConnector<?>, Node> edge,
                                                               final Connection connection) {
         return new SetConnectionSourceNodeCommand(node,
                                                   edge,
@@ -167,7 +169,7 @@ public class DefaultCanvasCommandFactory implements CanvasCommandFactory<Abstrac
 
     @Override
     public CanvasCommand<AbstractCanvasHandler> setTargetNode(final Node<? extends View<?>, Edge> node,
-                                                              final Edge<? extends View<?>, Node> edge,
+                                                              final Edge<? extends ViewConnector<?>, Node> edge,
                                                               final Connection connection) {
         return new SetConnectionTargetNodeCommand(node,
                                                   edge,
@@ -176,11 +178,9 @@ public class DefaultCanvasCommandFactory implements CanvasCommandFactory<Abstrac
 
     @Override
     public CanvasCommand<AbstractCanvasHandler> updatePosition(final Node<View<?>, Edge> element,
-                                                               final Double x,
-                                                               final Double y) {
+                                                               final Point2D location) {
         return new UpdateElementPositionCommand(element,
-                                                x,
-                                                y);
+                                                location);
     }
 
     @Override

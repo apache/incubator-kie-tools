@@ -33,6 +33,7 @@ import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.shared.core.types.ColorName;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
+import org.kie.workbench.common.stunner.core.client.shape.view.BoundingBox;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasDecorators;
 import org.kie.workbench.common.stunner.core.client.shape.view.IsConnector;
@@ -40,6 +41,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.util.ShapeUtils;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.DiscreteConnection;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
 public class WiresConnectorView<T> extends WiresConnector
@@ -338,6 +340,15 @@ public class WiresConnectorView<T> extends WiresConnector
     }
 
     @Override
+    public BoundingBox getBoundingBox() {
+        final com.ait.lienzo.client.core.types.BoundingBox bb = getGroup().getBoundingBox();
+        return new BoundingBox(bb.getMinX(),
+                               bb.getMinY(),
+                               bb.getMaxX(),
+                               bb.getMaxY());
+    }
+
+    @Override
     public void removeFromParent() {
         // Remove the main line.
         super.removeFromLayer();
@@ -398,13 +409,13 @@ public class WiresConnectorView<T> extends WiresConnector
     private static WiresMagnet getMagnetForConnection(final Connection connection,
                                                       final MagnetManager.Magnets magnets,
                                                       final com.ait.lienzo.client.core.types.Point2D absLocation) {
-        if (null != connection) {
+        if (null != connection && null != connection.getLocation()) {
             Point2D magnetAbs = new Point2D(absLocation.getX() + connection.getLocation().getX(),
                                             absLocation.getY() + connection.getLocation().getY());
             return getMagnetNearTo(magnets,
                                    magnetAbs);
         }
-        return null;
+        return magnets.getMagnet(MagnetConnection.MAGNET_CENTER);
     }
 
     /**

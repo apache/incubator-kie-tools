@@ -29,6 +29,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.basicset.definition.property.Name;
 import org.kie.workbench.common.stunner.basicset.definition.property.background.BackgroundAndBorderSet;
+import org.kie.workbench.common.stunner.basicset.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
@@ -123,6 +124,12 @@ public class BasicConnector implements BasicSetDefinition {
 
     public BackgroundAndBorderSet getBackgroundSet() {
         return backgroundSet;
+    }
+
+    @Override
+    public FontSet getFontSet() {
+        // Text for connectors still not supported, by it will be in future versions.
+        return null;
     }
 
     public void setBackgroundSet(final BackgroundAndBorderSet backgroundSet) {

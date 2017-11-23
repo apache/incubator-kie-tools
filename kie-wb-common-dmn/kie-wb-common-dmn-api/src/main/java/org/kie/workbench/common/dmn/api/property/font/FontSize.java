@@ -62,7 +62,7 @@ public class FontSize implements DMNProperty {
 
     @Value
     @FieldValue
-    private Double value = defaultValue;
+    private Double value;
 
     public FontSize() {
     }

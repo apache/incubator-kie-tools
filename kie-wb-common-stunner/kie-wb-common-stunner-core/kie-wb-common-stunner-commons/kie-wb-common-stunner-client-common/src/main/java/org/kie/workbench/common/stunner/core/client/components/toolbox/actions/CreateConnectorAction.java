@@ -45,6 +45,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.util.UUID;
@@ -124,8 +125,8 @@ public class CreateConnectorAction extends AbstractToolboxAction {
         final Element<?> element = getElement(canvasHandler,
                                               uuid);
         final Node<View<?>, Edge> sourceNode = (Node<View<?>, Edge>) element.asNode();
-        final Edge<View<?>, Node> connector =
-                (Edge<View<?>, Node>) clientFactoryManager
+        final Edge<? extends ViewConnector<?>, Node> connector =
+                (Edge<? extends ViewConnector<?>, Node>) clientFactoryManager
                         .newElement(UUID.uuid(),
                                     edgeId)
                         .asEdge();
@@ -172,8 +173,8 @@ public class CreateConnectorAction extends AbstractToolboxAction {
 
     @SuppressWarnings("unchecked")
     private DragProxy<AbstractCanvasHandler, ConnectorDragProxy.Item, DragProxyCallback> showDragProxy(final AbstractCanvasHandler canvasHandler,
-                                                                                                       final Edge<View<?>, Node> connector,
-                                                                                                       final Node<View<?>, Edge> sourceNode,
+                                                                                                       final Edge<? extends ViewConnector<?>, Node> connector,
+                                                                                                       final Node<? extends View<?>, Edge> sourceNode,
                                                                                                        final int x,
                                                                                                        final int y) {
 
@@ -183,12 +184,12 @@ public class CreateConnectorAction extends AbstractToolboxAction {
         final ConnectorDragProxy.Item connectorDragItem = new ConnectorDragProxy.Item() {
 
             @Override
-            public Edge<View<?>, Node> getEdge() {
+            public Edge<? extends ViewConnector<?>, Node> getEdge() {
                 return connector;
             }
 
             @Override
-            public Node<View<?>, Edge> getSourceNode() {
+            public Node<? extends View<?>, Edge> getSourceNode() {
                 return sourceNode;
             }
 
@@ -253,8 +254,8 @@ public class CreateConnectorAction extends AbstractToolboxAction {
     @SuppressWarnings("unchecked")
     private boolean allow(final int x,
                           final int y,
-                          final Edge<View<?>, Node> connector,
-                          final Node<View<?>, Edge> sourceNode,
+                          final Edge<? extends ViewConnector<?>, Node> connector,
+                          final Node<? extends View<?>, Edge> sourceNode,
                           final Node targetNode) {
         if (null != targetNode) {
             EdgeBuildRequestImpl buildRequest =
@@ -271,8 +272,8 @@ public class CreateConnectorAction extends AbstractToolboxAction {
     @SuppressWarnings("unchecked")
     private void accept(final int x,
                         final int y,
-                        final Edge<View<?>, Node> connector,
-                        final Node<View<?>, Edge> sourceNode,
+                        final Edge<? extends ViewConnector<?>, Node> connector,
+                        final Node<? extends View<?>, Edge> sourceNode,
                         final Node targetNode) {
         if (null != targetNode) {
             EdgeBuildRequestImpl buildRequest =

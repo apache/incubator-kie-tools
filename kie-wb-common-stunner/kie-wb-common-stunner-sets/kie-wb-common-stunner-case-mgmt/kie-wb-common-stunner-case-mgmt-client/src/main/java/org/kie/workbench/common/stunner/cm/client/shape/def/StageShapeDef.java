@@ -16,9 +16,11 @@
 
 package org.kie.workbench.common.stunner.cm.client.shape.def;
 
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
+import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
-public interface StageShapeDef<W extends BPMNDefinition> extends CaseManagementShapeDef<W> {
+public interface StageShapeDef<W extends BPMNViewDefinition, V extends ShapeView>
+        extends CaseManagementShapeDef<W, V> {
 
     double getWidth(final W element);
 

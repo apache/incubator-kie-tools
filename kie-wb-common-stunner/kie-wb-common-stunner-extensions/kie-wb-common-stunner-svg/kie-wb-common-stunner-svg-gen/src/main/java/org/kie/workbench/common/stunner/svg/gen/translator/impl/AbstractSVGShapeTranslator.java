@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.svg.gen.translator.impl;
 
 import org.kie.workbench.common.stunner.svg.gen.exception.TranslatorException;
+import org.kie.workbench.common.stunner.svg.gen.model.ShapePolicyDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.StyleDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.AbstractShapeDefinition;
 import org.kie.workbench.common.stunner.svg.gen.translator.SVGTranslatorContext;
@@ -25,13 +26,27 @@ import org.w3c.dom.Element;
 public abstract class AbstractSVGShapeTranslator<E extends Element, O extends AbstractShapeDefinition<?>>
         extends AbstractSVGPrimitiveTranslator<E, O> {
 
+    @Override
+    protected void translatePrimitiveDefinition(E element,
+                                                O def,
+                                                SVGTranslatorContext context) throws TranslatorException {
+        super.translatePrimitiveDefinition(element, def, context);
+        if (!def.isMain()) {
+            final String shapeRaw = getShapeAttributeValue(element);
+            final ShapePolicyDefinition p = isEmpty(shapeRaw) ? ShapePolicyDefinition.STROKE_COLOR : ShapePolicyDefinition.valueOf(shapeRaw);
+            def.setShapePolicyDefinition(p);
+        }
+    }
+
     protected StyleDefinition translateStyles(final E element,
                                               final O def,
                                               final SVGTranslatorContext context) throws TranslatorException {
         final StyleDefinition styleDefinition = super.translateStyles(element,
                                                                       def,
                                                                       context);
-        def.setStyleDefinition(styleDefinition);
+        if (null != styleDefinition) {
+            def.setStyleDefinition(styleDefinition);
+        }
         return styleDefinition;
     }
 }

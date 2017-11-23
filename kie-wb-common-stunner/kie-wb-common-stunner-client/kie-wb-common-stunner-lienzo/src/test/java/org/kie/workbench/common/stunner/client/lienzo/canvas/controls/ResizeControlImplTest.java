@@ -36,6 +36,7 @@ import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeViewExtStub;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
+import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ResizeEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ResizeHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
@@ -53,6 +54,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 import org.mockito.ArgumentCaptor;
@@ -123,7 +125,7 @@ public class ResizeControlImplTest {
     private View elementContent;
 
     @Mock
-    private Shape<?> shape;
+    private Shape<ShapeView> shape;
 
     @Mock
     private HasEventHandlers<ShapeViewExtStub, Object> shapeEventHandler;
@@ -273,12 +275,8 @@ public class ResizeControlImplTest {
         final UpdateElementPositionCommand positionCommand = (UpdateElementPositionCommand) commands.get(0);
         assertEquals(element,
                      positionCommand.getElement());
-        assertEquals(x,
-                     positionCommand.getX(),
-                     0d);
-        assertEquals(y,
-                     positionCommand.getY(),
-                     0d);
+        assertEquals(new Point2D(x, y),
+                     positionCommand.getLocation());
         assertTrue(commands.get(1) instanceof UpdateElementPropertyCommand);
         final UpdateElementPropertyCommand wPropertyCommand = (UpdateElementPropertyCommand) commands.get(1);
         assertEquals(element,

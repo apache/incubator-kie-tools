@@ -26,7 +26,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.mouse.CanvasMou
 import org.kie.workbench.common.stunner.core.client.canvas.event.mouse.CanvasMouseUpEvent;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.command.Command;
-import org.kie.workbench.common.stunner.core.command.CompositeCommand;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;

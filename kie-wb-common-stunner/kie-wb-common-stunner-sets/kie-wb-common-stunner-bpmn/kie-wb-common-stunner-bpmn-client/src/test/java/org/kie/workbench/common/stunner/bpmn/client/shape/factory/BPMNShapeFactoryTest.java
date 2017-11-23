@@ -128,11 +128,11 @@ public class BPMNShapeFactoryTest {
                                   factoryArgumentCaptor.capture());
         verify(delegateShapeFactory,
                times(1)).delegate(eq(StartSignalEvent.class),
-                                  any(TaskShapeDef.class),
+                                  any(StartEventShapeDef.class),
                                   factoryArgumentCaptor.capture());
         verify(delegateShapeFactory,
                times(1)).delegate(eq(StartTimerEvent.class),
-                                  any(TaskShapeDef.class),
+                                  any(StartEventShapeDef.class),
                                   factoryArgumentCaptor.capture());
         verify(delegateShapeFactory,
                times(1)).delegate(eq(ParallelGateway.class),

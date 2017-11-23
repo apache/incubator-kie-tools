@@ -22,34 +22,33 @@ import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
-import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
+import org.kie.workbench.common.stunner.core.client.shape.view.ShapeViewHandlersDef;
+import org.kie.workbench.common.stunner.core.definition.shape.ShapeViewDef;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
-public abstract class AbstractElementShape<W, C extends View<W>, E extends Element<C>, D extends MutableShapeDef<W>, V extends ShapeView<?>>
+public abstract class AbstractElementShape<W, C extends View<W>, E extends Element<C>, D extends ShapeViewDef<W, V>, V extends ShapeView>
         implements ElementShape<W, C, E, V>,
                    Lifecycle {
 
     private final ShapeImpl<V> shape;
-    private final ShapeDefViewHandler<W, V, D> defViewHandler;
+    private final ShapeViewHandlersDef<W, V, D> shapeHandlersDef;
 
     protected AbstractElementShape(final D shapeDef,
                                    final V view) {
+        this.shapeHandlersDef = new ShapeViewHandlersDef<>(shapeDef);
         this.shape = new ShapeImpl<V>(view,
-                                      new ShapeStateHelper<V, Shape<V>>());
-        this.defViewHandler = new ShapeDefViewHandler<W, V, D>(shapeDef,
-                                                               view);
-        getShape().getShapeStateHelper().forShape(this);
+                                      new ShapeStateStrokeHandler<>());
+        getShape().getShapeStateHandler().forShape(this);
     }
 
     protected AbstractElementShape(final D shapeDef,
                                    final V view,
-                                   final ShapeStateHelper<V, Shape<V>> shapeStateHelper) {
+                                   final ShapeStateHandler<V, Shape<V>> shapeStateHelper) {
+        this.shapeHandlersDef = new ShapeViewHandlersDef<>(shapeDef);
         this.shape = new ShapeImpl<V>(view,
                                       shapeStateHelper);
-        this.defViewHandler = new ShapeDefViewHandler<W, V, D>(shapeDef,
-                                                               view);
-        getShape().getShapeStateHelper().forShape(this);
+        getShape().getShapeStateHandler().forShape(this);
     }
 
     @Override
@@ -66,9 +65,12 @@ public abstract class AbstractElementShape<W, C extends View<W>, E extends Eleme
     public void applyTitle(final String title,
                            final E element,
                            final MutationContext mutationContext) {
-        getDefViewHandler().applyTitle(title,
-                                       getDefinition(element),
-                                       mutationContext);
+        getShapeHandlersDef()
+                .titleHandler()
+                .ifPresent(h -> h.accept(title, getShapeView()));
+        getShapeHandlersDef()
+                .fontHandler()
+                .ifPresent(h -> h.accept(getDefinition(element), getShapeView()));
     }
 
     @Override
@@ -84,9 +86,25 @@ public abstract class AbstractElementShape<W, C extends View<W>, E extends Eleme
     @Override
     public void applyProperties(final E element,
                                 final MutationContext mutationContext) {
-        getDefViewHandler().applyProperties(getDefinition(element),
-                                            mutationContext);
-        getShape().getShapeStateHelper().save((state) -> state.equals(ShapeState.NONE) || state.equals(ShapeState.SELECTED));
+        final ShapeState shapeState = getShape().getShapeStateHandler().reset();
+        // Apply generic view operations.
+        getShapeHandlersDef()
+                .viewHandler()
+                .accept(getDefinition(element), getShapeView());
+        // Apply custom view operations.
+        applyCustomProperties(element, mutationContext);
+        // Apply size operations.
+        getShapeHandlersDef()
+                .sizeHandler()
+                .ifPresent(h -> h.accept(element.getContent(), getShapeView()));
+        getShape()
+                .getShapeStateHandler()
+                .shapeUpdated()
+                .applyState(shapeState);
+    }
+
+    protected void applyCustomProperties(final E element,
+                                         final MutationContext mutationContext) {
     }
 
     @Override
@@ -99,16 +117,16 @@ public abstract class AbstractElementShape<W, C extends View<W>, E extends Eleme
         shape.destroy();
     }
 
-    public ShapeDefViewHandler<W, V, D> getDefViewHandler() {
-        return defViewHandler;
-    }
-
     public ShapeImpl<V> getShape() {
         return shape;
     }
 
+    public ShapeViewHandlersDef<W, V, D> getShapeHandlersDef() {
+        return shapeHandlersDef;
+    }
+
     public D getShapeDefinition() {
-        return defViewHandler.getShapeDefinition();
+        return getShapeHandlersDef().getShapeViewDef();
     }
 
     protected W getDefinition(final Element<? extends View<W>> element) {

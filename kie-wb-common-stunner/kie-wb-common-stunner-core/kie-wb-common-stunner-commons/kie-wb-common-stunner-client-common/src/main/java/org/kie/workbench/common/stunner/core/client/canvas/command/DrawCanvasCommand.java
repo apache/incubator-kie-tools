@@ -23,7 +23,7 @@ import java.util.function.BiPredicate;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -52,8 +52,8 @@ public class DrawCanvasCommand extends AbstractCanvasCommand {
         final Graph graph = context.getGraphIndex().getGraph();
         final String shapeSetId = getShapeSetId(context);
 
-        final CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation> commandBuilder =
-                new CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation>().forward();
+        final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder =
+                new CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation>().forward();
 
         // Aggregate all nodes in the parent-child-dock hierarchy.
         childrenTraverseProcessor
@@ -93,7 +93,7 @@ public class DrawCanvasCommand extends AbstractCanvasCommand {
                                   return true;
                               }
 
-                              private void addNode(final Node<View, Edge> node) {
+                              private void addNode(final Node node) {
                                   commandBuilder.addCommand(new AddCanvasNodeCommand(node,
                                                                                      shapeSetId));
                               }

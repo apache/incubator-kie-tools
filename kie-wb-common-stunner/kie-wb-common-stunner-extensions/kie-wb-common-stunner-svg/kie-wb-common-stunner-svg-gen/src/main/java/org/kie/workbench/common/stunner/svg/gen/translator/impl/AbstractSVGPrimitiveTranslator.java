@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.svg.gen.translator.impl;
 
+import java.util.Arrays;
+
 import org.apache.commons.lang3.StringUtils;
 import org.kie.workbench.common.stunner.svg.gen.exception.TranslatorException;
 import org.kie.workbench.common.stunner.svg.gen.model.LayoutDefinition;
@@ -42,14 +44,24 @@ public abstract class AbstractSVGPrimitiveTranslator<E extends Element, O extend
     @Override
     public O translate(final E element,
                        final SVGTranslatorContext context) throws TranslatorException {
+        // Check for excluded svg elements.
+        final boolean excluded = translatePrimitiveExcluded(element);
+        if (excluded) {
+            return null;
+        }
+
         // Delegate to subtypes the instantiation and initial population of the definition.
         final O def = doTranslate(element,
                                   context);
         if (null != def) {
             // Parse the stunner's specific primitives attributes.
-            translatePrimitiveSpecific(element,
-                                       def,
-                                       context);
+            translatePrimitiveDefinition(element,
+                                         def,
+                                         context);
+            // Parse the stunner's specific transform attributes.
+            translateTransformDefinition(element,
+                                         def,
+                                         context);
             // Parse the stunner's child layout, if any.
             translateLayout(element,
                             def,
@@ -66,22 +78,55 @@ public abstract class AbstractSVGPrimitiveTranslator<E extends Element, O extend
         return def;
     }
 
-    protected void translatePrimitiveSpecific(final E element,
-                                              final O def,
-                                              final SVGTranslatorContext context) throws TranslatorException {
+    protected boolean translatePrimitiveExcluded(final E element) throws TranslatorException {
+
+        final String shapeAttributeValue = getShapeAttributeValue(element);
+        return !isEmpty(shapeAttributeValue) &&
+                SVGDocumentTranslator.STUNNER_ATTR_SHAPE_EXCLUDE.equalsIgnoreCase(shapeAttributeValue);
+    }
+
+    protected void translatePrimitiveDefinition(final E element,
+                                                final O def,
+                                                final SVGTranslatorContext context) throws TranslatorException {
         // Position.
         translatePosition(element,
                           def,
                           context);
-        // Other tags for custom stunner's namespace.
-        final String shapeRaw = element.getAttributeNS(SVGDocumentTranslator.STUNNER_URI,
-                                                       SVGDocumentTranslator.STUNNER_ATTR_SHAPE);
-        final boolean nonScalable = isEmpty(shapeRaw)
-                || !SVGDocumentTranslator.STUNNER_ATTR_SHAPE_SCALABLE_GROUP.equalsIgnoreCase(shapeRaw);
-        final boolean isMainShape = !isEmpty(shapeRaw)
-                && SVGDocumentTranslator.STUNNER_ATTR_SHAPE_MAIN.equalsIgnoreCase(shapeRaw);
-        def.setScalable(!nonScalable);
+        // Check if this primitive is the main shape for the view.
+        // It can be set by using same classname as the svg id or
+        // by setting the shape attribute value to "main-shape".
+        final String[] classNames = SVGStyleTranslatorHelper.getClassNames(element);
+        boolean isMainShape = null != classNames &&
+                Arrays.stream(classNames)
+                        .anyMatch(c -> context.getSVGId().equals(c));
+        // If no class name matched, look for the concrete shape attribute value.
+        if (!isMainShape) {
+            final String shapeRaw = getShapeAttributeValue(element);
+            isMainShape = !isEmpty(shapeRaw)
+                    && SVGDocumentTranslator.STUNNER_ATTR_SHAPE_MAIN.equalsIgnoreCase(shapeRaw);
+        }
         def.setMainShape(isMainShape);
+    }
+
+    String getShapeAttributeValue(final E element) {
+        return element.getAttributeNS(SVGDocumentTranslator.STUNNER_URI,
+                                      SVGDocumentTranslator.STUNNER_ATTR_NS_SHAPE);
+    }
+
+    protected void translateTransformDefinition(final E element,
+                                                final O def,
+                                                final SVGTranslatorContext context) throws TranslatorException {
+        final String shapeRaw = element.getAttributeNS(SVGDocumentTranslator.STUNNER_URI,
+                                                       SVGDocumentTranslator.STUNNER_ATTR_NS_TRANSFORM);
+
+        boolean scalable = false;
+        boolean empty = isEmpty(shapeRaw);
+        if (!empty && SVGDocumentTranslator.STUNNER_ATTR_TRANSFORM_NON_SCALABLE.equalsIgnoreCase(shapeRaw)) {
+            scalable = false;
+        } else if (!empty && SVGDocumentTranslator.STUNNER_ATTR_TRANSFORM_SCALABLE.equalsIgnoreCase(shapeRaw)) {
+            scalable = true;
+        }
+        def.setScalable(scalable);
     }
 
     protected void translatePosition(final E element,
@@ -109,7 +154,7 @@ public abstract class AbstractSVGPrimitiveTranslator<E extends Element, O extend
                                                final O def,
                                                final SVGTranslatorContext context) throws TranslatorException {
         final String layoutRaw = element.getAttributeNS(SVGDocumentTranslator.STUNNER_URI,
-                                                        SVGDocumentTranslator.STUNNER_ATTR_LAYOUT);
+                                                        SVGDocumentTranslator.STUNNER_ATTR_NS_LAYOUT);
         final LayoutDefinition l = isEmpty(layoutRaw) ? LayoutDefinition.NONE : LayoutDefinition.valueOf(layoutRaw);
         def.setLayoutDefinition(l);
         return l;
@@ -126,12 +171,18 @@ public abstract class AbstractSVGPrimitiveTranslator<E extends Element, O extend
     protected StyleDefinition translateStyles(final E element,
                                               final O def,
                                               final SVGTranslatorContext context) throws TranslatorException {
-        final StyleDefinition styleDefinition = SVGStyleTranslatorHelper.parseStyleDefinition(element);
-        def.setAlpha(styleDefinition.getAlpha());
+        final StyleDefinition styleDefinition = SVGStyleTranslatorHelper.parseStyleDefinition(element,
+                                                                                              context.getViewId(),
+                                                                                              context.getGlobalStyleSheet().orElse(null));
+        if (null != styleDefinition) {
+            def.setAlpha(null != styleDefinition.getAlpha() ?
+                                 styleDefinition.getAlpha() :
+                                 1d);
+        }
         return styleDefinition;
     }
 
-    protected String getId(final Element element) {
+    protected static String getId(final Element element) {
         return element.getAttribute(ID);
     }
 

@@ -22,14 +22,14 @@ import java.util.logging.Logger;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.Command;
-import org.kie.workbench.common.stunner.core.command.CompositeCommand;
-import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.impl.SafeDeleteNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public class DeleteNodeCommand extends AbstractCanvasGraphCommand {
@@ -42,7 +42,7 @@ public class DeleteNodeCommand extends AbstractCanvasGraphCommand {
     @SuppressWarnings("unchecked")
     public DeleteNodeCommand(final Node candidate) {
         this.candidate = candidate;
-        this.command = new CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation>()
+        this.command = new CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation>()
                 .reverse()
                 .build();
     }
@@ -80,8 +80,8 @@ public class DeleteNodeCommand extends AbstractCanvasGraphCommand {
         }
 
         @Override
-        public void setEdgeTargetNode(final Node<?, Edge> targetNode,
-                                      Edge<? extends View<?>, Node> candidate) {
+        public void setEdgeTargetNode(final Node<? extends View<?>, Edge> targetNode,
+                                      Edge<? extends ViewConnector<?>, Node> candidate) {
             log("SetCanvasConnectionCommand [candidate=" + candidate.getUUID() + "]");
             getCommand().addCommand(new SetCanvasConnectionCommand(candidate));
         }

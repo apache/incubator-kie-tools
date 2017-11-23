@@ -46,6 +46,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
+import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -68,18 +69,16 @@ public class EmbeddedSubprocess extends BaseSubprocess implements DataIOModel {
     public static final transient String description = "An embedded sub-process.";
 
     @NonPortable
-    public static class EmbeddedSubprocessBuilder extends BaseSubprocessBuilder<EmbeddedSubprocess> {
+    public static class EmbeddedSubprocessBuilder implements Builder<EmbeddedSubprocess> {
 
+        // TODO: It should use #FAFAFA as bg_color, rather than other subprocesses...
         @Override
         public EmbeddedSubprocess build() {
             return new EmbeddedSubprocess(
                     new BPMNGeneralSet("Sub-process"),
-                    new BackgroundSet("#FFFFFF",
-                                      BORDER_COLOR,
-                                      BORDER_SIZE),
+                    new BackgroundSet(),
                     new FontSet(),
-                    new RectangleDimensionsSet(450d,
-                                               250d),
+                    new RectangleDimensionsSet(),
                     new SimulationSet(),
                     new OnEntryAction(""),
                     new OnExitAction(""),
@@ -100,21 +99,21 @@ public class EmbeddedSubprocess extends BaseSubprocess implements DataIOModel {
 
     @Property
     @FormField(
-        type = TextAreaFieldType.class,
-        afterElement = "onEntryAction",
-        settings = {@FieldParam(name = "rows", value = "5")}
+            type = TextAreaFieldType.class,
+            afterElement = "onEntryAction",
+            settings = {@FieldParam(name = "rows", value = "5")}
     )
     @Valid
     private OnExitAction onExitAction;
 
     @Property
     @FormField(
-        type = ConditionalComboBoxFieldType.class,
-        afterElement = "onExitAction",
-        settings = {
-            @FieldParam(name = "relatedField", value = "onEntryAction;onExitAction"),
-            @FieldParam(name = "allowCustomValue", value = "false")
-        }
+            type = ConditionalComboBoxFieldType.class,
+            afterElement = "onExitAction",
+            settings = {
+                    @FieldParam(name = "relatedField", value = "onEntryAction;onExitAction"),
+                    @FieldParam(name = "allowCustomValue", value = "false")
+            }
     )
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,
@@ -158,7 +157,8 @@ public class EmbeddedSubprocess extends BaseSubprocess implements DataIOModel {
         this.onEntryAction = onEntryAction;
         this.onExitAction = onExitAction;
         this.scriptLanguage = scriptLanguage;
-        this.isAsync = isAsync;this.processData = processData;
+        this.isAsync = isAsync;
+        this.processData = processData;
     }
 
     @Override

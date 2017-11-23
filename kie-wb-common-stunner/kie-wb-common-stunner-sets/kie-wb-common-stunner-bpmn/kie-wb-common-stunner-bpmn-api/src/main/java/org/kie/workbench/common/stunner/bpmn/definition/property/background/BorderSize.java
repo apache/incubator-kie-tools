@@ -63,7 +63,7 @@ public class BorderSize implements BPMNProperty {
 
     @Value
     @FieldValue
-    private Double value = defaultValue;
+    private Double value = null;
 
     public BorderSize() {
     }

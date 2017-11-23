@@ -48,4 +48,16 @@ public class AddChildNodeCommand extends AbstractCanvasGraphCommand {
                                              candidate,
                                              shapeSetId);
     }
+
+    public Node getParent() {
+        return parent;
+    }
+
+    public Node getCandidate() {
+        return candidate;
+    }
+
+    public String getShapeSetId() {
+        return shapeSetId;
+    }
 }

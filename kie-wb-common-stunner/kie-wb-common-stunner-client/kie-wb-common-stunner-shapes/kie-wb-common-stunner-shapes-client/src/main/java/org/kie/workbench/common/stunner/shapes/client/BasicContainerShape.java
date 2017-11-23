@@ -16,19 +16,26 @@
 
 package org.kie.workbench.common.stunner.shapes.client;
 
-import org.kie.workbench.common.stunner.client.lienzo.shape.impl.AnimationShapeStateHelper;
+import org.kie.workbench.common.stunner.client.lienzo.shape.impl.AnimatedShapeStateStrokeHandler;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ContainerShape;
+import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
-import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.ShapeViewDef;
 
-public class BasicContainerShape<W, D extends MutableShapeDef<W>, V extends ShapeView<?>>
+public class BasicContainerShape<W, D extends ShapeViewDef<W, V>, V extends ShapeView>
         extends ContainerShape<W, D, V, Shape<?>> {
 
     public BasicContainerShape(final D shapeDef,
                                final V view) {
-        super(shapeDef,
-              view,
-              new AnimationShapeStateHelper<>());
+        this(shapeDef,
+             view,
+             new AnimatedShapeStateStrokeHandler<>());
+    }
+
+    public BasicContainerShape(final D shapeDef,
+                               final V view,
+                               final ShapeStateHandler<V, Shape<V>> shapeStateHelper) {
+        super(shapeDef, view, shapeStateHelper);
     }
 }

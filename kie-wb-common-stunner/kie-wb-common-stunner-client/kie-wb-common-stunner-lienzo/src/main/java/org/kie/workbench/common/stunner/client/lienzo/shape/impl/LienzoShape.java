@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.client.lienzo.shape.impl;
 
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeImpl;
+import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateHandler;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeWrapper;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
@@ -27,15 +28,15 @@ public class LienzoShape<V extends ShapeView> extends ShapeWrapper<V, ShapeImpl<
 
     public LienzoShape(final V view) {
         this.wrapped = new ShapeImpl<V>(view,
-                                        new AnimationShapeStateHelper<>());
-        this.wrapped.getShapeStateHelper().forShape(this);
+                                        new AnimatedShapeStateStrokeHandler<>());
+        this.wrapped.getShapeStateHandler().forShape(this);
     }
 
     public LienzoShape(final V view,
-                       final AnimationShapeStateHelper<V, Shape<V>> shapeStateHelper) {
+                       final ShapeStateHandler<V, Shape<V>> shapeStateHelper) {
         this.wrapped = new ShapeImpl<V>(view,
                                         shapeStateHelper);
-        this.wrapped.getShapeStateHelper().forShape(this);
+        this.wrapped.getShapeStateHandler().forShape(this);
     }
 
     @Override

@@ -22,21 +22,21 @@ public class ViewRefDefinitionImpl implements ViewRefDefinition {
 
     private final String href;
     private final String parent;
-    private final String viewName;
     private final String refViewId;
+    private final String filePath;
 
     public ViewRefDefinitionImpl(final String href,
                                  final String parent,
-                                 final String viewName,
-                                 final String refViewId) {
+                                 final String refViewId,
+                                 final String filePath) {
         this.href = href;
         this.refViewId = refViewId;
         this.parent = parent;
-        this.viewName = viewName;
+        this.filePath = filePath;
     }
 
     @Override
-    public String getViewId() {
+    public String getViewRefId() {
         return refViewId;
     }
 
@@ -46,8 +46,8 @@ public class ViewRefDefinitionImpl implements ViewRefDefinition {
     }
 
     @Override
-    public String getViewName() {
-        return viewName;
+    public String getFilePath() {
+        return filePath;
     }
 
     @Override

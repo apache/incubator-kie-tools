@@ -25,6 +25,9 @@ import com.ait.lienzo.shared.core.types.ColorName;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresNoneLayoutContainer;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresShapeView;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGBasicShapeView;
+import org.kie.workbench.common.stunner.svg.client.shape.view.SVGContainer;
+import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitive;
+import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitiveShape;
 
 public class SVGBasicShapeViewImpl
         extends WiresShapeView<SVGBasicShapeViewImpl>
@@ -33,11 +36,11 @@ public class SVGBasicShapeViewImpl
     private static Logger LOGGER = Logger.getLogger(SVGBasicShapeViewImpl.class.getName());
 
     private final String name;
-    private final Shape<?> theShape;
+    private final SVGPrimitiveShape svgPrimitive;
     private final SVGChildViewHandler childViewHandler;
 
     public SVGBasicShapeViewImpl(final String name,
-                                 final Shape<?> theShape,
+                                 final SVGPrimitiveShape svgPrimitive,
                                  final double width,
                                  final double height) {
         super(setupDecorator(new MultiPath(),
@@ -47,28 +50,41 @@ public class SVGBasicShapeViewImpl
                              height),
               new WiresNoneLayoutContainer());
         this.name = name;
-        this.theShape = theShape;
-        this.childViewHandler = new SVGChildViewHandler(getGroup(),
-                                                        width,
-                                                        height);
-        addChild(theShape);
+        this.svgPrimitive = svgPrimitive;
+        this.childViewHandler = new SVGChildViewHandler(this);
+        addChild(getShape());
     }
 
     @Override
     public String getName() {
-
         return name;
     }
 
     @Override
     public Shape<?> getShape() {
-        return theShape;
+        return svgPrimitive.get();
+    }
+
+    @Override
+    public SVGBasicShapeViewImpl addChild(final SVGPrimitive<?> child) {
+        childViewHandler.addChild(child);
+        return this;
+    }
+
+    @Override
+    public Collection<SVGPrimitive<?>> getChildren() {
+        return childViewHandler.getChildren();
+    }
+
+    @Override
+    public SVGPrimitive getPrimitive() {
+        return svgPrimitive;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public SVGBasicShapeView addSVGChild(final String parent,
-                                         final SVGBasicShapeView child) {
+    public SVGBasicShapeViewImpl addSVGChild(final SVGContainer parent,
+                                             final SVGBasicShapeView child) {
         childViewHandler.addSVGChild(parent,
                                      child);
         return this;

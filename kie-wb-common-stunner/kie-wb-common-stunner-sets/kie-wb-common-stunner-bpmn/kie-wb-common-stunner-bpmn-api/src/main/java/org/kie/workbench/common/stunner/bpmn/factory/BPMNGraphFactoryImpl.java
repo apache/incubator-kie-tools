@@ -28,7 +28,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.command.Command;
-import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.factory.impl.AbstractGraphFactory;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -40,6 +40,7 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
@@ -111,8 +112,8 @@ public class BPMNGraphFactoryImpl
                                                              definitionSetId);
         //Add default elements
         final List<Command> commands = buildInitialisationCommands();
-        final CompositeCommandImpl.CompositeCommandBuilder commandBuilder =
-                new CompositeCommandImpl.CompositeCommandBuilder();
+        final CompositeCommand.Builder commandBuilder =
+                new CompositeCommand.Builder();
         commands.forEach(commandBuilder::addCommand);
         graphCommandManager.execute(createGraphContext(graph),
                                     commandBuilder.build());
@@ -146,8 +147,8 @@ public class BPMNGraphFactoryImpl
         commands.add(graphCommandFactory.addNode(diagramNode));
         commands.add(graphCommandFactory.addChildNode(diagramNode,
                                                       startEventNode,
-                                                      START_X,
-                                                      START_Y));
+                                                      new Point2D(START_X,
+                                                                  START_Y)));
         return commands;
     }
 

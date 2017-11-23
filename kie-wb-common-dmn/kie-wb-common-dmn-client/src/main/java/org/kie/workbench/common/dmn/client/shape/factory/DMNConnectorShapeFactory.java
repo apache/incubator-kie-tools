@@ -15,110 +15,79 @@
  */
 package org.kie.workbench.common.dmn.client.shape.factory;
 
-import javax.annotation.PostConstruct;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.DMNDefinition;
-import org.kie.workbench.common.dmn.client.shape.AssociationShape;
-import org.kie.workbench.common.dmn.client.shape.AuthorityRequirementShape;
-import org.kie.workbench.common.dmn.client.shape.InformationRequirementShape;
-import org.kie.workbench.common.dmn.client.shape.KnowledgeRequirementShape;
-import org.kie.workbench.common.dmn.client.shape.def.AssociationShapeDef;
-import org.kie.workbench.common.dmn.client.shape.def.AuthorityRequirementShapeDef;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Association;
+import org.kie.workbench.common.dmn.api.definition.v1_1.AuthorityRequirement;
+import org.kie.workbench.common.dmn.api.definition.v1_1.InformationRequirement;
+import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeRequirement;
+import org.kie.workbench.common.dmn.client.shape.DMNConnectorShape;
+import org.kie.workbench.common.dmn.client.shape.def.DMNConnectorShapeDef;
 import org.kie.workbench.common.dmn.client.shape.def.DMNShapeDef;
-import org.kie.workbench.common.dmn.client.shape.def.InformationRequirementShapeDef;
-import org.kie.workbench.common.dmn.client.shape.def.KnowledgeRequirementShapeDef;
-import org.kie.workbench.common.dmn.client.shape.view.AssociationView;
-import org.kie.workbench.common.dmn.client.shape.view.AuthorityRequirementView;
-import org.kie.workbench.common.dmn.client.shape.view.InformationRequirementView;
-import org.kie.workbench.common.dmn.client.shape.view.KnowledgeRequirementView;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresConnectorViewExt;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeDefFactory;
-import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeDefFunctionalFactory;
-import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 
 @ApplicationScoped
 public class DMNConnectorShapeFactory implements ShapeDefFactory<DMNDefinition, DMNShapeDef, Shape> {
 
+    private final Map<Class<? extends DMNDefinition>, Function<Double[], WiresConnectorViewExt>> VIEW_FACTORIES =
+            new HashMap<Class<? extends DMNDefinition>, Function<Double[], WiresConnectorViewExt>>() {{
+                put(Association.class,
+                    points -> getDmnConnectorShapeViewFactory()
+                            .association(points[0],
+                                         points[1],
+                                         points[2],
+                                         points[3]));
+                put(InformationRequirement.class,
+                    points -> getDmnConnectorShapeViewFactory()
+                            .informationRequirement(points[0],
+                                                    points[1],
+                                                    points[2],
+                                                    points[3]));
+                put(KnowledgeRequirement.class,
+                    points -> getDmnConnectorShapeViewFactory()
+                            .knowledgeRequirement(points[0],
+                                                  points[1],
+                                                  points[2],
+                                                  points[3]));
+                put(AuthorityRequirement.class,
+                    points -> getDmnConnectorShapeViewFactory()
+                            .authorityRequirement(points[0],
+                                                  points[1],
+                                                  points[2],
+                                                  points[3]));
+            }};
+
     private final DMNConnectorShapeViewFactory dmnConnectorShapeViewFactory;
-    private final ShapeDefFunctionalFactory<DMNDefinition, DMNShapeDef, Shape> functionalFactory;
 
     protected DMNConnectorShapeFactory() {
-        this(null,
-             null);
+        this(null);
     }
 
     @Inject
-    public DMNConnectorShapeFactory(final DMNConnectorShapeViewFactory dmnConnectorShapeViewFactory,
-                                    final ShapeDefFunctionalFactory<DMNDefinition, DMNShapeDef, Shape> functionalFactory) {
+    public DMNConnectorShapeFactory(final DMNConnectorShapeViewFactory dmnConnectorShapeViewFactory) {
         this.dmnConnectorShapeViewFactory = dmnConnectorShapeViewFactory;
-        this.functionalFactory = functionalFactory;
-    }
-
-    @PostConstruct
-    @SuppressWarnings("unchecked")
-    public void init() {
-        // Register shape instance builders.
-        functionalFactory
-                .set(AssociationShapeDef.class,
-                     this::newAssociationShape)
-                .set(InformationRequirementShapeDef.class,
-                     this::newInformationRequirementShape)
-                .set(KnowledgeRequirementShapeDef.class,
-                     this::newKnowledgeRequirementShape)
-                .set(AuthorityRequirementShapeDef.class,
-                     this::newAuthorityRequirementShape);
-    }
-
-    private Shape newAssociationShape(final Object instance,
-                                      final ShapeDef shapeDef) {
-        final AssociationShapeDef dmnShapeDef = (AssociationShapeDef) shapeDef;
-        final AssociationView view = dmnConnectorShapeViewFactory.association(0,
-                                                                              0,
-                                                                              100,
-                                                                              100);
-        return new AssociationShape(dmnShapeDef,
-                                    view);
-    }
-
-    private Shape newInformationRequirementShape(final Object instance,
-                                                 final ShapeDef shapeDef) {
-        final InformationRequirementShapeDef dmnShapeDef = (InformationRequirementShapeDef) shapeDef;
-        final InformationRequirementView view = dmnConnectorShapeViewFactory.informationRequirement(0,
-                                                                                                    0,
-                                                                                                    100,
-                                                                                                    100);
-        return new InformationRequirementShape(dmnShapeDef,
-                                               view);
-    }
-
-    private Shape newKnowledgeRequirementShape(final Object instance,
-                                               final ShapeDef shapeDef) {
-        final KnowledgeRequirementShapeDef dmnShapeDef = (KnowledgeRequirementShapeDef) shapeDef;
-        final KnowledgeRequirementView view = dmnConnectorShapeViewFactory.knowledgeRequirement(0,
-                                                                                                0,
-                                                                                                100,
-                                                                                                100);
-        return new KnowledgeRequirementShape(dmnShapeDef,
-                                             view);
-    }
-
-    private Shape newAuthorityRequirementShape(final Object instance,
-                                               final ShapeDef shapeDef) {
-        final AuthorityRequirementShapeDef dmnShapeDef = (AuthorityRequirementShapeDef) shapeDef;
-        final AuthorityRequirementView view = dmnConnectorShapeViewFactory.authorityRequirement(0,
-                                                                                                0,
-                                                                                                100,
-                                                                                                100);
-        return new AuthorityRequirementShape(dmnShapeDef,
-                                             view);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Shape newShape(final DMNDefinition instance,
                           final DMNShapeDef shapeDef) {
-        return functionalFactory.newShape(instance,
-                                          shapeDef);
+        final DMNConnectorShapeDef dmnShapeDef = (DMNConnectorShapeDef) shapeDef;
+        final WiresConnectorViewExt view =
+                VIEW_FACTORIES.get(instance.getClass()).apply(new Double[]{0d, 0d, 100d, 100d});
+        return new DMNConnectorShape(dmnShapeDef,
+                                     view);
+    }
+
+    public DMNConnectorShapeViewFactory getDmnConnectorShapeViewFactory() {
+        return dmnConnectorShapeViewFactory;
     }
 }

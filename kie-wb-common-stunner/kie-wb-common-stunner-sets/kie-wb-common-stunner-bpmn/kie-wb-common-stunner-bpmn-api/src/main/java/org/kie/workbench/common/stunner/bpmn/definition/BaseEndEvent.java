@@ -31,11 +31,10 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
-import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @MorphBase(defaultType = EndNoneEvent.class)
-public abstract class BaseEndEvent implements BPMNDefinition,
+public abstract class BaseEndEvent implements BPMNViewDefinition,
                                               DataIOModel {
 
     @Category
@@ -68,14 +67,6 @@ public abstract class BaseEndEvent implements BPMNDefinition,
         add("EndEventsMorph");
         add("cm_nop");
     }};
-
-    static abstract class BaseEndEventBuilder<T extends BaseEndEvent> implements Builder<T> {
-
-        public static final String BG_COLOR = "#ff6347";
-        public static final Double BORDER_SIZE = 1.5d;
-        public static final String BORDER_COLOR = "#000000";
-        public static final Double RADIUS = 14d;
-    }
 
     public BaseEndEvent() {
     }

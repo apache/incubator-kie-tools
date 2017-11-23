@@ -17,8 +17,10 @@
 package org.kie.workbench.common.stunner.svg.gen.translator.impl;
 
 import java.util.LinkedHashSet;
+import java.util.Optional;
 import java.util.Set;
 
+import org.kie.workbench.common.stunner.svg.gen.model.StyleSheetDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.ViewRefDefinition;
 import org.kie.workbench.common.stunner.svg.gen.translator.SVGElementTranslator;
 import org.kie.workbench.common.stunner.svg.gen.translator.SVGTranslatorContext;
@@ -27,20 +29,57 @@ import org.w3c.dom.Element;
 
 public class SVGTranslatorContextImpl implements SVGTranslatorContext {
 
-    private final SVGElementTranslator<Element, Object>[] elementTranslators;
     private final Document root;
+    private final String path;
+    private final Optional<StyleSheetDefinition> cssStyleSheet;
+    private String viewId;
+    private String id;
+    private SVGElementTranslator<Element, Object>[] elementTranslators;
     final Set<ViewRefDefinition> viewRefDefinitions = new LinkedHashSet<>();
 
-    public SVGTranslatorContextImpl(final Document root
-            ,
-                                    final SVGElementTranslator<Element, Object>[] elementTranslators) {
-        this.elementTranslators = elementTranslators;
+    public SVGTranslatorContextImpl(final Document root,
+                                    final String path,
+                                    final StyleSheetDefinition cssStyleSheet) {
+        this.cssStyleSheet = Optional.ofNullable(cssStyleSheet);
         this.root = root;
+        this.path = path;
+    }
+
+    @Override
+    public String getViewId() {
+        return viewId;
+    }
+
+    public void setViewId(String viewId) {
+        this.viewId = viewId;
+    }
+
+    public void setSVGId(final String id) {
+        this.id = id;
+    }
+
+    @Override
+    public String getSVGId() {
+        return id;
     }
 
     @Override
     public Document getRoot() {
         return root;
+    }
+
+    @Override
+    public String getPath() {
+        return path;
+    }
+
+    @Override
+    public Optional<StyleSheetDefinition> getGlobalStyleSheet() {
+        return cssStyleSheet;
+    }
+
+    public void setElementTranslators(final SVGElementTranslator<Element, Object>[] elementTranslators) {
+        this.elementTranslators = elementTranslators;
     }
 
     @Override

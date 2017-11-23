@@ -24,14 +24,17 @@ public class SVGGeneratorRequest {
     private final String name;
     private final String pkg;
     private final String typeOf;
+    private final String cssPath;
     private final Map<String, String> viewSources = new LinkedHashMap<>();
 
     public SVGGeneratorRequest(final String name,
                                final String pkg,
-                               final String typeOf) {
+                               final String typeOf,
+                               final String cssPath) {
         this.name = name;
         this.pkg = pkg;
         this.typeOf = typeOf;
+        this.cssPath = cssPath;
     }
 
     public String getName() {
@@ -44,6 +47,10 @@ public class SVGGeneratorRequest {
 
     public String getImplementedType() {
         return typeOf;
+    }
+
+    public String getCssPath() {
+        return cssPath;
     }
 
     public String put(final String methodName,

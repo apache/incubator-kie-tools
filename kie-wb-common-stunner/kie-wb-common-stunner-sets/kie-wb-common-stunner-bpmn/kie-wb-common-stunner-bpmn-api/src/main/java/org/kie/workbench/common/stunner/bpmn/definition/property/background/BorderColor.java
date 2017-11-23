@@ -63,7 +63,7 @@ public class BorderColor implements BPMNProperty {
 
     @Value
     @FieldValue
-    private String value = defaultValue;
+    private String value = null;
 
     public BorderColor() {
     }

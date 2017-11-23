@@ -25,8 +25,8 @@ import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeDefFactory;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeDefFunctionalFactory;
 import org.kie.workbench.common.stunner.svg.client.shape.SVGShape;
-import org.kie.workbench.common.stunner.svg.client.shape.def.SVGMutableShapeDef;
 import org.kie.workbench.common.stunner.svg.client.shape.def.SVGShapeDef;
+import org.kie.workbench.common.stunner.svg.client.shape.def.SVGShapeViewDef;
 import org.kie.workbench.common.stunner.svg.client.shape.impl.SVGMutableShapeImpl;
 import org.kie.workbench.common.stunner.svg.client.shape.impl.SVGShapeImpl;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
@@ -61,7 +61,7 @@ public class SVGShapeFactory
         functionalFactory
                 .set(SVGShapeDef.class,
                      this::newSVGShape)
-                .set(SVGMutableShapeDef.class,
+                .set(SVGShapeViewDef.class,
                      this::newSVGMutableShape);
     }
 
@@ -75,27 +75,26 @@ public class SVGShapeFactory
 
     private SVGShape<?> newSVGShape(final Object instance,
                                     final SVGShapeDef shapeDef) {
-        final SVGShapeView view = newSVGShapeView(instance,
-                                                  shapeDef);
-        return new SVGShapeImpl(view);
+        return new SVGShapeImpl(newSVGShapeView(instance,
+                                                shapeDef));
     }
 
     @SuppressWarnings("unchecked")
     private SVGShape<?> newSVGMutableShape(final Object instance,
                                            final SVGShapeDef shapeDef) {
-        final SVGMutableShapeDef mutableShapeDef = (SVGMutableShapeDef) shapeDef;
+        final SVGShapeViewDef mutableShapeDef = (SVGShapeViewDef) shapeDef;
         final SVGShapeView view = newSVGShapeView(instance,
                                                   mutableShapeDef);
-        return new SVGMutableShapeImpl<Object, SVGMutableShapeDef<Object, Object>>(mutableShapeDef,
-                                                                                   (SVGShapeViewImpl) view);
+        return new SVGMutableShapeImpl<Object, SVGShapeViewDef<Object, Object>>(mutableShapeDef,
+                                                                                (SVGShapeViewImpl) view);
     }
 
     @SuppressWarnings("unchecked")
-    private SVGShapeView newSVGShapeView(final Object instance,
-                                         final SVGShapeDef shapeDef) {
+    private SVGShapeViewImpl newSVGShapeView(final Object instance,
+                                             final SVGShapeDef shapeDef) {
         final Object factory = getViewFactory(shapeDef);
-        return shapeDef.newViewInstance(factory,
-                                        instance);
+        return (SVGShapeViewImpl) shapeDef.newViewInstance(factory,
+                                                           instance);
     }
 
     Object getViewFactory(final SVGShapeDef def) {

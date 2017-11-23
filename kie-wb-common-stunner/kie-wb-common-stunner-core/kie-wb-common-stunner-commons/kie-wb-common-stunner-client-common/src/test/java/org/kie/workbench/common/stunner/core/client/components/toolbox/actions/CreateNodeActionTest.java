@@ -24,16 +24,22 @@ import org.kie.workbench.common.stunner.core.client.api.ClientFactoryManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.BuilderControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.NodeBuildRequestImpl;
+import org.kie.workbench.common.stunner.core.client.canvas.command.AddConnectorCommand;
+import org.kie.workbench.common.stunner.core.client.canvas.command.AddNodeCommand;
+import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.canvas.command.SetConnectionTargetNodeCommand;
+import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPositionCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
-import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickEvent;
+import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.command.impl.DeferredCommand;
+import org.kie.workbench.common.stunner.core.command.impl.DeferredCompositeCommand;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -44,6 +50,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.ArgumentCaptor;
@@ -51,7 +58,7 @@ import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
@@ -86,9 +93,6 @@ public class CreateNodeActionTest {
     private ShapeFactory shapeFactory;
 
     @Mock
-    private NodeBuilderControl<AbstractCanvasHandler> nodeBuilderControl;
-
-    @Mock
     private CanvasLayoutUtils canvasLayoutUtils;
 
     @Mock
@@ -119,7 +123,7 @@ public class CreateNodeActionTest {
     private View elementContent;
 
     @Mock
-    private Edge<View<?>, Node> edge;
+    private Edge<ViewConnector<?>, Node> edge;
 
     @Mock
     private Node<View<?>, Edge> targetNode;
@@ -128,9 +132,10 @@ public class CreateNodeActionTest {
     private View targetNodeContent;
 
     @Mock
-    private Index<?, ?> graphIndex;
+    private Index<Node<View<?>, Edge>, Edge<ViewConnector<?>, Node>> graphIndex;
 
     private CreateNodeAction tested;
+    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -158,6 +163,8 @@ public class CreateNodeActionTest {
         when(targetNode.getUUID()).thenReturn(TARGET_NODE_UUID);
         when(targetNode.asNode()).thenReturn(targetNode);
         when(targetNode.getContent()).thenReturn(targetNodeContent);
+        when(sessionCommandManager.execute(eq(canvasHandler), any(Command.class)))
+                .thenReturn(CanvasCommandResultBuilder.SUCCESS);
         when(elementContent.getBounds())
                 .thenReturn(new BoundsImpl(new BoundImpl(0d,
                                                          0d),
@@ -174,13 +181,15 @@ public class CreateNodeActionTest {
         when(clientFactoryManager.newElement(anyString(),
                                              eq(TARGET_NODE_ID)))
                 .thenReturn((Element) targetNode);
+        this.canvasCommandFactory = new DefaultCanvasCommandFactory(null,
+                                                                    null);
         this.tested = new CreateNodeAction(definitionUtils,
                                            clientFactoryManager,
-                                           nodeBuilderControl,
                                            canvasLayoutUtils,
                                            canvasElementSelectedEvent,
                                            translationService,
-                                           sessionCommandManager)
+                                           sessionCommandManager,
+                                           canvasCommandFactory)
                 .setEdgeId(EDGE_ID)
                 .setNodeId(TARGET_NODE_ID);
     }
@@ -220,46 +229,28 @@ public class CreateNodeActionTest {
                                     event);
         assertEquals(tested,
                      cascade);
-        verify(edge,
-               times(1)).setSourceNode(eq(element));
-        verify(edge,
-               times(1)).setTargetNode(eq(targetNode));
-        verify(nodeBuilderControl,
-               times(1)).enable(eq(canvasHandler));
-        ArgumentCaptor<RequiresCommandManager.CommandManagerProvider> providerArgumentCaptor =
-                ArgumentCaptor.forClass(RequiresCommandManager.CommandManagerProvider.class);
-        verify(nodeBuilderControl,
-               times(1)).setCommandManagerProvider(providerArgumentCaptor.capture());
-        RequiresCommandManager.CommandManagerProvider cmProvider = providerArgumentCaptor.getValue();
-        assertEquals(sessionCommandManager,
-                     cmProvider.getCommandManager());
 
-        final ArgumentCaptor<NodeBuildRequestImpl> nodeBuildRequestArgumentCaptor =
-                ArgumentCaptor.forClass(NodeBuildRequestImpl.class);
-        final ArgumentCaptor<BuilderControl.BuildCallback> completeCallbackCaptor =
-                ArgumentCaptor.forClass(BuilderControl.BuildCallback.class);
-        verify(nodeBuilderControl,
-               times(1)).build(nodeBuildRequestArgumentCaptor.capture(),
-                               completeCallbackCaptor.capture());
-        final NodeBuildRequestImpl nodeBuildRequest = nodeBuildRequestArgumentCaptor.getValue();
-        assertEquals(edge,
-                     nodeBuildRequest.getInEdge());
-        assertEquals(targetNode,
-                     nodeBuildRequest.getNode());
-        assertNotNull(nodeBuildRequest.getSourceConnection());
-        assertNotNull(nodeBuildRequest.getTargetConnection());
-        assertEquals(100,
-                     nodeBuildRequest.getX(),
-                     0);
-        assertEquals(500,
-                     nodeBuildRequest.getY(),
-                     0);
-        final BuilderControl.BuildCallback completeCallback = completeCallbackCaptor.getValue();
-        completeCallback.onSuccess(TARGET_NODE_UUID);
-        verify(nodeBuilderControl,
-               times(1)).disable();
-        verify(nodeBuilderControl,
-               times(1)).setCommandManagerProvider(eq(null));
+        ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass(Command.class);
+        verify(sessionCommandManager, times(1)).execute(eq(canvasHandler),
+                                                        commandArgumentCaptor.capture());
+        DeferredCompositeCommand command = (DeferredCompositeCommand) commandArgumentCaptor.getValue();
+        DeferredCommand c0 = (DeferredCommand) command.getCommands().get(0);
+        DeferredCommand c1 = (DeferredCommand) command.getCommands().get(1);
+        DeferredCommand c2 = (DeferredCommand) command.getCommands().get(2);
+        DeferredCommand c3 = (DeferredCommand) command.getCommands().get(3);
+        AddNodeCommand addNodeCommand = (AddNodeCommand) c0.getCommand();
+        UpdateElementPositionCommand updateElementPositionCommand = (UpdateElementPositionCommand) c1.getCommand();
+        AddConnectorCommand addConnectorCommand = (AddConnectorCommand) c2.getCommand();
+        SetConnectionTargetNodeCommand setTargetNodeCommand = (SetConnectionTargetNodeCommand) c3.getCommand();
+        assertEquals(targetNode, addNodeCommand.getCandidate());
+        assertEquals("ss1", addNodeCommand.getShapeSetId());
+        assertEquals(edge, addConnectorCommand.getCandidate());
+        assertEquals(element, addConnectorCommand.getSource());
+        assertEquals("ss1", addConnectorCommand.getShapeSetId());
+        assertEquals(edge, setTargetNodeCommand.getEdge());
+        assertEquals(targetNode, setTargetNodeCommand.getNode());
+        assertEquals(targetNode, updateElementPositionCommand.getElement());
+        assertEquals(new Point2D(100d, 500d), updateElementPositionCommand.getLocation());
         final ArgumentCaptor<CanvasElementSelectedEvent> eventArgumentCaptor =
                 ArgumentCaptor.forClass(CanvasElementSelectedEvent.class);
         verify(canvasElementSelectedEvent,

@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext;
 
-import java.lang.reflect.Field;
-
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
@@ -43,10 +41,7 @@ public class WiresShapeViewExtTest {
     public void setup() throws Exception {
         this.tested = new WiresShapeViewExt<>(viewEventTypes,
                                               PATH);
-        setPrivateField(WiresShapeViewExt.class,
-                        tested,
-                        "textViewDecorator",
-                        textDecorator);
+        this.tested.setTextViewDecorator(textDecorator);
     }
 
     @Test
@@ -58,23 +53,6 @@ public class WiresShapeViewExtTest {
     @Test
     public void testTextWrapBoundariesUpdates() {
         tested.refresh();
-        verify(textDecorator).setTextBoundaries(PATH.getBoundingBox());
-    }
-
-    public static void setPrivateField(Class clazz,
-                                       Object instance,
-                                       String field,
-                                       Object value) {
-        try {
-            Field myField = clazz.getDeclaredField(field);
-            myField.setAccessible(true);
-            myField.set(instance,
-                        value);
-        } catch (Exception e) {
-            System.err.printf("Attempted to set non-existing field %s on %s." +
-                                      " This test might need updating",
-                              field,
-                              instance.toString());
-        }
+        verify(textDecorator).update();
     }
 }

@@ -17,14 +17,21 @@
 package org.kie.workbench.common.stunner.cm.client.shape.def;
 
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNImageResources;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
+import org.kie.workbench.common.stunner.bpmn.client.shape.def.BPMNShapeDef;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
 import org.kie.workbench.common.stunner.core.client.shape.ImageDataUriGlyph;
+import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
+import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
-import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
 
-public interface CaseManagementShapeDef<W extends BPMNDefinition> extends MutableShapeDef<W> {
+public interface CaseManagementShapeDef<W extends BPMNViewDefinition, V extends ShapeView>
+        extends BPMNShapeDef<W, V> {
 
     ImageDataUriGlyph GLYPH_OOME_HACK = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.glyphOOMEHack().getSafeUri());
+
+    default SizeHandler.Builder<W, V> newSizeHandlerBuilder() {
+        return new SizeHandler.Builder<>();
+    }
 
     @Override
     default Glyph getGlyph(final Class<? extends W> type) {

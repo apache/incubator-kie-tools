@@ -17,6 +17,8 @@
 package org.kie.workbench.common.stunner.svg.gen.translator.css;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,6 +30,7 @@ import com.steadystate.css.parser.SACParserCSS3;
 import org.apache.commons.lang3.StringUtils;
 import org.kie.workbench.common.stunner.svg.gen.exception.TranslatorException;
 import org.kie.workbench.common.stunner.svg.gen.model.StyleDefinition;
+import org.kie.workbench.common.stunner.svg.gen.model.StyleSheetDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.TransformDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.StyleDefinitionImpl;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.TransformDefinitionImpl;
@@ -39,22 +42,27 @@ import org.w3c.dom.css.CSSStyleDeclaration;
 
 public class SVGStyleTranslatorHelper {
 
+    private static final String PATTERN_CLASSNAME_SEPARATOR = "\\s+";
     private static final String TRANSFORM_SCALE = "scale";
     private static final String TRANSFORM_TRANSLATE = "translate";
     private static final Pattern TRANSFORM_PATTERN = Pattern.compile("(.*)\\((.*),(.*)\\)");
 
+    public static final String ID = "id";
     public static final String OPACITY = "opacity";
     public static final String FILL = "fill";
     public static final String FILL_OPACITY = "fill-opacity";
     public static final String STROKE = "stroke";
     public static final String STROKE_OPACITY = "stroke-opacity";
     public static final String STROKE_WIDTH = "stroke-width";
+    public static final String FONT_FAMILY = "font-family";
+    public static final String FONT_SIZE = "font-size";
     public static final String STYLE = "style";
+    public static final String CSS_CLASS = "class";
     public static final String TRANSFORM = "transform";
     public static final String ATTR_VALUE_NONE = "none";
 
     public static final String[] ATTR_NAMES = new String[]{
-            OPACITY, FILL, FILL_OPACITY, STROKE, STROKE_OPACITY, STROKE_WIDTH
+            OPACITY, FILL, FILL_OPACITY, STROKE, STROKE_OPACITY, STROKE_WIDTH, FONT_FAMILY, FONT_SIZE
     };
 
     public static TransformDefinition parseTransformDefinition(final Element element) throws TranslatorException {
@@ -67,6 +75,78 @@ public class SVGStyleTranslatorHelper {
                                                t[3]);
         }
         return new TransformDefinitionImpl();
+    }
+
+    public static StyleSheetDefinition parseStyleSheetDefinition(final String cssPath,
+                                                                 final InputStream cssStream) throws TranslatorException {
+        final CSSStyleSheetImpl sheet = parseStyleSheet(new InputSource(new InputStreamReader(cssStream)));
+        final CSSRuleList cssRules = sheet.getCssRules();
+        final StyleSheetDefinition result = new StyleSheetDefinition(cssPath);
+        for (int i = 0; i < cssRules.getLength(); i++) {
+            final CSSRule item = cssRules.item(i);
+            if (CSSRule.STYLE_RULE == item.getType()) {
+                final CSSStyleRuleImpl rule = (CSSStyleRuleImpl) item;
+                final String selectorText = rule.getSelectorText();
+                final CSSStyleDeclaration declaration = rule.getStyle();
+                final StyleDefinition styleDefinition = parseStyleDefinition(declaration);
+                result.addStyle(selectorText, styleDefinition);
+            }
+        }
+        return result;
+    }
+
+    // For now only single declaration support, the first one found.
+    public static StyleDefinition parseStyleDefinition(final Element element,
+                                                       final String svgId,
+                                                       final StyleSheetDefinition styleSheetDefinition) throws TranslatorException {
+        // Parse from the css class declarations, if a global stylesheet is present.
+        final String cssClassRaw = null != styleSheetDefinition ?
+                element.getAttribute(CSS_CLASS) :
+                null;
+        if (!isEmpty(cssClassRaw)) {
+            // Parse from the css class declaration.
+            final String cssSelector = parseCssSelector(cssClassRaw);
+            StyleDefinition style = styleSheetDefinition.getStyle(cssSelector);
+            style = null != style ? style.copy() : createDefaultStyleDefinition();
+            final String itemCssSelector = "#" + svgId + " " + cssSelector;
+            final StyleDefinition itemStyle = styleSheetDefinition.getStyle(itemCssSelector);
+            if (null != itemStyle) {
+                style.add(itemStyle);
+            }
+            return style;
+        } else {
+            // Parse styles from element attributes.
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < ATTR_NAMES.length; i++) {
+                final String key = ATTR_NAMES[i];
+                final String value = element.getAttribute(key);
+                if (!isEmpty(value)) {
+                    builder.append(key).append(": ").append(value).append("; ");
+                }
+            }
+            // Parse styles from element's style declaration.
+            final String styleRaw = element.getAttribute(STYLE);
+            if (!isEmpty(styleRaw)) {
+                builder.append(styleRaw);
+            }
+            if (0 < builder.length()) {
+                return parseElementStyleDefinition(builder.toString());
+            }
+        }
+        // Return default styles.
+        return createDefaultStyleDefinition();
+    }
+
+    public static String[] getClassNames(final Element element) {
+        final String raw = element.getAttribute(CSS_CLASS);
+        if (!isEmpty(raw)) {
+            return raw.split(PATTERN_CLASSNAME_SEPARATOR);
+        }
+        return null;
+    }
+
+    private static StyleDefinition createDefaultStyleDefinition() {
+        return new StyleDefinitionImpl.Builder().build();
     }
 
     private static double[] parseTransform(final String raw) throws TranslatorException {
@@ -98,29 +178,8 @@ public class SVGStyleTranslatorHelper {
         return new double[]{sx, sy, tx, ty};
     }
 
-    // For now only single declaration support, the first one found.
-    public static StyleDefinition parseStyleDefinition(final Element element) throws TranslatorException {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < ATTR_NAMES.length; i++) {
-            final String key = ATTR_NAMES[i];
-            final String value = element.getAttribute(key);
-            if (!isEmpty(value)) {
-                builder.append(key).append(": ").append(value).append("; ");
-            }
-        }
-        final String styleRaw = element.getAttribute(STYLE);
-        if (!isEmpty(styleRaw)) {
-            builder.append(styleRaw);
-        }
-        if (0 < builder.length()) {
-            return parseStyleDefinition(builder.toString());
-        }
-        // Return default styles.
-        return new StyleDefinitionImpl.Builder().build();
-    }
-
-    public static StyleDefinition parseStyleDefinition(final String styleRaw) throws TranslatorException {
-        final CSSStyleSheetImpl sheet = parseStyleSheet(styleRaw);
+    private static StyleDefinition parseElementStyleDefinition(final String styleRaw) throws TranslatorException {
+        final CSSStyleSheetImpl sheet = parseElementStyleSheet(styleRaw);
         final CSSRuleList cssRules = sheet.getCssRules();
         for (int i = 0; i < cssRules.getLength(); i++) {
             final CSSRule item = cssRules.item(i);
@@ -134,10 +193,13 @@ public class SVGStyleTranslatorHelper {
         return null;
     }
 
-    private static CSSStyleSheetImpl parseStyleSheet(final String style) throws TranslatorException {
+    private static CSSStyleSheetImpl parseElementStyleSheet(final String style) throws TranslatorException {
+        final String declaration = ".shape { " + style + "}";
+        return parseStyleSheet(new InputSource(new StringReader(declaration)));
+    }
+
+    private static CSSStyleSheetImpl parseStyleSheet(final InputSource source) throws TranslatorException {
         try {
-            final String declaration = ".shape { " + style + "}";
-            InputSource source = new InputSource(new StringReader(declaration));
             CSSOMParser parser = new CSSOMParser(new SACParserCSS3());
             return (CSSStyleSheetImpl) parser.parseStyleSheet(source,
                                                               null,
@@ -182,6 +244,12 @@ public class SVGStyleTranslatorHelper {
                 case STROKE_WIDTH:
                     builder.setStrokeWidth(SVGAttributeParserUtils.toPixelValue(value));
                     break;
+                case FONT_FAMILY:
+                    builder.setFontFamily(value.trim());
+                    break;
+                case FONT_SIZE:
+                    builder.setFontSize(SVGAttributeParserUtils.toPixelValue(value));
+                    break;
             }
         }
         if (isFillNone) {
@@ -191,6 +259,16 @@ public class SVGStyleTranslatorHelper {
             builder.setStrokeAlpha(0);
         }
         return builder.build();
+    }
+
+    private static String parseCssSelector(final String cssClassRaw) {
+        String result = "";
+        final String[] classNames = cssClassRaw.split(PATTERN_CLASSNAME_SEPARATOR);
+        for (String cssClassName : classNames) {
+            final String value = cssClassName.trim();
+            result += " ." + value;
+        }
+        return result.trim();
     }
 
     private static boolean isEmpty(final String s) {

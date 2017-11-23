@@ -21,7 +21,6 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
-import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
@@ -33,12 +32,11 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
-import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @MorphBase(defaultType = IntermediateSignalEventThrowing.class)
 public abstract class BaseThrowingIntermediateEvent
-        implements BPMNDefinition,
+        implements BPMNViewDefinition,
                    DataIOModel {
 
     @Category
@@ -93,15 +91,6 @@ public abstract class BaseThrowingIntermediateEvent
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
         this.dimensionsSet = dimensionsSet;
-    }
-
-    @NonPortable
-    static abstract class BaseThrowingIntermediateEventBuilder<T extends BaseThrowingIntermediateEvent> implements Builder<T> {
-
-        public static final String BG_COLOR = "#8cabff";
-        public static final Double BORDER_SIZE = 1.5d;
-        public static final String BORDER_COLOR = "#008cec";
-        public static final Double RADIUS = 14d;
     }
 
     @Override

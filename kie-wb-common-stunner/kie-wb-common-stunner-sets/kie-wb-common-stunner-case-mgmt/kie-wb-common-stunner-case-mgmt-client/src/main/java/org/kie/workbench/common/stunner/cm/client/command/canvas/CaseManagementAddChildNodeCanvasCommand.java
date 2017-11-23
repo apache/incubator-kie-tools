@@ -24,7 +24,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.command.AddCanvasNode
 import org.kie.workbench.common.stunner.core.client.canvas.command.DeleteCanvasNodeCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.graph.Node;
 
 public class CaseManagementAddChildNodeCanvasCommand extends AbstractCanvasCommand {
@@ -43,7 +43,7 @@ public class CaseManagementAddChildNodeCanvasCommand extends AbstractCanvasComma
 
     @Override
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
-        return new CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation>()
+        return new CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation>()
                 .addCommand(new AddCanvasNodeCommand(child,
                                                      shapeSetId))
                 .addCommand(new CaseManagementSetChildNodeCanvasCommand(parent,
@@ -57,7 +57,7 @@ public class CaseManagementAddChildNodeCanvasCommand extends AbstractCanvasComma
 
     @Override
     public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
-        return new CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation>()
+        return new CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation>()
                 .addCommand(new DeleteCanvasNodeCommand(child,
                                                         parent))
                 .build()

@@ -38,7 +38,7 @@ import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.command.Command;
-import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -144,7 +144,7 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         double x = 0;
         double y = 0;
 
-        if ((x>=0) && (y>=0)){
+        if ((x >= 0) && (y >= 0)) {
             x = request.getX();
             y = request.getY();
         } else {
@@ -168,7 +168,7 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
                         public void onComplete(final String uuid,
                                                final List<Command<AbstractCanvasHandler, CanvasViolation>> commands) {
                             getCommandManager().execute(canvasHandler,
-                                                        new CompositeCommandImpl.CompositeCommandBuilder()
+                                                        new CompositeCommand.Builder()
                                                                 .addCommands(commands)
                                                                 .build());
                             buildCallback.onSuccess(uuid);
@@ -255,8 +255,8 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         }
         // Execute both add element and move commands in batch, so undo will be done in batch as well.
         Command<AbstractCanvasHandler, CanvasViolation> moveCanvasElementCommand = canvasCommandFactory.updatePosition((Node<View<?>, Edge>) element,
-                                                                                                                       x,
-                                                                                                                       y);
+                                                                                                                       new Point2D(x,
+                                                                                                                                   y));
         final List<Command<AbstractCanvasHandler, CanvasViolation>> commandList = new LinkedList<Command<AbstractCanvasHandler, CanvasViolation>>();
         commandList.add(command);
         commandList.add(moveCanvasElementCommand);

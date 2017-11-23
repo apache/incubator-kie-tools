@@ -99,22 +99,13 @@ public class CaseManagementDiagram implements BPMNDiagram {
     @NonPortable
     public static class CaseManagementDiagramBuilder implements Builder<CaseManagementDiagram> {
 
-        public static final transient String COLOR = "#FFFFFF";
-        public static final transient String BORDER_COLOR = "#000000";
-        public static final Double BORDER_SIZE = 1d;
-        public static final Double WIDTH = 950d;
-        public static final Double HEIGHT = 950d;
-
         @Override
         public CaseManagementDiagram build() {
             return new CaseManagementDiagram(new DiagramSet(""),
                                              new ProcessData(),
-                                             new BackgroundSet(COLOR,
-                                                               BORDER_COLOR,
-                                                               BORDER_SIZE),
+                                             new BackgroundSet(),
                                              new FontSet(),
-                                             new RectangleDimensionsSet(WIDTH,
-                                                                        HEIGHT));
+                                             new RectangleDimensionsSet());
         }
     }
 

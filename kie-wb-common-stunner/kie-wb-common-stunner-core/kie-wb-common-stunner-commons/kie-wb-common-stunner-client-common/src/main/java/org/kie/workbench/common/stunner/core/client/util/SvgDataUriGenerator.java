@@ -242,7 +242,7 @@ public class SvgDataUriGenerator {
             return SVGContentType.XML_UTF8;
         }
         throw new IllegalArgumentException("The image data-uri specified is not a valid SVG data " +
-                                                   "for being emedded into the DOM.");
+                                                   "for being embedded into the DOM.");
     }
 
     private enum SVGContentType {

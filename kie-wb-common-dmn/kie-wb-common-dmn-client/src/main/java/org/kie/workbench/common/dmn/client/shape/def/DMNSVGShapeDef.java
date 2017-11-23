@@ -15,12 +15,72 @@
  */
 package org.kie.workbench.common.dmn.client.shape.def;
 
-import org.kie.workbench.common.dmn.api.definition.DMNDefinition;
+import java.util.Optional;
+import java.util.function.BiConsumer;
+
+import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
 import org.kie.workbench.common.dmn.client.resources.DMNSVGViewFactory;
-import org.kie.workbench.common.stunner.svg.client.shape.def.SVGMutableShapeDef;
+import org.kie.workbench.common.dmn.client.shape.view.handlers.DMNViewHandlers;
+import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
+import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
+import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
+import org.kie.workbench.common.stunner.core.client.shape.view.handler.TitleHandler;
+import org.kie.workbench.common.stunner.core.client.shape.view.handler.ViewAttributesHandler;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.svg.client.shape.def.SVGShapeViewDef;
+import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
-public interface DMNSVGShapeDef<W extends DMNDefinition>
-        extends DMNShapeDef<W>,
-                SVGMutableShapeDef<W, DMNSVGViewFactory> {
+public interface DMNSVGShapeDef<W extends DMNViewDefinition>
+        extends DMNShapeDef<W, SVGShapeView>,
+                SVGShapeViewDef<W, DMNSVGViewFactory> {
 
+    @Override
+    default Optional<BiConsumer<String, SVGShapeView>> titleHandler() {
+        return Optional.of(newTitleHandler()::handle);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    default Optional<BiConsumer<W, SVGShapeView>> fontHandler() {
+        return Optional.of(newFontHandler()::handle);
+    }
+
+    @Override
+    default Optional<BiConsumer<View<W>, SVGShapeView>> sizeHandler() {
+        return Optional.of(newSizeHandler()::handle);
+    }
+
+    @Override
+    default BiConsumer<W, SVGShapeView> viewHandler() {
+        return newViewAttributesHandler()::handle;
+    }
+
+    default TitleHandler<ShapeView> newTitleHandler() {
+        return DMNViewHandlers.TITLE_HANDLER;
+    }
+
+    default DMNViewHandlers.FontHandlerBuilder<W, SVGShapeView> newFontHandlerBuilder() {
+        return new DMNViewHandlers.FontHandlerBuilder<>();
+    }
+
+    default SizeHandler<W, SVGShapeView> newSizeHandler() {
+        return new DMNViewHandlers.SizeHandlerBuilder<W, SVGShapeView>().build();
+    }
+
+    default DMNViewHandlers.ViewAttributesHandlerBuilder<W, SVGShapeView> newViewAttributesHandlerBuilder() {
+        return new DMNViewHandlers.ViewAttributesHandlerBuilder<>();
+    }
+
+    default FontHandler<W, SVGShapeView> newFontHandler() {
+        return newFontHandlerBuilder().build();
+    }
+
+    default ViewAttributesHandler<W, SVGShapeView> newViewAttributesHandler() {
+        return newViewAttributesHandlerBuilder().build();
+    }
+
+    @Override
+    default Class<DMNSVGViewFactory> getViewFactoryType() {
+        return DMNSVGViewFactory.class;
+    }
 }

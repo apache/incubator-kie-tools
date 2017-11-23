@@ -16,13 +16,14 @@
 
 package org.kie.workbench.common.stunner.shapes.def;
 
+import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 
-public interface RingShapeDef<W> extends BasicMutableShapeDef<W> {
+public interface RingShapeDef<W, V extends ShapeView> extends BasicShapeViewDef<W, V> {
 
-    double getInnerRadius(final W element);
+    Double getInnerRadius(final W element);
 
-    double getOuterRadius(final W element);
+    Double getOuterRadius(final W element);
 
     @Override
     default Class<? extends ShapeDef> getType() {

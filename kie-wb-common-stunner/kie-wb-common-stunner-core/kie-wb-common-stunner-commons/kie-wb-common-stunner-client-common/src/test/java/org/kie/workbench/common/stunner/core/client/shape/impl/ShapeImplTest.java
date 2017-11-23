@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.impl;
 
-import java.util.function.Predicate;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +26,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -39,7 +36,7 @@ import static org.mockito.Mockito.verify;
 public class ShapeImplTest {
 
     @Mock
-    private ShapeStateHelper shapeStateHelper;
+    private ShapeStateStrokeHandler shapeStateHandler;
 
     private ShapeViewExtStub view;
     private ShapeImpl<ShapeView> tested;
@@ -49,8 +46,8 @@ public class ShapeImplTest {
     public void setup() throws Exception {
         this.view = spy(new ShapeViewExtStub());
         this.tested = new ShapeImpl<ShapeView>(view,
-                                               shapeStateHelper);
-        verify(shapeStateHelper,
+                                               shapeStateHandler);
+        verify(shapeStateHandler,
                times(1)).forShape(eq(tested));
     }
 
@@ -58,8 +55,8 @@ public class ShapeImplTest {
     public void testGetters() {
         assertEquals(view,
                      tested.getShapeView());
-        assertEquals(shapeStateHelper,
-                     tested.getShapeStateHelper());
+        assertEquals(shapeStateHandler,
+                     tested.getShapeStateHandler());
     }
 
     @Test
@@ -73,9 +70,9 @@ public class ShapeImplTest {
     @SuppressWarnings("unchecked")
     public void testApplyState() {
         tested.applyState(ShapeState.NONE);
-        verify(shapeStateHelper,
-               never()).save(any(Predicate.class));
-        verify(shapeStateHelper,
+        verify(shapeStateHandler,
+               never()).shapeUpdated();
+        verify(shapeStateHandler,
                times(1)).applyState(eq(ShapeState.NONE));
     }
 

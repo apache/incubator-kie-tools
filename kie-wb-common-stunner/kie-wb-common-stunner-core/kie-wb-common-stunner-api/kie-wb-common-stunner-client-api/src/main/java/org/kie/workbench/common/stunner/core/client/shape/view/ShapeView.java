@@ -149,6 +149,11 @@ public interface ShapeView<T> {
     T moveDown();
 
     /**
+     * Returns the relative bounding box for this view.
+     */
+    BoundingBox getBoundingBox();
+
+    /**
      * Removes this shape view from the parent.
      */
     void removeFromParent();

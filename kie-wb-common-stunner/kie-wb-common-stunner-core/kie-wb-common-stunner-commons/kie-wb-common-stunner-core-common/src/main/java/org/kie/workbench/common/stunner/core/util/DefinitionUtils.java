@@ -20,7 +20,6 @@ import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -103,34 +102,31 @@ public class DefinitionUtils {
         final DefinitionAdapter<Object> adapter = definitionManager.adapters().registry().getDefinitionAdapter(definition.getClass());
         final Object r = adapter.getMetaProperty(PropertyMetaTypes.RADIUS,
                                                  definition);
-        double width = 30;
-        double height = 30;
-        boolean found = false;
+        Double width = null;
+        Double height = null;
         if (null != r) {
-            final double rv = (double) definitionManager.adapters().forProperty().getValue(r);
-            width = rv * 2;
-            height = width;
-            found = true;
+            final Double rv = (Double) definitionManager.adapters().forProperty().getValue(r);
+            if (null != rv) {
+                width = rv * 2;
+                height = width;
+            }
         } else {
             final Object w = adapter.getMetaProperty(PropertyMetaTypes.WIDTH,
                                                      definition);
             final Object h = adapter.getMetaProperty(PropertyMetaTypes.HEIGHT,
                                                      definition);
             if (null != w && null != h) {
-                width = (double) definitionManager.adapters().forProperty().getValue(w);
-                height = (double) definitionManager.adapters().forProperty().getValue(h);
-                found = true;
+                width = (Double) definitionManager.adapters().forProperty().getValue(w);
+                height = (Double) definitionManager.adapters().forProperty().getValue(h);
             }
         }
 
-        if (!found) {
-            LOGGER.log(Level.WARNING,
-                       "Cannot build Bounds for [" + definition.getClass() + "]. Using defaults...");
-        }
+        final double _width = null != width ? width : 0d;
+        final double _height = null != height ? height : 0d;
         return new BoundsImpl(new BoundImpl(x,
                                             y),
-                              new BoundImpl(x + width,
-                                            y + height));
+                              new BoundImpl(x + _width,
+                                            y + _height));
     }
 
     public <T> String getNameIdentifier(final T definition) {

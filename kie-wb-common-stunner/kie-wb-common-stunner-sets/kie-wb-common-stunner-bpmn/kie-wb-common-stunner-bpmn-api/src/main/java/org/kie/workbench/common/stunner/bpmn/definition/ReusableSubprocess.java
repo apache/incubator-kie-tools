@@ -38,6 +38,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
+import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -74,9 +75,7 @@ public class ReusableSubprocess extends BaseSubprocess implements DataIOModel {
     protected DataIOSet dataIOSet;
 
     @NonPortable
-    public static class ReusableSubprocessBuilder extends BaseSubprocessBuilder<ReusableSubprocess> {
-
-        public static final Double REUSABLE_SUBPROCESS_BORDER_SIZE = 3d;
+    public static class ReusableSubprocessBuilder implements Builder<ReusableSubprocess> {
 
         @Override
         public ReusableSubprocess build() {
@@ -84,12 +83,9 @@ public class ReusableSubprocess extends BaseSubprocess implements DataIOModel {
                     new BPMNGeneralSet("Sub-process"),
                     new ReusableSubprocessTaskExecutionSet(),
                     new DataIOSet(),
-                    new BackgroundSet(COLOR,
-                                      BORDER_COLOR,
-                                      REUSABLE_SUBPROCESS_BORDER_SIZE),
+                    new BackgroundSet(),
                     new FontSet(),
-                    new RectangleDimensionsSet(WIDTH,
-                                               HEIGHT),
+                    new RectangleDimensionsSet(),
                     new SimulationSet());
         }
     }

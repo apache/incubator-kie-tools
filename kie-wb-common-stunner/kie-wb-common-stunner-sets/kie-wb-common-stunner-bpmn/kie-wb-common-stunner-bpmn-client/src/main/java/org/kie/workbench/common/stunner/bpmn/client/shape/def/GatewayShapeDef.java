@@ -19,130 +19,48 @@ package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gwt.safehtml.shared.SafeUri;
-import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNImageResources;
+import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
 import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
-import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
+import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
+import org.kie.workbench.common.stunner.svg.client.shape.factory.SVGShapeViewResources;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
 public class GatewayShapeDef
         implements BPMNSvgShapeDef<BaseGateway> {
 
-    public final static Map<Class<? extends BaseGateway>, String> VIEWS = new HashMap<Class<? extends BaseGateway>, String>(2) {{
-        put(ParallelGateway.class,
-            BPMNSVGViewFactory.VIEW_GATEWAY_PARALLEL_MULTIPLE);
-        put(ExclusiveDatabasedGateway.class,
-            BPMNSVGViewFactory.VIEW_GATEWAY_EXCLUSIVE);
-    }};
+    public static final SVGShapeViewResources<BaseGateway, BPMNSVGViewFactory> VIEW_RESOURCES =
+            new SVGShapeViewResources<BaseGateway, BPMNSVGViewFactory>()
+                    .put(ParallelGateway.class, BPMNSVGViewFactory::parallelMultipleGateway)
+                    .put(ExclusiveDatabasedGateway.class, BPMNSVGViewFactory::exclusiveGateway);
 
-    private final static Map<Class<? extends BaseGateway>, SafeUri> ICONS = new HashMap<Class<? extends BaseGateway>, SafeUri>(2) {{
-        put(ParallelGateway.class,
-            BPMNImageResources.INSTANCE.gatewayParallelEvent().getSafeUri());
-        put(ExclusiveDatabasedGateway.class,
-            BPMNImageResources.INSTANCE.gatewayExclusive().getSafeUri());
-    }};
+    public static final Map<Class<? extends BaseGateway>, SvgDataUriGlyph> GLYPHS =
+            new HashMap<Class<? extends BaseGateway>, SvgDataUriGlyph>() {{
+                put(ParallelGateway.class, BPMNSVGGlyphFactory.PARALLEL_MULTIPLE_GATEWAY_GLYPH);
+                put(ExclusiveDatabasedGateway.class, BPMNSVGGlyphFactory.EXCLUSIVE_GATEWAY_GLYPH);
+            }};
 
     @Override
-    public double getAlpha(final BaseGateway element) {
-        return 1d;
-    }
-
-    @Override
-    public String getBackgroundColor(final BaseGateway element) {
-        return element.getBackgroundSet().getBgColor().getValue();
-    }
-
-    @Override
-    public double getBackgroundAlpha(final BaseGateway element) {
-        return 1;
-    }
-
-    @Override
-    public String getBorderColor(final BaseGateway element) {
-        return element.getBackgroundSet().getBorderColor().getValue();
-    }
-
-    @Override
-    public double getBorderSize(final BaseGateway element) {
-        return element.getBackgroundSet().getBorderSize().getValue();
-    }
-
-    @Override
-    public double getBorderAlpha(final BaseGateway element) {
-        return 1;
-    }
-
-    @Override
-    public String getFontFamily(final BaseGateway element) {
-        return element.getFontSet().getFontFamily().getValue();
-    }
-
-    @Override
-    public String getFontColor(final BaseGateway element) {
-        return element.getFontSet().getFontColor().getValue();
-    }
-
-    @Override
-    public String getFontBorderColor(final BaseGateway element) {
-        return element.getFontSet().getFontBorderColor().getValue();
-    }
-
-    @Override
-    public double getFontSize(final BaseGateway element) {
-        return element.getFontSet().getFontSize().getValue();
-    }
-
-    @Override
-    public double getFontBorderSize(final BaseGateway element) {
-        return element.getFontSet().getFontBorderSize().getValue();
-    }
-
-    @Override
-    public HasTitle.Position getFontPosition(final BaseGateway element) {
-        return HasTitle.Position.BOTTOM;
-    }
-
-    @Override
-    public double getFontRotation(final BaseGateway element) {
-        return 0;
-    }
-
-    @Override
-    public double getWidth(final BaseGateway element) {
-        return element.getDimensionsSet().getRadius().getValue() * 2;
-    }
-
-    @Override
-    public double getHeight(final BaseGateway element) {
-        return element.getDimensionsSet().getRadius().getValue() * 2;
-    }
-
-    @Override
-    public boolean isSVGViewVisible(final String viewName,
-                                    final BaseGateway element) {
-        return viewName.equals(VIEWS.get(element.getClass()));
+    public SizeHandler<BaseGateway, SVGShapeView> newSizeHandler() {
+        return newSizeHandlerBuilder()
+                .radius(task -> task.getDimensionsSet().getRadius().getValue())
+                .build();
     }
 
     @Override
     public SVGShapeView<?> newViewInstance(final BPMNSVGViewFactory factory,
-                                           final BaseGateway gateway) {
-        return factory.gateway(getWidth(gateway),
-                               getHeight(gateway),
-                               false);
-    }
-
-    @Override
-    public Class<BPMNSVGViewFactory> getViewFactoryType() {
-        return BPMNSVGViewFactory.class;
+                                           final BaseGateway task) {
+        return VIEW_RESOURCES
+                .getResource(factory, task)
+                .build(false);
     }
 
     @Override
     public Glyph getGlyph(final Class<? extends BaseGateway> type) {
-        return SvgDataUriGlyph.Builder.build(ICONS.get(type));
+        return GLYPHS.get(type);
     }
 }

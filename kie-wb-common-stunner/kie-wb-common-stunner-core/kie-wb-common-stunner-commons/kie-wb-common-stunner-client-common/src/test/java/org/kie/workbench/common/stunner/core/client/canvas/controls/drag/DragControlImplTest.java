@@ -33,6 +33,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseExitHa
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -95,8 +96,7 @@ public class DragControlImplTest extends AbstractControlTest {
         when(bounds.getLowerRight()).thenReturn(bound);
         when(bounds.getUpperLeft()).thenReturn(bound);
         when(canvasCommandFactory.updatePosition(any(Node.class),
-                                                 eq(0d),
-                                                 eq(0d))).thenReturn(updatePositionCommand);
+                                                 eq(new Point2D(0d, 0d)))).thenReturn(updatePositionCommand);
         when(commandManagerProvider.getCommandManager()).thenReturn(commandManager);
     }
 
@@ -151,6 +151,7 @@ public class DragControlImplTest extends AbstractControlTest {
         return dragHandler;
     }
 
+    @SuppressWarnings("unchecked")
     private DragHandler testEndDrag(DragHandler dragHandler) {
         final DragEvent event = new DragEvent(2,
                                               2,
@@ -160,12 +161,12 @@ public class DragControlImplTest extends AbstractControlTest {
         dragHandler.end(event);
 
         verify(canvasCommandFactory,
-               times(1)).updatePosition(element,
-                                        0d,
-                                        0d);
+               times(1)).updatePosition(eq(element),
+                                        eq(new Point2D(0d,
+                                                       0d)));
         verify(commandManager,
-               times(1)).allow(canvasHandler,
-                               updatePositionCommand);
+               times(1)).allow(eq(canvasHandler),
+                               eq(updatePositionCommand));
 
         return dragHandler;
     }

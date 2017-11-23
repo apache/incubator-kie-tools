@@ -34,7 +34,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
-public abstract class BaseConnector implements BPMNDefinition {
+public abstract class BaseConnector implements BPMNViewDefinition {
 
     @Category
     public static final transient String category = Categories.CONNECTING_OBJECTS;

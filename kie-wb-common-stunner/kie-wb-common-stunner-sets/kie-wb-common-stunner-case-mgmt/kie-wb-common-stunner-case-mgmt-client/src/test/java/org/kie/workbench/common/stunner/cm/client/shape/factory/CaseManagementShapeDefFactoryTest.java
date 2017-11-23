@@ -26,9 +26,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.cm.client.shape.ActivityShape;
-import org.kie.workbench.common.stunner.cm.client.shape.DiagramShape;
+import org.kie.workbench.common.stunner.cm.client.shape.CMContainerShape;
 import org.kie.workbench.common.stunner.cm.client.shape.NullShape;
-import org.kie.workbench.common.stunner.cm.client.shape.StageShape;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementDiagramShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementReusableSubprocessTaskShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSubprocessShapeDef;
@@ -119,12 +118,12 @@ public class CaseManagementShapeDefFactoryTest {
         final Shape diagramShape = tested.newShape(new CaseManagementDiagram.CaseManagementDiagramBuilder().build(),
                                                    new CaseManagementDiagramShapeDef());
         assertNotNull(diagramShape);
-        assertTrue(diagramShape instanceof DiagramShape);
+        assertTrue(diagramShape instanceof CMContainerShape);
 
         final Shape subprocessShape = tested.newShape(new AdHocSubprocess.AdHocSubprocessBuilder().build(),
                                                       new CaseManagementSubprocessShapeDef());
         assertNotNull(subprocessShape);
-        assertTrue(subprocessShape instanceof StageShape);
+        assertTrue(subprocessShape instanceof CMContainerShape);
 
         final Shape activityShape = tested.newShape(new UserTask.UserTaskBuilder().build(),
                                                     new CaseManagementTaskShapeDef());

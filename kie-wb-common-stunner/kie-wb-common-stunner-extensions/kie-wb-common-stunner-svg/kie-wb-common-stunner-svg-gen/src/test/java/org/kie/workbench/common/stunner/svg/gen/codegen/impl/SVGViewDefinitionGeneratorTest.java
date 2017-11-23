@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.svg.gen.codegen.impl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.svg.gen.model.StyleSheetDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.ViewFactory;
 import org.kie.workbench.common.stunner.svg.gen.model.ViewRefDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.CircleDefinition;
@@ -44,6 +45,9 @@ public class SVGViewDefinitionGeneratorTest {
     private static final double VBOX_WIDTH = 300;
     private static final double VBOX_HEIGHT = 321.86;
 
+    private static final StyleSheetDefinition styleSheetDefinition =
+            new StyleSheetDefinition("test-svg-css");
+
     private SVGViewDefinitionGenerator tested;
 
     @Before
@@ -68,10 +72,12 @@ public class SVGViewDefinitionGeneratorTest {
                                        Y,
                                        WIDTH,
                                        HEIGHT,
+                                       styleSheetDefinition,
                                        new ViewBoxDefinitionImpl(VBOX_MIN_X,
                                                                  VBOX_MIN_Y,
                                                                  VBOX_WIDTH,
                                                                  VBOX_HEIGHT),
+                                       null,
                                        mainDef,
                                        circleDefinition);
 
@@ -79,14 +85,16 @@ public class SVGViewDefinitionGeneratorTest {
         viewDefinition.setPath("svg-view-test.svg");
         final String generated = tested.generate(viewFactory,
                                                  viewDefinition).toString();
-        assertTrue(generated.contains("public SVGShapeView svgViewTest(final boolean resizable)"));
-        assertTrue(generated.contains("return this.svgViewTest(25.50d, 225.45d, resizable);"));
-        assertTrue(generated.contains("public SVGShapeView svgViewTest(final double width, final double height, final boolean resizable) {"));
-        assertTrue(generated.contains("final SVGShapeViewImpl view = new SVGShapeViewImpl(\"viewDef1\", , width, height, resizable)"));
+        System.out.println(generated);
+        assertTrue(generated.contains("public SVGShapeViewResource svgViewTest()"));
+        assertTrue(generated.contains("private SVGShapeView svgViewTestView(final boolean resizable)"));
+        assertTrue(generated.contains("return this.svgViewTestView(25.50d, 225.45d, resizable);"));
+        assertTrue(generated.contains("private SVGShapeView svgViewTestView(final double width, final double height, final boolean resizable) {"));
+        assertTrue(generated.contains("final SVGShapeViewImpl view = new SVGShapeViewImpl(\"viewDef1\", mainShape, width, height, resizable)"));
         assertTrue(generated.contains("private SVGBasicShapeView svgViewTestBasicView() {"));
         assertTrue(generated.contains("return this.svgViewTestBasicView(25.50d, 225.45d);"));
         assertTrue(generated.contains("private SVGBasicShapeView svgViewTestBasicView(final double width, final double height) {"));
-        assertTrue(generated.contains("final SVGBasicShapeViewImpl view = new SVGBasicShapeViewImpl(\"viewDef1\", , width, height)"));
+        assertTrue(generated.contains("final SVGBasicShapeViewImpl view = new SVGBasicShapeViewImpl(\"viewDef1\", mainShape, width, height)"));
     }
 
     @Test(expected = RuntimeException.class)
@@ -106,10 +114,12 @@ public class SVGViewDefinitionGeneratorTest {
                                        Y,
                                        WIDTH,
                                        HEIGHT,
+                                       styleSheetDefinition,
                                        new ViewBoxDefinitionImpl(VBOX_MIN_X,
                                                                  VBOX_MIN_Y,
                                                                  VBOX_WIDTH,
                                                                  VBOX_HEIGHT),
+                                       null,
                                        mainDef,
                                        circleDefinition);
         viewDefinition.setFactoryMethodName("svgViewTest");

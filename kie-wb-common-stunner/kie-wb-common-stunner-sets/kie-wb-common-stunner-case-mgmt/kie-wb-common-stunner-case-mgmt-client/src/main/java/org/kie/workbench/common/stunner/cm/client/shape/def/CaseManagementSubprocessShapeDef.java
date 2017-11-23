@@ -16,86 +16,36 @@
 
 package org.kie.workbench.common.stunner.cm.client.shape.def;
 
+import java.util.Optional;
+import java.util.function.BiConsumer;
+
 import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
-import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
+import org.kie.workbench.common.stunner.cm.client.shape.view.StageView;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 public final class CaseManagementSubprocessShapeDef
-        implements StageShapeDef<BaseSubprocess> {
+        implements StageShapeDef<BaseSubprocess, StageView> {
+
+    public static final double WIDTH = 136d;
+    public static final double HEIGHT = 48d;
 
     @Override
-    public double getAlpha(final BaseSubprocess element) {
-        return 1d;
+    public Optional<BiConsumer<View<BaseSubprocess>, StageView>> sizeHandler() {
+        return Optional.of(newSizeHandlerBuilder()
+                                   .width(this::getWidth)
+                                   .height(this::getHeight)
+                                   .build()::handle);
     }
 
     @Override
-    public String getBackgroundColor(final BaseSubprocess element) {
-        return element.getBackgroundSet().getBgColor().getValue();
+    public double getWidth(BaseSubprocess element) {
+        return WIDTH;
     }
 
     @Override
-    public double getBackgroundAlpha(final BaseSubprocess element) {
-        return 1;
-    }
-
-    @Override
-    public String getBorderColor(final BaseSubprocess element) {
-        return element.getBackgroundSet().getBorderColor().getValue();
-    }
-
-    @Override
-    public double getBorderSize(final BaseSubprocess element) {
-        return element.getBackgroundSet().getBorderSize().getValue();
-    }
-
-    @Override
-    public double getBorderAlpha(final BaseSubprocess element) {
-        return 1;
-    }
-
-    @Override
-    public String getFontFamily(final BaseSubprocess element) {
-        return element.getFontSet().getFontFamily().getValue();
-    }
-
-    @Override
-    public String getFontColor(final BaseSubprocess element) {
-        return element.getFontSet().getFontColor().getValue();
-    }
-
-    @Override
-    public String getFontBorderColor(final BaseSubprocess element) {
-        return element.getFontSet().getFontBorderColor().getValue();
-    }
-
-    @Override
-    public double getFontSize(final BaseSubprocess element) {
-        return element.getFontSet().getFontSize().getValue();
-    }
-
-    @Override
-    public double getFontBorderSize(final BaseSubprocess element) {
-        return element.getFontSet().getFontBorderSize().getValue();
-    }
-
-    @Override
-    public HasTitle.Position getFontPosition(final BaseSubprocess element) {
-        return HasTitle.Position.CENTER;
-    }
-
-    @Override
-    public double getFontRotation(final BaseSubprocess element) {
-        return 0;
-    }
-
-    @Override
-    public double getWidth(final BaseSubprocess element) {
-        return element.getDimensionsSet().getWidth().getValue();
-    }
-
-    @Override
-    public double getHeight(final BaseSubprocess element) {
-        return element.getDimensionsSet().getHeight().getValue();
+    public double getHeight(BaseSubprocess element) {
+        return HEIGHT;
     }
 
     @Override

@@ -18,103 +18,23 @@ package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
-import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
+import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
 public class BPMNDiagramShapeDef
         implements BPMNSvgShapeDef<BPMNDiagramImpl> {
 
     @Override
-    public double getAlpha(final BPMNDiagramImpl element) {
-        return 1d;
-    }
-
-    @Override
-    public String getBackgroundColor(final BPMNDiagramImpl element) {
-        return element.getBackgroundSet().getBgColor().getValue();
-    }
-
-    @Override
-    public double getBackgroundAlpha(final BPMNDiagramImpl element) {
-        return 1;
-    }
-
-    @Override
-    public String getBorderColor(final BPMNDiagramImpl element) {
-        return element.getBackgroundSet().getBorderColor().getValue();
-    }
-
-    @Override
-    public double getBorderSize(final BPMNDiagramImpl element) {
-        return element.getBackgroundSet().getBorderSize().getValue();
-    }
-
-    @Override
-    public double getBorderAlpha(final BPMNDiagramImpl element) {
-        return 1;
-    }
-
-    @Override
-    public String getFontFamily(final BPMNDiagramImpl element) {
-        return element.getFontSet().getFontFamily().getValue();
-    }
-
-    @Override
-    public String getFontColor(final BPMNDiagramImpl element) {
-        return element.getFontSet().getFontColor().getValue();
-    }
-
-    @Override
-    public String getFontBorderColor(final BPMNDiagramImpl element) {
-        return element.getFontSet().getFontBorderColor().getValue();
-    }
-
-    @Override
-    public double getFontSize(final BPMNDiagramImpl element) {
-        return element.getFontSet().getFontSize().getValue();
-    }
-
-    @Override
-    public double getFontBorderSize(final BPMNDiagramImpl element) {
-        return element.getFontSet().getFontBorderSize().getValue();
-    }
-
-    @Override
-    public HasTitle.Position getFontPosition(final BPMNDiagramImpl element) {
-        return HasTitle.Position.CENTER;
-    }
-
-    @Override
-    public double getFontRotation(final BPMNDiagramImpl element) {
-        return 0;
-    }
-
-    @Override
-    public double getWidth(final BPMNDiagramImpl element) {
-        return element.getDimensionsSet().getWidth().getValue();
-    }
-
-    @Override
-    public double getHeight(final BPMNDiagramImpl element) {
-        return element.getDimensionsSet().getHeight().getValue();
-    }
-
-    @Override
-    public boolean isSVGViewVisible(final String viewName,
-                                    final BPMNDiagramImpl element) {
-        return false;
+    public SizeHandler<BPMNDiagramImpl, SVGShapeView> newSizeHandler() {
+        return newSizeHandlerBuilder()
+                .width(e -> e.getDimensionsSet().getWidth().getValue())
+                .height(e -> e.getDimensionsSet().getHeight().getValue())
+                .build();
     }
 
     @Override
     public SVGShapeView<?> newViewInstance(final BPMNSVGViewFactory factory,
                                            final BPMNDiagramImpl diagram) {
-        return factory.rectangle(getWidth(diagram),
-                                 getHeight(diagram),
-                                 true);
-    }
-
-    @Override
-    public Class<BPMNSVGViewFactory> getViewFactoryType() {
-        return BPMNSVGViewFactory.class;
+        return factory.rectangle().build(true);
     }
 }

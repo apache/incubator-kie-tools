@@ -18,51 +18,31 @@ package org.kie.workbench.common.stunner.core.client.canvas.command;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
-import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 /**
  * Registers a node shape into de canvas.
  */
-public class AddCanvasNodeCommand extends AbstractCanvasCommand {
+public class AddCanvasNodeCommand extends AbstractRegistrationCanvasNodeCommand {
 
-    private final Node candidate;
-    private final String shapeSetId;
-
-    public AddCanvasNodeCommand(final Node candidate,
+    public AddCanvasNodeCommand(final Node<? extends View<?>, Edge> candidate,
                                 final String shapeSetId) {
-        this.candidate = candidate;
-        this.shapeSetId = shapeSetId;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
-        context.register(shapeSetId,
-                         candidate);
-        context.applyElementMutation(candidate,
-                                     MutationContext.STATIC);
-        return buildResult();
+        super(candidate,
+              shapeSetId);
     }
 
     @Override
     public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
-        return new DeleteCanvasNodeCommand(candidate).execute(context);
-    }
-
-    public Node getCandidate() {
-        return candidate;
-    }
-
-    public String getShapeSetId() {
-        return shapeSetId;
+        return new DeleteCanvasNodeCommand(getCandidate()).execute(context);
     }
 
     @Override
     public String toString() {
         return getClass().getName() +
-                " [candidate=" + getUUID(candidate) + "," +
-                " shapeSet=" + shapeSetId + "]";
+                " [candidate=" + getUUID(getCandidate()) + "," +
+                " shapeSet=" + getShapeSetId() + "]";
     }
 }

@@ -20,29 +20,26 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public class UpdateElementPositionCommand extends AbstractCanvasGraphCommand {
 
     protected final Node<View<?>, Edge> element;
-    protected final Double x;
-    protected final Double y;
+    protected final Point2D location;
 
     public UpdateElementPositionCommand(final Node<View<?>, Edge> element,
-                                        final Double x,
-                                        final Double y) {
+                                        final Point2D location) {
         this.element = element;
-        this.x = x;
-        this.y = y;
+        this.location = location;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
         return new org.kie.workbench.common.stunner.core.graph.command.impl.UpdateElementPositionCommand(element,
-                                                                                                         x,
-                                                                                                         y);
+                                                                                                         location);
     }
 
     @Override
@@ -54,11 +51,7 @@ public class UpdateElementPositionCommand extends AbstractCanvasGraphCommand {
         return element;
     }
 
-    public Double getX() {
-        return x;
-    }
-
-    public Double getY() {
-        return y;
+    public Point2D getLocation() {
+        return location;
     }
 }

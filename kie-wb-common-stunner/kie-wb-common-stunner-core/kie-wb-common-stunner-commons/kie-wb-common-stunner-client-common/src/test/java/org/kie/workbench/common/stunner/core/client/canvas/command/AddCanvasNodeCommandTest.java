@@ -21,12 +21,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
+import org.kie.workbench.common.stunner.core.client.shape.Shape;
+import org.kie.workbench.common.stunner.core.client.shape.view.BoundingBox;
+import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -38,15 +46,28 @@ import static org.mockito.Mockito.when;
 public class AddCanvasNodeCommandTest extends AbstractCanvasCommandTest {
 
     @Mock
-    private Node candidate;
+    private Node<View<?>, Edge> candidate;
+
     @Mock
     private View content;
 
+    @Mock
+    private Shape shape;
+
+    @Mock
+    private ShapeView view;
+
     private AddCanvasNodeCommand tested;
+    private BoundingBox boundingBox;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         super.setup();
+        boundingBox = new BoundingBox(0d, 0d, 50d, 50d);
+        when(shape.getShapeView()).thenReturn(view);
+        when(view.getBoundingBox()).thenReturn(boundingBox);
+        when(canvas.getShape(eq("someUUID"))).thenReturn(shape);
         when(candidate.getUUID()).thenReturn("someUUID");
         when(candidate.getContent()).thenReturn(content);
         this.tested = new AddCanvasNodeCommand(candidate,
@@ -56,6 +77,7 @@ public class AddCanvasNodeCommandTest extends AbstractCanvasCommandTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testExecute() {
+        when(content.getBounds()).thenReturn(BoundsImpl.build(0d, 0d, 10d, 10d));
         final CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
         assertNotEquals(CommandResult.Type.ERROR,
                         result.getType());
@@ -65,5 +87,28 @@ public class AddCanvasNodeCommandTest extends AbstractCanvasCommandTest {
         verify(canvasHandler,
                times(1)).applyElementMutation(eq(candidate),
                                               any(MutationContext.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testExecuteAndSetViewBounds() {
+        when(content.getBounds()).thenReturn(BoundsImpl.build(0d, 0d, 0d, 0d));
+        final CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
+        assertNotEquals(CommandResult.Type.ERROR,
+                        result.getType());
+        verify(canvasHandler,
+               times(1)).register(eq(SHAPE_SET_ID),
+                                  eq(candidate));
+        verify(canvasHandler,
+               times(1)).applyElementMutation(eq(candidate),
+                                              any(MutationContext.class));
+        final ArgumentCaptor<Bounds> boundsrgumentCaptor = ArgumentCaptor.forClass(Bounds.class);
+        verify(content,
+               times(1)).setBounds(boundsrgumentCaptor.capture());
+        final BoundsImpl bounds = (BoundsImpl) boundsrgumentCaptor.getValue();
+        assertEquals(0d, bounds.getX(), 0d);
+        assertEquals(0d, bounds.getY(), 0d);
+        assertEquals(50d, bounds.getWidth(), 0d);
+        assertEquals(50d, bounds.getHeight(), 0d);
     }
 }

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.shape;
 
+import org.kie.workbench.common.stunner.core.client.shape.view.BoundingBox;
 import org.kie.workbench.common.stunner.core.client.shape.view.IsConnector;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
@@ -140,6 +141,11 @@ public class ConnectorViewStub implements ShapeView<Object>,
     @Override
     public Object moveDown() {
         return this;
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return null;
     }
 
     @Override

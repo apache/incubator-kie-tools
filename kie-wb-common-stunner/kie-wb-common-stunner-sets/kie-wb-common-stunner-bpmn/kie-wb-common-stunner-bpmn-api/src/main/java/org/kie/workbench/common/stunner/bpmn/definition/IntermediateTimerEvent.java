@@ -36,6 +36,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
+import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
@@ -62,16 +63,14 @@ public class IntermediateTimerEvent extends BaseCatchingIntermediateEvent {
     protected CancellingTimerEventExecutionSet executionSet;
 
     @NonPortable
-    public static class IntermediateTimerEventBuilder extends BaseCatchingIntermediateEvenBuilder<IntermediateTimerEvent> {
+    public static class IntermediateTimerEventBuilder implements Builder<IntermediateTimerEvent> {
 
         @Override
         public IntermediateTimerEvent build() {
             return new IntermediateTimerEvent(new BPMNGeneralSet(""),
-                                              new BackgroundSet(BG_COLOR,
-                                                                BORDER_COLOR,
-                                                                BORDER_SIZE),
+                                              new BackgroundSet(),
                                               new FontSet(),
-                                              new CircleDimensionSet(new Radius(RADIUS)),
+                                              new CircleDimensionSet(new Radius()),
                                               new CancellingTimerEventExecutionSet());
         }
     }

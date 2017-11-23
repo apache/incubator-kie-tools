@@ -193,8 +193,8 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<Ab
                                                final double tx,
                                                final double ty) {
         final CanvasCommand<AbstractCanvasHandler> c = canvasCommandFactory.updatePosition((Node<View<?>, Edge>) element,
-                                                                                           tx,
-                                                                                           ty);
+                                                                                           new Point2D(tx,
+                                                                                                       ty));
         CommandResult<CanvasViolation> result = getCommandManager().allow(canvasHandler,
                                                                           c);
         if (!CommandUtils.isError(result)) {

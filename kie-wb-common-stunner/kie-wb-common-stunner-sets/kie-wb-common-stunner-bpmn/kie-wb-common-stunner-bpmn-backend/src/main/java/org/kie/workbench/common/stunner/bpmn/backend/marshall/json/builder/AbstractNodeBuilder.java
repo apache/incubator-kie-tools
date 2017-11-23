@@ -37,6 +37,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
@@ -189,8 +190,8 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
                         double x = dCoords[0];
                         double y = dCoords[1];
                         commands.add(context.getCommandFactory().updatePosition(docked,
-                                                                                x,
-                                                                                y));
+                                                                                new Point2D(x,
+                                                                                            y)));
                     }
                 } else {
                     // Create the outgoing edge.

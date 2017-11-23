@@ -66,8 +66,9 @@ public class StageView extends AbstractCaseManagementShape<StageView> {
                                        h).L(voffset,
                                             h / 2).L(0,
                                                      0).Z().close();
-        path.setFillColor(ColorName.RED);
-        return path;
+        return path
+                .setFillColor(ColorName.LIGHTGOLDENRODYELLOW)
+                .setStrokeColor(ColorName.BLACK);
     }
 
     @Override

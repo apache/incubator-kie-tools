@@ -85,16 +85,8 @@ public class MagnetConnectionTest {
         assertTrue(m1.isAuto());
     }
 
-    @Test(expected = AssertionError.class)
-    public void testBuilderEmptyLocation() {
-        new MagnetConnection.Builder()
-                .magnet(4)
-                .auto(true)
-                .build();
-    }
-
     @Test
-    public void testChangeLocationAndResetMagnet() {
+    public void testChangeLocationAndNotResetMagnet() {
         MagnetConnection m1 = new MagnetConnection.Builder()
                 .atX(10)
                 .atY(25)
@@ -117,6 +109,6 @@ public class MagnetConnectionTest {
         assertEquals(200,
                      m1.getLocation().getY(),
                      0);
-        assertFalse(m1.getMagnetIndex().isPresent());
+        assertTrue(m1.getMagnetIndex().isPresent());
     }
 }

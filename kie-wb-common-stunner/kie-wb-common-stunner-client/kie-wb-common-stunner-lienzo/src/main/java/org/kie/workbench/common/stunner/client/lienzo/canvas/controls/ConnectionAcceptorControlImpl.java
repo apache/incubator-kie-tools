@@ -44,7 +44,6 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
-import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 @Dependent
@@ -95,7 +94,7 @@ public class ConnectionAcceptorControlImpl extends AbstractAcceptorControl
     @Override
     @SuppressWarnings("unchecked")
     public boolean allowSource(final Node source,
-                               final Edge<View<?>, Node> connector,
+                               final Edge<ViewConnector<?>, Node> connector,
                                final Connection connection) {
         if (isSourceChanged(source,
                             connector,
@@ -117,7 +116,7 @@ public class ConnectionAcceptorControlImpl extends AbstractAcceptorControl
     @Override
     @SuppressWarnings("unchecked")
     public boolean allowTarget(final Node target,
-                               final Edge<View<?>, Node> connector,
+                               final Edge<ViewConnector<?>, Node> connector,
                                final Connection connection) {
         if (isTargetChanged(target,
                             connector,
@@ -139,7 +138,7 @@ public class ConnectionAcceptorControlImpl extends AbstractAcceptorControl
     @Override
     @SuppressWarnings("unchecked")
     public boolean acceptSource(final Node source,
-                                final Edge<View<?>, Node> connector,
+                                final Edge<ViewConnector<?>, Node> connector,
                                 final Connection connection) {
         ensureUnHighLight();
         if (isSourceChanged(source,
@@ -158,7 +157,7 @@ public class ConnectionAcceptorControlImpl extends AbstractAcceptorControl
     @Override
     @SuppressWarnings("unchecked")
     public boolean acceptTarget(final Node target,
-                                final Edge<View<?>, Node> connector,
+                                final Edge<ViewConnector<?>, Node> connector,
                                 final Connection connection) {
         ensureUnHighLight();
         if (isTargetChanged(target,
@@ -176,11 +175,9 @@ public class ConnectionAcceptorControlImpl extends AbstractAcceptorControl
 
     @SuppressWarnings("unchecked")
     private static boolean isSourceChanged(final Node node,
-                                           final Edge<View<?>, Node> connector,
+                                           final Edge<ViewConnector<?>, Node> connector,
                                            final Connection connection) {
-        final ViewConnector vc = null != connector.getContent() ?
-                (ViewConnector) connector.getContent() :
-                null;
+        final ViewConnector vc = connector.getContent();
         return (!eq(node,
                     connector.getSourceNode(),
                     connection,
@@ -189,11 +186,9 @@ public class ConnectionAcceptorControlImpl extends AbstractAcceptorControl
 
     @SuppressWarnings("unchecked")
     private static boolean isTargetChanged(final Node node,
-                                           final Edge<View<?>, Node> connector,
+                                           final Edge<ViewConnector<?>, Node> connector,
                                            final Connection connection) {
-        final ViewConnector vc = null != connector.getContent() ?
-                (ViewConnector) connector.getContent() :
-                null;
+        final ViewConnector vc = connector.getContent();
         return (!eq(node,
                     connector.getTargetNode(),
                     connection,
@@ -267,8 +262,8 @@ public class ConnectionAcceptorControlImpl extends AbstractAcceptorControl
             if (!isEnabled()) {
                 return false;
             }
-            final Edge<View<?>, Node> edge = WiresUtils.getEdge(getCanvasHandler(),
-                                                                head.getConnector());
+            final Edge<ViewConnector<?>, Node> edge = WiresUtils.getEdge(getCanvasHandler(),
+                                                                         head.getConnector());
             final Node sourceNode = WiresUtils.getNode(getCanvasHandler(),
                                                        shape);
             return allowSource(sourceNode,
@@ -283,8 +278,8 @@ public class ConnectionAcceptorControlImpl extends AbstractAcceptorControl
             if (!isEnabled()) {
                 return false;
             }
-            final Edge<View<?>, Node> edge = WiresUtils.getEdge(getCanvasHandler(),
-                                                                tail.getConnector());
+            final Edge<ViewConnector<?>, Node> edge = WiresUtils.getEdge(getCanvasHandler(),
+                                                                         tail.getConnector());
             final Node targetNode = WiresUtils.getNode(getCanvasHandler(),
                                                        shape);
             return allowTarget(targetNode,
@@ -298,7 +293,7 @@ public class ConnectionAcceptorControlImpl extends AbstractAcceptorControl
     }
 
     private void highlight(final Node node,
-                           final Edge<View<?>, Node> connector,
+                           final Edge<ViewConnector<?>, Node> connector,
                            final boolean valid) {
         canvasHighlight.unhighLight();
         if (null != node && valid) {

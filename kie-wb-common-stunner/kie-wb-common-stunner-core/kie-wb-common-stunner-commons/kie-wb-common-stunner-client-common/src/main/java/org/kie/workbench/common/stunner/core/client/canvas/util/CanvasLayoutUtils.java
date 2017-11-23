@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
@@ -41,22 +42,6 @@ import org.kie.workbench.common.stunner.core.validation.Violation;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
-/**
- * This class is a basic implementation for achieving a simple layout mechanism.
- * It finds an empty area on the canvas where new elements could be place as:
- * - Calling <code>getNextLayoutPosition( CanvasHandler canvasHandler )</code> returns the
- * cartesian coordinates for an empty area found in the diagram's graph that is being managed by the
- * canvas handler instance.
- * - Calling <code>getNextLayoutPosition( CanvasHandler canvasHandler, Element<View<?>> source )</code> returns the
- * cartesian coordinates for an empty area found in the diagram's graph but relative to the given <code>source</code>
- * argument and its parent, if any.
- * In both cases the resulting coordinates are given from the coordinates of the visible element in the graph, which
- * is position is on bottom right rather than the others, plus a given <code>PADDING</code> anb some
- * error margin given by the <code>MARGIN</code> floating point.
- * <p>
- * TODO: This has to be refactored by the use of a good impl that achieve good dynamic layouts. Probably each
- * Definition Set / Diagram will require a different layout manager as well.
- */
 @Dependent
 public class CanvasLayoutUtils {
 
@@ -112,29 +97,25 @@ public class CanvasLayoutUtils {
         final double[] rootSize = GraphUtils.getNodeSize(root.getContent());
         final double[] newNodeSize = GraphUtils.getNodeSize(newNode.getContent());
         final Point2D newNodePosition = GraphUtils.getPosition(newNode.getContent());
-        Point2D[] offset = {new Point2D(0,
+        Point2D[] offset = {new Point2D(PADDING_X,
                                         0)};
         Point2D[] parentOffset = {new Point2D(0,
                                               0)};
-        final Node<View<?>, Edge> parent = (Node<View<?>, Edge>) GraphUtils.getParent(root);
-        if ((parent != null) && (GraphUtils.hasChildren(parent))) {
-            final Point2D pos = GraphUtils.getPosition(parent.getContent());
-            parentOffset[0] = new Point2D(pos.getX() + newNodePosition.getX() + PADDING_X,
-                                          pos.getY() + newNodePosition.getY());
-            offset[0].setX(parentOffset[0].getX());
-        }
         double maxNodeY[] = {0};
         if (root.getOutEdges().size() > 0) {
-            root.getOutEdges().forEach(n -> {
-                final Node<View<?>, Edge> node = n.getTargetNode();
-                final Point2D nodePos = GraphUtils.getPosition(node.getContent());
-                final Point2D rootPos = GraphUtils.getPosition(root.getContent());
-                if (nodePos.getY() > maxNodeY[0]) {
-                    maxNodeY[0] = nodePos.getY();
-                    final double[] nodeSize = GraphUtils.getNodeSize(node.getContent());
-                    offset[0].setY(maxNodeY[0] + nodeSize[1] - rootPos.getY());
-                }
-            });
+            root.getOutEdges().stream()
+                    .filter(e -> e.getContent() instanceof ViewConnector)
+                    .filter(e -> null != e.getTargetNode() && !e.getTargetNode().equals(newNode))
+                    .forEach(n -> {
+                        final Node<View<?>, Edge> node = n.getTargetNode();
+                        final Point2D nodePos = GraphUtils.getPosition(node.getContent());
+                        final Point2D rootPos = GraphUtils.getPosition(root.getContent());
+                        if (nodePos.getY() > maxNodeY[0]) {
+                            maxNodeY[0] = nodePos.getY();
+                            final double[] nodeSize = GraphUtils.getNodeSize(node.getContent());
+                            offset[0].setY(maxNodeY[0] + nodeSize[1] - rootPos.getY());
+                        }
+                    });
 
             offset[0].setY(offset[0].getY() + parentOffset[0].getY() + PADDING_Y);
         } else {

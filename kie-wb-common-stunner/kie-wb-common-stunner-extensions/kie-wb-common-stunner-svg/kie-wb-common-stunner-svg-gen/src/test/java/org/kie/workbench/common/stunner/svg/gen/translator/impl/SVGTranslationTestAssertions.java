@@ -155,9 +155,9 @@ public class SVGTranslationTestAssertions {
     public static void assertViewRef(final ViewRefDefinition viewRefDefinition) {
         assertNotNull(viewRefDefinition);
         assertEquals("Layer_1",
-                     viewRefDefinition.getViewId());
+                     viewRefDefinition.getViewRefId());
         assertEquals("another-svg.svg",
-                     viewRefDefinition.getViewName());
+                     viewRefDefinition.getFilePath());
         assertEquals("g1",
                      viewRefDefinition.getParent());
     }

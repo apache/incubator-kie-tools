@@ -85,7 +85,7 @@ public class ConnectionAcceptorControlImplTest {
     @Mock
     private Node node;
     @Mock
-    private Edge<View<?>, Node> edge;
+    private Edge<ViewConnector<?>, Node> edge;
     @Mock
     private ViewConnector edgeContent;
     @Mock
@@ -418,7 +418,7 @@ public class ConnectionAcceptorControlImplTest {
     }
 
     @Test
-    public void onKeyDownEventTest(){
+    public void onKeyDownEventTest() {
         InOrder inOrder = inOrder(cancelCanvasActionEvent);
 
         tested.enable(canvasHandler);

@@ -23,12 +23,13 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 public class SetCanvasConnectionCommand extends AbstractCanvasCommand {
 
-    private final Edge<? extends View<?>, Node> edge;
+    private final Edge<? extends ViewConnector<?>, Node> edge;
 
-    public SetCanvasConnectionCommand(final Edge<? extends View<?>, Node> edge) {
+    public SetCanvasConnectionCommand(final Edge<? extends ViewConnector<?>, Node> edge) {
         this.edge = edge;
     }
 
@@ -37,6 +38,8 @@ public class SetCanvasConnectionCommand extends AbstractCanvasCommand {
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
         final Node source = edge.getSourceNode();
         final Node target = edge.getTargetNode();
+        ShapeUtils.updateEdgeConnections(edge,
+                                         context);
         ShapeUtils.applyConnections(edge,
                                     context,
                                     MutationContext.STATIC);

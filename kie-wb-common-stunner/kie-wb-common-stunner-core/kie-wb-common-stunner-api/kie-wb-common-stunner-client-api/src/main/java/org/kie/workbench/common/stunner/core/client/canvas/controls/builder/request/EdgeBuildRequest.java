@@ -20,12 +20,13 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.Buil
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 public interface EdgeBuildRequest extends BuildRequest {
 
-    Edge<View<?>, Node> getEdge();
+    Edge<? extends ViewConnector<?>, Node> getEdge();
 
-    Node<View<?>, Edge> getInNode();
+    Node<? extends View<?>, Edge> getInNode();
 
-    Node<View<?>, Edge> getOutNode();
+    Node<? extends View<?>, Edge> getOutNode();
 }

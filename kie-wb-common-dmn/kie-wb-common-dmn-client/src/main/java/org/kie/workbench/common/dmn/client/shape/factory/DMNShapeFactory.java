@@ -30,16 +30,8 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeRequirement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
-import org.kie.workbench.common.dmn.client.shape.def.AssociationShapeDef;
-import org.kie.workbench.common.dmn.client.shape.def.AuthorityRequirementShapeDef;
-import org.kie.workbench.common.dmn.client.shape.def.BusinessKnowledgeModelShapeDef;
-import org.kie.workbench.common.dmn.client.shape.def.DMNDiagramShapeDef;
-import org.kie.workbench.common.dmn.client.shape.def.DecisionShapeDef;
-import org.kie.workbench.common.dmn.client.shape.def.InformationRequirementShapeDef;
-import org.kie.workbench.common.dmn.client.shape.def.InputDataShapeDef;
-import org.kie.workbench.common.dmn.client.shape.def.KnowledgeRequirementShapeDef;
-import org.kie.workbench.common.dmn.client.shape.def.KnowledgeSourceShapeDef;
-import org.kie.workbench.common.dmn.client.shape.def.TextAnnotationShapeDef;
+import org.kie.workbench.common.dmn.client.shape.def.DMNConnectorShapeDefImpl;
+import org.kie.workbench.common.dmn.client.shape.def.DMNSVGShapeDefImpl;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.DelegateShapeFactory;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
@@ -66,34 +58,34 @@ public class DMNShapeFactory implements ShapeFactory<DMNDefinition, Shape> {
     public void init() {
         delegateShapeFactory
                 .delegate(DMNDiagram.class,
-                          new DMNDiagramShapeDef(),
+                          new DMNSVGShapeDefImpl(),
                           () -> svgShapeFactory)
                 .delegate(InputData.class,
-                          new InputDataShapeDef(),
+                          new DMNSVGShapeDefImpl(),
                           () -> svgShapeFactory)
                 .delegate(KnowledgeSource.class,
-                          new KnowledgeSourceShapeDef(),
+                          new DMNSVGShapeDefImpl(),
                           () -> svgShapeFactory)
                 .delegate(BusinessKnowledgeModel.class,
-                          new BusinessKnowledgeModelShapeDef(),
+                          new DMNSVGShapeDefImpl(),
                           () -> svgShapeFactory)
                 .delegate(Decision.class,
-                          new DecisionShapeDef(),
+                          new DMNSVGShapeDefImpl(),
                           () -> svgShapeFactory)
                 .delegate(TextAnnotation.class,
-                          new TextAnnotationShapeDef(),
+                          new DMNSVGShapeDefImpl(),
                           () -> svgShapeFactory)
                 .delegate(Association.class,
-                          new AssociationShapeDef(),
+                          new DMNConnectorShapeDefImpl(),
                           () -> dmnConnectorShapeFactory)
                 .delegate(InformationRequirement.class,
-                          new InformationRequirementShapeDef(),
+                          new DMNConnectorShapeDefImpl(),
                           () -> dmnConnectorShapeFactory)
                 .delegate(KnowledgeRequirement.class,
-                          new KnowledgeRequirementShapeDef(),
+                          new DMNConnectorShapeDefImpl(),
                           () -> dmnConnectorShapeFactory)
                 .delegate(AuthorityRequirement.class,
-                          new AuthorityRequirementShapeDef(),
+                          new DMNConnectorShapeDefImpl(),
                           () -> dmnConnectorShapeFactory);
     }
 

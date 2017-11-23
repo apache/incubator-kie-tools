@@ -80,8 +80,12 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
 
     protected void setEventHandlerManager(final ViewEventHandlerManager eventHandlerManager) {
         this.eventHandlerManager = eventHandlerManager;
-        this.textViewDecorator = new WiresTextDecorator(eventHandlerManager);
+        setTextViewDecorator(new WiresTextDecorator(() -> eventHandlerManager));
         addTextAsChild();
+    }
+
+    void setTextViewDecorator(final WiresTextDecorator textViewDecorator) {
+        this.textViewDecorator = textViewDecorator;
     }
 
     @Override
@@ -186,10 +190,8 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
 
     @Override
     public void refresh() {
+        getTextViewDecorator().update();
         super.refresh();
-        if (null != getShape()) {
-            textViewDecorator.setTextBoundaries(getShape().getBoundingBox());
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -324,6 +326,16 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
         return cast();
     }
 
+    protected WiresTextDecorator getTextViewDecorator() {
+        return textViewDecorator;
+    }
+
+    protected void rebuildTextBoundaries(final double width,
+                                         final double height) {
+        textViewDecorator.resize(width,
+                                 height);
+    }
+
     private void addTextAsChild() {
         this.addChild(textViewDecorator.getView(),
                       textViewDecorator.getLayout());
@@ -365,23 +377,17 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
         HandlerRegistration r0 = addWiresResizeStartHandler(wiresResizeStartEvent -> {
             final ResizeEvent event = buildResizeEvent(wiresResizeStartEvent);
             resizeHandler.start(event);
-            removeChild(textViewDecorator.getView());
-            addTextAsChild();
-            textViewDecorator.setTextBoundaries(getShape().getBoundingBox());
+            rebuildTextBoundaries(event.getWidth(), event.getHeight());
         });
         HandlerRegistration r1 = addWiresResizeStepHandler(wiresResizeStepEvent -> {
             final ResizeEvent event = buildResizeEvent(wiresResizeStepEvent);
             resizeHandler.handle(event);
-            removeChild(textViewDecorator.getView());
-            addTextAsChild();
-            textViewDecorator.setTextBoundaries(getShape().getBoundingBox());
+            rebuildTextBoundaries(event.getWidth(), event.getHeight());
         });
         HandlerRegistration r2 = addWiresResizeEndHandler(wiresResizeEndEvent -> {
             final ResizeEvent event = buildResizeEvent(wiresResizeEndEvent);
             resizeHandler.end(event);
-            removeChild(textViewDecorator.getView());
-            addTextAsChild();
-            textViewDecorator.setTextBoundaries(getShape().getBoundingBox());
+            rebuildTextBoundaries(event.getWidth(), event.getHeight());
         });
         return new HandlerRegistration[]{r0, r1, r2};
     }

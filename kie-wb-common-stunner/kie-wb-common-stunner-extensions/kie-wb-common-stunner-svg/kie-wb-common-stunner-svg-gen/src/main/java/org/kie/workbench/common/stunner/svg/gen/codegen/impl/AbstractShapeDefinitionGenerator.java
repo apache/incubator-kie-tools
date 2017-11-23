@@ -41,17 +41,25 @@ public abstract class AbstractShapeDefinitionGenerator<I extends ShapeDefinition
                 shapeRaw.append(formatString(FILL_COLOR,
                                              styleDefinition.getFillColor()));
             }
-            shapeRaw.append(formatDouble(FILL_ALPHA,
-                                         styleDefinition.getFillAlpha()));
+            if (null != styleDefinition.getFillAlpha()) {
+                shapeRaw.append(formatDouble(FILL_ALPHA,
+                                             styleDefinition.getFillAlpha()));
+            }
 
             if (null != styleDefinition.getStrokeColor()) {
                 shapeRaw.append(formatString(STROKE_COLOR,
                                              styleDefinition.getStrokeColor()));
             }
-            shapeRaw.append(formatDouble(STROKE_ALPHA,
-                                         styleDefinition.getStrokeAlpha()));
-            shapeRaw.append(formatDouble(STROKE_WIDTH,
-                                         styleDefinition.getStrokeWidth()));
+            if (null != styleDefinition.getStrokeAlpha()) {
+                shapeRaw.append(formatDouble(STROKE_ALPHA,
+                                             styleDefinition.getStrokeAlpha()));
+            }
+
+            if (null != styleDefinition.getStrokeWidth()) {
+                shapeRaw.append(formatDouble(STROKE_WIDTH,
+                                             styleDefinition.getStrokeWidth()));
+            }
+
             return shapeRaw;
         }
         return new StringBuffer();

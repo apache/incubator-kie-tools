@@ -19,18 +19,19 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.builder.req
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 public final class EdgeBuildRequestImpl extends AbstractBuildRequest implements EdgeBuildRequest {
 
-    private final Edge<View<?>, Node> edge;
-    private Node<View<?>, Edge> inNode;
-    private Node<View<?>, Edge> outNode;
+    private final Edge<? extends ViewConnector<?>, Node> edge;
+    private Node<? extends View<?>, Edge> inNode;
+    private Node<? extends View<?>, Edge> outNode;
 
     public EdgeBuildRequestImpl(final double x,
                                 final double y,
-                                final Edge<View<?>, Node> edge,
-                                final Node<View<?>, Edge> inNode,
-                                final Node<View<?>, Edge> outNode) {
+                                final Edge<? extends ViewConnector<?>, Node> edge,
+                                final Node<? extends View<?>, Edge> inNode,
+                                final Node<? extends View<?>, Edge> outNode) {
         super(x,
               y);
         this.edge = edge;
@@ -38,26 +39,18 @@ public final class EdgeBuildRequestImpl extends AbstractBuildRequest implements 
         this.outNode = outNode;
     }
 
-    public EdgeBuildRequestImpl(final double x,
-                                final double y,
-                                final Edge<View<?>, Node> edge) {
-        super(x,
-              y);
-        this.edge = edge;
-    }
-
     @Override
-    public Edge<View<?>, Node> getEdge() {
+    public Edge<? extends ViewConnector<?>, Node> getEdge() {
         return edge;
     }
 
     @Override
-    public Node<View<?>, Edge> getInNode() {
+    public Node<? extends View<?>, Edge> getInNode() {
         return inNode;
     }
 
     @Override
-    public Node<View<?>, Edge> getOutNode() {
+    public Node<? extends View<?>, Edge> getOutNode() {
         return outNode;
     }
 }

@@ -19,9 +19,10 @@ package org.kie.workbench.common.stunner.shapes.client;
 import org.kie.workbench.common.stunner.shapes.client.view.ConnectorView;
 import org.kie.workbench.common.stunner.shapes.def.ConnectorShapeDef;
 
-public class ConnectorShape<W> extends BasicConnectorShape<W, ConnectorShapeDef<W>, ConnectorView> {
+public class ConnectorShape<W>
+        extends BasicConnectorShape<W, ConnectorShapeDef<W, ConnectorView>, ConnectorView> {
 
-    public ConnectorShape(final ConnectorShapeDef<W> shapeDef,
+    public ConnectorShape(final ConnectorShapeDef<W, ConnectorView> shapeDef,
                           final ConnectorView view) {
         super(shapeDef,
               view);

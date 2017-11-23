@@ -70,8 +70,8 @@ public class RectangleDimensionsSet implements DMNPropertySet {
     protected Height height;
 
     public RectangleDimensionsSet() {
-        this(new Width(Width.defaultValue),
-             new Height(Height.defaultValue));
+        this(new Width(),
+             new Height());
     }
 
     public RectangleDimensionsSet(final @MapsTo("width") Width width,

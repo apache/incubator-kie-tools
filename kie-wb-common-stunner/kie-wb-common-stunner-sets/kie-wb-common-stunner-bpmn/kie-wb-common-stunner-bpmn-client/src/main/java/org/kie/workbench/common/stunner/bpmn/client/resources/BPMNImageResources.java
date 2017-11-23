@@ -25,7 +25,6 @@ import com.google.gwt.resources.client.ImageResource;
 public interface BPMNImageResources extends ClientBundleWithLookup {
 
     public static final BPMNImageResources INSTANCE = GWT.create(BPMNImageResources.class);
-    public static final String SEQUENCE_FLOW = "images/connectors/sequence.svg";
 
     // ****** BPMN ShapeSet Thumbnail. *******
     @Source("images/bpmn_thumb.png")
@@ -57,135 +56,110 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
     DataResource categorySequence();
 
     // ******* Task *******
-    @ClientBundle.Source(BPMNSVGViewFactory.PATH_TASK)
+    @ClientBundle.Source("images/icons/task/task.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource task();
 
-    @ClientBundle.Source(BPMNSVGViewFactory.PATH_TASK_USER)
+    @ClientBundle.Source("images/icons/task/task-user.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource taskUser();
 
-    @ClientBundle.Source(BPMNSVGViewFactory.PATH_TASK_SCRIPT)
+    @ClientBundle.Source("images/icons/task/task-script.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource taskScript();
 
-    @ClientBundle.Source(BPMNSVGViewFactory.PATH_TASK_BUSINESS_RULE)
+    @ClientBundle.Source("images/icons/task/task-business-rule.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource taskBusinessRule();
 
-    @ClientBundle.Source("images/task/task-manual.svg")
+    @ClientBundle.Source("images/icons/task/task-manual.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource taskManual();
 
-    @ClientBundle.Source("images/task/task-service.svg")
+    @ClientBundle.Source("images/icons/task/task-service.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource taskService();
 
     // ******* Event *******
-    @ClientBundle.Source(BPMNSVGViewFactory.PATH_EVENT_END)
+    @ClientBundle.Source("images/icons/event/event-end.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource eventEnd();
 
-    @ClientBundle.Source(BPMNSVGViewFactory.PATH_EVENT_END_TERMINATE)
+    @ClientBundle.Source("images/icons/event/event-end-terminate.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource eventEndTerminate();
 
-    @ClientBundle.Source(BPMNSVGViewFactory.PATH_EVENT_INTERMEDIATE)
+    @ClientBundle.Source("images/icons/event/event-intermediate.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource eventIntermediate();
 
-    @ClientBundle.Source(BPMNSVGViewFactory.PATH_EVENT_START)
+    @ClientBundle.Source("images/icons/event/event-start.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource eventStart();
 
-    @ClientBundle.Source(BPMNSVGViewFactory.PATH_EVENT_SIGNAL)
+    @ClientBundle.Source("images/icons/event/event-signal.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource eventSignal();
 
-    @ClientBundle.Source(BPMNSVGViewFactory.PATH_EVENT_TIMER)
+    @ClientBundle.Source("images/icons/event/event-timer.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource eventTimer();
 
     // ******* Gateway *******
-    @ClientBundle.Source("images/gateway/parallel-event.svg")
+    @ClientBundle.Source("images/icons/gateway/parallel-event.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource gatewayParallelEvent();
 
-    @ClientBundle.Source(BPMNSVGViewFactory.PATH_GATEWAY_PARALLEL_MULTIPLE)
+    @ClientBundle.Source("images/icons/gateway/parallel_multiple.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource gatewayParallelMultiple();
 
-    @ClientBundle.Source(BPMNSVGViewFactory.PATH_GATEWAY_EXCLUSIVE)
+    @ClientBundle.Source("images/icons/gateway/exclusive.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource gatewayExclusive();
 
-    @ClientBundle.Source("images/gateway/complex.svg")
+    @ClientBundle.Source("images/icons/gateway/complex.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource gatewayComplex();
 
-    @ClientBundle.Source("images/gateway/event.svg")
+    @ClientBundle.Source("images/icons/gateway/event.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource gatewayEvent();
 
-    @ClientBundle.Source("images/gateway/inclusive.svg")
+    @ClientBundle.Source("images/icons/gateway/inclusive.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource gatewayInclusive();
 
     // ******* Containers *******
 
-    @ClientBundle.Source(BPMNSVGViewFactory.PATH_LANE)
+    @ClientBundle.Source("images/icons/lane_icon.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource lane();
 
-    @ClientBundle.Source("images/lane/lane_icon.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource laneIcon();
-
     // ******* Subprocesses *******
-    @ClientBundle.Source(BPMNSVGViewFactory.PATH_SUBPROCESS)
+    @ClientBundle.Source("images/icons/subprocess/subprocess.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource subProcess();
 
-    //
-    @ClientBundle.Source("images/subprocess/subprocess-glyph.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource subProcessGlyph();
-
-    @ClientBundle.Source(BPMNSVGViewFactory.PATH_SUBPROCESS_REUSABLE)
+    @ClientBundle.Source("images/icons/subprocess/subprocess-reusable.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource subProcessReusable();
 
-    @ClientBundle.Source(BPMNSVGViewFactory.PATH_SUBPROCESS_ADHOC)
+    @ClientBundle.Source("images/icons/subprocess/subprocess-adhoc.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource subProcessAdHoc();
 
     // ******* Connectors *******
 
-    @ClientBundle.Source(SEQUENCE_FLOW)
+    @ClientBundle.Source("images/icons/connectors/sequence.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource sequenceFlow();
 
     // ******* Misc *******
 
-    @ClientBundle.Source(BPMNSVGViewFactory.PATH_RECTANGLE)
-    @DataResource.MimeType("image/svg+xml")
-    DataResource rectangle();
-
     @ClientBundle.Source("images/misc/circle.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource cagetoryEvents();
-
-    @ClientBundle.Source("images/cancel.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource cancel();
-
-    @ClientBundle.Source("images/clock-o.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource clockO();
-
-    @ClientBundle.Source("images/plus-square.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource plusSquare();
 
     //This is a hack for OOME related to SVG, or image/svg+xml;base64 URLs
     @Source("images/glyph-oome-hack.png")

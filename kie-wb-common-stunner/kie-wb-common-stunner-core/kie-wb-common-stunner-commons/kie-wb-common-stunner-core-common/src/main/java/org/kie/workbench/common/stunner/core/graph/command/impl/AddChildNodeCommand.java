@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
@@ -43,30 +44,25 @@ public class AddChildNodeCommand extends AbstractGraphCompositeCommand {
 
     private final String parentUUID;
     private final Node candidate;
-    private final Double x;
-    private final Double y;
+    private final Point2D location;
     private transient Node<?, Edge> parent;
 
     public AddChildNodeCommand(final @MapsTo("parentUUID") String parentUUID,
                                final @MapsTo("candidate") Node candidate,
-                               final @MapsTo("x") Double x,
-                               final @MapsTo("y") Double y) {
+                               final @MapsTo("location") Point2D location) {
         this.parentUUID = PortablePreconditions.checkNotNull("parentUUID",
                                                              parentUUID);
         this.candidate = PortablePreconditions.checkNotNull("candidate",
                                                             candidate);
-        this.x = x;
-        this.y = y;
+        this.location = location;
     }
 
     public AddChildNodeCommand(final Node<?, Edge> parent,
                                final Node candidate,
-                               final Double x,
-                               final Double y) {
+                               final Point2D location) {
         this(parent.getUUID(),
              candidate,
-             x,
-             y);
+             location);
         this.parent = parent;
     }
 
@@ -74,7 +70,6 @@ public class AddChildNodeCommand extends AbstractGraphCompositeCommand {
                                final Node candidate) {
         this(parent,
              candidate,
-             null,
              null);
     }
 
@@ -85,10 +80,9 @@ public class AddChildNodeCommand extends AbstractGraphCompositeCommand {
         this.addCommand(new RegisterNodeCommand(candidate));
         this.addCommand(new SetChildNodeCommand(parent,
                                                 candidate));
-        if (null != x && null != y) {
+        if (null != location) {
             this.addCommand(new UpdateElementPositionCommand(candidate,
-                                                             x,
-                                                             y));
+                                                             location));
         }
         return this;
     }
@@ -141,12 +135,8 @@ public class AddChildNodeCommand extends AbstractGraphCompositeCommand {
         return candidate;
     }
 
-    public Double getX() {
-        return x;
-    }
-
-    public Double getY() {
-        return y;
+    public Point2D getLocation() {
+        return location;
     }
 
     @Override

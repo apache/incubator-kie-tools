@@ -39,7 +39,7 @@ import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -94,7 +94,7 @@ public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl<Abstrac
     public boolean allows(final NodeBuildRequest request) {
         final double x = request.getX();
         final double y = request.getY();
-        final Node<View<?>, Edge> node = request.getNode();
+        final Node<? extends View<?>, Edge> node = request.getNode();
         if (null != node) {
             final ElementBuildRequest<AbstractCanvasHandler> request1 = new ElementBuildRequestImpl(x,
                                                                                                     y,
@@ -110,8 +110,8 @@ public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl<Abstrac
                       final BuildCallback buildCallback) {
         final double x = request.getX();
         final double y = request.getY();
-        final Node<View<?>, Edge> node = request.getNode();
-        final Edge<View<?>, Node> inEdge = request.getInEdge();
+        final Node<? extends View<?>, Edge> node = request.getNode();
+        final Edge<? extends ViewConnector<?>, Node> inEdge = request.getInEdge();
         final Connection sourceConnection = request.getSourceConnection();
         final Connection targetConnection = request.getTargetConnection();
         if (null != node) {
@@ -132,7 +132,7 @@ public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl<Abstrac
                                        @Override
                                        public void onComplete(final String uuid,
                                                               final List<Command<AbstractCanvasHandler, CanvasViolation>> commands) {
-                                           final CompositeCommandImpl.CompositeCommandBuilder commandBuilder = new CompositeCommandImpl.CompositeCommandBuilder().addCommands(commands);
+                                           final CompositeCommand.Builder commandBuilder = new CompositeCommand.Builder().addCommands(commands);
                                            if (inEdge != null) {
                                                final Object edgeDef = inEdge.getContent().getDefinition();
                                                final String edgeId = clientDefinitionManager.adapters().forDefinition().getId(edgeDef);
@@ -145,8 +145,10 @@ public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl<Abstrac
                                                                                                       inEdge,
                                                                                                       targetConnection));
                                            }
-                                           final CommandResult<CanvasViolation> results = elementBuilderControl.getCommandManager().execute(canvasHandler,
-                                                                                                                                            commandBuilder.build());
+                                           final CommandResult<CanvasViolation> results = elementBuilderControl
+                                                   .getCommandManager().execute(canvasHandler,
+                                                                                commandBuilder.build());
+
                                            if (!CommandUtils.isError(results)) {
                                                updateConnectorShape(inEdge,
                                                                     node,
@@ -165,7 +167,7 @@ public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl<Abstrac
     }
 
     @SuppressWarnings("unchecked")
-    protected void updateConnectorShape(final Edge<View<?>, Node> inEdge,
+    protected void updateConnectorShape(final Edge<? extends ViewConnector<?>, Node> inEdge,
                                         final Node targetNode,
                                         final Connection sourceConnection,
                                         final Connection targetConnection) {

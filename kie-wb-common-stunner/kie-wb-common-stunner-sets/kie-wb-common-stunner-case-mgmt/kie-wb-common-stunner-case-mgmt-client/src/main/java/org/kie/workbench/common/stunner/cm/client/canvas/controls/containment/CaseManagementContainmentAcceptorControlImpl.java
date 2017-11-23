@@ -37,8 +37,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.CompositeCommand;
-import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -95,9 +94,9 @@ public class CaseManagementContainmentAcceptorControlImpl extends AbstractAccept
         final Optional<Edge<?, Node>> edge = getFirstIncomingEdge(child,
                                                                   e -> e.getContent() instanceof Child);
         if (edge.isPresent()) {
-            final CompositeCommand<AbstractCanvasHandler, CanvasViolation> command = buildCommands(parent,
-                                                                                                   child,
-                                                                                                   edge.get());
+            final Command<AbstractCanvasHandler, CanvasViolation> command = buildCommands(parent,
+                                                                                          child,
+                                                                                          edge.get());
             final CommandResult<CanvasViolation> result = executor.apply(command);
             return isCommandSuccess(child,
                                     result);
@@ -105,12 +104,11 @@ public class CaseManagementContainmentAcceptorControlImpl extends AbstractAccept
         return true;
     }
 
-    private CompositeCommand<AbstractCanvasHandler, CanvasViolation> buildCommands(final Element parent,
-                                                                                   final Node child,
-                                                                                   final Edge edge) {
-        final CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation> builder =
-                new CompositeCommandImpl
-                        .CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation>()
+    private Command<AbstractCanvasHandler, CanvasViolation> buildCommands(final Element parent,
+                                                                          final Node child,
+                                                                          final Edge edge) {
+        final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> builder =
+                new CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation>()
                         .reverse();
         if (null != edge.getSourceNode()) {
             builder.addCommand(

@@ -40,6 +40,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
+import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -73,7 +74,7 @@ public class BusinessRuleTask extends BaseTask implements DataIOModel {
     protected DataIOSet dataIOSet;
 
     @NonPortable
-    public static class BusinessRuleTaskBuilder extends BaseTaskBuilder<BusinessRuleTask> {
+    public static class BusinessRuleTaskBuilder implements Builder<BusinessRuleTask> {
 
         @Override
         public BusinessRuleTask build() {
@@ -81,12 +82,9 @@ public class BusinessRuleTask extends BaseTask implements DataIOModel {
                                                            new Documentation("")),
                                         new BusinessRuleTaskExecutionSet(),
                                         new DataIOSet(),
-                                        new BackgroundSet(COLOR,
-                                                          BORDER_COLOR,
-                                                          BORDER_SIZE),
+                                        new BackgroundSet(),
                                         new FontSet(),
-                                        new RectangleDimensionsSet(WIDTH,
-                                                                   HEIGHT),
+                                        new RectangleDimensionsSet(),
                                         new SimulationSet(),
                                         new TaskType(TaskTypes.BUSINESS_RULE)
             );

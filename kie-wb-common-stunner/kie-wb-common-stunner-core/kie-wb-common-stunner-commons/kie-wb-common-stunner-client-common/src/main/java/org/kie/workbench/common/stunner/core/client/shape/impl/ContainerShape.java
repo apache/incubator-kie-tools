@@ -22,7 +22,7 @@ import java.util.List;
 import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
-import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
+import org.kie.workbench.common.stunner.core.definition.shape.ShapeViewDef;
 
 /**
  * Extension for a Node Shape that can contain child shapes.
@@ -31,7 +31,7 @@ import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
  * @param <V> The view type.
  * @param <S> The shape's type that it can contain.
  */
-public class ContainerShape<W, D extends MutableShapeDef<W>, V extends ShapeView<?>, S extends Shape>
+public class ContainerShape<W, D extends ShapeViewDef<W, V>, V extends ShapeView, S extends Shape>
         extends NodeShapeImpl<W, D, V>
         implements HasChildren<S> {
 
@@ -45,7 +45,7 @@ public class ContainerShape<W, D extends MutableShapeDef<W>, V extends ShapeView
 
     public ContainerShape(final D shapeDef,
                           final V view,
-                          final ShapeStateHelper<V, Shape<V>> shapeStateHelper) {
+                          final ShapeStateHandler<V, Shape<V>> shapeStateHelper) {
         super(shapeDef,
               view,
               shapeStateHelper);

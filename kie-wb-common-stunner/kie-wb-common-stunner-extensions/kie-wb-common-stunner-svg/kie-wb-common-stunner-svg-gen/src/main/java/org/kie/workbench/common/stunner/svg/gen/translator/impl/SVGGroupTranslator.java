@@ -18,6 +18,8 @@ package org.kie.workbench.common.stunner.svg.gen.translator.impl;
 
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.kie.workbench.common.stunner.svg.gen.exception.TranslatorException;
+import org.kie.workbench.common.stunner.svg.gen.model.PrimitiveDefinition;
+import org.kie.workbench.common.stunner.svg.gen.model.ShapeDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.ViewRefDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.GroupDefinition;
 import org.kie.workbench.common.stunner.svg.gen.translator.SVGElementTranslator;
@@ -38,21 +40,34 @@ public class SVGGroupTranslator
     @Override
     protected GroupDefinition doTranslate(final Element element,
                                           final SVGTranslatorContext context) throws TranslatorException {
-        final NodeList childNodes = element.getElementsByTagName(SVGUseTranslator.TAG_NAME);
-        // Only look for view references inside the group. Discard the group itself for any other elements.
+
+        final String id = getOrSetId(element);
+        final GroupDefinition groupDefinition = new GroupDefinition(id);
+        final NodeList childNodes = element.getChildNodes();
         if (null != childNodes && childNodes.getLength() > 0) {
-            final String id = getOrSetId(element);
-            final GroupDefinition groupDefinition = new GroupDefinition(id);
             for (int i = 0; i < childNodes.getLength(); i++) {
                 final Node child = childNodes.item(i);
-                final SVGElementTranslator<Element, Object> elementTranslator = context.getElementTranslator(SVGUseTranslator.TAG_NAME);
-                final ViewRefDefinition childViewRef = (ViewRefDefinition) elementTranslator.translate((Element) child,
-                                                                                                       context);
-                context.addSVGViewRef(childViewRef);
+                if (child instanceof Element) {
+                    final Element childElement = (Element) child;
+                    final SVGElementTranslator<Element, Object> translator =
+                            context.getElementTranslator(childElement.getTagName());
+                    if (null != translator) {
+                        final Object childDefinition =
+                                translator.translate(childElement,
+                                                     context);
+                        if (childDefinition instanceof ViewRefDefinition) {
+                            context.addSVGViewRef((ViewRefDefinition) childDefinition);
+                        } else if (childDefinition instanceof ShapeDefinition) {
+                            groupDefinition.getChildren().add((PrimitiveDefinition) childDefinition);
+                        } else if (childDefinition instanceof GroupDefinition) {
+                            throw new UnsupportedOperationException("Nested SVG groups are not allowed! [svgId=" +
+                                                                            context.getSVGId() + "]");
+                        }
+                    }
+                }
             }
-            return groupDefinition;
         }
-        return null;
+        return groupDefinition;
     }
 
     private String getOrSetId(final Element element) {

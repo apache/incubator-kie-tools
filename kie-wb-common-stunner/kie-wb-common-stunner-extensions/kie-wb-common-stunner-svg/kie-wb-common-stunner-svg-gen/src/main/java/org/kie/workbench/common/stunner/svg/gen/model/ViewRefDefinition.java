@@ -20,7 +20,7 @@ public interface ViewRefDefinition {
 
     String getParent();
 
-    String getViewName();
+    String getFilePath();
 
-    String getViewId();
+    String getViewRefId();
 }

@@ -22,16 +22,17 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public class SetConnectionTargetNodeCommand extends AbstractCanvasGraphCommand {
 
     private final Node<? extends View<?>, Edge> node;
-    private final Edge<? extends View<?>, Node> edge;
+    private final Edge<? extends ViewConnector<?>, Node> edge;
     private final Connection connection;
 
     public SetConnectionTargetNodeCommand(final Node<? extends View<?>, Edge> node,
-                                          final Edge<? extends View<?>, Node> edge,
+                                          final Edge<? extends ViewConnector<?>, Node> edge,
                                           Connection connection) {
         this.node = node;
         this.edge = edge;

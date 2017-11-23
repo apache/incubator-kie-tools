@@ -36,6 +36,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
+import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
@@ -66,17 +67,15 @@ public class ExclusiveDatabasedGateway extends BaseGateway {
     private long Id = 0;
 
     @NonPortable
-    public static class ExclusiveDatabasedGatewayBuilder extends BaseGatewayBuilder<ExclusiveDatabasedGateway> {
+    public static class ExclusiveDatabasedGatewayBuilder implements Builder<ExclusiveDatabasedGateway> {
 
         @Override
         public ExclusiveDatabasedGateway build() {
             return new ExclusiveDatabasedGateway(new BPMNGeneralSet(""),
                                                  new ExclusiveGatewayExecutionSet(),
-                                                 new BackgroundSet(COLOR,
-                                                                   BORDER_COLOR,
-                                                                   BORDER_SIZE),
+                                                 new BackgroundSet(),
                                                  new FontSet(),
-                                                 new CircleDimensionSet(new Radius(RADIUS)));
+                                                 new CircleDimensionSet(new Radius()));
         }
     }
 

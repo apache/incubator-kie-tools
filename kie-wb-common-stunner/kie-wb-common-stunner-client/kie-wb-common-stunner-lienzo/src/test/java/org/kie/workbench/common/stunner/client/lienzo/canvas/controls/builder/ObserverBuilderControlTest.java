@@ -55,6 +55,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
@@ -74,7 +75,6 @@ import org.uberfire.mvp.ParameterizedCommand;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -157,14 +157,13 @@ public class ObserverBuilderControlTest {
             }
         });
 
-        when(canvasCommandFactory.updatePosition(any(Node.class), anyDouble(), anyDouble())).thenAnswer(new Answer<Command>() {
+        when(canvasCommandFactory.updatePosition(any(Node.class), any(Point2D.class))).thenAnswer(new Answer<Command>() {
 
             @Override
             public Command answer(InvocationOnMock invocationOnMock) {
                 Node node = (Node) invocationOnMock.getArguments()[0];
-                double x = (double) invocationOnMock.getArguments()[1];
-                double y = (double) invocationOnMock.getArguments()[2];
-                return new UpdateElementPositionCommand(node, x, y);
+                Point2D location = (Point2D) invocationOnMock.getArguments()[1];
+                return new UpdateElementPositionCommand(node, location);
             }
         });
 

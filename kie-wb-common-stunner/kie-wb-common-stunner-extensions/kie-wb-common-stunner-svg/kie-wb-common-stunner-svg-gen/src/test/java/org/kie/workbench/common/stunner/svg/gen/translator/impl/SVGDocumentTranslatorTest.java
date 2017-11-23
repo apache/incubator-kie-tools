@@ -31,6 +31,7 @@ import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 import org.kie.workbench.common.stunner.svg.gen.codegen.impl.ViewGenerators;
 import org.kie.workbench.common.stunner.svg.gen.exception.TranslatorException;
 import org.kie.workbench.common.stunner.svg.gen.model.PrimitiveDefinition;
+import org.kie.workbench.common.stunner.svg.gen.model.StyleSheetDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.ViewDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.ViewRefDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.CircleDefinition;
@@ -52,6 +53,8 @@ public class SVGDocumentTranslatorTest {
     private static Document svgTest;
     private static Document svgTestError;
     private SVGDocumentTranslator translator;
+    private static final StyleSheetDefinition styleSheetDefinition =
+            new StyleSheetDefinition("svg-test-css");
 
     @BeforeClass
     public static void init() throws Exception {
@@ -66,7 +69,10 @@ public class SVGDocumentTranslatorTest {
 
     @Test
     public void testTranslate() throws Exception {
-        final ViewDefinition<SVGShapeView> viewDefinition = translator.translate(svgTest);
+        final ViewDefinition<SVGShapeView> viewDefinition =
+                translator.translate(new SVGTranslatorContextImpl(svgTest,
+                                                                  "",
+                                                                  styleSheetDefinition));
         assertNotNull(viewDefinition);
         assertEquals("svg-test-file",
                      viewDefinition.getId());
@@ -119,7 +125,9 @@ public class SVGDocumentTranslatorTest {
 
     @Test(expected = TranslatorException.class)
     public void testCheckTranslateErrors() throws Exception {
-        translator.translate(svgTestError);
+        translator.translate(new SVGTranslatorContextImpl(svgTestError,
+                                                          "",
+                                                          styleSheetDefinition));
     }
 
     private static Document parse(final InputStream inputStream) throws Exception {

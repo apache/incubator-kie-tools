@@ -18,15 +18,23 @@ package org.kie.workbench.common.stunner.svg.gen.model;
 
 public interface StyleDefinition {
 
-    double getAlpha();
+    Double getAlpha();
 
     String getFillColor();
 
-    double getFillAlpha();
+    Double getFillAlpha();
 
     String getStrokeColor();
 
-    double getStrokeWidth();
+    Double getStrokeWidth();
 
-    double getStrokeAlpha();
+    Double getStrokeAlpha();
+
+    String getFontFamily();
+
+    Double getFontSize();
+
+    StyleDefinition add(StyleDefinition other);
+
+    StyleDefinition copy();
 }

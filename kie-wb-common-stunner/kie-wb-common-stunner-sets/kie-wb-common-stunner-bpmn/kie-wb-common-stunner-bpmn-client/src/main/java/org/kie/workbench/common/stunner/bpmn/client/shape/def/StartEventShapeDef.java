@@ -19,130 +19,60 @@ package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNImageResources;
+import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseStartEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
+import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
+import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
+import org.kie.workbench.common.stunner.svg.client.shape.factory.SVGShapeViewResources;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
 public class StartEventShapeDef
         implements BPMNSvgShapeDef<BaseStartEvent> {
 
-    public final static Map<Class<? extends BaseStartEvent>, String> VIEWS = new HashMap<Class<? extends BaseStartEvent>, String>(2) {{
-        put(StartSignalEvent.class,
-            BPMNSVGViewFactory.VIEW_EVENT_SIGNAL);
-        put(StartTimerEvent.class,
-            BPMNSVGViewFactory.VIEW_EVENT_TIMER);
-    }};
+    public static final SVGShapeViewResources<BaseStartEvent, BPMNSVGViewFactory> VIEW_RESOURCES =
+            new SVGShapeViewResources<BaseStartEvent, BPMNSVGViewFactory>()
+                    .put(StartNoneEvent.class, BPMNSVGViewFactory::startNoneEvent)
+                    .put(StartTimerEvent.class, BPMNSVGViewFactory::startTimerEvent)
+                    .put(StartSignalEvent.class, BPMNSVGViewFactory::startSignalEvent);
 
-    private static final SvgDataUriGlyph.Builder GLYPH_BUILDER =
-            SvgDataUriGlyph.Builder.create()
-                    .setUri(BPMNImageResources.INSTANCE.eventStart().getSafeUri())
-                    .addUri(BPMNSVGViewFactory.VIEW_EVENT_SIGNAL,
-                            BPMNImageResources.INSTANCE.eventSignal().getSafeUri())
-                    .addUri(BPMNSVGViewFactory.VIEW_EVENT_TIMER,
-                            BPMNImageResources.INSTANCE.eventTimer().getSafeUri());
+    public static final Map<Class<? extends BaseStartEvent>, SvgDataUriGlyph> GLYPHS =
+            new HashMap<Class<? extends BaseStartEvent>, SvgDataUriGlyph>() {{
+                put(StartNoneEvent.class, BPMNSVGGlyphFactory.START_NONE_EVENT_GLYPH);
+                put(StartTimerEvent.class, BPMNSVGGlyphFactory.START_TIMER_EVENT_GLYPH);
+                put(StartSignalEvent.class, BPMNSVGGlyphFactory.START_SIGNAL_EVENT_GLYPH);
+            }};
 
     @Override
-    public double getAlpha(final BaseStartEvent element) {
-        return 1d;
+    public FontHandler<BaseStartEvent, SVGShapeView> newFontHandler() {
+        return newFontHandlerBuilder()
+                .positon(event -> HasTitle.Position.BOTTOM)
+                .build();
     }
 
     @Override
-    public String getBackgroundColor(final BaseStartEvent element) {
-        return element.getBackgroundSet().getBgColor().getValue();
-    }
-
-    @Override
-    public double getBackgroundAlpha(final BaseStartEvent element) {
-        return 1;
-    }
-
-    @Override
-    public String getBorderColor(final BaseStartEvent element) {
-        return element.getBackgroundSet().getBorderColor().getValue();
-    }
-
-    @Override
-    public double getBorderSize(final BaseStartEvent element) {
-        return element.getBackgroundSet().getBorderSize().getValue();
-    }
-
-    @Override
-    public double getBorderAlpha(final BaseStartEvent element) {
-        return 1;
-    }
-
-    @Override
-    public String getFontFamily(final BaseStartEvent element) {
-        return element.getFontSet().getFontFamily().getValue();
-    }
-
-    @Override
-    public String getFontColor(final BaseStartEvent element) {
-        return element.getFontSet().getFontColor().getValue();
-    }
-
-    @Override
-    public String getFontBorderColor(final BaseStartEvent element) {
-        return element.getFontSet().getFontBorderColor().getValue();
-    }
-
-    @Override
-    public double getFontSize(final BaseStartEvent element) {
-        return element.getFontSet().getFontSize().getValue();
-    }
-
-    @Override
-    public double getFontBorderSize(final BaseStartEvent element) {
-        return element.getFontSet().getFontBorderSize().getValue();
-    }
-
-    @Override
-    public HasTitle.Position getFontPosition(final BaseStartEvent element) {
-        return HasTitle.Position.BOTTOM;
-    }
-
-    @Override
-    public double getFontRotation(final BaseStartEvent element) {
-        return 0;
-    }
-
-    @Override
-    public double getWidth(final BaseStartEvent element) {
-        return element.getDimensionsSet().getRadius().getValue() * 2;
-    }
-
-    @Override
-    public Glyph getGlyph(final Class<? extends BaseStartEvent> type) {
-        return GLYPH_BUILDER.build(VIEWS.get(type));
-    }
-
-    @Override
-    public double getHeight(final BaseStartEvent element) {
-        return element.getDimensionsSet().getRadius().getValue() * 2;
-    }
-
-    @Override
-    public boolean isSVGViewVisible(final String viewName,
-                                    final BaseStartEvent element) {
-        return viewName.equals(VIEWS.get(element.getClass()));
+    public SizeHandler<BaseStartEvent, SVGShapeView> newSizeHandler() {
+        return newSizeHandlerBuilder()
+                .radius(task -> task.getDimensionsSet().getRadius().getValue())
+                .build();
     }
 
     @Override
     public SVGShapeView<?> newViewInstance(final BPMNSVGViewFactory factory,
-                                           final BaseStartEvent startEvent) {
-        return factory.eventStart(getWidth(startEvent),
-                                  getHeight(startEvent),
-                                  false);
+                                           final BaseStartEvent task) {
+        return VIEW_RESOURCES
+                .getResource(factory, task)
+                .build(false);
     }
 
     @Override
-    public Class<BPMNSVGViewFactory> getViewFactoryType() {
-        return BPMNSVGViewFactory.class;
+    public Glyph getGlyph(final Class<? extends BaseStartEvent> type) {
+        return GLYPHS.get(type);
     }
 }

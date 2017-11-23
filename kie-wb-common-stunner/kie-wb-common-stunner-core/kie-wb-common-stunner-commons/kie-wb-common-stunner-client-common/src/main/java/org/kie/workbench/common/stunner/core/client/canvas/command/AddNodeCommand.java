@@ -46,4 +46,12 @@ public class AddNodeCommand extends AbstractCanvasGraphCommand {
         return new AddCanvasNodeCommand(candidate,
                                         shapeSetId);
     }
+
+    public Node getCandidate() {
+        return candidate;
+    }
+
+    public String getShapeSetId() {
+        return shapeSetId;
+    }
 }

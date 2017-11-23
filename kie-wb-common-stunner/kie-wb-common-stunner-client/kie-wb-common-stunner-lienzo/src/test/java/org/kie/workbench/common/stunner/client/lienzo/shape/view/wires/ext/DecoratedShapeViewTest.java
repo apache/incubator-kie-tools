@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresScal
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.mockito.Mock;
 
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -46,15 +47,12 @@ public class DecoratedShapeViewTest {
     @Before
     public void setup() throws Exception {
         container = new WiresScalableContainer();
-        this.tested = new DecoratedShapeView<WiresShapeViewExt>(viewEventTypes,
-                                                                container,
-                                                                PATH,
-                                                                width,
-                                                                height);
-        WiresShapeViewExtTest.setPrivateField(WiresShapeViewExt.class,
-                                              tested,
-                                              "textViewDecorator",
-                                              textDecorator);
+        this.tested = new DecoratedShapeView<>(viewEventTypes,
+                                               container,
+                                               PATH,
+                                               width,
+                                               height);
+        this.tested.setTextViewDecorator(textDecorator);
     }
 
     @Test
@@ -66,7 +64,7 @@ public class DecoratedShapeViewTest {
     @Test
     public void testTextWrapBoundariesUpdatesOnRefresh() {
         tested.refresh();
-        verify(textDecorator).setTextBoundaries(PATH.getBoundingBox());
+        verify(textDecorator).update();
     }
 
     @Test
@@ -76,13 +74,13 @@ public class DecoratedShapeViewTest {
                       10,
                       10,
                       true);
-        verify(textDecorator).setTextBoundaries(PATH.getBoundingBox());
+        verify(textDecorator, times(1)).resize(10d, 10d);
     }
 
     @Test
     public void testTextWrapBoundariesUpdatesOnSetSize() {
         tested.setSize(10,
                        10);
-        verify(textDecorator).setTextBoundaries(PATH.getBoundingBox());
+        verify(textDecorator, times(2)).resize(10d, 10d);
     }
 }

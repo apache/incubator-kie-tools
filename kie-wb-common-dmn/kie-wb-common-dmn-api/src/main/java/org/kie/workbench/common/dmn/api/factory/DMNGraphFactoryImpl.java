@@ -17,6 +17,7 @@ package org.kie.workbench.common.dmn.api.factory;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -24,7 +25,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.command.Command;
-import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.factory.impl.AbstractGraphFactory;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -103,8 +104,8 @@ public class DMNGraphFactoryImpl
 
         //Add default elements
         final List<Command> commands = buildInitialisationCommands();
-        final CompositeCommandImpl.CompositeCommandBuilder commandBuilder =
-                new CompositeCommandImpl.CompositeCommandBuilder();
+        final CompositeCommand.Builder commandBuilder =
+                new CompositeCommand.Builder<>();
         commands.forEach(commandBuilder::addCommand);
         graphCommandManager.execute(createGraphContext(graph),
                                     commandBuilder.build());

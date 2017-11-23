@@ -20,8 +20,4 @@ import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 
 public interface BasicShapeDef<W> extends ShapeDef<W> {
 
-    @Override
-    default Class<? extends ShapeDef> getType() {
-        return BasicShapeDef.class;
-    }
 }

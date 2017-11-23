@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.definition;
 
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 
-public interface BPMNDiagram extends BPMNDefinition {
+public interface BPMNDiagram extends BPMNViewDefinition {
 
     public DiagramSet getDiagramSet();
 }

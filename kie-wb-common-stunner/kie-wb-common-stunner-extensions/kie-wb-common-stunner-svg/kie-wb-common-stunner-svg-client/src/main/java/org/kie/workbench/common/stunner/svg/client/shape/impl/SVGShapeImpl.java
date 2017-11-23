@@ -19,23 +19,27 @@ package org.kie.workbench.common.stunner.svg.client.shape.impl;
 import org.kie.workbench.common.stunner.client.lienzo.shape.impl.LienzoShape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.svg.client.shape.SVGShape;
-import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
+import org.kie.workbench.common.stunner.svg.client.shape.view.impl.SVGShapeViewImpl;
 
 public class SVGShapeImpl
-        implements SVGShape<SVGShapeView<?>> {
+        implements SVGShape<SVGShapeViewImpl> {
 
-    private final SVGShapeView<?> view;
+    private final SVGShapeViewImpl view;
     private final LienzoShape<?> shape;
 
-    public SVGShapeImpl(final SVGShapeView<?> view) {
+    @SuppressWarnings("unchecked")
+    public SVGShapeImpl(final SVGShapeViewImpl view) {
         this(view,
-             new LienzoShape<SVGShapeView<?>>(view));
+             new LienzoShape<SVGShapeViewImpl>(view,
+                                               view.getShapeStateHandler()));
     }
 
-    SVGShapeImpl(final SVGShapeView<?> view,
+    @SuppressWarnings("unchecked")
+    SVGShapeImpl(final SVGShapeViewImpl view,
                  final LienzoShape<?> shape) {
         this.view = view;
         this.shape = shape;
+        view.getShapeStateHandler().forShape(this);
     }
 
     @Override
@@ -69,7 +73,7 @@ public class SVGShapeImpl
     }
 
     @Override
-    public SVGShapeView<?> getShapeView() {
+    public SVGShapeViewImpl getShapeView() {
         return view;
     }
 }

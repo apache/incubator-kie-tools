@@ -62,7 +62,7 @@ public class BorderSize implements DMNProperty {
 
     @Value
     @FieldValue
-    private Double value = defaultValue;
+    private Double value;
 
     public BorderSize() {
     }

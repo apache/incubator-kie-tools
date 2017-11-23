@@ -62,7 +62,7 @@ public class FontColour implements DMNProperty {
 
     @Value
     @FieldValue
-    private String value = defaultValue;
+    private String value;
 
     public FontColour() {
     }

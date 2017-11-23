@@ -21,12 +21,13 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 public interface NodeBuildRequest extends BuildRequest {
 
-    Node<View<?>, Edge> getNode();
+    Node<? extends View<?>, Edge> getNode();
 
-    Edge<View<?>, Node> getInEdge();
+    Edge<? extends ViewConnector<?>, Node> getInEdge();
 
     Connection getSourceConnection();
 

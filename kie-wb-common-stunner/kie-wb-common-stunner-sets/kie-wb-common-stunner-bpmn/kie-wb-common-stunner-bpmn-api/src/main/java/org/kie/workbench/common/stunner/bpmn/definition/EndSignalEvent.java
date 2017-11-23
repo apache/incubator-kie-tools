@@ -37,6 +37,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
+import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
@@ -136,16 +137,14 @@ public class EndSignalEvent extends BaseEndEvent {
     }
 
     @NonPortable
-    public static class EndSignalEventBuilder extends BaseEndEventBuilder<EndSignalEvent> {
+    public static class EndSignalEventBuilder implements Builder<EndSignalEvent> {
 
         @Override
         public EndSignalEvent build() {
             return new EndSignalEvent(new BPMNGeneralSet(""),
-                                      new BackgroundSet(BG_COLOR,
-                                                        BORDER_COLOR,
-                                                        BORDER_SIZE),
+                                      new BackgroundSet(),
                                       new FontSet(),
-                                      new CircleDimensionSet(new Radius(RADIUS)),
+                                      new CircleDimensionSet(new Radius()),
                                       new ScopedSignalEventExecutionSet(),
                                       new DataIOSet());
         }

@@ -33,19 +33,18 @@ public class ShapeImpl<V extends ShapeView>
         Lifecycle {
 
     private final V view;
-    private final ShapeStateHelper<V, Shape<V>> shapeStateHelper;
+    private final ShapeStateHandler<V, Shape<V>> shapeStateHandler;
     private String uuid;
 
     public ShapeImpl(final V view) {
-        this.view = view;
-        this.shapeStateHelper = new ShapeStateHelper<V, Shape<V>>(this);
+        this(view, new ShapeStateStrokeHandler<>());
     }
 
     public ShapeImpl(final V view,
-                     final ShapeStateHelper<V, Shape<V>> shapeStateHelper) {
+                     final ShapeStateHandler<V, Shape<V>> shapeStateHandler) {
         this.view = view;
-        this.shapeStateHelper = shapeStateHelper;
-        this.shapeStateHelper.forShape(this);
+        this.shapeStateHandler = shapeStateHandler;
+        this.shapeStateHandler.forShape(this);
     }
 
     public void setUUID(final String uuid) {
@@ -70,12 +69,12 @@ public class ShapeImpl<V extends ShapeView>
 
     @Override
     public void applyState(final ShapeState shapeState) {
-        shapeStateHelper
+        shapeStateHandler
                 .applyState(shapeState);
     }
 
-    public ShapeStateHelper<V, Shape<V>> getShapeStateHelper() {
-        return shapeStateHelper;
+    public ShapeStateHandler<V, Shape<V>> getShapeStateHandler() {
+        return shapeStateHandler;
     }
 
     @Override

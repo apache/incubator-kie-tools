@@ -37,6 +37,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
+import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
@@ -68,16 +69,14 @@ public class IntermediateSignalEventCatching extends BaseCatchingIntermediateEve
     protected DataIOSet dataIOSet;
 
     @NonPortable
-    public static class IntermediateSignalEventCatchingBuilder extends BaseCatchingIntermediateEvenBuilder<IntermediateSignalEventCatching> {
+    public static class IntermediateSignalEventCatchingBuilder implements Builder<IntermediateSignalEventCatching> {
 
         @Override
         public IntermediateSignalEventCatching build() {
             return new IntermediateSignalEventCatching(new BPMNGeneralSet(""),
-                                                       new BackgroundSet(BG_COLOR,
-                                                                         BORDER_COLOR,
-                                                                         BORDER_SIZE),
+                                                       new BackgroundSet(),
                                                        new FontSet(),
-                                                       new CircleDimensionSet(new Radius(RADIUS)),
+                                                       new CircleDimensionSet(new Radius()),
                                                        new DataIOSet(),
                                                        new CancellingSignalEventExecutionSet());
         }

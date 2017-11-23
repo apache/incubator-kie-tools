@@ -23,7 +23,6 @@ import java.util.Set;
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
@@ -40,11 +39,10 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphProperty;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphPropertyValueBinding;
-import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @MorphBase(defaultType = NoneTask.class, targets = {ReusableSubprocess.class})
-public abstract class BaseTask implements BPMNDefinition {
+public abstract class BaseTask implements BPMNViewDefinition {
 
     @Category
     public static final transient String category = Categories.ACTIVITIES;
@@ -113,16 +111,6 @@ public abstract class BaseTask implements BPMNDefinition {
         add("ActivitiesMorph");
         add("cm_activity");
     }};
-
-    @NonPortable
-    public static abstract class BaseTaskBuilder<T extends BaseTask> implements Builder<T> {
-
-        public static final String COLOR = "#f9fad2";
-        public static final Double WIDTH = 136d;
-        public static final Double HEIGHT = 48d;
-        public static final Double BORDER_SIZE = 0.5d;
-        public static final String BORDER_COLOR = "#000000";
-    }
 
     protected BaseTask(final TaskTypes type) {
         this.taskType = new TaskType(type);
@@ -225,5 +213,4 @@ public abstract class BaseTask implements BPMNDefinition {
         }
         return false;
     }
-
 }

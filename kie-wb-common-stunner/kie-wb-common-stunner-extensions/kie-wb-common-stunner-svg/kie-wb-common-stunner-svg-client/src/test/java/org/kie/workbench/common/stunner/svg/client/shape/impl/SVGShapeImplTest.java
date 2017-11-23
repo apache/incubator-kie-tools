@@ -16,26 +16,31 @@
 
 package org.kie.workbench.common.stunner.svg.client.shape.impl;
 
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.shape.impl.LienzoShape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
-import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
+import org.kie.workbench.common.stunner.svg.client.shape.view.impl.SVGShapeStateHandler;
+import org.kie.workbench.common.stunner.svg.client.shape.view.impl.SVGShapeViewImpl;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(LienzoMockitoTestRunner.class)
 public class SVGShapeImplTest {
 
     @Mock
-    private SVGShapeView<?> view;
+    private SVGShapeViewImpl view;
+
+    @Mock
+    private SVGShapeStateHandler svgShapeStateHandler;
 
     @Mock
     private LienzoShape<?> lienzoShape;
@@ -45,6 +50,7 @@ public class SVGShapeImplTest {
 
     @Before
     public void setup() throws Exception {
+        when(view.getShapeStateHandler()).thenReturn(svgShapeStateHandler);
         this.tested = new SVGShapeImpl(view);
         this.mocked = new SVGShapeImpl(view,
                                        lienzoShape);
