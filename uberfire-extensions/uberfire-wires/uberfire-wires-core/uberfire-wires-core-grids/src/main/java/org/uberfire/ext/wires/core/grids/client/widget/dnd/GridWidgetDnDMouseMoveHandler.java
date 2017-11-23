@@ -113,10 +113,12 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
             final double cy = ap.getY();
 
             //If over Grid's drag handle prime for dragging
-            if (gridWidget.onDragHandle(event)) {
-                state.setActiveGridWidget(gridWidget);
-                state.setOperation(GridWidgetDnDHandlersState.GridWidgetHandlersOperation.GRID_MOVE_PENDING);
-                continue;
+            if (!layer.isGridPinned()) {
+                if (gridWidget.onDragHandle(event)) {
+                    state.setActiveGridWidget(gridWidget);
+                    state.setOperation(GridWidgetDnDHandlersState.GridWidgetHandlersOperation.GRID_MOVE_PENDING);
+                    continue;
+                }
             }
 
             //Check bounds

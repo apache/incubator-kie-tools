@@ -49,9 +49,20 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.Gr
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
+import org.uberfire.mvp.Command;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class GridWidgetDnDMouseMoveHandlerTest {
@@ -281,13 +292,42 @@ public class GridWidgetDnDMouseMoveHandlerTest {
     }
 
     @Test
-    public void findMovableGridWhenOverDragHandle() {
-        when(state.getOperation()).thenReturn(GridWidgetHandlersOperation.NONE);
+    public void findMovableGridWhenOverDragHandleWhenIsPinned() {
+        doFindMovableGridWhenOverDragHandle(true,
+                                            () -> {
+                                                verify(state,
+                                                       never()).setActiveGridWidget(any(GridWidget.class));
+                                                verify(state,
+                                                       never()).setOperation(eq(GridWidgetHandlersOperation.GRID_MOVE_PENDING));
+                                                assertNull(state.getActiveGridWidget());
+                                                assertEquals(GridWidgetHandlersOperation.NONE,
+                                                             state.getOperation());
+                                            });
+    }
+
+    @Test
+    public void findMovableGridWhenOverDragHandleWhenNotPinned() {
+        doFindMovableGridWhenOverDragHandle(false,
+                                            () -> {
+                                                verify(state).setActiveGridWidget(eq(gridWidget));
+                                                verify(state).setOperation(eq(GridWidgetHandlersOperation.GRID_MOVE_PENDING));
+                                                assertEquals(gridWidget,
+                                                             state.getActiveGridWidget());
+                                                assertEquals(GridWidgetHandlersOperation.GRID_MOVE_PENDING,
+                                                             state.getOperation());
+                                            });
+    }
+
+    private void doFindMovableGridWhenOverDragHandle(final boolean isPinned,
+                                                     final Command assertion) {
+        state.setOperation(GridWidgetHandlersOperation.NONE);
         when(gridWidget.isVisible()).thenReturn(true);
         when(gridWidget.onDragHandle(any(INodeXYEvent.class))).thenReturn(true);
+        when(layer.isGridPinned()).thenReturn(isPinned);
         when(layer.getGridWidgets()).thenReturn(new HashSet<GridWidget>() {{
             add(gridWidget);
         }});
+
         //This location is top-left of the GridWidget; not within a column move/resize or row move hot-spot
         when(event.getX()).thenReturn(100);
         when(event.getY()).thenReturn(100);
@@ -297,24 +337,7 @@ public class GridWidgetDnDMouseMoveHandlerTest {
         verify(handler,
                times(1)).findGridColumn(eq(event));
 
-        verify(handler,
-               never()).findMovableColumns(any(GridWidget.class),
-                                           any(Double.class),
-                                           any(Double.class),
-                                           any(Double.class),
-                                           any(Double.class));
-        verify(handler,
-               never()).findMovableRows(any(GridWidget.class),
-                                        any(Double.class),
-                                        any(Double.class));
-        verify(handler,
-               never()).findResizableColumn(any(GridWidget.class),
-                                            any(Double.class));
-
-        verify(state,
-               times(1)).setActiveGridWidget(eq(gridWidget));
-        verify(state,
-               times(1)).setOperation(eq(GridWidgetHandlersOperation.GRID_MOVE_PENDING));
+        assertion.execute();
     }
 
     @Test
