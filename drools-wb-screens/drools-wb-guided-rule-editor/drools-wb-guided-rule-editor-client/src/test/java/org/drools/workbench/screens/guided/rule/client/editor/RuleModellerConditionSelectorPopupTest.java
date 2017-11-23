@@ -166,6 +166,7 @@ public class RuleModellerConditionSelectorPopupTest {
         new RuleModellerConditionSelectorPopup(model, ruleModeller, 0, oracle);
 
         verify(choices, atLeastOnce()).addItem(keyCaptor.capture(), valueCaptor.capture());
+        verify(choices).setMultipleSelect(true);
         Assertions.assertThat(keyCaptor.getAllValues()).contains(DSL_SENTENCE_CHOICE_KEY);
         Assertions.assertThat(valueCaptor.getAllValues()).contains(DSL_SENTENCE_CHOICE_VALUE);
     }
@@ -187,6 +188,7 @@ public class RuleModellerConditionSelectorPopupTest {
         new RuleModellerConditionSelectorPopup(model, ruleModeller, 0, oracle);
 
         verify(choices, atLeastOnce()).addItem(keyCaptor.capture(), valueCaptor.capture());
+        verify(choices).setMultipleSelect(true);
         Assertions.assertThat(keyCaptor.getAllValues()).doesNotContain(DSL_SENTENCE_CHOICE_KEY);
         Assertions.assertThat(valueCaptor.getAllValues()).doesNotContain(DSL_SENTENCE_CHOICE_VALUE);
     }

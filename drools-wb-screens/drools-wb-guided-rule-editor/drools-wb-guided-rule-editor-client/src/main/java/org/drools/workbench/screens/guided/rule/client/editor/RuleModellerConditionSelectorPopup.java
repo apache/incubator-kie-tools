@@ -144,6 +144,7 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
 
     private ListBox makeChoicesListBox() {
         choices = GWT.create(ListBox.class);
+        choices.setMultipleSelect(true);
         choices.setPixelSize(getChoicesWidth(),
                              getChoicesHeight());
 
