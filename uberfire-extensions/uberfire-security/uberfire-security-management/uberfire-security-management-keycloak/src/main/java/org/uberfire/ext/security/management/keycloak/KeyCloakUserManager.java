@@ -87,6 +87,11 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
         List<UserRepresentation> userRepresentations = usersResource.search(req.getSearchPattern(),
                                                                             page * pageSize,
                                                                             pageSize + 1);
+
+        int numberOfFoundUsers = usersResource.search(req.getSearchPattern(),
+                                                      1,
+                                                      Integer.MAX_VALUE).size();
+
         final List<User> users = new ArrayList<User>();
         boolean hasNext = false;
         if (userRepresentations != null && !userRepresentations.isEmpty()) {
@@ -105,7 +110,7 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
         return new SearchResponseImpl<User>(users,
                                             page + 1,
                                             pageSize,
-                                            -1,
+                                            numberOfFoundUsers,
                                             hasNext);
     }
 

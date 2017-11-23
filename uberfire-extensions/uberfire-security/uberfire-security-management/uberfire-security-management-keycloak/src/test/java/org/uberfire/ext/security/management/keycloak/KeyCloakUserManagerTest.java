@@ -133,7 +133,7 @@ public class KeyCloakUserManagerTest extends DefaultKeyCloakTest {
         int total = response.getTotal();
         boolean hasNextPage = response.hasNextPage();
         assertEquals(total,
-                     -1);
+                     usersCount);
         assertTrue(hasNextPage);
         assertEquals(users.size(),
                      5);
@@ -156,7 +156,7 @@ public class KeyCloakUserManagerTest extends DefaultKeyCloakTest {
         int total = response.getTotal();
         boolean hasNextPage = response.hasNextPage();
         assertEquals(total,
-                     -1);
+                     usersCount);
         assertTrue(hasNextPage);
         assertEquals(users.size(),
                      5);
@@ -179,7 +179,7 @@ public class KeyCloakUserManagerTest extends DefaultKeyCloakTest {
         int total = response.getTotal();
         boolean hasNextPage = response.hasNextPage();
         assertEquals(total,
-                     -1);
+                     usersCount);
         assertTrue(hasNextPage);
         assertEquals(users.size(),
                      5);
@@ -202,7 +202,7 @@ public class KeyCloakUserManagerTest extends DefaultKeyCloakTest {
         int total = response.getTotal();
         boolean hasNextPage = response.hasNextPage();
         assertEquals(total,
-                     -1);
+                     usersCount);
         assertTrue(hasNextPage);
         assertEquals(users.size(),
                      5);

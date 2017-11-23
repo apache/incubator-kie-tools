@@ -102,6 +102,11 @@ public abstract class DefaultKeyCloakTest extends BaseKeyCloakTest {
                 String pattern = (String) invocationOnMock.getArguments()[0];
                 Integer start = (Integer) invocationOnMock.getArguments()[1];
                 Integer size = (Integer) invocationOnMock.getArguments()[2];
+
+                if (start == 1 && size == Integer.MAX_VALUE) {
+                    return userRepresentations;
+                }
+
                 List<UserRepresentation> result = getUserRepresentations(pattern,
                                                                          start,
                                                                          size);
