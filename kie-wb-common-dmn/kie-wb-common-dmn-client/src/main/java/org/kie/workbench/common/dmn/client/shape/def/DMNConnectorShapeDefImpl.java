@@ -27,5 +27,4 @@ public class DMNConnectorShapeDefImpl implements DMNConnectorShapeDef<DMNDefinit
     public BiConsumer<DMNDefinition, ConnectorView> viewHandler() {
         return DMNViewHandlers.CONNECTOR_ATTRIBUTES_HANDLER::handle;
     }
-
 }

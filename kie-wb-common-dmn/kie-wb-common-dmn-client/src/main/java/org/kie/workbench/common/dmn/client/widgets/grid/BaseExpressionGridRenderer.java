@@ -29,11 +29,11 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl
 
 public class BaseExpressionGridRenderer extends BaseGridRenderer {
 
-    private static final int HEADER_HEIGHT = 64;
+    protected static final int HEADER_HEIGHT = 64;
 
-    private static final int HEADER_ROW_HEIGHT = 64;
+    protected static final int HEADER_ROW_HEIGHT = 64;
 
-    private final boolean hideHeader;
+    protected final boolean hideHeader;
 
     public BaseExpressionGridRenderer(final boolean hideHeader) {
         super(new BaseExpressionGridTheme() {

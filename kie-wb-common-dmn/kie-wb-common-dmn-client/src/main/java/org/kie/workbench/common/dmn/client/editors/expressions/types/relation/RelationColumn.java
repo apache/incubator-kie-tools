@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.expressions.types.literal;
+package org.kie.workbench.common.dmn.client.editors.expressions.types.relation;
 
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
@@ -28,15 +28,15 @@ import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRende
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.HasSingletonDOMElementResource;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
-public class LiteralExpressionColumn extends DMNGridColumn<String> implements HasSingletonDOMElementResource {
+public class RelationColumn extends DMNGridColumn<String> implements HasSingletonDOMElementResource {
 
     private final TextAreaSingletonDOMElementFactory factory;
 
-    public LiteralExpressionColumn(final HeaderMetaData headerMetaData,
-                                   final TextAreaSingletonDOMElementFactory factory,
-                                   final GridWidget gridWidget) {
+    public RelationColumn(final HeaderMetaData headerMetaData,
+                          final TextAreaSingletonDOMElementFactory factory,
+                          final GridWidget gridWidget) {
         super(headerMetaData,
-              new LiteralExpressionColumnRenderer(factory),
+              new RelationColumnRenderer(factory),
               gridWidget);
         this.factory = PortablePreconditions.checkNotNull("factory",
                                                           factory);

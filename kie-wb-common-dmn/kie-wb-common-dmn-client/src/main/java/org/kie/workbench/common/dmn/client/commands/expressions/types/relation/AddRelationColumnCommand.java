@@ -21,7 +21,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationUIModelMapper;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommand;
@@ -42,14 +42,14 @@ public class AddRelationColumnCommand extends AbstractCanvasGraphCommand impleme
     private final Relation relation;
     private final InformationItem informationItem;
     private final GridData uiModel;
-    private final LiteralExpressionColumn uiModelColumn;
+    private final RelationColumn uiModelColumn;
     private final RelationUIModelMapper uiModelMapper;
     private final org.uberfire.mvp.Command canvasOperation;
 
     public AddRelationColumnCommand(final Relation relation,
                                     final InformationItem informationItem,
                                     final GridData uiModel,
-                                    final LiteralExpressionColumn uiModelColumn,
+                                    final RelationColumn uiModelColumn,
                                     final RelationUIModelMapper uiModelMapper,
                                     final org.uberfire.mvp.Command canvasOperation) {
         this.relation = relation;

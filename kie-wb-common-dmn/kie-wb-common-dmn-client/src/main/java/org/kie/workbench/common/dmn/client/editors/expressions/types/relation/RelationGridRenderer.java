@@ -20,7 +20,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRender
 
 public class RelationGridRenderer extends BaseExpressionGridRenderer {
 
-    public RelationGridRenderer(final boolean hideHeader) {
-        super(hideHeader);
+    public RelationGridRenderer() {
+        super(false);
     }
 }

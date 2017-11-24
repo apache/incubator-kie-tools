@@ -106,7 +106,6 @@ public class RelationEditorDefinition implements ExpressionEditorDefinition<Rela
                                             sessionManager,
                                             sessionCommandManager,
                                             editorSelectedEvent,
-                                            controlsProvider.get(),
-                                            nested));
+                                            controlsProvider.get()));
     }
 }

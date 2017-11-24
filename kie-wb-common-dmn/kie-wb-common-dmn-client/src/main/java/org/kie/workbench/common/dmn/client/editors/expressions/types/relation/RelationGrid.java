@@ -31,8 +31,6 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.AddRelationColumnCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.AddRelationRowCommand;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionColumn;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionColumnHeaderMetaData;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
@@ -64,8 +62,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
                         final SessionManager sessionManager,
                         final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                         final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
-                        final RelationGridControls controls,
-                        final boolean nested) {
+                        final RelationGridControls controls) {
         super(parent,
               hasExpression,
               expression,
@@ -77,7 +74,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
                                    sessionCommandManager,
                                    expression,
                                    gridLayer::batch),
-              new RelationGridRenderer(nested),
+              new RelationGridRenderer(),
               sessionManager,
               sessionCommandManager,
               editorSelectedEvent);
@@ -122,23 +119,23 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
         expression.ifPresent(e -> {
             model.appendColumn(new RowNumberColumn());
             e.getColumn().forEach(ii -> {
-                final GridColumn literalExpressionColumn = makeLiteralExpressionColumn(ii);
-                model.appendColumn(literalExpressionColumn);
+                final GridColumn relationColumn = makeRelationColumn(ii);
+                model.appendColumn(relationColumn);
             });
         });
 
         getRenderer().setColumnRenderConstraint((isSelectionLayer, gridColumn) -> true);
     }
 
-    private LiteralExpressionColumn makeLiteralExpressionColumn(final InformationItem informationItem) {
-        final LiteralExpressionColumn literalExpressionColumn = new LiteralExpressionColumn(new LiteralExpressionColumnHeaderMetaData(() -> informationItem.getName().getValue(),
-                                                                                                                                      (s) -> informationItem.getName().setValue(s),
-                                                                                                                                      headerFactory),
-                                                                                            factory,
-                                                                                            this);
-        literalExpressionColumn.setMovable(true);
-        literalExpressionColumn.setResizable(true);
-        return literalExpressionColumn;
+    private RelationColumn makeRelationColumn(final InformationItem informationItem) {
+        final RelationColumn relationColumn = new RelationColumn(new RelationColumnHeaderMetaData(() -> informationItem.getName().getValue(),
+                                                                                                  (s) -> informationItem.getName().setValue(s),
+                                                                                                  headerFactory),
+                                                                 factory,
+                                                                 this);
+        relationColumn.setMovable(true);
+        relationColumn.setResizable(true);
+        return relationColumn;
     }
 
     @Override
@@ -167,16 +164,16 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
         expression.ifPresent(relation -> {
             final InformationItem informationItem = new InformationItem();
             informationItem.setName(new Name("Column"));
-            final LiteralExpressionColumn literalExpressionColumn = makeLiteralExpressionColumn(informationItem);
+            final RelationColumn relationColumn = makeRelationColumn(informationItem);
 
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           new AddRelationColumnCommand(relation,
                                                                        informationItem,
                                                                        model,
-                                                                       literalExpressionColumn,
+                                                                       relationColumn,
                                                                        uiModelMapper,
                                                                        () -> {
-                                                                           literalExpressionColumn.updateWidthOfPeers();
+                                                                           relationColumn.updateWidthOfPeers();
                                                                            gridPanel.refreshScrollPosition();
                                                                            gridPanel.updatePanelSize();
                                                                            gridLayer.batch();
