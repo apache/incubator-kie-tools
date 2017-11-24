@@ -25,15 +25,16 @@ UberFire has the power of GIT built in. A simple and clean NIO.2 based Virtual F
 
 Client-side code that creates a file in the server-side VFS:
 
+```
 @Inject private FileSystem fs;
 @Inject private Caller<VFSService> vfsServices;
 
-```
 public void onSaveButtonClicked() {
   Path path = PathFactory.newPath(
       fs, "readme.txt", "default://readme.txt");
   vfsServices.call().write(path, "Hello World!");
-}```
+}
+```
 
 ###Fine-Grained Security
 
