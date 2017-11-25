@@ -123,10 +123,6 @@
       <artifactId>commons-codec</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-commons</artifactId>
-    </dependency>
     <!-- drools -->
     <dependency>
       <groupId>org.drools</groupId>
