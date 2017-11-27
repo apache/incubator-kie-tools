@@ -19,7 +19,6 @@ package org.kie.workbench.common.dmn.client.commands.general;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
@@ -46,6 +45,7 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -92,13 +92,18 @@ public class SetCellValueCommandTest {
 
     private SetCellValueCommand command;
 
-    @Before
     @SuppressWarnings("unchecked")
-    public void setup() {
+    public void setup(final GridCell oldGridCell,
+                      final GridCellValue oldGridCellValue,
+                      final String oldCellValue) {
         when(gridModel.getCell(ROW_INDEX,
                                COLUMN_INDEX)).thenReturn(oldGridCell);
-        when(oldGridCell.getValue()).thenReturn(oldGridCellValue);
-        when(oldGridCellValue.getValue()).thenReturn(OLD_CELL_VALUE);
+        if (oldGridCell != null) {
+            when(oldGridCell.getValue()).thenReturn(oldGridCellValue);
+            if (oldGridCellValue != null) {
+                when(oldGridCellValue.getValue()).thenReturn(oldCellValue);
+            }
+        }
         when(newGridCell.getValue()).thenReturn(newGridCellValue);
         when(newGridCellValue.getValue()).thenReturn(NEW_CELL_VALUE);
 
@@ -113,6 +118,9 @@ public class SetCellValueCommandTest {
     @Test
     @SuppressWarnings("unchecked")
     public void checkGraphCommand() {
+        setup(oldGridCell,
+              oldGridCellValue,
+              OLD_CELL_VALUE);
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      command.getGraphCommand(canvasHandler).allow(graphCommandExecutionContext));
         verify(uiModelMapper,
@@ -124,6 +132,9 @@ public class SetCellValueCommandTest {
     @Test
     @SuppressWarnings("unchecked")
     public void executeGraphCommand() {
+        setup(oldGridCell,
+              oldGridCellValue,
+              OLD_CELL_VALUE);
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      command.getGraphCommand(canvasHandler).execute(graphCommandExecutionContext));
 
@@ -134,6 +145,9 @@ public class SetCellValueCommandTest {
     @Test
     @SuppressWarnings("unchecked")
     public void undoGraphCommand() {
+        setup(oldGridCell,
+              oldGridCellValue,
+              OLD_CELL_VALUE);
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      command.getGraphCommand(canvasHandler).undo(graphCommandExecutionContext));
 
@@ -161,6 +175,9 @@ public class SetCellValueCommandTest {
 
     @Test
     public void allowCanvasCommand() {
+        setup(oldGridCell,
+              oldGridCellValue,
+              OLD_CELL_VALUE);
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.getCanvasCommand(canvasHandler).allow(canvasHandler));
         verify(gridModel,
@@ -171,6 +188,9 @@ public class SetCellValueCommandTest {
 
     @Test
     public void executeCanvasCommand() {
+        setup(oldGridCell,
+              oldGridCellValue,
+              OLD_CELL_VALUE);
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.getCanvasCommand(canvasHandler).execute(canvasHandler));
 
@@ -179,10 +199,55 @@ public class SetCellValueCommandTest {
 
     @Test
     public void undoCanvasCommand() {
+        setup(oldGridCell,
+              oldGridCellValue,
+              OLD_CELL_VALUE);
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.getCanvasCommand(canvasHandler).undo(canvasHandler));
 
         assertCanvasMutation(oldGridCellValue);
+    }
+
+    @Test
+    public void executeCanvasCommandThenUndoWithNullOriginalCell() {
+        setup(null,
+              null,
+              null);
+
+        assertEquals(CanvasCommandResultBuilder.SUCCESS,
+                     command.getCanvasCommand(canvasHandler).execute(canvasHandler));
+
+        assertCanvasMutation(newGridCellValue);
+
+        reset(gridModel, gridLayer);
+
+        assertEquals(CanvasCommandResultBuilder.SUCCESS,
+                     command.getCanvasCommand(canvasHandler).undo(canvasHandler));
+
+        verify(gridModel).deleteCell(eq(ROW_INDEX),
+                                     eq(COLUMN_INDEX));
+        verify(gridLayer).batch();
+    }
+
+    @Test
+    public void executeCanvasCommandThenUndoWithNullOriginalValue() {
+        setup(oldGridCell,
+              null,
+              null);
+
+        assertEquals(CanvasCommandResultBuilder.SUCCESS,
+                     command.getCanvasCommand(canvasHandler).execute(canvasHandler));
+
+        assertCanvasMutation(newGridCellValue);
+
+        reset(gridModel, gridLayer);
+
+        assertEquals(CanvasCommandResultBuilder.SUCCESS,
+                     command.getCanvasCommand(canvasHandler).undo(canvasHandler));
+
+        verify(gridModel).deleteCell(eq(ROW_INDEX),
+                                     eq(COLUMN_INDEX));
+        verify(gridLayer).batch();
     }
 
     private void assertCanvasMutation(final GridCellValue gridCellValue) {
@@ -198,6 +263,9 @@ public class SetCellValueCommandTest {
 
     @Test
     public void checkCommandDefinition() {
+        setup(oldGridCell,
+              oldGridCellValue,
+              OLD_CELL_VALUE);
         assertTrue(command instanceof VetoExecutionCommand);
         assertTrue(command instanceof VetoUndoCommand);
     }
