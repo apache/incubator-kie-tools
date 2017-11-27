@@ -51,38 +51,43 @@ public class ExpressionEditorColumn extends DMNGridColumn<Optional<GridWidget>> 
     public Double getMinimumWidth() {
         double minimumWidth = super.getMinimumWidth();
         final GridData model = gridWidget.getModel();
-        final int columnIndex = model.getColumns().indexOf(this);
-        final int _columnIndex = model.getColumns().get(columnIndex).getIndex();
+        final int columnIndex = getLogicalColumnIndex(model);
 
-        for (GridRow row : model.getRows()) {
-            final GridCell<?> cell = row.getCells().get(_columnIndex);
-            if (cell != null) {
-                final GridCellValue<?> value = cell.getValue();
-                if (value instanceof DMNExpressionCellValue) {
-                    final DMNExpressionCellValue ecv = (DMNExpressionCellValue) value;
-                    final Optional<GridWidget> editor = ecv.getValue();
-                    if (editor.isPresent()) {
-
-                        // The minimum width of an embedded editor is the WIDTH of it's columns
-                        // (other than the last) plus the MINIMUM WIDTH of the last column.
-                        double editorWidth = DMNGridColumn.PADDING * 2;
-                        final GridWidget editorWidget = editor.get();
-                        final GridData editorModel = editorWidget.getModel();
-                        final List<GridColumn<?>> editorColumns = editorModel.getColumns();
-                        final int editorColumnCount = editorModel.getColumnCount();
-                        for (int editorColumnIndex = 0; editorColumnIndex < editorColumnCount - 1; editorColumnIndex++) {
-                            final GridColumn editorColumn = editorColumns.get(editorColumnIndex);
-                            editorWidth = editorWidth + editorColumn.getWidth();
+        if (columnIndex != -1) {
+            for (GridRow row : model.getRows()) {
+                final GridCell<?> cell = row.getCells().get(columnIndex);
+                if (cell != null) {
+                    final GridCellValue<?> value = cell.getValue();
+                    if (value instanceof DMNExpressionCellValue) {
+                        final DMNExpressionCellValue ecv = (DMNExpressionCellValue) value;
+                        final Optional<GridWidget> editor = ecv.getValue();
+                        if (editor.isPresent()) {
+                            minimumWidth = getMinimumWidthForColumns(editor.get(), minimumWidth);
                         }
-                        editorWidth = editorWidth + editorColumns.get(editorColumnCount - 1).getMinimumWidth();
-
-                        minimumWidth = Math.max(minimumWidth,
-                                                editorWidth);
                     }
                 }
             }
         }
         return minimumWidth;
+    }
+
+    private double getMinimumWidthForColumns(final GridWidget editorWidget, final double minimumWidth) {
+        // The minimum width of an embedded editor is the WIDTH of it's columns
+        // (other than the last) plus the MINIMUM WIDTH of the last column.
+        double editorWidth = DMNGridColumn.PADDING * 2;
+        final GridData editorModel = editorWidget.getModel();
+        final List<GridColumn<?>> editorColumns = editorModel.getColumns();
+        final int editorColumnCount = editorModel.getColumnCount();
+        for (int editorColumnIndex = 0; editorColumnIndex < editorColumnCount - 1; editorColumnIndex++) {
+            final GridColumn editorColumn = editorColumns.get(editorColumnIndex);
+            editorWidth = editorWidth + editorColumn.getWidth();
+        }
+        if (editorColumnCount > 0) {
+            editorWidth = editorWidth + editorColumns.get(editorColumnCount - 1).getMinimumWidth();
+        }
+
+        return Math.max(minimumWidth,
+                        editorWidth);
     }
 
     @Override
@@ -101,29 +106,37 @@ public class ExpressionEditorColumn extends DMNGridColumn<Optional<GridWidget>> 
     protected void updateWidthOfChildren() {
         final double columnWidth = getWidth();
         final GridData model = gridWidget.getModel();
-        final int columnIndex = model.getColumns().indexOf(this);
-        final int _columnIndex = model.getColumns().get(columnIndex).getIndex();
+        final int columnIndex = getLogicalColumnIndex(model);
 
-        for (GridRow row : model.getRows()) {
-            final GridCell<?> cell = row.getCells().get(_columnIndex);
-            if (cell != null) {
-                final GridCellValue<?> value = cell.getValue();
-                if (value instanceof DMNExpressionCellValue) {
-                    final DMNExpressionCellValue ecv = (DMNExpressionCellValue) value;
-                    final Optional<GridWidget> editor = ecv.getValue();
-                    if (editor.isPresent()) {
-                        final GridWidget gw = editor.get();
-                        final List<GridColumn<?>> gwcs = gw.getModel().getColumns();
-                        double targetGridWidth = columnWidth - DMNGridColumn.PADDING * 2;
-                        for (GridColumn<?> gwc : gwcs) {
-                            targetGridWidth = targetGridWidth - gwc.getWidth();
+        if (columnIndex != -1) {
+            for (GridRow row : model.getRows()) {
+                final GridCell<?> cell = row.getCells().get(columnIndex);
+                if (cell != null) {
+                    final GridCellValue<?> value = cell.getValue();
+                    if (value instanceof DMNExpressionCellValue) {
+                        final DMNExpressionCellValue ecv = (DMNExpressionCellValue) value;
+                        final Optional<GridWidget> editor = ecv.getValue();
+                        if (editor.isPresent()) {
+                            updateWidthOfLastColumn(editor.get(), columnWidth);
                         }
-
-                        final GridColumn<?> lastColumn = gwcs.get(gwcs.size() - 1);
-                        final double lastColumnWidth = lastColumn.getWidth();
-                        ((DMNGridColumn) lastColumn).setWidthInternal(lastColumnWidth + targetGridWidth);
                     }
                 }
+            }
+        }
+    }
+
+    private void updateWidthOfLastColumn(final GridWidget gridWidget, final double columnWidth) {
+        final List<GridColumn<?>> gwcs = gridWidget.getModel().getColumns();
+        double targetGridWidth = columnWidth - DMNGridColumn.PADDING * 2;
+        for (GridColumn<?> gwc : gwcs) {
+            targetGridWidth = targetGridWidth - gwc.getWidth();
+        }
+
+        if (gwcs.size() > 0) {
+            final GridColumn<?> lastColumn = gwcs.get(gwcs.size() - 1);
+            final double lastColumnWidth = lastColumn.getWidth();
+            if (lastColumn instanceof DMNGridColumn) {
+                ((DMNGridColumn) lastColumn).setWidthInternal(lastColumnWidth + targetGridWidth);
             }
         }
     }
@@ -140,23 +153,37 @@ public class ExpressionEditorColumn extends DMNGridColumn<Optional<GridWidget>> 
     private double getRequiredColumnWidth() {
         double requiredColumnWidth = DEFAULT_WIDTH;
         final GridData model = gridWidget.getModel();
-        final int columnIndex = model.getColumns().indexOf(this);
-        final int _columnIndex = model.getColumns().get(columnIndex).getIndex();
+        final int columnIndex = getLogicalColumnIndex(model);
 
-        for (GridRow row : model.getRows()) {
-            final GridCell<?> cell = row.getCells().get(_columnIndex);
-            if (cell != null) {
-                final GridCellValue<?> value = cell.getValue();
-                if (value instanceof DMNExpressionCellValue) {
-                    final DMNExpressionCellValue ecv = (DMNExpressionCellValue) value;
-                    final Optional<GridWidget> editor = ecv.getValue();
-                    if (editor.isPresent()) {
-                        requiredColumnWidth = Math.max(requiredColumnWidth,
-                                                       editor.get().getWidth() + DMNGridColumn.PADDING * 2);
+        if (columnIndex != -1) {
+            for (GridRow row : model.getRows()) {
+                final GridCell<?> cell = row.getCells().get(columnIndex);
+                if (cell != null) {
+                    final GridCellValue<?> value = cell.getValue();
+                    if (value instanceof DMNExpressionCellValue) {
+                        final DMNExpressionCellValue ecv = (DMNExpressionCellValue) value;
+                        final Optional<GridWidget> editor = ecv.getValue();
+                        if (editor.isPresent()) {
+                            requiredColumnWidth = Math.max(requiredColumnWidth,
+                                                           editor.get().getWidth() + DMNGridColumn.PADDING * 2);
+                        }
                     }
                 }
             }
         }
+
         return requiredColumnWidth;
+    }
+
+    /*
+     * It is index of the this column that can be seen in UI.
+     * It may differ to physical index of the column in the list
+     * because user could reorder columns in UI
+     *
+     * return index of the column, -1 if column was not found in the model
+     */
+    private int getLogicalColumnIndex(GridData model) {
+        final int columnIndex = model.getColumns().indexOf(this);
+        return columnIndex != -1 ? model.getColumns().get(columnIndex).getIndex() : -1;
     }
 }
