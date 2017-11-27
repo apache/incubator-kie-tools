@@ -25,14 +25,6 @@ public class GridCellTuple implements RequiresResize {
     private int columnIndex;
     private final GridData uiModel;
 
-    public static GridCellTuple make(final int rowIndex,
-                                     final int columnIndex,
-                                     final GridData uiModel) {
-        return new GridCellTuple(rowIndex,
-                                 columnIndex,
-                                 uiModel);
-    }
-
     public GridCellTuple(final int rowIndex,
                          final int columnIndex,
                          final GridData uiModel) {

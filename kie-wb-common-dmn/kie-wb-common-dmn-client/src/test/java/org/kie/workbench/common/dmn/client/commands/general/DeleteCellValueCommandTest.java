@@ -94,9 +94,9 @@ public class DeleteCellValueCommandTest {
         when(gridCell.getValue()).thenReturn(gridCellValue);
         when(gridCellValue.getValue()).thenReturn(CELL_VALUE);
 
-        this.command = new DeleteCellValueCommand(GridCellTuple.make(ROW_INDEX,
-                                                                     COLUMN_INDEX,
-                                                                     gridModel),
+        this.command = new DeleteCellValueCommand(new GridCellTuple(ROW_INDEX,
+                                                                    COLUMN_INDEX,
+                                                                    gridModel),
                                                   () -> uiModelMapper,
                                                   gridLayer::batch);
     }

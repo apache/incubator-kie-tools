@@ -145,9 +145,9 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                           final HasExpression hasExpression,
                           final Optional<HasName> hasName,
                           final Optional<Expression> expression) {
-        final Optional<GridWidget> oEditor = definition.getEditor(GridCellTuple.make(0,
-                                                                                     0,
-                                                                                     expressionContainer.getModel()),
+        final Optional<GridWidget> oEditor = definition.getEditor(new GridCellTuple(0,
+                                                                                    0,
+                                                                                    expressionContainer.getModel()),
                                                                   hasExpression,
                                                                   expression,
                                                                   hasName,

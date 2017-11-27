@@ -68,9 +68,9 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
 
                     final Optional<ExpressionEditorDefinition<Expression>> expressionEditorDefinition = expressionEditorDefinitionsSupplier.get().getExpressionEditorDefinition(expression);
                     expressionEditorDefinition.ifPresent(ed -> {
-                        final Optional<GridWidget> editor = ed.getEditor(GridCellTuple.make(rowIndex,
-                                                                                            columnIndex,
-                                                                                            uiModel.get()),
+                        final Optional<GridWidget> editor = ed.getEditor(new GridCellTuple(rowIndex,
+                                                                                           columnIndex,
+                                                                                           uiModel.get()),
                                                                          ce,
                                                                          expression,
                                                                          Optional.ofNullable(ce.getVariable()),
