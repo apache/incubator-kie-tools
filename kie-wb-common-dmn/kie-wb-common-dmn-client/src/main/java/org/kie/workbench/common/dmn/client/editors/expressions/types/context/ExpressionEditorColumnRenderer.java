@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
 import java.util.Optional;
 
 import com.ait.lienzo.client.core.shape.Group;
+import com.google.gwt.core.client.GWT;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
@@ -35,9 +36,11 @@ public class ExpressionEditorColumnRenderer extends BaseGridColumnRenderer<Optio
             return null;
         }
 
-        final Group g = new Group();
-        final DMNExpressionCellValue ecv = (DMNExpressionCellValue) cell.getValue();
-        ecv.getValue().ifPresent(editor -> g.add(editor.setX(DMNGridColumn.PADDING).setY(DMNGridColumn.PADDING)));
+        final Group g = GWT.create(Group.class);
+        if (cell.getValue() != null && cell.getValue() instanceof DMNExpressionCellValue) {
+            final DMNExpressionCellValue ecv = (DMNExpressionCellValue) cell.getValue();
+            ecv.getValue().ifPresent(editor -> g.add(editor.setX(DMNGridColumn.PADDING).setY(DMNGridColumn.PADDING)));
+        }
 
         return g;
     }
