@@ -22,6 +22,11 @@ public class WiresParentPickerCachedControl extends WiresParentPickerControlImpl
         clear();
     }
 
+    public WiresParentPickerCachedControl(WiresShapeLocationControlImpl shapeLocationControl,
+                                          ColorMapBackedPickerProvider colorMapBackedPickerProvider) {
+        super(shapeLocationControl, colorMapBackedPickerProvider);
+    }
+
     @Override
     public void onMoveStart(double x,
                             double y) {

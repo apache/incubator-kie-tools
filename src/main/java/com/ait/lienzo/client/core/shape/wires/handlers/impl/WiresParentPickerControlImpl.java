@@ -32,7 +32,7 @@ public class WiresParentPickerControlImpl implements WiresParentPickerControl,
         this.colorMapBackedPickerProvider = new ColorMapBackedPickerProviderImpl(pickerOptions);
     }
 
-    WiresParentPickerControlImpl(WiresShapeLocationControlImpl shapeLocationControl,
+    public WiresParentPickerControlImpl(WiresShapeLocationControlImpl shapeLocationControl,
                                  ColorMapBackedPickerProvider colorMapBackedPickerProvider) {
         this.shapeLocationControl = shapeLocationControl;
         this.colorMapBackedPickerProvider = colorMapBackedPickerProvider;
@@ -44,7 +44,7 @@ public class WiresParentPickerControlImpl implements WiresParentPickerControl,
         shapeLocationControl.onMoveStart(x, y);
         initialParent = getShape().getParent();
         m_parent = getShape().getParent();
-        m_picker = colorMapBackedPickerProvider.get(getShape().getWiresManager().getLayer());
+        rebuildPicker();
 
         if (m_parent != null && m_parent instanceof WiresShape) {
             if (getShape().getDockedTo() == null) {
@@ -55,6 +55,10 @@ public class WiresParentPickerControlImpl implements WiresParentPickerControl,
                                            (int) shapeLocationControl.getShapeStartCenterY());
             }
         }
+    }
+
+    public void rebuildPicker() {
+        m_picker = colorMapBackedPickerProvider.get(getShape().getWiresManager().getLayer());
     }
 
     @Override
