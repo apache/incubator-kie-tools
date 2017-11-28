@@ -147,8 +147,6 @@ public class WiresCompositeControlImpl
         Point2D candidate = null;
         if (shape.getControl().getContainmentControl().isAllow()) {
             candidate = shape.getControl().getContainmentControl().getCandidateLocation();
-        } else if (shape.getControl().getDockingControl().isAllow()) {
-            candidate = shape.getControl().getDockingControl().getCandidateLocation();
         }
         // Check if the candidate location is relative to the parent.
         if (null != candidate) {
@@ -276,8 +274,8 @@ public class WiresCompositeControlImpl
     @Override
     public void clear() {
         for (WiresShape shape : selectionContext.getShapes()) {
-            enableDocking(shape.getControl());
             shape.getControl().clear();
+            enableDocking(shape.getControl());
         }
         clearState();
     }
@@ -286,7 +284,7 @@ public class WiresCompositeControlImpl
     public void reset() {
         for (WiresShape shape : selectionContext.getShapes()) {
             shape.getControl().reset();
-            shape.shapeMoved();
+            enableDocking(shape.getControl());
         }
         for (WiresConnector connector : selectionContext.getConnectors()) {
             WiresConnector.WiresConnectorHandler handler = connector.getWiresConnectorHandler();
@@ -299,6 +297,10 @@ public class WiresCompositeControlImpl
     @Override
     public Point2D getAdjust() {
         return delta;
+    }
+
+    public Context getContext() {
+        return selectionContext;
     }
 
     @Override

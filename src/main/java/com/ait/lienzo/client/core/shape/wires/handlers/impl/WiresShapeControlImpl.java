@@ -200,6 +200,7 @@ public class WiresShapeControlImpl
         if (null != m_alignAndDistributeControl) {
             m_alignAndDistributeControl.dragEnd();
         }
+        getShape().shapeMoved();
         clearState();
     }
 
