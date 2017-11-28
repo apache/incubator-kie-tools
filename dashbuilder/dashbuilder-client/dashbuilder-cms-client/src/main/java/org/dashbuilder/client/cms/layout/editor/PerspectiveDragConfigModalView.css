@@ -1,0 +1,16 @@
+.uf-pdc-selector-body {
+    margin: 15px;
+}
+.uf-pdc-selector-button {
+    min-width: 200px;
+    text-align: left;
+}
+.uf-pdc-selector-menu {
+    margin-left: 20px;
+    min-width: 200px;
+}
+.uf-pdc-selector-caret {
+    float: right;
+    margin-top: 5px;
+}
+

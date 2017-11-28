@@ -1,0 +1,46 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
+             xmlns:my="urn:import:org.dashbuilder.displayer.client">
+
+  <ui:with field="i18n" type="org.dashbuilder.client.resources.i18n.AppConstants"/>
+
+  <g:VerticalPanel spacing="10">
+    <g:HorizontalPanel spacing="10">
+      <my:Displayer ui:field="tableAll"/>
+    </g:HorizontalPanel>
+    <b:TabPanel>
+
+      <b:NavTabs>
+        <b:TabListItem active="true" dataTarget="#strtab1" text="{i18n.sales_tablereports_tab_byyear}"/>
+        <b:TabListItem dataTarget="#strtab2" text="{i18n.sales_tablereports_tab_bycountry}"/>
+        <b:TabListItem dataTarget="#strtab3" text="{i18n.sales_tablereports_tab_byproduct}"/>
+        <b:TabListItem dataTarget="#strtab4" text="{i18n.sales_tablereports_tab_bysalesman}"/>
+      </b:NavTabs>
+      <b:TabContent>
+        <b:TabPane b:id="strtab1" active="true">
+          <g:FlowPanel>
+            <my:Displayer ui:field="tableByYear"/>
+          </g:FlowPanel>
+        </b:TabPane>
+        <b:TabPane b:id="strtab2">
+          <g:FlowPanel>
+            <my:Displayer ui:field="tableByCountry"/>
+          </g:FlowPanel>
+        </b:TabPane>
+        <b:TabPane b:id="strtab3">
+          <g:FlowPanel>
+            <my:Displayer ui:field="tableByProduct"/>
+          </g:FlowPanel>
+        </b:TabPane>
+        <b:TabPane b:id="strtab4">
+          <g:FlowPanel>
+            <my:Displayer ui:field="tableBySalesman"/>
+          </g:FlowPanel>
+        </b:TabPane>
+      </b:TabContent>
+    </b:TabPanel>
+  </g:VerticalPanel>
+
+</ui:UiBinder>

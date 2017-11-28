@@ -1,0 +1,16 @@
+.uf-tpe-selector-button {
+    width: 150px;
+    text-align: left;
+}
+.uf-tpe-selector-menu {
+    margin-left: 37px;
+    width: 150px;
+    overflow: auto;
+    max-height: 250px;
+}
+.uf-tpe-help-icon {
+    position: absolute;
+    margin-left: 155px;
+    margin-top: -25px;
+}
+

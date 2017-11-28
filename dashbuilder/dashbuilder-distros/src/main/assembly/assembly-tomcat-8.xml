@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+
+  <id>tomcat8</id>
+  <formats>
+    <format>war</format>
+    <format>dir</format>
+  </formats>
+
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>${project.basedir}/src/main/tomcat8</directory>
+      <outputDirectory>.</outputDirectory>
+    </fileSet>
+  </fileSets>
+
+  <dependencySets>
+    <dependencySet>
+      <includes>
+        <include>antlr:antlr</include>
+        <include>org.apache.cxf:*</include>
+        <include>org.apache.neethi:neethi</include>
+        <include>dom4j:dom4j</include>
+        <include>com.sun.xml.bind:jaxb-xjc</include>
+        <include>org.jboss.logging:jboss-logging</include>
+        <include>org.slf4j:slf4j-api:jar</include>
+        <include>org.slf4j:jcl-over-slf4j</include>
+        <include>org.slf4j:slf4j-ext</include>
+        <include>org.codehaus.woodstox:woodstox-core-asl</include>
+        <include>org.codehaus.woodstox:stax2-api</include>
+        <include>wsdl4j:wsdl4j</include>
+
+        <include>com.h2database:h2</include>
+        <include>ch.qos.cal10n:cal10n-api</include>
+        <include>javax.activation:activation</include>
+        <include>javax.enterprise:cdi-api</include>
+        <include>javax.inject:javax.inject</include>
+        <include>javax.mail:mail</include>
+        <include>javax.validation:validation-api</include>
+
+        <include>org.jboss.spec.javax.annotation:jboss-annotations-api_1.2_spec</include>
+        <include>org.jboss.spec.javax.interceptor:jboss-interceptors-api_1.2_spec</include>
+        <include>org.jboss.spec.javax.servlet.jstl:jboss-jstl-api_1.2_spec</include>
+        <include>org.jboss.spec.javax.jms:jboss-jms-api_2.0_spec</include>
+        <include>org.jboss.spec.javax.xml.ws:jboss-jaxws-api_2.2_spec</include>
+        <include>org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.0_spec</include>
+        <include>org.jboss.spec.javax.xml.bind:jboss-jaxb-api_2.2_spec</include>
+        <include>org.jboss.spec.javax.ejb:jboss-ejb-api_3.2_spec</include>
+        <include>org.jboss.spec.javax.security.jacc:jboss-jacc-api_1.5_spec</include>
+
+        <include>org.jboss.logging:jboss-logging</include>
+        <include>org.jboss.resteasy:resteasy-jaxrs</include>
+        <include>org.jboss.resteasy:resteasy-cdi</include>
+        <include>org.jboss.resteasy:resteasy-jackson-provider</include>
+        <include>org.jboss.resteasy:resteasy-jaxb-provider</include>
+        <include>org.jboss.resteasy:resteasy servlet-initializer</include>
+        <include>org.scannotation:scannotation</include>
+        <include>org.codehaus.jackson:jackson-jaxrs</include>
+
+        <include>org.jboss.weld:weld-api</include>
+        <include>org.jboss.weld:weld-core-impl</include>
+        <include>org.jboss.weld.se:weld-se-core</include>
+        <include>org.jboss.weld.servlet:weld-servlet-core</include>
+        <include>org.jboss.weld:weld-spi</include>
+        <include>org.jboss.weld.environment:weld-environment-common</include>
+        <include>org.jboss.classfilewriter:jboss-classfilewriter</include>
+
+        <include>org.hibernate.javax.persistence:hibernate-jpa-2.1-api:jar</include>
+        <include>org.jboss.logging:jboss-logging:jar</include>
+
+        <include>net.jcip:jcip-annotations</include>
+        <include>xalan:xalan</include>
+        <include>xalan:serializer</include>
+        <include>xerces:xercesImpl</include>
+        <include>xml-resolver:xml-resolver</include>
+
+        <!-- UF Security management provider for Tomcat -->
+        <include>org.uberfire:uberfire-security-management-tomcat</include>
+      </includes>
+      <unpack>false</unpack>
+      <outputDirectory>WEB-INF/lib</outputDirectory>
+    </dependencySet>
+    <dependencySet>
+      <includes>
+        <include>org.dashbuilder:dashbuilder-webapp:war</include>
+      </includes>
+      <outputDirectory>.</outputDirectory>
+      <unpack>true</unpack>
+      <unpackOptions>
+        <excludes>
+          <!-- JBoss specific files from development war artifact -->
+          <exclude>META-INF/jboss-all.xml</exclude>
+          <exclude>META-INF/MANIFEST.MF</exclude>
+          <exclude>WEB-INF/beans.xml</exclude>
+          <exclude>WEB-INF/web.xml</exclude>
+          <exclude>WEB-INF/ejb-jar.xml</exclude>
+          <exclude>WEB-INF/jboss-deployment-structure.xml</exclude>
+          <exclude>WEB-INF/jboss-web.xml</exclude>
+
+          <exclude>WEB-INF/classes/application-roles.properties</exclude>
+          <exclude>WEB-INF/classes/application-users.properties</exclude>
+
+          <!-- Errai -->
+          <exclude>WEB-INF/lib/errai-jboss-as-support-*.jar</exclude>
+
+          <!-- Exclude the default UF Security management provider for Wildfly and provide a specific one for this distro.-->
+          <exclude>WEB-INF/lib/uberfire-security-management-wildfly-*.jar</exclude>
+          <exclude>WEB-INF/classes/security-management.properties</exclude>
+        </excludes>
+      </unpackOptions>
+      <useStrictFiltering>true</useStrictFiltering>
+    </dependencySet>
+  </dependencySets>
+
+</assembly>

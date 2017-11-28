@@ -1,0 +1,67 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+  <ui:with field="i18n" type="org.dashbuilder.dataset.editor.client.resources.i18n.DataSetAuthoringConstants"/>
+
+  <ui:style>
+
+    .initialViewPanel {
+      margin: 50px;
+    }
+
+    .dataSetCountLabel {
+      margin-bottom: 20px;
+    }
+
+    .defineA {
+      float: left;
+      margin-left: 25px;
+    }
+
+    .newDataSet {
+      float: left;
+      margin-right: 5px;
+      margin-left: 5px;
+      cursor: pointer;
+    }
+
+    .toFetchYourDataFromExtSystem {
+      margin-left: 5px;
+    }
+
+    .nextSteps {
+      margin: 5px;
+    }
+
+    .step {
+      margin: 5px;
+      margin-left: 25px;
+    }
+
+    .clear {
+      clear: both;
+    }
+
+  </ui:style>
+
+  <g:HTMLPanel ui:field="initialViewPanel" addStyleNames="{style.initialViewPanel}">
+
+    <g:HTML addStyleNames="{style.dataSetCountLabel}" ui:field="dataSetCountText"/>
+
+    <g:FlowPanel addStyleNames="{style.clear} "/>
+
+    <g:HTML text="{i18n.nextSteps}:" addStyleNames="{style.nextSteps} "/>
+    <g:FlowPanel>
+      <g:FlowPanel>
+        <g:HTML text="{i18n.defineA} " addStyleNames="{style.defineA} "/>
+        <g:Hyperlink text="{i18n.newDataSet} " ui:field="newDataSetLink" addStyleNames="{style.newDataSet}"/>
+        <g:HTML text="{i18n.toFetchYourDataFromExtSystem}" addStyleNames="{style.toFetchYourDataFromExtSystem} "/>
+      </g:FlowPanel>
+      <g:HTML text="{i18n.createDataDisplayers}" addStyleNames="{style.step} "/>
+      <g:HTML text="{i18n.createDashboards}" addStyleNames="{style.step} "/>
+    </g:FlowPanel>
+
+  </g:HTMLPanel>
+
+</ui:UiBinder>

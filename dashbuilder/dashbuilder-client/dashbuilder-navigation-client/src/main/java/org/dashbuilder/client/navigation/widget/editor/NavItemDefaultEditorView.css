@@ -1,0 +1,85 @@
+.uf-navitem-container {
+    clear: both;
+}
+
+.uf-navitem-name {
+    margin-left: 7px;
+}
+
+.uf-navitem-cog-icon,
+.uf-navitem-edit-icon,
+.uf-navitem-delete-icon {
+    margin-left: 5px;
+    visibility: hidden;
+    cursor: pointer;
+}
+
+.uf-navitem-confirm-icon,
+.uf-navitem-cancel-icon {
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+.uf-navitem-name-div {
+    float: left;
+}
+
+.uf-navitem-name-input {
+    margin-left: 7px;
+    font-size: smaller;
+    float: left;
+    width: 150px;
+}
+
+.uf-navitem-name-error {
+    border-color: #c00;
+    border-width: 1px;
+}
+
+.uf-navitem-edit-div {
+}
+
+.uf-navitem-extra-div {
+    margin-left: 22px;
+    margin-bottom: 10px;
+    display: none;
+}
+
+.uf-navitem-extra-div .dropdown-menu:before,
+.uf-navitem-extra-div .dropdown-menu:after {
+    content: none;
+}
+
+.uf-navitem-extra-div .dropdown-menu {
+    margin-top: -1px;
+    margin-left: 15px;
+}
+
+.uf-navitem-view-div:hover,
+.uf-navitem-edit-div:hover {
+    background-color: lightcyan;
+}
+
+.uf-navitem-view-div:hover .uf-navitem-cog-icon,
+.uf-navitem-view-div:hover .uf-navitem-edit-icon,
+.uf-navitem-view-div:hover .uf-navitem-delete-icon {
+    visibility: visible;
+}
+
+.uf-navitem-edit-icon:hover,
+.uf-navitem-confirm-icon:hover,
+.uf-navitem-cancel-icon:hover {
+    color: #0088ce;
+}
+
+.uf-navitem-delete-icon:hover {
+    color: #990000;
+}
+
+.uf-navitem-children {
+    margin-left: 15px;
+}
+
+.uf-navitem-command-menu {
+    margin-left: 30px;
+}

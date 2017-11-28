@@ -1,0 +1,12 @@
+html, body {
+    height: 100%;
+}
+
+/* Override PatternFly default css so border isn't duplicated */
+.navbar-pf {
+    border-top: none;
+}
+
+.navbar-pf ul.navbar-utility {
+    top: -25px;
+}

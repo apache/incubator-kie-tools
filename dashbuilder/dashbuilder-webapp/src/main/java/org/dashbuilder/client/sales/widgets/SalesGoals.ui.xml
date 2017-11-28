@@ -1,0 +1,20 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:my="urn:import:org.dashbuilder.displayer.client">
+
+  <g:VerticalPanel>
+    <g:HorizontalPanel>
+      <my:Displayer ui:field="meterChartAmount"/>
+      <my:Displayer ui:field="bubbleByCountry"/>
+    </g:HorizontalPanel>
+    <g:HorizontalPanel>
+      <my:Displayer ui:field="lineChartByDate"/>
+    </g:HorizontalPanel>
+    <g:HorizontalPanel>
+      <my:Displayer ui:field="barChartByProduct"/>
+      <my:Displayer ui:field="barChartByEmployee"/>
+    </g:HorizontalPanel>
+  </g:VerticalPanel>
+
+</ui:UiBinder>

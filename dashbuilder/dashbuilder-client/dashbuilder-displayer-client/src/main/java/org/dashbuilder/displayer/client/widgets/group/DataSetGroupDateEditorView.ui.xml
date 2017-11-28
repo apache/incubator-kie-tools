@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright 2012 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
+
+  <ui:with field="i18n" type="org.dashbuilder.displayer.client.resources.i18n.CommonConstants"/>
+
+  <ui:style>
+    .labelFont {
+      font-size: small;
+    }
+    .checkBox {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      margin-right: 5px;
+    }
+  </ui:style>
+
+  <g:FlowPanel>
+    <g:HorizontalPanel>
+      <b:CheckBox styleName="{style.checkBox}" ui:field="fixedStrategyCheckBox" />
+      <g:Label styleName="{style.labelFont}" text="{i18n.dataset_groupdate_fixed_intervals}"/>
+    </g:HorizontalPanel>
+    <g:HorizontalPanel>
+      <b:CheckBox styleName="{style.checkBox}" ui:field="emptyIntervalsCheckBox" />
+      <g:Label styleName="{style.labelFont}" text="{i18n.dataset_groupdate_empty_intervals}"/>
+    </g:HorizontalPanel>
+    <g:FlowPanel>
+      <g:Label styleName="{style.labelFont}" text="{i18n.dataset_groupdate_interval_type}"/>
+      <b:ListBox ui:field="intervalTypeListBox" width="130px" />
+    </g:FlowPanel>
+    <g:FlowPanel ui:field="maxIntervalsGroup" visible="false">
+      <g:Label styleName="{style.labelFont}" text="{i18n.dataset_groupdate_max_intervals}"/>
+      <b:TextBox ui:field="maxIntervalsTextBox" width="130px" />
+    </g:FlowPanel>
+    <g:FlowPanel ui:field="firstDayPanel" visible="false">
+      <g:Label styleName="{style.labelFont}" text="{i18n.dataset_groupdate_firstday}"/>
+      <b:ListBox ui:field="firstDayListBox" width="130px"/>
+    </g:FlowPanel>
+    <g:FlowPanel ui:field="firstMonthPanel" visible="false">
+      <g:Label styleName="{style.labelFont}" text="{i18n.dataset_groupdate_firstmonth}"/>
+      <b:ListBox ui:field="firstMonthListBox" width="130px"/>
+    </g:FlowPanel>
+  </g:FlowPanel>
+</ui:UiBinder>

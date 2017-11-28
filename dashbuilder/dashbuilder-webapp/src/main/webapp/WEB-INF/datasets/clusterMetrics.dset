@@ -1,0 +1,16 @@
+{
+    "uuid": "clusterMetrics",
+    "name": "Cluster Metrics",
+    "provider": "BEAN",
+    "isPublic": true,
+    "pushEnabled": false,
+    "pushMaxSize": 1024,
+    "refreshTime": "1second",
+    "refreshAlways": "true",
+    "generatorClass": "org.dashbuilder.backend.ClusterMetricsGenerator",
+    "generatorParams": [
+      {"param": "timeFrame", "value": "10minute"},
+      {"param": "aliveNodes", "value": "server1,server2,server3,server4,server5"},
+      {"param": "overloadedNodes", "value": ""}
+    ]
+}

@@ -1,0 +1,117 @@
+package org.dashbuilder.client.widgets.dataset.explorer;
+
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.safehtml.shared.SafeUri;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.dashbuilder.client.widgets.dataset.event.EditDataSetEvent;
+import org.dashbuilder.dataprovider.DataSetProviderType;
+import org.dashbuilder.dataset.def.DataSetDef;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.uberfire.mocks.EventSourceMock;
+
+import static org.jgroups.util.Util.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
+
+@RunWith(GwtMockitoTestRunner.class)
+public class DataSetPanelTest {
+
+    @Mock DataSetSummary dataSetSummary;
+    @Mock EventSourceMock<EditDataSetEvent> editDataSetEvent;
+    @Mock DataSetPanel.View view;
+    @Mock DataSetDef dataSetDef;
+    
+    private DataSetPanel presenter;
+
+    @Before
+    public void setup() throws Exception {
+        when(dataSetDef.getUUID()).thenReturn("uuid1");
+        when(dataSetDef.getName()).thenReturn("name1");
+        when(dataSetDef.getProvider()).thenReturn(DataSetProviderType.BEAN);
+        
+        // The presenter instance to test.
+        final Widget widget = mock(Widget.class);
+        when(view.asWidget()).thenReturn(widget);
+        presenter = spy(new DataSetPanel(dataSetSummary, editDataSetEvent, view));
+        
+    }
+    
+    @Test
+    public void testInit() throws Exception {
+        presenter.init();
+        verify(view, times(1)).init(presenter);
+        verify(view, times(1)).configure(any(DataSetSummary.View.class));
+        verify(view, times(0)).showHeader(anyString(), anyString(), any(SafeUri.class), anyString(), anyString());
+        verify(view, times(0)).showSummary();
+        verify(view, times(0)).hideSummary();
+        verify(view, times(0)).enableActionButton(anyString(), any(ClickHandler.class));
+        verify(view, times(0)).disableActionButton();
+    }
+
+    @Test
+    public void testAsWidget() throws Exception {
+        assertEquals(view.asWidget(), presenter.asWidget());
+    }
+
+    @Test
+    public void testClose() throws Exception {
+        presenter.close();
+        verify(view, times(0)).init(presenter);
+        verify(view, times(0)).configure(any(DataSetSummary.View.class));
+        verify(view, times(0)).showHeader(anyString(), anyString(), any(SafeUri.class), anyString(), anyString());
+        verify(view, times(0)).showSummary();
+        verify(view, times(1)).hideSummary();
+        verify(view, times(0)).enableActionButton(anyString(), any(ClickHandler.class));
+        verify(view, times(0)).disableActionButton();
+    }
+
+    @Test
+    public void testDisable() throws Exception {
+        presenter.disable();
+        verify(view, times(0)).init(presenter);
+        verify(view, times(0)).configure(any(DataSetSummary.View.class));
+        verify(view, times(0)).showHeader(anyString(), anyString(), any(SafeUri.class), anyString(), anyString());
+        verify(view, times(0)).showSummary();
+        verify(view, times(0)).hideSummary();
+        verify(view, times(0)).enableActionButton(anyString(), any(ClickHandler.class));
+        verify(view, times(1)).disableActionButton();
+    }
+
+    @Test
+    public void testShow() throws Exception {
+        final String iconTitle = "iconTitle";
+        doReturn(iconTitle).when(presenter).getTypeIconTitle(dataSetDef);
+        final SafeUri iconUri = mock(SafeUri.class);
+        doReturn(iconUri).when(presenter).getTypeIconUri(dataSetDef);
+        final String parentPanelId = "parentPanel";
+        presenter.show(dataSetDef, parentPanelId);
+        assertEquals(dataSetDef, presenter.getDataSetDef());
+        verify(view, times(0)).init(presenter);
+        verify(view, times(0)).configure(any(DataSetSummary.View.class));
+        verify(view, times(1)).showHeader("uuid1", parentPanelId, iconUri, iconTitle, "name1");
+        verify(view, times(0)).showSummary();
+        verify(view, times(0)).hideSummary();
+        verify(view, times(0)).enableActionButton(anyString(), any(ClickHandler.class));
+        verify(view, times(0)).disableActionButton();
+    }
+
+    @Test
+    public void testOpen() throws Exception {
+        presenter.def = dataSetDef;
+        presenter.open();
+        verify(dataSetSummary, times(1)).show(dataSetDef);
+        verify(view, times(0)).init(presenter);
+        verify(view, times(0)).configure(any(DataSetSummary.View.class));
+        verify(view, times(0)).showHeader(anyString(), anyString(), any(SafeUri.class), anyString(), anyString());
+        verify(view, times(1)).showSummary();
+        verify(view, times(0)).hideSummary();
+        verify(view, times(1)).enableActionButton(anyString(), any(ClickHandler.class));
+        verify(view, times(0)).disableActionButton();
+    }
+
+}

@@ -1,0 +1,14 @@
+{
+    "uuid": "salesOpportunities",
+    "name": "Sales Opportunities",
+    "provider": "BEAN",
+    "pushEnabled": false,
+    "pushMaxSize": 2048,
+    "isPublic": true,
+    "generatorClass": "org.dashbuilder.backend.SalesDataSetGenerator",
+    "generatorParams": [
+        {"param": "startYear", "value": "-1"},
+        {"param": "endYear", "value": "3"},
+        {"param": "oppsPerMonth", "value": "30"}
+    ]
+}

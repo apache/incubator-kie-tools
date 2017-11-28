@@ -94,6 +94,10 @@
     <version.com.ahome-it.lienzo-core>2.0.292-RELEASE</version.com.ahome-it.lienzo-core>
     <version.com.ahome-it.lienzo-tests>2.0.292-RELEASE</version.com.ahome-it.lienzo-tests>
 
+    <!-- Need this for dashbuilder-webapp to compile. lienzo-charts is not compatible with newer version -->
+    <version.com.ahome-it.lienzo-core.charts>2.0.241-RC1</version.com.ahome-it.lienzo-core.charts>
+    <version.com.ahome-it.lienzo-tests.charts>2.0.241-RC1</version.com.ahome-it.lienzo-tests.charts>
+
     <version.org.jboss.spec.javax.enterprise.concurrent>1.0.0.Final</version.org.jboss.spec.javax.enterprise.concurrent>
     <version.bundle.plugin>3.3.0</version.bundle.plugin><!-- 3.2.0 sometimes fails with NPE during parallel build-->
     <!-- Make OSGi happy -->
@@ -111,13 +115,31 @@
     <version.org.apache.lucene>6.6.1</version.org.apache.lucene>
     <version.com.unboundid>3.2.0</version.com.unboundid>
     <com.fasterxml.jackson>2.8.8</com.fasterxml.jackson>
-    <!-- Newer version in ip-bom causes ServiceLoader error -->
-    <version.ch.qos.logback>1.1.3</version.ch.qos.logback>
     <version.jnuit.docker.rule>0.3</version.jnuit.docker.rule>
     <version.com.spotify.docker>5.0.2</version.com.spotify.docker>
     <version.org.uberfire.latestFinal.release>1.4.0.Final</version.org.uberfire.latestFinal.release>
     <revapi.oldUberFireVersion>${version.org.uberfire.latestFinal.release}</revapi.oldUberFireVersion>
     <revapi.newUberFireVersion>${project.version}</revapi.newUberFireVersion>
+
+    <version.com.ahome-it.lienzo-charts>1.0.241-RC1</version.com.ahome-it.lienzo-charts>
+    <!-- Version 4.3.2.Final which is coming from ip-bom is not compatible with with GWT 2.8.0 -->
+    <version.org.hibernate.hibernate-validator>4.1.0.Final</version.org.hibernate.hibernate-validator>
+
+    <version.javax.xml.stream>1.0-2</version.javax.xml.stream>
+    <version.com.googlecode.jsonsimple>1.1.1</version.com.googlecode.jsonsimple>
+    <version.com.googlecode.jtype>0.1.1</version.com.googlecode.jtype>
+
+    <!-- database testing -->
+    <version.org.mariadb.jdbc>1.3.6</version.org.mariadb.jdbc>
+    <version.org.mysql-driver>5.1.6</version.org.mysql-driver>
+    <version.org.postgres-driver>9.1-901.jdbc4</version.org.postgres-driver>
+    <!-- WildFly version used together with the GWT's Super Dev Mode -->
+    <version.org.wildfly.gwt.sdm>10.0.0.Final</version.org.wildfly.gwt.sdm>
+
+    <!-- Required since support for ELS 2.x. Keep in sync with kie-parent or remove when those
+          two versions are being updated on the IP BOM.-->
+    <version.com.fasterxml.jackson>2.6.2</version.com.fasterxml.jackson>
+    <version.commons-cli>1.3.1</version.commons-cli>
   </properties>
 
   <repositories>
@@ -206,6 +228,10 @@
                 <rules>
                   <banDuplicateClasses>
                     <ignoreClasses>
+                      <!-- Ban 'org.elasticsearch:elasticsearch' internal classes, as the artifact contains
+                        some duplicated classes for Joda time ones and it has the joda artifact
+                        as transitive dependency as well. -->
+                      <ignoreClass>org.joda.time.*</ignoreClass>
                       <!-- Classes bundled in errai-javax-enterprise which are GWT friendly.
                            See https://github.com/errai/errai/blob/master/errai-javax-enterprise/README -->
                       <ignoreClass>javax.interceptor.InvocationContext</ignoreClass>
@@ -237,6 +263,42 @@
                           <ignoreClass>javax.servlet.*</ignoreClass>
                         </ignoreClasses>
                       </dependency>
+                      <!-- gwt-dev bundles dozens of different 3rd party dependencies, but can not be usually excluded
+                           as e.g. GWT Mockito tests are using the com.google.gwt classes inside. Ignoring it for the
+                           duplicate classes check seems to be the only way. -->
+                      <dependency>
+                        <groupId>com.google.gwt</groupId>
+                        <artifactId>gwt-dev</artifactId>
+                        <type>jar</type>
+                        <ignoreClasses>
+                          <ignoreClass>*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                      <!-- netty-all duplicates many netty-* jars but they are managed to the same version -->
+                      <dependency>
+                        <groupId>io.netty</groupId>
+                        <artifactId>netty-all</artifactId>
+                        <type>jar</type>
+                        <ignoreClasses>
+                          <ignoreClass>*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                      <dependency>
+                        <groupId>org.apache.xmlbeans</groupId>
+                        <artifactId>xmlbeans</artifactId>
+                        <type>jar</type>
+                        <ignoreClasses>
+                          <!-- Classes duplicated by the jar itself (bug), see https://issues.apache.org/jira/browse/XMLBEANS-499 -->
+                          <ignoreClass>org.apache.xmlbeans.xml.stream.XMLName</ignoreClass>
+                          <ignoreClass>org.apache.xmlbeans.xml.stream.XMLInputStream</ignoreClass>
+                          <ignoreClass>org.apache.xmlbeans.xml.stream.utils.NestedThrowable</ignoreClass>
+                          <ignoreClass>org.apache.xmlbeans.xml.stream.utils.NestedThrowable$Util</ignoreClass>
+                          <ignoreClass>org.apache.xmlbeans.xml.stream.XMLStreamException</ignoreClass>
+                          <ignoreClass>org.apache.xmlbeans.xml.stream.ReferenceResolver</ignoreClass>
+                          <ignoreClass>org.apache.xmlbeans.xml.stream.XMLEvent</ignoreClass>
+                          <ignoreClass>org.apache.xmlbeans.xml.stream.Location</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
                     </dependencies>
                     <findAllDuplicates>true</findAllDuplicates>
                   </banDuplicateClasses>
@@ -245,6 +307,13 @@
               </configuration>
             </execution>
           </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <configuration>
+            <encoding>UTF-8</encoding>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
@@ -302,6 +371,7 @@
               <org.uberfire.nio.git.ssh.enabled>false</org.uberfire.nio.git.ssh.enabled>
               <org.uberfire.sys.repo.monitor.disabled>true</org.uberfire.sys.repo.monitor.disabled>
               <org.uberfire.nio.git.dir>${project.build.directory}</org.uberfire.nio.git.dir>
+              <apple.awt.UIElement>true</apple.awt.UIElement>
             </systemPropertyVariables>
             <includes>
               <include>**/*Test.java</include>
@@ -430,6 +500,12 @@
         </plugin>
 
         <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>jaxb2-maven-plugin</artifactId>
+          <version>1.3</version>
+        </plugin>
+
+        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
           <executions>
@@ -520,6 +596,16 @@
       </plugin>
 
       <plugin>
+        <!-- Entry needed to create, install and deploy sources jars -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+      </plugin>
+
+      <plugin>
         <artifactId>maven-clean-plugin</artifactId>
         <configuration>
           <filesets>
@@ -550,6 +636,7 @@
             <include>**/*Constants_ja.properties</include>
             <include>**/*Constants_pt_BR.properties</include>
             <include>**/*Constants_zh_CN.properties</include>
+              <include>**/*Constants_ru.properties</include>
           </includes>
           <excludes>
             <exclude>**/ErraiApp.properties</exclude>
@@ -752,6 +839,7 @@
     <module>uberfire-test-utils</module>
     <module>uberfire-workingset</module>
     <module>uberfire-showcase</module>
+    <module>dashbuilder</module>
   </modules>
 
   <dependencyManagement>
@@ -1088,16 +1176,176 @@
           </exclusion>
         </exclusions>
       </dependency>
+
       <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>${version.ch.qos.logback}</version>
+        <groupId>com.ahome-it</groupId>
+        <artifactId>lienzo-charts</artifactId>
+        <version>${version.com.ahome-it.lienzo-charts}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-internal</artifactId>
-        <version>${version.org.kie}</version>
+        <groupId>javax.enterprise</groupId>
+        <artifactId>cdi-api</artifactId>
+        <version>${version.javax.enterprise}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.annotation</groupId>
+            <artifactId>jsr250-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.el</groupId>
+            <artifactId>javax.el-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.interceptor</groupId>
+            <artifactId>javax.interceptor-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <!-- Validations -->
+      <dependency>
+        <groupId>javax.validation</groupId>
+        <artifactId>validation-api</artifactId>
+        <version>${version.javax.validation}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.validation</groupId>
+        <artifactId>validation-api</artifactId>
+        <version>${version.javax.validation}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-validator</artifactId>
+        <version>${version.org.hibernate.hibernate-validator}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-validator</artifactId>
+        <version>${version.org.hibernate.hibernate-validator}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>javax.xml.stream</groupId>
+        <artifactId>stax-api</artifactId>
+        <version>${version.javax.xml.stream}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>${version.org.apache.httpcomponents.httpclient}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <!-- GWT dev  -->
+      <dependency>
+        <groupId>com.google.gwt</groupId>
+        <artifactId>gwt-dev</artifactId>
+        <version>${version.com.google.gwt}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.gwt</groupId>
+        <artifactId>gwt-user</artifactId>
+        <version>${version.com.google.gwt}</version>
+      </dependency>
+
+      <!-- Elastic transitive dependencies -->
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-core</artifactId>
+        <version>${version.org.apache.lucene}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-queryparser</artifactId>
+        <version>${version.org.apache.lucene}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.fasterxml.jackson.dataformat</groupId>
+        <artifactId>jackson-dataformat-smile</artifactId>
+        <version>${version.com.fasterxml.jackson}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.fasterxml.jackson.dataformat</groupId>
+        <artifactId>jackson-dataformat-yaml</artifactId>
+        <version>${version.com.fasterxml.jackson}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>com.fasterxml.jackson.dataformat</groupId>
+        <artifactId>jackson-dataformat-cbor</artifactId>
+        <version>${version.com.fasterxml.jackson}</version>
+      </dependency>
+
+      <!-- Required to run the ElasticSearch server when performing the unit test executions.
+          The ELS data provider requires groovy scripts enabled on the server.-->
+      <dependency>
+        <groupId>org.codehaus.groovy</groupId>
+        <artifactId>groovy-all</artifactId>
+        <classifier>indy</classifier>
+        <version>${version.org.codehaus.groovy}</version>
+      </dependency>
+
+      <!-- JSON parsing. -->
+      <dependency>
+        <groupId>com.googlecode.json-simple</groupId>
+        <artifactId>json-simple</artifactId>
+        <version>${version.com.googlecode.jsonsimple}</version>
+        <type>jar</type>
+      </dependency>
+
+      <dependency>
+        <groupId>com.googlecode.jtype</groupId>
+        <artifactId>jtype</artifactId>
+        <version>${version.com.googlecode.jtype}</version>
+      </dependency>
+
+      <!-- Test deps -->
+      <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>${version.org.mysql-driver}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>${version.org.postgres-driver}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mariadb.jdbc</groupId>
+        <artifactId>mariadb-java-client</artifactId>
+        <version>${version.org.mariadb.jdbc}</version>
+        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>

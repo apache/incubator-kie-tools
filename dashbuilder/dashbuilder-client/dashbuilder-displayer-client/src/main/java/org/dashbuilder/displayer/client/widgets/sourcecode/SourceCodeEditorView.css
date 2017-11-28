@@ -1,0 +1,18 @@
+.sce-error {
+    font-size: smaller;
+}
+
+.sce-variable-menu {
+    height: 300px;
+    overflow: auto;
+    position: absolute;
+    top: 5px;
+    margin-right: 40px;
+}
+
+.sce-variable-button {
+    position: absolute;
+    top: 0px;
+    right: 20px;
+    z-index: 1;
+}
