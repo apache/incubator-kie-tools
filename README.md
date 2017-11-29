@@ -42,13 +42,13 @@ Add this dependency into your `pom.xml`:
             <dependency>
               <groupId>com.ahome-it</groupId>
               <artifactId>lienzo-tests</artifactId>
-              <version>2.0.293-RELEASE</version>
+              <version>2.0.294-RELEASE</version>
               <scope>test</scope>
             </dependency>
             
 Or for gradle:
 
-	    compile(group: 'com.ahome-it', name: 'lienzo-tests', version: '2.0.293-RELEASE')
+	    compile(group: 'com.ahome-it', name: 'lienzo-tests', version: '2.0.294-RELEASE')
 	
 
 2.- Use the JUnit runner `LienzoMockitoTestRunner` in your test case:          
