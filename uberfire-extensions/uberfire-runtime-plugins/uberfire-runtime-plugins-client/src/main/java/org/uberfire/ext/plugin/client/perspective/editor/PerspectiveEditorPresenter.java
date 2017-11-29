@@ -28,7 +28,6 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -61,6 +60,7 @@ import org.uberfire.ext.plugin.client.type.PerspectiveLayoutPluginResourceType;
 import org.uberfire.ext.plugin.client.validation.PluginNameValidator;
 import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginType;
+import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
@@ -140,9 +140,14 @@ public class PerspectiveEditorPresenter extends BaseEditor {
                 lookupLayoutDragComponentGroups(),
                 org.uberfire.ext.plugin.client.resources.i18n.CommonConstants.INSTANCE.EmptyTitleText(),
                 org.uberfire.ext.plugin.client.resources.i18n.CommonConstants.INSTANCE.EmptySubTitleText(),
-                LayoutTemplate.Style.FLUID);
+                LayoutTemplate.Style.PAGE);
 
         this.perspectiveEditorView.setupLayoutEditor(layoutEditorPlugin.asWidget());
+    }
+
+    @OnClose
+    public void onClose() {
+        layoutEditorPlugin.clear();
     }
 
     protected void addMenuItem(List<MenuItems> menuItems,

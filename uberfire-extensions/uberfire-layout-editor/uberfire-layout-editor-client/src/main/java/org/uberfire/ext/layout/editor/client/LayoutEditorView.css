@@ -73,8 +73,27 @@
     transform: translateY(-50%);
 }
 
-.le-default {
+.le-main-container {
+    padding-left: 10px;
+    height: 95%;
+}
+
+.le-design-fluid {
+    min-height: 100%;
+}
+
+.le-design-page {
+    height: 100%;
+}
+
+.le-design-container {
     padding: 16px;
+    background: linear-gradient(#f6f6f6 18px, transparent 18px) 0 -2px, linear-gradient(90deg, #f6f6f6 18px, transparent 0px) -2px 0;
+    background-color: #bbbbbb;
+    background-size: 20px 20px;
+}
+
+.le-preview-container {
     height: 100%;
 }
 

@@ -23,13 +23,16 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentPalette;
+import org.uberfire.ext.layout.editor.api.editor.LayoutInstance;
 import org.uberfire.ext.layout.editor.client.components.container.Container;
+import org.uberfire.ext.layout.editor.client.generator.LayoutGenerator;
 import org.uberfire.ext.layout.editor.client.widgets.LayoutDragComponentGroupPresenter;
 
 @Dependent
@@ -40,20 +43,23 @@ public class LayoutEditorPresenter implements LayoutDragComponentPalette {
     protected Map<String, LayoutDragComponentGroupPresenter> layoutDragComponentGroups = new HashMap<>();
     private ManagedInstance<LayoutDragComponentGroupPresenter> layoutDragComponentGroupInstance;
     private Container container;
+    private LayoutGenerator layoutGenerator;
 
     @Inject
     public LayoutEditorPresenter(final View view,
                                  Container container,
+                                 LayoutGenerator layoutGenerator,
                                  ManagedInstance<LayoutDragComponentGroupPresenter> layoutDragComponentGroupInstance) {
         this.view = view;
         this.container = container;
+        this.layoutGenerator = layoutGenerator;
         this.layoutDragComponentGroupInstance = layoutDragComponentGroupInstance;
         view.init(this);
     }
 
     @PostConstruct
     public void initNew() {
-        view.setupContainer(container.getView());
+        view.setupDesign(container.getView());
     }
 
     public void clear() {
@@ -73,6 +79,8 @@ public class LayoutEditorPresenter implements LayoutDragComponentPalette {
     public void loadLayout(LayoutTemplate layoutTemplate,
                            String emptyTitleText,
                            String emptySubTitleText) {
+
+        view.setDesignStyle(layoutTemplate.getStyle());
         container.load(layoutTemplate,
                        emptyTitleText,
                        emptySubTitleText);
@@ -81,6 +89,7 @@ public class LayoutEditorPresenter implements LayoutDragComponentPalette {
     public void loadEmptyLayout(String layoutName,
                                 String emptyTitleText,
                                 String emptySubTitleText) {
+        view.setDesignStyle(pageStyle);
         container.loadEmptyLayout(layoutName,
                                   pageStyle,
                                   emptyTitleText,
@@ -102,9 +111,23 @@ public class LayoutEditorPresenter implements LayoutDragComponentPalette {
         this.pageStyle = pageStyle;
     }
 
+    public void switchToDesignMode() {
+        view.setupDesign(container.getView());
+    }
+
+    public void switchToPreviewMode() {
+        LayoutTemplate layoutTemplate = container.toLayoutTemplate();
+        LayoutInstance layoutInstance = layoutGenerator.build(layoutTemplate);
+        view.setupPreview(layoutInstance.getElement());
+    }
+
     public interface View extends UberElement<LayoutEditorPresenter> {
 
-        void setupContainer(UberElement<Container> container);
+        void setupDesign(UberElement<Container> container);
+
+        void setDesignStyle(LayoutTemplate.Style pageStyle);
+
+        void setupPreview(HTMLElement previewPanel);
 
         void addDraggableComponentGroup(UberElement<LayoutDragComponentGroupPresenter> group);
 

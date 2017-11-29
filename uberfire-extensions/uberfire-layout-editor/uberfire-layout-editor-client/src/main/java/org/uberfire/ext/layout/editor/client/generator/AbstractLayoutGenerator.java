@@ -17,84 +17,94 @@ package org.uberfire.ext.layout.editor.client.generator;
 
 import java.util.List;
 
-import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Panel;
-import org.gwtbootstrap3.client.ui.Column;
-import org.gwtbootstrap3.client.ui.Row;
+import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.common.client.dom.DOMUtil;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
+import org.uberfire.ext.layout.editor.api.editor.LayoutInstance;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
-import org.uberfire.ext.layout.editor.client.infra.ColumnSizeBuilder;
 import org.uberfire.ext.layout.editor.client.infra.RowSizeBuilder;
 
 public abstract class AbstractLayoutGenerator implements LayoutGenerator {
 
     @Override
-    public Panel build(LayoutTemplate layoutTemplate) {
-        ComplexPanel container = getLayoutContainer();
+    public LayoutInstance build(LayoutTemplate layoutTemplate) {
+        HTMLElement container = createContainer(layoutTemplate);
+        container.getClassList().add("uf-perspective-container");
+        container.getClassList().add("uf-perspective-rendered-container");
+
+        LayoutInstance layoutInstance = new LayoutInstance(container);
         List<LayoutRow> rows = layoutTemplate.getRows();
-        generateRows(layoutTemplate,
-                     rows,
-                     container);
-        return container;
+        generateRows(layoutTemplate, layoutInstance, rows, container);
+        return layoutInstance;
     }
 
     private void generateRows(LayoutTemplate layoutTemplate,
+                              LayoutInstance layoutInstance,
                               List<LayoutRow> rows,
-                              ComplexPanel parentWidget) {
+                              HTMLElement parentWidget) {
         for (LayoutRow layoutRow : rows) {
-            Row row = new Row();
-            if (layoutTemplate.isPageLayout()) {
-                row.getElement().addClassName(RowSizeBuilder.buildRowSize(layoutRow.getHeight()));
+            HTMLElement row = createRow(layoutRow);
+
+            if (layoutTemplate.isPageStyle()) {
+                row.getClassList().add(RowSizeBuilder.buildRowSize(layoutRow.getHeight()));
+                row.getClassList().add("uf-le-overflow");
             }
             for (LayoutColumn layoutColumn : layoutRow.getLayoutColumns()) {
-                Column column = new Column(
-                        ColumnSizeBuilder.buildColumnSize(new Integer(layoutColumn.getSpan())));
-                if (layoutTemplate.isPageLayout() && layoutColumn.getHeight().isEmpty()) {
-                    column.getElement().addClassName("uf-perspective-col");
+                HTMLElement column = createColumn(layoutColumn);
+
+                if (layoutTemplate.isPageStyle() && layoutColumn.getHeight().isEmpty()) {
+                    column.getClassList().add("uf-perspective-col");
                 }
                 if (columnHasNestedRows(layoutColumn)) {
-                    if (layoutTemplate.isPageLayout() && layoutColumn.getHeight().isEmpty()) {
-                        column.asWidget().getElement().addClassName("uf-perspective-col");
+                    if (layoutTemplate.isPageStyle() && layoutColumn.getHeight().isEmpty()) {
+                        column.getClassList().add("uf-perspective-col");
                     } else if (!layoutColumn.getHeight().isEmpty()) {
-                        column.getElement().addClassName("uf-perspective-row-" + layoutColumn.getHeight());
+                        column.getClassList().add("uf-perspective-row-" + layoutColumn.getHeight());
                     }
                     generateRows(layoutTemplate,
+                                 layoutInstance,
                                  layoutColumn.getRows(),
                                  column);
                 } else {
                     generateComponents(layoutTemplate,
+                                       layoutInstance,
                                        layoutColumn,
                                        column);
                 }
-                column.getElement().addClassName("uf-perspective-rendered-col");
-                row.add(column);
+                column.getClassList().add("uf-perspective-rendered-col");
+                row.appendChild(column);
             }
-            row.getElement().addClassName("uf-perspective-rendered-row");
-            parentWidget.add(row);
+            row.getClassList().add("uf-perspective-rendered-row");
+            parentWidget.appendChild(row);
         }
     }
 
     private void generateComponents(LayoutTemplate layoutTemplate,
+                                    final LayoutInstance layoutInstance,
                                     final LayoutColumn layoutColumn,
-                                    final Column column) {
+                                    final HTMLElement column) {
         for (final LayoutComponent layoutComponent : layoutColumn.getLayoutComponents()) {
-            final LayoutDragComponent dragComponent = getLayoutDragComponent(layoutComponent);
+            final LayoutDragComponent dragComponent = lookupLayoutDragComponent(layoutComponent);
             if (dragComponent != null) {
-                RenderingContext componentContext = new RenderingContext(layoutComponent,
-                                                                         column);
+                Widget columnWidget = ElementWrapperWidget.getWidget(column);
+                RenderingContext componentContext = new RenderingContext(layoutComponent, columnWidget);
                 IsWidget componentWidget = dragComponent.getShowWidget(componentContext);
-                if (layoutTemplate.isPageLayout() && layoutColumn.getHeight().isEmpty()) {
+
+                if (layoutTemplate.isPageStyle() && layoutColumn.getHeight().isEmpty()) {
                     componentWidget.asWidget().getElement().addClassName("uf-perspective-col");
-                } else if (!layoutColumn.getHeight().isEmpty()) {
-                    column.getElement().addClassName("uf-perspective-row-" + layoutColumn.getHeight());
+                }
+                else if (!layoutColumn.getHeight().isEmpty()) {
+                    column.getClassList().add("uf-perspective-row-" + layoutColumn.getHeight());
                 }
                 if (componentWidget != null) {
-                    column.add(componentWidget);
+                    DOMUtil.appendWidgetToElement(column, componentWidget);
                 }
             }
         }
@@ -104,7 +114,13 @@ public abstract class AbstractLayoutGenerator implements LayoutGenerator {
         return layoutColumn.getRows() != null && !layoutColumn.getRows().isEmpty();
     }
 
-    public abstract ComplexPanel getLayoutContainer();
+    // Abstract methods
 
-    public abstract LayoutDragComponent getLayoutDragComponent(LayoutComponent layoutComponent);
+    protected abstract LayoutDragComponent lookupLayoutDragComponent(LayoutComponent layoutComponent);
+
+    protected abstract HTMLElement createContainer(LayoutTemplate layoutTemplate);
+
+    protected abstract HTMLElement createRow(LayoutRow layoutRow);
+
+    protected abstract HTMLElement createColumn(LayoutColumn layoutColumn);
 }

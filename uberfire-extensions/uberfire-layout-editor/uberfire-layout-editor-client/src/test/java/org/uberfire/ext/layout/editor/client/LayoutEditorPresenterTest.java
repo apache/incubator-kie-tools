@@ -26,6 +26,7 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
 import org.uberfire.ext.layout.editor.client.components.container.Container;
+import org.uberfire.ext.layout.editor.client.generator.LayoutGenerator;
 import org.uberfire.ext.layout.editor.client.test.TestLayoutEditorPresenter;
 import org.uberfire.ext.layout.editor.client.widgets.LayoutDragComponentGroupPresenter;
 
@@ -44,6 +45,9 @@ public class LayoutEditorPresenterTest {
 
     @Mock
     private Container container;
+
+    @Mock
+    private LayoutGenerator layoutGenerator;
 
     @Mock
     private LayoutEditorPresenter.View view;
@@ -66,6 +70,7 @@ public class LayoutEditorPresenterTest {
 
         presenter = new TestLayoutEditorPresenter(view,
                                                   container,
+                                                  layoutGenerator,
                                                   instance);
     }
 
@@ -77,7 +82,7 @@ public class LayoutEditorPresenterTest {
         presenter.initNew();
 
         verify(container).getView();
-        verify(view).setupContainer(any());
+        verify(view).setupDesign(any());
     }
 
     @Test

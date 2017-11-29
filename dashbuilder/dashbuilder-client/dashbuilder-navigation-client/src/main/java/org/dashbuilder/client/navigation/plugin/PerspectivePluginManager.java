@@ -39,9 +39,11 @@ import org.dashbuilder.navigation.service.PerspectivePluginServices;
 import org.dashbuilder.navigation.workbench.NavWorkbenchCtx;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.type.ClientTypeRegistry;
+import org.uberfire.ext.layout.editor.api.editor.LayoutInstance;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.generator.LayoutGenerator;
 import org.uberfire.ext.plugin.client.type.PerspectiveLayoutPluginResourceType;
@@ -154,8 +156,9 @@ public class PerspectivePluginManager {
                     if (navGroup != null) {
                         navGroupStack.push(navGroup);
                     }
-                    IsWidget result = layoutGenerator.build(layoutInfo.getLayoutTemplate());
-                    afterBuild.execute(result);
+                    LayoutInstance result = layoutGenerator.build(layoutInfo.getLayoutTemplate());
+                    IsWidget widget = ElementWrapperWidget.getWidget(result.getElement());
+                    afterBuild.execute(widget);
                 }
                 finally {
                     if (navGroup != null) {
