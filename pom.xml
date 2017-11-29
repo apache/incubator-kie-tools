@@ -115,6 +115,8 @@
     <version.org.apache.lucene>6.6.1</version.org.apache.lucene>
     <version.com.unboundid>3.2.0</version.com.unboundid>
     <com.fasterxml.jackson>2.8.8</com.fasterxml.jackson>
+    <!-- Newer version in ip-bom causes ServiceLoader error -->
+    <version.ch.qos.logback>1.1.3</version.ch.qos.logback>
     <version.jnuit.docker.rule>0.3</version.jnuit.docker.rule>
     <version.com.spotify.docker>5.0.2</version.com.spotify.docker>
     <version.org.uberfire.latestFinal.release>1.4.0.Final</version.org.uberfire.latestFinal.release>
@@ -887,6 +889,12 @@
         <version>${version.javax.validation}</version>
       </dependency>
       <dependency>
+        <groupId>javax.validation</groupId>
+        <artifactId>validation-api</artifactId>
+        <version>${version.javax.validation}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
         <groupId>javax.enterprise</groupId>
         <artifactId>cdi-api</artifactId>
         <version>${version.javax.enterprise}</version>
@@ -1176,6 +1184,11 @@
           </exclusion>
         </exclusions>
       </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${version.ch.qos.logback}</version>
+      </dependency>
 
       <dependency>
         <groupId>com.ahome-it</groupId>
@@ -1183,37 +1196,6 @@
         <version>${version.com.ahome-it.lienzo-charts}</version>
       </dependency>
 
-      <dependency>
-        <groupId>javax.enterprise</groupId>
-        <artifactId>cdi-api</artifactId>
-        <version>${version.javax.enterprise}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>javax.annotation</groupId>
-            <artifactId>jsr250-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.el</groupId>
-            <artifactId>javax.el-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.interceptor</groupId>
-            <artifactId>javax.interceptor-api</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <!-- Validations -->
-      <dependency>
-        <groupId>javax.validation</groupId>
-        <artifactId>validation-api</artifactId>
-        <version>${version.javax.validation}</version>
-      </dependency>
-      <dependency>
-        <groupId>javax.validation</groupId>
-        <artifactId>validation-api</artifactId>
-        <version>${version.javax.validation}</version>
-        <classifier>sources</classifier>
-      </dependency>
       <dependency>
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-validator</artifactId>
@@ -1241,42 +1223,6 @@
             <artifactId>commons-logging</artifactId>
           </exclusion>
         </exclusions>
-      </dependency>
-
-      <!-- GWT dev  -->
-      <dependency>
-        <groupId>com.google.gwt</groupId>
-        <artifactId>gwt-dev</artifactId>
-        <version>${version.com.google.gwt}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.annotation</groupId>
-            <artifactId>javax.annotation-api</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>com.google.gwt</groupId>
-        <artifactId>gwt-user</artifactId>
-        <version>${version.com.google.gwt}</version>
-      </dependency>
-
-      <!-- Elastic transitive dependencies -->
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-core</artifactId>
-        <version>${version.org.apache.lucene}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-queryparser</artifactId>
-        <version>${version.org.apache.lucene}</version>
       </dependency>
 
       <dependency>
