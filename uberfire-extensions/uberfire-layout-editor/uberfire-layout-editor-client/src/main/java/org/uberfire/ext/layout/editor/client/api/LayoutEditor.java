@@ -43,5 +43,7 @@ public interface LayoutEditor {
 
     String getLayoutProperty(String key);
 
+    void setPreviewEnabled(boolean enabled);
+
     LayoutDragComponentPalette getDragComponentPalette();
 }

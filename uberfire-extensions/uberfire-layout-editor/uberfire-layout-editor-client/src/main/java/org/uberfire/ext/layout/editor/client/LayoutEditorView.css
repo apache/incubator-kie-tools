@@ -73,11 +73,6 @@
     transform: translateY(-50%);
 }
 
-.le-main-container {
-    padding-left: 10px;
-    height: 95%;
-}
-
 .le-design-fluid {
     min-height: 100%;
 }

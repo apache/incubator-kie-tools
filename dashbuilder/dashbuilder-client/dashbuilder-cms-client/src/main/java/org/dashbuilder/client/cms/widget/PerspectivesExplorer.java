@@ -29,9 +29,7 @@ import org.jboss.errai.common.client.dom.HTMLElement;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.plugin.client.security.PluginController;
-import org.uberfire.ext.plugin.client.widget.popup.NewPluginPopUp;
 import org.uberfire.ext.plugin.model.Plugin;
-import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
@@ -64,7 +62,7 @@ public class PerspectivesExplorer implements IsElement {
     PerspectivePluginManager perspectivePluginManager;
     PlaceManager placeManager;
     PluginController pluginController;
-    NewPluginPopUp newPluginPopUp;
+    NewPerspectivePopUp newPerspectivePopUp;
     ContentManagerI18n i18n;
     Command onExpandCommand;
     boolean expanded;
@@ -73,13 +71,13 @@ public class PerspectivesExplorer implements IsElement {
     public PerspectivesExplorer(View view,
                                 PerspectivePluginManager perspectivePluginManager,
                                 PluginController pluginController,
-                                NewPluginPopUp newPluginPopUp,
+                                NewPerspectivePopUp newPerspectivePopUp,
                                 PlaceManager placeManager,
                                 ContentManagerI18n i18n) {
         this.view = view;
         this.perspectivePluginManager = perspectivePluginManager;
         this.pluginController = pluginController;
-        this.newPluginPopUp = newPluginPopUp;
+        this.newPerspectivePopUp = newPerspectivePopUp;
         this.placeManager = placeManager;
         this.i18n = i18n;
         this.view.init(this);
@@ -158,7 +156,7 @@ public class PerspectivesExplorer implements IsElement {
     }
 
     public void createNewPerspective() {
-        newPluginPopUp.show(PluginType.PERSPECTIVE_LAYOUT);
+        newPerspectivePopUp.show();
     }
 
     public void onPerspectivePluginsChanged(@Observes final PerspectivePluginsChangedEvent event) {

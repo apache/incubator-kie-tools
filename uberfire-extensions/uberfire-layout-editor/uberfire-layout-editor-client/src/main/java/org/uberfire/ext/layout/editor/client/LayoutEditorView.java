@@ -45,7 +45,15 @@ public class LayoutEditorView
 
     @Inject
     @DataField
+    Div mainDiv;
+
+    @Inject
+    @DataField
     Div container;
+
+    @Inject
+    @DataField
+    Div tabsDiv;
 
     @Inject
     @DataField
@@ -85,8 +93,14 @@ public class LayoutEditorView
     public void init(LayoutEditorPresenter presenter) {
         this.presenter = presenter;
         componentsLabel.setTextContent(CommonConstants.INSTANCE.Components());
-        designAnchor.setTextContent(CommonConstants.INSTANCE.Design());
+        designAnchor.setTextContent(CommonConstants.INSTANCE.Editor());
         previewAnchor.setTextContent(CommonConstants.INSTANCE.Preview());
+    }
+
+    @Override
+    public void setPreviewEnabled(boolean previewEnabled) {
+        tabsDiv.setHidden(!previewEnabled);
+        mainDiv.getStyle().setProperty("height", previewEnabled ? "95%" : "100%");
     }
 
     @Override

@@ -142,6 +142,9 @@ public class PerspectiveEditorPresenter extends BaseEditor {
                 org.uberfire.ext.plugin.client.resources.i18n.CommonConstants.INSTANCE.EmptySubTitleText(),
                 LayoutTemplate.Style.PAGE);
 
+        // Enable the preview feature in the perspective editor
+        this.layoutEditorPlugin.setPreviewEnabled(true);
+
         this.perspectiveEditorView.setupLayoutEditor(layoutEditorPlugin.asWidget());
     }
 

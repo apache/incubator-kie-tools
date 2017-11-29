@@ -50,18 +50,33 @@ public class PerspectiveServicesImplTest {
     @Mock
     Path path2;
 
+    @Mock
+    Plugin plugin;
+
     PerspectiveServicesImpl perspectiveServices;
 
     @Before
     public void setup() {
         LayoutEditorModel layoutEditorModel = new LayoutEditorModel("layout", PluginType.PERSPECTIVE_LAYOUT, path2, "").emptyLayout();
 
+        when(pluginServices.createNewPlugin(anyString(), any())).thenReturn(plugin);
+        when(plugin.getPath()).thenReturn(path);
         when(pluginServices.copy(any(), anyString(), anyString())).thenReturn(path2);
         when(pluginServices.copy(any(), anyString(), any(), anyString())).thenReturn(path2);
         when(pluginServices.rename(any(), anyString(), anyString())).thenReturn(path2);
         when(pluginServices.getLayoutEditor(eq(path2), eq(PluginType.PERSPECTIVE_LAYOUT))).thenReturn(layoutEditorModel);
 
         perspectiveServices = new PerspectiveServicesImpl(pluginServices, layoutServices);
+    }
+
+    @Test
+    public void testCreate() {
+        perspectiveServices.createNewPerspective("test", LayoutTemplate.Style.FLUID);
+        ArgumentCaptor<LayoutEditorModel> arg1 = ArgumentCaptor.forClass(LayoutEditorModel.class);
+        verify(pluginServices).createNewPlugin("test", PluginType.PERSPECTIVE_LAYOUT);
+        verify(pluginServices).saveLayout(arg1.capture(), eq("Perspective 'test' check-in"));
+        LayoutEditorModel layoutEditorModel = arg1.getValue();
+        assertEquals(layoutEditorModel.getName(), "test");
     }
 
     @Test

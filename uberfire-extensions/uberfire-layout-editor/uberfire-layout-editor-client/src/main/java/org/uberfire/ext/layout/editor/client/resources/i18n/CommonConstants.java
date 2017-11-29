@@ -51,7 +51,7 @@ public interface CommonConstants
 
     String Column();
 
-    String Design();
+    String Editor();
 
     String Preview();
 }

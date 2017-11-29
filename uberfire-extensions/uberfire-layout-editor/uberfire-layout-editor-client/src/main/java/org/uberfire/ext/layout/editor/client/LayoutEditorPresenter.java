@@ -60,6 +60,11 @@ public class LayoutEditorPresenter implements LayoutDragComponentPalette {
     @PostConstruct
     public void initNew() {
         view.setupDesign(container.getView());
+        view.setPreviewEnabled(false);
+    }
+
+    public void setPreviewEnabled(boolean previewEnabled) {
+        view.setPreviewEnabled(previewEnabled);
     }
 
     public void clear() {
@@ -126,6 +131,8 @@ public class LayoutEditorPresenter implements LayoutDragComponentPalette {
         void setupDesign(UberElement<Container> container);
 
         void setDesignStyle(LayoutTemplate.Style pageStyle);
+
+        void setPreviewEnabled(boolean previewEnabled);
 
         void setupPreview(HTMLElement previewPanel);
 
