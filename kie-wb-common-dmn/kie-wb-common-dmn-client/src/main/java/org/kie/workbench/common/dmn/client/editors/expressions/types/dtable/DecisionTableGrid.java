@@ -149,8 +149,8 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
     @Override
     public void initialiseUiColumns() {
         expression.ifPresent(e -> {
-            model.appendColumn(new RowNumberColumn(e::getHitPolicy,
-                                                   e::getAggregation));
+            model.appendColumn(new DecisionTableRowNumberColumn(e::getHitPolicy,
+                                                                e::getAggregation));
             e.getInput().forEach(ic -> model.appendColumn(makeInputClauseColumn(ic)));
             e.getOutput().forEach(oc -> model.appendColumn(makeOutputClauseColumn(oc)));
             model.appendColumn(new DescriptionColumn(new BaseHeaderMetaData("Description",

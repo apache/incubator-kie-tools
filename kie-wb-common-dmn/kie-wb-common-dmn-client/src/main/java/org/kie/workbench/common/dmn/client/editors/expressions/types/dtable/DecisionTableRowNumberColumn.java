@@ -16,24 +16,18 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
+import java.util.Collections;
 import java.util.function.Supplier;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
-import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridColumn;
-import org.uberfire.ext.wires.core.grids.client.widget.dnd.IsRowDragHandle;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.impl.IntegerColumnRenderer;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
-public class RowNumberColumn extends BaseGridColumn<Integer> implements IsRowDragHandle {
+public class DecisionTableRowNumberColumn extends RowNumberColumn {
 
-    public RowNumberColumn(final Supplier<HitPolicy> hitPolicySupplier,
-                           final Supplier<BuiltinAggregator> builtinAggregatorSupplier) {
-        super(new RowNumberColumnHeaderMetaData(hitPolicySupplier,
-                                                builtinAggregatorSupplier),
-              new IntegerColumnRenderer(),
-              50.0);
-        setMovable(false);
-        setResizable(false);
-        setFloatable(true);
+    public DecisionTableRowNumberColumn(final Supplier<HitPolicy> hitPolicySupplier,
+                                        final Supplier<BuiltinAggregator> builtinAggregatorSupplier) {
+        super(Collections.singletonList(new RowNumberColumnHeaderMetaData(hitPolicySupplier,
+                                                                          builtinAggregatorSupplier)));
     }
 }

@@ -25,7 +25,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.RowNumberColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableRowNumberColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommand;
@@ -137,11 +137,11 @@ public class MoveRowsCommand extends AbstractCanvasGraphCommand implements VetoE
             }
 
             private void updateRowNumbers() {
-                final Optional<RowNumberColumn> rowNumberColumn = uiModel
+                final Optional<DecisionTableRowNumberColumn> rowNumberColumn = uiModel
                         .getColumns()
                         .stream()
-                        .filter(c -> c instanceof RowNumberColumn)
-                        .map(c -> (RowNumberColumn) c)
+                        .filter(c -> c instanceof DecisionTableRowNumberColumn)
+                        .map(c -> (DecisionTableRowNumberColumn) c)
                         .findFirst();
 
                 rowNumberColumn.ifPresent(c -> {
