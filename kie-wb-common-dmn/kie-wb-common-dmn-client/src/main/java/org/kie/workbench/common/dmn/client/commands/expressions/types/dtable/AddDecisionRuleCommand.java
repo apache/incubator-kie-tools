@@ -18,6 +18,9 @@ package org.kie.workbench.common.dmn.client.commands.expressions.types.dtable;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
+import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
+import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapper;
@@ -70,6 +73,20 @@ public class AddDecisionRuleCommand extends AbstractCanvasGraphCommand implement
             @Override
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
                 dtable.getRule().add(rule);
+
+                for (int ie = 0; ie < dtable.getInput().size(); ie++) {
+                    final UnaryTests ut = new UnaryTests();
+                    ut.setText("unary test");
+                    rule.getInputEntry().add(ut);
+                }
+                for (int oe = 0; oe < dtable.getOutput().size(); oe++) {
+                    final LiteralExpression le = new LiteralExpression();
+                    le.setText("literal expression");
+                    rule.getOutputEntry().add(le);
+                }
+                final Description d = new Description();
+                d.setValue("A rule");
+                rule.setDescription(d);
 
                 return GraphCommandResultBuilder.SUCCESS;
             }

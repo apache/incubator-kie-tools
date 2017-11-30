@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.commands.expressions.types.relation;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.List;
+import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
@@ -71,6 +72,11 @@ public class AddRelationRowCommand extends AbstractCanvasGraphCommand implements
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext gce) {
                 relation.getRow().add(row);
 
+                relation.getColumn().forEach(ii -> {
+                    final LiteralExpression le = new LiteralExpression();
+                    row.getExpression().add(le);
+                });
+
                 return GraphCommandResultBuilder.SUCCESS;
             }
 
@@ -88,10 +94,13 @@ public class AddRelationRowCommand extends AbstractCanvasGraphCommand implements
         return new AbstractCanvasCommand() {
             @Override
             public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler handler) {
+                int columnIndex = 0;
                 uiModel.appendRow(uiModelRow);
+                uiModelMapper.fromDMNModel(uiModel.getRowCount() - 1,
+                                           columnIndex++);
                 for (int ii = 0; ii < relation.getColumn().size(); ii++) {
                     uiModelMapper.fromDMNModel(uiModel.getRowCount() - 1,
-                                               ii);
+                                               columnIndex++);
                 }
 
                 canvasOperation.execute();

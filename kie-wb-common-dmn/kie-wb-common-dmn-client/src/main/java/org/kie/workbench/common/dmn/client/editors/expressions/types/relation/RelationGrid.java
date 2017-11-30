@@ -26,7 +26,6 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.List;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.AddRelationColumnCommand;
@@ -184,15 +183,9 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
     @Override
     public void addRow() {
         expression.ifPresent(relation -> {
-            final List row = new List();
-            relation.getColumn().forEach(ii -> {
-                final LiteralExpression le = new LiteralExpression();
-                row.getExpression().add(le);
-            });
-
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           new AddRelationRowCommand(relation,
-                                                                    row,
+                                                                    new List(),
                                                                     model,
                                                                     new DMNGridRow(),
                                                                     uiModelMapper,

@@ -36,8 +36,6 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
-import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
-import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.AddDecisionRuleCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.AddInputClauseCommand;
@@ -294,24 +292,9 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
     @Override
     public void addDecisionRule() {
         expression.ifPresent(dtable -> {
-            final DecisionRule rule = new DecisionRule();
-            for (int ie = 0; ie < dtable.getInput().size(); ie++) {
-                final UnaryTests ut = new UnaryTests();
-                ut.setText("unary test");
-                rule.getInputEntry().add(ut);
-            }
-            for (int oe = 0; oe < dtable.getOutput().size(); oe++) {
-                final LiteralExpression le = new LiteralExpression();
-                le.setText("literal expression");
-                rule.getOutputEntry().add(le);
-            }
-            final Description d = new Description();
-            d.setValue("A rule");
-            rule.setDescription(d);
-
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           new AddDecisionRuleCommand(dtable,
-                                                                     rule,
+                                                                     new DecisionRule(),
                                                                      model,
                                                                      new DMNGridRow(),
                                                                      uiModelMapper,
