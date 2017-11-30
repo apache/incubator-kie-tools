@@ -54,7 +54,7 @@ public class RelationColumn extends DMNGridColumn<String> implements HasSingleto
     }
 
     private GridCell<String> assertCell(final GridCell<String> cell) {
-        if (cell != null) {
+        if (cell != null && cell.getValue() != null && cell.getValue().getValue() != null) {
             return cell;
         }
         return new BaseGridCell<>(new BaseGridCellValue<>(""));
