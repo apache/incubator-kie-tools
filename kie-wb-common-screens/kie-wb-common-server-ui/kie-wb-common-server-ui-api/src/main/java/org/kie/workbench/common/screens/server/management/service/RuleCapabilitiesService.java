@@ -23,12 +23,13 @@ import org.kie.server.controller.api.model.spec.ContainerSpecKey;
 @Remote
 public interface RuleCapabilitiesService {
 
-    void scanNow(final ContainerSpecKey containerSpecKey);
+    void scanNow(ContainerSpecKey containerSpecKey);
 
-    void startScanner(final ContainerSpecKey containerSpecKey, long interval);
+    void startScanner(ContainerSpecKey containerSpecKey,
+                      Long interval);
 
-    void stopScanner(final ContainerSpecKey containerSpecKey);
+    void stopScanner(ContainerSpecKey containerSpecKey);
 
-    void upgradeContainer(final ContainerSpecKey containerSpecKey, final ReleaseId releaseId);
-
+    void upgradeContainer(ContainerSpecKey containerSpecKey,
+                          ReleaseId releaseId);
 }

@@ -16,13 +16,7 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.build;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.google.common.collect.Sets;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -42,12 +36,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.server.controller.api.model.spec.Capability;
-import org.kie.server.controller.api.model.spec.ContainerConfig;
-import org.kie.server.controller.api.model.spec.ContainerSpec;
-import org.kie.server.controller.api.model.spec.ProcessConfig;
-import org.kie.server.controller.api.model.spec.RuleConfig;
-import org.kie.server.controller.api.model.spec.ServerTemplate;
+import org.kie.server.controller.api.model.spec.*;
 import org.kie.workbench.common.screens.projecteditor.client.editor.DeploymentScreenPopupViewImpl;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.server.management.model.RuntimeStrategy;
@@ -66,6 +55,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -168,7 +158,7 @@ public class BuildExecutorTest {
     public void testBuildAndDeployCommandSingleServerTemplate() {
         final ServerTemplate serverTemplate = new ServerTemplate("id",
                                                                  "name");
-        when(specManagementServiceMock.listServerTemplates()).thenReturn(Collections.singletonList(serverTemplate));
+        when(specManagementServiceMock.listServerTemplates()).thenReturn(new ServerTemplateList(Collections.singletonList(serverTemplate)));
 
         buildExecutor.triggerBuildAndDeploy();
 
@@ -201,7 +191,7 @@ public class BuildExecutorTest {
                                                           null,
                                                           null,
                                                           null));
-        when(specManagementServiceMock.listServerTemplates()).thenReturn(Collections.singletonList(serverTemplate));
+        when(specManagementServiceMock.listServerTemplates()).thenReturn(new ServerTemplateList(Collections.singletonList(serverTemplate)));
 
         buildExecutor.triggerBuildAndDeploy();
 
@@ -223,8 +213,8 @@ public class BuildExecutorTest {
         final ServerTemplate serverTemplate2 = new ServerTemplate("id2",
                                                                   "name2");
 
-        when(specManagementServiceMock.listServerTemplates()).thenReturn(Arrays.asList(serverTemplate1,
-                                                                                       serverTemplate2));
+        when(specManagementServiceMock.listServerTemplates()).thenReturn(new ServerTemplateList(Arrays.asList(serverTemplate1,
+                                                                                                              serverTemplate2)));
 
         buildExecutor.triggerBuildAndDeploy();
 

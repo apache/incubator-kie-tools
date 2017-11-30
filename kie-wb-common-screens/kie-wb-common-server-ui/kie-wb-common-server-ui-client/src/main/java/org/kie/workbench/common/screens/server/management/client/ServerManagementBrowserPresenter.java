@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.server.management.client;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -34,6 +35,7 @@ import org.kie.server.controller.api.model.runtime.ServerInstanceKey;
 import org.kie.server.controller.api.model.spec.ContainerSpec;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.server.controller.api.model.spec.ServerTemplateKey;
+import org.kie.server.controller.api.model.spec.ServerTemplateKeyList;
 import org.kie.workbench.common.screens.server.management.client.container.ContainerPresenter;
 import org.kie.workbench.common.screens.server.management.client.container.empty.ServerContainerEmptyPresenter;
 import org.kie.workbench.common.screens.server.management.client.empty.ServerEmptyPresenter;
@@ -146,12 +148,10 @@ public class ServerManagementBrowserPresenter {
     }
 
     private void refreshList( @Observes final ServerTemplateListRefresh refresh ) {
-        specManagementService.call( new RemoteCallback<Collection<ServerTemplateKey>>() {
-            @Override
-            public void callback( final Collection<ServerTemplateKey> serverTemplateKeys ) {
-                setup( serverTemplateKeys, refresh.getSelectServerTemplateId() );
-            }
-        } ).listServerTemplateKeys();
+        specManagementService.call((ServerTemplateKeyList serverTemplateKeys) ->
+                                           setup(Arrays.asList(serverTemplateKeys.getServerTemplates()),
+                                                 refresh.getSelectServerTemplateId())
+        ).listServerTemplateKeys();
     }
 
     public void onSelected( @Observes final ServerTemplateSelected serverTemplateSelected ) {

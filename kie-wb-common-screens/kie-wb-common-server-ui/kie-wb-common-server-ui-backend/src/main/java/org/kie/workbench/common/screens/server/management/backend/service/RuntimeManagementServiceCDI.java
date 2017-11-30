@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.server.management.backend.service;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -60,7 +61,7 @@ public class RuntimeManagementServiceCDI extends RuntimeManagementServiceImpl
         return serverTemplate.getServerInstanceKeys().stream()
                 .filter(serverInstanceKey -> serverInstanceKey.getServerInstanceId().equalsIgnoreCase(serverInstanceId))
                 .findFirst()
-                .map(this::getContainers)
+                .map(serverInstanceKey -> Arrays.asList(getContainers(serverInstanceKey).getContainers()))
                 .orElse(Collections.emptyList());
     }
 

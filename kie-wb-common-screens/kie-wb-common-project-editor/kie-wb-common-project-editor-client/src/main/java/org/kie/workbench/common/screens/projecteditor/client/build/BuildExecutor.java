@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.build;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -42,14 +43,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.server.api.model.KieContainerStatus;
 import org.kie.server.api.model.KieScannerStatus;
 import org.kie.server.api.model.ReleaseId;
-import org.kie.server.controller.api.model.spec.Capability;
-import org.kie.server.controller.api.model.spec.ContainerConfig;
-import org.kie.server.controller.api.model.spec.ContainerSpec;
-import org.kie.server.controller.api.model.spec.ContainerSpecKey;
-import org.kie.server.controller.api.model.spec.ProcessConfig;
-import org.kie.server.controller.api.model.spec.RuleConfig;
-import org.kie.server.controller.api.model.spec.ServerTemplate;
-import org.kie.server.controller.api.model.spec.ServerTemplateKey;
+import org.kie.server.controller.api.model.spec.*;
 import org.kie.workbench.common.screens.projecteditor.client.editor.DeploymentScreenPopupViewImpl;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.server.management.model.MergeMode;
@@ -107,24 +101,23 @@ public class BuildExecutor {
     }
 
     public void triggerBuildAndDeploy() {
-        specManagementService.call((Collection<ServerTemplate> serverTemplates) -> {
-
-            switch (serverTemplates.size()) {
+        specManagementService.call((ServerTemplateList serverTemplates) -> {
+            final int length = serverTemplates == null || serverTemplates.getServerTemplates() == null ? 0 : serverTemplates.getServerTemplates().length;
+            switch (length) {
                 case 0:
                     safeExecuted(buildDeployCommand(DeploymentMode.VALIDATED)).execute();
                     break;
                 case 1:
-                    buildDeployWithOneServerTemplate(serverTemplates);
+                    buildDeployWithOneServerTemplate(serverTemplates.getServerTemplates()[0]);
                     break;
                 default:
-                    buildDeployWithMultipleServerTemplates(serverTemplates);
+                    buildDeployWithMultipleServerTemplates(Arrays.asList(serverTemplates.getServerTemplates()));
                     break;
             }
         }).listServerTemplates();
     }
 
-    private void buildDeployWithOneServerTemplate(Collection<ServerTemplate> serverTemplates) {
-        final ServerTemplate serverTemplate = serverTemplates.iterator().next();
+    private void buildDeployWithOneServerTemplate(ServerTemplate serverTemplate) {
         final Set<String> existingContainers = existingContainers(serverTemplate);
 
         if (!existingContainers.contains(defaultContainerId())) {

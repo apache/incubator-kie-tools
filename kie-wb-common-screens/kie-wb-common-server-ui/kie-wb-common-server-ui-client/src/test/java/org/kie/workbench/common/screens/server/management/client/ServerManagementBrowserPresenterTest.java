@@ -34,6 +34,7 @@ import org.kie.server.controller.api.model.spec.ContainerSpec;
 import org.kie.server.controller.api.model.spec.ContainerSpecKey;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.server.controller.api.model.spec.ServerTemplateKey;
+import org.kie.server.controller.api.model.spec.ServerTemplateKeyList;
 import org.kie.workbench.common.screens.server.management.client.container.ContainerPresenter;
 import org.kie.workbench.common.screens.server.management.client.container.empty.ServerContainerEmptyPresenter;
 import org.kie.workbench.common.screens.server.management.client.empty.ServerEmptyPresenter;
@@ -197,7 +198,7 @@ public class ServerManagementBrowserPresenterTest {
     public void testOnOpen() {
         final ServerTemplateKey serverTemplateKey = new ServerTemplateKey( "ServerTemplateKeyId", "ServerTemplateKeyName" );
         final List<ServerTemplateKey> serverTemplateKeys = Collections.singletonList( serverTemplateKey );
-        when( specManagementService.listServerTemplateKeys() ).thenReturn( serverTemplateKeys );
+        when( specManagementService.listServerTemplateKeys() ).thenReturn( new ServerTemplateKeyList(serverTemplateKeys) );
 
         presenter.onOpen();
 
@@ -222,7 +223,7 @@ public class ServerManagementBrowserPresenterTest {
     public void testOnServerDeleted() {
         final ServerTemplateKey serverTemplateKey = new ServerTemplateKey( "ServerTemplateKeyId", "ServerTemplateKeyName" );
         final List<ServerTemplateKey> serverTemplateKeys = Collections.singletonList( serverTemplateKey );
-        when( specManagementService.listServerTemplateKeys() ).thenReturn( serverTemplateKeys );
+        when( specManagementService.listServerTemplateKeys() ).thenReturn( new ServerTemplateKeyList(serverTemplateKeys) );
 
         presenter.onServerDeleted( new ServerTemplateDeleted() );
 
@@ -257,7 +258,7 @@ public class ServerManagementBrowserPresenterTest {
         when( serverTemplatePresenter.getCurrentServerTemplate() ).thenReturn( serverTemplate );
         final ServerTemplateKey serverTemplateKey = new ServerTemplateKey( "ServerTemplateKeyId", "ServerTemplateKeyName" );
         final List<ServerTemplateKey> serverTemplateKeys = Collections.singletonList( serverTemplateKey );
-        when( specManagementService.listServerTemplateKeys() ).thenReturn( serverTemplateKeys );
+        when( specManagementService.listServerTemplateKeys() ).thenReturn( new ServerTemplateKeyList(serverTemplateKeys) );
 
         presenter.onDelete( new ServerInstanceDeleted( serverInstanceKey.getServerInstanceId() ) );
 
