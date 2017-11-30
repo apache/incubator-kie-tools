@@ -203,8 +203,6 @@ public interface Constants
 
     String AddAFieldToThisExpectation();
 
-    String ChooseDotDotDot();
-
     String ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation();
 
     String WHEN();

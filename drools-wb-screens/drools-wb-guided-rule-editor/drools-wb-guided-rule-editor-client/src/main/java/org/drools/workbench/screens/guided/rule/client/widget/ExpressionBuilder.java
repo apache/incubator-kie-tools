@@ -166,7 +166,7 @@ public class ExpressionBuilder extends RuleModellerWidget
     private Widget createStartPointWidget() {
         ListBox startPoint = new ListBox();
 
-        startPoint.addItem(GuidedRuleEditorResources.CONSTANTS.ChooseDotDotDot(),
+        startPoint.addItem(GuidedRuleEditorResources.CONSTANTS.Choose(),
                            "");
 
         // TODO {baunax} uncomment when global collections is implemented.
@@ -256,7 +256,7 @@ public class ExpressionBuilder extends RuleModellerWidget
         };
 
         final ListBox listBox = new ListBox();
-        listBox.addItem(GuidedRuleEditorResources.CONSTANTS.ChooseDotDotDot(),
+        listBox.addItem(GuidedRuleEditorResources.CONSTANTS.Choose(),
                         "");
         if (includeDeleteOption()) {
             listBox.addItem("<==" + GuidedRuleEditorResources.CONSTANTS.DeleteItem(),
