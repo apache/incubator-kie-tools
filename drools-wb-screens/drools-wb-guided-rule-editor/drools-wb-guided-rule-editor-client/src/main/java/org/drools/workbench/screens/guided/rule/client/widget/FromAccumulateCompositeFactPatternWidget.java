@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.guided.rule.client.widget;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -81,8 +82,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
         ClickHandler sourcePatternClick = new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                Widget w = (Widget) event.getSource();
-                showSourcePatternSelector(w);
+                showSourcePatternSelector();
             }
         };
 
@@ -339,7 +339,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
      */
     @Override
     protected void showFactTypeSelector() {
-        final ListBox box = new ListBox();
+        final ListBox box = GWT.create(ListBox.class);
         AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
         String[] facts = oracle.getFactTypes();
 
@@ -368,7 +368,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
     /**
      * Pops up the fact selector.
      */
-    protected void showSourcePatternSelector(final Widget w) {
+    protected void showSourcePatternSelector() {
         final ListBox box = new ListBox();
         AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
         String[] facts = oracle.getFactTypes();
