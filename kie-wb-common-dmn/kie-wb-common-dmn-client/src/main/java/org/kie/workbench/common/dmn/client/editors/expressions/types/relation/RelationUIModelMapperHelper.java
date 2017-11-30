@@ -36,7 +36,7 @@ public class RelationUIModelMapperHelper {
         if ((_columnIndex = _columnIndex - ROW_INDEX_COLUMN_COUNT) < 0) {
             return RelationSection.ROW_INDEX;
         }
-        if ((_columnIndex = _columnIndex - iiColumnCount) < 0) {
+        if ((_columnIndex - iiColumnCount) < 0) {
             return RelationSection.INFORMATION_ITEM;
         }
         return RelationSection.NONE;
