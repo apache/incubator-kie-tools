@@ -18,14 +18,17 @@ package org.kie.workbench.common.services.backend.project;
 
 import java.net.URISyntaxException;
 import java.net.URL;
+
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 
 import org.guvnor.common.services.project.backend.server.ProjectConfigurationContentHandler;
+import org.guvnor.common.services.project.model.ProjectImports;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.imports.Import;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -36,9 +39,13 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProjectImportsServiceImplTest extends WeldProjectTestBase {
@@ -59,7 +66,7 @@ public class ProjectImportsServiceImplTest extends WeldProjectTestBase {
         super.startWeld();
 
         //Instantiate Paths used in tests for Path conversion
-        final Bean pathsBean = (Bean) beanManager.getBeans(Paths.class).iterator().next();
+        final Bean pathsBean = beanManager.getBeans(Paths.class).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext(pathsBean);
 
         Paths paths = (Paths) beanManager.getReference(pathsBean,
@@ -120,13 +127,17 @@ public class ProjectImportsServiceImplTest extends WeldProjectTestBase {
 
         when(ioService.exists(any(org.uberfire.java.nio.file.Path.class))).thenReturn(true);
 
-        projectImportsService.load(pathToImports);
+        final ProjectImports projectImports = projectImportsService.load(pathToImports);
 
         verify(ioService,
                never()).write(any(org.uberfire.java.nio.file.Path.class),
                               any(String.class));
         verify(ioService,
                times(1)).readAllString(any(org.uberfire.java.nio.file.Path.class));
+
+        // projects imports need always to contain java.lang.Number
+        // because of the guided rule editor
+        assertTrue(projectImports.getImports().contains(new Import(Number.class)));
     }
 
     @Test
@@ -134,12 +145,16 @@ public class ProjectImportsServiceImplTest extends WeldProjectTestBase {
 
         when(ioService.exists(any(org.uberfire.java.nio.file.Path.class))).thenReturn(false);
 
-        projectImportsService.load(pathToImports);
+        final ProjectImports projectImports = projectImportsService.load(pathToImports);
 
         verify(ioService,
                times(1)).write(any(org.uberfire.java.nio.file.Path.class),
                                importsArgumentCaptor.capture());
 
         assertExternalDataObjects(importsArgumentCaptor.getValue());
+
+        // projects imports need always to contain java.lang.Number
+        // because of the guided rule editor
+        assertTrue(projectImports.getImports().contains(new Import(Number.class)));
     }
 }

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.services.backend.project;
 
+import java.util.Objects;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -100,7 +102,15 @@ public class ProjectImportsServiceImpl
                 saveProjectImports(path);
             }
             final String content = ioService.readAllString(Paths.convert(path));
-            return projectConfigurationContentHandler.toModel(content);
+            final ProjectImports projectImports = projectConfigurationContentHandler.toModel(content);
+
+            // java.lang.Number imported by default in new guided rule
+            // include it into project imports if not present already
+            final Import javaLangNumber = new Import(Number.class);
+            if (projectImports.getImports().getImports().stream().noneMatch(anImport -> Objects.equals(anImport, javaLangNumber))) {
+                projectImports.getImports().addImport(javaLangNumber);
+            }
+            return projectImports;
         } catch (Exception e) {
             throw ExceptionUtilities.handleException(e);
         }
