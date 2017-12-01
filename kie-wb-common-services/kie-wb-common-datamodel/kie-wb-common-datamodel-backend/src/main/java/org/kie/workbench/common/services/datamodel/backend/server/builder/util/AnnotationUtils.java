@@ -65,7 +65,7 @@ public class AnnotationUtils {
     public static Set<org.kie.soup.project.datamodel.oracle.Annotation> getClassAnnotations( Class<?> clazz ) {
 
         if ( clazz == null ) {
-            return Collections.EMPTY_SET;
+            return Collections.emptySet();
         }
 
         return getAnnotations( clazz.getAnnotations(), false );
@@ -91,7 +91,7 @@ public class AnnotationUtils {
                                                                                                     boolean inherited ) {
 
         if ( field == null ) {
-            return Collections.EMPTY_SET;
+            return Collections.emptySet();
         }
 
         return getAnnotations( field.getDeclaredAnnotations(), inherited );

@@ -15,19 +15,19 @@
 
 package org.kie.workbench.common.screens.datamodeller.backend.server;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
+import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.shared.project.KieProject;
-import org.uberfire.backend.vfs.Path;
 import t1p1.Pojo1;
 import t1p2.Pojo2;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Tests for DataModelService
@@ -36,32 +36,28 @@ public class DataModelerServiceWeldTest extends AbstractDataModelerServiceWeldTe
 
     @Test
     public void testDataModelerService() throws Exception {
+        KieProject project = loadProjectFromResources("/DataModelerTest1");
 
-        final URL packageUrl = this.getClass().getResource( "/DataModelerTest1" );
-        final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
-        final Path packagePath = paths.convert( nioPackagePath );
+        final Map<String, AnnotationDefinition> systemAnnotations = dataModelService.getAnnotationDefinitions();
+        DataModel dataModelOriginal = new DataModelTestUtil(systemAnnotations).createModel(Pojo1.class,
+                                                                                           Pojo2.class);
 
-        KieProject project = projectService.resolveProject( packagePath );
+        org.kie.workbench.common.services.datamodeller.core.DataModel dataModel = dataModelService.loadModel(project);
+        Map<String, DataObject> objectsMap = new HashMap<>();
 
-        DataModel dataModelOriginal = new DataModelTestUtil( systemAnnotations ).createModel( Pojo1.class,
-                                                                                              Pojo2.class );
+        assertNotNull(dataModel);
 
-        org.kie.workbench.common.services.datamodeller.core.DataModel dataModel = dataModelService.loadModel( project );
-        Map<String, DataObject> objectsMap = new HashMap<String, DataObject>();
+        assertEquals(dataModelOriginal.getDataObjects().size(),
+                     dataModel.getDataObjects().size());
 
-        assertNotNull( dataModel );
-
-        assertEquals( dataModelOriginal.getDataObjects().size(),
-                      dataModel.getDataObjects().size() );
-
-        for ( DataObject dataObject : dataModel.getDataObjects() ) {
-            objectsMap.put( dataObject.getClassName(),
-                            dataObject );
+        for (DataObject dataObject : dataModel.getDataObjects()) {
+            objectsMap.put(dataObject.getClassName(),
+                           dataObject);
         }
 
-        for ( DataObject dataObject : dataModelOriginal.getDataObjects() ) {
-            org.kie.workbench.common.services.datamodeller.DataModelerAssert.assertEqualsDataObject( dataObject,
-                                                                                                     objectsMap.get( dataObject.getClassName() ) );
+        for (DataObject dataObject : dataModelOriginal.getDataObjects()) {
+            org.kie.workbench.common.services.datamodeller.DataModelerAssert.assertEqualsDataObject(dataObject,
+                                                                                                    objectsMap.get(dataObject.getClassName()));
         }
     }
 }

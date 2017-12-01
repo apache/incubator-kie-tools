@@ -121,7 +121,7 @@ public class DataModelOracleUtilities {
                                                      final String fullyQualifiedClassName) {
         final Map<String, Set<Annotation>> typeAnnotations = oracle.getProjectTypeAnnotations();
         if (!typeAnnotations.containsKey(fullyQualifiedClassName)) {
-            return Collections.EMPTY_SET;
+            return Collections.emptySet();
         }
         return typeAnnotations.get(fullyQualifiedClassName);
     }
@@ -137,7 +137,7 @@ public class DataModelOracleUtilities {
                                                                         final String fullyQualifiedClassName) {
         final Map<String, Map<String, Set<Annotation>>> typeFieldsAnnotations = oracle.getProjectTypeFieldsAnnotations();
         if (!typeFieldsAnnotations.containsKey(fullyQualifiedClassName)) {
-            return Collections.EMPTY_MAP;
+            return Collections.emptyMap();
         }
         return typeFieldsAnnotations.get(fullyQualifiedClassName);
     }
