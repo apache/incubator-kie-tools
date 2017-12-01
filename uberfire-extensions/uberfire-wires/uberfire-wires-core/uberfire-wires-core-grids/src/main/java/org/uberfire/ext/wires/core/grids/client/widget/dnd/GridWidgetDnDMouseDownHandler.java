@@ -36,8 +36,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
  */
 public class GridWidgetDnDMouseDownHandler implements NodeMouseDownHandler {
 
-    private final GridLayer layer;
-    private final GridWidgetDnDHandlersState state;
+    protected final GridLayer layer;
+    protected final GridWidgetDnDHandlersState state;
 
     public GridWidgetDnDMouseDownHandler(final GridLayer layer,
                                          final GridWidgetDnDHandlersState state) {
@@ -105,8 +105,8 @@ public class GridWidgetDnDMouseDownHandler implements NodeMouseDownHandler {
     }
 
     @SuppressWarnings("unchecked")
-    void showColumnHighlight(final GridWidget view,
-                             final List<GridColumn<?>> activeGridColumns) {
+    protected void showColumnHighlight(final GridWidget view,
+                                       final List<GridColumn<?>> activeGridColumns) {
         final BaseGridRendererHelper rendererHelper = view.getRendererHelper();
         final BaseGridRendererHelper.RenderingInformation renderingInformation = rendererHelper.getRenderingInformation();
         if (renderingInformation == null) {
@@ -148,8 +148,8 @@ public class GridWidgetDnDMouseDownHandler implements NodeMouseDownHandler {
         return highlightHeight;
     }
 
-    void showRowHighlight(final GridWidget view,
-                          final List<GridRow> activeGridRows) {
+    protected void showRowHighlight(final GridWidget view,
+                                    final List<GridRow> activeGridRows) {
         final BaseGridRendererHelper rendererHelper = view.getRendererHelper();
         final BaseGridRendererHelper.RenderingInformation renderingInformation = rendererHelper.getRenderingInformation();
         if (renderingInformation == null) {

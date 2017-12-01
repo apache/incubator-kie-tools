@@ -24,8 +24,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
  */
 public class GridWidgetDnDMouseUpHandler implements NodeMouseUpHandler {
 
-    private final GridLayer layer;
-    private final GridWidgetDnDHandlersState state;
+    protected final GridLayer layer;
+    protected final GridWidgetDnDHandlersState state;
 
     public GridWidgetDnDMouseUpHandler(final GridLayer layer,
                                        final GridWidgetDnDHandlersState state) {

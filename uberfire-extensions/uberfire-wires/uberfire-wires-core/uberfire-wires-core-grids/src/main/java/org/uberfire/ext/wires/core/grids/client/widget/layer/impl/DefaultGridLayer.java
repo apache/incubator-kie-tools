@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
-import com.ait.lienzo.client.core.event.NodeMouseDownHandler;
 import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
 import com.ait.lienzo.client.core.event.NodeMouseUpEvent;
 import com.ait.lienzo.client.core.shape.IPrimitive;
@@ -86,12 +85,9 @@ public class DefaultGridLayer extends Layer implements GridLayer {
                                      0);
 
         //Column DnD handlers
-        this.mouseDownHandler = new GridWidgetDnDMouseDownHandler(this,
-                                                                  state);
-        this.mouseMoveHandler = new GridWidgetDnDMouseMoveHandler(this,
-                                                                  state);
-        this.mouseUpHandler = new GridWidgetDnDMouseUpHandler(this,
-                                                              state);
+        this.mouseDownHandler = getGridWidgetDnDMouseDownHandler();
+        this.mouseMoveHandler = getGridWidgetDnDMouseMoveHandler();
+        this.mouseUpHandler = getGridWidgetDnDMouseUpHandler();
         addNodeMouseDownHandler(mouseDownHandler);
         addNodeMouseMoveHandler(mouseMoveHandler);
         addNodeMouseUpHandler(mouseUpHandler);
@@ -103,20 +99,32 @@ public class DefaultGridLayer extends Layer implements GridLayer {
         // We do this rather than setFocus on GridPanel as the FocusImplSafari implementation of
         // FocusPanel sets focus at unpredictable times which can lead to SingletonDOMElements
         // loosing focus after they've been attached to the DOM and hence disappearing.
-        addNodeMouseDownHandler(new NodeMouseDownHandler() {
-            @Override
-            public void onNodeMouseDown(final NodeMouseDownEvent event) {
-                for (GridWidget gridWidget : getGridWidgets()) {
-                    for (GridColumn<?> gridColumn : gridWidget.getModel().getColumns()) {
-                        if (gridColumn instanceof HasSingletonDOMElementResource) {
-                            ((HasSingletonDOMElementResource) gridColumn).flush();
-                            ((HasSingletonDOMElementResource) gridColumn).destroyResources();
-                            batch();
-                        }
+        addNodeMouseDownHandler((event) -> {
+            for (GridWidget gridWidget : getGridWidgets()) {
+                for (GridColumn<?> gridColumn : gridWidget.getModel().getColumns()) {
+                    if (gridColumn instanceof HasSingletonDOMElementResource) {
+                        ((HasSingletonDOMElementResource) gridColumn).flush();
+                        ((HasSingletonDOMElementResource) gridColumn).destroyResources();
+                        batch();
                     }
                 }
             }
         });
+    }
+
+    protected GridWidgetDnDMouseDownHandler getGridWidgetDnDMouseDownHandler() {
+        return new GridWidgetDnDMouseDownHandler(this,
+                                                 state);
+    }
+
+    protected GridWidgetDnDMouseMoveHandler getGridWidgetDnDMouseMoveHandler() {
+        return new GridWidgetDnDMouseMoveHandler(this,
+                                                 state);
+    }
+
+    protected GridWidgetDnDMouseUpHandler getGridWidgetDnDMouseUpHandler() {
+        return new GridWidgetDnDMouseUpHandler(this,
+                                               state);
     }
 
     @Override
