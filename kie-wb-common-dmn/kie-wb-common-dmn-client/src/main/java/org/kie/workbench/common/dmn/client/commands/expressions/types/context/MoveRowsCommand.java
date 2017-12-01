@@ -77,6 +77,9 @@ public class MoveRowsCommand extends AbstractCanvasGraphCommand implements VetoE
         return new AbstractGraphCommand() {
             @Override
             protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext gcec) {
+                if (index == uiModel.getRowCount() - 1) {
+                    return GraphCommandResultBuilder.FAILED;
+                }
                 return GraphCommandResultBuilder.SUCCESS;
             }
 
@@ -120,6 +123,15 @@ public class MoveRowsCommand extends AbstractCanvasGraphCommand implements VetoE
     @Override
     protected Command<AbstractCanvasHandler, CanvasViolation> newCanvasCommand(final AbstractCanvasHandler ach) {
         return new AbstractCanvasCommand() {
+
+            @Override
+            public CommandResult<CanvasViolation> allow(AbstractCanvasHandler context) {
+                if (index == uiModel.getRowCount() - 1) {
+                    return CanvasCommandResultBuilder.FAILED;
+                }
+                return CanvasCommandResultBuilder.SUCCESS;
+            }
+
             @Override
             public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler ach) {
                 uiModel.moveRowsTo(index,
@@ -153,8 +165,9 @@ public class MoveRowsCommand extends AbstractCanvasGraphCommand implements VetoE
                         .findFirst();
 
                 rowNumberColumn.ifPresent(c -> {
+                    final int lastRowIndex = uiModel.getRowCount() - 1;
                     final int columnIndex = uiModel.getColumns().indexOf(c);
-                    for (int rowIndex = 0; rowIndex < uiModel.getRowCount(); rowIndex++) {
+                    for (int rowIndex = 0; rowIndex < lastRowIndex; rowIndex++) {
                         uiModel.setCell(rowIndex,
                                         columnIndex,
                                         new BaseGridCellValue<>(rowIndex + 1));

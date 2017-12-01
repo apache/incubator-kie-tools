@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -36,15 +37,20 @@ import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxS
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.HasRowDragRestrictions;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
+import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState;
+import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState.GridWidgetHandlersOperation;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
-public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMapper> implements ContextGridControls.Presenter {
+public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMapper> implements ContextGridControls.Presenter,
+                                                                                              HasRowDragRestrictions {
 
     private static final String EXPRESSION_COLUMN_GROUP = "ContextGrid$ExpressionColumn1";
 
@@ -138,10 +144,13 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
     @Override
     public void initialiseUiModel() {
         expression.ifPresent(c -> {
+            final int lastRowIndex = c.getContextEntry().size();
             c.getContextEntry().stream().forEach(ce -> {
                 model.appendRow(new DMNGridRow());
-                uiModelMapper.fromDMNModel(model.getRowCount() - 1,
-                                           0);
+                if (model.getRowCount() != lastRowIndex) {
+                    uiModelMapper.fromDMNModel(model.getRowCount() - 1,
+                                               0);
+                }
                 uiModelMapper.fromDMNModel(model.getRowCount() - 1,
                                            1);
                 uiModelMapper.fromDMNModel(model.getRowCount() - 1,
@@ -172,5 +181,16 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
                                                                          gridLayer.batch();
                                                                      }));
         });
+    }
+
+    @Override
+    public boolean isRowDragPermitted(final GridWidgetDnDHandlersState state) {
+        final GridWidgetHandlersOperation operation = state.getOperation();
+        if (operation == GridWidgetHandlersOperation.ROW_MOVE_PENDING) {
+            final int lastRowIndex = model.getRowCount() - 1;
+            final List<GridRow> rows = state.getActiveGridRows();
+            return !rows.contains(model.getRow(lastRowIndex));
+        }
+        return true;
     }
 }

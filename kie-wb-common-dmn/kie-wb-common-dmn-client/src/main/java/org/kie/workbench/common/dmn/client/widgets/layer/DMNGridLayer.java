@@ -20,8 +20,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.google.gwt.user.client.Command;
+import org.kie.workbench.common.dmn.client.widgets.dnd.DelegatingGridWidgetDndMouseMoveHandler;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNExpressionCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
+import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDMouseMoveHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
@@ -75,6 +77,12 @@ public class DMNGridLayer extends DefaultGridLayer {
     @Override
     public void updatePinnedContext(final GridWidget gridWidget) throws IllegalStateException {
         //Do nothing. ExpressionEditor grid is a place-holder for the real content.
+    }
+
+    @Override
+    protected GridWidgetDnDMouseMoveHandler getGridWidgetDnDMouseMoveHandler() {
+        return new DelegatingGridWidgetDndMouseMoveHandler(this,
+                                                           getGridWidgetHandlersState());
     }
 
     public void clearAllSelections() {

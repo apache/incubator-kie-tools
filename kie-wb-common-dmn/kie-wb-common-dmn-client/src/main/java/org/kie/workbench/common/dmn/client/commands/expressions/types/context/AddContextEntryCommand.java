@@ -69,7 +69,9 @@ public class AddContextEntryCommand extends AbstractCanvasGraphCommand implement
 
             @Override
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext gce) {
-                context.getContextEntry().add(contextEntry);
+                final int lastRowIndex = context.getContextEntry().size() - 1;
+                context.getContextEntry().add(lastRowIndex,
+                                              contextEntry);
 
                 return GraphCommandResultBuilder.SUCCESS;
             }
@@ -87,12 +89,14 @@ public class AddContextEntryCommand extends AbstractCanvasGraphCommand implement
         return new AbstractCanvasCommand() {
             @Override
             public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler handler) {
-                uiModel.appendRow(uiModelRow);
-                uiModelMapper.fromDMNModel(uiModel.getRowCount() - 1,
+                final int lastRowIndex = uiModel.getRowCount() - 1;
+                uiModel.insertRow(lastRowIndex,
+                                  uiModelRow);
+                uiModelMapper.fromDMNModel(lastRowIndex,
                                            0);
-                uiModelMapper.fromDMNModel(uiModel.getRowCount() - 1,
+                uiModelMapper.fromDMNModel(lastRowIndex,
                                            1);
-                uiModelMapper.fromDMNModel(uiModel.getRowCount() - 1,
+                uiModelMapper.fromDMNModel(lastRowIndex,
                                            2);
                 canvasOperation.execute();
 

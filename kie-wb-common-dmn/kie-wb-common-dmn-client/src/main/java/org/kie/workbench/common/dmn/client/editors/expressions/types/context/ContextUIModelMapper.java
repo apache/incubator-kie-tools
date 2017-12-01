@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
@@ -57,7 +58,8 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
                                           new BaseGridCellValue<>(rowIndex + 1));
                     break;
                 case NAME:
-                    final String name = context.getContextEntry().get(rowIndex).getVariable().getName().getValue();
+                    final InformationItem variable = context.getContextEntry().get(rowIndex).getVariable();
+                    final String name = variable == null ? "result" : variable.getName().getValue();
                     uiModel.get().setCell(rowIndex,
                                           columnIndex,
                                           new BaseGridCellValue<>(name));

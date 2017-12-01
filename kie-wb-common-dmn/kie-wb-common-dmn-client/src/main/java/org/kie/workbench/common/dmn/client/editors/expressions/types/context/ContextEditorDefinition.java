@@ -29,6 +29,7 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
+import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
@@ -87,10 +88,16 @@ public class ContextEditorDefinition implements ExpressionEditorDefinition<Conte
 
     @Override
     public Optional<Context> getModelClass() {
+        //Add one ContextEntry for the User to start with
         final Context context = new Context();
         final ContextEntry contextEntry = new ContextEntry();
         contextEntry.setVariable(new InformationItem());
         context.getContextEntry().add(contextEntry);
+
+        //Add (default) "result" entry
+        final ContextEntry resultEntry = new ContextEntry();
+        resultEntry.setExpression(new LiteralExpression());
+        context.getContextEntry().add(resultEntry);
         return Optional.of(context);
     }
 

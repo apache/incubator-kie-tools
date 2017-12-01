@@ -29,12 +29,10 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
-import org.uberfire.ext.wires.core.grids.client.widget.dnd.IsRowDragHandle;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.HasSingletonDOMElementResource;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
-public class NameColumn extends DMNGridColumn<String> implements HasSingletonDOMElementResource,
-                                                                 IsRowDragHandle {
+public class NameColumn extends DMNGridColumn<String> implements HasSingletonDOMElementResource {
 
     private final TextBoxSingletonDOMElementFactory factory;
 
@@ -62,6 +60,11 @@ public class NameColumn extends DMNGridColumn<String> implements HasSingletonDOM
     public void edit(final GridCell<String> cell,
                      final GridBodyCellRenderContext context,
                      final Callback<GridCellValue<String>> callback) {
+        final int rowIndex = context.getRowIndex();
+        final int lastRowIndex = gridWidget.getModel().getRowCount() - 1;
+        if (rowIndex == lastRowIndex) {
+            return;
+        }
         factory.attachDomElement(context,
                                  (e) -> e.getWidget().setValue(assertCell(cell).getValue().getValue()),
                                  (e) -> e.getWidget().setFocus(true));

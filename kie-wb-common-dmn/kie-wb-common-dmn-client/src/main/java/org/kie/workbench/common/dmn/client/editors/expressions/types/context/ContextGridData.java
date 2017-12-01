@@ -25,7 +25,9 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.context.Mo
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -65,12 +67,23 @@ public class ContextGridData implements GridData {
     @Override
     public void moveRowsTo(final int index,
                            final List<GridRow> rows) {
-        expression.ifPresent(context -> sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
-                                                                      new MoveRowsCommand(context,
-                                                                                          delegate,
-                                                                                          index,
-                                                                                          rows,
-                                                                                          canvasOperation)));
+        expression.ifPresent(context -> {
+            final AbstractCanvasHandler handler = (AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler();
+            final MoveRowsCommand command = new MoveRowsCommand(context,
+                                                                delegate,
+                                                                index,
+                                                                rows,
+                                                                canvasOperation);
+            if (isAllowed(sessionCommandManager.allow(handler,
+                                                      command))) {
+                sessionCommandManager.execute(handler,
+                                              command);
+            }
+        });
+    }
+
+    private boolean isAllowed(final CommandResult<CanvasViolation> result) {
+        return !CommandResult.Type.ERROR.equals(result.getType());
     }
 
     // --- Delegated to real class ---
