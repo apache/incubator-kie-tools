@@ -101,7 +101,7 @@ public class SideDockItemFocused
                                }
                            },
                            MouseOutEvent.getType());
-        setAutoHideEnabled(true);
+        setAutoHideEnabled(false);
     }
 
     @Override
