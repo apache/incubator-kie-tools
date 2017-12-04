@@ -30,6 +30,10 @@ public class RelationUIModelMapperHelper {
 
     public static RelationSection getSection(final Relation relation,
                                              final int columnIndex) {
+        if (columnIndex < 0) {
+            return RelationSection.NONE;
+        }
+
         final int iiColumnCount = relation.getColumn().size();
 
         int _columnIndex = columnIndex;

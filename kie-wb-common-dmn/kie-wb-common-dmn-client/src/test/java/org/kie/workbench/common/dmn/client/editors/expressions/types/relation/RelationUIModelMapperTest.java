@@ -124,8 +124,8 @@ public class RelationUIModelMapperTest {
 
     @Test
     public void testToDMNModelLiteralExpressionsEmptyValue() {
-        for (int uiRowIndex = 0; uiRowIndex < 2; uiRowIndex++) {
-            for (int uiColumnIndex = 1; uiColumnIndex < 3; uiColumnIndex++) {
+        for (int uiRowIndex = 0; uiRowIndex < uiModel.getRowCount(); uiRowIndex++) {
+            for (int uiColumnIndex = 1; uiColumnIndex < uiModel.getColumnCount(); uiColumnIndex++) {
                 mapper.toDMNModel(uiRowIndex,
                                   uiColumnIndex,
                                   cellValueSupplier);
@@ -143,8 +143,8 @@ public class RelationUIModelMapperTest {
 
     @Test
     public void testToDMNModelLiteralExpressionsNonEmptyValue() {
-        for (int uiRowIndex = 0; uiRowIndex < 2; uiRowIndex++) {
-            for (int uiColumnIndex = 1; uiColumnIndex < 3; uiColumnIndex++) {
+        for (int uiRowIndex = 0; uiRowIndex < uiModel.getRowCount(); uiRowIndex++) {
+            for (int uiColumnIndex = 1; uiColumnIndex < uiModel.getColumnCount(); uiColumnIndex++) {
                 final String value = "(" + uiColumnIndex + "," + uiRowIndex + ")";
                 cellValueSupplier = () -> Optional.of(new BaseGridCellValue<>(value));
                 mapper.toDMNModel(uiRowIndex,

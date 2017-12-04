@@ -50,6 +50,33 @@ public class RelationUIModelMapperHelperTest {
     }
 
     @Test
+    public void testGetSectionRowNumberColumnWhenInformationItemPresent() {
+        relation.getColumn().add(new InformationItem());
+
+        assertEquals(RelationSection.ROW_INDEX,
+                     getSection(relation,
+                                0));
+    }
+
+    @Test
+    public void testGetSectionNonExistingNegativeIndex() {
+        relation.getColumn().add(new InformationItem());
+
+        assertEquals(RelationSection.NONE,
+                     getSection(relation,
+                                -1));
+    }
+
+    @Test
+    public void testGetSectionNonExistingIndexEqualToColumnCount() {
+        relation.getColumn().add(new InformationItem());
+
+        assertEquals(RelationSection.NONE,
+                     getSection(relation,
+                                relation.getColumn().size() + 1));
+    }
+
+    @Test
     public void testGetSectionInformationItemColumn() {
         relation.getColumn().add(new InformationItem());
 
@@ -69,5 +96,23 @@ public class RelationUIModelMapperHelperTest {
         assertEquals(1,
                      getInformationItemIndex(relation,
                                              2));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetSectionInformationItemColumnNegativeIndex() {
+        relation.getColumn().add(new InformationItem());
+
+        assertEquals(RelationSection.INFORMATION_ITEM,
+                     getInformationItemIndex(relation,
+                                             -1));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetSectionInformationItemColumnIndexEqualToColumnCount() {
+        relation.getColumn().add(new InformationItem());
+
+        assertEquals(RelationSection.INFORMATION_ITEM,
+                     getInformationItemIndex(relation,
+                                             relation.getColumn().size() + 1));
     }
 }
