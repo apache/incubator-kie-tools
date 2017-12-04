@@ -65,13 +65,13 @@ public abstract class BaseDOMElementSingletonColumnTest<F extends BaseSingletonD
 
     protected GridData model;
 
-    private F factory;
+    protected F factory;
 
-    private D domElement;
+    protected D domElement;
 
-    private W widget;
+    protected W widget;
 
-    private C column;
+    protected C column;
 
     @Before
     public void setup() {
@@ -81,6 +81,7 @@ public abstract class BaseDOMElementSingletonColumnTest<F extends BaseSingletonD
         this.widget = getWidget();
         this.column = getColumn();
         when(domElement.getWidget()).thenReturn(widget);
+        when(gridWidget.getModel()).thenReturn(model);
     }
 
     protected abstract F getFactory();

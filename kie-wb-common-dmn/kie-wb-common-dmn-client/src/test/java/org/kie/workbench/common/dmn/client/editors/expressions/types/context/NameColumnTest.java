@@ -18,11 +18,23 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.BaseDOMElementSingletonColumnTest;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextBoxDOMElement;
 import org.mockito.Mock;
+import org.uberfire.client.callbacks.Callback;
+import org.uberfire.ext.wires.core.grids.client.model.GridCell;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class NameColumnTest extends BaseDOMElementSingletonColumnTest<TextBoxSingletonDOMElementFactory, TextBoxDOMElement, TextBox, NameColumn> {
@@ -56,5 +68,32 @@ public class NameColumnTest extends BaseDOMElementSingletonColumnTest<TextBoxSin
         return new NameColumn(headerMetaData,
                               factory,
                               gridWidget);
+    }
+
+    @Override
+    public void checkEdit() {
+        doReturn(0).when(context).getRowIndex();
+        model.appendRow(new BaseGridRow());
+        model.appendRow(new BaseGridRow());
+
+        super.checkEdit();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void checkEditLastRow() {
+        doReturn(0).when(context).getRowIndex();
+        model.appendRow(new BaseGridRow());
+
+        final GridCell<String> cell = new BaseGridCell<>(new BaseGridCellValue<>("value"));
+
+        column.edit(cell,
+                    context,
+                    result -> {/*Nothing*/});
+
+        verify(factory,
+               never()).attachDomElement(any(GridBodyCellRenderContext.class),
+                                         any(Callback.class),
+                                         any(Callback.class));
     }
 }

@@ -36,6 +36,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
 
+    static final String DEFAULT_ROW_CAPTION = "default";
+
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
 
     public ContextUIModelMapper(final Supplier<GridData> uiModel,
@@ -59,7 +61,7 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
                     break;
                 case NAME:
                     final InformationItem variable = context.getContextEntry().get(rowIndex).getVariable();
-                    final String name = variable == null ? "result" : variable.getName().getValue();
+                    final String name = variable == null ? DEFAULT_ROW_CAPTION : variable.getName().getValue();
                     uiModel.get().setCell(rowIndex,
                                           columnIndex,
                                           new BaseGridCellValue<>(name));
