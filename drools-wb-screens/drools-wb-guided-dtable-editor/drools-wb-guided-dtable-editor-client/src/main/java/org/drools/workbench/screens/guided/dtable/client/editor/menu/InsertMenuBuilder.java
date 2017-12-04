@@ -112,7 +112,7 @@ public class InsertMenuBuilder extends BaseMenu implements MenuFactory.CustomMen
     @Override
     public void initialise() {
 
-        if (this.activeDecisionTable == null || !activeDecisionTable.getAccess().isEditable()) {
+        if (activeDecisionTable == null || !activeDecisionTable.getAccess().isEditable()) {
             enableMenuItemsForAppendingRows(false);
             enableMenuItemsForAppendingColumns(false);
             enableMenuItemsForInsertingRows(false);

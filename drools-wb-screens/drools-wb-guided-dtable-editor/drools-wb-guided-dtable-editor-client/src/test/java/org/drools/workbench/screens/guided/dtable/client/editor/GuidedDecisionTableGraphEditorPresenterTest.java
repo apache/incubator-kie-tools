@@ -88,6 +88,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.startsWith;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -492,6 +493,37 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
     }
 
     @Test
+    public void testLoadDocumentGraphEmptyModel() throws Exception {
+        final ObservablePath documentPath = mock(ObservablePath.class);
+        final Overview overview = mock(Overview.class);
+        final GuidedDecisionTableEditorGraphModel graphModel = mock(GuidedDecisionTableEditorGraphModel.class);
+        final GuidedDecisionTableEditorGraphContent graphContent = mock(GuidedDecisionTableEditorGraphContent.class);
+
+        when(documentPath.getFileName()).thenReturn("GDT");
+        when(versionRecordManager.getCurrentPath()).thenReturn(documentPath);
+        when(dtGraphService.loadContent(documentPath)).thenReturn(graphContent);
+        when(versionRecordManager.getPathToLatest()).thenReturn(documentPath);
+        when(graphContent.getOverview()).thenReturn(overview);
+        when(graphContent.getModel()).thenReturn(graphModel);
+
+        presenter.loadDocumentGraph(documentPath);
+        verify(view).showLoading();
+        verify(view).hideBusyIndicator();
+        verify(view).refreshTitle(startsWith("GDT"));
+
+        // initialise when no documents
+        verify(editMenuItem).setEnabled(false);
+        verify(viewMenuItem).setEnabled(false);
+        verify(insertMenuItem).setEnabled(false);
+        verify(radarMenuItem).setEnabled(false);
+
+        verify(kieEditorWrapperView).clear();
+        verify(kieEditorWrapperView).addMainEditorPage(view);
+        verify(kieEditorWrapperView).addOverviewPage(eq(overviewWidget), any(com.google.gwt.user.client.Command.class));
+        verify(overviewWidget).setContent(overview, documentPath);
+    }
+
+    @Test
     public void checkMayCloseWithCleanDecisionTableGraph() {
         checkMayClose(0,
                       () -> assertTrue(presenter.mayClose()));
@@ -678,13 +710,29 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
     public void testOnDecisionTableSelectedWhenPresenterIsNotNull() {
 
         final GuidedDecisionTableView.Presenter dtPresenter = mock(GuidedDecisionTableView.Presenter.class);
+        final Overview overview = mock(Overview.class);
+        final AsyncPackageDataModelOracle oracle = mock(AsyncPackageDataModelOracle.class);
+        final GuidedDecisionTable52 model = new GuidedDecisionTable52();
+        final GuidedDecisionTablePresenter.Access access = new GuidedDecisionTablePresenter.Access();
         final DecisionTableSelectedEvent event = new DecisionTableSelectedEvent(dtPresenter);
+        final ObservablePath path = mock(ObservablePath.class);
 
+        doNothing().when(presenter).initialiseKieEditorTabs(dtPresenter, overview, oracle, model.getImports(), false);
         doNothing().when(presenter).initialiseEditorTabsWhenNoDocuments();
+        doReturn(true).when(modeller).isDecisionTableAvailable(dtPresenter);
+        doReturn(dtPresenter).when(modeller).getActiveDecisionTable();
+        doReturn(overview).when(dtPresenter).getOverview();
+        doReturn(oracle).when(dtPresenter).getDataModelOracle();
+        doReturn(model).when(dtPresenter).getModel();
+        doReturn(access).when(dtPresenter).getAccess();
+        doReturn(path).when(dtPresenter).getLatestPath();
 
+        presenter.registerDocument(dtPresenter);
         presenter.onDecisionTableSelected(event);
 
         verify(presenter, never()).initialiseEditorTabsWhenNoDocuments();
+        verify(presenter).addColumnsTab();
+        verify(presenter).columnsTabToggle(dtPresenter);
     }
 
     private void checkOnDecisionTableSelected(final ParameterizedCommand<PlaceRequest> setup,
