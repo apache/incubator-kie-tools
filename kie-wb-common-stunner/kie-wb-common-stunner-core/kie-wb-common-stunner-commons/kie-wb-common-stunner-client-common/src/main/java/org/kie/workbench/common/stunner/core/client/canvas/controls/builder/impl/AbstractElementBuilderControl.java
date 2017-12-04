@@ -29,6 +29,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.ElementBuildRequest;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.exceptions.ElementOutOfBoundsException;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
@@ -42,6 +43,7 @@ import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -141,18 +143,18 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
             buildCallback.onSuccess(null);
             return;
         }
-        double x = 0;
-        double y = 0;
+        double x = request.getX();;
+        double y = request.getY();;
 
-        if ((x >= 0) && (y >= 0)) {
-            x = request.getX();
-            y = request.getY();
-        } else {
-            throw new IllegalArgumentException("Coordinates locations cannot be negative");
+        if (checkOutOfBoundsCanvas(x, y)) {
+            buildCallback.onError(new ClientRuntimeError(new ElementOutOfBoundsException("Element is placed outside canvas bounds")));
+            return;
         }
+
         final Object definition = request.getDefinition();
         // Notify processing starts.
         fireProcessingStarted();
+
         final Node<View<?>, Edge> parent = getParent(x,
                                                      y);
         final Point2D childCoordinates = getChildCoordinates(parent,
@@ -183,6 +185,11 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
                             fireProcessingCompleted();
                         }
                     });
+    }
+
+    private boolean checkOutOfBoundsCanvas(double x, double y) {
+        double[] graphSize = GraphUtils.getGraphSize((DefinitionSet) canvasHandler.getDiagram().getGraph().getContent());
+        return ((x < 0 || x > graphSize[0]) || (y < 0 || y > graphSize[1]));
     }
 
     @Override

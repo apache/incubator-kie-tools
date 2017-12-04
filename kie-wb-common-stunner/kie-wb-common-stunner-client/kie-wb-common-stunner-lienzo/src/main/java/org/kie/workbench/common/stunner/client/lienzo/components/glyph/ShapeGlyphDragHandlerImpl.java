@@ -31,6 +31,7 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.components.drag.DragProxy;
@@ -111,8 +112,16 @@ public class ShapeGlyphDragHandlerImpl implements ShapeGlyphDragHandler<Abstract
 
         //MouseMoveEvents
         addMouseMoveEvents(floatingPanel, callback, style);
+
         //MouseUpEvent
-        addMouseUpEvent(floatingPanel, callback);
+        //delay to attach the MouseUpEvent handler, to avoid "clicking" to drop item.
+        new Timer() {
+            @Override
+            public void run() {
+                addMouseUpEvent(floatingPanel, callback);
+                this.cancel();
+            }
+        }.schedule(200);
     }
 
     private void addMouseMoveEvents(LienzoPanel floatingPanel, DragProxyCallback callback, Style style) {

@@ -33,6 +33,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.Text
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.BuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.ObserverBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.ElementBuildRequest;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.exceptions.ElementOutOfBoundsException;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
@@ -66,6 +67,7 @@ import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleSet;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -73,11 +75,19 @@ import org.mockito.stubbing.Answer;
 import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -112,6 +122,9 @@ public class ObserverBuilderControlTest {
 
     @Mock
     RequiresCommandManager.CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
+
+    @Mock
+    DefinitionSet graphDefinitionSet;
 
     private View<Object> view;
     private AbstractCanvasHandler canvasHandler;
@@ -187,7 +200,7 @@ public class ObserverBuilderControlTest {
         MutableIndex index = mock(MutableIndex.class);
         Graph graph = mock(Graph.class);
         DefinitionSet graphContent = mock(DefinitionSet.class);
-        when(graphContent.getBounds()).thenReturn(new BoundsImpl(new BoundImpl(Double.MIN_VALUE, Double.MIN_VALUE), new BoundImpl(Double.MAX_VALUE, Double.MAX_VALUE)));
+        when(graphContent.getBounds()).thenReturn(new BoundsImpl(new BoundImpl(10d, 10d), new BoundImpl(100d, 100d)));
         when(graph.getContent()).thenReturn(graphContent);
         when(index.getGraph()).thenReturn(graph);
 
@@ -195,6 +208,8 @@ public class ObserverBuilderControlTest {
         canvasHandler = new CanvasHandlerImpl(clientDefinitionManager, canvasCommandFactory, clientFactoryServices, ruleManager, graphUtils, graphIndexBuilder, shapeManager, mock(TextPropertyProviderFactory.class), mock(Event.class), null, null, null);
         canvasHandler.handle(mock(AbstractCanvas.class));
         canvasHandler.draw(diagram, mock(ParameterizedCommand.class));
+        when(diagram.getGraph()).thenReturn(graph);
+
 
         CanvasCommandManager commandManager = mock(CanvasCommandManager.class);
 
@@ -233,5 +248,41 @@ public class ObserverBuilderControlTest {
                 fail(error.getMessage());
             }
         });
+    }
+
+    @Test
+    public void testAddElementInsideCanvas() {
+        ElementBuildRequest<AbstractCanvasHandler> request = mock(ElementBuildRequest.class);
+        BuilderControl.BuildCallback buildCallback = mock(BuilderControl.BuildCallback.class);
+        ArgumentCaptor<ClientRuntimeError> errorArgumentCaptor = ArgumentCaptor.forClass(ClientRuntimeError.class);
+
+        reset(buildCallback);
+        when(request.getX()).thenReturn(5.0);
+        when(request.getY()).thenReturn(5.0);
+        tested.build(request, buildCallback);
+        verify(buildCallback, never()).onError(errorArgumentCaptor.capture());
+        verify(buildCallback, times(1)).onSuccess(anyString());
+    }
+
+    @Test
+    public void testAddElementOutsideCanvas() {
+        executeOutOfBoundsTest(-5.0, -5.0);
+        executeOutOfBoundsTest(5.0, -5.0);
+        executeOutOfBoundsTest(-5.0, 5.0);
+        executeOutOfBoundsTest(100.0, 0.0);
+        executeOutOfBoundsTest(0.0, 100.0);
+    }
+
+    public void executeOutOfBoundsTest(double x, double y) {
+        ElementBuildRequest<AbstractCanvasHandler> request = mock(ElementBuildRequest.class);
+        BuilderControl.BuildCallback buildCallback = mock(BuilderControl.BuildCallback.class);
+        ArgumentCaptor<ClientRuntimeError> errorArgumentCaptor = ArgumentCaptor.forClass(ClientRuntimeError.class);
+
+        when(request.getX()).thenReturn(x);
+        when(request.getY()).thenReturn(y);
+        tested.build(request, buildCallback);
+        verify(buildCallback, times(1)).onError(errorArgumentCaptor.capture());
+        assertTrue(errorArgumentCaptor.getValue().getThrowable() instanceof ElementOutOfBoundsException);
+        verify(buildCallback, never()).onSuccess(anyString());
     }
 }

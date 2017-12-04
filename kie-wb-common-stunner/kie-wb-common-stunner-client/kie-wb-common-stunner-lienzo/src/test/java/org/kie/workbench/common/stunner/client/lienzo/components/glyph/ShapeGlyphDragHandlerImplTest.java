@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.components.glyph;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
@@ -72,12 +75,17 @@ public class ShapeGlyphDragHandlerImplTest {
 
     @Test
     public void testShow() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
 
         DragProxyCallback callback = mock(DragProxyCallback.class);
         shapeGlyphDragHandler.show(item, 0, 0, callback);
 
         //asserting handlers registrations
-        assertEquals(shapeGlyphDragHandler.handlerRegistrations.size(), 3);
+        assertEquals(shapeGlyphDragHandler.handlerRegistrations.size(), 2);
+        //delay timeout to add MouseUp handler
+        latch.await(201, TimeUnit.MILLISECONDS);
+        assertEquals(shapeGlyphDragHandler.handlerRegistrations.size(), 2);
+
         assertNotNull(shapeGlyphDragHandler.dragProxyPanel);
 
         verify(glyphLienzoGlyphRenderer).render(item.getShape(),
