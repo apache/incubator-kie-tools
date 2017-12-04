@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
@@ -59,8 +60,11 @@ public class DMNGridColumn<T> extends BaseGridColumn<T> {
     public void updateWidthOfPeers() {
         if (gridWidget instanceof BaseExpressionGrid) {
             final int parentColumnIndex = ((BaseExpressionGrid) gridWidget).getParentInformation().getColumnIndex();
-            final GridColumn<?> parentColumn = ((BaseExpressionGrid) gridWidget).getParentInformation().getGridData().getColumns().get(parentColumnIndex);
-            parentColumn.setWidth(gridWidget.getWidth() + PADDING * 2);
+            final GridData gridData = ((BaseExpressionGrid) gridWidget).getParentInformation().getGridData();
+            if (gridData != null) {
+                final GridColumn<?> parentColumn = gridData.getColumns().get(parentColumnIndex);
+                parentColumn.setWidth(gridWidget.getWidth() + PADDING * 2);
+            }
         }
     }
 }
