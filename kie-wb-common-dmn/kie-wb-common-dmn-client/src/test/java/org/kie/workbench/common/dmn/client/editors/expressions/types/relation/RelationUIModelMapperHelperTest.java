@@ -39,7 +39,7 @@ public class RelationUIModelMapperHelperTest {
     public void testGetSectionNone() {
         assertEquals(RelationSection.NONE,
                      getSection(relation,
-                                2));
+                                RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT + 1));
     }
 
     @Test

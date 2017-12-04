@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
-
 public class ContextUIModelMapperHelper {
 
     public static final int ROW_INDEX_COLUMN_COUNT = 1;
@@ -43,19 +41,5 @@ public class ContextUIModelMapperHelper {
             return ContextSection.EXPRESSION;
         }
         return ContextSection.NONE;
-    }
-
-    public static int getInformationItemIndex(final Relation relation,
-                                              final int columnIndex) {
-        final int iiColumnCount = relation.getColumn().size();
-
-        int _columnIndex = columnIndex;
-        if ((_columnIndex = _columnIndex - ROW_INDEX_COLUMN_COUNT) < 0) {
-            throw new IllegalArgumentException("columnIndex referenced 'Row index' column. Should be a valid InformationItem column.");
-        }
-        if (_columnIndex > iiColumnCount - 1) {
-            throw new IllegalArgumentException("columnIndex did not reference a valid InformationItem column.");
-        }
-        return _columnIndex;
     }
 }

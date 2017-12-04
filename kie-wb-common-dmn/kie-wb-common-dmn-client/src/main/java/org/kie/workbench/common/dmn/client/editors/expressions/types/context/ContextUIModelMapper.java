@@ -26,6 +26,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -88,6 +89,7 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void toDMNModel(final int rowIndex,
                            final int columnIndex,
                            final Supplier<Optional<GridCellValue<?>>> cell) {
@@ -103,10 +105,14 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
                             .setName(new Name(cell.get().orElse(new BaseGridCellValue<>("")).getValue().toString()));
                     break;
                 case EXPRESSION:
-                    cell.get().ifPresent(ecv -> {
-                        context.getContextEntry()
-                                .get(rowIndex)
-                                .setExpression((Expression) ecv.getValue());
+                    cell.get().ifPresent(v -> {
+                        final DMNExpressionCellValue ecv = (DMNExpressionCellValue) v;
+                        ecv.getValue().ifPresent(editor -> {
+                            final BaseExpressionGrid beg = (BaseExpressionGrid) editor;
+                            beg.getExpression().ifPresent(e -> context.getContextEntry()
+                                    .get(rowIndex)
+                                    .setExpression((Expression) e));
+                        });
                     });
             }
         });
