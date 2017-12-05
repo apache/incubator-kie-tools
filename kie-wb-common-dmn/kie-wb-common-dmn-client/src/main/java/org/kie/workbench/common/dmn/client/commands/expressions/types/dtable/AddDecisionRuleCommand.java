@@ -41,7 +41,6 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 public class AddDecisionRuleCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
                                                                                   VetoUndoCommand {
 
-    public static final String INPUT_CLAUSE_DEFAULT_VALUE = "unary test";
     public static final String OUTPUT_CLAUSE_DEFAULT_VALUE = "literal expression";
     public static final String DESCRIPTION_DEFAULT_VALUE = "A rule";
 
@@ -80,7 +79,7 @@ public class AddDecisionRuleCommand extends AbstractCanvasGraphCommand implement
 
                 for (int ie = 0; ie < dtable.getInput().size(); ie++) {
                     final UnaryTests ut = new UnaryTests();
-                    ut.setText(INPUT_CLAUSE_DEFAULT_VALUE);
+                    ut.setText(AddInputClauseCommand.INPUT_CLAUSE_DEFAULT_VALUE);
                     rule.getInputEntry().add(ut);
                 }
                 for (int oe = 0; oe < dtable.getOutput().size(); oe++) {

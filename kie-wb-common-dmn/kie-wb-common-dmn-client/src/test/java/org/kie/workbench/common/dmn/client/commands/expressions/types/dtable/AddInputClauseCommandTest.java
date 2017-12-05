@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.commands.expressions.types.dtable;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,13 +25,10 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
-import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
+import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapper;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DescriptionColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.InputClauseColumn;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.OutputClauseColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
@@ -42,29 +40,16 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AddDecisionRuleCommandTest {
-
-    private DecisionTable dtable;
-
-    private DecisionRule rule;
-
-    private GridData uiModel;
-
-    private DMNGridRow uiModelRow;
-
-    private DecisionTableUIModelMapper uiModelMapper;
-
-    private AddDecisionRuleCommand command;
+public class AddInputClauseCommandTest {
 
     @Mock
     private DMNGridLayer selectionManager;
@@ -76,36 +61,37 @@ public class AddDecisionRuleCommandTest {
     private InputClauseColumn uiInputClauseColumn;
 
     @Mock
-    private OutputClauseColumn uiOutputClauseColumn;
-
-    @Mock
-    private DescriptionColumn uiDescriptionColumn;
-
-    @Mock
     private AbstractCanvasHandler canvasHandler;
 
     @Mock
     private GraphCommandExecutionContext graphCommandExecutionContext;
 
+    private DecisionTable dtable;
+
+    private InputClause inputClause;
+
+    private GridData uiModel;
+
+    private DecisionTableUIModelMapper uiModelMapper;
+
+    private AddInputClauseCommand command;
+
     @Mock
     private org.uberfire.mvp.Command canvasOperation;
 
     @Before
-    public void setup() {
+    public void setUp() throws Exception {
         this.dtable = new DecisionTable();
-        this.rule = new DecisionRule();
         this.uiModel = new DMNGridData(selectionManager);
         this.uiModel.appendColumn(uiRowNumberColumn);
-        this.uiModelRow = new DMNGridRow();
+        this.inputClause = new InputClause();
         this.uiModelMapper = new DecisionTableUIModelMapper(() -> uiModel,
                                                             () -> Optional.of(dtable));
 
-        this.command = new AddDecisionRuleCommand(dtable, rule, uiModel, uiModelRow, uiModelMapper, canvasOperation);
+        this.command = new AddInputClauseCommand(dtable, inputClause, uiModel, uiInputClauseColumn, uiModelMapper, canvasOperation);
 
         doReturn(0).when(uiRowNumberColumn).getIndex();
         doReturn(1).when(uiInputClauseColumn).getIndex();
-        doReturn(2).when(uiOutputClauseColumn).getIndex();
-        doReturn(3).when(uiDescriptionColumn).getIndex();
     }
 
     @Test
@@ -125,83 +111,97 @@ public class AddDecisionRuleCommandTest {
     }
 
     @Test
-    public void testGraphCommandExecuteConstructedDescription() {
-        assertEquals(0, dtable.getRule().size());
+    public void testGraphCommandExecute() throws Exception {
+        dtable.getRule().add(new DecisionRule());
+        dtable.getRule().add(new DecisionRule());
+        assertEquals(0, dtable.getInput().size());
 
         final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = command.newGraphCommand(canvasHandler);
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      graphCommand.execute(graphCommandExecutionContext));
-        assertEquals(1, dtable.getRule().size());
-        assertEquals(rule, dtable.getRule().get(0));
-        assertTrue(rule.getDescription() != null);
-        assertTrue(rule.getDescription().getValue() != null);
-        assertFalse(rule.getDescription().getValue().isEmpty());
+
+        // one new input column
+        assertEquals(1, dtable.getInput().size());
+
+        // first rule
+        assertEquals(1, dtable.getRule().get(0).getInputEntry().size());
+        assertEquals(AddInputClauseCommand.INPUT_CLAUSE_DEFAULT_VALUE, dtable.getRule().get(0).getInputEntry().get(0).getText());
+
+        // second rule
+        assertEquals(1, dtable.getRule().get(1).getInputEntry().size());
+        assertEquals(AddInputClauseCommand.INPUT_CLAUSE_DEFAULT_VALUE, dtable.getRule().get(1).getInputEntry().get(0).getText());
     }
 
     @Test
-    public void testGraphCommandExecuteConstructedRuleInputs() {
-        assertEquals(0, dtable.getRule().size());
-        final int inputsCount = 2;
+    public void testGraphCommandExecuteExistingNotAffected() throws Exception {
+        final String ruleOneOldInput = "old rule 1";
+        final String ruleTwoOldInput = "old rule 2";
 
-        for (int i = 0; i < inputsCount; i++) {
-            dtable.getInput().add(new InputClause());
-        }
+        dtable.getInput().add(new InputClause());
+        addRuleWithInputClauseValues(ruleOneOldInput);
+        addRuleWithInputClauseValues(ruleTwoOldInput);
+
+        assertEquals(1, dtable.getInput().size());
 
         final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = command.newGraphCommand(canvasHandler);
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      graphCommand.execute(graphCommandExecutionContext));
-        assertEquals(1, dtable.getRule().size());
-        assertEquals(rule, dtable.getRule().get(0));
 
-        assertEquals(inputsCount, rule.getInputEntry().size());
-        assertEquals(0, rule.getOutputEntry().size());
+        assertEquals(2, dtable.getInput().size());
 
-        for (int inputIndex = 0; inputIndex < inputsCount; inputIndex++) {
-            assertTrue(rule.getInputEntry().get(inputIndex).getText() != null);
-            assertFalse(rule.getInputEntry().get(inputIndex).getText().isEmpty());
-        }
+        // first rule
+        assertEquals(2, dtable.getRule().get(0).getInputEntry().size());
+        assertEquals(ruleOneOldInput, dtable.getRule().get(0).getInputEntry().get(0).getText());
+        assertEquals(AddInputClauseCommand.INPUT_CLAUSE_DEFAULT_VALUE, dtable.getRule().get(0).getInputEntry().get(1).getText());
+
+        // second rule
+        assertEquals(2, dtable.getRule().get(1).getInputEntry().size());
+        assertEquals(ruleTwoOldInput, dtable.getRule().get(1).getInputEntry().get(0).getText());
+        assertEquals(AddInputClauseCommand.INPUT_CLAUSE_DEFAULT_VALUE, dtable.getRule().get(1).getInputEntry().get(1).getText());
+    }
+
+    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    public void testGraphCommandUndoNoInputClauseColumns() throws Exception {
+        dtable.getRule().add(new DecisionRule());
+
+        assertEquals(0, dtable.getInput().size());
+
+        final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = command.newGraphCommand(canvasHandler);
+
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     graphCommand.undo(graphCommandExecutionContext));
     }
 
     @Test
-    public void testGraphCommandExecuteConstructedRuleOutputs() {
-        assertEquals(0, dtable.getRule().size());
-        final int outputsCount = 2;
+    public void testGraphCommandUndoJustLastInputClauseColumn() throws Exception {
+        final String ruleOneOldInput = "old rule 1";
+        final String ruleTwoOldInput = "old rule 2";
 
-        for (int i = 0; i < outputsCount; i++) {
-            dtable.getOutput().add(new OutputClause());
-        }
+        dtable.getInput().add(new InputClause());
+        addRuleWithInputClauseValues(ruleOneOldInput);
+        addRuleWithInputClauseValues(ruleTwoOldInput);
+
+        assertEquals(1, dtable.getInput().size());
 
         final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = command.newGraphCommand(canvasHandler);
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      graphCommand.execute(graphCommandExecutionContext));
-        assertEquals(1, dtable.getRule().size());
-        assertEquals(rule, dtable.getRule().get(0));
-
-        assertEquals(0, rule.getInputEntry().size());
-        assertEquals(outputsCount, rule.getOutputEntry().size());
-
-        for (int outputIndex = 0; outputIndex < outputsCount; outputIndex++) {
-            assertTrue(rule.getOutputEntry().get(outputIndex).getText() != null);
-            assertFalse(rule.getOutputEntry().get(outputIndex).getText().isEmpty());
-        }
-    }
-
-    @Test
-    public void testGraphCommandUndo() {
-        assertEquals(0, dtable.getRule().size());
-
-        final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = command.newGraphCommand(canvasHandler);
-        graphCommand.execute(graphCommandExecutionContext);
-
-        assertEquals(1, dtable.getRule().size());
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      graphCommand.undo(graphCommandExecutionContext));
 
-        assertEquals(0, dtable.getRule().size());
+        assertEquals(1, dtable.getInput().size());
+
+        // first rule
+        assertEquals(1, dtable.getRule().get(0).getInputEntry().size());
+        assertEquals(ruleOneOldInput, dtable.getRule().get(0).getInputEntry().get(0).getText());
+
+        // second rule
+        assertEquals(1, dtable.getRule().get(1).getInputEntry().size());
+        assertEquals(ruleTwoOldInput, dtable.getRule().get(1).getInputEntry().get(0).getText());
     }
 
     @Test
@@ -214,29 +214,54 @@ public class AddDecisionRuleCommandTest {
 
     @Test
     public void testCanvasCommandAddRuleAndThenUndo() throws Exception {
-        dtable.getInput().add(new InputClause());
-        dtable.getOutput().add(new OutputClause());
+        final String ruleOneInputValue = "one";
+        final String ruleTwoInputValue = "two";
+
+        addRuleWithInputClauseValues(ruleOneInputValue);
+        addRuleWithInputClauseValues(ruleTwoInputValue);
 
         final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = command.newGraphCommand(canvasHandler);
         graphCommand.execute(graphCommandExecutionContext);
 
-        uiModel.appendColumn(uiInputClauseColumn);
-        uiModel.appendColumn(uiOutputClauseColumn);
-        uiModel.appendColumn(uiDescriptionColumn);
+        uiModel.appendRow(new BaseGridRow());
+        uiModel.appendRow(new BaseGridRow());
 
-        final Command<AbstractCanvasHandler, CanvasViolation> canvasAddRuleCommand = command.newCanvasCommand(canvasHandler);
-        canvasAddRuleCommand.execute(canvasHandler);
+        final Command<AbstractCanvasHandler, CanvasViolation> canvasAddInputClauseCommand = command.newCanvasCommand(canvasHandler);
+        canvasAddInputClauseCommand.execute(canvasHandler);
 
-        assertEquals(1, uiModel.getRowCount());
-        assertEquals(1, uiModel.getRow(0).getCells().get(0).getValue().getValue());
-        assertEquals(AddInputClauseCommand.INPUT_CLAUSE_DEFAULT_VALUE, uiModel.getRow(0).getCells().get(1).getValue().getValue());
-        assertEquals(AddDecisionRuleCommand.OUTPUT_CLAUSE_DEFAULT_VALUE, uiModel.getRow(0).getCells().get(2).getValue().getValue());
-        assertEquals(AddDecisionRuleCommand.DESCRIPTION_DEFAULT_VALUE, uiModel.getRow(0).getCells().get(3).getValue().getValue());
+        // first rule
+        assertEquals(ruleOneInputValue, uiModel.getRow(0).getCells().get(1).getValue().getValue());
 
-        canvasAddRuleCommand.undo(canvasHandler);
-        assertEquals(0, uiModel.getRowCount());
+        // second rule
+        assertEquals(ruleTwoInputValue, uiModel.getRow(1).getCells().get(1).getValue().getValue());
+
+        assertEquals(2, uiModel.getColumnCount());
+        assertEquals(CanvasCommandResultBuilder.SUCCESS,
+                     canvasAddInputClauseCommand.undo(canvasHandler));
+        assertEquals(1, uiModel.getColumnCount());
 
         // one time in execute(), one time in undo()
         verify(canvasOperation, times(2)).execute();
+    }
+
+    @Test
+    public void testCanvasCommandUndoWhenNothingBefore() throws Exception {
+        final Command<AbstractCanvasHandler, CanvasViolation> canvasAddInputClauseCommand = command.newCanvasCommand(canvasHandler);
+
+        canvasAddInputClauseCommand.undo(canvasHandler);
+        // just row number column
+        assertEquals(1, uiModel.getColumnCount());
+
+        verify(canvasOperation).execute();
+    }
+
+    private void addRuleWithInputClauseValues(String... inputClauseValues) {
+        dtable.getRule().add(new DecisionRule() {{
+            Stream.of(inputClauseValues).forEach(iClause -> {
+                getInputEntry().add(new UnaryTests() {{
+                    setText(iClause);
+                }});
+            });
+        }});
     }
 }
