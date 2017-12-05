@@ -20,7 +20,9 @@ import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRender
 
 public class FunctionGridRenderer extends BaseExpressionGridRenderer {
 
+    @SuppressWarnings("unused")
     public FunctionGridRenderer(final boolean hideHeader) {
-        super(hideHeader);
+        //TODO {manstis} We need to hide only the first header row when hideHeader is true
+        super(false);
     }
 }

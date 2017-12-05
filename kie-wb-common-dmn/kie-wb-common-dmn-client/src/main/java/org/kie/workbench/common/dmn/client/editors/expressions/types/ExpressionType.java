@@ -23,6 +23,8 @@ public enum ExpressionType {
     CONTEXT,
     DECISION_TABLE,
     RELATION,
-    FUNCTION
+    FUNCTION,
+    FUNCTION_JAVA,
+    FUNCTION_PMML
 
 }

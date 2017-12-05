@@ -28,6 +28,8 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 @Portable
 public class FunctionDefinition extends Expression implements HasExpression {
 
+    public static final QName KIND_QNAME = new QName("http://www.drools.org/kie/dmn/1.1:kind");
+
     private Expression expression;
 
     private List<InformationItem> formalParameter;
@@ -68,5 +70,26 @@ public class FunctionDefinition extends Expression implements HasExpression {
             formalParameter = new ArrayList<>();
         }
         return this.formalParameter;
+    }
+
+    @Portable
+    public enum Kind {
+        FEEL("F"),
+        JAVA("J"),
+        PMML("P");
+
+        private final String code;
+
+        Kind(final String code) {
+            this.code = code;
+        }
+
+        public String code() {
+            return code;
+        }
+
+        public static FunctionDefinition.Kind determineFromString(final String code) {
+            return code == null ? null : (FEEL.code.equals(code) ? FEEL : (JAVA.code.equals(code) ? JAVA : (PMML.code.equals(code) ? PMML : null)));
+        }
     }
 }

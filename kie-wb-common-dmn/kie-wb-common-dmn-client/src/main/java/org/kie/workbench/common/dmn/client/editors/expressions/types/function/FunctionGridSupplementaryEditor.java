@@ -16,11 +16,16 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
-import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class FunctionParametersCellValue extends BaseGridCellValue<FunctionParametersHolder> {
+import javax.inject.Qualifier;
 
-    public FunctionParametersCellValue(final FunctionParametersHolder parameters) {
-        super(parameters);
-    }
+@Qualifier
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER})
+public @interface FunctionGridSupplementaryEditor {
+
 }

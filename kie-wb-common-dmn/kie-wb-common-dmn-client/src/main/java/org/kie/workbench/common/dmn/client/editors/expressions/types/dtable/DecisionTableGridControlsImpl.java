@@ -21,6 +21,7 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Event;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Document;
@@ -159,7 +160,7 @@ public class DecisionTableGridControlsImpl implements DecisionTableGridControls 
                             final String value) {
         // Setting value directly throws a JavaScript error, probably because the Element is
         // not attached to the DOM at this point. Deferring setting the value works around
-        select.refresh(s -> s.setValue(value));
+        Scheduler.get().scheduleDeferred(() -> select.refresh(s -> s.setValue(value)));
     }
 
     @Override

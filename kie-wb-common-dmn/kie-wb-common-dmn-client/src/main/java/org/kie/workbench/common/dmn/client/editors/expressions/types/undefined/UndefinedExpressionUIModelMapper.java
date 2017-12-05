@@ -54,7 +54,7 @@ public class UndefinedExpressionUIModelMapper extends BaseUIModelMapper<Expressi
             final ExpressionCellValue ecv = (ExpressionCellValue) v;
             ecv.getValue().ifPresent(editor -> {
                 final BaseExpressionGrid beg = (BaseExpressionGrid) editor;
-                beg.getExpression().ifPresent(e -> hasExpression.setExpression((Expression) e));
+                hasExpression.setExpression((Expression) beg.getExpression().orElse(null));
             });
         });
     }

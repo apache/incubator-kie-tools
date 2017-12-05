@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
+import java.util.List;
+
+import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.uberfire.client.mvp.UberElement;
 
 public interface FunctionGridControls extends org.jboss.errai.ui.client.local.api.IsElement,
@@ -24,5 +28,21 @@ public interface FunctionGridControls extends org.jboss.errai.ui.client.local.ap
     interface Presenter {
 
         void addFormalParameter();
+
+        void setKind(final FunctionDefinition.Kind kind);
+
+        void setExpressionType(final ExpressionType type);
     }
+
+    void initKinds(final List<FunctionDefinition.Kind> kinds);
+
+    void initExpressionTypes(final List<ExpressionType> types);
+
+    void initSelectedKind(final FunctionDefinition.Kind kind);
+
+    void initSelectedExpressionType(final ExpressionType type);
+
+    void enableKind(final boolean enabled);
+
+    void enableExpressionType(final boolean enabled);
 }

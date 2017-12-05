@@ -14,26 +14,28 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
+package org.kie.workbench.common.dmn.client.editors.expressions.types.function.pmml;
 
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.function.FunctionGridSupplementaryEditor;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.FunctionSupplementaryGrid;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
@@ -44,8 +46,9 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
-@ApplicationScoped
-public class ContextEditorDefinition implements ExpressionEditorDefinition<Context> {
+@Dependent
+@FunctionGridSupplementaryEditor
+public class PMMLFunctionEditorDefinition implements ExpressionEditorDefinition<Context> {
 
     private DMNGridPanel gridPanel;
     private DMNGridLayer gridLayer;
@@ -53,32 +56,29 @@ public class ContextEditorDefinition implements ExpressionEditorDefinition<Conte
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private Event<ExpressionEditorSelectedEvent> editorSelectedEvent;
-    private ManagedInstance<ContextGridControls> controlsProvider;
 
-    public ContextEditorDefinition() {
+    public PMMLFunctionEditorDefinition() {
         //CDI proxy
     }
 
     @Inject
-    public ContextEditorDefinition(final @DMNEditor DMNGridPanel gridPanel,
-                                   final @DMNEditor DMNGridLayer gridLayer,
-                                   final SessionManager sessionManager,
-                                   final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                   final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
-                                   final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
-                                   final ManagedInstance<ContextGridControls> controlsProvider) {
+    public PMMLFunctionEditorDefinition(final @DMNEditor DMNGridPanel gridPanel,
+                                        final @DMNEditor DMNGridLayer gridLayer,
+                                        final SessionManager sessionManager,
+                                        final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                        final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
+                                        final Event<ExpressionEditorSelectedEvent> editorSelectedEvent) {
         this.gridPanel = gridPanel;
         this.gridLayer = gridLayer;
         this.sessionManager = sessionManager;
         this.sessionCommandManager = sessionCommandManager;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.editorSelectedEvent = editorSelectedEvent;
-        this.controlsProvider = controlsProvider;
     }
 
     @Override
     public ExpressionType getType() {
-        return ExpressionType.CONTEXT;
+        return ExpressionType.FUNCTION_PMML;
     }
 
     @Override
@@ -88,16 +88,20 @@ public class ContextEditorDefinition implements ExpressionEditorDefinition<Conte
 
     @Override
     public Optional<Context> getModelClass() {
-        //Add one ContextEntry for the User to start with
         final Context context = new Context();
-        final ContextEntry contextEntry = new ContextEntry();
-        contextEntry.setVariable(new InformationItem());
-        context.getContextEntry().add(contextEntry);
+        final ContextEntry documentEntry = new ContextEntry();
+        final InformationItem documentEntryVariable = new InformationItem();
+        documentEntryVariable.setName(new Name("document"));
+        documentEntry.setVariable(documentEntryVariable);
+        documentEntry.setExpression(new LiteralExpression());
+        context.getContextEntry().add(documentEntry);
 
-        //Add (default) "result" entry
-        final ContextEntry resultEntry = new ContextEntry();
-        resultEntry.setExpression(new LiteralExpression());
-        context.getContextEntry().add(resultEntry);
+        final ContextEntry modelEntry = new ContextEntry();
+        final InformationItem modelEntryVariable = new InformationItem();
+        modelEntryVariable.setName(new Name("model"));
+        modelEntry.setVariable(modelEntryVariable);
+        modelEntry.setExpression(new LiteralExpression());
+        context.getContextEntry().add(modelEntry);
         return Optional.of(context);
     }
 
@@ -107,17 +111,15 @@ public class ContextEditorDefinition implements ExpressionEditorDefinition<Conte
                                           final Optional<Context> expression,
                                           final Optional<HasName> hasName,
                                           final boolean nested) {
-        return Optional.of(new ContextGrid(parent,
-                                           hasExpression,
-                                           expression,
-                                           hasName,
-                                           gridPanel,
-                                           gridLayer,
-                                           sessionManager,
-                                           sessionCommandManager,
-                                           expressionEditorDefinitionsSupplier,
-                                           editorSelectedEvent,
-                                           controlsProvider.get(),
-                                           nested));
+        return Optional.of(new FunctionSupplementaryGrid(parent,
+                                                         hasExpression,
+                                                         expression,
+                                                         hasName,
+                                                         gridPanel,
+                                                         gridLayer,
+                                                         sessionManager,
+                                                         sessionCommandManager,
+                                                         expressionEditorDefinitionsSupplier,
+                                                         editorSelectedEvent));
     }
 }

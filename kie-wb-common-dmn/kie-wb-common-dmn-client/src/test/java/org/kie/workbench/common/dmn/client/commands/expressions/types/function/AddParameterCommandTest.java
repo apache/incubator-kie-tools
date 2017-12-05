@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.function.FunctionColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -41,7 +41,7 @@ import static org.mockito.Mockito.verify;
 public class AddParameterCommandTest {
 
     @Mock
-    private FunctionColumn uiModelColumn;
+    private ExpressionEditorColumn uiModelColumn;
 
     @Mock
     private org.uberfire.mvp.Command canvasOperation;

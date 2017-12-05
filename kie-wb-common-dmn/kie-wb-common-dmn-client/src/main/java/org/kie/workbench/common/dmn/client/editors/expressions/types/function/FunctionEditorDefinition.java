@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -29,6 +30,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -43,12 +45,12 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 @ApplicationScoped
 public class FunctionEditorDefinition implements ExpressionEditorDefinition<FunctionDefinition> {
 
-    static final String EL_FEEL = "FEEL";
-
     private DMNGridPanel gridPanel;
     private DMNGridLayer gridLayer;
     private SessionManager sessionManager;
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+    private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+    private Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier;
     private Event<ExpressionEditorSelectedEvent> editorSelectedEvent;
     private ManagedInstance<FunctionGridControls> controlsProvider;
 
@@ -61,12 +63,16 @@ public class FunctionEditorDefinition implements ExpressionEditorDefinition<Func
                                     final @DMNEditor DMNGridLayer gridLayer,
                                     final SessionManager sessionManager,
                                     final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                    final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
+                                    final @FunctionGridSupplementaryEditor Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier,
                                     final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                                     final ManagedInstance<FunctionGridControls> controlsProvider) {
         this.gridPanel = gridPanel;
         this.gridLayer = gridLayer;
         this.sessionManager = sessionManager;
         this.sessionCommandManager = sessionCommandManager;
+        this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
+        this.supplementaryEditorDefinitionsSupplier = supplementaryEditorDefinitionsSupplier;
         this.editorSelectedEvent = editorSelectedEvent;
         this.controlsProvider = controlsProvider;
     }
@@ -84,9 +90,9 @@ public class FunctionEditorDefinition implements ExpressionEditorDefinition<Func
     @Override
     public Optional<FunctionDefinition> getModelClass() {
         final FunctionDefinition function = new FunctionDefinition();
-        final LiteralExpression le = new LiteralExpression();
-        le.setExpressionLanguage(EL_FEEL);
-        function.setExpression(le);
+        function.getOtherAttributes().put(FunctionDefinition.KIND_QNAME,
+                                          FunctionDefinition.Kind.FEEL.code());
+        function.setExpression(new LiteralExpression());
         return Optional.of(function);
     }
 
@@ -104,6 +110,8 @@ public class FunctionEditorDefinition implements ExpressionEditorDefinition<Func
                                             gridLayer,
                                             sessionManager,
                                             sessionCommandManager,
+                                            expressionEditorDefinitionsSupplier,
+                                            supplementaryEditorDefinitionsSupplier,
                                             editorSelectedEvent,
                                             controlsProvider.get(),
                                             nested));

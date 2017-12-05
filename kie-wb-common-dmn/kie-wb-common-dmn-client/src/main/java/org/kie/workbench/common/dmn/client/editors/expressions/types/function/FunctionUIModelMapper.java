@@ -16,88 +16,83 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition> {
 
+    private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+
     public FunctionUIModelMapper(final Supplier<GridData> uiModel,
-                                 final Supplier<Optional<FunctionDefinition>> dmnModel) {
+                                 final Supplier<Optional<FunctionDefinition>> dmnModel,
+                                 final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
         super(uiModel,
               dmnModel);
+        this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
     }
 
     @Override
     public void fromDMNModel(final int rowIndex,
                              final int columnIndex) {
         dmnModel.get().ifPresent(function -> {
-            switch (rowIndex) {
-                case 0:
-                    final FunctionParametersHolder parameters = new FunctionParametersHolder(this::extractExpressionLanguage,
-                                                                                             this::extractFormalParameters);
-                    uiModel.get().setCell(rowIndex,
-                                          columnIndex,
-                                          new FunctionParametersCellValue(parameters));
+            final FunctionDefinition.Kind kind = extractExpressionLanguage(function);
+            final GridCellTuple expressionParent = new GridCellTuple(0, 0, uiModel.get());
+            final Optional<Expression> expression = Optional.ofNullable(function.getExpression());
+
+            switch (kind) {
+                case FEEL:
+                    final Optional<ExpressionEditorDefinition<Expression>> expressionEditorDefinition = expressionEditorDefinitionsSupplier.get().getExpressionEditorDefinition(expression);
+                    expressionEditorDefinition.ifPresent(ed -> {
+                        final Optional<GridWidget> editor = ed.getEditor(expressionParent,
+                                                                         function,
+                                                                         expression,
+                                                                         Optional.empty(),
+                                                                         true);
+                        uiModel.get().setCell(rowIndex,
+                                              columnIndex,
+                                              new ExpressionCellValue(editor));
+                    });
                     break;
-                case 1:
-                    final Expression e = function.getExpression();
-                    final LiteralExpression le = (LiteralExpression) e;
-                    uiModel.get().setCell(rowIndex,
-                                          columnIndex,
-                                          new BaseGridCellValue<>(le.getText()));
-                    break;
-                default:
-                    throw new IllegalArgumentException("RowIndex should be either 0 or 1.");
+                case JAVA:
+                case PMML:
             }
         });
     }
 
-    private String extractExpressionLanguage() {
-        if (dmnModel.get().isPresent()) {
-            final FunctionDefinition function = dmnModel.get().get();
-            final Expression e = function.getExpression();
-            final LiteralExpression le = (LiteralExpression) e;
-            return le.getExpressionLanguage();
-        } else {
-            return "";
-        }
-    }
-
-    private List<InformationItem> extractFormalParameters() {
-        if (dmnModel.get().isPresent()) {
-            final FunctionDefinition function = dmnModel.get().get();
-            return function.getFormalParameter();
-        }
-        return Collections.emptyList();
+    private FunctionDefinition.Kind extractExpressionLanguage(final FunctionDefinition function) {
+        final Map<QName, String> attributes = function.getOtherAttributes();
+        final String code = attributes.getOrDefault(FunctionDefinition.KIND_QNAME,
+                                                    FunctionDefinition.Kind.FEEL.code());
+        return FunctionDefinition.Kind.determineFromString(code);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void toDMNModel(final int rowIndex,
                            final int columnIndex,
                            final Supplier<Optional<GridCellValue<?>>> cell) {
         dmnModel.get().ifPresent(function -> {
-            switch (rowIndex) {
-                case 0:
-                    break;
-                case 1:
-                    final Expression e = function.getExpression();
-                    final LiteralExpression le = (LiteralExpression) e;
-                    le.setText(cell.get().orElse(new BaseGridCellValue<>("")).getValue().toString());
-                    break;
-                default:
-                    throw new IllegalArgumentException("RowIndex should be either 0 or 1.");
-            }
+            cell.get().ifPresent(v -> {
+                final ExpressionCellValue ecv = (ExpressionCellValue) v;
+                ecv.getValue().ifPresent(editor -> {
+                    final BaseExpressionGrid beg = (BaseExpressionGrid) editor;
+                    function.setExpression((Expression) beg.getExpression().orElse(null));
+                });
+            });
         });
     }
 }

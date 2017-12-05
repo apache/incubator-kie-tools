@@ -308,6 +308,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
 
     @Override
     public void setHitPolicy(final HitPolicy hitPolicy) {
+        //TODO {manstis} This needs to be command-based
         expression.ifPresent(e -> {
             e.setHitPolicy(hitPolicy);
             assertAggregationState(e);
@@ -337,6 +338,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
 
     @Override
     public void setBuiltinAggregator(final BuiltinAggregator aggregator) {
+        //TODO {manstis} This needs to be command-based
         expression.ifPresent(e -> {
             e.setAggregation(aggregator);
             gridLayer.batch();
@@ -345,6 +347,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
 
     @Override
     public void setDecisionTableOrientation(final DecisionTableOrientation orientation) {
+        //TODO {manstis} This needs to be command-based
         expression.ifPresent(e -> e.setPreferredOrientation(orientation));
     }
 }

@@ -16,6 +16,7 @@
 package org.kie.workbench.common.dmn.client.editors.expressions;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
@@ -25,6 +26,7 @@ import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
@@ -46,7 +48,7 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
     private ExpressionEditorView view;
     private SessionManager sessionManager;
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-    private ExpressionEditorDefinitions expressionEditorDefinitions;
+    private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitions;
 
     private Optional<Command> exitCommand;
 
@@ -64,7 +66,7 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
     public ExpressionEditor(final ExpressionEditorView view,
                             final SessionManager sessionManager,
                             final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                            final ExpressionEditorDefinitions expressionEditorDefinitions) {
+                            final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitions) {
         this.view = view;
         this.sessionManager = sessionManager;
         this.sessionCommandManager = sessionCommandManager;
@@ -97,7 +99,7 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
 
     @Override
     public void setExpression(final Optional<Expression> expression) {
-        final Optional<ExpressionEditorDefinition<Expression>> expressionEditorDefinition = expressionEditorDefinitions.getExpressionEditorDefinition(expression);
+        final Optional<ExpressionEditorDefinition<Expression>> expressionEditorDefinition = expressionEditorDefinitions.get().getExpressionEditorDefinition(expression);
         expressionEditorDefinition.ifPresent(ed -> {
             view.setEditor(ed,
                            hasExpression,

@@ -35,4 +35,10 @@ public class ExpressionEditorDefinitions extends ArrayList<ExpressionEditorDefin
                     .findFirst();
         }
     }
+
+    public Optional<ExpressionEditorDefinition<Expression>> getExpressionEditorDefinition(final ExpressionType type) {
+        return this.stream()
+                .filter(ed -> ed.getType().equals(type))
+                .findFirst();
+    }
 }

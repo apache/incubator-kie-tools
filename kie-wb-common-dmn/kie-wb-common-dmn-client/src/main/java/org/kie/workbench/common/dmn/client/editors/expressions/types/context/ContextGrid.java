@@ -66,8 +66,8 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
                        final DMNGridLayer gridLayer,
                        final SessionManager sessionManager,
                        final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                       final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                        final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
+                       final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                        final ContextGridControls controls,
                        final boolean nested) {
         super(parent,
