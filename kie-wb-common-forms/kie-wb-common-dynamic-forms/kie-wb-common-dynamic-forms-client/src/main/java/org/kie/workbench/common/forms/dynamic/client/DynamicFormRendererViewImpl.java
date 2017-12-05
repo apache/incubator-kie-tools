@@ -22,6 +22,8 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
@@ -54,7 +56,8 @@ public class DynamicFormRendererViewImpl extends Composite implements DynamicFor
         formContent.clear();
 
         if (context != null) {
-            formContent.add(layoutGenerator.buildLayout(context));
+            Widget layout = ElementWrapperWidget.getWidget(layoutGenerator.buildLayout(context));
+            formContent.add(layout);
         }
     }
 

@@ -86,12 +86,15 @@ public class FormEditorViewImpl extends KieEditorViewImpl implements FormEditorP
         if (getParent() == null) {
             return;
         }
-        int height = getParent().getOffsetHeight();
-        int width = getParent().getOffsetWidth();
+
+        double height = getParent().getOffsetHeight() * 0.95;
+        double width = getParent().getOffsetWidth();
+
+        editorContent.getElement().getStyle().setHeight(height, Style.Unit.PX);
 
         container.getStyle().setWidth(width,
-                                      Style.Unit.PX);
+                Style.Unit.PX);
         container.getStyle().setHeight(height,
-                                       Style.Unit.PX);
+                Style.Unit.PX);
     }
 }

@@ -25,24 +25,25 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.ComplexPanel;
-import com.google.gwt.user.client.ui.Panel;
-import org.gwtbootstrap3.client.ui.Column;
 import org.gwtbootstrap3.client.ui.constants.ColumnSize;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.dom.Window;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
+import org.uberfire.ext.layout.editor.api.editor.LayoutInstance;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
-import org.uberfire.ext.layout.editor.client.generator.AbstractLayoutGenerator;
+import org.uberfire.ext.layout.editor.client.generator.BootstrapLayoutGenerator;
 
 @Any
 @Dependent
-public class FormLayoutGenerator extends AbstractLayoutGenerator {
+public class FormLayoutGenerator extends BootstrapLayoutGenerator {
 
-    private List<FieldLayoutComponent> layoutComponents = new ArrayList<FieldLayoutComponent>();
+    private List<FieldLayoutComponent> layoutComponents = new ArrayList<>();
 
     private Map<String, Class<? extends LayoutDragComponent>> componentsCache = new HashMap<>();
 
@@ -59,22 +60,24 @@ public class FormLayoutGenerator extends AbstractLayoutGenerator {
         this.instance = instance;
     }
 
-    public Panel buildLayout(FormRenderingContext renderingContext) {
+    public HTMLElement buildLayout(FormRenderingContext renderingContext) {
         this.renderingContext = renderingContext;
         layoutComponents.clear();
         if (renderingContext == null || renderingContext.getRootForm() == null) {
-            return getLayoutContainer();
+            return createContainer();
         }
-        return build(renderingContext.getRootForm().getLayoutTemplate());
+        LayoutInstance layoutInstance = build(renderingContext.getRootForm().getLayoutTemplate());
+        return layoutInstance.getElement();
+    }
+
+    protected HTMLElement createContainer() {
+        Div column = (Div) Window.getDocument().createElement("div");
+        column.setClassName(ColumnSize.MD_12.getCssName());
+        return column;
     }
 
     @Override
-    public ComplexPanel getLayoutContainer() {
-        return new Column(ColumnSize.MD_12);
-    }
-
-    @Override
-    public LayoutDragComponent getLayoutDragComponent(LayoutComponent layoutComponent) {
+    public LayoutDragComponent lookupLayoutDragComponent(LayoutComponent layoutComponent) {
 
         Class<? extends LayoutDragComponent> clazz = componentsCache.get(layoutComponent.getDragTypeName());
         if (clazz == null) {
