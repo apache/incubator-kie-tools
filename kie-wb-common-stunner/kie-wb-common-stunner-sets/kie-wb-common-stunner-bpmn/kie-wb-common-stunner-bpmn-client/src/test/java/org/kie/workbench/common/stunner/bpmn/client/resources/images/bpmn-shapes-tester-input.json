@@ -1,37 +1,53 @@
 {
   "name": "BPMN",
   "path": ".",
-  "css": "bpmn-shapes.css",
+  "css": "shapes/bpmn-shapes.css",
   "stencils": [
       {
         "id": "parallelMultipleGateway",
         "name": "Gateway - Parallel Multiple",
         "shape": {
-          "path": ".",
+          "path": "shapes/",
           "file": "gateway.svg"
+        },
+        "icon": {
+          "path": "icons/gateway/",
+          "file": "parallel_multiple.svg"
         }
       },
     {
       "id": "exclusiveGateway",
       "name": "Gateway - Exclusive",
       "shape": {
-        "path": ".",
+        "path": "shapes/",
         "file": "gateway.svg"
+      },
+      "icon": {
+        "path": "icons/gateway/",
+        "file": "exclusive.svg"
       }
     },
     {
       "id": "lane",
       "name": "Lane",
       "shape": {
-        "path": ".",
+        "path": "shapes/",
         "file": "lane.svg"
+      },
+      "icon": {
+        "path": "icons/",
+        "file": "lane_icon.svg"
       }
     },
     {
       "id": "noneTask",
       "name": "Task",
       "shape": {
-        "path": ".",
+        "path": "shapes/",
+        "file": "task.svg"
+      },
+      "icon": {
+        "path": "icons/task/",
         "file": "task.svg"
       }
     },
@@ -39,120 +55,190 @@
       "id": "userTask",
       "name": "Task - User",
       "shape": {
-        "path": ".",
+        "path": "shapes/",
         "file": "task.svg"
+      },
+      "icon": {
+        "path": "icons/task/",
+        "file": "task-user.svg"
       }
     },
     {
       "id": "scriptTask",
       "name": "Task - Script",
       "shape": {
-        "path": ".",
+        "path": "shapes/",
         "file": "task.svg"
+      },
+      "icon": {
+        "path": "icons/task/",
+        "file": "task-script.svg"
       }
     },
     {
       "id": "businessRuleTask",
       "name": "Task - Business Rule",
       "shape": {
-        "path": ".",
+        "path": "shapes/",
         "file": "task.svg"
+      },
+      "icon": {
+        "path": "icons/task/",
+        "file": "task-business-rule.svg"
       }
     },
     {
       "id": "reusableSubProcess",
       "name": "Subprocess - Reusable",
       "shape": {
-        "path": ".",
+        "path": "shapes/",
         "file": "subprocess.svg"
+      },
+      "icon": {
+        "path": "icons/subprocess/",
+        "file": "subprocess.svg",
+        "refs": "subProcessReusable"
       }
     },
     {
       "id": "adHocSubProcess",
       "name": "Subprocess - AdHoc",
       "shape": {
-        "path": ".",
+        "path": "shapes/",
         "file": "subprocess-adhoc.svg"
+      },
+      "icon": {
+        "path": "icons/subprocess/",
+        "file": "subprocess.svg",
+        "refs": "subProcessAdHoc"
       }
     },
     {
       "id": "embeddedSubProcess",
       "name": "Subprocess - Embedded",
       "shape": {
-        "path": ".",
+        "path": "shapes/",
         "file": "subprocess-adhoc.svg"
+      },
+      "icon": {
+        "path": "icons/subprocess/",
+        "file": "subprocess.svg",
+        "refs": "subProcessAdHoc"
       }
     },
     {
       "id": "startNoneEvent",
       "name": "Start Event",
       "shape": {
-        "path": ".",
+        "path": "shapes/",
         "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-start.svg"
       }
     },
     {
       "id": "startSignalEvent",
       "name": "Start Event - Signal",
       "shape": {
-        "path": ".",
+        "path": "shapes/",
         "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-start.svg",
+        "refs": "eventSignal"
       }
     },
     {
       "id": "startTimerEvent",
       "name": "Start Event - Timer",
       "shape": {
-        "path": ".",
+        "path": "shapes/",
         "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-start.svg",
+        "refs": "eventTimer"
       }
     },
     {
       "id": "intermediateTimerEvent",
       "name": "Intermediate Event - Timer",
       "shape": {
-        "path": ".",
+        "path": "shapes/",
         "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-intermediate.svg",
+        "refs": "eventTimer"
       }
     },
     {
       "id": "intermediateSignalCatchingEvent",
       "name": "Catching Intermediate Event - Signal",
       "shape": {
-        "path": ".",
+        "path": "shapes/",
         "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-intermediate.svg",
+        "refs": "eventSignal"
       }
     },
     {
       "id": "intermediateSignalThrowingEvent",
       "name": "Throwing Intermediate Event - Signal",
       "shape": {
-        "path": ".",
+        "path": "shapes/",
         "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-intermediate.svg",
+        "refs": "eventSignal"
       }
     },
     {
       "id": "endNoneEvent",
       "name": "End Event",
       "shape": {
-        "path": ".",
+        "path": "shapes/",
         "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-end.svg"
       }
     },
     {
       "id": "endSignalEvent",
       "name": "End Event- Signal",
       "shape": {
-        "path": ".",
+        "path": "shapes/",
         "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-end.svg",
+        "refs": "eventSignal"
       }
     },
     {
       "id": "endTerminateEvent",
       "name": "End Event - Terminate",
       "shape": {
-        "path": ".",
+        "path": "shapes/",
         "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-end.svg",
+        "refs": "eventEndTerminate"
       }
     }
   ]

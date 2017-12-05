@@ -1,13 +1,13 @@
 {
   "name": "DMN",
   "path": ".",
-  "css": "dmn-shapes.css",
+  "css": "shapes/dmn-shapes.css",
   "stencils": [
     {
       "id": "inputData",
       "name": "Input Data",
       "shape": {
-        "path": ".",
+        "path": "shapes/",
         "file": "input-data.svg"
       }
     },
@@ -15,7 +15,7 @@
       "id": "knowledgeSource",
       "name": "Knowledge Source",
       "shape": {
-        "path": ".",
+        "path": "shapes/",
         "file": "knowledge-source.svg"
       }
     },
@@ -23,7 +23,7 @@
       "id": "businessKnowledgeModel",
       "name": "Business Knowledge Model",
       "shape": {
-        "path": ".",
+        "path": "shapes/",
         "file": "business-knowledge-model.svg"
       }
     },
@@ -31,7 +31,7 @@
       "id": "decision",
       "name": "Decision",
       "shape": {
-        "path": ".",
+        "path": "shapes/",
         "file": "decision.svg"
       }
     },
@@ -39,7 +39,7 @@
       "id": "textAnnotation",
       "name": "Text Annotation",
       "shape": {
-        "path": ".",
+        "path": "shapes/",
         "file": "text-annotation.svg"
       }
     }

@@ -17,7 +17,7 @@
 <svg id="eventEnd" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
 		 x="0" y="0" width="30px" height="30px" viewBox="-2.5 -2.5 35 35">
 	<circle cx="15px" cy="15px" r="15px" style="fill:none; stroke: black; stroke-width: 5;"/>
-	<g style="opacity:0">
+	<g style="opacity:1">
 		<use xlink:href="event-end-terminate.svg#eventEndTerminate"/>
 	</g>
 	<g transform="translate(4,3) scale(0.05,0.05)" style="opacity:1">

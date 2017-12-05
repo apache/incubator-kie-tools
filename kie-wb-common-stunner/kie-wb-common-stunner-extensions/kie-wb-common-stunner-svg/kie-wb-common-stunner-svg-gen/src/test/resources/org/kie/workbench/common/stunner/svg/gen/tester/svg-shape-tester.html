@@ -26,7 +26,7 @@
     <table width="80%" border="1">
         <tr style="background-color: lightgrey; font-weight: bold; font-size:large; color: black;">
             <td style="padding: 10px;">
-                Shape: &nbsp;
+                Stencil: &nbsp;
                 <select title="Shape" id="shapeSelector" onchange="updateContent()">
                 </select>
             </td>
@@ -50,7 +50,15 @@
         </tr>
         <tr>
             <td colspan="5" align="center">
-                <div id="contentPanel" style="margin: 25px;"></div>
+                <h4 style="margin: 5px;">Shape</h4>
+                <div id="shapePanel" style="margin: 25px;"></div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5" align="center">
+                <h4 style="margin: 5px;">Icon</h4>
+                <p id="iconHeaderSize" style="margin: 5px;font-size: small;"></p>
+                <div id="iconPanel" style="margin: 25px;"></div>
             </td>
         </tr>
     </table>

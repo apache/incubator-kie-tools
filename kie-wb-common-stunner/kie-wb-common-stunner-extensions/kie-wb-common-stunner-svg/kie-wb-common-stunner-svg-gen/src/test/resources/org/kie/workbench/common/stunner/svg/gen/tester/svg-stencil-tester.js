@@ -19,6 +19,7 @@
  */
 const testerHtmlTemplatePath = "https://rawgit.com/kiegroup/kie-wb-common/master/kie-wb-common-stunner/kie-wb-common-stunner-extensions/kie-wb-common-stunner-svg/kie-wb-common-stunner-svg-gen/src/test/resources/org/kie/workbench/common/stunner/svg/gen/tester/svg-shape-tester.html";
 //const testerHtmlTemplatePath = "/kie-wb-common-stunner/kie-wb-common-stunner-svg-gen/org/kie/workbench/common/stunner/svg/gen/tester/svg-shape-tester.html";
+const ICON_SIZE = 32;
 var currentTester = undefined;
 
 // Global function for HTML templates.
@@ -73,10 +74,17 @@ var SVGStencilShape = function (path, file) {
     this.file = file;
 };
 
+var SVGStencilIcon = function (path, file, refs) {
+    this.path = path;
+    this.file = file;
+    this.refs = refs;
+};
+
 var SVGStencil = function (id, name) {
     this.id = id;
     this.name = name;
     this.shape = undefined;
+    this.icon = undefined;
 };
 
 var SVGStencilSet = function (name) {
@@ -111,6 +119,10 @@ SVGStencilTester.prototype.parseStencilSetInput = function(inputPath) {
             console.log("Loading Stencil [" + inputStencil.id + "]");
             const stencil = new SVGStencil(inputStencil.id, inputStencil.name);
             stencil.shape = new SVGStencilShape(inputStencil.shape.path, inputStencil.shape.file);
+            if (inputStencil.icon) {
+                var iconRefs = inputStencil.icon.refs ? inputStencil.icon.refs : undefined;
+                stencil.icon = new SVGStencilIcon(inputStencil.icon.path, inputStencil.icon.file, iconRefs);
+            }
             self.stencilSet.stencils.push(stencil);
         }
 
@@ -151,8 +163,7 @@ SVGStencilTester.prototype.populateStencils = function() {
     stencilIndex = 0;
 };
 
-SVGStencilTester.prototype.processSvgContent = function(svgContent) {
-    const relativePath = this.stencilSet.stencils[stencilIndex].path;
+SVGStencilTester.prototype.processSvgContent = function(svgContent, relativePath) {
     // Remove the declaration tags.
     // TODO: regexp.
     var svgProcessed = svgContent.replace("<?xml version=\"1.0\" encoding=\"utf-8\"?>", "");
@@ -167,9 +178,13 @@ SVGStencilTester.prototype.processSvgContent = function(svgContent) {
 };
 
 SVGStencilTester.prototype.clearContent = function () {
-    const contentDiv = document.getElementById('contentPanel');
-    while (contentDiv.firstChild) {
-        contentDiv.removeChild(contentDiv.firstChild);
+    const shapeContentDiv = document.getElementById('shapePanel');
+    while (shapeContentDiv.firstChild) {
+        shapeContentDiv.removeChild(shapeContentDiv.firstChild);
+    }
+    const iconContentDiv = document.getElementById('iconPanel');
+    while (iconContentDiv.firstChild) {
+        iconContentDiv.removeChild(iconContentDiv.firstChild);
     }
 };
 
@@ -183,16 +198,16 @@ SVGStencilTester.prototype.updateContent = function () {
     const appendTextValue = domAppendTextInput.checked;
     // Load and process the svg content.
     const self = this;
-    const after = function (svgProcessed) {
-        const contentDiv = document.getElementById('contentPanel');
+    const shapeLoadCallback = function (svgProcessed) {
+        const contentDiv = document.getElementById('shapePanel');
         // Update the content div.
         contentDiv.innerHTML = svgProcessed;
-        svgOriginalId = $("#contentPanel > svg").first().attr("id");
+        svgOriginalId = $("#shapePanel > svg").first().attr("id");
         console.log("Original SVG Element ID = " + svgOriginalId);
         // Set the stencil id attribute for making CSS styles to work.
         const currentShapeId = self.stencilSet.stencils[stencilIndex].id;
         if (svgOriginalId !== currentShapeId) {
-            $("#contentPanel > svg").first().attr("id", currentShapeId);
+            $("#shapePanel > svg").first().attr("id", currentShapeId);
         }
 
         // Apply syles for the concrete stencil selected.
@@ -202,7 +217,50 @@ SVGStencilTester.prototype.updateContent = function () {
             self.appendSvgText();
         }
     };
-    this.loadSvgStencil(this.stencilSet.stencils[stencilIndex], after);
+    const iconLoadCallback = function (svgProcessed) {
+        const contentDiv = document.getElementById('iconPanel');
+        contentDiv.style.display = "none";
+        contentDiv.innerHTML = svgProcessed;
+        setTimeout(function() {
+            const iconStencil = self.stencilSet.stencils[stencilIndex];
+            const contentDiv = document.getElementById('iconPanel');
+            const svgElement = $("#iconPanel > svg").first()[0];
+            var iconRefs = [ "" ];
+            if (iconStencil.icon.refs && iconStencil.icon.refs.length > 0) {
+                iconRefs = iconStencil.icon.refs.split(',');
+            }
+            const useElements = $("#" + svgElement.id + " use");
+            for (var i = 0; i < useElements.length; i++) {
+                const useElement = useElements[i];
+                // TODO: Handle namespace attribute name.
+                const useHref = $(useElement).attr("xlink:href");
+                var enabled = false;
+                for (var j = 0; j < iconRefs.length; j++) {
+                    const iconRef = iconRefs[j];
+                    if (useHref.match("#" + iconRef + "$")) {
+                        enabled = true;
+                    }
+                }
+                if (!enabled) {
+                    useElement.style.display = "none";
+                }
+            }
+            // Resize the icon to the given values.
+            const sizeRaw = ICON_SIZE + "px";
+            contentDiv.style.width = sizeRaw;
+            contentDiv.style.height = sizeRaw;
+            svgElement.style.width = sizeRaw;
+            svgElement.style.height = sizeRaw;
+            contentDiv.style.display = "block";
+        }, 200);
+    };
+    const s = this.stencilSet.stencils[stencilIndex];
+    this.loadSvgShape(s, shapeLoadCallback);
+    if (s.icon) {
+        this.loadSvgIcon(s, iconLoadCallback);
+    } else {
+        document.getElementById('iconPanel').innerHTML = "<h4>No Icon</h4>"
+    }
 };
 
 SVGStencilTester.prototype.parseSvgElementAttributes = function (svgElement) {
@@ -211,11 +269,22 @@ SVGStencilTester.prototype.parseSvgElementAttributes = function (svgElement) {
     return [ width, height];
 };
 
-SVGStencilTester.prototype.loadSvgStencil = function (stencil, callback) {
+SVGStencilTester.prototype.loadSvgShape= function (stencil, callback) {
+    const relativePath = stencil.shape.path + "/";
+    const shapePath = this.stencilSet.path + "/" + relativePath + stencil.shape.file;
+    this.loadSvgContent(shapePath, relativePath, callback);
+};
+
+SVGStencilTester.prototype.loadSvgIcon = function (stencil, callback) {
+    const relativePath = stencil.icon.path + "/";
+    const iconPath = this.stencilSet.path + "/" + relativePath + stencil.icon.file;
+    this.loadSvgContent(iconPath, relativePath, callback);
+};
+
+SVGStencilTester.prototype.loadSvgContent= function (path, relativePath, callback) {
     const self = this;
-    const shapePath = self.stencilSet.path + "/" + stencil.shape.path + "/" + stencil.shape.file;
-    $.get(shapePath, function(theSvgContent){
-        var svgProcessed = self.processSvgContent(theSvgContent);
+    $.get(path, function(theSvgContent){
+        var svgProcessed = self.processSvgContent(theSvgContent, relativePath);
         callback.call(self, svgProcessed);
     }, 'text');
 };
@@ -229,6 +298,9 @@ SVGStencilTester.prototype.appendTesterHtmlContent = function (testerContainerId
         $("#" + testerContainerId).html(data);
         self.populateDiagramButtons(self.diagramTesters);
         self.injectStencilSetStyleDeclarations();
+        // Update the icon header's text in order to display the icon size.
+        const sizeRaw = ICON_SIZE + "px";
+        document.getElementById('iconHeaderSize').innerHTML = "(" + sizeRaw + ", " + sizeRaw + ")";
     });
 };
 
@@ -396,7 +468,7 @@ SVGDiagramTester.prototype.populateNodes = function(tester, diagramTesterPanel, 
             .filter(function (e) {
                 return (e.id === node.stencilId);
             });
-    tester.loadSvgStencil(stencil[0], after);
+    tester.loadSvgShape(stencil[0], after);
 };
 
 SVGDiagramTester.prototype.parseDiagramInput = function(inputDiagramPath) {
