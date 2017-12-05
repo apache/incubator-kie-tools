@@ -488,7 +488,7 @@ public class Container {
         if (hasDownSibling(index,
                            rows)) {
             Row downSibling = rows.get(index + 1);
-            return downSibling.getHeight() > 2;
+            return downSibling.getHeight() > 1;
         }
         return false;
     }
@@ -500,7 +500,7 @@ public class Container {
 
     private boolean canResizeUp(int index,
                                 List<Row> rows) {
-        return (rows.get(index - 1).getHeight() > 2);
+        return (rows.get(index - 1).getHeight() > 1);
     }
 
     private boolean firstRow(int index) {

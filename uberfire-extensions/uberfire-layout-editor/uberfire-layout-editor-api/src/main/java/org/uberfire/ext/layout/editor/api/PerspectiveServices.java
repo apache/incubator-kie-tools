@@ -32,6 +32,8 @@ public interface PerspectiveServices
                 SupportsRename,
                 SupportsDelete {
 
+    Plugin createNewPerspective(String name, LayoutTemplate.Style style);
+
     Collection<LayoutTemplate> listLayoutTemplates();
 
     LayoutTemplate getLayoutTemplate(String perspectiveName);

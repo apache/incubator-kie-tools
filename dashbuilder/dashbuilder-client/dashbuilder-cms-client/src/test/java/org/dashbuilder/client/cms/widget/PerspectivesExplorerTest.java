@@ -25,7 +25,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.plugin.client.security.PluginController;
-import org.uberfire.ext.plugin.client.widget.popup.NewPluginPopUp;
 import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -55,7 +54,7 @@ public class PerspectivesExplorerTest {
     PluginController pluginControllerM;
 
     @Mock
-    NewPluginPopUp newPluginPopUpM;
+    NewPerspectivePopUp newPerspectivePopUpM;
 
     @Mock
     ContentManagerI18n i18nM;
@@ -76,7 +75,7 @@ public class PerspectivesExplorerTest {
             return null;
         }).when(perspectivePluginManagerM).getPerspectivePlugins(any());
 
-        perspectivesExplorer = new PerspectivesExplorer(viewM, perspectivePluginManagerM, pluginControllerM, newPluginPopUpM, placeManagerM, i18nM);
+        perspectivesExplorer = new PerspectivesExplorer(viewM, perspectivePluginManagerM, pluginControllerM, newPerspectivePopUpM, placeManagerM, i18nM);
     }
 
     @Test

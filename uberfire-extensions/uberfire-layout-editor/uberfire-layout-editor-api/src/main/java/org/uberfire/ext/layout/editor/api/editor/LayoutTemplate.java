@@ -44,6 +44,11 @@ public final class LayoutTemplate {
         this.name = name;
     }
 
+    public LayoutTemplate(String name, Style style) {
+        this.name = name;
+        this.style = style;
+    }
+
     public LayoutTemplate(String layoutName,
                           Map<String, String> properties,
                           Style pageStyle) {
@@ -74,10 +79,6 @@ public final class LayoutTemplate {
 
     public Map<String, String> getLayoutProperties() {
         return layoutProperties;
-    }
-
-    public boolean isPageStyle() {
-        return style.equals(Style.PAGE);
     }
 
     @Override
@@ -133,13 +134,17 @@ public final class LayoutTemplate {
         return style;
     }
 
-    public boolean isPageLayout() {
-        return getStyle() == LayoutTemplate.Style.PAGE;
+    public void setStyle(Style style) {
+        this.style = style;
+    }
+
+    public boolean isPageStyle() {
+        return Style.PAGE.equals(style);
     }
 
     @Portable
     public enum Style {
         PAGE,
-        FLUID
+        FLUID;
     }
 }

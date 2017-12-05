@@ -1,0 +1,47 @@
+<!--
+  ~ Copyright 2017 JBoss, by Red Hat, Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<div>
+  <div data-field="body">
+    <form class="form-horizontal">
+      <div data-field="formDiv" class="form-group">
+        <label class="col-md-3 control-label">
+          <span class="uf-np-popup-name-label" data-field="nameLabel">Name!</span>
+          <a href="#" data-toggle="tooltip" data-delay="0"><span data-field="nameHelp" class="fa fa-info-circle"></span></a>
+        </label>
+        <div class="dropdown col-md-4">
+          <input data-field="nameInput" class="form-control uf-np-popup-name-input">
+        </div>
+        <span data-field="nameErrorLabel" class="help-block"></span>
+      </div>
+      <div class="form-group">
+        <label class="col-md-3 control-label">
+          <span class="uf-np-popup-style-label" data-field="styleLabel">Style!</span>
+          <a href="#" data-toggle="tooltip" data-delay="0"><span data-field="styleHelp" class="fa fa-info-circle"></span></a>
+        </label>
+        <div class="dropdown col-md-4">
+          <select data-field="styleSelect" class="form-control uf-np-popup-style-select">
+            <option value="FLUID" selected data-field="fluidOption">Fluid!</option>
+            <option value="PAGE" data-field="pageOption">Page!</option>
+          </select>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div data-field="footer">
+    <button data-field="cancelButton" type="button" class="btn btn-default">Cancel!</button>
+    <button data-field="okButton" type="button" class="btn btn-primary">Ok!</button>
+  </div>
+</div>

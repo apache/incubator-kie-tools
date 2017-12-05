@@ -106,6 +106,11 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
     }
 
     @Override
+    public void setPreviewEnabled(boolean enabled) {
+        layoutEditorPresenter.setPreviewEnabled(enabled);
+    }
+
+    @Override
     public void load(Path currentPath,
                      Command loadCallBack) {
 

@@ -52,15 +52,15 @@ public class ColumnSizeBuilder {
     }
 
     private static String buildSize(ColumnSize mdSize) {
-        String size = mdSize + " " + ColumnSize.XS_12;
+        String size = mdSize.getCssName() + " " + ColumnSize.XS_12.getCssName();
         if (mdSize == ColumnSize.MD_4) {
-            size += " " + ColumnSize.SM_6;
+            size += " " + ColumnSize.SM_6.getCssName();
         } else if (mdSize == ColumnSize.MD_5) {
-            size += " " + ColumnSize.SM_6;
+            size += " " + ColumnSize.SM_6.getCssName();
         } else if (mdSize == ColumnSize.MD_6) {
-            size += " " + ColumnSize.SM_6;
+            size += " " + ColumnSize.SM_6.getCssName();
         } else {
-            size += " " + ColumnSize.SM_12;
+            size += " " + ColumnSize.SM_12.getCssName();
         }
         return size;
     }

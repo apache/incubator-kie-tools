@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss, by Red Hat, Inc
+ * Copyright 2017 JBoss, by Red Hat, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.uberfire.ext.layout.editor.api.editor;
 
-package org.uberfire.ext.layout.editor.client.generator;
+import org.jboss.errai.common.client.api.IsElement;
+import org.jboss.errai.common.client.dom.HTMLElement;
 
-import org.uberfire.ext.layout.editor.api.editor.LayoutInstance;
-import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
+public class LayoutInstance implements IsElement {
 
-public interface LayoutGenerator {
+    HTMLElement htmlElement;
 
-    LayoutInstance build(LayoutTemplate layoutTemplate);
+    public LayoutInstance(HTMLElement htmlElement) {
+        this.htmlElement = htmlElement;
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return htmlElement;
+    }
 }

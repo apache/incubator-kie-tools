@@ -61,4 +61,29 @@ public interface ContentManagerConstants extends Messages {
     String perspectiveDragNotFoundError();
 
     String perspectiveInfiniteRecursionError();
+
+    String newPerspectivePopUpViewName();
+
+    String newPerspectivePopUpViewNameHelp();
+
+    String newPerspectivePopUpViewStyle();
+
+    String newPerspectivePopUpViewStyleHelp();
+
+    String newPerspectivePopUpViewFluid();
+
+    String newPerspectivePopUpViewPage();
+
+    String newPerspectivePopUpViewCancel();
+
+    String newPerspectivePopUpViewOk();
+
+    String newPerspectivePopUpViewTitle();
+
+    String newPerspectivePopUpViewErrorEmptyName();
+
+    String newPerspectivePopUpViewErrorInvalidName();
+
+    String newPerspectivePopUpViewErrorDuplicatedName();
 }
+

@@ -19,10 +19,15 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.ComplexPanel;
-import org.gwtbootstrap3.client.ui.Container;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.dom.Window;
+import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
+import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
+import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.infra.ColumnSizeBuilder;
 import org.uberfire.ext.layout.editor.client.infra.LayoutDragComponentHelper;
 
 /**
@@ -36,16 +41,29 @@ public class BootstrapLayoutGenerator extends AbstractLayoutGenerator {
     private LayoutDragComponentHelper dragTypeHelper;
 
     @Override
-    public ComplexPanel getLayoutContainer() {
-        Container mainPanel = new Container();
-        mainPanel.getElement().setId("mainContainer");
-        mainPanel.getElement().addClassName("uf-perspective-container");
-        mainPanel.getElement().addClassName("uf-perspective-rendered-container");
-        return mainPanel;
+    protected HTMLElement createContainer(LayoutTemplate layoutTemplate) {
+        Div div = (Div) Window.getDocument().createElement("div");
+        div.setId("mainContainer");
+        return div;
     }
 
     @Override
-    public LayoutDragComponent getLayoutDragComponent(LayoutComponent layoutComponent) {
+    protected HTMLElement createRow(LayoutRow layoutRow) {
+        Div div = (Div) Window.getDocument().createElement("div");
+        div.setClassName("row");
+        return div;
+    }
+
+    @Override
+    protected HTMLElement createColumn(LayoutColumn layoutColumn) {
+        Div div = (Div) Window.getDocument().createElement("div");
+        String colSize = ColumnSizeBuilder.buildColumnSize(new Integer(layoutColumn.getSpan()));
+        div.setClassName(colSize);
+        return div;
+    }
+
+    @Override
+    public LayoutDragComponent lookupLayoutDragComponent(LayoutComponent layoutComponent) {
         return dragTypeHelper.lookupDragTypeBean(layoutComponent.getDragTypeName());
     }
 }

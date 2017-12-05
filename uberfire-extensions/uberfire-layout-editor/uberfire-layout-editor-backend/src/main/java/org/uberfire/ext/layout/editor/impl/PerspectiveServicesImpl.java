@@ -44,6 +44,14 @@ public class PerspectiveServicesImpl implements PerspectiveServices {
     }
 
     @Override
+    public Plugin createNewPerspective(String name, LayoutTemplate.Style style) {
+        Plugin perspectivePlugin = pluginServices.createNewPlugin(name, PluginType.PERSPECTIVE_LAYOUT);
+        LayoutTemplate layoutTemplate = new LayoutTemplate(name, style);
+        saveLayoutTemplate(perspectivePlugin.getPath(), layoutTemplate, "Perspective '" + name + "' check-in");
+        return perspectivePlugin;
+    }
+
+    @Override
     public Collection<LayoutTemplate> listLayoutTemplates() {
         return pluginServices.listPlugins().stream()
                 .map(this::getLayoutTemplate)
@@ -60,7 +68,7 @@ public class PerspectiveServicesImpl implements PerspectiveServices {
     public LayoutTemplate getLayoutTemplate(Path perspectivePath) {
         LayoutEditorModel layoutEditorModel = pluginServices.getLayoutEditor(perspectivePath, PluginType.PERSPECTIVE_LAYOUT);
         if (layoutEditorModel.isEmptyLayout()) {
-            return new LayoutTemplate(layoutEditorModel.getName());
+            return new LayoutTemplate(layoutEditorModel.getName(), LayoutTemplate.Style.PAGE);
         }
         return layoutServices.convertLayoutFromString(layoutEditorModel.getLayoutEditorModel());
     }
