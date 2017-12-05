@@ -17,6 +17,8 @@
 
 package org.guvnor.m2repo.backend.server.repositories;
 
+import java.io.File;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -27,7 +29,8 @@ public class LocalArtifactRepositoryTest {
     public void testGetRootDir() throws Exception {
         LocalArtifactRepository repository = new LocalArtifactRepository("test");
         String rootDir = repository.getRootDir();
-        assertEquals(System.getProperty("user.home") + "/.m2/repository",
-                     rootDir);
+        assertNotNull(rootDir);
+        File rootDirFile = new File(rootDir);
+        assertTrue(rootDirFile.isDirectory());
     }
 }
