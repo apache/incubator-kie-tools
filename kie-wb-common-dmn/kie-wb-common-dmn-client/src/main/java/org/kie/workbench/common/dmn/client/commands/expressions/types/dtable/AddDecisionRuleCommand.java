@@ -41,7 +41,6 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 public class AddDecisionRuleCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
                                                                                   VetoUndoCommand {
 
-    public static final String OUTPUT_CLAUSE_DEFAULT_VALUE = "literal expression";
     public static final String DESCRIPTION_DEFAULT_VALUE = "A rule";
 
     private final DecisionTable dtable;
@@ -84,7 +83,7 @@ public class AddDecisionRuleCommand extends AbstractCanvasGraphCommand implement
                 }
                 for (int oe = 0; oe < dtable.getOutput().size(); oe++) {
                     final LiteralExpression le = new LiteralExpression();
-                    le.setText(OUTPUT_CLAUSE_DEFAULT_VALUE);
+                    le.setText(AddOutputClauseCommand.OUTPUT_CLAUSE_DEFAULT_VALUE);
                     rule.getOutputEntry().add(le);
                 }
                 final Description d = new Description();

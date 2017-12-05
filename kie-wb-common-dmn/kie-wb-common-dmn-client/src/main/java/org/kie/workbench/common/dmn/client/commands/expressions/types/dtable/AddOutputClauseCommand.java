@@ -40,6 +40,8 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 public class AddOutputClauseCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
                                                                                   VetoUndoCommand {
 
+    public static final String OUTPUT_CLAUSE_DEFAULT_VALUE = "literal expression";
+
     private final DecisionTable dtable;
     private final OutputClause outputClause;
     private final GridData uiModel;
@@ -75,7 +77,7 @@ public class AddOutputClauseCommand extends AbstractCanvasGraphCommand implement
 
                 dtable.getRule().forEach(rule -> {
                     final LiteralExpression le = new LiteralExpression();
-                    le.setText("Literal expression");
+                    le.setText(OUTPUT_CLAUSE_DEFAULT_VALUE);
                     rule.getOutputEntry().add(le);
                 });
 

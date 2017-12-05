@@ -230,7 +230,7 @@ public class AddDecisionRuleCommandTest {
         assertEquals(1, uiModel.getRowCount());
         assertEquals(1, uiModel.getRow(0).getCells().get(0).getValue().getValue());
         assertEquals(AddInputClauseCommand.INPUT_CLAUSE_DEFAULT_VALUE, uiModel.getRow(0).getCells().get(1).getValue().getValue());
-        assertEquals(AddDecisionRuleCommand.OUTPUT_CLAUSE_DEFAULT_VALUE, uiModel.getRow(0).getCells().get(2).getValue().getValue());
+        assertEquals(AddOutputClauseCommand.OUTPUT_CLAUSE_DEFAULT_VALUE, uiModel.getRow(0).getCells().get(2).getValue().getValue());
         assertEquals(AddDecisionRuleCommand.DESCRIPTION_DEFAULT_VALUE, uiModel.getRow(0).getCells().get(3).getValue().getValue());
 
         canvasAddRuleCommand.undo(canvasHandler);
