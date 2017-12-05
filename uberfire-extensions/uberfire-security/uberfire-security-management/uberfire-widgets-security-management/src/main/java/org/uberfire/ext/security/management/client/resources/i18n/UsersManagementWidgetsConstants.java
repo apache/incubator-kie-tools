@@ -96,6 +96,8 @@ public interface UsersManagementWidgetsConstants extends Messages {
 
     String ensureRemoveGroup();
 
+    String ensureUserHasGroupsOrRoles();
+
     String genericError();
 
     String remove();

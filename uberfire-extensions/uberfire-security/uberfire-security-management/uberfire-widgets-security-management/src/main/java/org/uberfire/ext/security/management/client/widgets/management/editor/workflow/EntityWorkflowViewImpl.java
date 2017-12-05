@@ -27,19 +27,18 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Column;
-import org.gwtbootstrap3.client.ui.html.Text;
+import org.gwtbootstrap3.client.ui.ListGroup;
+import org.gwtbootstrap3.client.ui.ListGroupItem;
+import org.gwtbootstrap3.client.ui.constants.ListGroupItemType;
 
 @Dependent
 public class EntityWorkflowViewImpl extends Composite implements EntityWorkflowView {
 
     private static UserEditorWorkflowViewBinder uiBinder = GWT.create(UserEditorWorkflowViewBinder.class);
     @UiField
-    Alert notifications;
-    @UiField
-    Text notificationLabel;
+    ListGroup notificationsList;
     @UiField
     Column content;
     @UiField
@@ -94,15 +93,18 @@ public class EntityWorkflowViewImpl extends Composite implements EntityWorkflowV
 
     @Override
     public EntityWorkflowView showNotification(final String text) {
-        notificationLabel.setText(text);
-        notifications.setVisible(true);
+        final ListGroupItem item = new ListGroupItem();
+        item.setText(text);
+        item.setType(ListGroupItemType.WARNING);
+        notificationsList.add(item);
+        notificationsList.setVisible(true);
         return this;
     }
 
     @Override
-    public EntityWorkflowView clearNotification() {
-        notificationLabel.setText("");
-        notifications.setVisible(false);
+    public EntityWorkflowView clearNotifications() {
+        notificationsList.clear();
+        notificationsList.setVisible(false);
         return this;
     }
 

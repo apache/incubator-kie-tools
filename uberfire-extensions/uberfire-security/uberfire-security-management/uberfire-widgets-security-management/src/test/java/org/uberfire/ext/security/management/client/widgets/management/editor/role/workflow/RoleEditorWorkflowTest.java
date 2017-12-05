@@ -92,7 +92,7 @@ public class RoleEditorWorkflowTest extends AbstractSecurityManagementTest {
         when(roleEditor.getAclSettings()).thenReturn(aclSettings);
         when(role.getName()).thenReturn("role1");
         when(view.setWidget(any(IsWidget.class))).thenReturn(view);
-        when(view.clearNotification()).thenReturn(view);
+        when(view.clearNotifications()).thenReturn(view);
         when(view.setCallback(any(EntityWorkflowView.Callback.class))).thenReturn(view);
         when(view.setCancelButtonVisible(anyBoolean())).thenReturn(view);
         when(view.setSaveButtonEnabled(anyBoolean())).thenReturn(view);
@@ -123,7 +123,7 @@ public class RoleEditorWorkflowTest extends AbstractSecurityManagementTest {
         verify(roleEditor,
                never()).show(any(Role.class));
         verify(view,
-               atLeastOnce()).clearNotification();
+               atLeastOnce()).clearNotifications();
         verify(view,
                never()).setCancelButtonVisible(true);
         verify(view,
@@ -152,7 +152,7 @@ public class RoleEditorWorkflowTest extends AbstractSecurityManagementTest {
         verify(view).setSaveButtonEnabled(false);
         verify(view,
                never()).showNotification(anyString());
-        verify(view).clearNotification();
+        verify(view).clearNotifications();
         verify(roleEditorDriver).edit(role,
                                       roleEditor);
         verify(roleEditor).clear();

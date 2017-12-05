@@ -35,6 +35,7 @@ import org.uberfire.ext.security.management.client.widgets.management.ChangePass
 import org.uberfire.ext.security.management.client.widgets.management.CreateEntity;
 import org.uberfire.ext.security.management.client.widgets.management.editor.user.UserAssignedGroupsEditor;
 import org.uberfire.ext.security.management.client.widgets.management.editor.user.UserAssignedGroupsExplorer;
+import org.uberfire.ext.security.management.client.widgets.management.editor.user.UserAssignedRolesExplorer;
 import org.uberfire.ext.security.management.client.widgets.management.editor.user.UserAttributesEditor;
 import org.uberfire.ext.security.management.client.widgets.management.editor.user.UserEditor;
 import org.uberfire.ext.security.management.client.widgets.management.editor.workflow.EntityWorkflowView;
@@ -55,7 +56,15 @@ import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class UserCreationWorkflowTest extends AbstractSecurityManagementTest {
@@ -89,6 +98,8 @@ public class UserCreationWorkflowTest extends AbstractSecurityManagementTest {
     @Mock
     UserAssignedGroupsEditor userAssignedGroupsEditor;
     @Mock
+    UserAssignedRolesExplorer userAssignedRolesExplorer;
+    @Mock
     User user;
     private UserCreationWorkflow tested;
 
@@ -102,7 +113,7 @@ public class UserCreationWorkflowTest extends AbstractSecurityManagementTest {
         when(user.getIdentifier()).thenReturn("user1");
         when(user.getGroups()).thenReturn(groups);
         when(view.setWidget(any(IsWidget.class))).thenReturn(view);
-        when(view.clearNotification()).thenReturn(view);
+        when(view.clearNotifications()).thenReturn(view);
         when(view.setCallback(any(EntityWorkflowView.Callback.class))).thenReturn(view);
         when(view.setCancelButtonVisible(anyBoolean())).thenReturn(view);
         when(view.setSaveButtonEnabled(anyBoolean())).thenReturn(view);
@@ -115,6 +126,7 @@ public class UserCreationWorkflowTest extends AbstractSecurityManagementTest {
         when(userEditor.attributesEditor()).thenReturn(userAttributesEditor);
         when(userEditor.groupsExplorer()).thenReturn(userAssignedGroupsExplorer);
         when(userEditor.groupsEditor()).thenReturn(userAssignedGroupsEditor);
+        when(userEditor.rolesExplorer()).thenReturn(userAssignedRolesExplorer);
         tested = new UserCreationWorkflow(userSystemManager,
                                           errorEvent,
                                           workbenchNotification,
@@ -153,7 +165,7 @@ public class UserCreationWorkflowTest extends AbstractSecurityManagementTest {
         verify(view,
                times(1)).setSaveButtonEnabled(true);
         verify(view,
-               times(2)).clearNotification();
+               times(2)).clearNotifications();
     }
 
     @Test
@@ -171,9 +183,9 @@ public class UserCreationWorkflowTest extends AbstractSecurityManagementTest {
 
     @Test
     public void testDoEdit() {
-        tested.isDirty = false;
         tested.user = user;
         tested.doEdit();
+        assertFalse(tested.isDirty);
         verify(userManagerService,
                times(0)).get(anyString());
         verify(view,
@@ -187,11 +199,11 @@ public class UserCreationWorkflowTest extends AbstractSecurityManagementTest {
         verify(view,
                times(3)).setSaveButtonVisible(true);
         verify(view,
-               times(2)).setSaveButtonEnabled(false);
+               times(4)).setSaveButtonEnabled(false);
         verify(view,
                times(1)).setSaveButtonEnabled(true);
         verify(view,
-               times(0)).clearNotification();
+               times(2)).clearNotifications();
         verify(userEditor,
                times(0)).clear();
         verify(userEditorDriver,
@@ -353,6 +365,6 @@ public class UserCreationWorkflowTest extends AbstractSecurityManagementTest {
         verify(view,
                times(1)).setSaveButtonEnabled(true);
         verify(view,
-               times(1)).showNotification(anyString());
+               times(2)).showNotification(anyString());
     }
 }

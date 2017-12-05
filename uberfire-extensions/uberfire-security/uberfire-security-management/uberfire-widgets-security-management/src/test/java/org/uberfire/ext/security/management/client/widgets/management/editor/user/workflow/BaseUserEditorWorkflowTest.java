@@ -16,12 +16,14 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.editor.user.workflow;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.security.shared.api.Group;
+import org.jboss.errai.security.shared.api.GroupImpl;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +34,8 @@ import org.mockito.stubbing.Answer;
 import org.uberfire.ext.security.management.client.editor.user.UserEditorDriver;
 import org.uberfire.ext.security.management.client.widgets.management.AbstractSecurityManagementTest;
 import org.uberfire.ext.security.management.client.widgets.management.ChangePassword;
+import org.uberfire.ext.security.management.client.widgets.management.editor.user.UserAssignedGroupsExplorer;
+import org.uberfire.ext.security.management.client.widgets.management.editor.user.UserAssignedRolesExplorer;
 import org.uberfire.ext.security.management.client.widgets.management.editor.user.UserEditor;
 import org.uberfire.ext.security.management.client.widgets.management.editor.workflow.EntityWorkflowView;
 import org.uberfire.ext.security.management.client.widgets.management.events.DeleteUserEvent;
@@ -46,7 +50,11 @@ import org.uberfire.workbench.events.NotificationEvent;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class BaseUserEditorWorkflowTest extends AbstractSecurityManagementTest {
@@ -64,6 +72,10 @@ public class BaseUserEditorWorkflowTest extends AbstractSecurityManagementTest {
     @Mock
     UserEditorDriver userEditorDriver;
     @Mock
+    UserAssignedGroupsExplorer userAssignedGroupsExplorer;
+    @Mock
+    UserAssignedRolesExplorer userAssignedRolesExplorer;
+    @Mock
     ChangePassword changePassword;
     @Mock
     LoadingBox loadingBox;
@@ -77,7 +89,7 @@ public class BaseUserEditorWorkflowTest extends AbstractSecurityManagementTest {
     public void setup() {
         super.setup();
         when(view.setWidget(any(IsWidget.class))).thenReturn(view);
-        when(view.clearNotification()).thenReturn(view);
+        when(view.clearNotifications()).thenReturn(view);
         when(view.setCallback(any(EntityWorkflowView.Callback.class))).thenReturn(view);
         when(view.setCancelButtonVisible(anyBoolean())).thenReturn(view);
         when(view.setSaveButtonEnabled(anyBoolean())).thenReturn(view);
@@ -90,6 +102,10 @@ public class BaseUserEditorWorkflowTest extends AbstractSecurityManagementTest {
         groups.add(group1);
         when(user.getIdentifier()).thenReturn("user1");
         when(user.getGroups()).thenReturn(groups);
+        when(userEditor.groupsExplorer()).thenReturn(userAssignedGroupsExplorer);
+        when(userAssignedGroupsExplorer.getValue()).thenReturn(Collections.emptySet());
+        when(userEditor.rolesExplorer()).thenReturn(userAssignedRolesExplorer);
+        when(userAssignedRolesExplorer.getValue()).thenReturn(Collections.emptySet());
         doAnswer(new Answer<User>() {
             @Override
             public User answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -137,7 +153,7 @@ public class BaseUserEditorWorkflowTest extends AbstractSecurityManagementTest {
         verify(view,
                times(2)).setSaveButtonEnabled(false);
         verify(view,
-               times(2)).clearNotification();
+               times(2)).clearNotifications();
         verify(userEditor,
                times(1)).clear();
         verify(loadingBox,
@@ -198,9 +214,9 @@ public class BaseUserEditorWorkflowTest extends AbstractSecurityManagementTest {
         verify(view,
                times(1)).setSaveButtonEnabled(true);
         verify(view,
-               times(1)).showNotification(anyString());
+               times(2)).showNotification(anyString());
         verify(view,
-               times(0)).clearNotification();
+               times(1)).clearNotifications();
         verify(loadingBox,
                times(0)).show();
         verify(loadingBox,
@@ -225,7 +241,63 @@ public class BaseUserEditorWorkflowTest extends AbstractSecurityManagementTest {
         verify(view,
                times(0)).showNotification(anyString());
         verify(view,
-               times(1)).clearNotification();
+               times(1)).clearNotifications();
+        verify(loadingBox,
+               times(0)).show();
+        verify(loadingBox,
+               times(0)).hide();
+    }
+
+    @Test
+    public void testNotifyEmptyAssignments() {
+        when(userAssignedGroupsExplorer.getValue()).thenReturn(Collections.emptySet());
+        when(userAssignedRolesExplorer.getValue()).thenReturn(Collections.emptySet());
+        tested.user = user;
+        tested.setDirty(false);
+        verify(view,
+               times(0)).setCancelButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setCallback(any(EntityWorkflowView.Callback.class));
+        verify(view,
+               times(0)).setSaveButtonText(anyString());
+        verify(view,
+               times(0)).setWidget(any(IsWidget.class));
+        verify(view,
+               times(0)).setSaveButtonVisible(anyBoolean());
+        verify(view,
+               times(1)).setSaveButtonEnabled(false);
+        verify(view,
+               times(1)).showNotification(anyString());
+        verify(view,
+               times(1)).clearNotifications();
+        verify(loadingBox,
+               times(0)).show();
+        verify(loadingBox,
+               times(0)).hide();
+    }
+
+    @Test
+    public void testNoNeedToNotifyAssignmentsFound() {
+        when(userAssignedGroupsExplorer.getValue()).thenReturn(Collections.singleton(new GroupImpl("g1")));
+        when(userAssignedRolesExplorer.getValue()).thenReturn(Collections.emptySet());
+        tested.user = user;
+        tested.setDirty(false);
+        verify(view,
+               times(0)).setCancelButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setCallback(any(EntityWorkflowView.Callback.class));
+        verify(view,
+               times(0)).setSaveButtonText(anyString());
+        verify(view,
+               times(0)).setWidget(any(IsWidget.class));
+        verify(view,
+               times(0)).setSaveButtonVisible(anyBoolean());
+        verify(view,
+               times(1)).setSaveButtonEnabled(false);
+        verify(view,
+               times(0)).showNotification(anyString());
+        verify(view,
+               times(1)).clearNotifications();
         verify(loadingBox,
                times(0)).show();
         verify(loadingBox,
@@ -253,11 +325,11 @@ public class BaseUserEditorWorkflowTest extends AbstractSecurityManagementTest {
         verify(view,
                times(1)).setSaveButtonVisible(true);
         verify(view,
-               times(1)).setSaveButtonEnabled(false);
+               times(2)).setSaveButtonEnabled(false);
         verify(view,
-               times(0)).showNotification(anyString());
+               times(1)).showNotification(anyString());
         verify(view,
-               times(0)).clearNotification();
+               times(1)).clearNotifications();
         verify(loadingBox,
                times(0)).show();
         verify(loadingBox,
@@ -336,7 +408,7 @@ public class BaseUserEditorWorkflowTest extends AbstractSecurityManagementTest {
         verify(view,
                times(0)).showNotification(anyString());
         verify(view,
-               times(2)).clearNotification();
+               times(2)).clearNotifications();
     }
 
     private void assertNoViewCalls() {
@@ -355,7 +427,7 @@ public class BaseUserEditorWorkflowTest extends AbstractSecurityManagementTest {
         verify(view,
                times(0)).showNotification(anyString());
         verify(view,
-               times(0)).clearNotification();
+               times(0)).clearNotifications();
         verify(loadingBox,
                times(0)).show();
         verify(loadingBox,

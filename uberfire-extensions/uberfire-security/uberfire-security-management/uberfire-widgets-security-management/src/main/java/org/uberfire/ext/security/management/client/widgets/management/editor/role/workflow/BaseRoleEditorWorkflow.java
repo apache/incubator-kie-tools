@@ -112,7 +112,7 @@ public abstract class BaseRoleEditorWorkflow implements IsWidget {
          ****************************************************************************************************** */
 
     public void clear() {
-        view.clearNotification();
+        view.clearNotifications();
         roleEditor.clear();
         isDirty = false;
         role = null;
@@ -190,7 +190,7 @@ public abstract class BaseRoleEditorWorkflow implements IsWidget {
         if (isDirty) {
             view.showNotification(UsersManagementWidgetsConstants.INSTANCE.roleModified(BaseRoleEditorWorkflow.this.role.getName()));
         } else {
-            view.clearNotification();
+            view.clearNotifications();
         }
     }
 

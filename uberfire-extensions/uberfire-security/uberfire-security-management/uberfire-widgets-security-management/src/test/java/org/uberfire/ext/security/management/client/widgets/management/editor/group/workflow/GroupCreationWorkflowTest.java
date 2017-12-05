@@ -76,7 +76,7 @@ public class GroupCreationWorkflowTest extends AbstractSecurityManagementTest {
         super.setup();
         when(group.getName()).thenReturn("group1");
         when(view.setWidget(any(IsWidget.class))).thenReturn(view);
-        when(view.clearNotification()).thenReturn(view);
+        when(view.clearNotifications()).thenReturn(view);
         when(view.setCallback(any(EntityWorkflowView.Callback.class))).thenReturn(view);
         when(view.setCancelButtonVisible(anyBoolean())).thenReturn(view);
         when(view.setSaveButtonEnabled(anyBoolean())).thenReturn(view);
@@ -108,7 +108,7 @@ public class GroupCreationWorkflowTest extends AbstractSecurityManagementTest {
         verify(groupUsersAssignment,
                times(1)).clear();
         verify(view,
-               times(1)).clearNotification();
+               times(1)).clearNotifications();
         verify(view,
                times(0)).setCancelButtonVisible(anyBoolean());
         verify(view,
@@ -151,7 +151,7 @@ public class GroupCreationWorkflowTest extends AbstractSecurityManagementTest {
         verify(view,
                times(1)).setSaveButtonEnabled(true);
         verify(view,
-               times(1)).clearNotification();
+               times(1)).clearNotifications();
     }
 
     @Test
@@ -173,7 +173,7 @@ public class GroupCreationWorkflowTest extends AbstractSecurityManagementTest {
         verify(view,
                times(1)).setSaveButtonEnabled(false);
         verify(view,
-               times(0)).clearNotification();
+               times(0)).clearNotifications();
     }
 
     @Test
@@ -272,6 +272,6 @@ public class GroupCreationWorkflowTest extends AbstractSecurityManagementTest {
         verify(view,
                times(1)).setSaveButtonEnabled(true);
         verify(view,
-               times(1)).clearNotification();
+               times(1)).clearNotifications();
     }
 }

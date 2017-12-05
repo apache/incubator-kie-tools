@@ -38,7 +38,7 @@ public interface EntityWorkflowView extends IsWidget {
 
     EntityWorkflowView showNotification(final String text);
 
-    EntityWorkflowView clearNotification();
+    EntityWorkflowView clearNotifications();
 
     interface Callback {
 

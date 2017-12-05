@@ -35,6 +35,7 @@ import org.uberfire.ext.security.management.client.widgets.management.ChangePass
 import org.uberfire.ext.security.management.client.widgets.management.editor.acl.ACLViewer;
 import org.uberfire.ext.security.management.client.widgets.management.editor.user.UserAssignedGroupsEditor;
 import org.uberfire.ext.security.management.client.widgets.management.editor.user.UserAssignedGroupsExplorer;
+import org.uberfire.ext.security.management.client.widgets.management.editor.user.UserAssignedRolesExplorer;
 import org.uberfire.ext.security.management.client.widgets.management.editor.user.UserAttributesEditor;
 import org.uberfire.ext.security.management.client.widgets.management.editor.user.UserEditor;
 import org.uberfire.ext.security.management.client.widgets.management.editor.workflow.EntityWorkflowView;
@@ -54,7 +55,13 @@ import org.uberfire.ext.security.management.client.widgets.popup.LoadingBox;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class UserEditorWorkflowTest extends AbstractSecurityManagementTest {
@@ -86,6 +93,8 @@ public class UserEditorWorkflowTest extends AbstractSecurityManagementTest {
     @Mock
     UserAssignedGroupsEditor userAssignedGroupsEditor;
     @Mock
+    UserAssignedRolesExplorer userAssignedRolesExplorer;
+    @Mock
     User user;
     private UserEditorWorkflow tested;
 
@@ -95,6 +104,7 @@ public class UserEditorWorkflowTest extends AbstractSecurityManagementTest {
         when(userEditor.attributesEditor()).thenReturn(userAttributesEditor);
         when(userEditor.groupsExplorer()).thenReturn(userAssignedGroupsExplorer);
         when(userEditor.groupsEditor()).thenReturn(userAssignedGroupsEditor);
+        when(userEditor.rolesExplorer()).thenReturn(userAssignedRolesExplorer);
         when(userEditor.getACLViewer()).thenReturn(aclViewer);
         final Set<Group> groups = new HashSet<Group>();
         final Group group1 = mock(Group.class);
@@ -135,11 +145,11 @@ public class UserEditorWorkflowTest extends AbstractSecurityManagementTest {
         verify(view,
                times(1)).setSaveButtonVisible(true);
         verify(view,
-               times(1)).setSaveButtonEnabled(false);
+               times(2)).setSaveButtonEnabled(false);
         verify(view,
-               times(0)).showNotification(anyString());
+               times(1)).showNotification(anyString());
         verify(view,
-               times(0)).clearNotification();
+               times(1)).clearNotifications();
         verify(loadingBox,
                times(0)).show();
         verify(loadingBox,
@@ -232,6 +242,6 @@ public class UserEditorWorkflowTest extends AbstractSecurityManagementTest {
         verify(view,
                times(1)).setSaveButtonEnabled(true);
         verify(view,
-               times(1)).showNotification(anyString());
+               times(2)).showNotification(anyString());
     }
 }

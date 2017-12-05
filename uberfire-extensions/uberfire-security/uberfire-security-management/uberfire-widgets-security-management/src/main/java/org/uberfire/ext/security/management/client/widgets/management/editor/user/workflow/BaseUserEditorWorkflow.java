@@ -18,6 +18,7 @@ package org.uberfire.ext.security.management.client.widgets.management.editor.us
 
 import java.util.LinkedHashSet;
 import java.util.Set;
+
 import javax.enterprise.event.Event;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -142,7 +143,7 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
     }
 
     public void clear() {
-        view.clearNotification();
+        view.clearNotifications();
         userEditor.clear();
         user = null;
         setDirty(false);
@@ -190,14 +191,22 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
     protected void setDirty(final boolean isDirty) {
         this.isDirty = isDirty;
         view.setSaveButtonEnabled(isDirty);
+        handleNotifications();
+    }
+
+    private void handleNotifications() {
+        final boolean emptyAssignments = null != user && !hasAssignments();
+        view.clearNotifications();
         if (isDirty) {
             view.showNotification(UsersManagementWidgetsConstants.INSTANCE.userModified(BaseUserEditorWorkflow.this.user.getIdentifier()));
-        } else {
-            view.clearNotification();
+        }
+        if (emptyAssignments) {
+            view.showNotification(UsersManagementWidgetsConstants.INSTANCE.ensureUserHasGroupsOrRoles());
         }
     }
 
     protected void edit() {
+        setDirty(false);
         userEditorDriver.edit(user,
                               userEditor);
         view.setCancelButtonVisible(true);
@@ -212,26 +221,14 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
         this.user = userEditorDriver.getValue();
 
         if (isValid) {
-            final RemoteCallback<User> assignGroupsCallback = new RemoteCallback<User>() {
-                @Override
-                public void callback(final User user) {
-                    doAssignGroups(new Command() {
-                        @Override
-                        public void execute() {
-                            doAssignRoles(new Command() {
-                                @Override
-                                public void execute() {
-                                    hideLoadingBox();
-                                    BaseUserEditorWorkflow.this.isDirty = false;
-                                    // Ask for the user's password if user is just created.
-                                    final String id = user.getIdentifier();
-                                    afterSave(id);
-                                }
-                            });
-                        }
-                    });
-                }
-            };
+            final RemoteCallback<User> assignGroupsCallback =
+                    user1 -> doAssignGroups(() -> doAssignRoles(() -> {
+                        hideLoadingBox();
+                        BaseUserEditorWorkflow.this.isDirty = false;
+                        // Ask for the user's password if user is just created.
+                        final String id = user1.getIdentifier();
+                        afterSave(id);
+                    }));
 
             // Update the wrapped user instance from the modifiable one and assign updated groups if update op is successful.
             showLoadingBox();
@@ -243,12 +240,7 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
 
     protected void doAssignGroups(final Command callback) {
         if (userEditor.canAssignGroups()) {
-            userSystemManager.users(new RemoteCallback<Void>() {
-                                        @Override
-                                        public void callback(Void aVoid) {
-                                            callback.execute();
-                                        }
-                                    },
+            userSystemManager.users(aVoid -> callback.execute(),
                                     errorCallback).assignGroups(user.getIdentifier(),
                                                                 getGroupNames());
         } else {
@@ -258,12 +250,7 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
 
     protected void doAssignRoles(final Command callback) {
         if (userEditor.canAssignRoles()) {
-            userSystemManager.users(new RemoteCallback<Void>() {
-                                        @Override
-                                        public void callback(Void aVoid) {
-                                            callback.execute();
-                                        }
-                                    },
+            userSystemManager.users(aVoid -> callback.execute(),
                                     errorCallback).assignRoles(user.getIdentifier(),
                                                                getRoleNames());
         } else {
@@ -375,5 +362,13 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
 
     protected void hideLoadingBox() {
         loadingBox.hide();
+    }
+
+    private boolean hasAssignments() {
+        final boolean hasGroups = null != userEditor.groupsExplorer().getValue() &&
+                !userEditor.groupsExplorer().getValue().isEmpty();
+        final boolean hasRoles = null != userEditor.rolesExplorer().getValue() &&
+                !userEditor.rolesExplorer().getValue().isEmpty();
+        return hasGroups || hasRoles;
     }
 }

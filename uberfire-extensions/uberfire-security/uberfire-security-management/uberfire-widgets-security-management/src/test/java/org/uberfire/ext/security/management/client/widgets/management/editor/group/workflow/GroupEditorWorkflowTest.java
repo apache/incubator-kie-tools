@@ -100,7 +100,7 @@ public class GroupEditorWorkflowTest extends AbstractSecurityManagementTest {
         when(groupEditor.getAclSettings()).thenReturn(aclSettings);
         when(group.getName()).thenReturn("group1");
         when(view.setWidget(any(IsWidget.class))).thenReturn(view);
-        when(view.clearNotification()).thenReturn(view);
+        when(view.clearNotifications()).thenReturn(view);
         when(view.setCallback(any(EntityWorkflowView.Callback.class))).thenReturn(view);
         when(view.setCancelButtonVisible(anyBoolean())).thenReturn(view);
         when(view.setSaveButtonEnabled(anyBoolean())).thenReturn(view);
@@ -133,7 +133,7 @@ public class GroupEditorWorkflowTest extends AbstractSecurityManagementTest {
         verify(groupEditor,
                times(0)).show(any(Group.class));
         verify(view,
-               times(1)).clearNotification();
+               times(1)).clearNotifications();
         verify(view,
                times(0)).setCancelButtonVisible(anyBoolean());
         verify(view,
@@ -169,7 +169,7 @@ public class GroupEditorWorkflowTest extends AbstractSecurityManagementTest {
         verify(view,
                times(0)).showNotification(anyString());
         verify(view,
-               times(1)).clearNotification();
+               times(1)).clearNotifications();
         verify(groupEditorDriver,
                times(1)).edit(group,
                               groupEditor);
@@ -249,6 +249,6 @@ public class GroupEditorWorkflowTest extends AbstractSecurityManagementTest {
         verify(view,
                times(0)).showNotification(anyString());
         verify(view,
-               times(0)).clearNotification();
+               times(0)).clearNotifications();
     }
 }

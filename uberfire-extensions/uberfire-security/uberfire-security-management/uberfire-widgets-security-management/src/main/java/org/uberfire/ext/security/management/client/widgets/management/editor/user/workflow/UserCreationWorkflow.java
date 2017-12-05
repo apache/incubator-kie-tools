@@ -176,6 +176,7 @@ public class UserCreationWorkflow extends BaseUserEditorWorkflow {
 
         // Configure the workflow's view.
         doShowEditorView();
+        setDirty(false);
 
         // Edit the instance using the user editor's driver.
         edit();
@@ -268,7 +269,7 @@ public class UserCreationWorkflow extends BaseUserEditorWorkflow {
                                         if (throwable instanceof UserNotFoundException) {
                                             // User not found, so identifier is valid.
                                             callback.valid();
-                                        } else  if (throwable instanceof InvalidEntityIdentifierException) {
+                                        } else if (throwable instanceof InvalidEntityIdentifierException) {
                                             callback.invalid(new SecurityManagementException(getUserNameNotValidMessage((InvalidEntityIdentifierException) throwable),
                                                                                              throwable));
                                         } else {

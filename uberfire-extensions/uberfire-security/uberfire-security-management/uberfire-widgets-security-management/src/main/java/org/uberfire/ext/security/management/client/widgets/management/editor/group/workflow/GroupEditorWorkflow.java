@@ -148,7 +148,7 @@ public class GroupEditorWorkflow implements IsWidget {
 
     public void clear() {
         groupEditor.clear();
-        view.clearNotification();
+        view.clearNotifications();
         group = null;
     }
 
@@ -266,7 +266,7 @@ public class GroupEditorWorkflow implements IsWidget {
         if (isDirty) {
             view.showNotification(UsersManagementWidgetsConstants.INSTANCE.groupModified(group.getName()));
         } else {
-            view.clearNotification();
+            view.clearNotifications();
         }
     }
 

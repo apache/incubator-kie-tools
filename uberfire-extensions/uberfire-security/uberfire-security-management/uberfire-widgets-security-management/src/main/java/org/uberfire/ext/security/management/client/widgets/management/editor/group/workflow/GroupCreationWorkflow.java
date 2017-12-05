@@ -132,7 +132,7 @@ public class GroupCreationWorkflow implements IsWidget {
     }
 
     public void clear() {
-        view.clearNotification();
+        view.clearNotifications();
         createEntity.clear();
         groupUsersAssignment.clear();
         group = null;
