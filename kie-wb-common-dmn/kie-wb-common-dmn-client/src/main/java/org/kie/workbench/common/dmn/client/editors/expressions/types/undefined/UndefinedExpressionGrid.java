@@ -29,9 +29,9 @@ import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
@@ -136,7 +136,7 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
             final GridCellValueTuple gcv = new GridCellValueTuple<>(parent.getRowIndex(),
                                                                     parent.getColumnIndex(),
                                                                     parent.getGridData(),
-                                                                    new DMNExpressionCellValue(editor));
+                                                                    new ExpressionCellValue(editor));
 
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           new SetCellValueCommand(gcv,

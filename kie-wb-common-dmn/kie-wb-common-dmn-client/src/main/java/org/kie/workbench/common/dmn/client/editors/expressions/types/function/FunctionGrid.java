@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import javax.enterprise.event.Event;
@@ -26,10 +24,8 @@ import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.common.client.api.IsElement;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.function.AddParameterCommand;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
@@ -103,8 +99,6 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
         final GridColumn literalExpressionColumn = new FunctionColumn(new FunctionColumnNameHeaderMetaData(() -> hasName.orElse(HasName.NOP).getName().getValue(),
                                                                                                            (s) -> hasName.orElse(HasName.NOP).getName().setValue(s),
                                                                                                            headerFactory),
-                                                                      new FunctionColumnParametersHeaderMetaData(this::extractExpressionLanguage,
-                                                                                                                 this::extractFormalParameters),
                                                                       factory,
                                                                       this);
         literalExpressionColumn.setWidth(DEFAULT_WIDTH);
@@ -112,30 +106,13 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
         model.appendColumn(literalExpressionColumn);
     }
 
-    private String extractExpressionLanguage() {
-        if (expression.isPresent()) {
-            final FunctionDefinition function = expression.get();
-            final Expression e = function.getExpression();
-            final LiteralExpression le = (LiteralExpression) e;
-            return le.getExpressionLanguage();
-        } else {
-            return "";
-        }
-    }
-
-    private List<InformationItem> extractFormalParameters() {
-        if (expression.isPresent()) {
-            return expression.get().getFormalParameter();
-        }
-        return Collections.emptyList();
-    }
-
     @Override
     protected void initialiseUiModel() {
         expression.ifPresent(e -> {
+            model.appendRow(new DMNGridRow(64));
             model.appendRow(new DMNGridRow());
-            uiModelMapper.fromDMNModel(0,
-                                       0);
+            uiModelMapper.fromDMNModel(0, 0);
+            uiModelMapper.fromDMNModel(1, 0);
         });
     }
 

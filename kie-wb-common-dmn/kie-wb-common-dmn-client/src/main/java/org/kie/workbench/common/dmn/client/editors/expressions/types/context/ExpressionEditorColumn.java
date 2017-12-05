@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.RequiresResize;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
@@ -58,8 +57,8 @@ public class ExpressionEditorColumn extends DMNGridColumn<Optional<GridWidget>> 
                 final GridCell<?> cell = row.getCells().get(columnIndex);
                 if (cell != null) {
                     final GridCellValue<?> value = cell.getValue();
-                    if (value instanceof DMNExpressionCellValue) {
-                        final DMNExpressionCellValue ecv = (DMNExpressionCellValue) value;
+                    if (value instanceof ExpressionCellValue) {
+                        final ExpressionCellValue ecv = (ExpressionCellValue) value;
                         final Optional<GridWidget> editor = ecv.getValue();
                         if (editor.isPresent()) {
                             minimumWidth = getMinimumWidthForColumns(editor.get(), minimumWidth);
@@ -113,8 +112,8 @@ public class ExpressionEditorColumn extends DMNGridColumn<Optional<GridWidget>> 
                 final GridCell<?> cell = row.getCells().get(columnIndex);
                 if (cell != null) {
                     final GridCellValue<?> value = cell.getValue();
-                    if (value instanceof DMNExpressionCellValue) {
-                        final DMNExpressionCellValue ecv = (DMNExpressionCellValue) value;
+                    if (value instanceof ExpressionCellValue) {
+                        final ExpressionCellValue ecv = (ExpressionCellValue) value;
                         final Optional<GridWidget> editor = ecv.getValue();
                         if (editor.isPresent()) {
                             updateWidthOfLastColumn(editor.get(), columnWidth);
@@ -160,8 +159,8 @@ public class ExpressionEditorColumn extends DMNGridColumn<Optional<GridWidget>> 
                 final GridCell<?> cell = row.getCells().get(columnIndex);
                 if (cell != null) {
                     final GridCellValue<?> value = cell.getValue();
-                    if (value instanceof DMNExpressionCellValue) {
-                        final DMNExpressionCellValue ecv = (DMNExpressionCellValue) value;
+                    if (value instanceof ExpressionCellValue) {
+                        final ExpressionCellValue ecv = (ExpressionCellValue) value;
                         final Optional<GridWidget> editor = ecv.getValue();
                         if (editor.isPresent()) {
                             requiredColumnWidth = Math.max(requiredColumnWidth,

@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.widgets.grid.model;
-
-import java.util.Optional;
+package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
-public class DMNExpressionCellValue extends BaseGridCellValue<Optional<GridWidget>> {
+public class FunctionParametersCellValue extends BaseGridCellValue<FunctionParametersHolder> {
 
-    public DMNExpressionCellValue(final Optional<GridWidget> editor) {
-        super(editor);
+    public FunctionParametersCellValue(final FunctionParametersHolder parameters) {
+        super(parameters);
     }
 }

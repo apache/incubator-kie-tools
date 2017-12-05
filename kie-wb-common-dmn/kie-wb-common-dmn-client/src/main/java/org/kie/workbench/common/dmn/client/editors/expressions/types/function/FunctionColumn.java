@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
-import java.util.Arrays;
-
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
@@ -35,11 +33,11 @@ public class FunctionColumn extends DMNGridColumn<String> implements HasSingleto
     private final TextAreaSingletonDOMElementFactory factory;
 
     public FunctionColumn(final FunctionColumnNameHeaderMetaData nameHeaderMetaData,
-                          final FunctionColumnParametersHeaderMetaData parametersHeaderMetaData,
                           final TextAreaSingletonDOMElementFactory factory,
                           final GridWidget gridWidget) {
-        super(Arrays.asList(nameHeaderMetaData, parametersHeaderMetaData),
-              new FunctionColumnRenderer(factory),
+        super(nameHeaderMetaData,
+              new FunctionColumnRenderer(factory,
+                                         gridWidget),
               gridWidget);
         this.factory = PortablePreconditions.checkNotNull("factory",
                                                           factory);
@@ -51,6 +49,10 @@ public class FunctionColumn extends DMNGridColumn<String> implements HasSingleto
     public void edit(final GridCell<String> cell,
                      final GridBodyCellRenderContext context,
                      final Callback<GridCellValue<String>> callback) {
+        final int rowIndex = context.getRowIndex();
+        if (rowIndex == 0) {
+            return;
+        }
         factory.attachDomElement(context,
                                  (e) -> e.getWidget().setValue(assertCell(cell).getValue().getValue()),
                                  (e) -> e.getWidget().setFocus(true));

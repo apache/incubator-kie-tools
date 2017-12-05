@@ -23,7 +23,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.mockito.Mock;
@@ -212,7 +211,7 @@ public class ExpressionEditorColumnTest {
         final GridWidget gridWidget = mock(GridWidget.class);
 
         gridData.setCell(rowIndex, columnIndex,
-                         new DMNExpressionCellValue(
+                         new ExpressionCellValue(
                                  Optional.of(new BaseGridWidget(new BaseGridData() {{
                                      for (double width : widthOfCells) {
                                          appendColumn(new DMNGridColumn<Object>(headerMetaData, gridColumnRenderer, gridWidget) {{
@@ -224,6 +223,6 @@ public class ExpressionEditorColumnTest {
     }
 
     private double getColumnWidth(final int rowOfCell, final int columnOfCell, final int columnInCell) {
-        return ((DMNExpressionCellValue) gridData.getCell(rowOfCell, columnOfCell).getValue()).getValue().get().getModel().getColumns().get(columnInCell).getWidth();
+        return ((ExpressionCellValue) gridData.getCell(rowOfCell, columnOfCell).getValue()).getValue().get().getModel().getColumns().get(columnInCell).getWidth();
     }
 }

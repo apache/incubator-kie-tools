@@ -20,8 +20,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.google.gwt.user.client.Command;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.dnd.DelegatingGridWidgetDndMouseMoveHandler;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNExpressionCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDMouseMoveHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -60,8 +60,8 @@ public class DMNGridLayer extends DefaultGridLayer {
                         .stream()
                         .filter(cell -> cell != null && cell.getValue() != null)
                         .map(GridCell::getValue)
-                        .filter(value -> value instanceof DMNExpressionCellValue)
-                        .map(value -> (DMNExpressionCellValue) value)
+                        .filter(value -> value instanceof ExpressionCellValue)
+                        .map(value -> (ExpressionCellValue) value)
                         .filter(value -> value.getValue().isPresent())
                         .map(value -> value.getValue().get())
                         .forEach(editor -> allGridWidgets.addAll(collectGridWidgets(editor))));

@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
+package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
 
-import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRenderer;
+import java.util.Optional;
 
-public class FunctionGridRenderer extends BaseExpressionGridRenderer {
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
-    public FunctionGridRenderer(final boolean hideHeader) {
-        super(hideHeader);
+public class ExpressionCellValue extends BaseGridCellValue<Optional<GridWidget>> {
+
+    public ExpressionCellValue(final Optional<GridWidget> editor) {
+        super(editor);
     }
 }

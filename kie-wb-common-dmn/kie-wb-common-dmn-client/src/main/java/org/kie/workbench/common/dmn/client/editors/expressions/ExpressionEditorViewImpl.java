@@ -35,8 +35,8 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.BoundaryTransformMediator;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.HasExpressionEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
@@ -154,7 +154,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                                   false);
         expressionContainer.getModel().setCell(0,
                                                0,
-                                               new DMNExpressionCellValue(oEditor));
+                                               new ExpressionCellValue(oEditor));
         gridPanel.refreshScrollPosition();
         gridPanel.updatePanelSize();
         gridLayer.batch();

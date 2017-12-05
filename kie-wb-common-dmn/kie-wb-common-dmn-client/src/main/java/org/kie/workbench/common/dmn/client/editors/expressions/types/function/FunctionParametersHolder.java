@@ -21,38 +21,16 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
-import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 
-public class FunctionColumnParametersHeaderMetaData implements GridColumn.HeaderMetaData {
-
-    private static final String PARAMETER_COLUMN_GROUP = "FunctionColumnParametersHeaderMetaData$Parameters";
+public class FunctionParametersHolder {
 
     private final Supplier<String> expressionLanguageSupplier;
     private final Supplier<List<InformationItem>> formalParametersSupplier;
 
-    public FunctionColumnParametersHeaderMetaData(final Supplier<String> expressionLanguageSupplier,
-                                                  final Supplier<List<InformationItem>> formalParametersSupplier) {
+    public FunctionParametersHolder(final Supplier<String> expressionLanguageSupplier,
+                                    final Supplier<List<InformationItem>> formalParametersSupplier) {
         this.expressionLanguageSupplier = expressionLanguageSupplier;
         this.formalParametersSupplier = formalParametersSupplier;
-    }
-
-    @Override
-    public String getColumnGroup() {
-        return PARAMETER_COLUMN_GROUP;
-    }
-
-    @Override
-    public void setColumnGroup(final String columnGroup) {
-        throw new UnsupportedOperationException("Group cannot be set.");
-    }
-
-    @Override
-    public String getTitle() {
-        //TODO {manstis} We need the FunctionGridRendered to render the two sections as different cells
-        final StringBuffer sb = new StringBuffer(getExpressionLanguageTitle());
-        sb.append(" : ");
-        sb.append(getFormalParametersTitle());
-        return sb.toString();
     }
 
     public String getExpressionLanguageTitle() {
@@ -68,10 +46,5 @@ public class FunctionColumnParametersHeaderMetaData implements GridColumn.Header
         }
         sb.append(")");
         return sb.toString();
-    }
-
-    @Override
-    public void setTitle(final String title) {
-        throw new UnsupportedOperationException("Title is derived from the Decision Table Hit Policy and cannot be set on the HeaderMetaData.");
     }
 }

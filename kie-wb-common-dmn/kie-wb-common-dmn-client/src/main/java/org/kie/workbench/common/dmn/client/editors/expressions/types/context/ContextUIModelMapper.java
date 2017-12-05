@@ -28,7 +28,6 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -82,7 +81,7 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
                                                                          true);
                         uiModel.get().setCell(rowIndex,
                                               columnIndex,
-                                              new DMNExpressionCellValue(editor));
+                                              new ExpressionCellValue(editor));
                     });
             }
         });
@@ -106,7 +105,7 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
                     break;
                 case EXPRESSION:
                     cell.get().ifPresent(v -> {
-                        final DMNExpressionCellValue ecv = (DMNExpressionCellValue) v;
+                        final ExpressionCellValue ecv = (ExpressionCellValue) v;
                         ecv.getValue().ifPresent(editor -> {
                             final BaseExpressionGrid beg = (BaseExpressionGrid) editor;
                             beg.getExpression().ifPresent(e -> context.getContextEntry()

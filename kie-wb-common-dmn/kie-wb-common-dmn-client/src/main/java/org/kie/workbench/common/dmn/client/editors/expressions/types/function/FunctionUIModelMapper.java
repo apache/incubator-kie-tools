@@ -16,11 +16,14 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
+import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
@@ -39,12 +42,44 @@ public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition>
     public void fromDMNModel(final int rowIndex,
                              final int columnIndex) {
         dmnModel.get().ifPresent(function -> {
+            switch (rowIndex) {
+                case 0:
+                    final FunctionParametersHolder parameters = new FunctionParametersHolder(this::extractExpressionLanguage,
+                                                                                             this::extractFormalParameters);
+                    uiModel.get().setCell(rowIndex,
+                                          columnIndex,
+                                          new FunctionParametersCellValue(parameters));
+                    break;
+                case 1:
+                    final Expression e = function.getExpression();
+                    final LiteralExpression le = (LiteralExpression) e;
+                    uiModel.get().setCell(rowIndex,
+                                          columnIndex,
+                                          new BaseGridCellValue<>(le.getText()));
+                    break;
+                default:
+                    throw new IllegalArgumentException("RowIndex should be either 0 or 1.");
+            }
+        });
+    }
+
+    private String extractExpressionLanguage() {
+        if (dmnModel.get().isPresent()) {
+            final FunctionDefinition function = dmnModel.get().get();
             final Expression e = function.getExpression();
             final LiteralExpression le = (LiteralExpression) e;
-            uiModel.get().setCell(rowIndex,
-                                  columnIndex,
-                                  new BaseGridCellValue<>(le.getText()));
-        });
+            return le.getExpressionLanguage();
+        } else {
+            return "";
+        }
+    }
+
+    private List<InformationItem> extractFormalParameters() {
+        if (dmnModel.get().isPresent()) {
+            final FunctionDefinition function = dmnModel.get().get();
+            return function.getFormalParameter();
+        }
+        return Collections.emptyList();
     }
 
     @Override
@@ -52,9 +87,17 @@ public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition>
                            final int columnIndex,
                            final Supplier<Optional<GridCellValue<?>>> cell) {
         dmnModel.get().ifPresent(function -> {
-            final Expression e = function.getExpression();
-            final LiteralExpression le = (LiteralExpression) e;
-            le.setText(cell.get().orElse(new BaseGridCellValue<>("")).getValue().toString());
+            switch (rowIndex) {
+                case 0:
+                    break;
+                case 1:
+                    final Expression e = function.getExpression();
+                    final LiteralExpression le = (LiteralExpression) e;
+                    le.setText(cell.get().orElse(new BaseGridCellValue<>("")).getValue().toString());
+                    break;
+                default:
+                    throw new IllegalArgumentException("RowIndex should be either 0 or 1.");
+            }
         });
     }
 }

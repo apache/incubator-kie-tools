@@ -17,23 +17,32 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
 import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.TextLineBreakWrap;
+import com.ait.lienzo.client.core.shape.TextNoWrap;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextAreaDOMElement;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
+import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
+import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.single.impl.BaseGridColumnSingletonDOMElementRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.GridRendererTheme;
 
 public class FunctionColumnRenderer extends BaseGridColumnSingletonDOMElementRenderer<String, TextArea, TextAreaDOMElement> {
 
-    public FunctionColumnRenderer(final TextAreaSingletonDOMElementFactory factory) {
+    private final GridWidget gridWidget;
+
+    public FunctionColumnRenderer(final TextAreaSingletonDOMElementFactory factory,
+                                  final GridWidget gridWidget) {
         super(factory);
+        this.gridWidget = gridWidget;
     }
 
     @Override
@@ -43,9 +52,41 @@ public class FunctionColumnRenderer extends BaseGridColumnSingletonDOMElementRen
             return null;
         }
 
+        final GridCellValue gcv = cell.getValue();
+        if (gcv instanceof FunctionParametersCellValue) {
+            return renderFunctionParametersCellValue((FunctionParametersCellValue) gcv, context);
+        }
+        return renderLiteralExpression(cell, context);
+    }
+
+    private Group renderFunctionParametersCellValue(final FunctionParametersCellValue cell,
+                                                    final GridBodyCellRenderContext context) {
+        final FunctionParametersHolder parameters = cell.getValue();
         final GridRenderer renderer = context.getRenderer();
         final GridRendererTheme theme = renderer.getTheme();
+        final Group g = new Group();
 
+        final GridColumn<?> column = gridWidget.getModel().getColumns().get(context.getColumnIndex());
+        final Rectangle r = theme.getHeaderBackground(column).setVisible(true);
+        r.setWidth(context.getCellWidth()).setHeight(context.getCellHeight());
+        g.add(r);
+
+        final Text t = theme.getHeaderText()
+                .setText(parameters.getExpressionLanguageTitle() + " : " + parameters.getFormalParametersTitle())
+                .setListening(false)
+                .setVisible(true)
+                .setX(context.getCellWidth() / 2)
+                .setY(context.getCellHeight() / 2)
+                .setTextAlign(TextAlign.CENTER);
+        t.setWrapper(new TextNoWrap(t));
+        g.add(t);
+        return g;
+    }
+
+    private Group renderLiteralExpression(final GridCell<String> cell,
+                                          final GridBodyCellRenderContext context) {
+        final GridRenderer renderer = context.getRenderer();
+        final GridRendererTheme theme = renderer.getTheme();
         final Group g = new Group();
         final Text t = theme.getBodyText()
                 .setText(cell.getValue().getValue())

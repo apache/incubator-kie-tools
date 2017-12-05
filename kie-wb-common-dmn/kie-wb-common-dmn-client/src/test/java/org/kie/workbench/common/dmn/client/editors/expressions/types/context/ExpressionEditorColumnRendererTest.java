@@ -24,7 +24,6 @@ import com.google.gwtmockito.GwtMockito;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNExpressionCellValue;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
@@ -76,7 +75,7 @@ public class ExpressionEditorColumnRendererTest {
 
     @Test
     public void testRenderCellDMNExpression() throws Exception {
-        cell = new BaseGridCell<>(new DMNExpressionCellValue(Optional.of(widget)));
+        cell = new BaseGridCell<>(new ExpressionCellValue(Optional.of(widget)));
         renderer.renderCell(cell, context);
         verify(renderedGroup).add(editorGroup);
     }

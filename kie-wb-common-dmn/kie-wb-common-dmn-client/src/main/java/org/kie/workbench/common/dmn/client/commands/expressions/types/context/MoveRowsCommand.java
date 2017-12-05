@@ -25,9 +25,9 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommand;
@@ -188,8 +188,8 @@ public class MoveRowsCommand extends AbstractCanvasGraphCommand implements VetoE
                     for (int rowIndex = 0; rowIndex < uiModel.getRowCount(); rowIndex++) {
                         final GridCell<?> cell = uiModel.getCell(rowIndex, columnIndex);
                         final GridCellValue<?> value = cell.getValue();
-                        if (value instanceof DMNExpressionCellValue) {
-                            final DMNExpressionCellValue ecv = (DMNExpressionCellValue) value;
+                        if (value instanceof ExpressionCellValue) {
+                            final ExpressionCellValue ecv = (ExpressionCellValue) value;
                             if (ecv.getValue().isPresent()) {
                                 final GridWidget gw = ecv.getValue().get();
                                 if (gw instanceof BaseExpressionGrid) {

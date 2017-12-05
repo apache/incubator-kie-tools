@@ -31,7 +31,6 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.mockito.Mock;
@@ -149,8 +148,8 @@ public class ContextUIModelMapperTest {
 
         assertNull(uiModel.getCell(0, 2));
 
-        assertTrue(uiModel.getCell(1, 2).getValue() instanceof DMNExpressionCellValue);
-        final DMNExpressionCellValue dcv = (DMNExpressionCellValue) uiModel.getCell(1, 2).getValue();
+        assertTrue(uiModel.getCell(1, 2).getValue() instanceof ExpressionCellValue);
+        final ExpressionCellValue dcv = (ExpressionCellValue) uiModel.getCell(1, 2).getValue();
         assertEquals(literalExpressionEditor,
                      dcv.getValue().get());
     }
@@ -169,7 +168,7 @@ public class ContextUIModelMapperTest {
 
     @Test
     public void testToDMNModelExpression() {
-        cellValueSupplier = () -> Optional.of(new DMNExpressionCellValue(Optional.of(literalExpressionEditor)));
+        cellValueSupplier = () -> Optional.of(new ExpressionCellValue(Optional.of(literalExpressionEditor)));
 
         mapper.toDMNModel(0,
                           2,

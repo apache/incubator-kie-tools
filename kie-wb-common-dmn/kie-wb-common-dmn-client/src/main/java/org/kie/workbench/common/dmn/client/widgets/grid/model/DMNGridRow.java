@@ -16,15 +16,23 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.model;
 
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 
 public class DMNGridRow extends BaseGridRow {
 
-    private static final double DEFAULT_HEIGHT = 100.0;
+    static final double DEFAULT_HEIGHT = 100.0;
+
+    private final double defaultHeight;
 
     public DMNGridRow() {
-        super(DEFAULT_HEIGHT);
+        this(DEFAULT_HEIGHT);
+    }
+
+    public DMNGridRow(final double height) {
+        super(height);
+        this.defaultHeight = height;
     }
 
     @Override
@@ -34,12 +42,12 @@ public class DMNGridRow extends BaseGridRow {
                 .stream()
                 .filter(cell -> cell != null && cell.getValue() != null)
                 .map(GridCell::getValue)
-                .filter(value -> value instanceof DMNExpressionCellValue)
-                .map(value -> (DMNExpressionCellValue) value)
+                .filter(value -> value instanceof ExpressionCellValue)
+                .map(value -> (ExpressionCellValue) value)
                 .filter(value -> value.getValue().isPresent())
                 .map(value -> value.getValue().get())
                 .map(editor -> editor.getHeight() + DMNGridColumn.PADDING * 2)
                 .reduce(Double::max)
-                .orElse(DEFAULT_HEIGHT);
+                .orElse(defaultHeight);
     }
 }
