@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.expressions.types;
+package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
-public enum ExpressionType {
+import org.uberfire.client.mvp.UberElement;
 
-    UNDEFINED,
-    LITERAL_EXPRESSION,
-    CONTEXT,
-    DECISION_TABLE,
-    RELATION,
-    FUNCTION
+public interface FunctionGridControls extends org.jboss.errai.ui.client.local.api.IsElement,
+                                              UberElement<FunctionGridControls.Presenter> {
 
+    interface Presenter {
+
+        void addFormalParameter();
+    }
 }

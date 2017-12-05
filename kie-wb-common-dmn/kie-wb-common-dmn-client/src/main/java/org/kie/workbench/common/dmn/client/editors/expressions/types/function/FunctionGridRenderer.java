@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.expressions.types;
+package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
-public enum ExpressionType {
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRenderer;
 
-    UNDEFINED,
-    LITERAL_EXPRESSION,
-    CONTEXT,
-    DECISION_TABLE,
-    RELATION,
-    FUNCTION
+public class FunctionGridRenderer extends BaseExpressionGridRenderer {
 
+    public FunctionGridRenderer(final boolean hideHeader) {
+        //TODO {manstis} We only want to hide the top of the header when nested
+        // i.e. we still need to show the expression language and formal parameters
+        // Perhaps using a fixed row instead of two header rows is better!?!
+        super(false);
+    }
 }
