@@ -49,6 +49,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.AdHocOrdering;
 import org.eclipse.bpmn2.AdHocSubProcess;
@@ -262,11 +263,10 @@ public class Bpmn2JsonMarshaller {
                                                                        "Integer",
                                                                        "List",
                                                                        "String");
-
+    private static final Logger _logger = LoggerFactory.getLogger(Bpmn2JsonMarshaller.class);
     private Map<String, DiagramElement> _diagramElements = new HashMap<String, DiagramElement>();
     private Map<String, Association> _diagramAssociations = new HashMap<String, Association>();
     private Scenario _simulationScenario = null;
-    private static final Logger _logger = LoggerFactory.getLogger(Bpmn2JsonMarshaller.class);
     private IDiagramProfile profile;
     private boolean coordianteManipulation = true;
 
@@ -402,7 +402,7 @@ public class Bpmn2JsonMarshaller {
             props.put(TYPELANGUAGE,
                       def.getTypeLanguage());
             props.put(NAME,
-                      unescapeXML(def.getName()));
+                      StringEscapeUtils.unescapeXml(def.getName()));
             props.put(ID,
                       def.getId());
             props.put(EXPRESSIONLANGUAGE,
@@ -424,7 +424,7 @@ public class Bpmn2JsonMarshaller {
                     Process pr = (Process) rootElement;
                     if (pr.getName() != null && pr.getName().length() > 0) {
                         props.put(PROCESSN,
-                                  unescapeXML(((Process) rootElement).getName()));
+                                  StringEscapeUtils.unescapeXml(((Process) rootElement).getName()));
                     }
                     List<Property> processProperties = ((Process) rootElement).getProperties();
                     if (processProperties != null && processProperties.size() > 0) {
@@ -814,7 +814,7 @@ public class Bpmn2JsonMarshaller {
                 if (((MessageEventDefinition) ed).getMessageRef() != null) {
                     Message msg = ((MessageEventDefinition) ed).getMessageRef();
                     properties.put(MESSAGEREF,
-                                   msg.getId());
+                                   msg.getName());
                 }
             } else if (ed instanceof CompensateEventDefinition) {
                 if (((CompensateEventDefinition) ed).getActivityRef() != null) {
@@ -986,7 +986,7 @@ public class Bpmn2JsonMarshaller {
             Map<String, Object> laneProperties = new LinkedHashMap<String, Object>();
             if (lane.getName() != null) {
                 laneProperties.put(NAME,
-                                   unescapeXML(lane.getName()));
+                                   StringEscapeUtils.unescapeXml(lane.getName()));
             } else {
                 laneProperties.put(NAME,
                                    "");
@@ -2723,7 +2723,7 @@ public class Bpmn2JsonMarshaller {
 
         if (node.getName() != null) {
             properties.put(NAME,
-                           unescapeXML(node.getName()));
+                           StringEscapeUtils.unescapeXml(node.getName()));
         } else {
             if (node instanceof TextAnnotation) {
                 if (((TextAnnotation) node).getText() != null) {
@@ -2898,7 +2898,7 @@ public class Bpmn2JsonMarshaller {
 
         if (dataObject.getName() != null && dataObject.getName().length() > 0) {
             properties.put(NAME,
-                           unescapeXML(dataObject.getName()));
+                           StringEscapeUtils.unescapeXml(dataObject.getName()));
         } else {
             // we need a name, use id instead
             properties.put(NAME,
@@ -2989,7 +2989,7 @@ public class Bpmn2JsonMarshaller {
         Map<String, Object> properties = new LinkedHashMap<String, Object>(flowElementProperties);
         if (subProcess.getName() != null) {
             properties.put(NAME,
-                           unescapeXML(subProcess.getName()));
+                           StringEscapeUtils.unescapeXml(subProcess.getName()));
         } else {
             properties.put(NAME,
                            "");
@@ -3419,7 +3419,7 @@ public class Bpmn2JsonMarshaller {
         // check null for sequence flow name
         if (sequenceFlow.getName() != null && !"".equals(sequenceFlow.getName())) {
             properties.put(NAME,
-                           unescapeXML(sequenceFlow.getName()));
+                           StringEscapeUtils.unescapeXml(sequenceFlow.getName()));
         } else {
             properties.put(NAME,
                            "");
@@ -3857,7 +3857,7 @@ public class Bpmn2JsonMarshaller {
         Map<String, Object> properties = new LinkedHashMap<>();
         if (group.getCategoryValueRef() != null && group.getCategoryValueRef().getValue() != null) {
             properties.put("name",
-                           unescapeXML(group.getCategoryValueRef().getValue()));
+                           StringEscapeUtils.unescapeXml(group.getCategoryValueRef().getValue()));
         }
 
         putDocumentationProperty(group, properties);
@@ -3958,52 +3958,6 @@ public class Bpmn2JsonMarshaller {
             }
         }
         return false;
-    }
-
-    private static String unescapeXML(String str) {
-        if (str == null || str.length() == 0) {
-            return "";
-        }
-        StringBuffer buf = new StringBuffer();
-        int len = str.length();
-        for (int i = 0; i < len; ++i) {
-            char c = str.charAt(i);
-            if (c == '&') {
-                int pos = str.indexOf(";",
-                                      i);
-                if (pos == -1) { // Really evil
-                    buf.append('&');
-                } else if (str.charAt(i + 1) == '#') {
-                    int val = Integer.parseInt(str.substring(i + 2,
-                                                             pos),
-                                               16);
-                    buf.append((char) val);
-                    i = pos;
-                } else {
-                    String substr = str.substring(i,
-                                                  pos + 1);
-                    if (substr.equals("&amp;")) {
-                        buf.append('&');
-                    } else if (substr.equals("&lt;")) {
-                        buf.append('<');
-                    } else if (substr.equals("&gt;")) {
-                        buf.append('>');
-                    } else if (substr.equals("&quot;")) {
-                        buf.append('"');
-                    } else if (substr.equals("&apos;")) {
-                        buf.append('\'');
-                    } else
-                    // ????
-                    {
-                        buf.append(substr);
-                    }
-                    i = pos;
-                }
-            } else {
-                buf.append(c);
-            }
-        }
-        return buf.toString();
     }
 
     private String updateReassignmentAndNotificationInput(String inputStr,

@@ -37,6 +37,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
+import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
@@ -49,6 +50,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.AdHoc;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.ProcessInstanceDescription;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.CancelActivity;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.IsInterrupting;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.SignalRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.SignalScope;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimeCycle;
@@ -188,6 +190,8 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
                 "isinterrupting");
             put(SignalRef.class,
                 "signalref");
+            put(MessageRef.class,
+                "messageref");
             put(CancelActivity.class,
                 "boundarycancelactivity");
             put(SignalScope.class,
@@ -279,6 +283,12 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
                 startTimerEventPropertiesMap);
             startTimerEventPropertiesMap.put(AssignmentsInfo.class,
                                              "assignmentsinfo");
+
+            Map<Class<?>, String> startMessageEventPropertiesMap = new HashMap<Class<?>, String>();
+            put(StartMessageEvent.class,
+                startMessageEventPropertiesMap);
+            startMessageEventPropertiesMap.put(AssignmentsInfo.class,
+                                               "assignmentsinfo");
 
             Map<Class<?>, String> intermediateTimerEventPropertiesMap = new HashMap<Class<?>, String>();
             put(IntermediateTimerEvent.class,

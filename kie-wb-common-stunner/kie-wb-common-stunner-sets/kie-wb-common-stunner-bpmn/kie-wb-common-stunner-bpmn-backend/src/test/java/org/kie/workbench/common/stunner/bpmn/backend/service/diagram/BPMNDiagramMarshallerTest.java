@@ -84,6 +84,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
+import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
@@ -92,6 +93,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.Assignme
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.IsInterrupting;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.SignalRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
@@ -173,6 +175,7 @@ public class BPMNDiagramMarshallerTest {
     private static final String BPMN_STARTNONEEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startNoneEvent.bpmn";
     private static final String BPMN_STARTTIMEREVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startTimerEvent.bpmn";
     private static final String BPMN_STARTSIGNALEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startSignalEvent.bpmn";
+    private static final String BPMN_STARTMESSAGEEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startMessageEvent.bpmn";
     private static final String BPMN_INTERMEDIATE_SIGNAL_EVENTCATCHING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateSignalEventCatching.bpmn";
     private static final String BPMN_INTERMEDIATE_SIGNAL_EVENTTHROWING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateSignalEventThrowing.bpmn";
     private static final String BPMN_INTERMEDIATE_TIMER_EVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateTimerEvent.bpmn";
@@ -230,6 +233,18 @@ public class BPMNDiagramMarshallerTest {
     TaskTypeMorphDefinition taskMorphDefinition;
 
     private BPMNDiagramMarshaller tested;
+
+    private static int count(final String string,
+                             final String substring) {
+        int count = 0;
+        int idx = 0;
+        while ((idx = string.indexOf(substring,
+                                     idx)) != -1) {
+            idx++;
+            count++;
+        }
+        return count;
+    }
 
     @Before
     @SuppressWarnings("unchecked")
@@ -580,6 +595,29 @@ public class BPMNDiagramMarshallerTest {
         SignalRef signalRef = startSignalEvent.getExecutionSet().getSignalRef();
         assertEquals("sig1",
                      signalRef.getValue());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnmarshallStartMessageEvent() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_STARTMESSAGEEVENT);
+        assertDiagram(diagram,
+                      2);
+        assertEquals("StartMessageEvent",
+                     diagram.getMetadata().getTitle());
+        Node<? extends Definition, ?> startMessageEventNode = diagram.getGraph().getNode("_34C4BBFC-544F-4E23-B17B-547BB48EEB63");
+        StartMessageEvent startMessageEvent = (StartMessageEvent) startMessageEventNode.getContent().getDefinition();
+        assertNotNull(startMessageEvent.getExecutionSet());
+        MessageRef messageRef = startMessageEvent.getExecutionSet().getMessageRef();
+        IsInterrupting isInterrupting = startMessageEvent.getExecutionSet().getIsInterrupting();
+        assertEquals("msgref",
+                     messageRef.getValue());
+        assertEquals(true,
+                     isInterrupting.getValue());
+        DataIOSet dataIOSet = startMessageEvent.getDataIOSet();
+        AssignmentsInfo assignmentsInfo = dataIOSet.getAssignmentsinfo();
+        assertEquals("||StartMessageEventOutputVar1:String||[dout]StartMessageEventOutputVar1->var1",
+                     assignmentsInfo.getValue());
     }
 
     @Test
@@ -1740,6 +1778,21 @@ public class BPMNDiagramMarshallerTest {
     }
 
     @Test
+    public void testMarshallStartMessageEvent() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_STARTMESSAGEEVENT);
+        String result = tested.marshall(diagram);
+        assertDiagram(result,
+                      1,
+                      1,
+                      0);
+        assertTrue(result.contains("<bpmn2:startEvent id=\"_34C4BBFC-544F-4E23-B17B-547BB48EEB63\""));
+        assertTrue(result.contains(" name=\"StartMessageEvent\""));
+        assertTrue(result.contains("<bpmn2:message "));
+        assertTrue(result.contains(" name=\"msgref\""));
+        assertTrue(result.contains("<bpmn2:messageEventDefinition"));
+    }
+
+    @Test
     public void testMarshallTimerIntermediateEvent() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_INTERMEDIATE_TIMER_EVENT);
         String result = tested.marshall(diagram);
@@ -2190,18 +2243,6 @@ public class BPMNDiagramMarshallerTest {
 
     private InputStream loadStream(String path) {
         return Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
-    }
-
-    private static int count(final String string,
-                             final String substring) {
-        int count = 0;
-        int idx = 0;
-        while ((idx = string.indexOf(substring,
-                                     idx)) != -1) {
-            idx++;
-            count++;
-        }
-        return count;
     }
 
     private Process getProcess(Definitions definitions) {

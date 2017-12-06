@@ -124,6 +124,10 @@
     opacity: 0;
 }
 
+.eventAll_group_message {
+    opacity: 0;
+}
+
 .eventAll_signalIcon {
 
 }
@@ -153,6 +157,25 @@
 #startSignalEvent .eventAll_signalIcon {
     fill: #4AA241;
     stroke: #4AA241;
+}
+
+#startMessageEvent .eventAll {
+    fill: #E8FAE6;
+    stroke: #4AA241;
+}
+
+#startMessageEvent .eventAll_group_message {
+    opacity: 1;
+}
+
+#startMessageEvent .eventAll_messageIcon {
+    fill: #4AA241;
+    stroke: #4AA241;
+}
+
+#startMessageEvent .eventAll_interm_circle {
+    stroke: #4AA241;
+    opacity: 1;
 }
 
 #startTimerEvent .eventAll {
@@ -248,6 +271,17 @@
 }
 
 #endSignalEvent .eventAll_signalIcon {
+    fill: #A30000;
+    stroke: #A30000;
+}
+
+
+#endMessageEvent .eventAll {
+    fill: #FCE7E7;
+    stroke: #A30000;
+}
+
+#endMessageEvent .eventAll_messageIcon {
     fill: #A30000;
     stroke: #A30000;
 }

@@ -41,6 +41,9 @@ public abstract class BaseStartEvent implements BPMNViewDefinition,
     @Category
     public static final transient String category = Categories.EVENTS;
 
+    @Labels
+    protected final Set<String> labels = new HashSet<String>();
+
     @PropertySet
     @FormField
     @Valid
@@ -59,21 +62,8 @@ public abstract class BaseStartEvent implements BPMNViewDefinition,
     @PropertySet
     private SimulationAttributeSet simulationSet;
 
-    @Labels
-    protected final Set<String> labels = new HashSet<String>() {{
-        add("all");
-        add("Startevents_all");
-        add("Startevents_outgoing_all");
-        add("sequence_start");
-        add("choreography_sequence_start");
-        add("to_task_event");
-        add("from_task_event");
-        add("fromtoall");
-        add("StartEventsMorph");
-        add("cm_nop");
-    }};
-
     public BaseStartEvent() {
+        initLabels();
     }
 
     public BaseStartEvent(final BPMNGeneralSet general,
@@ -81,11 +71,25 @@ public abstract class BaseStartEvent implements BPMNViewDefinition,
                           final FontSet fontSet,
                           final CircleDimensionSet dimensionsSet,
                           final SimulationAttributeSet simulationSet) {
+        this();
         this.general = general;
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
         this.dimensionsSet = dimensionsSet;
         this.simulationSet = simulationSet;
+    }
+
+    protected void initLabels() {
+        labels.add("all");
+        labels.add("Startevents_all");
+        labels.add("Startevents_outgoing_all");
+        labels.add("sequence_start");
+        labels.add("choreography_sequence_start");
+        labels.add("to_task_event");
+        labels.add("from_task_event");
+        labels.add("fromtoall");
+        labels.add("StartEventsMorph");
+        labels.add("cm_nop");
     }
 
     @Override
