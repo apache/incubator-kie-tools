@@ -16,20 +16,18 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.Image;
 import org.drools.workbench.models.testscenarios.shared.ActivateRuleFlowGroup;
 import org.drools.workbench.models.testscenarios.shared.Fixture;
 import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
-import org.uberfire.ext.widgets.common.client.common.ImageButton;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 
 public class ActivateRuleFlowWidget
@@ -75,23 +73,23 @@ public class ActivateRuleFlowWidget
             outer.setWidget( row,
                              0,
                              new SmallLabel( acticateRuleFlowGroup.getName() ) );
-            Image image = CommonAltedImages.INSTANCE.DeleteItemSmall();
-            image.setAltText( TestScenarioConstants.INSTANCE.RemoveThisRuleFlowActivation() );
-            ImageButton del = new ImageButton( image,
-                                               TestScenarioConstants.INSTANCE.RemoveThisRuleFlowActivation(),
-                                               new ClickHandler() {
-                                                   public void onClick( ClickEvent w ) {
-                                                       retList.remove( acticateRuleFlowGroup );
-                                                       sc.getFixtures().remove( acticateRuleFlowGroup );
-                                                       render( retList,
-                                                               outer,
-                                                               sc );
-                                                       parent.renderEditor();
-                                                   }
-                                               } );
+
+            Button deleteButton = new Button();
+            deleteButton.setIcon(IconType.TRASH);
+            deleteButton.setType(ButtonType.DANGER);
+            deleteButton.setTitle(TestScenarioConstants.INSTANCE.RemoveThisRuleFlowActivation());
+            deleteButton.addClickHandler(clickEvent -> {
+                retList.remove(acticateRuleFlowGroup);
+                sc.getFixtures().remove(acticateRuleFlowGroup);
+                render(retList,
+                       outer,
+                       sc);
+                parent.renderEditor();
+            });
+
             outer.setWidget( row,
                              1,
-                             del );
+                             deleteButton );
 
             row++;
         }

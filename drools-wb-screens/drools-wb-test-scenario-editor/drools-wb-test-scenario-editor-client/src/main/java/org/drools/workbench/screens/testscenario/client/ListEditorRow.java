@@ -28,6 +28,9 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.testscenarios.shared.CollectionFieldData;
 import org.drools.workbench.models.testscenarios.shared.FieldData;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 
 public class ListEditorRow extends Composite {
 
@@ -43,7 +46,7 @@ public class ListEditorRow extends Composite {
     FieldDataConstraintEditor fieldDataConstraintEditor;
 
     @UiField
-    Image deleteItem;
+    Button deleteItem;
 
     @UiField
     Image newItemBelow;
@@ -78,6 +81,8 @@ public class ListEditorRow extends Composite {
         } );
 
         initWidget( uiBinder.createAndBindUi( this ) );
+        deleteItem.setIcon(IconType.TRASH);
+        deleteItem.setType(ButtonType.DANGER);
     }
 
     @UiHandler("deleteItem")

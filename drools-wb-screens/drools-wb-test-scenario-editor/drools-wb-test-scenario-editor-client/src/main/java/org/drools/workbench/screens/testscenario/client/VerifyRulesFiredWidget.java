@@ -19,8 +19,6 @@ package org.drools.workbench.screens.testscenario.client;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.Window;
@@ -37,9 +35,11 @@ import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioImages;
+import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.TextBox;
-import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 
@@ -164,21 +164,20 @@ public class VerifyRulesFiredWidget extends Composite {
                             2,
                             h );
 
-            Image del = CommonAltedImages.INSTANCE.DeleteItemSmall();
-            del.setAltText( TestScenarioConstants.INSTANCE.RemoveThisRuleExpectation() );
+            Button del = new Button();
+            del.setIcon(IconType.TRASH);
+            del.setType(ButtonType.DANGER);
             del.setTitle( TestScenarioConstants.INSTANCE.RemoveThisRuleExpectation() );
-            del.addClickHandler( new ClickHandler() {
-                public void onClick( ClickEvent w ) {
-                    if ( Window.confirm( TestScenarioConstants.INSTANCE.AreYouSureYouWantToRemoveThisRuleExpectation() ) ) {
-                        rfl.remove( v );
-                        sc.removeFixture( v );
-                        outer.setWidget( 1,
-                                         0,
-                                         render( rfl,
-                                                 sc ) );
-                    }
+            del.addClickHandler(clickEvent -> {
+                if (Window.confirm(TestScenarioConstants.INSTANCE.AreYouSureYouWantToRemoveThisRuleExpectation())) {
+                    rfl.remove(v);
+                    sc.removeFixture(v);
+                    outer.setWidget(1,
+                                    0,
+                                    render(rfl,
+                                           sc));
                 }
-            } );
+            });
 
             data.setWidget( i,
                             3,

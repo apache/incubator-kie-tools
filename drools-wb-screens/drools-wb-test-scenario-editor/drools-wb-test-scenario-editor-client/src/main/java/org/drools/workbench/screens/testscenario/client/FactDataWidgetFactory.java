@@ -38,10 +38,11 @@ import org.drools.workbench.models.testscenarios.shared.FieldPlaceHolder;
 import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.uberfire.ext.widgets.common.client.common.ClickableLabel;
-import org.uberfire.ext.widgets.common.client.common.ImageButton;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 
 public class FactDataWidgetFactory {
@@ -226,11 +227,12 @@ public class FactDataWidgetFactory {
         return rowIndexByFieldName.amountOrRows();
     }
 
-    class DeleteFactColumnButton extends ImageButton {
+    class DeleteFactColumnButton extends Button {
 
         public DeleteFactColumnButton( final FactData fact ) {
-            super( CommonAltedImages.INSTANCE.DeleteItemSmall(),
-                   TestScenarioConstants.INSTANCE.RemoveTheColumnForScenario( fact.getName() ) );
+            setIcon(IconType.TRASH);
+            setType(ButtonType.DANGER);
+            setTitle(TestScenarioConstants.INSTANCE.RemoveTheColumnForScenario(fact.getName()));
 
             addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent event ) {
@@ -247,12 +249,13 @@ public class FactDataWidgetFactory {
         }
     }
 
-    class DeleteFieldRowButton extends ImageButton {
+    class DeleteFieldRowButton extends Button {
 
         public DeleteFieldRowButton( final Fact fact,
                                      final String fieldName ) {
-            super( CommonAltedImages.INSTANCE.DeleteItemSmall(),
-                   TestScenarioConstants.INSTANCE.RemoveThisRow() );
+            setIcon(IconType.TRASH);
+            setType(ButtonType.DANGER);
+            setTitle(TestScenarioConstants.INSTANCE.RemoveThisRow());
 
             addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent event ) {

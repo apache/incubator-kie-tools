@@ -40,11 +40,13 @@ import org.drools.workbench.models.testscenarios.shared.VerifyField;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioImages;
+import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.soup.project.datamodel.oracle.MethodInfo;
 import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.common.client.common.ClickableLabel;
@@ -209,24 +211,23 @@ public class VerifyFactWidget extends Composite {
                            3,
                            cellEditor);
 
-            Image del = CommonAltedImages.INSTANCE.DeleteItemSmall();
-            del.setAltText(TestScenarioConstants.INSTANCE.RemoveThisFieldExpectation());
-            del.setTitle(TestScenarioConstants.INSTANCE.RemoveThisFieldExpectation());
-            del.addClickHandler(new ClickHandler() {
-                public void onClick(ClickEvent w) {
-                    if (Window.confirm(TestScenarioConstants.INSTANCE.AreYouSureYouWantToRemoveThisFieldExpectation(
-                            fld.getFieldName()))) {
-                        vf.getFieldValues().remove(fld);
-                        FlexTable data = render(vf);
-                        outer.setWidget(1,
-                                        0,
-                                        data);
-                    }
+            Button deleteButton = new Button();
+            deleteButton.setIcon(IconType.TRASH);
+            deleteButton.setType(ButtonType.DANGER);
+            deleteButton.setTitle(TestScenarioConstants.INSTANCE.RemoveThisFieldExpectation());
+            deleteButton.addClickHandler(clickEvent -> {
+                if (Window.confirm(TestScenarioConstants.INSTANCE.AreYouSureYouWantToRemoveThisFieldExpectation(
+                        fld.getFieldName()))) {
+                    vf.getFieldValues().remove(fld);
+                    FlexTable renderedTableAfterDelete = render(vf);
+                    outer.setWidget(1,
+                                    0,
+                                    renderedTableAfterDelete);
                 }
             });
             data.setWidget(i,
                            4,
-                           del);
+                           deleteButton);
 
             if (showResults && fld.getSuccessResult() != null) {
                 if (!fld.getSuccessResult().booleanValue()) {

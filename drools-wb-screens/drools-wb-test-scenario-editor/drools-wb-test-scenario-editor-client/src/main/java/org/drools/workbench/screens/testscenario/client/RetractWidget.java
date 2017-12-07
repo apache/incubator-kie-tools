@@ -26,8 +26,9 @@ import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.RetractFact;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
-import org.uberfire.ext.widgets.common.client.common.ImageButton;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 
 public class RetractWidget extends FlexTable {
@@ -83,11 +84,12 @@ public class RetractWidget extends FlexTable {
         }
     }
 
-    class DeleteButton extends ImageButton {
+    class DeleteButton extends Button {
 
         public DeleteButton( final RetractFact retractFact ) {
-            super( CommonAltedImages.INSTANCE.DeleteItemSmall(),
-                   TestScenarioConstants.INSTANCE.RemoveThisDeleteStatement() );
+            setIcon(IconType.TRASH);
+            setType(ButtonType.DANGER);
+            setTitle(TestScenarioConstants.INSTANCE.RemoveThisDeleteStatement());
 
             addClickHandler( new ClickHandler() {
                 public void onClick( ClickEvent event ) {

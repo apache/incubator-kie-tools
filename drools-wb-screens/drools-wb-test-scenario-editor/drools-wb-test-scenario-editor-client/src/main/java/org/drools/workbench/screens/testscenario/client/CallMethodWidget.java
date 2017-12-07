@@ -37,14 +37,15 @@ import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
+import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.soup.project.datamodel.oracle.DropDownData;
 import org.kie.soup.project.datamodel.oracle.MethodInfo;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.ext.widgets.common.client.common.ImageButton;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 
@@ -260,11 +261,12 @@ public class CallMethodWidget extends Composite {
         }
     }
 
-    class DeleteButton extends ImageButton {
+    class DeleteButton extends Button {
 
         public DeleteButton() {
-            super(CommonAltedImages.INSTANCE.DeleteItemSmall(),
-                  TestScenarioConstants.INSTANCE.RemoveCallMethod());
+            setIcon(IconType.TRASH);
+            setType(ButtonType.DANGER);
+            setTitle(TestScenarioConstants.INSTANCE.RemoveCallMethod());
 
             addClickHandler(new ClickHandler() {
 

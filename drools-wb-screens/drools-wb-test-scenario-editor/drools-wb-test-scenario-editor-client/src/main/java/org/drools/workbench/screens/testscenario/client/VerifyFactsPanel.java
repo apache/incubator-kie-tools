@@ -27,9 +27,10 @@ import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.models.testscenarios.shared.VerifyFact;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
-import org.uberfire.ext.widgets.common.client.common.ImageButton;
 
 public class VerifyFactsPanel extends VerticalPanel {
 
@@ -65,11 +66,12 @@ public class VerifyFactsPanel extends VerticalPanel {
         }
     }
 
-    class DeleteButton extends ImageButton {
+    class DeleteButton extends Button {
 
         public DeleteButton( final VerifyFact verifyFact ) {
-            super( CommonAltedImages.INSTANCE.DeleteItemSmall(),
-                   TestScenarioConstants.INSTANCE.DeleteTheExpectationForThisFact() );
+            setIcon(IconType.TRASH);
+            setType(ButtonType.DANGER);
+            setTitle(TestScenarioConstants.INSTANCE.DeleteTheExpectationForThisFact());
 
             addClickHandler( new ClickHandler() {
 
