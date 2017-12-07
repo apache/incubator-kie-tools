@@ -49,6 +49,7 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -153,8 +154,29 @@ public class AddContextEntryCommandTest {
                      context.getContextEntry().get(0));
         assertEquals(defaultResultContextEntry,
                      context.getContextEntry().get(1));
-        assertEquals(defaultResultContextEntry,
+    }
+
+    @Test
+    public void testGraphCommandExecuteMultipleEntriesPresent() {
+        final ContextEntry firstEntry = new ContextEntry() {{
+            setVariable(new InformationItem() {{
+                setName(new Name("old one"));
+            }});
+        }};
+        context.getContextEntry().add(0, firstEntry);
+
+        final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
+
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     c.execute(gce));
+        assertEquals(3,
+                     context.getContextEntry().size());
+        assertEquals(firstEntry,
+                     context.getContextEntry().get(0));
+        assertEquals(contextEntry,
                      context.getContextEntry().get(1));
+        assertEquals(defaultResultContextEntry,
+                     context.getContextEntry().get(2));
     }
 
     @Test
@@ -170,6 +192,30 @@ public class AddContextEntryCommandTest {
                      context.getContextEntry().size());
         assertEquals(defaultResultContextEntry,
                      context.getContextEntry().get(0));
+    }
+
+    @Test
+    public void testGraphCommandUndoMultipleEntriesPresent() {
+        final ContextEntry firstEntry = new ContextEntry() {{
+            setVariable(new InformationItem() {{
+                setName(new Name("old one"));
+            }});
+        }};
+        context.getContextEntry().add(0, firstEntry);
+
+        final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
+
+        //Add column and then undo
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     c.execute(gce));
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     c.undo(gce));
+        assertEquals(2,
+                     context.getContextEntry().size());
+        assertEquals(firstEntry,
+                     context.getContextEntry().get(0));
+        assertEquals(defaultResultContextEntry,
+                     context.getContextEntry().get(1));
     }
 
     @Test
@@ -213,6 +259,64 @@ public class AddContextEntryCommandTest {
         assertNull(uiModel.getCell(1, 1));
 
         verify(canvasOperation).execute();
+    }
+
+    @Test
+    public void testCanvasCommandExecuteMultipleEntries() {
+        // first row
+        command.newGraphCommand(handler).execute(gce);
+        final Command<AbstractCanvasHandler, CanvasViolation> firstEntryCanvasCommand = command.newCanvasCommand(handler);
+        assertEquals(CanvasCommandResultBuilder.SUCCESS,
+                     firstEntryCanvasCommand.execute(handler));
+
+        // second row
+        final ContextEntry secondRowEntry = new ContextEntry() {{
+            setVariable(new InformationItem() {{
+                setName(new Name("last entry"));
+            }});
+        }};
+        final DMNGridRow uiSecondModelRow = new DMNGridRow();
+        command = new AddContextEntryCommand(context,
+                                             secondRowEntry,
+                                             uiModel,
+                                             uiSecondModelRow,
+                                             uiModelMapper,
+                                             canvasOperation);
+        command.newGraphCommand(handler).execute(gce);
+        final Command<AbstractCanvasHandler, CanvasViolation> secondEntryCanvasCommand = command.newCanvasCommand(handler);
+        assertEquals(CanvasCommandResultBuilder.SUCCESS,
+                     secondEntryCanvasCommand.execute(handler));
+
+        assertEquals(3,
+                     uiModel.getRowCount());
+        assertEquals(uiModelRow,
+                     uiModel.getRows().get(0));
+        assertEquals(uiSecondModelRow,
+                     uiModel.getRows().get(1));
+        assertEquals(uiDefaultResultModelRow,
+                     uiModel.getRows().get(2));
+        assertEquals(3,
+                     uiModel.getColumnCount());
+        assertEquals(uiRowNumberColumn,
+                     uiModel.getColumns().get(0));
+        assertEquals(uiNameColumn,
+                     uiModel.getColumns().get(1));
+        assertEquals(uiExpressionEditorColumn,
+                     uiModel.getColumns().get(2));
+        assertEquals(2,
+                     uiModel.getRows().get(0).getCells().size());
+        assertEquals(1,
+                     uiModel.getCell(0, 0).getValue().getValue());
+        assertEquals("variable",
+                     uiModel.getCell(0, 1).getValue().getValue());
+        assertEquals(2,
+                     uiModel.getCell(1, 0).getValue().getValue());
+        assertEquals("last entry",
+                     uiModel.getCell(1, 1).getValue().getValue());
+        assertNull(uiModel.getCell(2, 0));
+        assertNull(uiModel.getCell(2, 1));
+
+        verify(canvasOperation, times(2)).execute();
     }
 
     @Test
