@@ -50,6 +50,10 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 @FunctionGridSupplementaryEditor
 public class JavaFunctionEditorDefinition implements ExpressionEditorDefinition<Context> {
 
+    static final String VARIABLE_CLASS = "class";
+
+    static final String VARIABLE_METHOD_SIGNATURE = "method signature";
+
     private DMNGridPanel gridPanel;
     private DMNGridLayer gridLayer;
     private SessionManager sessionManager;
@@ -91,14 +95,14 @@ public class JavaFunctionEditorDefinition implements ExpressionEditorDefinition<
         final Context context = new Context();
         final ContextEntry classEntry = new ContextEntry();
         final InformationItem classEntryVariable = new InformationItem();
-        classEntryVariable.setName(new Name("class"));
+        classEntryVariable.setName(new Name(VARIABLE_CLASS));
         classEntry.setVariable(classEntryVariable);
         classEntry.setExpression(new LiteralExpression());
         context.getContextEntry().add(classEntry);
 
         final ContextEntry methodSignatureEntry = new ContextEntry();
         final InformationItem methodSignatureEntryVariable = new InformationItem();
-        methodSignatureEntryVariable.setName(new Name("method signature"));
+        methodSignatureEntryVariable.setName(new Name(VARIABLE_METHOD_SIGNATURE));
         methodSignatureEntry.setVariable(methodSignatureEntryVariable);
         methodSignatureEntry.setExpression(new LiteralExpression());
         context.getContextEntry().add(methodSignatureEntry);

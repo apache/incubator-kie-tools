@@ -50,6 +50,11 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 @FunctionGridSupplementaryEditor
 public class PMMLFunctionEditorDefinition implements ExpressionEditorDefinition<Context> {
 
+    static final String VARIABLE_DOCUMENT = "document";
+
+    static final String VARIABLE_MODEL = "model";
+
+
     private DMNGridPanel gridPanel;
     private DMNGridLayer gridLayer;
     private SessionManager sessionManager;
@@ -91,14 +96,14 @@ public class PMMLFunctionEditorDefinition implements ExpressionEditorDefinition<
         final Context context = new Context();
         final ContextEntry documentEntry = new ContextEntry();
         final InformationItem documentEntryVariable = new InformationItem();
-        documentEntryVariable.setName(new Name("document"));
+        documentEntryVariable.setName(new Name(VARIABLE_DOCUMENT));
         documentEntry.setVariable(documentEntryVariable);
         documentEntry.setExpression(new LiteralExpression());
         context.getContextEntry().add(documentEntry);
 
         final ContextEntry modelEntry = new ContextEntry();
         final InformationItem modelEntryVariable = new InformationItem();
-        modelEntryVariable.setName(new Name("model"));
+        modelEntryVariable.setName(new Name(VARIABLE_MODEL));
         modelEntry.setVariable(modelEntryVariable);
         modelEntry.setExpression(new LiteralExpression());
         context.getContextEntry().add(modelEntry);
