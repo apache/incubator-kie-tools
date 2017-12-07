@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.Role;
@@ -37,6 +38,7 @@ import org.uberfire.ext.security.management.api.AbstractEntityManager;
 import org.uberfire.ext.security.management.api.UserManager;
 import org.uberfire.ext.security.management.api.exception.GroupNotFoundException;
 import org.uberfire.ext.security.management.api.exception.OperationFailedException;
+import org.uberfire.ext.security.management.api.exception.RealmManagementNotAuthorizedException;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
 import org.uberfire.ext.security.management.api.exception.UserNotFoundException;
 import org.uberfire.ext.security.management.impl.SearchRequestImpl;
@@ -51,6 +53,8 @@ import org.uberfire.ext.security.management.keycloak.client.resource.UsersResour
 import org.uberfire.ext.security.management.util.SecurityManagementUtils;
 
 public abstract class BaseKeyCloakManager {
+
+    static final int STATUS_NOT_AUTHORIZED = 403;
 
     protected static final String ATTRIBUTE_USER_ID = "user.id";
     protected static final String ATTRIBUTE_USER_FIRST_NAME = "user.firstName";
@@ -100,7 +104,19 @@ public abstract class BaseKeyCloakManager {
         return factory.get();
     }
 
-    protected RealmResource getRealmResource() {
+    protected void consumeRealm(final Consumer<RealmResource> consumer) {
+        try {
+            consumer.accept(getRealmResource());
+        } catch (ClientResponseFailure e) {
+            if (STATUS_NOT_AUTHORIZED == e.getResponse().getResponseStatus().getStatusCode()) {
+                throw new RealmManagementNotAuthorizedException(getKeyCloakInstance().getRealm());
+            } else {
+                throw new SecurityManagementException(e);
+            }
+        }
+    }
+
+    private RealmResource getRealmResource() {
         return getKeyCloakInstance().realm();
     }
 

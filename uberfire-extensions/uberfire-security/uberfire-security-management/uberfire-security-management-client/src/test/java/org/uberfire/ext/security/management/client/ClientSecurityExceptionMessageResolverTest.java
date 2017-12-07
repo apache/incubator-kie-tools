@@ -26,6 +26,7 @@ import org.uberfire.ext.security.management.api.Capability;
 import org.uberfire.ext.security.management.api.exception.EntityNotFoundException;
 import org.uberfire.ext.security.management.api.exception.GroupNotFoundException;
 import org.uberfire.ext.security.management.api.exception.NoImplementationAvailableException;
+import org.uberfire.ext.security.management.api.exception.RealmManagementNotAuthorizedException;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
 import org.uberfire.ext.security.management.api.exception.UnsupportedServiceCapabilityException;
 import org.uberfire.ext.security.management.api.exception.UserAlreadyExistsException;
@@ -34,7 +35,10 @@ import org.uberfire.ext.security.management.api.exception.UserNotFoundException;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.contains;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ClientSecurityExceptionMessageResolverTest {
@@ -80,6 +84,12 @@ public class ClientSecurityExceptionMessageResolverTest {
                                        c5);
         verify(c5,
                times(1)).accept(contains("aUser"));
+
+        final Consumer<String> c6 = mock(Consumer.class);
+        tested.consumeExceptionMessage(new RealmManagementNotAuthorizedException("aRealm"),
+                                       c6);
+        verify(c6,
+               times(1)).accept(contains("aRealm"));
     }
 
     @Test

@@ -42,7 +42,6 @@ import org.uberfire.ext.security.management.api.exception.SecurityManagementExce
 import org.uberfire.ext.security.management.api.exception.UserNotFoundException;
 import org.uberfire.ext.security.management.impl.SearchResponseImpl;
 import org.uberfire.ext.security.management.impl.UserManagerSettingsImpl;
-import org.uberfire.ext.security.management.keycloak.client.resource.RealmResource;
 import org.uberfire.ext.security.management.keycloak.client.resource.RoleMappingResource;
 import org.uberfire.ext.security.management.keycloak.client.resource.RoleResource;
 import org.uberfire.ext.security.management.keycloak.client.resource.RolesResource;
@@ -54,7 +53,6 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 
 /**
  * <p>UsersManager Service Provider Implementation for KeyCloak.</p>
- *
  * @since 0.8.0
  */
 public class KeyCloakUserManager extends BaseKeyCloakManager implements UserManager,
@@ -82,73 +80,75 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
         }
         final int page = req.getPage() - 1;
         final int pageSize = req.getPageSize();
-        RealmResource realmResource = getRealmResource();
-        UsersResource usersResource = realmResource.users();
-        List<UserRepresentation> userRepresentations = usersResource.search(req.getSearchPattern(),
-                                                                            page * pageSize,
-                                                                            pageSize + 1);
-
-        int numberOfFoundUsers = usersResource.search(req.getSearchPattern(),
-                                                      1,
-                                                      Integer.MAX_VALUE).size();
-
         final List<User> users = new ArrayList<User>();
-        boolean hasNext = false;
-        if (userRepresentations != null && !userRepresentations.isEmpty()) {
-            int x = 0;
-            for (UserRepresentation userRepresentation : userRepresentations) {
-                if (x == req.getPageSize()) {
-                    hasNext = true;
-                } else {
-                    final User user = createUser(userRepresentation);
-                    users.add(user);
-                    x++;
+        final int[] numberOfFoundUsers = new int[]{0};
+        final boolean[] hasNextPage = new boolean[]{false};
+        consumeRealm(realmResource -> {
+            final UsersResource usersResource = realmResource.users();
+            final List<UserRepresentation> userRepresentations = usersResource.search(req.getSearchPattern(),
+                                                                                      page * pageSize,
+                                                                                      pageSize + 1);
+            numberOfFoundUsers[0] = usersResource.search(req.getSearchPattern(),
+                                                         1,
+                                                         Integer.MAX_VALUE).size();
+            if (userRepresentations != null && !userRepresentations.isEmpty()) {
+                int x = 0;
+                for (UserRepresentation userRepresentation : userRepresentations) {
+                    if (x == req.getPageSize()) {
+                        hasNextPage[0] = true;
+                    } else {
+                        final User user = createUser(userRepresentation);
+                        users.add(user);
+                        x++;
+                    }
                 }
             }
-        }
-
+        });
         return new SearchResponseImpl<User>(users,
                                             page + 1,
                                             pageSize,
-                                            numberOfFoundUsers,
-                                            hasNext);
+                                            numberOfFoundUsers[0],
+                                            hasNextPage[0]);
     }
 
     @Override
     public User get(String username) throws SecurityManagementException {
         checkNotNull("username",
                      username);
-        RealmResource realmResource = getRealmResource();
-        UsersResource usersResource = realmResource.users();
-        UserResource userResource = getUserResource(usersResource,
-                                                    username);
-        RoleMappingResource roleMappingResource = userResource.roles();
-        Set<Group> _groups = null;
-        Set<Role> _roles = null;
-        if (roleMappingResource != null) {
-            Set[] gr = getUserGroupsAndRoles(roleMappingResource);
-            if (null != gr) {
-                _groups = gr[0];
-                _roles = gr[1];
+        final User[] user = new User[1];
+        consumeRealm(realmResource -> {
+            final UsersResource usersResource = realmResource.users();
+            final UserResource userResource = getUserResource(usersResource,
+                                                              username);
+            final RoleMappingResource roleMappingResource = userResource.roles();
+            Set<Group> _groups = null;
+            Set<Role> _roles = null;
+            if (roleMappingResource != null) {
+                Set[] gr = getUserGroupsAndRoles(roleMappingResource);
+                if (null != gr) {
+                    _groups = gr[0];
+                    _roles = gr[1];
+                }
             }
-        }
-        User user = createUser(userResource.toRepresentation(),
-                               _groups,
-                               _roles);
-        return user;
+            user[0] = createUser(userResource.toRepresentation(),
+                                 _groups,
+                                 _roles);
+        });
+        return user[0];
     }
 
     @Override
     public User create(User entity) throws SecurityManagementException {
         checkNotNull("entity",
                      entity);
-        RealmResource realmResource = getRealmResource();
-        UsersResource usersResource = realmResource.users();
-        UserRepresentation userRepresentation = new UserRepresentation();
-        fillUserRepresentationAttributes(entity,
-                                         userRepresentation);
-        ClientResponse response = (ClientResponse) usersResource.create(userRepresentation);
-        handleResponse(response);
+        consumeRealm(realmResource -> {
+            final UsersResource usersResource = realmResource.users();
+            final UserRepresentation userRepresentation = new UserRepresentation();
+            fillUserRepresentationAttributes(entity,
+                                             userRepresentation);
+            final ClientResponse response = (ClientResponse) usersResource.create(userRepresentation);
+            handleResponse(response);
+        });
         return entity;
     }
 
@@ -156,17 +156,19 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
     public User update(User entity) throws SecurityManagementException {
         checkNotNull("entity",
                      entity);
-        UsersResource usersResource = getRealmResource().users();
-        UserResource userResource = getUserResource(usersResource,
-                                                    entity.getIdentifier());
-        if (userResource == null) {
-            throw new UserNotFoundException(entity.getIdentifier());
-        }
-        UserRepresentation userRepresentation = new UserRepresentation();
-        fillUserRepresentationAttributes(entity,
-                                         userRepresentation);
-        ClientResponse response = (ClientResponse) userResource.update(userRepresentation);
-        handleResponse(response);
+        consumeRealm(realmResource -> {
+            UsersResource usersResource = realmResource.users();
+            UserResource userResource = getUserResource(usersResource,
+                                                        entity.getIdentifier());
+            if (userResource == null) {
+                throw new UserNotFoundException(entity.getIdentifier());
+            }
+            UserRepresentation userRepresentation = new UserRepresentation();
+            fillUserRepresentationAttributes(entity,
+                                             userRepresentation);
+            ClientResponse response = (ClientResponse) userResource.update(userRepresentation);
+            handleResponse(response);
+        });
         return entity;
     }
 
@@ -174,17 +176,18 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
     public void delete(String... identifiers) throws SecurityManagementException {
         checkNotNull("identifiers",
                      identifiers);
-        RealmResource realmResource = getRealmResource();
-        UsersResource usersResource = realmResource.users();
-        for (String identifier : identifiers) {
-            UserResource userResource = getUserResource(usersResource,
-                                                        identifier);
-            if (userResource == null) {
-                throw new UserNotFoundException(identifier);
+        consumeRealm(realmResource -> {
+            UsersResource usersResource = realmResource.users();
+            for (String identifier : identifiers) {
+                UserResource userResource = getUserResource(usersResource,
+                                                            identifier);
+                if (userResource == null) {
+                    throw new UserNotFoundException(identifier);
+                }
+                ClientResponse response = (ClientResponse) userResource.remove();
+                handleResponse(response);
             }
-            ClientResponse response = (ClientResponse) userResource.remove();
-            handleResponse(response);
-        }
+        });
     }
 
     @Override
@@ -203,8 +206,8 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
                              Collection<String> groups) throws SecurityManagementException {
         checkNotNull("username",
                      username);
-        Set<String> userRoles = SecurityManagementUtils.rolesToString(SecurityManagementUtils.getRoles(userSystemManager,
-                                                                                                       username));
+        final Set<String> userRoles = SecurityManagementUtils.rolesToString(SecurityManagementUtils.getRoles(userSystemManager,
+                                                                                                             username));
         userRoles.addAll(groups);
         assignGroupsOrRoles(username,
                             userRoles);
@@ -215,8 +218,8 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
                             Collection<String> roles) throws SecurityManagementException {
         checkNotNull("username",
                      username);
-        Set<String> userGroups = SecurityManagementUtils.groupsToString(SecurityManagementUtils.getGroups(userSystemManager,
-                                                                                                          username));
+        final Set<String> userGroups = SecurityManagementUtils.groupsToString(SecurityManagementUtils.getGroups(userSystemManager,
+                                                                                                                username));
         userGroups.addAll(roles);
         assignGroupsOrRoles(username,
                             userGroups);
@@ -226,31 +229,29 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
                                      Collection<String> idsToAssign) throws SecurityManagementException {
         checkNotNull("username",
                      username);
-        RealmResource realmResource = getRealmResource();
-        UsersResource usersResource = realmResource.users();
-        UserResource userResource = getUserResource(usersResource,
-                                                    username);
-        if (userResource == null) {
-            throw new UserNotFoundException(username);
-        }
-        RolesResource rolesResource = realmResource.roles();
-        List<RoleRepresentation> roleRepresentations = userResource.roles().realmLevel().listEffective();
-        userResource.roles().realmLevel().remove(roleRepresentations);
-
-        if (idsToAssign != null && !idsToAssign.isEmpty()) {
-
-            // Add the given assignments.
-            List<RoleRepresentation> rolesToAdd = new ArrayList<RoleRepresentation>();
-            for (String name : idsToAssign) {
-                RoleResource roleResource = rolesResource.get(name);
-                if (roleResource != null) {
-                    rolesToAdd.add(getRoleRepresentation(name,
-                                                         roleResource));
-                }
+        consumeRealm(realmResource -> {
+            final UsersResource usersResource = realmResource.users();
+            final UserResource userResource = getUserResource(usersResource,
+                                                              username);
+            if (userResource == null) {
+                throw new UserNotFoundException(username);
             }
-
-            userResource.roles().realmLevel().add(rolesToAdd);
-        }
+            final RolesResource rolesResource = realmResource.roles();
+            final List<RoleRepresentation> roleRepresentations = userResource.roles().realmLevel().listEffective();
+            userResource.roles().realmLevel().remove(roleRepresentations);
+            if (idsToAssign != null && !idsToAssign.isEmpty()) {
+                // Add the given assignments.
+                final List<RoleRepresentation> rolesToAdd = new ArrayList<RoleRepresentation>();
+                for (String name : idsToAssign) {
+                    RoleResource roleResource = rolesResource.get(name);
+                    if (roleResource != null) {
+                        rolesToAdd.add(getRoleRepresentation(name,
+                                                             roleResource));
+                    }
+                }
+                userResource.roles().realmLevel().add(rolesToAdd);
+            }
+        });
     }
 
     @Override
@@ -258,17 +259,18 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
                                String newPassword) throws SecurityManagementException {
         checkNotNull("username",
                      username);
-        RealmResource realmResource = getRealmResource();
-        UsersResource usersResource = realmResource.users();
-        UserResource userResource = getUserResource(usersResource,
-                                                    username);
-        if (userResource == null) {
-            throw new UserNotFoundException(username);
-        }
-        CredentialRepresentation credentialRepresentation = new CredentialRepresentation();
-        credentialRepresentation.setType(CREDENTIAL_TYPE_PASSWORD);
-        credentialRepresentation.setValue(newPassword);
-        String result = userResource.resetPassword(credentialRepresentation);
+        consumeRealm(realmResource -> {
+            final UsersResource usersResource = realmResource.users();
+            final UserResource userResource = getUserResource(usersResource,
+                                                              username);
+            if (userResource == null) {
+                throw new UserNotFoundException(username);
+            }
+            final CredentialRepresentation credentialRepresentation = new CredentialRepresentation();
+            credentialRepresentation.setType(CREDENTIAL_TYPE_PASSWORD);
+            credentialRepresentation.setValue(newPassword);
+            userResource.resetPassword(credentialRepresentation);
+        });
     }
 
     protected CapabilityStatus getCapabilityStatus(final Capability capability) {

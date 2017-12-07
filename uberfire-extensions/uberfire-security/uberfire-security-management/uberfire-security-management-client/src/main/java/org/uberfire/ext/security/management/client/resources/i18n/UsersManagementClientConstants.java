@@ -47,4 +47,6 @@ public interface UsersManagementClientConstants extends ConstantsWithLookup {
     String userNotFound();
 
     String groupNotFound();
+
+    String realmManagementNotAuthorized();
 }

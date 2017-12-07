@@ -17,6 +17,7 @@
 package org.uberfire.ext.security.management.service;
 
 import java.util.Collection;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -85,18 +86,11 @@ public class UserManagerServiceImpl implements UserManagerService {
     @Override
     public SearchResponse<User> search(SearchRequest request) {
         final UserManager serviceImpl = getService();
-
         // Delegate to the current service provider implementation.
-        SearchResponse<User> response = null;
-        try {
-            if (request.getPage() == 0) {
-                throw new IllegalArgumentException("First page must be 1.");
-            }
-            response = serviceImpl.search(request);
-        } catch (RuntimeException e) {
-            throw new SecurityManagementException(e);
+        if (request.getPage() == 0) {
+            throw new IllegalArgumentException("First page must be 1.");
         }
-        return response;
+        return serviceImpl.search(request);
     }
 
     @Override

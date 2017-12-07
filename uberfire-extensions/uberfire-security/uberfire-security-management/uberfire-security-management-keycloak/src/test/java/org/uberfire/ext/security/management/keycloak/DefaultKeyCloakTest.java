@@ -21,7 +21,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.core.Response;
+
 import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.ClientResponseFailure;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.keycloak.representations.idm.RoleRepresentation;
@@ -37,7 +40,8 @@ import org.uberfire.ext.security.management.keycloak.client.resource.UserResourc
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * <p>It provides a default set of users and roles for mocking a keycloak service.</p>
@@ -133,6 +137,15 @@ public abstract class DefaultKeyCloakTest extends BaseKeyCloakTest {
         ClientResponse response = mock(ClientResponse.class);
         when(response.getStatus()).thenReturn(200);
         when(usersResource.create(any(UserRepresentation.class))).thenReturn(response);
+    }
+
+    protected ClientResponseFailure mockForbiddenResponse() {
+        ClientResponseFailure error = mock(ClientResponseFailure.class);
+        ClientResponse response = mock(ClientResponse.class);
+        Response.Status responseStatus = Response.Status.FORBIDDEN;
+        when(error.getResponse()).thenReturn(response);
+        when(response.getResponseStatus()).thenReturn(responseStatus);
+        return error;
     }
 
     private List<UserRepresentation> getUserRepresentations(String pattern,

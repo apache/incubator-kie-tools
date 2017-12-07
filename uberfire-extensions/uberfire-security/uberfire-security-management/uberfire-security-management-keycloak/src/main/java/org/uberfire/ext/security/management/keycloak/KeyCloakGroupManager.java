@@ -19,6 +19,7 @@ package org.uberfire.ext.security.management.keycloak;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +39,6 @@ import org.uberfire.ext.security.management.api.exception.SecurityManagementExce
 import org.uberfire.ext.security.management.api.exception.UnsupportedServiceCapabilityException;
 import org.uberfire.ext.security.management.api.exception.UserNotFoundException;
 import org.uberfire.ext.security.management.impl.GroupManagerSettingsImpl;
-import org.uberfire.ext.security.management.keycloak.client.resource.RealmResource;
 import org.uberfire.ext.security.management.keycloak.client.resource.RoleResource;
 import org.uberfire.ext.security.management.keycloak.client.resource.RolesResource;
 import org.uberfire.ext.security.management.keycloak.client.resource.UserResource;
@@ -52,7 +52,6 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 /**
  * <p>GroupsManager Service Provider Implementation for KeyCloak.</p>
  * <p>Note that roles (in keycloak server) are mapped as groups (in the workbench) for the keycloak users management provider impl.</p>
- *
  * @since 0.8.0
  */
 public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupManager,
@@ -75,18 +74,18 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
         if (request.getPage() <= 0) {
             throw new RuntimeException("First page must be 1.");
         }
-        RealmResource realmResource = getRealmResource();
-        RolesResource rolesResource = realmResource.roles();
-        List<RoleRepresentation> roleRepresentations = rolesResource.list();
-        List<Group> roles = null;
-        if (roleRepresentations != null && !roleRepresentations.isEmpty()) {
-            roles = new ArrayList<Group>();
-            for (RoleRepresentation role : roleRepresentations) {
-                final String name = role.getName();
-                final Group group = createGroup(name);
-                roles.add(group);
+        final List<Group> roles = new LinkedList<>();
+        consumeRealm(realmResource -> {
+            final RolesResource rolesResource = realmResource.roles();
+            final List<RoleRepresentation> roleRepresentations = rolesResource.list();
+            if (roleRepresentations != null && !roleRepresentations.isEmpty()) {
+                for (RoleRepresentation role : roleRepresentations) {
+                    final String name = role.getName();
+                    final Group group = createGroup(name);
+                    roles.add(group);
+                }
             }
-        }
+        });
         return groupsSearchEngine.search(roles,
                                          request);
     }
@@ -95,12 +94,14 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
     public Group get(String identifier) throws SecurityManagementException {
         checkNotNull("identifier",
                      identifier);
-        RealmResource realmResource = getRealmResource();
-        RolesResource rolesResource = realmResource.roles();
-        RoleResource roleResource = rolesResource.get(identifier);
-        if (roleResource != null) {
-            RoleRepresentation roleRepresentation = getRoleRepresentation(identifier,
-                                                                          roleResource);
+        final RoleResource[] roleResource = new RoleResource[1];
+        consumeRealm(realmResource -> {
+            final RolesResource rolesResource = realmResource.roles();
+            roleResource[0] = rolesResource.get(identifier);
+        });
+        if (roleResource[0] != null) {
+            final RoleRepresentation roleRepresentation = getRoleRepresentation(identifier,
+                                                                                roleResource[0]);
             Group g = createGroup(roleRepresentation);
             if (g != null) {
                 return g;
@@ -113,16 +114,17 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
     public Group create(Group entity) throws SecurityManagementException {
         checkNotNull("entity",
                      entity);
-        RealmResource realmResource = getRealmResource();
-        RolesResource rolesResource = realmResource.roles();
-        RoleRepresentation roleRepresentation = new RoleRepresentation();
-        roleRepresentation.setName(entity.getName());
-        roleRepresentation.setDescription(entity.getName());
-        roleRepresentation.setScopeParamRequired(false);
-        roleRepresentation.setId(entity.getName());
-        roleRepresentation.setComposite(false);
-        ClientResponse response = (ClientResponse) rolesResource.create(roleRepresentation);
-        handleResponse(response);
+        consumeRealm(realmResource -> {
+            final RolesResource rolesResource = realmResource.roles();
+            final RoleRepresentation roleRepresentation = new RoleRepresentation();
+            roleRepresentation.setName(entity.getName());
+            roleRepresentation.setDescription(entity.getName());
+            roleRepresentation.setScopeParamRequired(false);
+            roleRepresentation.setId(entity.getName());
+            roleRepresentation.setComposite(false);
+            final ClientResponse response = (ClientResponse) rolesResource.create(roleRepresentation);
+            handleResponse(response);
+        });
         return entity;
     }
 
@@ -137,15 +139,16 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
     public void delete(String... identifiers) throws SecurityManagementException {
         checkNotNull("identifiers",
                      identifiers);
-        RealmResource realmResource = getRealmResource();
-        RolesResource rolesResource = realmResource.roles();
-        for (String identifier : identifiers) {
-            RoleResource roleResource = rolesResource.get(identifier);
-            if (roleResource == null) {
-                throw new GroupNotFoundException(identifier);
+        consumeRealm(realmResource -> {
+            final RolesResource rolesResource = realmResource.roles();
+            for (String identifier : identifiers) {
+                final RoleResource roleResource = rolesResource.get(identifier);
+                if (roleResource == null) {
+                    throw new GroupNotFoundException(identifier);
+                }
+                roleResource.remove();
             }
-            String response = roleResource.remove();
-        }
+        });
     }
 
     @Override
@@ -165,21 +168,22 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
         checkNotNull("name",
                      name);
         if (users != null) {
-            RealmResource realmResource = getRealmResource();
-            UsersResource usersResource = realmResource.users();
-            RolesResource rolesResource = realmResource.roles();
-            RoleResource roleResource = rolesResource.get(name);
-            List<RoleRepresentation> rolesToAdd = new ArrayList<RoleRepresentation>(1);
-            rolesToAdd.add(getRoleRepresentation(name,
-                                                 roleResource));
-            for (String username : users) {
-                UserResource userResource = getUserResource(usersResource,
-                                                            username);
-                if (userResource == null) {
-                    throw new UserNotFoundException(username);
+            consumeRealm(realmResource -> {
+                final UsersResource usersResource = realmResource.users();
+                final RolesResource rolesResource = realmResource.roles();
+                final RoleResource roleResource = rolesResource.get(name);
+                final List<RoleRepresentation> rolesToAdd = new ArrayList<RoleRepresentation>(1);
+                rolesToAdd.add(getRoleRepresentation(name,
+                                                     roleResource));
+                for (String username : users) {
+                    final UserResource userResource = getUserResource(usersResource,
+                                                                      username);
+                    if (userResource == null) {
+                        throw new UserNotFoundException(username);
+                    }
+                    userResource.roles().realmLevel().add(rolesToAdd);
                 }
-                userResource.roles().realmLevel().add(rolesToAdd);
-            }
+            });
         }
     }
 

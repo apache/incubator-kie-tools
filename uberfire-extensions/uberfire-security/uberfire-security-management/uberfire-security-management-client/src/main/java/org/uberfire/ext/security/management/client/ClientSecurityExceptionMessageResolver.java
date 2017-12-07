@@ -21,12 +21,14 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.uberfire.ext.security.management.api.exception.EntityNotFoundException;
 import org.uberfire.ext.security.management.api.exception.GroupNotFoundException;
 import org.uberfire.ext.security.management.api.exception.NoImplementationAvailableException;
+import org.uberfire.ext.security.management.api.exception.RealmManagementNotAuthorizedException;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
 import org.uberfire.ext.security.management.api.exception.UnsupportedServiceCapabilityException;
 import org.uberfire.ext.security.management.api.exception.UserAlreadyExistsException;
@@ -63,6 +65,9 @@ public class ClientSecurityExceptionMessageResolver {
         register(UserAlreadyExistsException.class,
                  e -> getArgMessage(UsersManagementClientConstants.INSTANCE.userAlreadyExists(),
                                     e.getUserId()));
+        register(RealmManagementNotAuthorizedException.class,
+                 e -> getArgMessage(UsersManagementClientConstants.INSTANCE.realmManagementNotAuthorized(),
+                                    e.getRealmResource()));
     }
 
     /**
