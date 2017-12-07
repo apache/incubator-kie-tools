@@ -15,7 +15,7 @@
   -->
 
 <div>
-    <div>
+    <div class="form-horizontal">
         <div data-field="fieldListDescription" class="alert alert-info">
             <span class="pficon pficon-info"></span>
             <b><span data-i18n-key="Select"></span></b>
@@ -40,11 +40,33 @@
             <span data-i18n-key="YouMustEnterAColumnField"></span>
         </div>
 
-        <label class="col-sm-4 form-control-label" data-i18n-key="Field"></label>
+        <div data-field="fieldBindingWarning" class="alert alert-warning">
+            <span class="pficon pficon-warning-triangle-o"></span>
+            <span data-i18n-key="PleaseEnterANameThatIsNotAlreadyUsed"></span>
+        </div>
 
-        <div class="col-sm-8">
-            <select class="form-control" data-field="fieldList" title=""></select>
-            <input type="text" class="form-control" data-field="fieldTextBox"/>
+        <div data-field="predicateBindingInfo" class="alert alert-info">
+            <span class="pficon pficon-info"></span>
+            <span data-i18n-key="PredicateBindingInfo"></span>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-4 form-control-label" data-i18n-key="Field">
+            </label>
+
+            <div class="col-sm-8">
+                <select class="form-control" data-field="fieldList" title=""></select>
+                <input type="text" class="form-control" data-field="fieldTextBox"/>
+            </div>
+        </div>
+
+        <div class="form-group" data-field="bindingContainer">
+            <label class="col-sm-4 form-control-label" data-i18n-key="Binding">
+            </label>
+
+            <div class="col-sm-8">
+                <div data-field="bindingFieldContainer" data-toggle="popover"></div>
+            </div>
         </div>
     </div>
 </div>

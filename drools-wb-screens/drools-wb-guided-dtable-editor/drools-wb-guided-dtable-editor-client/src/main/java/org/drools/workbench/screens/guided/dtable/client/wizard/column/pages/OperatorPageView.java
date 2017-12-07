@@ -20,13 +20,11 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.common.client.dom.Div;
+import elemental2.dom.HTMLDivElement;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-
-import static org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTableColumnViewUtils.addWidgetToContainer;
 
 @Dependent
 @Templated
@@ -36,29 +34,39 @@ public class OperatorPageView implements IsElement,
     private OperatorPage page;
 
     @DataField("warning")
-    private Div warning;
+    private HTMLDivElement warning;
 
     @Inject
     @DataField("operatorWarning")
-    private Div operatorWarning;
+    private HTMLDivElement operatorWarning;
 
     @DataField("info")
-    private Div info;
+    private HTMLDivElement info;
 
     @DataField("operatorsContainer")
-    private Div operatorsContainer;
+    private HTMLDivElement operatorsContainer;
 
-    private TranslationService translationService;
+    @DataField("currentField")
+    private HTMLDivElement currentField;
+
+    @DataField("currentFieldContainer")
+    private HTMLDivElement currentFieldContainer;
+
+    private Elemental2DomUtil elemental2DomUtil;
 
     @Inject
-    public OperatorPageView(final Div warning,
-                            final Div info,
-                            final Div operatorsContainer,
-                            final TranslationService translationService) {
+    public OperatorPageView(final HTMLDivElement warning,
+                            final HTMLDivElement info,
+                            final HTMLDivElement operatorsContainer,
+                            final HTMLDivElement currentField,
+                            final HTMLDivElement currentFieldContainer,
+                            final Elemental2DomUtil elemental2DomUtil) {
         this.warning = warning;
         this.info = info;
         this.operatorsContainer = operatorsContainer;
-        this.translationService = translationService;
+        this.currentField = currentField;
+        this.currentFieldContainer = currentFieldContainer;
+        this.elemental2DomUtil = elemental2DomUtil;
     }
 
     @Override
@@ -68,29 +76,39 @@ public class OperatorPageView implements IsElement,
 
     @Override
     public void showFactFieldWarningWhenItIsNotDefined(final boolean hasOperator) {
-        info.setHidden(true);
-        warning.setHidden(hasOperator);
+        info.hidden = true;
+        warning.hidden = hasOperator;
     }
 
     @Override
     public void showPredicateWarning() {
-        info.setHidden(false);
-        warning.setHidden(true);
+        info.hidden = false;
+        warning.hidden = true;
     }
 
     @Override
     public void setupOperator(final IsWidget dropdown) {
-        addWidgetToContainer(dropdown,
-                             operatorsContainer);
+        elemental2DomUtil.removeAllElementChildren(operatorsContainer);
+        elemental2DomUtil.appendWidgetToElement(operatorsContainer, dropdown.asWidget());
     }
 
     @Override
     public void showOperatorWarning() {
-        operatorWarning.setHidden(false);
+        operatorWarning.hidden = false;
     }
 
     @Override
     public void hideOperatorWarning() {
-        operatorWarning.setHidden(true);
+        operatorWarning.hidden = true;
+    }
+
+    @Override
+    public void setCurrentField(final String currentField) {
+        this.currentField.textContent = currentField;
+    }
+
+    @Override
+    public void currentFieldToggle(final boolean isVisible) {
+        this.currentFieldContainer.hidden = !isVisible;
     }
 }

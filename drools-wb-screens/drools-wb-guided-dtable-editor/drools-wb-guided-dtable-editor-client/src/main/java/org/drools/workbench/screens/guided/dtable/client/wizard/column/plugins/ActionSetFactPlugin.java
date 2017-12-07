@@ -205,8 +205,8 @@ public class ActionSetFactPlugin extends BaseDecisionTableColumnPlugin implement
     }
 
     @Override
-    public Boolean isFieldBindingValid() {
-        return Boolean.TRUE;
+    public boolean isFieldBindingValid() {
+        return true;
     }
 
     @Override
@@ -231,12 +231,12 @@ public class ActionSetFactPlugin extends BaseDecisionTableColumnPlugin implement
     }
 
     @Override
-    public String getPatternPageDescription() {
-        return translate(GuidedDecisionTableErraiConstants.PatternPageView_PatternPageDescriptionActions);
+    public void setEntryPointName(final String entryPointName) {
     }
 
     @Override
-    public void setEntryPointName(final String entryPointName) {
+    public String getPatternPageDescription() {
+        return translate(GuidedDecisionTableErraiConstants.PatternPageView_PatternPageDescriptionActions);
     }
 
     @Override
@@ -412,12 +412,12 @@ public class ActionSetFactPlugin extends BaseDecisionTableColumnPlugin implement
 
     @Override
     public String getBinding() {
-        return patternWrapper().getBoundName();
+        return null;
     }
 
     @Override
     public void setBinding(final String binding) {
-        editingWrapper().setBoundName(binding);
+        // Empty. This plugin is not bindable.
     }
 
     @Override
@@ -455,7 +455,7 @@ public class ActionSetFactPlugin extends BaseDecisionTableColumnPlugin implement
         final List<String> variables = brlRuleModel.getLHSPatternVariables();
         return !variables
                 .stream()
-                .anyMatch(b -> b.equals(getBinding()));
+                .anyMatch(b -> b.equals(patternWrapper().getBoundName()));
     }
 
     private AsyncPackageDataModelOracle oracle() {

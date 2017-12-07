@@ -26,13 +26,21 @@ public interface HasFieldPage {
 
     DTColumnConfig52 editingCol();
 
-    void setFactField(final String selectedValue);
-
     String getFactField();
+
+    void setFactField(final String selectedValue);
 
     int constraintValue();
 
     FieldAccessorsAndMutators getAccessor();
 
     boolean filterEnumFields();
+
+    boolean isFieldBindingValid();
+
+    String getBinding();
+
+    void setBinding(final String binding);
+
+    boolean isBindable();
 }

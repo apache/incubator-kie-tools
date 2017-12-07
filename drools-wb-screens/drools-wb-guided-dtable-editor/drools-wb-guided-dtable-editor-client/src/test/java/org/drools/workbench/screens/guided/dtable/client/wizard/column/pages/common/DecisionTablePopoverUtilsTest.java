@@ -36,6 +36,9 @@ public class DecisionTablePopoverUtilsTest {
     @Mock
     private HTMLElement htmlElement;
 
+    @Mock
+    private elemental2.dom.Element elemental2Element;
+
     private DecisionTablePopoverUtils popoverUtils;
 
     @Before
@@ -79,5 +82,24 @@ public class DecisionTablePopoverUtilsTest {
         popoverUtils.destroyPopovers();
 
         assertTrue(popoverUtils.getPopoverHTMLElementRegistrations().isEmpty());
+    }
+
+    @Test
+    public void checkElemental2ElementRegistration() {
+        popoverUtils.setupPopover(elemental2Element,
+                                  "hello");
+
+        assertTrue(popoverUtils.getPopoverElemental2ElementRegistrations().isEmpty());
+
+        popoverUtils.setupAndRegisterPopover(elemental2Element,
+                                             "hello");
+
+        assertFalse(popoverUtils.getPopoverElemental2ElementRegistrations().isEmpty());
+        assertEquals(1,
+                     popoverUtils.getPopoverElemental2ElementRegistrations().size());
+
+        popoverUtils.destroyPopovers();
+
+        assertTrue(popoverUtils.getPopoverElemental2ElementRegistrations().isEmpty());
     }
 }

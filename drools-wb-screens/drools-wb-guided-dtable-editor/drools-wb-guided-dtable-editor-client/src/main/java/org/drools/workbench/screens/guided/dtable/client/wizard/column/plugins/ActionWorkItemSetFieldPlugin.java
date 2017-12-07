@@ -411,13 +411,13 @@ public class ActionWorkItemSetFieldPlugin extends BaseDecisionTableColumnPlugin 
     }
 
     @Override
-    public String getPatternPageDescription() {
-        return translate(GuidedDecisionTableErraiConstants.PatternPageView_PatternPageDescriptionActions);
+    public void setEntryPointName(final String entryPointName) {
+        // empty
     }
 
     @Override
-    public void setEntryPointName(final String entryPointName) {
-        // empty
+    public String getPatternPageDescription() {
+        return translate(GuidedDecisionTableErraiConstants.PatternPageView_PatternPageDescriptionActions);
     }
 
     @Override
@@ -461,6 +461,26 @@ public class ActionWorkItemSetFieldPlugin extends BaseDecisionTableColumnPlugin 
 
     @Override
     public boolean filterEnumFields() {
+        return false;
+    }
+
+    @Override
+    public boolean isFieldBindingValid() {
+        return true;
+    }
+
+    @Override
+    public String getBinding() {
+        return null;
+    }
+
+    @Override
+    public void setBinding(final String binding) {
+        // Empty. This plugin is not bindable.
+    }
+
+    @Override
+    public boolean isBindable() {
         return false;
     }
 

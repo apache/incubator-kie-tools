@@ -21,7 +21,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.CEPWindow;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
@@ -32,7 +31,6 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.c
 import org.drools.workbench.screens.guided.rule.client.editor.CEPWindowOperatorsDropdown;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.kie.workbench.common.widgets.client.widget.BindingTextBox;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.UberElement;
 
@@ -50,8 +48,6 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
     private boolean defaultValueEnabled = false;
 
     private boolean limitedValueEnabled = false;
-
-    private boolean bindingEnabled = false;
 
     @Inject
     public ValueOptionsPage(final View view,
@@ -73,17 +69,7 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
 
     @Override
     public void isComplete(final Callback<Boolean> callback) {
-        boolean isFieldBindingValid = plugin().isFieldBindingValid();
-        boolean isValueOptionPageComplete = plugin().isValueOptionsPageCompleted();
-        boolean isComplete = isValueOptionPageComplete && isFieldBindingValid;
-
-        if (!isFieldBindingValid) {
-            view.showFieldBindingWarning();
-        } else {
-            view.hideFieldBindingWarning();
-        }
-
-        callback.callback(isComplete);
+        callback.callback(plugin().isValueOptionsPageCompleted());
     }
 
     @Override
@@ -95,19 +81,6 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
         setupCepOperators();
         setupDefaultValue();
         setupLimitedValue();
-        setupBinding();
-        setupPredicateBindingInfoBox();
-    }
-
-    void setupPredicateBindingInfoBox() {
-
-        final boolean isConstraintValuePredicate = constraintValue() == BaseSingleFieldConstraint.TYPE_PREDICATE;
-
-        if (isConstraintValuePredicate) {
-            view.showPredicateBindingInfo();
-        } else {
-            view.hidePredicateBindingInfo();
-        }
     }
 
     void setupValueList() {
@@ -166,14 +139,6 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
         }
     }
 
-    void setupBinding() {
-        if (canSetupBinding()) {
-            view.setupBinding(newBindingTextBox());
-        } else {
-            view.setupBinding(disabledTextBox());
-        }
-    }
-
     private TextBox disabledTextBox() {
         final TextBox textBox = GWT.create(TextBox.class);
         textBox.setEnabled(false);
@@ -196,10 +161,6 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
         return limitedValueEnabled;
     }
 
-    private boolean isBindingEnabled() {
-        return bindingEnabled;
-    }
-
     public void enableValueList() {
         valueListEnabled = true;
     }
@@ -214,10 +175,6 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
 
     public void enableLimitedValue() {
         limitedValueEnabled = true;
-    }
-
-    public void enableBinding() {
-        bindingEnabled = true;
     }
 
     IsWidget newDefaultValueWidget() {
@@ -240,17 +197,6 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
                 cepWindow.setOperator(operator);
             });
         }};
-    }
-
-    private TextBox newBindingTextBox() {
-        final BindingTextBox bindingTextBox = GWT.create(BindingTextBox.class);
-
-        bindingTextBox.setText(plugin().getBinding());
-        bindingTextBox.addKeyUpHandler(event -> {
-            plugin().setBinding(bindingTextBox.getText());
-        });
-
-        return bindingTextBox;
     }
 
     boolean canSetupCepOperators() {
@@ -295,14 +241,6 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
         }
 
         return true;
-    }
-
-    boolean canSetupBinding() {
-        return isBindingEnabled() && isBindable();
-    }
-
-    private boolean isBindable() {
-        return plugin().isBindable();
     }
 
     boolean canSetupValueList() {
@@ -399,18 +337,8 @@ public class ValueOptionsPage<T extends HasValueOptionsPage & DecisionTableColum
 
         void hideLimitedValue();
 
-        void setupBinding(IsWidget widget);
-
         void hideCepOperators();
 
         void setupCepOperators(IsWidget widget);
-
-        void showFieldBindingWarning();
-
-        void hideFieldBindingWarning();
-
-        void showPredicateBindingInfo();
-
-        void hidePredicateBindingInfo();
     }
 }

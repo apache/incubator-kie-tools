@@ -21,7 +21,6 @@ import java.util.HashMap;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwtmockito.GwtMockito;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -40,7 +39,6 @@ import org.junit.runner.RunWith;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.widget.BindingTextBox;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -89,9 +87,6 @@ public class ValueOptionsPageTest {
     private TranslationService translationService;
 
     @Mock
-    private BindingTextBox bindingTextBox;
-
-    @Mock
     private TextBox disabledTextBox;
 
     @InjectMocks
@@ -108,7 +103,6 @@ public class ValueOptionsPageTest {
 
     @Before
     public void setup() {
-        GwtMockito.useProviderForType(BindingTextBox.class, (aClass -> bindingTextBox));
         GwtMockito.useProviderForType(TextBox.class, (aClass -> disabledTextBox));
 
         when(defaultValue.getDataType()).thenReturn(DataType.DataTypes.STRING);
@@ -295,29 +289,6 @@ public class ValueOptionsPageTest {
     }
 
     @Test
-    public void testCanSetupBindingWhenBindingIsNotEnabled() throws Exception {
-        assertFalse(page.canSetupBinding());
-    }
-
-    @Test
-    public void testCanSetupBindingWhenBindingIsEnabledAndIsNotBindable() throws Exception {
-        page.enableBinding();
-
-        when(plugin.isBindable()).thenReturn(false);
-
-        assertFalse(page.canSetupBinding());
-    }
-
-    @Test
-    public void testCanSetupBindingWhenBindingIsEnabledAndIsBindable() throws Exception {
-        page.enableBinding();
-
-        when(plugin.isBindable()).thenReturn(true);
-
-        assertTrue(page.canSetupBinding());
-    }
-
-    @Test
     public void testValueListDisabledWhenEnumsPresent() throws Exception {
         page.enableValueList();
         when(pattern52.getFactType()).thenReturn("factType");
@@ -346,38 +317,6 @@ public class ValueOptionsPageTest {
         verify(page).setupCepOperators();
         verify(page).setupDefaultValue();
         verify(page).setupLimitedValue();
-        verify(page).setupBinding();
-        verify(page).setupPredicateBindingInfoBox();
-    }
-
-    @Test
-    public void testSetupPredicateBindingInfoBoxWhenConstraintValueIsPredicate() {
-
-        doReturn(BaseSingleFieldConstraint.TYPE_PREDICATE).when(page).constraintValue();
-
-        page.setupPredicateBindingInfoBox();
-
-        verify(view).showPredicateBindingInfo();
-    }
-
-    @Test
-    public void testSetupPredicateBindingInfoBoxWhenConstraintValueIsNotPredicate() {
-
-        doReturn(BaseSingleFieldConstraint.TYPE_LITERAL).when(page).constraintValue();
-
-        page.setupPredicateBindingInfoBox();
-
-        verify(view).hidePredicateBindingInfo();
-    }
-
-    @Test
-    public void testSetupPredicateBindingInfoBoxWhenConstraintValueIsFormula() {
-
-        doReturn(BaseSingleFieldConstraint.TYPE_RET_VALUE).when(page).constraintValue();
-
-        page.setupPredicateBindingInfoBox();
-
-        verify(view).hidePredicateBindingInfo();
     }
 
     @Test
@@ -420,66 +359,8 @@ public class ValueOptionsPageTest {
 
     @Test
     public void testIsCompleteWhenValueOptionsPageIsCompleted() throws Exception {
-        when(plugin.isFieldBindingValid()).thenReturn(true);
         when(plugin.isValueOptionsPageCompleted()).thenReturn(true);
 
         page.isComplete(Assert::assertTrue);
-    }
-
-    @Test
-    public void testIsCompleteWhenValueOptionsPageIsCompletedWithValidBinding() throws Exception {
-        when(plugin.isFieldBindingValid()).thenReturn(true);
-        when(plugin.isValueOptionsPageCompleted()).thenReturn(true);
-
-        page.isComplete(Assert::assertTrue);
-
-        verify(view).hideFieldBindingWarning();
-    }
-
-    @Test
-    public void testIsCompleteWhenValueOptionsPageIsCompletedWithInvalidBinding() throws Exception {
-        when(plugin.isFieldBindingValid()).thenReturn(false);
-        when(plugin.isValueOptionsPageCompleted()).thenReturn(true);
-
-        page.isComplete(Assert::assertFalse);
-
-        verify(view).showFieldBindingWarning();
-    }
-
-    @Test
-    public void testSetupBindingIfBindingEnabledAndFieldBindable() throws Exception {
-        page.enableBinding();
-        when(plugin.isBindable()).thenReturn(true);
-
-        page.setupBinding();
-        verify(view).setupBinding(bindingTextBox);
-    }
-
-    @Test
-    public void testSetupBindingIfBindingEnabledAndFieldNotBindable() throws Exception {
-        page.enableBinding();
-        when(plugin.isBindable()).thenReturn(false);
-
-        page.setupBinding();
-        verify(view).setupBinding(disabledTextBox);
-        verify(disabledTextBox).setEnabled(false);
-    }
-
-    @Test
-    public void testSetupBindingIfBindingDisabledAndFieldBindable() throws Exception {
-        when(plugin.isBindable()).thenReturn(true);
-
-        page.setupBinding();
-        verify(view).setupBinding(disabledTextBox);
-        verify(disabledTextBox).setEnabled(false);
-    }
-
-    @Test
-    public void testSetupBindingIfBindingDisabledAndFieldNotBindable() throws Exception {
-        when(plugin.isBindable()).thenReturn(false);
-
-        page.setupBinding();
-        verify(view).setupBinding(disabledTextBox);
-        verify(disabledTextBox).setEnabled(false);
     }
 }

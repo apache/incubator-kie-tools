@@ -24,16 +24,20 @@ import java.util.stream.Stream;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.commons.HasFieldPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.BaseDecisionTableColumnPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.modals.HasList;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.DecisionTableColumnPlugin;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
 import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.widget.BindingTextBox;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.UberElement;
 
@@ -64,13 +68,31 @@ public class FieldPage<T extends HasFieldPage & DecisionTableColumnPlugin> exten
 
     @Override
     public void isComplete(final Callback<Boolean> callback) {
-        boolean isComplete = !nil(plugin().getFactField()) || isConstraintValuePredicate();
-        if (!isComplete) {
+
+        final boolean isFieldBindingValid = plugin().isFieldBindingValid();
+        final boolean isFactFieldValid = !nil(plugin().getFactField()) || isConstraintValuePredicate();
+        final boolean isComplete = isFactFieldValid && isFieldBindingValid;
+
+        fieldBindingWarningToggle(isFieldBindingValid);
+        factFieldWarningToggle(isFactFieldValid);
+
+        callback.callback(isComplete);
+    }
+
+    void fieldBindingWarningToggle(final boolean isFieldBindingValid) {
+        if (!isFieldBindingValid) {
+            view.showFieldBindingWarning();
+        } else {
+            view.hideFieldBindingWarning();
+        }
+    }
+
+    void factFieldWarningToggle(final boolean isFactFieldValid) {
+        if (!isFactFieldValid) {
             view.showSelectFieldWarning();
         } else {
             view.hideSelectFieldWarning();
         }
-        callback.callback(isComplete);
     }
 
     @Override
@@ -78,6 +100,8 @@ public class FieldPage<T extends HasFieldPage & DecisionTableColumnPlugin> exten
         view.init(this);
 
         setupPatternWarningMessages();
+        setupPredicateBindingInfoBox();
+        setupBinding();
         setupField();
     }
 
@@ -127,6 +151,40 @@ public class FieldPage<T extends HasFieldPage & DecisionTableColumnPlugin> exten
         return plugin().getAccessor();
     }
 
+    void setupPredicateBindingInfoBox() {
+
+        final boolean isConstraintValuePredicate = constraintValue() == BaseSingleFieldConstraint.TYPE_PREDICATE;
+
+        if (isConstraintValuePredicate) {
+            view.showPredicateBindingInfo();
+        } else {
+            view.hidePredicateBindingInfo();
+        }
+    }
+
+    void setupBinding() {
+        if (canSetupBinding()) {
+            view.setupBinding(newBindingTextBox());
+        }
+
+        view.bindingToggle(canSetupBinding());
+    }
+
+    TextBox newBindingTextBox() {
+        final BindingTextBox bindingTextBox = GWT.create(BindingTextBox.class);
+
+        bindingTextBox.setText(plugin().getBinding());
+        bindingTextBox.addKeyUpHandler(event -> {
+            plugin().setBinding(bindingTextBox.getText());
+        });
+
+        return bindingTextBox;
+    }
+
+    boolean canSetupBinding() {
+        return plugin().isBindable();
+    }
+
     Callback<ModelField[]> fieldsCallback(Consumer<String> consumer) {
         final AsyncPackageDataModelOracle oracle = presenter.getDataModelOracle();
 
@@ -147,7 +205,11 @@ public class FieldPage<T extends HasFieldPage & DecisionTableColumnPlugin> exten
     }
 
     boolean isConstraintValuePredicate() {
-        return plugin().constraintValue() == BaseSingleFieldConstraint.TYPE_PREDICATE;
+        return constraintValue() == BaseSingleFieldConstraint.TYPE_PREDICATE;
+    }
+
+    private int constraintValue() {
+        return plugin().constraintValue();
     }
 
     boolean filterEnumFields() {
@@ -191,5 +253,17 @@ public class FieldPage<T extends HasFieldPage & DecisionTableColumnPlugin> exten
         void enableListFieldView();
 
         void enablePredicateFieldView();
+
+        void setupBinding(IsWidget widget);
+
+        void showFieldBindingWarning();
+
+        void hideFieldBindingWarning();
+
+        void showPredicateBindingInfo();
+
+        void hidePredicateBindingInfo();
+
+        void bindingToggle(final boolean isVisible);
     }
 }

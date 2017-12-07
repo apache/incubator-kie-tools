@@ -30,60 +30,52 @@ public class DecisionTablePopoverUtils {
 
     private final List<Element> popoverElementRegistrations = new ArrayList<>();
     private final List<HTMLElement> popoverHTMLElementRegistrations = new ArrayList<>();
+    private final List<elemental2.dom.Element> popoverElemental2ElementRegistrations = new ArrayList<>();
 
-    public void setupPopover(final Element e,
+    private static native void doDestroyPopover(final Element e) /*-{
+        $wnd.jQuery(e).popover('destroy');
+    }-*/;
+
+    private static native void doDestroyPopover(final HTMLElement e) /*-{
+        $wnd.jQuery(e).popover('destroy');
+    }-*/;
+
+    private static native void doDestroyPopover(final elemental2.dom.Element e) /*-{
+        $wnd.jQuery(e).popover('destroy');
+    }-*/;
+
+    public void setupPopover(final Element element,
                              final String content) {
-        doSetupPopover(e,
-                       content);
+        doSetupPopover(element, content);
+    }
+
+    public void setupPopover(final HTMLElement htmlElement,
+                             final String content) {
+        doSetupPopover(htmlElement, content);
+    }
+
+    public void setupPopover(final elemental2.dom.Element element,
+                             final String content) {
+        doSetupPopover(element, content);
     }
 
     public void setupAndRegisterPopover(final Element e,
                                         final String content) {
-        setupPopover(e,
-                     content);
+        setupPopover(e, content);
         popoverElementRegistrations.add(e);
-    }
-
-    private native void doSetupPopover(final Element e,
-                                       final String content) /*-{
-        $wnd.jQuery(e).popover({
-            container: 'body',
-            placement: 'bottom',
-            content: content,
-            html: true,
-            trigger: 'hover'
-        }).on("show.bs.popover",
-                function () {
-                    $wnd.jQuery(e).data("bs.popover").tip().css("max-width", "600px");
-                });
-    }-*/;
-
-    public void setupPopover(final HTMLElement e,
-                             final String content) {
-        doSetupPopover(e,
-                       content);
     }
 
     public void setupAndRegisterPopover(final HTMLElement e,
                                         final String content) {
-        setupPopover(e,
-                     content);
+        setupPopover(e, content);
         popoverHTMLElementRegistrations.add(e);
     }
 
-    private native void doSetupPopover(final HTMLElement e,
-                                       final String content) /*-{
-        $wnd.jQuery(e).popover({
-            container: 'body',
-            placement: 'bottom',
-            content: content,
-            html: true,
-            trigger: 'hover'
-        }).on("show.bs.popover",
-                function () {
-                    $wnd.jQuery(e).data("bs.popover").tip().css("max-width", "600px");
-                });
-    }-*/;
+    public void setupAndRegisterPopover(final elemental2.dom.Element element,
+                                        final String content) {
+        setupPopover(element, content);
+        popoverElemental2ElementRegistrations.add(element);
+    }
 
     public void enableOtherwisePopover(final HTMLElement e,
                                        final boolean enabled) {
@@ -93,6 +85,20 @@ public class DecisionTablePopoverUtils {
             doDisablePopover(e);
         }
     }
+
+    private native void doSetupPopover(final Object e,
+                                       final String content) /*-{
+        $wnd.jQuery(e).popover({
+            container: 'body',
+            placement: 'bottom',
+            content: content,
+            html: true,
+            trigger: 'hover'
+        }).on("show.bs.popover",
+                function () {
+                    $wnd.jQuery(e).data("bs.popover").tip().css("max-width", "600px");
+                });
+    }-*/;
 
     private native void doEnablePopover(final HTMLElement e) /*-{
         $wnd.jQuery(e).popover('enable');
@@ -105,17 +111,11 @@ public class DecisionTablePopoverUtils {
     public void destroyPopovers() {
         popoverElementRegistrations.forEach(DecisionTablePopoverUtils::doDestroyPopover);
         popoverHTMLElementRegistrations.forEach(DecisionTablePopoverUtils::doDestroyPopover);
+        popoverElemental2ElementRegistrations.forEach(DecisionTablePopoverUtils::doDestroyPopover);
         popoverElementRegistrations.clear();
         popoverHTMLElementRegistrations.clear();
+        popoverElemental2ElementRegistrations.clear();
     }
-
-    private static native void doDestroyPopover(final Element e) /*-{
-        $wnd.jQuery(e).popover('destroy');
-    }-*/;
-
-    private static native void doDestroyPopover(final HTMLElement e) /*-{
-        $wnd.jQuery(e).popover('destroy');
-    }-*/;
 
     List<Element> getPopoverElementRegistrations() {
         return Collections.unmodifiableList(popoverElementRegistrations);
@@ -123,5 +123,9 @@ public class DecisionTablePopoverUtils {
 
     List<HTMLElement> getPopoverHTMLElementRegistrations() {
         return Collections.unmodifiableList(popoverHTMLElementRegistrations);
+    }
+
+    List<elemental2.dom.Element> getPopoverElemental2ElementRegistrations() {
+        return Collections.unmodifiableList(popoverElemental2ElementRegistrations);
     }
 }

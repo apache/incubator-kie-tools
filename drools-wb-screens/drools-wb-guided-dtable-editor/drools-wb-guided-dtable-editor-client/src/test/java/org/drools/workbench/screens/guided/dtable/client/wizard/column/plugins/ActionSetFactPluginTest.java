@@ -500,29 +500,6 @@ public class ActionSetFactPluginTest {
     }
 
     @Test
-    public void testGetBinding() {
-        final PatternWrapper patternWrapper = mock(PatternWrapper.class);
-
-        doReturn(patternWrapper).when(plugin).patternWrapper();
-
-        plugin.getBinding();
-
-        verify(patternWrapper).getBoundName();
-    }
-
-    @Test
-    public void testSetBinding() {
-        final ActionWrapper actionWrapper = mock(ActionWrapper.class);
-        final String binding = "binding";
-
-        doReturn(actionWrapper).when(plugin).editingWrapper();
-
-        plugin.setBinding(binding);
-
-        verify(actionWrapper).setBoundName(binding);
-    }
-
-    @Test
     public void testTableFormat() {
         final GuidedDecisionTable52.TableFormat expectedTableFormat = GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY;
         final GuidedDecisionTable52 model = mock(GuidedDecisionTable52.class);
@@ -815,6 +792,11 @@ public class ActionSetFactPluginTest {
     @Test
     public void testIsFieldBindingValid() {
         assertTrue(plugin.isFieldBindingValid());
+    }
+
+    @Test
+    public void testIsBindable() {
+        assertFalse(plugin.isBindable());
     }
 
     private void mockPatterns() {

@@ -32,6 +32,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDeci
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.ConditionColumnPlugin;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.PatternWrapper;
 import org.drools.workbench.services.verifier.api.client.index.DataType;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -57,6 +58,7 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -320,29 +322,54 @@ public class FieldPageTest {
 
     @Test
     public void testIsCompleteWhenFactFieldIsNull() throws Exception {
+
+        when(plugin.isFieldBindingValid()).thenReturn(true);
         when(plugin.constraintValue()).thenReturn(BaseSingleFieldConstraint.TYPE_LITERAL);
         when(plugin.getFactField()).thenReturn(null);
 
         page.isComplete(Assert::assertFalse);
-        verify(view).showSelectFieldWarning();
+
+        verify(page).fieldBindingWarningToggle(true);
+        verify(page).factFieldWarningToggle(false);
+    }
+
+    @Test
+    public void testIsCompleteWhenBindingIsNotValid() throws Exception {
+
+        when(plugin.isFieldBindingValid()).thenReturn(false);
+        when(plugin.constraintValue()).thenReturn(BaseSingleFieldConstraint.TYPE_LITERAL);
+        when(plugin.getFactField()).thenReturn("factField");
+
+        page.isComplete(Assert::assertFalse);
+
+        verify(page).fieldBindingWarningToggle(false);
+        verify(page).factFieldWarningToggle(true);
     }
 
     @Test
     public void testIsCompleteWhenFactFieldIsNotNull() throws Exception {
+
+        when(plugin.isFieldBindingValid()).thenReturn(true);
         when(plugin.constraintValue()).thenReturn(BaseSingleFieldConstraint.TYPE_LITERAL);
         when(plugin.getFactField()).thenReturn("factField");
 
         page.isComplete(Assert::assertTrue);
-        verify(view).hideSelectFieldWarning();
+
+        verify(page).fieldBindingWarningToggle(true);
+        verify(page).factFieldWarningToggle(true);
     }
 
     @Test
     public void testIsCompleteWhenConstraintValueIsPredicate() throws Exception {
+
+        when(plugin.isFieldBindingValid()).thenReturn(true);
         when(plugin.constraintValue()).thenReturn(BaseSingleFieldConstraint.TYPE_PREDICATE);
         when(plugin.getFactField()).thenReturn(null);
 
         page.isComplete(Assert::assertTrue);
-        verify(view).hideSelectFieldWarning();
+
+        verify(page).fieldBindingWarningToggle(true);
+        verify(page).factFieldWarningToggle(true);
     }
 
     @Test
@@ -372,6 +399,10 @@ public class FieldPageTest {
         page.prepareView();
 
         verify(view).init(page);
+        verify(page).setupPatternWarningMessages();
+        verify(page).setupPredicateBindingInfoBox();
+        verify(page).setupBinding();
+        verify(page).setupField();
     }
 
     @Test
@@ -454,5 +485,112 @@ public class FieldPageTest {
         page.setupPatternWarningMessages();
 
         verify(view).patternWarningToggle(true);
+    }
+
+    @Test
+    public void testFactFieldWarningToggleWhenFactFieldIsValid() {
+
+        final boolean isFactFieldValid = true;
+
+        page.factFieldWarningToggle(isFactFieldValid);
+
+        verify(view, never()).showSelectFieldWarning();
+        verify(view).hideSelectFieldWarning();
+    }
+
+    @Test
+    public void testFactFieldWarningToggleWhenFactFieldIsNotValid() {
+
+        final boolean isFactFieldValid = false;
+
+        page.factFieldWarningToggle(isFactFieldValid);
+
+        verify(view).showSelectFieldWarning();
+        verify(view, never()).hideSelectFieldWarning();
+    }
+
+    @Test
+    public void testFieldBindingWarningToggleWhenFieldBindingIsValid() {
+
+        final boolean isFieldBindingValid = true;
+
+        page.fieldBindingWarningToggle(isFieldBindingValid);
+
+        verify(view, never()).showFieldBindingWarning();
+        verify(view).hideFieldBindingWarning();
+    }
+
+    @Test
+    public void testFieldBindingWarningToggleWhenFieldBindingIsNotValid() {
+
+        final boolean isFieldBindingValid = false;
+
+        page.fieldBindingWarningToggle(isFieldBindingValid);
+
+        verify(view).showFieldBindingWarning();
+        verify(view, never()).hideFieldBindingWarning();
+    }
+
+    @Test
+    public void testSetupPredicateBindingInfoBoxWhenConstraintValueIsPredicate() {
+
+        doReturn(BaseSingleFieldConstraint.TYPE_PREDICATE).when(plugin).constraintValue();
+
+        page.setupPredicateBindingInfoBox();
+
+        verify(view).showPredicateBindingInfo();
+        verify(view, never()).hidePredicateBindingInfo();
+    }
+
+    @Test
+    public void testSetupPredicateBindingInfoBoxWhenConstraintValueIsNotPredicate() {
+
+        doReturn(BaseSingleFieldConstraint.TYPE_LITERAL).when(plugin).constraintValue();
+
+        page.setupPredicateBindingInfoBox();
+
+        verify(view).hidePredicateBindingInfo();
+        verify(view, never()).showPredicateBindingInfo();
+    }
+
+    @Test
+    public void testSetupPredicateBindingInfoBoxWhenConstraintValueIsFormula() {
+
+        doReturn(BaseSingleFieldConstraint.TYPE_RET_VALUE).when(plugin).constraintValue();
+
+        page.setupPredicateBindingInfoBox();
+
+        verify(view).hidePredicateBindingInfo();
+        verify(view, never()).showPredicateBindingInfo();
+    }
+
+    @Test
+    public void testSetupBindingWhenItIsBindable() {
+
+        final TextBox textBox = mock(TextBox.class);
+        final boolean isBindable = true;
+
+        doReturn(isBindable).when(plugin).isBindable();
+        doReturn(textBox).when(page).newBindingTextBox();
+
+        page.setupBinding();
+
+        verify(view).setupBinding(textBox);
+        verify(view).bindingToggle(isBindable);
+    }
+
+    @Test
+    public void testSetupBindingWhenItIsNotBindable() {
+
+        final TextBox textBox = mock(TextBox.class);
+        final boolean isBindable = false;
+
+        doReturn(isBindable).when(plugin).isBindable();
+        doReturn(textBox).when(page).newBindingTextBox();
+
+        page.setupBinding();
+
+        verify(view, never()).setupBinding(textBox);
+        verify(view).bindingToggle(isBindable);
     }
 }

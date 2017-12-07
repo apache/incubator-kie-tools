@@ -44,8 +44,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 @WithClassesToStub(RootPanel.class)
@@ -64,17 +64,13 @@ public class FieldBindingIntegrationTest {
     private CalculationTypePage calculationTypePage;
 
     @Mock
-    private FieldPage<ConditionColumnPlugin> fieldPage;
+    private FieldPage.View fieldPageView;
 
     @Mock
     private OperatorPage operatorPage;
 
     @Mock
-    private ValueOptionsPageView valueOptionsPageView;
-
-    @Spy
-    @InjectMocks
-    private ValueOptionsPage<ConditionColumnPlugin> valueOptionsPage = new ValueOptionsPage<>(valueOptionsPageView, translationService);
+    private ValueOptionsPage<ConditionColumnPlugin> valueOptionsPage;
 
     @Mock
     private AdditionalInfoPage<ConditionColumnPlugin> additionalInfoPage;
@@ -82,18 +78,22 @@ public class FieldBindingIntegrationTest {
     @Mock
     private SummaryPage summaryPage;
 
-    private Event<WizardPageStatusChangeEvent> changeEvent = new EventSourceMock<>();
-
     @Mock
     private ValueOptionsPageView view;
 
     @Mock
     private WizardView wizardView;
 
-    private NewGuidedDecisionTableColumnWizard wizard;
-
     @Mock
     private GuidedDecisionTablePresenter presenter;
+
+    @Spy
+    @InjectMocks
+    private FieldPage<ConditionColumnPlugin> fieldPage = new FieldPage<>(fieldPageView, translationService);
+
+    private Event<WizardPageStatusChangeEvent> changeEvent = new EventSourceMock<>();
+
+    private NewGuidedDecisionTableColumnWizard wizard;
 
     private GuidedDecisionTable52 model;
 
@@ -101,41 +101,65 @@ public class FieldBindingIntegrationTest {
 
     @Before
     public void setup() {
-        wizard = new NewGuidedDecisionTableColumnWizard(wizardView, summaryPage,
-                                                        translationService, new DecisionTablePopoverUtils());
+
+        wizard = makeNewGuidedDecisionTableColumnWizard();
+        plugin = spy(makeConditionColumnPlugin());
+        model = new GuidedDecisionTable52();
+
+        doReturn(model).when(presenter).getModel();
+        doReturn(oracle).when(presenter).getDataModelOracle();
+        doNothing().when(plugin).fireChangeEvent(any(WizardPage.class));
+
+        wizard.start(plugin);
+    }
+
+    private ConditionColumnPlugin makeConditionColumnPlugin() {
+        return new ConditionColumnPlugin(patternPage,
+                                         calculationTypePage,
+                                         fieldPage,
+                                         operatorPage,
+                                         valueOptionsPage,
+                                         additionalInfoPage,
+                                         changeEvent,
+                                         translationService);
+    }
+
+    private NewGuidedDecisionTableColumnWizard makeNewGuidedDecisionTableColumnWizard() {
+
+        final DecisionTablePopoverUtils popoverUtils = new DecisionTablePopoverUtils();
+        final NewGuidedDecisionTableColumnWizard wizard = new NewGuidedDecisionTableColumnWizard(wizardView,
+                                                                                                 summaryPage,
+                                                                                                 translationService,
+                                                                                                 popoverUtils);
         wizard.init(presenter);
 
-        model = new GuidedDecisionTable52();
-        when(presenter.getModel()).thenReturn(model);
-        when(presenter.getDataModelOracle()).thenReturn(oracle);
-
-        plugin = spy(new ConditionColumnPlugin(patternPage, calculationTypePage, fieldPage, operatorPage,
-                                               valueOptionsPage, additionalInfoPage, changeEvent, translationService));
-        doNothing().when(plugin).fireChangeEvent(any(WizardPage.class));
-        wizard.start(plugin);
+        return wizard;
     }
 
     @Test
     public void testFieldBindingLiteralCalculationType() throws Exception {
         plugin.setConstraintValue(BaseSingleFieldConstraint.TYPE_LITERAL);
 
-        valueOptionsPage.prepareView();
-        assertTrue(valueOptionsPage.canSetupBinding());
+        fieldPage.prepareView();
+
+        assertTrue(fieldPage.canSetupBinding());
     }
 
     @Test
     public void testFieldBindingFormulaCalculationType() throws Exception {
         plugin.setConstraintValue(BaseSingleFieldConstraint.TYPE_RET_VALUE);
 
-        valueOptionsPage.prepareView();
-        assertTrue(valueOptionsPage.canSetupBinding());
+        fieldPage.prepareView();
+
+        assertTrue(fieldPage.canSetupBinding());
     }
 
     @Test
     public void testFieldBindingPredicateCalculationType() throws Exception {
         plugin.setConstraintValue(BaseSingleFieldConstraint.TYPE_PREDICATE);
 
-        valueOptionsPage.prepareView();
-        assertFalse(valueOptionsPage.canSetupBinding());
+        fieldPage.prepareView();
+
+        assertFalse(fieldPage.canSetupBinding());
     }
 }

@@ -16,15 +16,19 @@
 
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.pages;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
+import elemental2.dom.HTMLDivElement;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
-import org.jboss.errai.common.client.dom.Div;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTablePopoverUtils;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -38,42 +42,78 @@ import static org.drools.workbench.screens.guided.dtable.client.wizard.column.pa
 public class FieldPageView implements IsElement,
                                       FieldPage.View {
 
-    private FieldPage<?> page;
-
     @DataField("fieldList")
-    private ListBox fieldList;
+    private final ListBox fieldList;
 
     @DataField("fieldTextBox")
-    private TextBox fieldTextBox;
+    private final TextBox fieldTextBox;
 
     @DataField("fieldListDescription")
-    private Div fieldListDescription;
+    private final HTMLDivElement fieldListDescription;
 
     @DataField("predicateFieldDescription")
-    private Div predicateFieldDescription;
+    private final HTMLDivElement predicateFieldDescription;
 
     @DataField("patternWarning")
-    private Div patternWarning;
+    private final HTMLDivElement patternWarning;
 
-    @Inject
     @DataField("fieldWarning")
-    private Div fieldWarning;
+    private final HTMLDivElement fieldWarning;
 
-    private TranslationService translationService;
+    @DataField("bindingContainer")
+    private final HTMLDivElement bindingContainer;
+
+    @DataField("bindingFieldContainer")
+    private final HTMLDivElement bindingFieldContainer;
+
+    @DataField("fieldBindingWarning")
+    private final HTMLDivElement fieldBindingWarning;
+
+    @DataField("predicateBindingInfo")
+    private final HTMLDivElement predicateBindingInfo;
+
+    private final DecisionTablePopoverUtils popoverUtils;
+
+    private final Elemental2DomUtil elemental2DomUtil;
+
+    private final TranslationService translationService;
+
+    private FieldPage<?> page;
 
     @Inject
     public FieldPageView(final ListBox fieldList,
                          final TextBox fieldTextBox,
-                         final Div patternWarning,
+                         final HTMLDivElement fieldWarning,
+                         final HTMLDivElement patternWarning,
+                         final HTMLDivElement fieldListDescription,
+                         final HTMLDivElement predicateFieldDescription,
+                         final HTMLDivElement bindingContainer,
+                         final HTMLDivElement bindingFieldContainer,
+                         final HTMLDivElement fieldBindingWarning,
+                         final HTMLDivElement predicateBindingInfo,
                          final TranslationService translationService,
-                         final Div fieldListDescription,
-                         final Div predicateFieldDescription) {
+                         final Elemental2DomUtil elemental2DomUtil,
+                         final DecisionTablePopoverUtils popoverUtils) {
         this.fieldList = fieldList;
         this.fieldTextBox = fieldTextBox;
         this.patternWarning = patternWarning;
-        this.translationService = translationService;
+        this.fieldWarning = fieldWarning;
         this.fieldListDescription = fieldListDescription;
         this.predicateFieldDescription = predicateFieldDescription;
+        this.bindingContainer = bindingContainer;
+        this.bindingFieldContainer = bindingFieldContainer;
+        this.fieldBindingWarning = fieldBindingWarning;
+        this.predicateBindingInfo = predicateBindingInfo;
+        this.translationService = translationService;
+        this.elemental2DomUtil = elemental2DomUtil;
+        this.popoverUtils = popoverUtils;
+    }
+
+    @PostConstruct
+    public void initPopovers() {
+        final String bindingDescription = translate(GuidedDecisionTableErraiConstants.FieldPage_BindingDescription);
+
+        popoverUtils.setupAndRegisterPopover(bindingFieldContainer, bindingDescription);
     }
 
     @Override
@@ -93,7 +133,8 @@ public class FieldPageView implements IsElement,
 
     @Override
     public void patternWarningToggle(final boolean isVisible) {
-        patternWarning.setHidden(!isVisible);
+        patternWarning.hidden = !isVisible;
+
         fieldTextBox.setEnabled(!isVisible);
         fieldList.setEnabled(!isVisible);
     }
@@ -134,12 +175,12 @@ public class FieldPageView implements IsElement,
 
     @Override
     public void showSelectFieldWarning() {
-        fieldWarning.setHidden(false);
+        fieldWarning.hidden = false;
     }
 
     @Override
     public void hideSelectFieldWarning() {
-        fieldWarning.setHidden(true);
+        fieldWarning.hidden = true;
     }
 
     @Override
@@ -152,12 +193,43 @@ public class FieldPageView implements IsElement,
         toggleViewElements(true);
     }
 
+    @Override
+    public void setupBinding(final IsWidget widget) {
+        elemental2DomUtil.removeAllElementChildren(bindingFieldContainer);
+        elemental2DomUtil.appendWidgetToElement(bindingFieldContainer, widget.asWidget());
+    }
+
+    @Override
+    public void showFieldBindingWarning() {
+        fieldBindingWarning.hidden = false;
+    }
+
+    @Override
+    public void hideFieldBindingWarning() {
+        fieldBindingWarning.hidden = true;
+    }
+
+    @Override
+    public void showPredicateBindingInfo() {
+        predicateBindingInfo.hidden = false;
+    }
+
+    @Override
+    public void hidePredicateBindingInfo() {
+        predicateBindingInfo.hidden = true;
+    }
+
+    @Override
+    public void bindingToggle(final boolean isVisible) {
+        bindingContainer.hidden = !isVisible;
+    }
+
     private void toggleViewElements(final boolean showPredicateElements) {
 
         fieldTextBox.setVisible(showPredicateElements);
-        predicateFieldDescription.setHidden(!showPredicateElements);
+        predicateFieldDescription.hidden = !showPredicateElements;
 
         fieldList.setVisible(!showPredicateElements);
-        fieldListDescription.setHidden(showPredicateElements);
+        fieldListDescription.hidden = showPredicateElements;
     }
 }

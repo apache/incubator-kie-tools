@@ -270,13 +270,13 @@ public class ConditionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
     }
 
     @Override
-    public String getPatternPageDescription() {
-        return translate(GuidedDecisionTableErraiConstants.PatternPageView_PatternPageDescriptionConditions);
+    public void setEntryPointName(final String entryPointName) {
+        patternWrapper().setEntryPointName(entryPointName);
     }
 
     @Override
-    public void setEntryPointName(final String entryPointName) {
-        patternWrapper().setEntryPointName(entryPointName);
+    public String getPatternPageDescription() {
+        return translate(GuidedDecisionTableErraiConstants.PatternPageView_PatternPageDescriptionConditions);
     }
 
     @Override
@@ -505,19 +505,19 @@ public class ConditionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
     }
 
     @Override
-    public Boolean isFieldBindingValid() {
+    public boolean isFieldBindingValid() {
         if (!isBindable()) {
-            return Boolean.TRUE;
+            return true;
         }
 
         final String binding = getBinding();
         if ((binding == null || binding.isEmpty())) {
-            return Boolean.TRUE;
+            return true;
         }
 
         if (!isNewColumn()) {
             if (binding.equals(originalCondition().getBinding())) {
-                return Boolean.TRUE;
+                return true;
             }
         }
 
@@ -625,6 +625,7 @@ public class ConditionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
 
     void resetFieldAndOperator() {
         editingCol.setFactField("");
+        editingCol.setBinding("");
         editingCol.setFieldType("");
         editingCol.setOperator(operatorPlaceholder());
     }

@@ -144,7 +144,7 @@ public class GuidedDecisionTableErraiConstants {
     public static final String ValueOptionsPage_DefaultValueDescription = "ValueOptionsPage.DefaultValueDescription";
 
     @TranslationKey(defaultValue = "")
-    public static final String ValueOptionsPage_BindingDescription = "ValueOptionsPage.BindingDescription";
+    public static final String FieldPage_BindingDescription = "FieldPage.BindingDescription";
 
     @TranslationKey(defaultValue = "")
     public static final String WorkItemPage_WorkItem = "WorkItemPage.WorkItem";

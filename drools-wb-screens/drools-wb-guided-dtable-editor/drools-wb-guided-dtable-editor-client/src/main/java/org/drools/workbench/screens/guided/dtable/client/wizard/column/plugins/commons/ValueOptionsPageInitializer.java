@@ -54,8 +54,6 @@ public class ValueOptionsPageInitializer {
                 break;
         }
 
-        page.enableBinding();
-
         return page;
     }
 }

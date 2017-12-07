@@ -930,6 +930,17 @@ public class ConditionColumnPluginTest {
         assertEquals(expectedVariables, actualVariables);
     }
 
+    @Test
+    public void testResetFieldAndOperator() {
+
+        plugin.resetFieldAndOperator();
+
+        verify(editingCol).setFactField("");
+        verify(editingCol).setBinding("");
+        verify(editingCol).setFieldType("");
+        verify(editingCol).setOperator("pleaseChoose");
+    }
+
     private Pattern52 mockFactPattern(final String binding) {
         final Pattern52 p = new Pattern52();
         p.setBoundName(binding);

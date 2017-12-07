@@ -17,9 +17,11 @@
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.pages;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -76,13 +78,29 @@ public class OperatorPage extends BaseDecisionTableColumnPage<ConditionColumnPlu
 
         setupWarningMessages();
         setupOperator();
+        setupCurrentField();
     }
 
-    private void setupOperator() {
+    void setupCurrentField() {
+        view.setCurrentField(currentField());
+        view.currentFieldToggle(hasFactField());
+    }
+
+    String currentField() {
+
+        final List<String> parts = Arrays.asList(plugin().getBinding(), plugin().getFactField());
+
+        return parts
+                .stream()
+                .filter(part -> !nil(part))
+                .collect(Collectors.joining(" : "));
+    }
+
+    void setupOperator() {
         operatorDropdown(dropdown -> view.setupOperator(dropdown));
     }
 
-    private void setupWarningMessages() {
+    void setupWarningMessages() {
         if (isConstraintValuePredicate()) {
             view.showPredicateWarning();
         } else {
@@ -223,5 +241,9 @@ public class OperatorPage extends BaseDecisionTableColumnPage<ConditionColumnPlu
         void showOperatorWarning();
 
         void hideOperatorWarning();
+
+        void setCurrentField(String currentField);
+
+        void currentFieldToggle(final boolean isVisible);
     }
 }

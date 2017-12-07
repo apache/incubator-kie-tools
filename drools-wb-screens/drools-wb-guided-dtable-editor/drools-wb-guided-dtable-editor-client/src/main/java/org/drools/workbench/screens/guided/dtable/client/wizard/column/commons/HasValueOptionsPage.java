@@ -25,8 +25,6 @@ public interface HasValueOptionsPage {
 
     Boolean isValueOptionsPageCompleted();
 
-    Boolean isFieldBindingValid();
-
     int constraintValue();
 
     String getFactType();
@@ -51,11 +49,5 @@ public interface HasValueOptionsPage {
 
     IsWidget limitedValueWidget();
 
-    String getBinding();
-
-    void setBinding(final String binding);
-
     boolean doesOperatorNeedValue();
-
-    boolean isBindable();
 }

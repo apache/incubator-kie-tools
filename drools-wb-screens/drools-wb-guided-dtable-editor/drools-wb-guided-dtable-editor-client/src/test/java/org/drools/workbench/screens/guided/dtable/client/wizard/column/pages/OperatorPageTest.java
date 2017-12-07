@@ -355,6 +355,73 @@ public class OperatorPageTest {
         page.prepareView();
 
         verify(view).init(page);
+        verify(page).setupWarningMessages();
+        verify(page).setupOperator();
+        verify(page).setupCurrentField();
+    }
+
+    @Test
+    public void testSetupCurrentFieldWhenFactFieldIsNotNull() throws Exception {
+
+        final String factField = "factField";
+
+        doReturn(factField).when(plugin).getFactField();
+
+        page.setupCurrentField();
+
+        verify(view).setCurrentField(factField);
+        verify(view).currentFieldToggle(true);
+    }
+
+    @Test
+    public void testSetupCurrentFieldWhenFactFieldIsNull() throws Exception {
+
+        final String factField = null;
+
+        doReturn(factField).when(plugin).getFactField();
+
+        page.setupCurrentField();
+
+        verify(view).setCurrentField("");
+        verify(view).currentFieldToggle(false);
+    }
+
+    @Test
+    public void testCurrentFieldWhenFactFieldIsNull() throws Exception {
+
+        final String factField = null;
+
+        doReturn(factField).when(plugin).getFactField();
+
+        final String currentField = page.currentField();
+
+        assertEquals("", currentField);
+    }
+
+    @Test
+    public void testCurrentFieldWhenFactFieldIsNotNull() throws Exception {
+
+        final String factField = "factField";
+
+        doReturn(factField).when(plugin).getFactField();
+
+        final String currentField = page.currentField();
+
+        assertEquals("factField", currentField);
+    }
+
+    @Test
+    public void testCurrentFieldWhenBindingIsNotNull() throws Exception {
+
+        final String factField = "factField";
+        final String binding = "binding";
+
+        doReturn(factField).when(plugin).getFactField();
+        doReturn(binding).when(plugin).getBinding();
+
+        final String currentField = page.currentField();
+
+        assertEquals("binding : factField", currentField);
     }
 
     @Test

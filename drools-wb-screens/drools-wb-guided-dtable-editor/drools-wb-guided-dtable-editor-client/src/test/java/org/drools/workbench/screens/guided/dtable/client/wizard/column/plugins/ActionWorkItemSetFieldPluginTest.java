@@ -687,6 +687,16 @@ public class ActionWorkItemSetFieldPluginTest {
         assertFalse(plugin.isNewFactPattern());
     }
 
+    @Test
+    public void testIsFieldBindingValid() {
+        assertTrue(plugin.isFieldBindingValid());
+    }
+
+    @Test
+    public void testIsBindable() {
+        assertFalse(plugin.isBindable());
+    }
+
     private ActionWorkItemWrapper mockActionWrapper(final String boundName,
                                                     final String factType) {
         final ActionWorkItemWrapper wrapper = mock(ActionWorkItemWrapper.class);
