@@ -28,7 +28,6 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.NameColumn;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
@@ -55,6 +54,7 @@ public class MoveRowsCommandTest {
 
     protected static final String II1 = "ii1";
     protected static final String II2 = "ii2";
+    protected static final String II3 = "ii3";
 
     @Mock
     protected DMNGridLayer gridLayer;
@@ -67,9 +67,6 @@ public class MoveRowsCommandTest {
 
     @Mock
     protected ExpressionEditorColumn uiExpressionEditorColumn;
-
-    @Mock
-    protected RelationColumn uiModelColumn2;
 
     @Mock
     protected org.uberfire.mvp.Command canvasOperation;
@@ -166,7 +163,22 @@ public class MoveRowsCommandTest {
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      command.newGraphCommand(handler).execute(gce));
 
-        assertRelationDefinition(1, 0);
+        assertRelationDefinition(new int[]{1, 0});
+    }
+
+    @Test
+    public void testGraphCommandExecuteMoveUpThreeRows() {
+        // add third row
+        addRelationRow(II3);
+        addUiModelRow(2);
+
+        setupCommand(0,
+                     uiModel.getRow(2));
+
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     command.newGraphCommand(handler).execute(gce));
+
+        assertRelationDefinition(new int[]{1, 2, 0});
     }
 
     @Test
@@ -177,7 +189,22 @@ public class MoveRowsCommandTest {
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      command.newGraphCommand(handler).execute(gce));
 
-        assertRelationDefinition(1, 0);
+        assertRelationDefinition(new int[]{1, 0});
+    }
+
+    @Test
+    public void testGraphCommandExecuteMoveDownThreeRows() {
+        // add third row
+        addRelationRow(II3);
+        addUiModelRow(2);
+
+        setupCommand(2,
+                     uiModel.getRow(0));
+
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     command.newGraphCommand(handler).execute(gce));
+
+        assertRelationDefinition(new int[]{2, 0, 1});
     }
 
     @Test
@@ -196,7 +223,7 @@ public class MoveRowsCommandTest {
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      gc.undo(gce));
 
-        assertRelationDefinition(0, 1);
+        assertRelationDefinition(new int[]{0, 1});
     }
 
     @Test
@@ -215,19 +242,20 @@ public class MoveRowsCommandTest {
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      gc.undo(gce));
 
-        assertRelationDefinition(0, 1);
+        assertRelationDefinition(new int[]{0, 1});
     }
 
-    private void assertRelationDefinition(final int ii1RowIndex,
-                                          final int ii2RowIndex) {
-        assertEquals(II1,
-                     context.getContextEntry().get(ii1RowIndex).getVariable().getName().getValue());
-        assertEquals(makeLiteralExpression(II1, 0),
-                     ((LiteralExpression) context.getContextEntry().get(ii1RowIndex).getExpression()).getText());
-        assertEquals(II2,
-                     context.getContextEntry().get(ii2RowIndex).getVariable().getName().getValue());
-        assertEquals(makeLiteralExpression(II2, 1),
-                     ((LiteralExpression) context.getContextEntry().get(ii2RowIndex).getExpression()).getText());
+    private void assertRelationDefinition(final int[] iiRowIndexes) {
+        final String[] rowValueBases = {II1, II2, II3};
+
+        int iiRowIndexIterator = 0;
+        for (final int iiRowIndex : iiRowIndexes) {
+            assertEquals(rowValueBases[iiRowIndexIterator],
+                         context.getContextEntry().get(iiRowIndex).getVariable().getName().getValue());
+            assertEquals(makeLiteralExpression(rowValueBases[iiRowIndexIterator], iiRowIndexIterator),
+                         ((LiteralExpression) context.getContextEntry().get(iiRowIndex).getExpression()).getText());
+            iiRowIndexIterator++;
+        }
     }
 
     @Test
@@ -254,6 +282,21 @@ public class MoveRowsCommandTest {
     }
 
     @Test
+    public void testCanvasCommandExecuteMoveUpThreeRows() {
+        // add third row
+        addRelationRow(II3);
+        addUiModelRow(2);
+
+        setupCommand(0,
+                     uiModel.getRow(2));
+
+        assertEquals(CanvasCommandResultBuilder.SUCCESS,
+                     command.newCanvasCommand(handler).execute(handler));
+
+        assertUiModelDefinition(new int[]{2, 0, 1});
+    }
+
+    @Test
     public void testCanvasCommandExecuteMoveDown() {
         setupCommand(1,
                      uiModel.getRow(0));
@@ -262,6 +305,21 @@ public class MoveRowsCommandTest {
                      command.newCanvasCommand(handler).execute(handler));
 
         assertUiModelDefinition(new int[]{1, 0});
+    }
+
+    @Test
+    public void testCanvasCommandExecuteMoveDownThreeRows() {
+        // add third row
+        addRelationRow(II3);
+        addUiModelRow(2);
+
+        setupCommand(2,
+                     uiModel.getRow(0));
+
+        assertEquals(CanvasCommandResultBuilder.SUCCESS,
+                     command.newCanvasCommand(handler).execute(handler));
+
+        assertUiModelDefinition(new int[]{1, 2, 0});
     }
 
     @Test
@@ -295,13 +353,19 @@ public class MoveRowsCommandTest {
     }
 
     private void assertUiModelDefinition(final int[] rowIndexes) {
-        assertEquals(1,
-                     uiModel.getCell(0, 0).getValue().getValue());
-        assertEquals("name" + rowIndexes[0],
-                     uiModel.getCell(0, 1).getValue().getValue());
-        assertEquals(1,
-                     uiModel.getCell(1, 0).getValue().getValue());
-        assertEquals("name" + rowIndexes[1],
-                     uiModel.getCell(1, 1).getValue().getValue());
+        int rowIndexesIterator = 0;
+        for (int rowIndex : rowIndexes) {
+            // row number not updated for last row
+            if (rowIndex != rowIndexes[rowIndexes.length - 1]) {
+                assertEquals(rowIndexesIterator + 1,
+                             uiModel.getCell(rowIndexesIterator, 0).getValue().getValue());
+            }
+            assertEquals("name" + rowIndexes[rowIndexesIterator],
+                         uiModel.getCell(rowIndexesIterator, 1).getValue().getValue());
+            assertEquals("editor" + rowIndexes[rowIndexesIterator],
+                         uiModel.getCell(rowIndexesIterator, 2).getValue().getValue());
+
+            rowIndexesIterator++;
+        }
     }
 }

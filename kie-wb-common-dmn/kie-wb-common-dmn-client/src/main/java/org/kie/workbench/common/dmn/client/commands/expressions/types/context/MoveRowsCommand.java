@@ -53,7 +53,7 @@ public class MoveRowsCommand extends AbstractCanvasGraphCommand implements VetoE
     private final Context context;
     private final DMNGridData uiModel;
     private final int index;
-    private final List<GridRow> rows;
+    private final List<GridRow> uiRows;
     private final org.uberfire.mvp.Command canvasOperation;
 
     private final int oldIndex;
@@ -61,15 +61,15 @@ public class MoveRowsCommand extends AbstractCanvasGraphCommand implements VetoE
     public MoveRowsCommand(final Context context,
                            final DMNGridData uiModel,
                            final int index,
-                           final List<GridRow> rows,
+                           final List<GridRow> uiRows,
                            final org.uberfire.mvp.Command canvasOperation) {
         this.context = context;
         this.uiModel = uiModel;
         this.index = index;
-        this.rows = new ArrayList<>(rows);
+        this.uiRows = new ArrayList<>(uiRows);
         this.canvasOperation = canvasOperation;
 
-        this.oldIndex = uiModel.getRows().indexOf(rows.get(0));
+        this.oldIndex = uiModel.getRows().indexOf(uiRows.get(0));
     }
 
     @Override
@@ -98,8 +98,8 @@ public class MoveRowsCommand extends AbstractCanvasGraphCommand implements VetoE
             }
 
             private void moveRows(final int index) {
-                final int oldIndex = uiModel.getRows().indexOf(rows.get(0));
-                final List<ContextEntry> rowsToMove = rows
+                final int oldIndex = uiModel.getRows().indexOf(uiRows.get(0));
+                final List<ContextEntry> rowsToMove = uiRows
                         .stream()
                         .map(r -> uiModel.getRows().indexOf(r))
                         .map(i -> context.getContextEntry().get(i))
@@ -135,7 +135,7 @@ public class MoveRowsCommand extends AbstractCanvasGraphCommand implements VetoE
             @Override
             public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler ach) {
                 uiModel.moveRowsTo(index,
-                                   rows);
+                                   uiRows);
                 updateRowNumbers();
                 updateParentInformation();
 
@@ -147,7 +147,7 @@ public class MoveRowsCommand extends AbstractCanvasGraphCommand implements VetoE
             @Override
             public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler ach) {
                 uiModel.moveRowsTo(oldIndex,
-                                   rows);
+                                   uiRows);
                 updateRowNumbers();
                 updateParentInformation();
 
