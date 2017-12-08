@@ -254,10 +254,10 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
         });
     }
 
-    private void doSetKind(final FunctionDefinition.Kind kind,
-                           final FunctionDefinition function,
-                           final Optional<Expression> expression,
-                           final Optional<GridWidget> editor) {
+    void doSetKind(final FunctionDefinition.Kind kind,
+                   final FunctionDefinition function,
+                   final Optional<Expression> expression,
+                   final Optional<GridWidget> editor) {
         final GridCellValueTuple gcv = new GridCellValueTuple<>(0,
                                                                 0,
                                                                 model,
@@ -293,7 +293,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
         });
     }
 
-    private void synchroniseViewWhenExpressionEditorChanged(final Optional<GridWidget> oEditor) {
+    void synchroniseViewWhenExpressionEditorChanged(final Optional<GridWidget> oEditor) {
         parent.onResize();
         gridPanel.refreshScrollPosition();
         gridPanel.updatePanelSize();
