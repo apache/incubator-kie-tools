@@ -62,7 +62,7 @@
       <groupId>org.kie.workbench.services</groupId>
       <artifactId>kie-wb-common-services-api</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -125,7 +125,7 @@
       <artifactId>weld-se-core</artifactId>
       <scope>test</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-nio2-fs</artifactId>
@@ -162,6 +162,24 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-test-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.servlet</groupId>
+      <artifactId>jboss-servlet-api_3.1_spec</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-cdi</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
-  
+
 </project>
