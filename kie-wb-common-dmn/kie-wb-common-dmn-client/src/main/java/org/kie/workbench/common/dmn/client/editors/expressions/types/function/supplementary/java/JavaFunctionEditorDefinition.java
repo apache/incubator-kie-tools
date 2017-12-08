@@ -50,9 +50,9 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 @FunctionGridSupplementaryEditor
 public class JavaFunctionEditorDefinition implements ExpressionEditorDefinition<Context> {
 
-    static final String VARIABLE_CLASS = "class";
+    public static final String VARIABLE_CLASS = "class";
 
-    static final String VARIABLE_METHOD_SIGNATURE = "method signature";
+    public static final String VARIABLE_METHOD_SIGNATURE = "method signature";
 
     private DMNGridPanel gridPanel;
     private DMNGridLayer gridLayer;

@@ -36,7 +36,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
 
-    static final String DEFAULT_ROW_CAPTION = "default";
+    public static final String DEFAULT_ROW_CAPTION = "default";
 
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
 

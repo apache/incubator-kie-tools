@@ -50,10 +50,9 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 @FunctionGridSupplementaryEditor
 public class PMMLFunctionEditorDefinition implements ExpressionEditorDefinition<Context> {
 
-    static final String VARIABLE_DOCUMENT = "document";
+    public static final String VARIABLE_DOCUMENT = "document";
 
-    static final String VARIABLE_MODEL = "model";
-
+    public static final String VARIABLE_MODEL = "model";
 
     private DMNGridPanel gridPanel;
     private DMNGridLayer gridLayer;
