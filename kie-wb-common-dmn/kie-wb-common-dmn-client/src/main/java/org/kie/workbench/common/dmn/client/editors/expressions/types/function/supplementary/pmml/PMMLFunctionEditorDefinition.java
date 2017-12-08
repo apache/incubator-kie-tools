@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.expressions.types.function.pmml;
+package org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.pmml;
 
 import java.util.Optional;
 import java.util.function.Supplier;

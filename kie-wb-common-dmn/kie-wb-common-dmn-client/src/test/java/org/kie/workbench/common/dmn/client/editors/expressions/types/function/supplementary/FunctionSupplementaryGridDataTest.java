@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
+package org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,13 +25,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
-import org.kie.workbench.common.dmn.client.commands.expressions.types.context.MoveRowsCommand;
+import org.kie.workbench.common.dmn.client.commands.expressions.types.function.supplementary.MoveRowsCommand;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -41,11 +40,10 @@ import org.uberfire.mvp.Command;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class ContextGridDataTest {
+public class FunctionSupplementaryGridDataTest {
 
     @Mock
     private GridRow gridRow;
@@ -74,17 +72,17 @@ public class ContextGridDataTest {
     @Mock
     private DMNGridData delegate;
 
-    private ContextGridData uiModel;
+    private FunctionSupplementaryGridData uiModel;
 
     private Optional<Context> expression = Optional.of(new Context());
 
     @Before
     public void setup() {
-        this.uiModel = new ContextGridData(delegate,
-                                           sessionManager,
-                                           sessionCommandManager,
-                                           expression,
-                                           canvasOperation);
+        this.uiModel = new FunctionSupplementaryGridData(delegate,
+                                                         sessionManager,
+                                                         sessionCommandManager,
+                                                         expression,
+                                                         canvasOperation);
 
         doReturn(session).when(sessionManager).getCurrentSession();
         doReturn(canvasHandler).when(session).getCanvasHandler();
@@ -93,10 +91,7 @@ public class ContextGridDataTest {
     // --- Intercepted methods delegated to commands ---
 
     @Test
-    public void testMoveRowToPermitted() {
-        doReturn(GraphCommandResultBuilder.SUCCESS).when(sessionCommandManager).allow(eq(canvasHandler),
-                                                                                      any(MoveRowsCommand.class));
-
+    public void testMoveRowTo() {
         uiModel.moveRowTo(0,
                           gridRow);
 
@@ -105,41 +100,12 @@ public class ContextGridDataTest {
     }
 
     @Test
-    public void testMoveRowsToPermitted() {
-        doReturn(GraphCommandResultBuilder.SUCCESS).when(sessionCommandManager).allow(eq(canvasHandler),
-                                                                                      any(MoveRowsCommand.class));
-
+    public void testMoveRowsTo() {
         uiModel.moveRowsTo(0,
                            Collections.singletonList(gridRow));
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               any(MoveRowsCommand.class));
-    }
-
-    @Test
-    public void testMoveRowToNotPermitted() {
-        doReturn(GraphCommandResultBuilder.FAILED).when(sessionCommandManager).allow(eq(canvasHandler),
-                                                                                     any(MoveRowsCommand.class));
-
-        uiModel.moveRowTo(0,
-                          gridRow);
-
-        verify(sessionCommandManager,
-               never()).execute(any(AbstractCanvasHandler.class),
-                                any(MoveRowsCommand.class));
-    }
-
-    @Test
-    public void testMoveRowsToNotPermitted() {
-        doReturn(GraphCommandResultBuilder.FAILED).when(sessionCommandManager).allow(eq(canvasHandler),
-                                                                                     any(MoveRowsCommand.class));
-
-        uiModel.moveRowsTo(0,
-                           Collections.singletonList(gridRow));
-
-        verify(sessionCommandManager,
-               never()).execute(any(AbstractCanvasHandler.class),
-                                any(MoveRowsCommand.class));
     }
 
     // --- Delegated to real class ---

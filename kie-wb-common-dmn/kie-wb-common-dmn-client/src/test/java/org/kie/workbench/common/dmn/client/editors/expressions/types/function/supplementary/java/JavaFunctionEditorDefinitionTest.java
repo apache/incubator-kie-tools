@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.expressions.types.function.pmml;
+package org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.java;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -47,7 +47,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class PMMLFunctionEditorDefinitionTest {
+public class JavaFunctionEditorDefinitionTest {
 
     @Mock
     private DMNGridPanel gridPanel;
@@ -75,12 +75,12 @@ public class PMMLFunctionEditorDefinitionTest {
 
     private Optional<HasName> hasName = Optional.empty();
 
-    private PMMLFunctionEditorDefinition definition;
+    private JavaFunctionEditorDefinition definition;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        this.definition = new PMMLFunctionEditorDefinition(gridPanel,
+        this.definition = new JavaFunctionEditorDefinition(gridPanel,
                                                            gridLayer,
                                                            sessionManager,
                                                            sessionCommandManager,
@@ -94,7 +94,7 @@ public class PMMLFunctionEditorDefinitionTest {
 
     @Test
     public void testType() {
-        assertEquals(ExpressionType.FUNCTION_PMML,
+        assertEquals(ExpressionType.FUNCTION_JAVA,
                      definition.getType());
     }
 
@@ -113,11 +113,11 @@ public class PMMLFunctionEditorDefinitionTest {
         assertEquals(2,
                      model.getContextEntry().size());
 
-        assertEquals(PMMLFunctionEditorDefinition.VARIABLE_DOCUMENT,
+        assertEquals(JavaFunctionEditorDefinition.VARIABLE_CLASS,
                      model.getContextEntry().get(0).getVariable().getName().getValue());
         assertTrue(model.getContextEntry().get(0).getExpression() instanceof LiteralExpression);
 
-        assertEquals(PMMLFunctionEditorDefinition.VARIABLE_MODEL,
+        assertEquals(JavaFunctionEditorDefinition.VARIABLE_METHOD_SIGNATURE,
                      model.getContextEntry().get(1).getVariable().getName().getValue());
         assertTrue(model.getContextEntry().get(1).getExpression() instanceof LiteralExpression);
     }

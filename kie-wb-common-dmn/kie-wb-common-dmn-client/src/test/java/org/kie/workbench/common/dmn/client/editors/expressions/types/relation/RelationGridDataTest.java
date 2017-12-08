@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
+package org.kie.workbench.common.dmn.client.editors.expressions.types.relation;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.context.MoveRowsCommand;
+import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.MoveColumnsCommand;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -41,11 +40,10 @@ import org.uberfire.mvp.Command;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class ContextGridDataTest {
+public class RelationGridDataTest {
 
     @Mock
     private GridRow gridRow;
@@ -74,17 +72,17 @@ public class ContextGridDataTest {
     @Mock
     private DMNGridData delegate;
 
-    private ContextGridData uiModel;
+    private RelationGridData uiModel;
 
-    private Optional<Context> expression = Optional.of(new Context());
+    private Optional<Relation> expression = Optional.of(new Relation());
 
     @Before
     public void setup() {
-        this.uiModel = new ContextGridData(delegate,
-                                           sessionManager,
-                                           sessionCommandManager,
-                                           expression,
-                                           canvasOperation);
+        this.uiModel = new RelationGridData(delegate,
+                                            sessionManager,
+                                            sessionCommandManager,
+                                            expression,
+                                            canvasOperation);
 
         doReturn(session).when(sessionManager).getCurrentSession();
         doReturn(canvasHandler).when(session).getCanvasHandler();
@@ -93,10 +91,7 @@ public class ContextGridDataTest {
     // --- Intercepted methods delegated to commands ---
 
     @Test
-    public void testMoveRowToPermitted() {
-        doReturn(GraphCommandResultBuilder.SUCCESS).when(sessionCommandManager).allow(eq(canvasHandler),
-                                                                                      any(MoveRowsCommand.class));
-
+    public void testMoveRowTo() {
         uiModel.moveRowTo(0,
                           gridRow);
 
@@ -105,10 +100,7 @@ public class ContextGridDataTest {
     }
 
     @Test
-    public void testMoveRowsToPermitted() {
-        doReturn(GraphCommandResultBuilder.SUCCESS).when(sessionCommandManager).allow(eq(canvasHandler),
-                                                                                      any(MoveRowsCommand.class));
-
+    public void testMoveRowsTo() {
         uiModel.moveRowsTo(0,
                            Collections.singletonList(gridRow));
 
@@ -117,51 +109,24 @@ public class ContextGridDataTest {
     }
 
     @Test
-    public void testMoveRowToNotPermitted() {
-        doReturn(GraphCommandResultBuilder.FAILED).when(sessionCommandManager).allow(eq(canvasHandler),
-                                                                                     any(MoveRowsCommand.class));
+    public void testMoveColumnTo() {
+        uiModel.moveColumnTo(0,
+                             gridColumn);
 
-        uiModel.moveRowTo(0,
-                          gridRow);
-
-        verify(sessionCommandManager,
-               never()).execute(any(AbstractCanvasHandler.class),
-                                any(MoveRowsCommand.class));
+        verify(sessionCommandManager).execute(eq(canvasHandler),
+                                              any(MoveColumnsCommand.class));
     }
 
     @Test
-    public void testMoveRowsToNotPermitted() {
-        doReturn(GraphCommandResultBuilder.FAILED).when(sessionCommandManager).allow(eq(canvasHandler),
-                                                                                     any(MoveRowsCommand.class));
+    public void testMoveColumnsTo() {
+        uiModel.moveColumnsTo(0,
+                              Collections.singletonList(gridColumn));
 
-        uiModel.moveRowsTo(0,
-                           Collections.singletonList(gridRow));
-
-        verify(sessionCommandManager,
-               never()).execute(any(AbstractCanvasHandler.class),
-                                any(MoveRowsCommand.class));
+        verify(sessionCommandManager).execute(eq(canvasHandler),
+                                              any(MoveColumnsCommand.class));
     }
 
     // --- Delegated to real class ---
-
-    @Test
-    public void testDelegateMoveColumnTo() {
-        uiModel.moveColumnTo(1,
-                             gridColumn);
-
-        verify(delegate).moveColumnTo(eq(1),
-                                      eq(gridColumn));
-    }
-
-    @Test
-    public void testDelegateMoveColumnsTo() {
-        final List<GridColumn<?>> gridColumns = Collections.singletonList(gridColumn);
-        uiModel.moveColumnsTo(1,
-                              gridColumns);
-
-        verify(delegate).moveColumnsTo(eq(1),
-                                       eq(gridColumns));
-    }
 
     @Test
     public void testDelegateSelectCell() {

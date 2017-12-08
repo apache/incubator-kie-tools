@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.expressions.types.function.java;
+package org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.java;
 
 import java.util.Optional;
 import java.util.function.Supplier;
