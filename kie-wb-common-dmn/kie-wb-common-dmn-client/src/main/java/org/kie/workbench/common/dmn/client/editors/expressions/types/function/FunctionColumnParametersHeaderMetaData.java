@@ -26,7 +26,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 
 public class FunctionColumnParametersHeaderMetaData implements GridColumn.HeaderMetaData {
 
-    private static final String PARAMETER_COLUMN_GROUP = "FunctionColumnParametersHeaderMetaData$Parameters";
+    static final String PARAMETER_COLUMN_GROUP = "FunctionColumnParametersHeaderMetaData$Parameters";
 
     private final Supplier<FunctionDefinition.Kind> expressionLanguageSupplier;
     private final Supplier<List<InformationItem>> formalParametersSupplier;

@@ -36,13 +36,16 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition> {
 
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+    private Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier;
 
     public FunctionUIModelMapper(final Supplier<GridData> uiModel,
                                  final Supplier<Optional<FunctionDefinition>> dmnModel,
-                                 final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
+                                 final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
+                                 final Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier) {
         super(uiModel,
               dmnModel);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
+        this.supplementaryEditorDefinitionsSupplier = supplementaryEditorDefinitionsSupplier;
     }
 
     @Override
@@ -50,27 +53,45 @@ public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition>
                              final int columnIndex) {
         dmnModel.get().ifPresent(function -> {
             final FunctionDefinition.Kind kind = extractExpressionLanguage(function);
-            final GridCellTuple expressionParent = new GridCellTuple(0, 0, uiModel.get());
             final Optional<Expression> expression = Optional.ofNullable(function.getExpression());
 
             switch (kind) {
                 case FEEL:
                     final Optional<ExpressionEditorDefinition<Expression>> expressionEditorDefinition = expressionEditorDefinitionsSupplier.get().getExpressionEditorDefinition(expression);
                     expressionEditorDefinition.ifPresent(ed -> {
-                        final Optional<GridWidget> editor = ed.getEditor(expressionParent,
-                                                                         function,
-                                                                         expression,
-                                                                         Optional.empty(),
-                                                                         true);
-                        uiModel.get().setCell(rowIndex,
-                                              columnIndex,
-                                              new ExpressionCellValue(editor));
+                        setUiModelEditor(rowIndex,
+                                         columnIndex,
+                                         function,
+                                         ed);
                     });
                     break;
                 case JAVA:
                 case PMML:
+                    final Optional<ExpressionEditorDefinition<Expression>> supplementaryEditorDefinition = supplementaryEditorDefinitionsSupplier.get().getExpressionEditorDefinition(expression);
+                    supplementaryEditorDefinition.ifPresent(ed -> {
+                        setUiModelEditor(rowIndex,
+                                         columnIndex,
+                                         function,
+                                         ed);
+                    });
             }
         });
+    }
+
+    private void setUiModelEditor(final int rowIndex,
+                                  final int columnIndex,
+                                  final FunctionDefinition function,
+                                  final ExpressionEditorDefinition<Expression> ed) {
+        final GridCellTuple expressionParent = new GridCellTuple(0, 0, uiModel.get());
+        final Optional<Expression> expression = Optional.ofNullable(function.getExpression());
+        final Optional<GridWidget> editor = ed.getEditor(expressionParent,
+                                                         function,
+                                                         expression,
+                                                         Optional.empty(),
+                                                         true);
+        uiModel.get().setCell(rowIndex,
+                              columnIndex,
+                              new ExpressionCellValue(editor));
     }
 
     private FunctionDefinition.Kind extractExpressionLanguage(final FunctionDefinition function) {

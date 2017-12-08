@@ -112,7 +112,8 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
     public FunctionUIModelMapper makeUiModelMapper() {
         return new FunctionUIModelMapper(this::getModel,
                                          () -> expression,
-                                         expressionEditorDefinitionsSupplier);
+                                         expressionEditorDefinitionsSupplier,
+                                         supplementaryEditorDefinitionsSupplier);
     }
 
     @Override
