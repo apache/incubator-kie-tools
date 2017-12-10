@@ -13,6 +13,7 @@ import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.MouseEvent;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeHighlight;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.widget.DragContext;
 
@@ -28,13 +29,14 @@ public class WiresShapeHandler
                    NodeMouseClickHandler {
 
     private final WiresShapeControl control;
-    private final WiresShapePartHighlight highlight;
+    private final WiresShapeHighlight<PickerPart.ShapePart> highlight;
 
-    public WiresShapeHandler(WiresShapeControl control,
-                             WiresManager manager) {
+    public WiresShapeHandler(final WiresShapeControl control,
+                             final WiresShapeHighlight<PickerPart.ShapePart> highlight,
+                             final WiresManager manager) {
         super(manager);
         this.control = control;
-        highlight = new WiresShapePartHighlight();
+        this.highlight = highlight;
     }
 
     @Override
@@ -49,10 +51,11 @@ public class WiresShapeHandler
         final WiresShape parent = getParentShape();
         if (null != parent) {
             if (isDocked(getShape())) {
-                highlight.highlightBorder(getParentShape(),
-                                          getWiresManager().getDockingAcceptor().getHotspotSize());
+                highlight.highlight(getParentShape(),
+                                    PickerPart.ShapePart.BORDER);
             } else {
-                highlight.highlightBody(getParentShape());
+                highlight.highlight(getParentShape(),
+                                    PickerPart.ShapePart.BODY);
             }
         }
         batch();
@@ -87,10 +90,11 @@ public class WiresShapeHandler
         }
         if (null != newParent) {
             if (isDockAllowed) {
-                highlight.highlightBorder(newParent,
-                                          getWiresManager().getDockingAcceptor().getHotspotSize());
+                highlight.highlight(newParent,
+                                    PickerPart.ShapePart.BORDER);
             } else if (isContAllow) {
-                highlight.highlightBody(newParent);
+                highlight.highlight(newParent,
+                                    PickerPart.ShapePart.BODY);
             }
         }
 
@@ -101,43 +105,21 @@ public class WiresShapeHandler
 
     @Override
     protected void doOnNodeDragEnd(NodeDragEndEvent event) {
-        // Restore highlights, if any.
-        highlight.restore();
+        final int dx = event.getDragContext().getDx();
+        final int dy = event.getDragContext().getDy();
+        control.onMove(dx,
+                        dy);
 
-        Point2D location = null;
-        boolean c_accept = false;
-        boolean d_accept = false;
-        boolean l_accept = false;
-        if (control.onMoveComplete()) {
-            d_accept = null != control.getDockingControl() &&
-                    control.getDockingControl().accept();
-            c_accept = !d_accept && null != control.getContainmentControl() &&
-                    control.getContainmentControl().accept();
-
-            if (c_accept) {
-                location = control.getContainmentControl().getCandidateLocation();
-            } else if (d_accept) {
-                location = control.getDockingControl().getCandidateLocation();
-            } else {
-                location = control.getParentPickerControl().getShapeLocation();
-            }
-            l_accept = getShape().getWiresManager()
-                    .getLocationAcceptor()
-                    .accept(new WiresShape[]{getShape()},
-                            new Point2D[]{location});
-        }
-
-        if ((c_accept || d_accept) && l_accept) {
-            if (d_accept) {
-                control.getDockingControl().execute();
-            } else {
-                control.getContainmentControl().execute();
-            }
-            control.getParentPickerControl().setShapeLocation(location);
+        // Complete the control operation.
+        if (control.onMoveComplete() && control.accept()) {
             control.execute();
         } else {
             reset();
         }
+
+        // Restore highlights, if any.
+        highlight.restore();
+
         batch();
     }
 

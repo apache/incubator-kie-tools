@@ -30,6 +30,8 @@ public class WiresShapeControlImpl
     private AlignAndDistributeControl m_alignAndDistributeControl;
     private BoundingBox shapeBounds;
     private Point2D m_adjust;
+    private boolean c_accept;
+    private boolean d_accept;
     private WiresConnector[] m_connectorsWithSpecialConnections;
 
     public WiresShapeControlImpl(WiresShape shape,
@@ -59,6 +61,8 @@ public class WiresShapeControlImpl
                             double y) {
         shapeBounds = getShape().getGroup().getComputedBoundingPoints().getBoundingBox();
         m_adjust = new Point2D(0, 0);
+        d_accept = false;
+        c_accept = false;
 
         // Important - skip the shape and its children, if any, from the picker.
         // Otherwise children or the shape itself are being processed by the parent picker
@@ -94,10 +98,31 @@ public class WiresShapeControlImpl
     }
 
     @Override
+    public boolean isOutOfBounds(double dx, double dy) {
+        // Check the location bounds, if any.
+        if (null != getConstrainedBounds()) {
+            final double shapeMinX = shapeBounds.getMinX() + dx;
+            final double shapeMinY = shapeBounds.getMinY() + dy;
+            final double shapeMaxX = shapeMinX + (shapeBounds.getMaxX() - shapeBounds.getMinX());
+            final double shapeMaxY = shapeMinY + (shapeBounds.getMaxY() - shapeBounds.getMinY());
+            if (shapeMinX <= getConstrainedBounds().getMinX() ||
+                    shapeMaxX >= getConstrainedBounds().getMaxX() ||
+                    shapeMinY <= getConstrainedBounds().getMinY() ||
+                    shapeMaxY >= getConstrainedBounds().getMaxY()) {
+                // Bounds are exceeded as from last adjusted location, so
+                // just accept adjust and keep current location value.
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    @Override
     public boolean onMove(double dx,
                           double dy) {
 
-        if (super.onMove(dx, dy)) {
+        if (isOutOfBounds(dx, dy)) {
             return true;
         }
 
@@ -159,6 +184,28 @@ public class WiresShapeControlImpl
     }
 
     @Override
+    public boolean accept() {
+        Point2D location = null;
+        d_accept = null != getDockingControl() && getDockingControl().accept();
+        c_accept = !d_accept && null != getContainmentControl() && getContainmentControl().accept();
+
+        if (c_accept) {
+            location = getContainmentControl().getCandidateLocation();
+        } else if (d_accept) {
+            location = getDockingControl().getCandidateLocation();
+        }
+
+        boolean accept = false;
+        if (null != location) {
+            accept = getShape().getWiresManager()
+                    .getLocationAcceptor()
+                    .accept(new WiresShape[]{getShape()},
+                            new Point2D[]{location});
+        }
+        return accept;
+    }
+
+    @Override
     public boolean onMoveComplete() {
         final boolean dcompleted = null == m_dockingAndControl || m_dockingAndControl.onMoveComplete();
         final boolean ccompleted = null == m_containmentControl || m_containmentControl.onMoveComplete();
@@ -170,6 +217,19 @@ public class WiresShapeControlImpl
 
     @Override
     public void execute() {
+        final boolean accept = c_accept || d_accept;
+        if (!accept) {
+            throw new IllegalStateException("Execute should not be called. No containment neither docking operations have been accepted.");
+        }
+        final Point2D location = c_accept ?
+                getContainmentControl().getCandidateLocation() :
+                getDockingControl().getCandidateLocation();
+        if (d_accept) {
+            getDockingControl().execute();
+        } else {
+            getContainmentControl().execute();
+        }
+        getParentPickerControl().setShapeLocation(location);
         ShapeControlUtils.checkForAndApplyLineSplice(getWiresManager(),
                                                      getShape());
         shapeUpdated(true);
@@ -257,11 +317,6 @@ public class WiresShapeControlImpl
     @Override
     public Point2D getAdjust() {
         return m_adjust;
-    }
-
-    @Override
-    protected BoundingBox getBounds() {
-        return shapeBounds;
     }
 
     private void shapeUpdated(final boolean isAcceptOp) {

@@ -17,7 +17,6 @@
 package com.ait.lienzo.client.core.shape.wires;
 
 import com.ait.lienzo.client.core.types.Point2D;
-import com.google.gwt.core.client.GWT;
 
 public interface ILocationAcceptor {
 
@@ -48,13 +47,6 @@ public interface ILocationAcceptor {
         @Override
         public boolean accept(WiresContainer[] shapes,
                               Point2D[] locations) {
-            if (m_defaultValue) {
-                int i = 0;
-                for (WiresContainer shape : shapes) {
-                    GWT.log("ACCEPTING LOCATION[" + i + "] ==> [" + locations[i] + "]");
-                    i++;
-                }
-            }
             return m_defaultValue;
         }
     }

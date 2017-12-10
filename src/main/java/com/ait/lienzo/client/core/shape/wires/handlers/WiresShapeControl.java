@@ -36,4 +36,7 @@ public interface WiresShapeControl extends WiresMoveControl,
     WiresContainmentControl getContainmentControl();
 
     WiresParentPickerControl getParentPickerControl();
+
+    boolean accept();
+
 }

@@ -162,6 +162,7 @@ public final class WiresManager
         shape.setWiresManager(this);
 
         final WiresShapeHandler handler = new WiresShapeHandler(getControlFactory().newShapeControl(shape, this),
+                                                                getControlFactory().newShapeHighlight(this),
                                                                 this);
 
         if (addIntoIndex)

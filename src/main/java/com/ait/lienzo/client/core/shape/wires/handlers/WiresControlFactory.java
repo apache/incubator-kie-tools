@@ -1,5 +1,6 @@
 package com.ait.lienzo.client.core.shape.wires.handlers;
 
+import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
@@ -41,4 +42,10 @@ public interface WiresControlFactory {
      */
     WiresCompositeControl newCompositeControl(WiresCompositeControl.Context context,
                                               WiresManager wiresManager);
+
+    /**
+     * Creates a new shape highlight control.
+     */
+    WiresShapeHighlight<PickerPart.ShapePart> newShapeHighlight(WiresManager wiresManager);
+
 }

@@ -1,14 +1,39 @@
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeHighlight;
 import com.ait.lienzo.client.core.types.FillGradient;
 import com.ait.lienzo.client.core.types.LinearGradient;
 import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.RadialGradient;
 
-public class WiresShapePartHighlight {
+public class WiresShapeHighlightImpl implements WiresShapeHighlight<PickerPart.ShapePart> {
+
+    private final int borderSize;
+
+    public WiresShapeHighlightImpl(int borderSize) {
+        this.borderSize = borderSize;
+    }
+
+    @Override
+    public void highlight(final WiresShape shape, 
+                          final PickerPart.ShapePart part) {
+        switch (part) {
+            case BODY:
+                highlightBody(shape);
+                break;
+            default:
+                highlightBorder(shape);
+        }
+    }
+
+    @Override
+    public void restore() {
+        doRestore();
+    }
 
     private WiresShape parent;
     private String m_priorFill;
@@ -16,7 +41,7 @@ public class WiresShapePartHighlight {
     private Double m_priorAlpha;
     private MultiPath m_path;
 
-    public WiresShapePartHighlight highlightBody(final WiresShape parent) {
+    private void highlightBody(final WiresShape parent) {
         if (!isBodyHighlight()) {
             m_priorFill = parent.getPath().getFillColor();
             m_priorFillGradient = parent.getPath().getFillGradient();
@@ -26,15 +51,13 @@ public class WiresShapePartHighlight {
             this.parent = parent;
             drawLayer();
         }
-        return this;
     }
 
-    public WiresShapePartHighlight highlightBorder(final WiresShape parent,
-                                                   final double width) {
+    private void highlightBorder(final WiresShape parent) {
         if (null == m_path) {
             MultiPath path = parent.getPath();
             m_path = path.copy();
-            m_path.setStrokeWidth(width);
+            m_path.setStrokeWidth(borderSize);
             final Point2D absLoc = path.getComputedLocation();
             m_path.setX(absLoc.getX());
             m_path.setY(absLoc.getY());
@@ -44,16 +67,15 @@ public class WiresShapePartHighlight {
             this.parent = parent;
             drawOverLayer();
         }
-        return this;
     }
 
-    public void restore() {
+    private void doRestore() {
         restoreBody();
         restoreBorder();
         parent = null;
     }
 
-    private WiresShapePartHighlight restoreBody() {
+    private void restoreBody() {
         if (isBodyHighlight()) {
             parent.getPath().setFillColor(m_priorFill);
             if (m_priorFillGradient instanceof LinearGradient) {
@@ -69,16 +91,14 @@ public class WiresShapePartHighlight {
             m_priorAlpha = null;
             drawLayer();
         }
-        return this;
     }
 
-    private WiresShapePartHighlight restoreBorder() {
+    private void restoreBorder() {
         if (null != m_path) {
             m_path.removeFromParent();
             m_path = null;
             drawOverLayer();
         }
-        return this;
     }
 
     private boolean isBodyHighlight() {

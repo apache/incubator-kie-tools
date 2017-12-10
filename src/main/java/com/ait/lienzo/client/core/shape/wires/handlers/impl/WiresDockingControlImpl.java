@@ -117,7 +117,7 @@ public class WiresDockingControlImpl extends AbstractWiresParentPickerControl
 
     @Override
     public boolean accept() {
-        return !isEnabled() || _isAccept();
+        return !isEnabled() || (isAllow() && _isAccept());
     }
 
     @Override
@@ -151,8 +151,6 @@ public class WiresDockingControlImpl extends AbstractWiresParentPickerControl
         final WiresLayer m_layer = getParentPickerControl().getWiresLayer();
         final WiresManager wiresManager = m_layer.getWiresManager();
         final IDockingAcceptor dockingAcceptor = wiresManager.getDockingAcceptor();
-        WiresContainer p1 = getParent();
-        PickerPart.ShapePart ps1 = getParentShapePart();
         return null != getParent() &&
                 null != getParentShapePart()
                 && getParentShapePart() == PickerPart.ShapePart.BORDER

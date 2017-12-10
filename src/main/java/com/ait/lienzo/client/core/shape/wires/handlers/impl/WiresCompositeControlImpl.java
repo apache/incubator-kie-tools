@@ -1,5 +1,6 @@
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +12,6 @@ import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.MouseEvent;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresCompositeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
-import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 
 /**
@@ -24,11 +24,9 @@ public class WiresCompositeControlImpl
         implements WiresCompositeControl {
 
     private Context selectionContext;
-    private BoundingBox shapeBounds;
-    private boolean locationsAccepted;
-    private boolean containmentAccepted;
     private Point2D delta;
-    private Point2D[] locations;
+    private Collection<WiresShape> selectedShapes;
+    private Collection<WiresConnector> selectedConnectors;
     private WiresConnector[] m_connectorsWithSpecialConnections;
 
     public WiresCompositeControlImpl(Context selectionContext) {
@@ -41,22 +39,15 @@ public class WiresCompositeControlImpl
     }
 
     @Override
-    protected BoundingBox getBounds() {
-        return shapeBounds;
-    }
-
-    @Override
     public void onMoveStart(double x,
                             double y) {
-        shapeBounds = selectionContext.getBounds();
         delta = new Point2D(0, 0);
-        locationsAccepted = false;
-        containmentAccepted = false;
-        locations = null;
+        selectedShapes = new ArrayList<>(selectionContext.getShapes());
+        selectedConnectors = new ArrayList<>(selectionContext.getConnectors());
 
         Map<String, WiresConnector> connectors = new HashMap<String, WiresConnector>();
 
-        for (WiresShape shape : selectionContext.getShapes()) {
+        for (WiresShape shape : selectedShapes) {
 
             ShapeControlUtils.collectionSpecialConnectors(shape,
                                                           connectors);
@@ -78,7 +69,7 @@ public class WiresCompositeControlImpl
 
         m_connectorsWithSpecialConnections = connectors.values().toArray(new WiresConnector[connectors.size()]);
 
-        for (WiresConnector connector : selectionContext.getConnectors()) {
+        for (WiresConnector connector : selectedConnectors) {
             WiresConnector.WiresConnectorHandler handler = connector.getWiresConnectorHandler();
             handler.getControl().onMoveStart(x,
                                              y); // records the start position of all the points
@@ -87,17 +78,28 @@ public class WiresCompositeControlImpl
     }
 
     @Override
+    public boolean isOutOfBounds(final double dx,
+                                 final double dy) {
+        for (WiresShape shape : selectedShapes) {
+            if (shape.getControl().isOutOfBounds(dx, dy)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public boolean onMove(double dx,
                           double dy) {
 
-        if (super.onMove(dx, dy)) {
+        if (isOutOfBounds(dx, dy)) {
             return true;
         }
 
         delta = new Point2D(dx, dy);
 
         // Delegate location deltas to shape controls and obtain current locations for each one.
-        final Collection<WiresShape> shapes = selectionContext.getShapes();
+        final Collection<WiresShape> shapes = selectedShapes;
         if (!shapes.isEmpty()) {
             final WiresManager wiresManager = shapes.iterator().next().getWiresManager();
             final Point2D[] locs = new Point2D[shapes.size()];
@@ -124,10 +126,10 @@ public class WiresCompositeControlImpl
             }
         }
 
-        final Collection<WiresConnector> connectors = selectionContext.getConnectors();
+        final Collection<WiresConnector> connectors = selectedConnectors;
         if (!connectors.isEmpty()) {
             // Update connectors and connections.
-            for (WiresConnector connector : selectionContext.getConnectors()) {
+            for (WiresConnector connector : connectors) {
                 WiresConnector.WiresConnectorHandler handler = connector.getWiresConnectorHandler();
                 handler.getControl().move(dx,
                                           dy,
@@ -144,30 +146,16 @@ public class WiresCompositeControlImpl
     }
 
     private Point2D getCandidateShapeLocationRelativeToInitialParent(final WiresShape shape) {
-        Point2D candidate = null;
-        if (shape.getControl().getContainmentControl().isAllow()) {
-            candidate = shape.getControl().getContainmentControl().getCandidateLocation();
-        }
-        // Check if the candidate location is relative to the parent.
-        if (null != candidate) {
-            final WiresParentPickerControlImpl parentPickerControl =
-                    (WiresParentPickerControlImpl) shape.getControl().getParentPickerControl();
-            // If the initial parent's shape and the new candidate are different,
-            // then calculate candidate location using the relative distance between parents.
-            if (!parentPickerControl.getShapeLocationControl().isStartDocked() &&
-                    parentPickerControl.getInitialParent() != parentPickerControl.getParent()) {
-                final Point2D io = null != parentPickerControl.getInitialParent() ?
-                        parentPickerControl.getInitialParent().getComputedLocation() :
-                        new Point2D(0, 0);
-                final Point2D co = null != parentPickerControl.getParent() ?
-                        parentPickerControl.getParent().getComputedLocation() :
-                        new Point2D(0, 0);
-                return co.add(candidate).minus(io);
-            }
-            // Otherwise, if parents match, just return the candidate relative location.
-            return candidate;
-        }
-        return shape.getControl().getParentPickerControl().getShapeLocation();
+        final Point2D candidate = shape.getControl().getContainmentControl().getCandidateLocation();
+        final WiresParentPickerControlImpl parentPickerControl =
+                (WiresParentPickerControlImpl) shape.getControl().getParentPickerControl();
+        final Point2D io = null != parentPickerControl.getInitialParent() ?
+                parentPickerControl.getInitialParent().getComputedLocation() :
+                new Point2D(0, 0);
+        final Point2D co = null != parentPickerControl.getParent() ?
+                parentPickerControl.getParent().getComputedLocation() :
+                new Point2D(0, 0);
+        return co.add(candidate).minus(io);
     }
 
     public boolean isAllowed() {
@@ -176,11 +164,11 @@ public class WiresCompositeControlImpl
         return null != parent &&
                 parent.getWiresManager().getContainmentAcceptor()
                         .containmentAllowed(parent,
-                                            toArray(selectionContext.getShapes()));
+                                            toArray(selectedShapes));
     }
 
     public WiresContainer getSharedParent() {
-        final Collection<WiresShape> shapes = selectionContext.getShapes();
+        final Collection<WiresShape> shapes = selectedShapes;
         if (shapes.isEmpty()) {
             return null;
         }
@@ -197,71 +185,71 @@ public class WiresCompositeControlImpl
     @Override
     public boolean onMoveComplete() {
         boolean completeResult = true;
-        // Propagate events.
-        final Collection<WiresShape> shapes = selectionContext.getShapes();
+        final Collection<WiresShape> shapes = selectedShapes;
         if (!shapes.isEmpty()) {
             final WiresManager wiresManager = shapes.iterator().next().getWiresManager();
-            final Point2D[] shapeLocations = new Point2D[shapes.size()];
-            final Point2D[] shapeCandidateLocations = new Point2D[shapes.size()];
             int i = 0;
             for (WiresShape shape : shapes) {
-                shape.getControl().onMoveComplete();
-                shapeLocations[i] = shape.getControl().getParentPickerControl().getCurrentLocation();
-                shapeCandidateLocations[i] = shape.getControl().getContainmentControl().getCandidateLocation();
+                if (!shape.getControl().onMoveComplete()) {
+                    completeResult = false;
+                }
                 i++;
             }
-
-            // Check parents && acceptors' acceptance.
-            final WiresShape[] shapesArray = toArray(shapes);
-            final WiresContainer parent = getSharedParent();
-            containmentAccepted = null != parent &&
-                    wiresManager.getContainmentAcceptor()
-                            .acceptContainment(parent,
-                                               shapesArray);
-
-            locations = containmentAccepted ?
-                    shapeCandidateLocations :
-                    shapeLocations;
-
-            // Check new locations are accepted.
-            locationsAccepted = wiresManager.getLocationAcceptor()
-                    .accept(shapesArray,
-                            locations);
-            completeResult = containmentAccepted && locationsAccepted;
         }
-
-        if (completeResult) {
-            final Collection<WiresConnector> connectors = selectionContext.getConnectors();
-            if (!connectors.isEmpty()) {
-                // Update connectors and connections.
-                for (WiresConnector connector : selectionContext.getConnectors()) {
-                    WiresConnector.WiresConnectorHandler handler = connector.getWiresConnectorHandler();
-                    handler.getControl().onMoveComplete();
-                    WiresConnector.updateHeadTailForRefreshedConnector(connector);
+        final Collection<WiresConnector> connectors = selectedConnectors;
+        if (!connectors.isEmpty()) {
+            // Update connectors and connections.
+            for (WiresConnector connector : connectors) {
+                if (!connector.getWiresConnectorHandler().getControl().onMoveComplete()) {
+                    completeResult = false;
                 }
             }
         }
 
         delta = new Point2D(0, 0);
-        shapeBounds = null;
         return completeResult;
+    }
+
+    @Override
+    public boolean accept() {
+        final Collection<WiresShape> shapes = selectedShapes;
+        if (!shapes.isEmpty()) {
+            final WiresManager wiresManager = shapes.iterator().next().getWiresManager();
+            final Point2D[] shapeCandidateLocations = new Point2D[shapes.size()];
+
+            int i = 0;
+            for (WiresShape shape : shapes) {
+                shapeCandidateLocations[i] = shape.getControl().getContainmentControl().getCandidateLocation();
+                i++;
+            }
+
+            final WiresShape[] shapesArray = toArray(shapes);
+            final WiresContainer parent = getSharedParent();
+            boolean completeResult = null != parent &&
+                    wiresManager.getContainmentAcceptor()
+                            .acceptContainment(parent,
+                                               shapesArray);
+
+            if (completeResult) {
+                completeResult = wiresManager.getLocationAcceptor()
+                        .accept(shapesArray,
+                                shapeCandidateLocations);
+            }
+            return completeResult;
+        }
+        return false;
     }
 
     @Override
     public void execute() {
         int i = 0;
-        for (WiresShape shape : selectionContext.getShapes()) {
-            if (containmentAccepted) {
-                shape.getControl().getContainmentControl().execute();
-            } else {
-                shape.getControl().getParentPickerControl().setShapeLocation(locations[i++]);
-            }
+        for (WiresShape shape : selectedShapes) {
+            shape.getControl().getContainmentControl().execute();
             postUpdateShape(shape);
         }
 
-        for (WiresConnector connector : selectionContext.getConnectors()) {
+        for (WiresConnector connector : selectedConnectors) {
             WiresConnector.WiresConnectorHandler handler = connector.getWiresConnectorHandler();
-            handler.getControl().onMoveComplete(); // must be called to null the  points array
             WiresConnector.updateHeadTailForRefreshedConnector(connector);
         }
 
@@ -273,7 +261,7 @@ public class WiresCompositeControlImpl
 
     @Override
     public void clear() {
-        for (WiresShape shape : selectionContext.getShapes()) {
+        for (WiresShape shape : selectedShapes) {
             shape.getControl().clear();
             enableDocking(shape.getControl());
         }
@@ -282,11 +270,11 @@ public class WiresCompositeControlImpl
 
     @Override
     public void reset() {
-        for (WiresShape shape : selectionContext.getShapes()) {
+        for (WiresShape shape : selectedShapes) {
             shape.getControl().reset();
             enableDocking(shape.getControl());
         }
-        for (WiresConnector connector : selectionContext.getConnectors()) {
+        for (WiresConnector connector : selectedConnectors) {
             WiresConnector.WiresConnectorHandler handler = connector.getWiresConnectorHandler();
             handler.getControl().reset();
             WiresConnector.updateHeadTailForRefreshedConnector(connector);
@@ -326,9 +314,8 @@ public class WiresCompositeControlImpl
 
     private void clearState() {
         delta = new Point2D(0, 0);
-        locationsAccepted = false;
-        containmentAccepted = false;
-        locations = null;
+        selectedShapes = null;
+        selectedConnectors = null;
         m_connectorsWithSpecialConnections = null;
     }
 

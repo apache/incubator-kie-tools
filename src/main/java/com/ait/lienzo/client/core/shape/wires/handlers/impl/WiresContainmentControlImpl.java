@@ -61,11 +61,13 @@ public class WiresContainmentControlImpl extends AbstractWiresParentPickerContro
         final WiresShape[] shapes = {shape};
         final boolean isParentLayer = null == parent || parent instanceof WiresLayer;
         final WiresContainer candidateParent = isParentLayer ? m_layer : parent;
-        return allowNotAccept ?
-                containmentAcceptor.containmentAllowed(candidateParent,
-                                                       shapes) :
-                containmentAcceptor.acceptContainment(candidateParent,
-                                                      shapes);
+        final boolean isAllowed = containmentAcceptor.containmentAllowed(candidateParent,
+                                                           shapes);
+        if (!allowNotAccept && isAllowed) {
+            return containmentAcceptor.acceptContainment(candidateParent,
+                                                         shapes);
+        }
+        return isAllowed;
     }
 
     @Override
