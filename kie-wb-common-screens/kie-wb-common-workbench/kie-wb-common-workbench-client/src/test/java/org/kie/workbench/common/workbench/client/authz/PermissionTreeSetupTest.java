@@ -31,29 +31,7 @@ import static org.kie.workbench.common.workbench.client.EditorIds.GUIDED_DECISIO
 import static org.kie.workbench.common.workbench.client.EditorIds.GUIDED_SCORE_CARD;
 import static org.kie.workbench.common.workbench.client.EditorIds.STUNNER_DESIGNER;
 import static org.kie.workbench.common.workbench.client.EditorIds.XLS_SCORE_CARD;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.ADMIN;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.ADMINISTRATION;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.APPS;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.AUTHORING;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.BUSINESS_DASHBOARDS;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.DATASET_AUTHORING;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.DATASOURCE_MANAGEMENT;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.DEPLOYMENTS;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.EXECUTION_ERRORS;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.GUVNOR_M2REPO;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.HOME;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.JOBS;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.LIBRARY;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.PLUGIN_AUTHORING;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.PROCESS_DASHBOARD;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.PROCESS_DEFINITIONS;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.PROCESS_INSTANCES;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.SECURITY_MANAGEMENT;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.SERVER_MANAGEMENT;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.SOCIAL_HOME;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.SOCIAL_USER_HOME;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.TASKS;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.TASKS_ADMIN;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -114,8 +92,8 @@ public class PermissionTreeSetupTest {
                                                            eq("DataSources"));
         verify(perspectiveTreeProvider).setPerspectiveName(eq(LIBRARY),
                                                            eq("ProjectAuthoring"));
-        verify(perspectiveTreeProvider).setPerspectiveName(eq(BUSINESS_DASHBOARDS),
-                                                           eq("Business_Dashboards"));
+        verify(perspectiveTreeProvider).setPerspectiveName(eq(CONTENT_MANAGEMENT),
+                                                           eq("Content_Management"));
         verify(perspectiveTreeProvider).setPerspectiveName(eq(DEPLOYMENTS),
                                                            eq("Process_Deployments"));
         verify(perspectiveTreeProvider).setPerspectiveName(eq(SERVER_MANAGEMENT),

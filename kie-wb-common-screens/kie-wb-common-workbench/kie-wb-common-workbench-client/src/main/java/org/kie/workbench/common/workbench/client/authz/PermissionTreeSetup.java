@@ -35,7 +35,7 @@ import static org.kie.workbench.common.workbench.client.PerspectiveIds.ADMIN;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.ADMINISTRATION;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.APPS;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.AUTHORING;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.BUSINESS_DASHBOARDS;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.CONTENT_MANAGEMENT;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.DATASET_AUTHORING;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.DATASOURCE_MANAGEMENT;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.DEPLOYMENTS;
@@ -104,8 +104,8 @@ public class PermissionTreeSetup {
                                                    i18n.DataSources());
         perspectiveTreeProvider.setPerspectiveName(LIBRARY,
                                                    i18n.ProjectAuthoring());
-        perspectiveTreeProvider.setPerspectiveName(BUSINESS_DASHBOARDS,
-                                                   i18n.Business_Dashboards());
+        perspectiveTreeProvider.setPerspectiveName(CONTENT_MANAGEMENT,
+                                                   i18n.Content_Management());
         perspectiveTreeProvider.setPerspectiveName(DEPLOYMENTS,
                                                    i18n.Process_Deployments());
         perspectiveTreeProvider.setPerspectiveName(SERVER_MANAGEMENT,
@@ -139,6 +139,7 @@ public class PermissionTreeSetup {
         perspectiveTreeProvider.excludePerspectiveId("PreferencesCentralPerspective"); /* uberfire */
         perspectiveTreeProvider.excludePerspectiveId(ADMINISTRATION); /* kie-wb-distributions */
         perspectiveTreeProvider.excludePerspectiveId(PLUGIN_AUTHORING); /* uberfire */
+        perspectiveTreeProvider.excludePerspectiveId(APPS); /* uberfire */
         perspectiveTreeProvider.excludePerspectiveId(SOCIAL_HOME); /* uberfire */
         perspectiveTreeProvider.excludePerspectiveId(SOCIAL_USER_HOME); /* uberfire */
         perspectiveTreeProvider.excludePerspectiveId("Asset Management"); /* guvnor */

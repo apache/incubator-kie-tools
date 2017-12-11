@@ -71,7 +71,7 @@ public interface DefaultWorkbenchConstants
 
     String Process_Dashboard();
 
-    String Business_Dashboards();
+    String Content_Management();
 
     String Group();
 

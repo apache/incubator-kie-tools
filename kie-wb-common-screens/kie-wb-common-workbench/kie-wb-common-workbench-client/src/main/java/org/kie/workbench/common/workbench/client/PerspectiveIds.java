@@ -40,7 +40,7 @@ public interface PerspectiveIds {
     String TASKS = "Tasks";
     String TASKS_ADMIN = "TaskAdmin";
     String PROCESS_DASHBOARD = "DashboardPerspective";
-    String BUSINESS_DASHBOARDS = "ContentManagerPerspective";
+    String CONTENT_MANAGEMENT = "ContentManagerPerspective";
     String DATASOURCE_MANAGEMENT = "DataSourceManagementPerspective";
     String ADMIN = "AdminPagePerspective";
 }
