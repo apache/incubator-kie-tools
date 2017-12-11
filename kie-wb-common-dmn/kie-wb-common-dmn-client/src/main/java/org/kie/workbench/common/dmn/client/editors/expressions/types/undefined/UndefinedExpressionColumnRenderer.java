@@ -20,8 +20,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import com.ait.lienzo.client.core.event.NodeMouseEnterHandler;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -35,12 +37,12 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.im
 
 public class UndefinedExpressionColumnRenderer extends BaseGridColumnRenderer<String> implements HasDOMElementResources {
 
-    private final Group editorTypesContainer = new Group();
-    private ExpressionEditorTooltip tooltip = ExpressionEditorTooltip.INSTANCE;
-    private Set<HandlerRegistration> tooltipEventHandlerRegistrations = new HashSet<>();
+    private final ExpressionEditorTooltip tooltip = getTooltip();
+    private final Group editorTypesContainer = getEditorTypesContainer();
+    private final Set<HandlerRegistration> tooltipEventHandlerRegistrations = new HashSet<>();
 
-    private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
-    private UndefinedExpressionGrid gridWidget;
+    private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+    private final UndefinedExpressionGrid gridWidget;
 
     public UndefinedExpressionColumnRenderer(final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                              final UndefinedExpressionGrid gridWidget) {
@@ -50,6 +52,14 @@ public class UndefinedExpressionColumnRenderer extends BaseGridColumnRenderer<St
         setupTooltips();
     }
 
+    Group getEditorTypesContainer() {
+        return new Group();
+    }
+
+    ExpressionEditorTooltip getTooltip() {
+        return ExpressionEditorTooltip.INSTANCE;
+    }
+
     private void setupTooltips() {
         double x = 10.0;
         for (ExpressionEditorDefinition<Expression> definition : expressionEditorDefinitionsSupplier.get()) {
@@ -57,14 +67,7 @@ public class UndefinedExpressionColumnRenderer extends BaseGridColumnRenderer<St
                 final Rectangle r = new Rectangle(10, 10);
                 r.setY(10.0).setX(x).setFillColor(ColorName.AQUAMARINE).setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
 
-                tooltipEventHandlerRegistrations.add(r.addNodeMouseEnterHandler((event) -> {
-                    final double absoluteCellX = editorTypesContainer.getAbsoluteLocation().getX();
-                    final double absoluteCellY = editorTypesContainer.getAbsoluteLocation().getY();
-                    tooltip.show(definition,
-                                 absoluteCellX,
-                                 absoluteCellY,
-                                 r);
-                }));
+                tooltipEventHandlerRegistrations.add(r.addNodeMouseEnterHandler(getNodeMouseEnterHandler(definition, r)));
                 tooltipEventHandlerRegistrations.add(r.addNodeMouseExitHandler((event) -> tooltip.hide()));
                 tooltipEventHandlerRegistrations.add(r.addNodeMouseClickHandler((event) -> {
                     tooltip.hide();
@@ -75,6 +78,21 @@ public class UndefinedExpressionColumnRenderer extends BaseGridColumnRenderer<St
                 editorTypesContainer.add(r);
             }
         }
+    }
+
+    NodeMouseEnterHandler getNodeMouseEnterHandler(final ExpressionEditorDefinition<Expression> definition,
+                                                   final Rectangle r) {
+        return (event) -> {
+            final Transform transform = editorTypesContainer.getViewport().getTransform();
+            final double tx = transform.getTranslateX();
+            final double ty = transform.getTranslateY();
+            final double absoluteCellX = editorTypesContainer.getAbsoluteLocation().getX() - tx;
+            final double absoluteCellY = editorTypesContainer.getAbsoluteLocation().getY() - ty;
+            tooltip.show(definition,
+                         absoluteCellX,
+                         absoluteCellY,
+                         r);
+        };
     }
 
     @Override
