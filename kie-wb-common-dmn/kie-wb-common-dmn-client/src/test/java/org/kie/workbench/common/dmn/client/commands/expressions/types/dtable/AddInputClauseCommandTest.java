@@ -103,14 +103,6 @@ public class AddInputClauseCommandTest {
     }
 
     @Test
-    public void testGraphCommandCheck() throws Exception {
-        final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = command.newGraphCommand(canvasHandler);
-
-        assertEquals(GraphCommandResultBuilder.SUCCESS,
-                     graphCommand.allow(graphCommandExecutionContext));
-    }
-
-    @Test
     public void testGraphCommandExecute() throws Exception {
         dtable.getRule().add(new DecisionRule());
         dtable.getRule().add(new DecisionRule());
