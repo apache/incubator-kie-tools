@@ -37,6 +37,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionT
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.FunctionGridSupplementaryEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.FunctionSupplementaryGrid;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -44,7 +45,6 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.Session;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 @Dependent
 @FunctionGridSupplementaryEditor
@@ -110,11 +110,11 @@ public class PMMLFunctionEditorDefinition implements ExpressionEditorDefinition<
     }
 
     @Override
-    public Optional<GridWidget> getEditor(final GridCellTuple parent,
-                                          final HasExpression hasExpression,
-                                          final Optional<Context> expression,
-                                          final Optional<HasName> hasName,
-                                          final boolean nested) {
+    public Optional<BaseExpressionGrid> getEditor(final GridCellTuple parent,
+                                                  final HasExpression hasExpression,
+                                                  final Optional<Context> expression,
+                                                  final Optional<HasName> hasName,
+                                                  final boolean nested) {
         return Optional.of(new FunctionSupplementaryGrid(parent,
                                                          hasExpression,
                                                          expression,

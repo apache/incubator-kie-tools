@@ -31,7 +31,6 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition> {
 
@@ -84,11 +83,11 @@ public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition>
                                   final ExpressionEditorDefinition<Expression> ed) {
         final GridCellTuple expressionParent = new GridCellTuple(0, 0, uiModel.get());
         final Optional<Expression> expression = Optional.ofNullable(function.getExpression());
-        final Optional<GridWidget> editor = ed.getEditor(expressionParent,
-                                                         function,
-                                                         expression,
-                                                         Optional.empty(),
-                                                         true);
+        final Optional<BaseExpressionGrid> editor = ed.getEditor(expressionParent,
+                                                                 function,
+                                                                 expression,
+                                                                 Optional.empty(),
+                                                                 true);
         uiModel.get().setCell(rowIndex,
                               columnIndex,
                               new ExpressionCellValue(editor));
@@ -109,10 +108,7 @@ public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition>
         dmnModel.get().ifPresent(function -> {
             cell.get().ifPresent(v -> {
                 final ExpressionCellValue ecv = (ExpressionCellValue) v;
-                ecv.getValue().ifPresent(editor -> {
-                    final BaseExpressionGrid beg = (BaseExpressionGrid) editor;
-                    function.setExpression((Expression) beg.getExpression().orElse(null));
-                });
+                ecv.getValue().ifPresent(beg -> function.setExpression((Expression) beg.getExpression().orElse(null)));
             });
         });
     }

@@ -65,7 +65,7 @@ public class RelationGridTest {
 
     private Optional<Relation> expression = Optional.of(relation);
 
-    private Optional<HasName> hasName;
+    private Optional<HasName> hasName = Optional.empty();
 
     @Mock
     private DMNGridPanel gridPanel;

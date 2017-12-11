@@ -24,8 +24,10 @@ import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextArea
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextAreaDOMElement;
 import org.mockito.Mock;
 
+import static org.mockito.Mockito.mock;
+
 @RunWith(LienzoMockitoTestRunner.class)
-public class LiteralExpressionColumnTest extends BaseDOMElementSingletonColumnTest<TextAreaSingletonDOMElementFactory, TextAreaDOMElement, TextArea, LiteralExpressionColumn> {
+public class LiteralExpressionColumnTest extends BaseDOMElementSingletonColumnTest<TextAreaSingletonDOMElementFactory, TextAreaDOMElement, TextArea, LiteralExpressionColumn, LiteralExpressionGrid> {
 
     @Mock
     private TextAreaSingletonDOMElementFactory factory;
@@ -49,6 +51,11 @@ public class LiteralExpressionColumnTest extends BaseDOMElementSingletonColumnTe
     @Override
     protected TextArea getWidget() {
         return widget;
+    }
+
+    @Override
+    protected LiteralExpressionGrid getGridWidget() {
+        return mock(LiteralExpressionGrid.class);
     }
 
     @Override

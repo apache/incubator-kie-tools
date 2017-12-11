@@ -19,22 +19,22 @@ package org.kie.workbench.common.dmn.client.events;
 import java.util.Optional;
 
 import org.jboss.errai.common.client.api.annotations.NonPortable;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.event.AbstractSessionEvent;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 @NonPortable
 public class ExpressionEditorSelectedEvent extends AbstractSessionEvent {
 
-    private Optional<GridWidget> editor;
+    private Optional<BaseExpressionGrid> editor;
 
     public ExpressionEditorSelectedEvent(final ClientSession session,
-                                         final Optional<GridWidget> editor) {
+                                         final Optional<BaseExpressionGrid> editor) {
         super(session);
         this.editor = editor;
     }
 
-    public Optional<GridWidget> getEditor() {
+    public Optional<BaseExpressionGrid> getEditor() {
         return editor;
     }
 }

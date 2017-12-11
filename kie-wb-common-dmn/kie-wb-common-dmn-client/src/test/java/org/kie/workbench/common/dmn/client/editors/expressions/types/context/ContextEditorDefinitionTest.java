@@ -32,6 +32,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -132,11 +133,11 @@ public class ContextEditorDefinitionTest {
     @Test
     public void testEditor() {
         final Optional<Context> expression = definition.getModelClass();
-        final Optional<GridWidget> oEditor = definition.getEditor(parent,
-                                                                  hasExpression,
-                                                                  expression,
-                                                                  hasName,
-                                                                  false);
+        final Optional<BaseExpressionGrid> oEditor = definition.getEditor(parent,
+                                                                          hasExpression,
+                                                                          expression,
+                                                                          hasName,
+                                                                          false);
 
         assertTrue(oEditor.isPresent());
 

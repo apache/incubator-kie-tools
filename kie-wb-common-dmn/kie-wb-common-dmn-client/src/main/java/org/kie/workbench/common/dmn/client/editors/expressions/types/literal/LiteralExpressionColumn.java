@@ -26,7 +26,6 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.HasSingletonDOMElementResource;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 public class LiteralExpressionColumn extends DMNGridColumn<String> implements HasSingletonDOMElementResource {
 
@@ -34,7 +33,7 @@ public class LiteralExpressionColumn extends DMNGridColumn<String> implements Ha
 
     public LiteralExpressionColumn(final HeaderMetaData headerMetaData,
                                    final TextAreaSingletonDOMElementFactory factory,
-                                   final GridWidget gridWidget) {
+                                   final LiteralExpressionGrid gridWidget) {
         super(headerMetaData,
               new LiteralExpressionColumnRenderer(factory),
               gridWidget);

@@ -21,6 +21,7 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.mockito.ArgumentCaptor;
@@ -37,13 +38,12 @@ import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRende
 import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.BaseDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.HasSingletonDOMElementResource;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl.BaseSingletonDOMElementFactory;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public abstract class BaseDOMElementSingletonColumnTest<F extends BaseSingletonDOMElementFactory, D extends BaseDOMElement, W extends Widget & HasValue & Focusable, C extends BaseGridColumn & HasSingletonDOMElementResource> {
+public abstract class BaseDOMElementSingletonColumnTest<F extends BaseSingletonDOMElementFactory, D extends BaseDOMElement, W extends Widget & HasValue & Focusable, C extends BaseGridColumn & HasSingletonDOMElementResource, G extends BaseExpressionGrid> {
 
     @Mock
     protected GridColumn.HeaderMetaData headerMetaData;
@@ -53,9 +53,6 @@ public abstract class BaseDOMElementSingletonColumnTest<F extends BaseSingletonD
 
     @Mock
     protected DMNGridLayer gridLayer;
-
-    @Mock
-    protected GridWidget gridWidget;
 
     @Captor
     protected ArgumentCaptor<Callback<D>> domElementOnCreationCallbackCaptor;
@@ -71,6 +68,8 @@ public abstract class BaseDOMElementSingletonColumnTest<F extends BaseSingletonD
 
     protected W widget;
 
+    protected G gridWidget;
+
     protected C column;
 
     @Before
@@ -79,6 +78,7 @@ public abstract class BaseDOMElementSingletonColumnTest<F extends BaseSingletonD
         this.factory = getFactory();
         this.domElement = getDomElement();
         this.widget = getWidget();
+        this.gridWidget = getGridWidget();
         this.column = getColumn();
         when(domElement.getWidget()).thenReturn(widget);
         when(gridWidget.getModel()).thenReturn(model);
@@ -89,6 +89,8 @@ public abstract class BaseDOMElementSingletonColumnTest<F extends BaseSingletonD
     protected abstract D getDomElement();
 
     protected abstract W getWidget();
+
+    protected abstract G getGridWidget();
 
     protected abstract C getColumn();
 

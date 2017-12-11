@@ -40,8 +40,6 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 
 public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression, LiteralExpressionUIModelMapper> {
 
-    private static final double DEFAULT_WIDTH = 300.0;
-
     public LiteralExpressionGrid(final GridCellTuple parent,
                                  final HasExpression hasExpression,
                                  final Optional<LiteralExpression> expression,
@@ -93,7 +91,6 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
                                                                                                                          headerFactory),
                                                                                factory,
                                                                                this);
-        literalExpressionColumn.setWidth(DEFAULT_WIDTH);
 
         model.appendColumn(literalExpressionColumn);
     }

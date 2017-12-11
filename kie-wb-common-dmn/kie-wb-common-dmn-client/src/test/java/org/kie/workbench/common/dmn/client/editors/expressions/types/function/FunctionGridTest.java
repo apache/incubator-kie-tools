@@ -42,6 +42,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionT
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
@@ -116,7 +117,7 @@ public class FunctionGridTest {
     private ExpressionEditorDefinition literalExpressionEditorDefinition;
 
     @Mock
-    private GridWidget literalExpressionEditor;
+    private BaseExpressionGrid literalExpressionEditor;
 
     private LiteralExpression literalExpression = new LiteralExpression();
 
@@ -135,7 +136,7 @@ public class FunctionGridTest {
     private ArgumentCaptor<Optional<Expression>> expressionCaptor;
 
     @Captor
-    private ArgumentCaptor<Optional<GridWidget>> gridWidgetCaptor;
+    private ArgumentCaptor<Optional<BaseExpressionGrid>> gridWidgetCaptor;
 
     @Captor
     private ArgumentCaptor<GridLayerRedrawManager.PrioritizedCommand> redrawCaptor;
@@ -231,7 +232,7 @@ public class FunctionGridTest {
 
     @Test
     public void testColumnMetaData() {
-        final GridColumn column = grid.getModel().getColumns().get(0);
+        final GridColumn<?> column = grid.getModel().getColumns().get(0);
         final List<GridColumn.HeaderMetaData> header = column.getHeaderMetaData();
 
         assertEquals(2,

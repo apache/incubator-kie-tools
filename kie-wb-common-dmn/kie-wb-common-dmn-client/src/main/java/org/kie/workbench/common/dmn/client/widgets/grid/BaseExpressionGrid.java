@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -209,5 +210,19 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
 
     public Optional<E> getExpression() {
         return expression;
+    }
+
+    public double getMinimumWidth() {
+        double minimumWidth = 0;
+        final int columnCount = model.getColumnCount();
+        final List<GridColumn<?>> uiColumns = model.getColumns();
+        for (int columnIndex = 0; columnIndex < columnCount - 1; columnIndex++) {
+            final GridColumn editorColumn = uiColumns.get(columnIndex);
+            minimumWidth = minimumWidth + editorColumn.getWidth();
+        }
+        if (columnCount > 0) {
+            minimumWidth = minimumWidth + uiColumns.get(columnCount - 1).getMinimumWidth();
+        }
+        return minimumWidth;
     }
 }

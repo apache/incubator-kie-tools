@@ -24,12 +24,12 @@ import com.google.gwtmockito.GwtMockito;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
@@ -44,7 +44,7 @@ public class ExpressionEditorColumnRendererTest {
     private GridBodyCellRenderContext context;
 
     @Mock
-    private GridWidget widget;
+    private BaseExpressionGrid widget;
 
     @Mock
     private Group renderedGroup;
@@ -52,7 +52,7 @@ public class ExpressionEditorColumnRendererTest {
     @Mock
     private Group editorGroup;
 
-    private GridCell<Optional<GridWidget>> cell;
+    private GridCell<Optional<BaseExpressionGrid>> cell;
 
     private ExpressionEditorColumnRenderer renderer;
 

@@ -30,7 +30,6 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.HasSingletonDOMElementResource;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 public class NameColumn extends DMNGridColumn<String> implements HasSingletonDOMElementResource {
 
@@ -38,7 +37,7 @@ public class NameColumn extends DMNGridColumn<String> implements HasSingletonDOM
 
     public NameColumn(final GridColumn.HeaderMetaData headerMetaData,
                       final TextBoxSingletonDOMElementFactory factory,
-                      final GridWidget gridWidget) {
+                      final ContextGrid gridWidget) {
         this(Collections.singletonList(headerMetaData),
              factory,
              gridWidget);
@@ -46,7 +45,7 @@ public class NameColumn extends DMNGridColumn<String> implements HasSingletonDOM
 
     public NameColumn(final List<HeaderMetaData> headerMetaData,
                       final TextBoxSingletonDOMElementFactory factory,
-                      final GridWidget gridWidget) {
+                      final ContextGrid gridWidget) {
         super(headerMetaData,
               new NameColumnRenderer(factory),
               gridWidget);

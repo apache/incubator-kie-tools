@@ -25,11 +25,11 @@ import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 import static org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow.DEFAULT_HEIGHT;
 
@@ -37,7 +37,7 @@ import static org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow.
 public class DMNGridRowTest {
 
     @Mock
-    private GridWidget view;
+    private BaseExpressionGrid view;
 
     @Test
     public void testEmptyRow() throws Exception {

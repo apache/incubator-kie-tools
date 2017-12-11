@@ -20,16 +20,16 @@ import java.util.Optional;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.google.gwt.core.client.GWT;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.impl.BaseGridColumnRenderer;
 
-public class ExpressionEditorColumnRenderer extends BaseGridColumnRenderer<Optional<GridWidget>> {
+public class ExpressionEditorColumnRenderer extends BaseGridColumnRenderer<Optional<BaseExpressionGrid>> {
 
     @Override
-    public Group renderCell(final GridCell<Optional<GridWidget>> cell,
+    public Group renderCell(final GridCell<Optional<BaseExpressionGrid>> cell,
                             final GridBodyCellRenderContext context) {
         if (cell == null || cell.getValue() == null) {
             return null;

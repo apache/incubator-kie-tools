@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.RequiresResize;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
@@ -29,7 +30,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
-public class ExpressionEditorColumn extends DMNGridColumn<Optional<GridWidget>> implements RequiresResize {
+public class ExpressionEditorColumn extends DMNGridColumn<Optional<BaseExpressionGrid>> implements RequiresResize {
 
     public ExpressionEditorColumn(final HeaderMetaData headerMetaData,
                                   final GridWidget gridWidget) {
@@ -59,34 +60,13 @@ public class ExpressionEditorColumn extends DMNGridColumn<Optional<GridWidget>> 
                     final GridCellValue<?> value = cell.getValue();
                     if (value instanceof ExpressionCellValue) {
                         final ExpressionCellValue ecv = (ExpressionCellValue) value;
-                        final Optional<GridWidget> editor = ecv.getValue();
-                        if (editor.isPresent()) {
-                            minimumWidth = getMinimumWidthForColumns(editor.get(), minimumWidth);
-                        }
+                        minimumWidth = Math.max(minimumWidth,
+                                                ecv.getMinimumWidth().orElse(0.0) + DMNGridColumn.PADDING * 2);
                     }
                 }
             }
         }
         return minimumWidth;
-    }
-
-    private double getMinimumWidthForColumns(final GridWidget editorWidget, final double minimumWidth) {
-        // The minimum width of an embedded editor is the WIDTH of it's columns
-        // (other than the last) plus the MINIMUM WIDTH of the last column.
-        double editorWidth = DMNGridColumn.PADDING * 2;
-        final GridData editorModel = editorWidget.getModel();
-        final List<GridColumn<?>> editorColumns = editorModel.getColumns();
-        final int editorColumnCount = editorModel.getColumnCount();
-        for (int editorColumnIndex = 0; editorColumnIndex < editorColumnCount - 1; editorColumnIndex++) {
-            final GridColumn editorColumn = editorColumns.get(editorColumnIndex);
-            editorWidth = editorWidth + editorColumn.getWidth();
-        }
-        if (editorColumnCount > 0) {
-            editorWidth = editorWidth + editorColumns.get(editorColumnCount - 1).getMinimumWidth();
-        }
-
-        return Math.max(minimumWidth,
-                        editorWidth);
     }
 
     @Override
@@ -114,9 +94,10 @@ public class ExpressionEditorColumn extends DMNGridColumn<Optional<GridWidget>> 
                     final GridCellValue<?> value = cell.getValue();
                     if (value instanceof ExpressionCellValue) {
                         final ExpressionCellValue ecv = (ExpressionCellValue) value;
-                        final Optional<GridWidget> editor = ecv.getValue();
+                        final Optional<BaseExpressionGrid> editor = ecv.getValue();
                         if (editor.isPresent()) {
-                            updateWidthOfLastColumn(editor.get(), columnWidth);
+                            final BaseExpressionGrid beg = editor.get();
+                            updateWidthOfLastColumn(beg, columnWidth);
                         }
                     }
                 }
@@ -124,7 +105,8 @@ public class ExpressionEditorColumn extends DMNGridColumn<Optional<GridWidget>> 
         }
     }
 
-    private void updateWidthOfLastColumn(final GridWidget gridWidget, final double columnWidth) {
+    private void updateWidthOfLastColumn(final BaseExpressionGrid gridWidget,
+                                         final double columnWidth) {
         final List<GridColumn<?>> gwcs = gridWidget.getModel().getColumns();
         double targetGridWidth = columnWidth - DMNGridColumn.PADDING * 2;
         for (GridColumn<?> gwc : gwcs) {
@@ -161,10 +143,11 @@ public class ExpressionEditorColumn extends DMNGridColumn<Optional<GridWidget>> 
                     final GridCellValue<?> value = cell.getValue();
                     if (value instanceof ExpressionCellValue) {
                         final ExpressionCellValue ecv = (ExpressionCellValue) value;
-                        final Optional<GridWidget> editor = ecv.getValue();
+                        final Optional<BaseExpressionGrid> editor = ecv.getValue();
                         if (editor.isPresent()) {
+                            final BaseExpressionGrid beg = editor.get();
                             requiredColumnWidth = Math.max(requiredColumnWidth,
-                                                           editor.get().getWidth() + DMNGridColumn.PADDING * 2);
+                                                           beg.getWidth() + DMNGridColumn.PADDING * 2);
                         }
                     }
                 }

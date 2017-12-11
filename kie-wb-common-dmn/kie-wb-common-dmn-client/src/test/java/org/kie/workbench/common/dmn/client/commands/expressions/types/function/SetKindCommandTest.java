@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
@@ -39,7 +40,6 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -66,14 +66,14 @@ public class SetKindCommandTest {
     private RuleManager ruleManager;
 
     @Mock
-    private GridWidget originalEditor;
+    private BaseExpressionGrid originalEditor;
 
     private LiteralExpression originalExpression = new LiteralExpression();
 
     private FunctionDefinition.Kind originalKind = FunctionDefinition.Kind.FEEL;
 
     @Mock
-    private GridWidget newEditor;
+    private BaseExpressionGrid newEditor;
 
     private LiteralExpression newExpression = new LiteralExpression();
 

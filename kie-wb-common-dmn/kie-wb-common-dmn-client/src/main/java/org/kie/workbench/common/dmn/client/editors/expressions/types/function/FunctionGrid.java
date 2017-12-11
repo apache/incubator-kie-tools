@@ -55,12 +55,9 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
 
 public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, FunctionUIModelMapper> implements FunctionGridControls.Presenter {
-
-    private static final double DEFAULT_WIDTH = 300.0;
 
     private final FunctionGridControls controls;
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
@@ -131,7 +128,6 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
                                                                                      new FunctionColumnParametersHeaderMetaData(this::extractExpressionLanguage,
                                                                                                                                 this::extractFormalParameters)),
                                                                        this);
-        expressionColumn.setWidth(DEFAULT_WIDTH);
 
         model.appendColumn(expressionColumn);
 
@@ -242,11 +238,11 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
         oDefinition.ifPresent(definition -> {
             final GridCellTuple expressionParent = new GridCellTuple(0, 0, model);
             final Optional<Expression> expression = definition.getModelClass();
-            final Optional<GridWidget> gridWidget = definition.getEditor(expressionParent,
-                                                                         hasExpression,
-                                                                         expression,
-                                                                         hasName,
-                                                                         true);
+            final Optional<BaseExpressionGrid> gridWidget = definition.getEditor(expressionParent,
+                                                                                 hasExpression,
+                                                                                 expression,
+                                                                                 hasName,
+                                                                                 true);
             doSetKind(kind,
                       function,
                       expression,
@@ -257,7 +253,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
     void doSetKind(final FunctionDefinition.Kind kind,
                    final FunctionDefinition function,
                    final Optional<Expression> expression,
-                   final Optional<GridWidget> editor) {
+                   final Optional<BaseExpressionGrid> editor) {
         final GridCellValueTuple gcv = new GridCellValueTuple<>(0,
                                                                 0,
                                                                 model,
@@ -276,11 +272,11 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
         expressionEditorDefinition.ifPresent(ed -> {
             final Optional<Expression> expression = ed.getModelClass();
             final GridCellTuple expressionParent = new GridCellTuple(0, 0, model);
-            final Optional<GridWidget> editor = ed.getEditor(expressionParent,
-                                                             hasExpression,
-                                                             expression,
-                                                             hasName,
-                                                             true);
+            final Optional<BaseExpressionGrid> editor = ed.getEditor(expressionParent,
+                                                                     hasExpression,
+                                                                     expression,
+                                                                     hasName,
+                                                                     true);
             final GridCellValueTuple gcv = new GridCellValueTuple<>(0,
                                                                     0,
                                                                     model,
@@ -293,7 +289,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
         });
     }
 
-    void synchroniseViewWhenExpressionEditorChanged(final Optional<GridWidget> oEditor) {
+    void synchroniseViewWhenExpressionEditorChanged(final Optional<BaseExpressionGrid> oEditor) {
         parent.onResize();
         gridPanel.refreshScrollPosition();
         gridPanel.updatePanelSize();

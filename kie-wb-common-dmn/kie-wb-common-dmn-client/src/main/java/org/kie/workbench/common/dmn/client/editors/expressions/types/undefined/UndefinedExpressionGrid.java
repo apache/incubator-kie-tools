@@ -42,7 +42,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
 
 public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, UndefinedExpressionUIModelMapper> {
@@ -128,11 +127,11 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
 
         final Optional<ExpressionEditorDefinition<Expression>> expressionEditorDefinition = expressionEditorDefinitionsSupplier.get().getExpressionEditorDefinition(expression);
         expressionEditorDefinition.ifPresent(ed -> {
-            final Optional<GridWidget> editor = ed.getEditor(parent,
-                                                             hasExpression,
-                                                             expression,
-                                                             hasName,
-                                                             nested);
+            final Optional<BaseExpressionGrid> editor = ed.getEditor(parent,
+                                                                     hasExpression,
+                                                                     expression,
+                                                                     hasName,
+                                                                     nested);
             final GridCellValueTuple gcv = new GridCellValueTuple<>(parent.getRowIndex(),
                                                                     parent.getColumnIndex(),
                                                                     parent.getGridData(),

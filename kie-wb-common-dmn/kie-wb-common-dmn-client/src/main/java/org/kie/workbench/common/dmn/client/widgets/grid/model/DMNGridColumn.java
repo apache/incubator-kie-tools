@@ -30,7 +30,7 @@ public class DMNGridColumn<T> extends BaseGridColumn<T> {
 
     public static final double PADDING = 0.0;
 
-    protected static final double DEFAULT_WIDTH = 100.0;
+    public static final double DEFAULT_WIDTH = 100.0;
 
     protected final GridWidget gridWidget;
 

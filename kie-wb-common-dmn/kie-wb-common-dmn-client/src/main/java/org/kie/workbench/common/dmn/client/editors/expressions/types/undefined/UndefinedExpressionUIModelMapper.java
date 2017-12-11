@@ -22,7 +22,6 @@ import java.util.function.Supplier;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
-import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -52,10 +51,7 @@ public class UndefinedExpressionUIModelMapper extends BaseUIModelMapper<Expressi
                            final Supplier<Optional<GridCellValue<?>>> cell) {
         cell.get().ifPresent(v -> {
             final ExpressionCellValue ecv = (ExpressionCellValue) v;
-            ecv.getValue().ifPresent(editor -> {
-                final BaseExpressionGrid beg = (BaseExpressionGrid) editor;
-                hasExpression.setExpression((Expression) beg.getExpression().orElse(null));
-            });
+            ecv.getValue().ifPresent(beg -> hasExpression.setExpression((Expression) beg.getExpression().orElse(null)));
         });
     }
 }

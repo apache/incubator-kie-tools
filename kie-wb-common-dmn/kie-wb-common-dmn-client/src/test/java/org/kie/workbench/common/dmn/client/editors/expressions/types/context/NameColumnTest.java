@@ -33,11 +33,12 @@ import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRende
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class NameColumnTest extends BaseDOMElementSingletonColumnTest<TextBoxSingletonDOMElementFactory, TextBoxDOMElement, TextBox, NameColumn> {
+public class NameColumnTest extends BaseDOMElementSingletonColumnTest<TextBoxSingletonDOMElementFactory, TextBoxDOMElement, TextBox, NameColumn, ContextGrid> {
 
     @Mock
     private TextBoxSingletonDOMElementFactory factory;
@@ -61,6 +62,11 @@ public class NameColumnTest extends BaseDOMElementSingletonColumnTest<TextBoxSin
     @Override
     protected TextBox getWidget() {
         return widget;
+    }
+
+    @Override
+    protected ContextGrid getGridWidget() {
+        return mock(ContextGrid.class);
     }
 
     @Override

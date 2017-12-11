@@ -36,16 +36,15 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.BoundaryTransformMediator;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.HasExpressionEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.Session;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
@@ -145,13 +144,13 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                           final HasExpression hasExpression,
                           final Optional<HasName> hasName,
                           final Optional<Expression> expression) {
-        final Optional<GridWidget> oEditor = definition.getEditor(new GridCellTuple(0,
-                                                                                    0,
-                                                                                    expressionContainer.getModel()),
-                                                                  hasExpression,
-                                                                  expression,
-                                                                  hasName,
-                                                                  false);
+        final Optional<BaseExpressionGrid> oEditor = definition.getEditor(new GridCellTuple(0,
+                                                                                            0,
+                                                                                            expressionContainer.getModel()),
+                                                                          hasExpression,
+                                                                          expression,
+                                                                          hasName,
+                                                                          false);
         expressionContainer.getModel().setCell(0,
                                                0,
                                                new ExpressionCellValue(oEditor));
@@ -163,18 +162,15 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     }
 
     @Override
-    public void onExpressionEditorSelected(final Optional<GridWidget> oEditor) {
+    public void onExpressionEditorSelected(final Optional<BaseExpressionGrid> oEditor) {
         DOMUtil.removeAllChildren(expressionEditorControls);
 
         if (oEditor.isPresent()) {
-            final GridWidget editor = oEditor.get();
-            if (editor instanceof HasExpressionEditorControls) {
-                final HasExpressionEditorControls hasControls = (HasExpressionEditorControls) editor;
-                final Optional<IsElement> oEditorControls = hasControls.getEditorControls();
-                if (oEditorControls.isPresent()) {
-                    final IsElement editorControls = oEditorControls.get();
-                    expressionEditorControls.appendChild(editorControls.getElement());
-                }
+            final BaseExpressionGrid editor = oEditor.get();
+            final Optional<IsElement> oEditorControls = editor.getEditorControls();
+            if (oEditorControls.isPresent()) {
+                final IsElement editorControls = oEditorControls.get();
+                expressionEditorControls.appendChild(editorControls.getElement());
             }
         }
     }

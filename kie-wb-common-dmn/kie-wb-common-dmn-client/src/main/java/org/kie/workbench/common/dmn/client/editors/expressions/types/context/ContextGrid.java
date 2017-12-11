@@ -176,6 +176,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
                                                                      new DMNGridRow(),
                                                                      uiModelMapper,
                                                                      () -> {
+                                                                         parent.onResize();
                                                                          gridPanel.refreshScrollPosition();
                                                                          gridPanel.updatePanelSize();
                                                                          gridLayer.batch();

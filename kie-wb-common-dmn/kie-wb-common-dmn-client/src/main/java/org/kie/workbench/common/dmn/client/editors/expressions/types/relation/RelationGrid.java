@@ -132,8 +132,6 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
                                                                                                   headerFactory),
                                                                  factory,
                                                                  this);
-        relationColumn.setMovable(true);
-        relationColumn.setResizable(true);
         return relationColumn;
     }
 

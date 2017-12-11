@@ -17,16 +17,19 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.relation;
 
 import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.HasSingletonDOMElementResource;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 public class RelationColumn extends DMNGridColumn<String> implements HasSingletonDOMElementResource {
 
@@ -34,14 +37,51 @@ public class RelationColumn extends DMNGridColumn<String> implements HasSingleto
 
     public RelationColumn(final HeaderMetaData headerMetaData,
                           final TextAreaSingletonDOMElementFactory factory,
-                          final GridWidget gridWidget) {
+                          final RelationGrid gridWidget) {
         super(headerMetaData,
               new RelationColumnRenderer(factory),
               gridWidget);
         this.factory = PortablePreconditions.checkNotNull("factory",
                                                           factory);
-        setMovable(false);
+        setMovable(true);
         setResizable(false);
+    }
+
+    @Override
+    public Double getMinimumWidth() {
+        final double minimumWidth = super.getMinimumWidth();
+        final double minimumWidthOfPeers = getMinimumWidthOfPeers();
+        final double widthOfThisEditor = gridWidget.getWidth();
+        final double widthOfThisColumn = getWidth();
+
+        return Math.max(minimumWidth,
+                        minimumWidthOfPeers - (widthOfThisEditor - widthOfThisColumn));
+    }
+
+    private double getMinimumWidthOfPeers() {
+        final GridCellTuple parent = ((RelationGrid) gridWidget).getParentInformation();
+        final GridData parentUiModel = parent.getGridData();
+        final int parentUiRowIndex = parent.getRowIndex();
+        final int parentUiColumnIndex = parent.getColumnIndex();
+
+        double minimumWidth = super.getMinimumWidth();
+
+        for (int uiRowIndex = 0; uiRowIndex < parentUiModel.getRowCount(); uiRowIndex++) {
+            if (uiRowIndex != parentUiRowIndex) {
+                final GridRow row = parentUiModel.getRow(uiRowIndex);
+                final GridCell<?> cell = row.getCells().get(parentUiColumnIndex);
+                if (cell != null) {
+                    final GridCellValue<?> value = cell.getValue();
+                    if (value instanceof ExpressionCellValue) {
+                        final ExpressionCellValue ecv = (ExpressionCellValue) value;
+                        minimumWidth = Math.max(minimumWidth,
+                                                ecv.getMinimumWidth().orElse(0.0) + DMNGridColumn.PADDING * 2);
+                    }
+                }
+            }
+        }
+
+        return minimumWidth;
     }
 
     @Override

@@ -32,7 +32,6 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
 
@@ -72,13 +71,13 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
 
                     final Optional<ExpressionEditorDefinition<Expression>> expressionEditorDefinition = expressionEditorDefinitionsSupplier.get().getExpressionEditorDefinition(expression);
                     expressionEditorDefinition.ifPresent(ed -> {
-                        final Optional<GridWidget> editor = ed.getEditor(new GridCellTuple(rowIndex,
-                                                                                           columnIndex,
-                                                                                           uiModel.get()),
-                                                                         ce,
-                                                                         expression,
-                                                                         Optional.ofNullable(ce.getVariable()),
-                                                                         true);
+                        final Optional<BaseExpressionGrid> editor = ed.getEditor(new GridCellTuple(rowIndex,
+                                                                                                   columnIndex,
+                                                                                                   uiModel.get()),
+                                                                                 ce,
+                                                                                 expression,
+                                                                                 Optional.ofNullable(ce.getVariable()),
+                                                                                 true);
                         uiModel.get().setCell(rowIndex,
                                               columnIndex,
                                               new ExpressionCellValue(editor));
@@ -106,8 +105,7 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
                 case EXPRESSION:
                     cell.get().ifPresent(v -> {
                         final ExpressionCellValue ecv = (ExpressionCellValue) v;
-                        ecv.getValue().ifPresent(editor -> {
-                            final BaseExpressionGrid beg = (BaseExpressionGrid) editor;
+                        ecv.getValue().ifPresent(beg -> {
                             beg.getExpression().ifPresent(e -> context.getContextEntry()
                                     .get(rowIndex)
                                     .setExpression((Expression) e));

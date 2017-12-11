@@ -33,6 +33,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -40,7 +41,6 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.Session;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 @ApplicationScoped
 public class UndefinedExpressionEditorDefinition implements ExpressionEditorDefinition<Expression> {
@@ -90,11 +90,11 @@ public class UndefinedExpressionEditorDefinition implements ExpressionEditorDefi
     }
 
     @Override
-    public Optional<GridWidget> getEditor(final GridCellTuple parent,
-                                          final HasExpression hasExpression,
-                                          final Optional<Expression> expression,
-                                          final Optional<HasName> hasName,
-                                          final boolean nested) {
+    public Optional<BaseExpressionGrid> getEditor(final GridCellTuple parent,
+                                                  final HasExpression hasExpression,
+                                                  final Optional<Expression> expression,
+                                                  final Optional<HasName> hasName,
+                                                  final boolean nested) {
         return Optional.of(new UndefinedExpressionGrid(parent,
                                                        hasExpression,
                                                        expression,

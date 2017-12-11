@@ -44,7 +44,6 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 public class MoveRowsCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
@@ -187,11 +186,8 @@ public class MoveRowsCommand extends AbstractCanvasGraphCommand implements VetoE
                         if (value instanceof ExpressionCellValue) {
                             final ExpressionCellValue ecv = (ExpressionCellValue) value;
                             if (ecv.getValue().isPresent()) {
-                                final GridWidget gw = ecv.getValue().get();
-                                if (gw instanceof BaseExpressionGrid) {
-                                    final BaseExpressionGrid beg = (BaseExpressionGrid) gw;
-                                    beg.getParentInformation().setRowIndex(rowIndex);
-                                }
+                                final BaseExpressionGrid beg = ecv.getValue().get();
+                                beg.getParentInformation().setRowIndex(rowIndex);
                             }
                         }
                     }

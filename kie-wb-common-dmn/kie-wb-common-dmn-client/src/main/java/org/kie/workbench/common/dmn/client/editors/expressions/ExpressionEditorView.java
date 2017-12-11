@@ -23,11 +23,11 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.mvp.Command;
 
 public interface ExpressionEditorView extends org.jboss.errai.ui.client.local.api.IsElement,
@@ -55,5 +55,5 @@ public interface ExpressionEditorView extends org.jboss.errai.ui.client.local.ap
                    final Optional<HasName> hasName,
                    final Optional<Expression> expression);
 
-    void onExpressionEditorSelected(final Optional<GridWidget> oEditor);
+    void onExpressionEditorSelected(final Optional<BaseExpressionGrid> oEditor);
 }

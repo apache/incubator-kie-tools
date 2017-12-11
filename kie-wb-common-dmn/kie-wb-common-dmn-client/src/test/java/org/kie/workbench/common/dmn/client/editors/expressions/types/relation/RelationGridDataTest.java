@@ -27,6 +27,8 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.context.MoveRowsCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.MoveColumnsCommand;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
+import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
@@ -35,11 +37,15 @@ import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.mvp.Command;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -53,6 +59,9 @@ public class RelationGridDataTest {
 
     @Mock
     private GridCellValue gridCellValue;
+
+    @Mock
+    private DMNGridLayer gridLayer;
 
     @Mock
     private SessionManager sessionManager;
@@ -69,7 +78,6 @@ public class RelationGridDataTest {
     @Mock
     private Command canvasOperation;
 
-    @Mock
     private DMNGridData delegate;
 
     private RelationGridData uiModel;
@@ -78,6 +86,7 @@ public class RelationGridDataTest {
 
     @Before
     public void setup() {
+        this.delegate = spy(new DMNGridData(gridLayer));
         this.uiModel = new RelationGridData(delegate,
                                             sessionManager,
                                             sessionCommandManager,
@@ -126,6 +135,40 @@ public class RelationGridDataTest {
                                               any(MoveColumnsCommand.class));
     }
 
+    @Test
+    public void testAppendColumn() {
+        uiModel.appendColumn(gridColumn);
+
+        verify(delegate).appendColumn(eq(gridColumn));
+
+        verify(gridColumn).setResizable(eq(false));
+    }
+
+    @Test
+    public void testInsertColumn() {
+        uiModel.insertColumn(0, gridColumn);
+
+        verify(delegate).insertColumn(eq(0),
+                                      eq(gridColumn));
+
+        verify(gridColumn).setResizable(eq(false));
+    }
+
+    @Test
+    public void testDeleteColumn() {
+        final GridColumn<?> anotherGridColumn = mock(GridColumn.class);
+        uiModel.appendColumn(anotherGridColumn);
+        uiModel.appendColumn(gridColumn);
+
+        //Reset as methods were invoked by the appendColumn(..) calls
+        reset(anotherGridColumn);
+        uiModel.deleteColumn(gridColumn);
+
+        verify(delegate).deleteColumn(eq(gridColumn));
+
+        verify(anotherGridColumn).setResizable(eq(false));
+    }
+
     // --- Delegated to real class ---
 
     @Test
@@ -148,19 +191,27 @@ public class RelationGridDataTest {
 
     @Test
     public void testDelegateSetCell() {
-        uiModel.setCell(0, 1, gridCellValue);
+        uiModel.appendColumn(gridColumn);
+        uiModel.appendRow(new BaseGridRow());
+        uiModel.appendRow(new BaseGridRow());
 
-        verify(delegate).setCell(eq(0),
-                                 eq(1),
+        uiModel.setCell(1, 0, gridCellValue);
+
+        verify(delegate).setCell(eq(1),
+                                 eq(0),
                                  eq(gridCellValue));
     }
 
     @Test
     public void testDelegateDeleteCell() {
-        uiModel.deleteCell(0, 1);
+        uiModel.appendColumn(gridColumn);
+        uiModel.appendRow(new BaseGridRow());
+        uiModel.appendRow(new BaseGridRow());
 
-        verify(delegate).deleteCell(eq(0),
-                                    eq(1));
+        uiModel.deleteCell(1, 0);
+
+        verify(delegate).deleteCell(eq(1),
+                                    eq(0));
     }
 
     @Test
@@ -175,28 +226,6 @@ public class RelationGridDataTest {
         uiModel.getColumnCount();
 
         verify(delegate).getColumnCount();
-    }
-
-    @Test
-    public void testDelegateAppendColumn() {
-        uiModel.appendColumn(gridColumn);
-
-        verify(delegate).appendColumn(eq(gridColumn));
-    }
-
-    @Test
-    public void testDelegateInsertColumn() {
-        uiModel.insertColumn(0, gridColumn);
-
-        verify(delegate).insertColumn(eq(0),
-                                      eq(gridColumn));
-    }
-
-    @Test
-    public void testDelegateDeleteColumn() {
-        uiModel.deleteColumn(gridColumn);
-
-        verify(delegate).deleteColumn(eq(gridColumn));
     }
 
     @Test
@@ -266,6 +295,8 @@ public class RelationGridDataTest {
 
     @Test
     public void testDelegateUpdateColumn() {
+        uiModel.appendColumn(gridColumn);
+
         uiModel.updateColumn(0, gridColumn);
 
         verify(delegate).updateColumn(eq(0),
@@ -324,6 +355,8 @@ public class RelationGridDataTest {
 
     @Test
     public void testDelegateDeleteRow() {
+        uiModel.appendRow(gridRow);
+
         uiModel.deleteRow(0);
 
         verify(delegate).deleteRow(eq(0));
@@ -346,6 +379,8 @@ public class RelationGridDataTest {
 
     @Test
     public void testDelegateGetRow() {
+        uiModel.appendRow(new DMNGridRow());
+
         uiModel.getRow(0);
 
         verify(delegate).getRow(eq(0));

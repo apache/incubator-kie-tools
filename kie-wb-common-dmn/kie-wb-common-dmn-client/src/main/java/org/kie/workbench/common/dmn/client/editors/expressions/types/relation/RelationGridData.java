@@ -95,6 +95,34 @@ public class RelationGridData implements GridData {
                                                                                               canvasOperation)));
     }
 
+    @Override
+    public void appendColumn(final GridColumn<?> column) {
+        delegate.appendColumn(column);
+        assertResizableColumns();
+    }
+
+    @Override
+    public void insertColumn(final int index,
+                             final GridColumn<?> column) {
+        delegate.insertColumn(index,
+                              column);
+        assertResizableColumns();
+    }
+
+    @Override
+    public void deleteColumn(final GridColumn<?> column) {
+        delegate.deleteColumn(column);
+        assertResizableColumns();
+    }
+
+    private void assertResizableColumns() {
+        final int lastColumnIndex = getColumnCount() - 1;
+        for (int columnIndex = 0; columnIndex < getColumnCount(); columnIndex++) {
+            final GridColumn<?> uiColumn = getColumns().get(columnIndex);
+            uiColumn.setResizable(columnIndex != lastColumnIndex);
+        }
+    }
+
     // --- Delegated to real class ---
 
     @Override
@@ -139,23 +167,6 @@ public class RelationGridData implements GridData {
     @Override
     public int getColumnCount() {
         return delegate.getColumnCount();
-    }
-
-    @Override
-    public void appendColumn(final GridColumn<?> column) {
-        delegate.appendColumn(column);
-    }
-
-    @Override
-    public void insertColumn(final int index,
-                             final GridColumn<?> column) {
-        delegate.insertColumn(index,
-                              column);
-    }
-
-    @Override
-    public void deleteColumn(final GridColumn<?> column) {
-        delegate.deleteColumn(column);
     }
 
     @Override

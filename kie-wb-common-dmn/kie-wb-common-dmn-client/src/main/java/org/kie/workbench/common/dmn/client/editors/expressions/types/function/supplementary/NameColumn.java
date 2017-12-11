@@ -18,12 +18,11 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.function.s
 
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.impl.StringColumnRenderer;
 
 public class NameColumn extends DMNGridColumn<String> {
 
-    public NameColumn(final GridWidget gridWidget) {
+    public NameColumn(final FunctionSupplementaryGrid gridWidget) {
         super(new BaseHeaderMetaData(""),
               new StringColumnRenderer(),
               gridWidget);

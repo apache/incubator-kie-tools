@@ -31,21 +31,25 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.client.commands.expressions.types.context.AddContextEntryCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState;
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState.GridWidgetHandlersOperation;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 import org.uberfire.mocks.EventSourceMock;
 
@@ -54,7 +58,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class ContextGridTest {
@@ -67,6 +73,12 @@ public class ContextGridTest {
 
     @Mock
     private SessionManager sessionManager;
+
+    @Mock
+    private ClientSession session;
+
+    @Mock
+    private AbstractCanvasHandler handler;
 
     @Mock
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
@@ -93,10 +105,13 @@ public class ContextGridTest {
     private ExpressionEditorDefinition literalExpressionEditorDefinition;
 
     @Mock
-    private GridWidget literalExpressionEditor;
+    private BaseExpressionGrid literalExpressionEditor;
 
     @Mock
     private GridWidgetDnDHandlersState dndHandlersState;
+
+    @Captor
+    private ArgumentCaptor<AddContextEntryCommand> addContextEntryCommandCaptor;
 
     private LiteralExpression literalExpression = new LiteralExpression();
 
@@ -128,6 +143,9 @@ public class ContextGridTest {
                                                                                                          any(Optional.class),
                                                                                                          any(Optional.class),
                                                                                                          anyBoolean());
+
+        doReturn(session).when(sessionManager).getCurrentSession();
+        doReturn(handler).when(session).getCanvasHandler();
 
         this.grid = (ContextGrid) definition.getEditor(parent,
                                                        hasExpression,
@@ -193,5 +211,21 @@ public class ContextGridTest {
 
         assertEquals(isPermitted,
                      grid.isRowDragPermitted(dndHandlersState));
+    }
+
+    @Test
+    public void testAddContextEntry() {
+        grid.addContextEntry();
+
+        verify(sessionCommandManager).execute(eq(handler),
+                                              addContextEntryCommandCaptor.capture());
+
+        final AddContextEntryCommand addContextEntryCommand = addContextEntryCommandCaptor.getValue();
+        addContextEntryCommand.execute(handler);
+
+        verify(parent).onResize();
+        verify(gridPanel).refreshScrollPosition();
+        verify(gridPanel).updatePanelSize();
+        verify(gridLayer).batch();
     }
 }

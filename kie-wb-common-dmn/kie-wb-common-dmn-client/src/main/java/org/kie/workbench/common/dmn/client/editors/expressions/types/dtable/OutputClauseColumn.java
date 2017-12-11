@@ -29,7 +29,6 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.HasSingletonDOMElementResource;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 public class OutputClauseColumn extends DMNGridColumn<String> implements HasSingletonDOMElementResource {
 
@@ -39,7 +38,7 @@ public class OutputClauseColumn extends DMNGridColumn<String> implements HasSing
 
     public OutputClauseColumn(final Supplier<List<HeaderMetaData>> headerMetaDataSupplier,
                               final TextAreaSingletonDOMElementFactory factory,
-                              final GridWidget gridWidget) {
+                              final DecisionTableGrid gridWidget) {
         super(headerMetaDataSupplier.get(),
               new OutputClauseColumnRenderer(factory),
               gridWidget);
