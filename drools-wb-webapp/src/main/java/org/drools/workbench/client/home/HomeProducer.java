@@ -26,7 +26,7 @@ import org.kie.workbench.common.screens.home.model.HomeShortcutLink;
 import org.kie.workbench.common.screens.home.model.ModelUtils;
 import org.uberfire.client.mvp.PlaceManager;
 
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.BUSINESS_DASHBOARDS;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.CONTENT_MANAGEMENT;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.DEPLOYMENTS;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.LIBRARY;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.SERVER_MANAGEMENT;
@@ -51,8 +51,8 @@ public class HomeProducer implements HomeModelProvider {
                                                             PERSPECTIVE);
         design.addLink(new HomeShortcutLink("projects",
                                             LIBRARY));
-        design.addLink(new HomeShortcutLink("dashboards",
-                                            BUSINESS_DASHBOARDS));
+        design.addLink(new HomeShortcutLink("pages",
+                                            CONTENT_MANAGEMENT));
 
         final HomeShortcut devOps = ModelUtils.makeShortcut("fa fa-gears",
                                                             "DevOps",
