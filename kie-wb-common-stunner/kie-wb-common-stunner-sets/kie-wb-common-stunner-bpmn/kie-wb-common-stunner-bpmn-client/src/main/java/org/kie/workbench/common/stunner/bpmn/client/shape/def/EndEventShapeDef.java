@@ -22,6 +22,7 @@ import java.util.Map;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseEndEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
@@ -38,15 +39,25 @@ public class EndEventShapeDef
 
     public static final SVGShapeViewResources<BaseEndEvent, BPMNSVGViewFactory> VIEW_RESOURCES =
             new SVGShapeViewResources<BaseEndEvent, BPMNSVGViewFactory>()
-                    .put(EndNoneEvent.class, BPMNSVGViewFactory::endNoneEvent)
-                    .put(EndSignalEvent.class, BPMNSVGViewFactory::endSignalEvent)
-                    .put(EndTerminateEvent.class, BPMNSVGViewFactory::endTerminateEvent);
+                    .put(EndNoneEvent.class,
+                         BPMNSVGViewFactory::endNoneEvent)
+                    .put(EndSignalEvent.class,
+                         BPMNSVGViewFactory::endSignalEvent)
+                    .put(EndTerminateEvent.class,
+                         BPMNSVGViewFactory::endTerminateEvent)
+                    .put(EndErrorEvent.class,
+                         BPMNSVGViewFactory::endErrorEvent);
 
     public static final Map<Class<? extends BaseEndEvent>, SvgDataUriGlyph> GLYPHS =
             new HashMap<Class<? extends BaseEndEvent>, SvgDataUriGlyph>() {{
-                put(EndNoneEvent.class, BPMNSVGGlyphFactory.END_NONE_EVENT_GLYPH);
-                put(EndSignalEvent.class, BPMNSVGGlyphFactory.END_SIGNAL_EVENT_GLYPH);
-                put(EndTerminateEvent.class, BPMNSVGGlyphFactory.END_TERMINATE_EVENT_GLYPH);
+                put(EndNoneEvent.class,
+                    BPMNSVGGlyphFactory.END_NONE_EVENT_GLYPH);
+                put(EndSignalEvent.class,
+                    BPMNSVGGlyphFactory.END_SIGNAL_EVENT_GLYPH);
+                put(EndTerminateEvent.class,
+                    BPMNSVGGlyphFactory.END_TERMINATE_EVENT_GLYPH);
+                put(EndErrorEvent.class,
+                    BPMNSVGGlyphFactory.END_ERROR_EVENT_GLYPH);
             }};
 
     @Override
@@ -67,7 +78,8 @@ public class EndEventShapeDef
     public SVGShapeView<?> newViewInstance(final BPMNSVGViewFactory factory,
                                            final BaseEndEvent task) {
         return VIEW_RESOURCES
-                .getResource(factory, task)
+                .getResource(factory,
+                             task)
                 .build(false);
     }
 

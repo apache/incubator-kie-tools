@@ -27,6 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
@@ -50,6 +51,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.AdHoc;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.ProcessInstanceDescription;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.CancelActivity;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.IsInterrupting;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.ErrorRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.SignalRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.SignalScope;
@@ -196,6 +198,8 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
                 "boundarycancelactivity");
             put(SignalScope.class,
                 "signalscope");
+            put(ErrorRef.class,
+                "errorref");
 
             // Simulation properties
             put(TimeUnit.class,
@@ -312,6 +316,8 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
             put(EndNoneEvent.class,
                 endEventPropertiesMap);
             put(EndTerminateEvent.class,
+                endEventPropertiesMap);
+            put(EndErrorEvent.class,
                 endEventPropertiesMap);
             endEventPropertiesMap.put(AssignmentsInfo.class,
                                       "assignmentsinfo");

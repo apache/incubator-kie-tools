@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
@@ -135,6 +136,9 @@ public class BPMNShapeFactory
                           new EndEventShapeDef(),
                           () -> svgShapeFactory)
                 .delegate(EndTerminateEvent.class,
+                          new EndEventShapeDef(),
+                          () -> svgShapeFactory)
+                .delegate(EndErrorEvent.class,
                           new EndEventShapeDef(),
                           () -> svgShapeFactory)
                 .delegate(IntermediateTimerEvent.class,

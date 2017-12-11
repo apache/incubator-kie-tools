@@ -90,6 +90,14 @@ public interface BPMNSVGGlyphFactory {
                             BPMNImageResources.INSTANCE.eventEndTerminate().getSafeUri())
                     .build("eventEndTerminate");
 
+    SvgDataUriGlyph END_ERROR_EVENT_GLYPH =
+            SvgDataUriGlyph.Builder
+                    .create()
+                    .setUri(BPMNImageResources.INSTANCE.eventEnd().getSafeUri())
+                    .addUri("eventEndError",
+                            BPMNImageResources.INSTANCE.eventEndError().getSafeUri())
+                    .build("eventEndError");
+
     SvgDataUriGlyph INTERMEDIATE_NONE_EVENT_GLYPH =
             SvgDataUriGlyph.Builder
                     .create()

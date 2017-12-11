@@ -240,6 +240,16 @@
         "file": "event-end.svg",
         "refs": "eventEndTerminate"
       }
+    },
+
+    {
+      "id": "endErrorEvent",
+      "name": "End Event - Error",
+      "shape": {
+        "path": ".",
+        "file": "event-all.svg"
+      }
     }
+
   ]
 }

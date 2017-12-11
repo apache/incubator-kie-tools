@@ -23,6 +23,7 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
@@ -68,6 +69,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
                 EndNoneEvent.class,
                 EndSignalEvent.class,
                 EndTerminateEvent.class,
+                EndErrorEvent.class,
                 IntermediateTimerEvent.class,
                 IntermediateSignalEventCatching.class,
                 IntermediateSignalEventThrowing.class,

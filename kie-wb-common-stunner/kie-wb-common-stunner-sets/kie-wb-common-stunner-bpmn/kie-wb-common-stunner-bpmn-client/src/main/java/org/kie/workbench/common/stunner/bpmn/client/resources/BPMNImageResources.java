@@ -24,7 +24,7 @@ import com.google.gwt.resources.client.ImageResource;
 
 public interface BPMNImageResources extends ClientBundleWithLookup {
 
-    public static final BPMNImageResources INSTANCE = GWT.create(BPMNImageResources.class);
+    BPMNImageResources INSTANCE = GWT.create(BPMNImageResources.class);
 
     // ****** BPMN ShapeSet Thumbnail. *******
     @Source("images/bpmn_thumb.png")
@@ -88,6 +88,10 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
     @ClientBundle.Source("images/icons/event/event-end-terminate.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource eventEndTerminate();
+
+    @ClientBundle.Source("images/icons/event/event-end-error.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource eventEndError();
 
     @ClientBundle.Source("images/icons/event/event-intermediate.svg")
     @DataResource.MimeType("image/svg+xml")

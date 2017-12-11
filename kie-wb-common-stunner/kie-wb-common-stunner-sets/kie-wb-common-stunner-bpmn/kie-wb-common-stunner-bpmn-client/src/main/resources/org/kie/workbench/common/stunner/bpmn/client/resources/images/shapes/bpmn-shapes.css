@@ -140,6 +140,14 @@
 
 }
 
+.eventAll_group_error {
+    opacity: 0;
+}
+
+.eventAll_errorIcon {
+
+}
+
 #startNoneEvent .eventAll {
     fill: #E8FAE6;
     stroke: #4AA241;
@@ -300,6 +308,22 @@
 }
 
 #endTerminateEvent .eventAll_group_terminate {
+    opacity: 1;
+}
+
+/*TODO, UX please complete the proper values for modelling the BPMN EndErrorEvent element*/
+#endErrorEvent .eventAll {
+    fill: #FCE7E7;
+    stroke: #A30000;
+}
+
+/*TODO, UX please complete the proper values for modelling the BPMN EndErrorEvent element*/
+#endErrorEvent .eventAll_errorIcon {
+    fill: yellow;
+    stroke: blue;
+}
+
+#endErrorEvent .eventAll_group_error {
     opacity: 1;
 }
 

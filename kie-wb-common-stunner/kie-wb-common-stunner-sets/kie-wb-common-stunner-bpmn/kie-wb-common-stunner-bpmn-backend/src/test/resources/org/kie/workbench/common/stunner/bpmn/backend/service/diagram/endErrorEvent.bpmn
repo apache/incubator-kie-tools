@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:drools="http://www.jboss.org/drools" id="_fSI6AMC4Eeev7KdGLdXSAw" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" exporter="jBPM Designer" exporterVersion="6.2.0" targetNamespace="http://www.omg.org/bpmn20">
+  <bpmn2:itemDefinition id="_var1Item" structureRef="String"/>
+  <bpmn2:error id="MyError" errorCode="MyError"/>
+  <bpmn2:process id="evaluation.endErrorEventProcess" drools:packageName="Evaluation.src.main.resources" drools:version="1.0" name="endErrorEventProcess" isExecutable="true">
+    <bpmn2:property id="var1" itemSubjectRef="_var1Item"/>
+    <bpmn2:endEvent id="_E69BD781-AB7F-45C4-85DA-B1F3BAE5BCCB" name="MyErrorEventName">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[MyErrorEventName]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:documentation id="_fSXjgMC4Eeev7KdGLdXSAw"><![CDATA[MyErrorEventDocumentation]]></bpmn2:documentation>
+      <bpmn2:dataInput id="_E69BD781-AB7F-45C4-85DA-B1F3BAE5BCCB_myErrorEventInputInputX" drools:dtype="String" name="myErrorEventInput"/>
+      <bpmn2:dataInputAssociation id="_fSXjgsC4Eeev7KdGLdXSAw">
+        <bpmn2:sourceRef>var1</bpmn2:sourceRef>
+        <bpmn2:targetRef>_E69BD781-AB7F-45C4-85DA-B1F3BAE5BCCB_myErrorEventInputInputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:inputSet id="_fSXjgcC4Eeev7KdGLdXSAw">
+        <bpmn2:dataInputRefs>_E69BD781-AB7F-45C4-85DA-B1F3BAE5BCCB_myErrorEventInputInputX</bpmn2:dataInputRefs>
+      </bpmn2:inputSet>
+      <bpmn2:errorEventDefinition id="_fSXjg8C4Eeev7KdGLdXSAw" drools:erefname="MyError" errorRef="MyError"/>
+    </bpmn2:endEvent>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_fSXjhMC4Eeev7KdGLdXSAw">
+    <bpmndi:BPMNPlane id="_fSXjhcC4Eeev7KdGLdXSAw" bpmnElement="evaluation.endErrorEventProcess">
+      <bpmndi:BPMNShape id="_fSXjhsC4Eeev7KdGLdXSAw" bpmnElement="_E69BD781-AB7F-45C4-85DA-B1F3BAE5BCCB">
+        <dc:Bounds height="28.0" width="28.0" x="75.0" y="75.0"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmn2:relationship id="_fSYKkMC4Eeev7KdGLdXSAw" type="BPSimData">
+    <bpmn2:extensionElements>
+      <bpsim:BPSimData>
+        <bpsim:Scenario xsi:type="bpsim:Scenario" id="default" name="Simulationscenario">
+          <bpsim:ScenarioParameters xsi:type="bpsim:ScenarioParameters"/>
+        </bpsim:Scenario>
+      </bpsim:BPSimData>
+    </bpmn2:extensionElements>
+    <bpmn2:source>_fSI6AMC4Eeev7KdGLdXSAw</bpmn2:source>
+    <bpmn2:target>_fSI6AMC4Eeev7KdGLdXSAw</bpmn2:target>
+  </bpmn2:relationship>
+</bpmn2:definitions>

@@ -32,5 +32,8 @@
 	<g class="eventAll_group_terminate" stunner:transform="scalable">
 		<circle class="eventAll_terminateIcon" cx="28px" cy="28px" r="14px"/>
 	</g>
-
+	<!--TODO, UX please complete the proper paths, etc., for modelling the BPMN ErrorElements-->
+	<g class="eventAll_group_error" stunner:transform="scalable">
+		<circle class="eventAll_errorIcon" cx="28px" cy="28px" r="14px"/>
+	</g>
 </svg>

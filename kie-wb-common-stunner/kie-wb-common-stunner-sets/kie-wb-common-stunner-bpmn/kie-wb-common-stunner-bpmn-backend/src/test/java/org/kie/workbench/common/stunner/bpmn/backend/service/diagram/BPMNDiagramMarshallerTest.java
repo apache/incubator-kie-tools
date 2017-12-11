@@ -73,6 +73,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
@@ -195,6 +196,7 @@ public class BPMNDiagramMarshallerTest {
     private static final String BPMN_SIMULATIONPROPERTIES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/simulationProperties.bpmn";
     private static final String BPMN_MAGNETDOCKERS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/magnetDockers.bpmn";
     private static final String BPMN_MAGNETSINLANE = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/magnetsInLane.bpmn";
+    private static final String BPMN_ENDERROR_EVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endErrorEvent.bpmn";
 
     @Mock
     DefinitionManager definitionManager;
@@ -751,6 +753,30 @@ public class BPMNDiagramMarshallerTest {
                      endSignalEvent.getExecutionSet().getSignalScope().getValue());
         assertEquals("employee",
                      endSignalEvent.getExecutionSet().getSignalRef().getValue());
+    }
+
+    public void testUnmarshallEndErrorEvent() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_ENDERROR_EVENT);
+        assertDiagram(diagram,
+                      2);
+        assertEquals("endErrorEventProcess",
+                     diagram.getMetadata().getTitle());
+        Node<? extends Definition, ?> endEventNode = diagram.getGraph().getNode("_E69BD781-AB7F-45C4-85DA-B1F3BAE5BCCB");
+        EndErrorEvent endErrorEvent = (EndErrorEvent) endEventNode.getContent().getDefinition();
+        assertNotNull(endErrorEvent.getGeneral());
+        assertEquals("MyErrorEventName",
+                     endErrorEvent.getGeneral().getName().getValue());
+        assertEquals("MyErrorEventDocumentation",
+                     endErrorEvent.getGeneral().getDocumentation().getValue());
+        assertNotNull(endErrorEvent.getExecutionSet());
+        assertNotNull(endErrorEvent.getExecutionSet().getErrorRef());
+        assertEquals("MyError",
+                     endErrorEvent.getExecutionSet().getErrorRef().getValue());
+
+        DataIOSet dataIOSet = endErrorEvent.getDataIOSet();
+        AssignmentsInfo assignmentsInfo = dataIOSet.getAssignmentsinfo();
+        assertEquals("myErrorEventInput:String||||[din]var1->myErrorEventInput",
+                     assignmentsInfo.getValue());
     }
 
     @Test
@@ -1878,6 +1904,21 @@ public class BPMNDiagramMarshallerTest {
         assertTrue(result.contains("<![CDATA[MyEndTerminateEventDocumentation]]></bpmn2:documentation>"));
         assertTrue(result.contains("<bpmn2:terminateEventDefinition"));
         assertTrue(result.contains("</bpmn2:endEvent>"));
+    }
+
+    public void testMarshallEndErrorEnd() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_ENDERROR_EVENT);
+        String result = tested.marshall(diagram);
+        assertDiagram(result,
+                      1,
+                      1,
+                      0);
+        assertTrue(result.contains("<bpmn2:error id=\"MyError\" errorCode=\"MyError\"/>"));
+        assertTrue(result.contains("<bpmn2:endEvent"));
+        assertTrue(result.contains(" name=\"MyErrorEventName\""));
+        assertTrue(result.contains("<bpmn2:errorEventDefinition"));
+        assertTrue(result.contains(" errorRef=\"MyError\""));
+        assertTrue(result.contains(" drools:erefname=\"MyError\""));
     }
 
     @Test
