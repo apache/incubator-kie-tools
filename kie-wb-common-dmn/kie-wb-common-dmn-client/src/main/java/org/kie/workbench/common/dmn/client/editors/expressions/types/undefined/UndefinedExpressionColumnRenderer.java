@@ -26,6 +26,7 @@ import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
@@ -38,7 +39,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.im
 public class UndefinedExpressionColumnRenderer extends BaseGridColumnRenderer<String> implements HasDOMElementResources {
 
     private final ExpressionEditorTooltip tooltip = getTooltip();
-    private final Group editorTypesContainer = getEditorTypesContainer();
+    private final Group editorTypesContainer = GWT.create(Group.class);
     private final Set<HandlerRegistration> tooltipEventHandlerRegistrations = new HashSet<>();
 
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
@@ -50,10 +51,6 @@ public class UndefinedExpressionColumnRenderer extends BaseGridColumnRenderer<St
         this.gridWidget = gridWidget;
 
         setupTooltips();
-    }
-
-    Group getEditorTypesContainer() {
-        return new Group();
     }
 
     ExpressionEditorTooltip getTooltip() {

@@ -27,6 +27,7 @@ import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.google.gwtmockito.GwtMockito;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -91,6 +92,8 @@ public class UndefinedExpressionColumnRendererTest {
         doReturn(transform).when(viewport).getTransform();
         doReturn(editorTypesContainerLocation).when(editorTypesContainer).getAbsoluteLocation();
 
+        GwtMockito.useProviderForType(Group.class, type -> editorTypesContainer);
+
         this.renderer = new MockUndefinedExpressionColumnRenderer(expressionEditorDefinitionsSupplier,
                                                                   gridWidget);
     }
@@ -133,11 +136,6 @@ public class UndefinedExpressionColumnRendererTest {
                                                      final UndefinedExpressionGrid gridWidget) {
             super(expressionEditorDefinitionsSupplier,
                   gridWidget);
-        }
-
-        @Override
-        Group getEditorTypesContainer() {
-            return editorTypesContainer;
         }
 
         @Override
