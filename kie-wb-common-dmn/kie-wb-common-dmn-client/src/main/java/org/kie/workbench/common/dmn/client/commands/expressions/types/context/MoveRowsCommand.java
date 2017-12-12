@@ -20,11 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
+import org.kie.workbench.common.dmn.client.commands.util.CommandUtils;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
@@ -43,8 +45,6 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
-import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 public class MoveRowsCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
                                                                            VetoUndoCommand {
@@ -135,7 +135,7 @@ public class MoveRowsCommand extends AbstractCanvasGraphCommand implements VetoE
             public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler ach) {
                 uiModel.moveRowsTo(index,
                                    uiRows);
-                updateRowNumbers();
+                CommandUtils.updateRowNumbers(uiModel, IntStream.range(0, uiModel.getRowCount() - 1));
                 updateParentInformation();
 
                 canvasOperation.execute();
@@ -147,31 +147,12 @@ public class MoveRowsCommand extends AbstractCanvasGraphCommand implements VetoE
             public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler ach) {
                 uiModel.moveRowsTo(oldIndex,
                                    uiRows);
-                updateRowNumbers();
+                CommandUtils.updateRowNumbers(uiModel, IntStream.range(0, uiModel.getRowCount() - 1));
                 updateParentInformation();
 
                 canvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
-            }
-
-            private void updateRowNumbers() {
-                final Optional<RowNumberColumn> rowNumberColumn = uiModel
-                        .getColumns()
-                        .stream()
-                        .filter(c -> c instanceof RowNumberColumn)
-                        .map(c -> (RowNumberColumn) c)
-                        .findFirst();
-
-                rowNumberColumn.ifPresent(c -> {
-                    final int lastRowIndex = uiModel.getRowCount() - 1;
-                    final int columnIndex = uiModel.getColumns().indexOf(c);
-                    for (int rowIndex = 0; rowIndex < lastRowIndex; rowIndex++) {
-                        uiModel.setCell(rowIndex,
-                                        columnIndex,
-                                        new BaseGridCellValue<>(rowIndex + 1));
-                    }
-                });
             }
 
             private void updateParentInformation() {
