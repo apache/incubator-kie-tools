@@ -104,8 +104,13 @@ public class UndefinedExpressionColumnRendererTest {
     }
 
     @Test
-    public void testTooltipPositioningWithTranslation() {
+    public void testTooltipPositioningWithTranslationNegative() {
         assertPositioning(-20, -40, 100, 200, 120, 240);
+    }
+
+    @Test
+    public void testTooltipPositioningWithTranslationPositive() {
+        assertPositioning(20, 40, 100, 200, 80, 160);
     }
 
     private void assertPositioning(final double tx,
