@@ -1,0 +1,5 @@
+package guvnor.bugs.dtables;
+
+function int myfunc() {
+    return 0;
+}
