@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.expressions.types;
+package org.kie.workbench.common.dmn.client.editors.expressions.types.invocation;
 
-public enum ExpressionType {
+import org.uberfire.client.mvp.UberElement;
 
-    UNDEFINED,
-    LITERAL_EXPRESSION,
-    CONTEXT,
-    DECISION_TABLE,
-    RELATION,
-    FUNCTION,
-    FUNCTION_JAVA,
-    FUNCTION_PMML,
-    INVOCATION
+public interface InvocationGridControls extends org.jboss.errai.ui.client.local.api.IsElement,
+                                                UberElement<InvocationGridControls.Presenter> {
 
+    interface Presenter {
+
+        void addParameterBinding();
+    }
 }

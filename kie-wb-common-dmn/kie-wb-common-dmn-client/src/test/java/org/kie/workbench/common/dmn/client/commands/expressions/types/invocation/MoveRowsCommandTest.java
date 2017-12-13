@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.commands.expressions.types.context;
+package org.kie.workbench.common.dmn.client.commands.expressions.types.invocation;
 
 import java.util.Collections;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Binding;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.context.NameColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.invocation.NameColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
@@ -80,7 +80,7 @@ public class MoveRowsCommandTest {
     @Mock
     protected RuleManager ruleManager;
 
-    protected Context context;
+    protected Invocation invocation;
 
     protected DMNGridData uiModel;
 
@@ -88,15 +88,15 @@ public class MoveRowsCommandTest {
 
     @Before
     public void setup() {
-        this.context = new Context();
+        this.invocation = new Invocation();
         this.uiModel = new DMNGridData(gridLayer);
         doReturn(ruleManager).when(handler).getRuleManager();
         doReturn(0).when(uiRowNumberColumn).getIndex();
         doReturn(1).when(uiNameColumn).getIndex();
         doReturn(2).when(uiExpressionEditorColumn).getIndex();
 
-        addContextEntry(II1);
-        addContextEntry(II2);
+        addParameterBinding(II1);
+        addParameterBinding(II2);
 
         addUiModelColumn(uiRowNumberColumn);
         addUiModelColumn(uiNameColumn);
@@ -105,14 +105,14 @@ public class MoveRowsCommandTest {
         addUiModelRow(1);
     }
 
-    protected void addContextEntry(final String variable) {
-        context.getContextEntry().add(new ContextEntry() {{
-            setVariable(new InformationItem() {{
+    protected void addParameterBinding(final String variable) {
+        invocation.getBinding().add(new Binding() {{
+            setParameter(new InformationItem() {{
                 setName(new Name(variable));
             }});
             setExpression(new LiteralExpression() {{
                 setText(makeLiteralExpression(variable,
-                                              context.getContextEntry().size()));
+                                              invocation.getBinding().size()));
             }});
         }});
     }
@@ -136,7 +136,7 @@ public class MoveRowsCommandTest {
 
     private void setupCommand(final int index,
                               final GridRow uiModelRow) {
-        this.command = new MoveRowsCommand(context,
+        this.command = new MoveRowsCommand(invocation,
                                            uiModel,
                                            index,
                                            Collections.singletonList(uiModelRow),
@@ -163,13 +163,13 @@ public class MoveRowsCommandTest {
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      command.newGraphCommand(handler).execute(gce));
 
-        assertContextEntryDefinitions(new int[]{1, 0});
+        assertBindingDefinitions(new int[]{1, 0});
     }
 
     @Test
     public void testGraphCommandExecuteMoveUpThreeRows() {
         // add third row
-        addContextEntry(II3);
+        addParameterBinding(II3);
         addUiModelRow(2);
 
         setupCommand(0,
@@ -178,7 +178,7 @@ public class MoveRowsCommandTest {
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      command.newGraphCommand(handler).execute(gce));
 
-        assertContextEntryDefinitions(new int[]{1, 2, 0});
+        assertBindingDefinitions(new int[]{1, 2, 0});
     }
 
     @Test
@@ -189,13 +189,13 @@ public class MoveRowsCommandTest {
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      command.newGraphCommand(handler).execute(gce));
 
-        assertContextEntryDefinitions(new int[]{1, 0});
+        assertBindingDefinitions(new int[]{1, 0});
     }
 
     @Test
     public void testGraphCommandExecuteMoveDownThreeRows() {
         // add third row
-        addContextEntry(II3);
+        addParameterBinding(II3);
         addUiModelRow(2);
 
         setupCommand(2,
@@ -204,7 +204,7 @@ public class MoveRowsCommandTest {
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      command.newGraphCommand(handler).execute(gce));
 
-        assertContextEntryDefinitions(new int[]{2, 0, 1});
+        assertBindingDefinitions(new int[]{2, 0, 1});
     }
 
     @Test
@@ -223,7 +223,7 @@ public class MoveRowsCommandTest {
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      gc.undo(gce));
 
-        assertContextEntryDefinitions(new int[]{0, 1});
+        assertBindingDefinitions(new int[]{0, 1});
     }
 
     @Test
@@ -242,18 +242,18 @@ public class MoveRowsCommandTest {
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      gc.undo(gce));
 
-        assertContextEntryDefinitions(new int[]{0, 1});
+        assertBindingDefinitions(new int[]{0, 1});
     }
 
-    private void assertContextEntryDefinitions(final int[] iiRowIndexes) {
+    private void assertBindingDefinitions(final int[] iiRowIndexes) {
         final String[] rowValueBases = {II1, II2, II3};
 
         int iiRowIndexIterator = 0;
         for (final int iiRowIndex : iiRowIndexes) {
             assertEquals(rowValueBases[iiRowIndexIterator],
-                         context.getContextEntry().get(iiRowIndex).getVariable().getName().getValue());
+                         invocation.getBinding().get(iiRowIndex).getParameter().getName().getValue());
             assertEquals(makeLiteralExpression(rowValueBases[iiRowIndexIterator], iiRowIndexIterator),
-                         ((LiteralExpression) context.getContextEntry().get(iiRowIndex).getExpression()).getText());
+                         ((LiteralExpression) invocation.getBinding().get(iiRowIndex).getExpression()).getText());
             iiRowIndexIterator++;
         }
     }
@@ -284,7 +284,7 @@ public class MoveRowsCommandTest {
     @Test
     public void testCanvasCommandExecuteMoveUpThreeRows() {
         // add third row
-        addContextEntry(II3);
+        addParameterBinding(II3);
         addUiModelRow(2);
 
         setupCommand(0,
@@ -310,7 +310,7 @@ public class MoveRowsCommandTest {
     @Test
     public void testCanvasCommandExecuteMoveDownThreeRows() {
         // add third row
-        addContextEntry(II3);
+        addParameterBinding(II3);
         addUiModelRow(2);
 
         setupCommand(2,

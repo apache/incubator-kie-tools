@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.expressions.types;
+package org.kie.workbench.common.dmn.client.editors.expressions.types.invocation;
 
-public enum ExpressionType {
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRenderer;
 
-    UNDEFINED,
-    LITERAL_EXPRESSION,
-    CONTEXT,
-    DECISION_TABLE,
-    RELATION,
-    FUNCTION,
-    FUNCTION_JAVA,
-    FUNCTION_PMML,
-    INVOCATION
+public class InvocationGridRenderer extends BaseExpressionGridRenderer {
 
+    @SuppressWarnings("unused")
+    public InvocationGridRenderer(final boolean hideHeader) {
+        //TODO {manstis} We need to hide only the first header row when hideHeader is true
+        super(false);
+    }
 }
