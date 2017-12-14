@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.expressions.types.relation;
+package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -23,9 +23,9 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
-import org.kie.workbench.common.dmn.client.commands.expressions.types.context.MoveRowsCommand;
-import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.MoveColumnsCommand;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
+import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.MoveColumnsCommand;
+import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.MoveRowsCommand;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -40,13 +40,11 @@ import org.uberfire.mvp.Command;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class RelationGridDataTest {
+public class DecisionTableGridDataTest {
 
     @Mock
     private GridRow gridRow;
@@ -74,18 +72,18 @@ public class RelationGridDataTest {
 
     private DMNGridData delegate;
 
-    private RelationGridData uiModel;
+    private DecisionTableGridData uiModel;
 
-    private Optional<Relation> expression = Optional.of(new Relation());
+    private Optional<DecisionTable> expression = Optional.of(new DecisionTable());
 
     @Before
     public void setup() {
         this.delegate = spy(new DMNGridData(gridLayer));
-        this.uiModel = new RelationGridData(delegate,
-                                            sessionManager,
-                                            sessionCommandManager,
-                                            expression,
-                                            canvasOperation);
+        this.uiModel = new DecisionTableGridData(delegate,
+                                                 sessionManager,
+                                                 sessionCommandManager,
+                                                 expression,
+                                                 canvasOperation);
 
         doReturn(session).when(sessionManager).getCurrentSession();
         doReturn(canvasHandler).when(session).getCanvasHandler();
@@ -125,39 +123,5 @@ public class RelationGridDataTest {
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               any(MoveColumnsCommand.class));
-    }
-
-    @Test
-    public void testAppendColumn() {
-        uiModel.appendColumn(gridColumn);
-
-        verify(delegate).appendColumn(eq(gridColumn));
-
-        verify(gridColumn).setResizable(eq(false));
-    }
-
-    @Test
-    public void testInsertColumn() {
-        uiModel.insertColumn(0, gridColumn);
-
-        verify(delegate).insertColumn(eq(0),
-                                      eq(gridColumn));
-
-        verify(gridColumn).setResizable(eq(false));
-    }
-
-    @Test
-    public void testDeleteColumn() {
-        final GridColumn<?> anotherGridColumn = mock(GridColumn.class);
-        uiModel.appendColumn(anotherGridColumn);
-        uiModel.appendColumn(gridColumn);
-
-        //Reset as methods were invoked by the appendColumn(..) calls
-        reset(anotherGridColumn);
-        uiModel.deleteColumn(gridColumn);
-
-        verify(delegate).deleteColumn(eq(gridColumn));
-
-        verify(anotherGridColumn).setResizable(eq(false));
     }
 }
