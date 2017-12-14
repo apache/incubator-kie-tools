@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.columns;
 
+import java.util.List;
+
 import com.ait.lienzo.client.core.event.INodeXYEvent;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -87,9 +89,45 @@ public class EditableHeaderUtilities {
         final double clipMinX = gridWidget.getAbsoluteX() + floatingX + floatingWidth;
         final double clipMinY = gridWidget.getAbsoluteY();
 
-        return new GridBodyCellRenderContext(cellX,
+        //Check and adjust for blocks of columns sharing equal HeaderMetaData
+        double blockCellX = cellX;
+        double blockCellWidth = column.getWidth();
+        final List<GridColumn<?>> gridColumns = ri.getAllColumns();
+        final GridColumn.HeaderMetaData clicked = column.getHeaderMetaData().get(uiHeaderRowIndex);
+
+        //Walk backwards to block start
+        if (ci.getUiColumnIndex() > 0) {
+            int uiLeadColumnIndex = ci.getUiColumnIndex() - 1;
+            GridColumn<?> lead = gridColumns.get(uiLeadColumnIndex);
+            while (uiLeadColumnIndex >= 0 && isSameHeaderMetaData(clicked,
+                                                                  lead.getHeaderMetaData(),
+                                                                  uiHeaderRowIndex)) {
+                blockCellX = blockCellX - lead.getWidth();
+                blockCellWidth = blockCellWidth + lead.getWidth();
+                if (--uiLeadColumnIndex >= 0) {
+                    lead = gridColumns.get(uiLeadColumnIndex);
+                }
+            }
+        }
+
+        //Walk forwards to block end
+        if (ci.getUiColumnIndex() < gridColumns.size() - 1) {
+            int uiTailColumnIndex = ci.getUiColumnIndex() + 1;
+            GridColumn<?> tail = gridColumns.get(uiTailColumnIndex);
+            while (uiTailColumnIndex < gridColumns.size() && isSameHeaderMetaData(clicked,
+                                                                                  tail.getHeaderMetaData(),
+                                                                                  uiHeaderRowIndex)) {
+                blockCellWidth = blockCellWidth + tail.getWidth();
+                tail = gridColumns.get(uiTailColumnIndex);
+                if (++uiTailColumnIndex < gridColumns.size()) {
+                    tail = gridColumns.get(uiTailColumnIndex);
+                }
+            }
+        }
+
+        return new GridBodyCellRenderContext(blockCellX,
                                              cellY,
-                                             column.getWidth(),
+                                             blockCellWidth,
                                              headerRowHeight,
                                              clipMinY,
                                              clipMinX,
@@ -98,5 +136,14 @@ public class EditableHeaderUtilities {
                                              floatingBlockInformation.getColumns().contains(column),
                                              gridWidget.getViewport().getTransform(),
                                              renderer);
+    }
+
+    private static boolean isSameHeaderMetaData(final GridColumn.HeaderMetaData clickedHeaderMetaData,
+                                                final List<GridColumn.HeaderMetaData> columnHeaderMetaData,
+                                                final int uiHeaderRowIndex) {
+        if (uiHeaderRowIndex > columnHeaderMetaData.size() - 1) {
+            return false;
+        }
+        return clickedHeaderMetaData.equals(columnHeaderMetaData.get(uiHeaderRowIndex));
     }
 }
