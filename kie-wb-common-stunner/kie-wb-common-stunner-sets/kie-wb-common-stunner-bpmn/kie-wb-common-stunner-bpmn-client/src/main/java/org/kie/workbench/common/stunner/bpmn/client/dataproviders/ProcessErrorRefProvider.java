@@ -18,6 +18,8 @@ package org.kie.workbench.common.stunner.bpmn.client.dataproviders;
 import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -27,6 +29,7 @@ import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorDataProvider;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.ErrorRef;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -73,14 +76,25 @@ public class ProcessErrorRefProvider
 
     private Collection<String> findCurrentErrorRefs() {
         Diagram diagram = sessionManager.getCurrentSession().getCanvasHandler().getDiagram();
+        Predicate<Node> endErrorEventsFilter = node -> ((View) node.getContent()).getDefinition() instanceof EndErrorEvent;
+        Predicate<Node> intermediateErrorEventsFilter = node -> ((View) node.getContent()).getDefinition() instanceof IntermediateErrorEventCatching;
+        Predicate<Node> errorNodesFilter = endErrorEventsFilter.or(intermediateErrorEventsFilter);
+
+        Function<Node, ErrorRef> errorRefMapper = node -> {
+            if (((View) node.getContent()).getDefinition() instanceof EndErrorEvent) {
+                return ((EndErrorEvent) ((View) node.getContent()).getDefinition()).getExecutionSet().getErrorRef();
+            } else if (((View) node.getContent()).getDefinition() instanceof IntermediateErrorEventCatching) {
+                return ((IntermediateErrorEventCatching) ((View) node.getContent()).getDefinition()).getExecutionSet().getErrorRef();
+            }
+            return null;
+        };
+
         @SuppressWarnings("unchecked")
         Iterable<Node> it = diagram.getGraph().nodes();
         return StreamSupport.stream(it.spliterator(),
                                     false)
-                .filter(e -> e.getContent() instanceof View)
-                .filter(e -> ((View) e.getContent()).getDefinition() instanceof EndErrorEvent)
-                .map(e -> (EndErrorEvent) ((View) e.getContent()).getDefinition())
-                .map(e -> e.getExecutionSet().getErrorRef())
+                .filter(errorNodesFilter)
+                .map(errorRefMapper)
                 .filter(errorRef -> errorRef != null && errorRef.getValue() != null && !errorRef.getValue().isEmpty())
                 .map(ErrorRef::getValue)
                 .collect(Collectors.toSet());

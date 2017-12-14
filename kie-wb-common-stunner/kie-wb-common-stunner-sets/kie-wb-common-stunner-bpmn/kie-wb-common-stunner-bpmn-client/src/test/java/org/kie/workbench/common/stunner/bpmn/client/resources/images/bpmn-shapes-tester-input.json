@@ -191,6 +191,19 @@
       }
     },
     {
+      "id": "intermediateErrorCatchingEvent",
+      "name": "Catching Intermediate Event - Error",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-intermediate-error.svg",
+        "refs": "eventIntermediateError"
+      }
+    },
+    {
       "id": "intermediateSignalThrowingEvent",
       "name": "Throwing Intermediate Event - Signal",
       "shape": {
@@ -246,8 +259,13 @@
       "id": "endErrorEvent",
       "name": "End Event - Error",
       "shape": {
-        "path": ".",
+        "path": "shapes/",
         "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-end-error.svg",
+        "refs": "eventEndError"
       }
     }
 

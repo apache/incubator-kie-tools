@@ -26,4 +26,7 @@
 	<g transform="translate(3.7,3.7) scale(0.05,0.05)" style="opacity:1">
 		<use xlink:href="event-signal.svg#eventSignal"/>
 	</g>
+	<g style="opacity:1">
+			<use xlink:href="event-intermediate-error.svg#eventIntermediateError"/>
+	</g>
 </svg>

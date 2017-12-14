@@ -229,6 +229,28 @@
     opacity: 1;
 }
 
+/*TODO, UX please complete the proper values for modelling the BPMN IntermediateErrorEventCatching element*/
+#intermediateErrorCatchingEvent .eventAll {
+    fill: #FBEFCF;
+    stroke: #F0AB00;
+}
+
+/*TODO, UX please complete the proper values for modelling the BPMN IntermediateErrorEventCatching element*/
+#intermediateErrorCatchingEvent .eventAll_interm_circle {
+    stroke: #F0AB00;
+    opacity: 1;
+}
+
+/*TODO, UX please complete the proper values for modelling the BPMN IntermediateErrorEventCatching element*/
+#intermediateErrorCatchingEvent .eventAll_errorIcon {
+    fill: blue;
+    stroke: yellow;
+}
+
+#intermediateErrorCatchingEvent .eventAll_group_error {
+    opacity: 1;
+}
+
 #intermediateSignalThrowingEvent .eventAll {
     fill: #8cabff;
     fill-opacity: 0.5;

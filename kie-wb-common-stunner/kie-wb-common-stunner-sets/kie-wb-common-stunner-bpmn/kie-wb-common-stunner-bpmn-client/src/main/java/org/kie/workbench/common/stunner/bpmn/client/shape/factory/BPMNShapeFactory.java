@@ -39,6 +39,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
@@ -145,6 +146,9 @@ public class BPMNShapeFactory
                           new CatchingIntermediateEventShapeDef(),
                           () -> svgShapeFactory)
                 .delegate(IntermediateSignalEventCatching.class,
+                          new CatchingIntermediateEventShapeDef(),
+                          () -> svgShapeFactory)
+                .delegate(IntermediateErrorEventCatching.class,
                           new CatchingIntermediateEventShapeDef(),
                           () -> svgShapeFactory)
                 .delegate(IntermediateSignalEventThrowing.class,

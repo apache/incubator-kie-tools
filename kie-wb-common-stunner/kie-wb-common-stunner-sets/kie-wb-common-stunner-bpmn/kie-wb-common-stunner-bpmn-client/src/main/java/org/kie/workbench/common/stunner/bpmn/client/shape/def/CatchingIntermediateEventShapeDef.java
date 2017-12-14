@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGGlyphFactor
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.EventCancelActivityViewHandler;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseCatchingIntermediateEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
@@ -40,13 +41,21 @@ public class CatchingIntermediateEventShapeDef
 
     public static final SVGShapeViewResources<BaseCatchingIntermediateEvent, BPMNSVGViewFactory> VIEW_RESOURCES =
             new SVGShapeViewResources<BaseCatchingIntermediateEvent, BPMNSVGViewFactory>()
-                    .put(IntermediateTimerEvent.class, BPMNSVGViewFactory::intermediateTimerEvent)
-                    .put(IntermediateSignalEventCatching.class, BPMNSVGViewFactory::intermediateSignalCatchingEvent);
+                    .put(IntermediateTimerEvent.class,
+                         BPMNSVGViewFactory::intermediateTimerEvent)
+                    .put(IntermediateSignalEventCatching.class,
+                         BPMNSVGViewFactory::intermediateSignalCatchingEvent)
+                    .put(IntermediateErrorEventCatching.class,
+                         BPMNSVGViewFactory::intermediateErrorCatchingEvent);
 
     public static final Map<Class<? extends BaseCatchingIntermediateEvent>, SvgDataUriGlyph> GLYPHS =
             new HashMap<Class<? extends BaseCatchingIntermediateEvent>, SvgDataUriGlyph>() {{
-                put(IntermediateTimerEvent.class, BPMNSVGGlyphFactory.INTERMEDIATE_TIMER_EVENT_GLYPH);
-                put(IntermediateSignalEventCatching.class, BPMNSVGGlyphFactory.INTERMEDIATE_SIGNAL_EVENT_GLYPH);
+                put(IntermediateTimerEvent.class,
+                    BPMNSVGGlyphFactory.INTERMEDIATE_TIMER_EVENT_GLYPH);
+                put(IntermediateSignalEventCatching.class,
+                    BPMNSVGGlyphFactory.INTERMEDIATE_SIGNAL_EVENT_GLYPH);
+                put(IntermediateErrorEventCatching.class,
+                    BPMNSVGGlyphFactory.INTERMEDIATE_ERROR_EVENT_GLYPH);
             }};
 
     @Override
@@ -75,7 +84,8 @@ public class CatchingIntermediateEventShapeDef
     public SVGShapeView<?> newViewInstance(final BPMNSVGViewFactory factory,
                                            final BaseCatchingIntermediateEvent task) {
         return VIEW_RESOURCES
-                .getResource(factory, task)
+                .getResource(factory,
+                             task)
                 .build(false);
     }
 

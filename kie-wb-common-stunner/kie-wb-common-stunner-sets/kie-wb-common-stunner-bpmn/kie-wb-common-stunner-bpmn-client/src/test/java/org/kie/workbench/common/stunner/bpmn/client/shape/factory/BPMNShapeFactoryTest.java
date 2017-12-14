@@ -40,6 +40,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
@@ -176,6 +177,10 @@ public class BPMNShapeFactoryTest {
                                   any(CatchingIntermediateEventShapeDef.class),
                                   factoryArgumentCaptor.capture());
         verify(delegateShapeFactory,
+               times(1)).delegate(eq(IntermediateErrorEventCatching.class),
+                                  any(CatchingIntermediateEventShapeDef.class),
+                                  factoryArgumentCaptor.capture());
+        verify(delegateShapeFactory,
                times(1)).delegate(eq(IntermediateSignalEventThrowing.class),
                                   any(ThrowingIntermediateEventShapeDef.class),
                                   factoryArgumentCaptor.capture());
@@ -189,7 +194,7 @@ public class BPMNShapeFactoryTest {
         final long basicFactoryCallCount = factoryArgumentCaptor.getAllValues().stream()
                 .filter(this::isBasicShapeFactory)
                 .count();
-        assertEquals(19,
+        assertEquals(20,
                      svgFactoryCallCount,
                      0);
         assertEquals(1,

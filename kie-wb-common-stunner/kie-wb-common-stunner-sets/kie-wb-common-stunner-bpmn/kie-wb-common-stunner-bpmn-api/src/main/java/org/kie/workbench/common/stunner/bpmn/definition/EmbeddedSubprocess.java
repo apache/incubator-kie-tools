@@ -49,6 +49,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
+import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
@@ -56,6 +57,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Definition(graphFactory = NodeFactory.class, builder = EmbeddedSubprocess.EmbeddedSubprocessBuilder.class)
 @Morph(base = BaseSubprocess.class)
 @CanContain(roles = {"all"})
+@CanDock(roles = {"IntermediateEventOnSubprocessBoundary"})
 @FormDefinition(
         startElement = "general",
         policy = FieldPolicy.ONLY_MARKED

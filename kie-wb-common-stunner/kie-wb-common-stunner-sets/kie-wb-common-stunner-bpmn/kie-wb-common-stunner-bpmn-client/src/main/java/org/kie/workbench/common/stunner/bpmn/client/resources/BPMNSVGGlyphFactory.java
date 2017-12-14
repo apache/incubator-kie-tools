@@ -120,6 +120,14 @@ public interface BPMNSVGGlyphFactory {
                             BPMNImageResources.INSTANCE.eventTimer().getSafeUri())
                     .build("eventTimer");
 
+    SvgDataUriGlyph INTERMEDIATE_ERROR_EVENT_GLYPH =
+            SvgDataUriGlyph.Builder
+                    .create()
+                    .setUri(BPMNImageResources.INSTANCE.eventIntermediate().getSafeUri())
+                    .addUri("eventIntermediateError",
+                            BPMNImageResources.INSTANCE.eventIntermediateError().getSafeUri())
+                    .build("eventIntermediateError");
+
     SvgDataUriGlyph LANE_GLYPH =
             SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.lane().getSafeUri());
 

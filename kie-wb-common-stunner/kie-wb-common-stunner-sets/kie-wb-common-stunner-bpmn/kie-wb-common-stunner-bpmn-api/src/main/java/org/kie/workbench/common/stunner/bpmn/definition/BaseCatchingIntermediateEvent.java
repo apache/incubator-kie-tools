@@ -57,32 +57,36 @@ public abstract class BaseCatchingIntermediateEvent
     protected CircleDimensionSet dimensionsSet;
 
     @Labels
-    private final Set<String> labels = new HashSet<String>() {{
-        add("all");
-        add("sequence_start");
-        add("sequence_end");
-        add("to_task_event");
-        add("from_task_event");
-        add("fromtoall");
-        add("FromEventbasedGateway");
-        add("IntermediateEventOnSubprocessBoundary");
-        add("IntermediateEventOnActivityBoundary");
-        add("EventOnChoreographyActivityBoundary");
-        add("IntermediateEventsMorph");
-        add("cm_nop");
-    }};
+    protected final Set<String> labels = new HashSet<>();
 
     public BaseCatchingIntermediateEvent() {
+        initLabels();
     }
 
     public BaseCatchingIntermediateEvent(final BPMNGeneralSet general,
                                          final BackgroundSet backgroundSet,
                                          final FontSet fontSet,
                                          final CircleDimensionSet dimensionsSet) {
+        this();
         this.general = general;
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
         this.dimensionsSet = dimensionsSet;
+    }
+
+    protected void initLabels() {
+        labels.add("all");
+        labels.add("sequence_start");
+        labels.add("sequence_end");
+        labels.add("to_task_event");
+        labels.add("from_task_event");
+        labels.add("fromtoall");
+        labels.add("FromEventbasedGateway");
+        labels.add("IntermediateEventOnSubprocessBoundary");
+        labels.add("IntermediateEventOnActivityBoundary");
+        labels.add("EventOnChoreographyActivityBoundary");
+        labels.add("IntermediateEventsMorph");
+        labels.add("cm_nop");
     }
 
     @Override

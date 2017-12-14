@@ -28,6 +28,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
@@ -73,6 +74,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
                 IntermediateTimerEvent.class,
                 IntermediateSignalEventCatching.class,
                 IntermediateSignalEventThrowing.class,
+                IntermediateErrorEventCatching.class,
                 ParallelGateway.class,
                 ExclusiveDatabasedGateway.class,
                 ReusableSubprocess.class,
