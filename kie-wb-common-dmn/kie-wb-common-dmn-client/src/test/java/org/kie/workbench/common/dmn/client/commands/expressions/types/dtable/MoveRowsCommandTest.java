@@ -151,7 +151,7 @@ public class MoveRowsCommandTest {
 
     @Test
     public void moveMultipleRowsDown() throws Exception {
-        moveRowsToPositionCommand(rowsUnderTest.subList(0, 2), 2);
+        moveRowsToPositionCommand(rowsUnderTest.subList(0, 2), 1);
 
         graphCommand.execute(graphCommandExecutionContext);
         canvasCommand.execute(canvasHandler);

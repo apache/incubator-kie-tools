@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.commands.util;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
@@ -43,5 +44,10 @@ public class CommandUtils {
 
             );
         });
+    }
+
+    public static <T> void moveRows(final List<T> allRows, final List<T> rowsToMove, final int index) {
+        allRows.removeAll(rowsToMove);
+        allRows.addAll(index, rowsToMove);
     }
 }

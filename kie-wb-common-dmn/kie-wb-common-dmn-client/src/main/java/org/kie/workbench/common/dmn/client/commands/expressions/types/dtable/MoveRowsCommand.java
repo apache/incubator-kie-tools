@@ -88,7 +88,6 @@ public class MoveRowsCommand extends AbstractCanvasGraphCommand implements VetoE
             }
 
             private void moveDecisionRules(final int index) {
-                final int oldIndex = uiModel.getRows().indexOf(rows.get(0));
                 final List<DecisionRule> rulesToMove = rows
                         .stream()
                         .map(r -> uiModel.getRows().indexOf(r))
@@ -97,15 +96,7 @@ public class MoveRowsCommand extends AbstractCanvasGraphCommand implements VetoE
 
                 final List<DecisionRule> rules = dtable.getRule();
 
-                rules.removeAll(rulesToMove);
-
-                if (index < oldIndex) {
-                    rules.addAll(index,
-                                 rulesToMove);
-                } else if (index > oldIndex) {
-                    rules.addAll(index - rulesToMove.size() + 1,
-                                 rulesToMove);
-                }
+                CommandUtils.moveRows(rules, rulesToMove, index);
             }
         };
     }

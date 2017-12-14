@@ -97,7 +97,6 @@ public class MoveRowsCommand extends AbstractCanvasGraphCommand implements VetoE
             }
 
             private void moveRows(final int index) {
-                final int oldIndex = uiModel.getRows().indexOf(uiRows.get(0));
                 final List<Binding> rowsToMove = uiRows
                         .stream()
                         .map(r -> uiModel.getRows().indexOf(r))
@@ -106,15 +105,7 @@ public class MoveRowsCommand extends AbstractCanvasGraphCommand implements VetoE
 
                 final List<Binding> rows = invocation.getBinding();
 
-                rows.removeAll(rowsToMove);
-
-                if (index < oldIndex) {
-                    rows.addAll(index,
-                                rowsToMove);
-                } else if (index > oldIndex) {
-                    rows.addAll(index - rowsToMove.size() + 1,
-                                rowsToMove);
-                }
+                CommandUtils.moveRows(rows, rowsToMove, index);
             }
         };
     }
