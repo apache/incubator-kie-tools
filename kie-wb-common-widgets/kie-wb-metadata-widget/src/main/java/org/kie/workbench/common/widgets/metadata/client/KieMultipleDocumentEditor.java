@@ -106,7 +106,7 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
 
     protected Menus menus;
 
-    private D activeDocument = null;
+    protected D activeDocument = null;
     protected final Set<D> documents = new HashSet<>();
 
     //Handler for MayClose requests
