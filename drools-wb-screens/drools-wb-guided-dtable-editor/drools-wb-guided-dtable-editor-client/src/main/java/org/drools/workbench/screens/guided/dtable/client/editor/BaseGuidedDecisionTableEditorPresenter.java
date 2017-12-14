@@ -266,6 +266,7 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
                        MenuItems.VALIDATE);
 
         if (!dtPresenter.isPresent()) {
+            activeDocument = null;
             return;
         }
 
@@ -292,15 +293,14 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
 
         addColumnsTab();
 
-        columnsTabToggle(dtPresenter);
+        enableColumnsTab(dtPresenter);
     }
 
-    void columnsTabToggle(final GuidedDecisionTableView.Presenter decisionTablePresenter) {
-        columnsTabToggle(isGuidedDecisionTableEditable(decisionTablePresenter));
+    void enableColumnsTab(final GuidedDecisionTableView.Presenter decisionTablePresenter) {
+        enableColumnsTab(isGuidedDecisionTableEditable(decisionTablePresenter));
     }
 
     boolean isGuidedDecisionTableEditable(final GuidedDecisionTableView.Presenter decisionTablePresenter) {
-
         final GuidedDecisionTablePresenter.Access access = decisionTablePresenter.getAccess();
         final boolean decisionTableIsEditable = !access.isReadOnly();
         final boolean decisionTableHasEditableColumns = access.hasEditableColumns();
@@ -308,27 +308,27 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
         return decisionTableIsEditable && decisionTableHasEditableColumns;
     }
 
-    void columnsTabToggle(final boolean disableColumnsPage) {
-        if (disableColumnsPage) {
-            disableColumnsPage();
-        } else {
+    void enableColumnsTab(final boolean enabled) {
+        if (enabled) {
             enableColumnsPage();
+        } else {
+            disableColumnsPage();
         }
     }
 
     void onUpdatedLockStatusEvent(final UpdatedLockStatusEvent event) {
-
         final Optional<GuidedDecisionTableView.Presenter> activeDecisionTable = Optional.ofNullable(modeller.getActiveDecisionTable());
 
         if (!activeDecisionTable.isPresent()) {
+            enableColumnsTab(false);
             return;
         }
 
         final boolean isEditable = isGuidedDecisionTableEditable(activeDecisionTable.get());
         final boolean isLocked = event.isLocked() && !event.isLockedByCurrentUser();
-        final boolean disableColumnsPage = isLocked || !isEditable;
+        final boolean enableColumnsPage = !isLocked && isEditable;
 
-        columnsTabToggle(disableColumnsPage);
+        enableColumnsTab(enableColumnsPage);
     }
 
     void addColumnsTab() {

@@ -50,6 +50,7 @@ import static org.drools.workbench.screens.guided.dtable.client.editor.BaseGuide
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
@@ -303,6 +304,35 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
                never()).activateDocument(any(GuidedDecisionTableView.Presenter.class));
         assertFalse(getMenuState(presenter.getMenus(),
                                  MenuItems.VALIDATE));
+    }
+
+    @Test
+    public void checkOnDecisionTableSelectedEventReselection() {
+        final ObservablePath path = mock(ObservablePath.class);
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
+        final GuidedDecisionTableEditorContent content = makeDecisionTableContent();
+        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable(path,
+                                                                                path,
+                                                                                placeRequest,
+                                                                                content);
+        final DecisionTableSelectedEvent eventSelect = new DecisionTableSelectedEvent(dtPresenter);
+        doReturn(true).when(modeller).isDecisionTableAvailable(dtPresenter);
+
+        presenter.onStartup(path,
+                            placeRequest);
+
+        presenter.onDecisionTableSelected(eventSelect);
+        assertEquals(dtPresenter,
+                     presenter.getActiveDocument());
+
+        final DecisionTableSelectedEvent eventDeselect = DecisionTableSelectedEvent.NONE;
+
+        presenter.onDecisionTableSelected(eventDeselect);
+        assertNull(presenter.getActiveDocument());
+
+        presenter.onDecisionTableSelected(eventSelect);
+        assertEquals(dtPresenter,
+                     presenter.getActiveDocument());
     }
 
     @Test
@@ -571,21 +601,20 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
         verify(dtPresenter).activate();
         verify(presenter).enableMenus(true);
         verify(presenter).addColumnsTab();
-        verify(presenter).columnsTabToggle(dtPresenter);
+        verify(presenter).enableColumnsTab(dtPresenter);
         verify(presenter).activateDocument(dtPresenter, overview, oracle, imports, !isEditable);
     }
 
     @Test
-    public void testColumnsTabToggle() {
-
+    public void testEnableColumnsTab() {
         final GuidedDecisionTableView.Presenter dtPresenter = mock(GuidedDecisionTableView.Presenter.class);
         final boolean isGuidedDecisionTableEditable = true;
 
         doReturn(isGuidedDecisionTableEditable).when(presenter).isGuidedDecisionTableEditable(any());
 
-        presenter.columnsTabToggle(dtPresenter);
+        presenter.enableColumnsTab(dtPresenter);
 
-        verify(presenter).columnsTabToggle(isGuidedDecisionTableEditable);
+        verify(presenter).enableColumnsTab(eq(true));
     }
 
     @Test
@@ -686,74 +715,66 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
 
     @Test
     public void testOnUpdatedLockStatusEventWhenTableIsNotLockedAndIsEditable() {
-
         final UpdatedLockStatusEvent event = mock(UpdatedLockStatusEvent.class);
         final GuidedDecisionTableView.Presenter activeDecisionTable = mock(GuidedDecisionTableView.Presenter.class);
-        final boolean disableColumnsTab = false;
 
         doReturn(false).when(event).isLocked();
         doReturn(false).when(event).isLockedByCurrentUser();
         doReturn(true).when(presenter).isGuidedDecisionTableEditable(activeDecisionTable);
         doReturn(activeDecisionTable).when(modeller).getActiveDecisionTable();
-        doNothing().when(presenter).columnsTabToggle(anyBoolean());
+        doNothing().when(presenter).enableColumnsTab(anyBoolean());
 
         presenter.onUpdatedLockStatusEvent(event);
 
-        verify(presenter).columnsTabToggle(disableColumnsTab);
+        verify(presenter).enableColumnsTab(eq(true));
     }
 
     @Test
     public void testOnUpdatedLockStatusEventWhenTableIsNotLockedAndIsNotEditable() {
-
         final UpdatedLockStatusEvent event = mock(UpdatedLockStatusEvent.class);
         final GuidedDecisionTableView.Presenter activeDecisionTable = mock(GuidedDecisionTableView.Presenter.class);
-        final boolean disableColumnsTab = true;
 
         doReturn(false).when(event).isLocked();
         doReturn(false).when(event).isLockedByCurrentUser();
         doReturn(false).when(presenter).isGuidedDecisionTableEditable(activeDecisionTable);
         doReturn(activeDecisionTable).when(modeller).getActiveDecisionTable();
-        doNothing().when(presenter).columnsTabToggle(anyBoolean());
+        doNothing().when(presenter).enableColumnsTab(anyBoolean());
 
         presenter.onUpdatedLockStatusEvent(event);
 
-        verify(presenter).columnsTabToggle(disableColumnsTab);
+        verify(presenter).enableColumnsTab(eq(false));
     }
 
     @Test
     public void testOnUpdatedLockStatusEventWhenIsLockedByTheCurrentUser() {
-
         final UpdatedLockStatusEvent event = mock(UpdatedLockStatusEvent.class);
         final GuidedDecisionTableView.Presenter activeDecisionTable = mock(GuidedDecisionTableView.Presenter.class);
-        final boolean disableColumnsTab = false;
 
         doReturn(true).when(event).isLocked();
         doReturn(true).when(event).isLockedByCurrentUser();
         doReturn(true).when(presenter).isGuidedDecisionTableEditable(activeDecisionTable);
         doReturn(activeDecisionTable).when(modeller).getActiveDecisionTable();
-        doNothing().when(presenter).columnsTabToggle(anyBoolean());
+        doNothing().when(presenter).enableColumnsTab(anyBoolean());
 
         presenter.onUpdatedLockStatusEvent(event);
 
-        verify(presenter).columnsTabToggle(disableColumnsTab);
+        verify(presenter).enableColumnsTab(eq(true));
     }
 
     @Test
     public void testOnUpdatedLockStatusEventWhenIsLockedByAnotherUser() {
-
         final UpdatedLockStatusEvent event = mock(UpdatedLockStatusEvent.class);
         final GuidedDecisionTableView.Presenter activeDecisionTable = mock(GuidedDecisionTableView.Presenter.class);
-        final boolean disableColumnsTab = true;
 
         doReturn(true).when(event).isLocked();
         doReturn(false).when(event).isLockedByCurrentUser();
         doReturn(true).when(presenter).isGuidedDecisionTableEditable(activeDecisionTable);
         doReturn(activeDecisionTable).when(modeller).getActiveDecisionTable();
-        doNothing().when(presenter).columnsTabToggle(anyBoolean());
+        doNothing().when(presenter).enableColumnsTab(anyBoolean());
 
         presenter.onUpdatedLockStatusEvent(event);
 
-        verify(presenter).columnsTabToggle(disableColumnsTab);
+        verify(presenter).enableColumnsTab(eq(false));
     }
 
     @Test
@@ -765,6 +786,6 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
 
         presenter.onUpdatedLockStatusEvent(event);
 
-        verify(presenter, never()).columnsTabToggle(any());
+        verify(presenter, never()).enableColumnsTab(any());
     }
 }

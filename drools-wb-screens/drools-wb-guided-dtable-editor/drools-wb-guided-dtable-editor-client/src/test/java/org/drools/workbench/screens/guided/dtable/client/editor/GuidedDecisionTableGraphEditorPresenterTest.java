@@ -732,7 +732,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
 
         verify(presenter, never()).initialiseEditorTabsWhenNoDocuments();
         verify(presenter).addColumnsTab();
-        verify(presenter).columnsTabToggle(dtPresenter);
+        verify(presenter).enableColumnsTab(dtPresenter);
     }
 
     private void checkOnDecisionTableSelected(final ParameterizedCommand<PlaceRequest> setup,
