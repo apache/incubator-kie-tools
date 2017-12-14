@@ -26,7 +26,7 @@ public class Person {
 
 
     
-    public java.lang.String getSex() {
+    public String getSex() {
         return this.sex;
     }
 

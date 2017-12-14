@@ -1,4 +1,4 @@
-package guvnor.bugs.dtables;
+package guvnor.feature.dtables;
 
 function int myfunc() {
     return 0;

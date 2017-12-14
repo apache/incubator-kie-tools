@@ -16,24 +16,27 @@
 
 package org.drools.workbench.screens.dtablexls.backend.server;
 
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 
+import org.assertj.core.api.Assertions;
+import org.assertj.core.api.SoftAssertions;
+import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionMessage;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSService;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.test.CDITestSetup;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 public class DecisionTableXLSServiceImplCDITest extends CDITestSetup {
 
-    private ConversionResult conversionResult;
     private DecisionTableXLSService xlsService;
 
     private String droolsDateFormat;
@@ -63,27 +66,67 @@ public class DecisionTableXLSServiceImplCDITest extends CDITestSetup {
      */
     @Test
     public void testConvertFunctionAndBigDecimal() throws Exception {
-        convertResource("dtables/src/main/resources/guvnor/feature/dtables/FunctionAndBigDecimalTable.xls");
-        assertEquals(1, conversionResult.getMessages().size());
-        assertTrue(conversionResult.getMessages().get(0).getMessage().startsWith("Created Guided Decision Table 'FunctionAndBigDecimalTable (converted on"));
-        assertTrue(conversionResult.getMessages().get(0).getMessage().endsWith(").gdst'"));
+        final String resourcePath = "dtables/src/main/resources/guvnor/feature/dtables/FunctionAndBigDecimalTable.xls";
+        final ConversionResult conversionResult = convertResource(resourcePath);
+        final List<ConversionMessage> messages = conversionResult.getMessages();
+        Assertions.assertThat(messages).hasSize(1);
+        final String message = messages.get(0).getMessage();
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(message).startsWith("Created Guided Decision Table 'FunctionAndBigDecimalTable (converted on");
+            softly.assertThat(message).endsWith(").gdst'");
+        });
+    }
+
+    /**
+     * Covers RHBRMS-609 - Validation for spreadsheet fails because it cannot find functions in the same package
+     */
+    @Test
+    public void testValidateFunctionAndBigDecimal() throws Exception {
+        final String resourcePath = "dtables/src/main/resources/guvnor/feature/dtables/FunctionAndBigDecimalTable.xls";
+        final List<ValidationMessage> messages = validateResource(resourcePath);
+        Assertions.assertThat(messages).hasSize(0);
     }
 
     @Test
     public void testConvertStaticFields() throws Exception {
-        convertResource("dtables/src/main/resources/guvnor/feature/dtables/StaticFieldsTable.xls");
-        assertEquals(2, conversionResult.getMessages().size());
-        assertEquals("Unable to convert value 'Message.GOODBYE' to NUMERIC_INTEGER. Cell (F11)",
-                     conversionResult.getMessages().get(0).getMessage());
-        assertTrue(conversionResult.getMessages().get(1).getMessage().startsWith("Created Guided Decision Table 'StaticFieldsTable (converted on"));
-        assertTrue(conversionResult.getMessages().get(1).getMessage().endsWith(").gdst'"));
+        final String resourcePath = "dtables/src/main/resources/guvnor/feature/dtables/StaticFieldsTable.xls";
+        final ConversionResult conversionResult = convertResource(resourcePath);
+        final List<ConversionMessage> messages = conversionResult.getMessages();
+        Assertions.assertThat(messages).hasSize(2);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(messages.get(0).getMessage())
+                    .isEqualTo("Unable to convert value 'Message.GOODBYE' to NUMERIC_INTEGER. Cell (F11)");
+            softly.assertThat(messages.get(1).getMessage())
+                    .startsWith("Created Guided Decision Table 'StaticFieldsTable (converted on");
+            softly.assertThat(messages.get(1).getMessage())
+                    .endsWith(").gdst'");
+        });
     }
 
-    private void convertResource(final String resource) throws Exception {
+    /**
+     * Covers RHDM-216 - From accumulate causes validation errors
+     */
+    @Test
+    @Ignore("Ignored due to RHDM-216")
+    public void testFromAccumulate() throws Exception {
+        final String resourcePath = "forest/src/main/resources/com/redhat/sample/ForestHealth.xls";
+        final List<ValidationMessage> messages = validateResource(resourcePath);
+        Assertions.assertThat(messages).hasSize(0);
+    }
+
+    private ConversionResult convertResource(final String resource) throws Exception {
+        final Path resourcePath = getPath(resource);
+        return xlsService.convert(resourcePath);
+    }
+
+    private List<ValidationMessage> validateResource(final String resource) throws Exception {
+        final Path resourcePath = getPath(resource);
+        return xlsService.validate(resourcePath, resourcePath);
+    }
+
+    private Path getPath(String resource) throws URISyntaxException {
         final URL resourceURL = getClass().getResource(resource);
         final org.uberfire.java.nio.file.Path resourceNioPath = fileSystemProvider.getPath(resourceURL.toURI());
-        final Path resourcePath = Paths.convert(resourceNioPath);
-
-        conversionResult = xlsService.convert(resourcePath);
+        return Paths.convert(resourceNioPath);
     }
 }
