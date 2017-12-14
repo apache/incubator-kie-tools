@@ -3,18 +3,18 @@
   "path": ".",
   "css": "shapes/bpmn-shapes.css",
   "stencils": [
-      {
-        "id": "parallelMultipleGateway",
-        "name": "Gateway - Parallel Multiple",
-        "shape": {
-          "path": "shapes/",
-          "file": "gateway.svg"
-        },
-        "icon": {
-          "path": "icons/gateway/",
-          "file": "parallel_multiple.svg"
-        }
+    {
+      "id": "parallelMultipleGateway",
+      "name": "Gateway - Parallel Multiple",
+      "shape": {
+        "path": "shapes/",
+        "file": "gateway.svg"
       },
+      "icon": {
+        "path": "icons/gateway/",
+        "file": "parallel_multiple.svg"
+      }
+    },
     {
       "id": "exclusiveGateway",
       "name": "Gateway - Exclusive",
@@ -152,6 +152,19 @@
       }
     },
     {
+      "id": "startMessageEvent",
+      "name": "Start Event - Message",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-start.svg",
+        "refs": "eventMessage"
+      }
+    },
+    {
       "id": "startTimerEvent",
       "name": "Start Event - Timer",
       "shape": {
@@ -230,7 +243,7 @@
     },
     {
       "id": "endSignalEvent",
-      "name": "End Event- Signal",
+      "name": "End Event - Signal",
       "shape": {
         "path": "shapes/",
         "file": "event-all.svg"
@@ -239,6 +252,19 @@
         "path": "icons/event/",
         "file": "event-end.svg",
         "refs": "eventSignal"
+      }
+    },
+    {
+      "id": "endMessageEvent",
+      "name": "End Event - Message",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-end.svg",
+        "refs": "eventMessage"
       }
     },
     {

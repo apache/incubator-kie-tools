@@ -74,6 +74,9 @@ public interface BPMNSVGViewFactory {
     SVGShapeViewResource endSignalEvent();
 
     @SVGSource(PATH_EVENT_ALL)
+    SVGShapeViewResource endMessageEvent();
+
+    @SVGSource(PATH_EVENT_ALL)
     SVGShapeViewResource endTerminateEvent();
 
     @SVGSource(PATH_EVENT_ALL)

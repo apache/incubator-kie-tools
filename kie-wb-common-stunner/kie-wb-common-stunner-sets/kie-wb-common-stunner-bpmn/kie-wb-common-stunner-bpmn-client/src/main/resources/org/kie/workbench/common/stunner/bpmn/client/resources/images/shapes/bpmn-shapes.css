@@ -132,6 +132,9 @@
 
 }
 
+.eventAll_messageIcon {
+
+}
 .eventAll_group_terminate {
     opacity: 0;
 }
@@ -318,6 +321,20 @@
 
 #endSignalEvent .eventAll_group_signal {
     opacity: 1;
+}
+
+#endMessageEvent .eventAll {
+    fill: #FCE7E7;
+    stroke: #A30000;
+}
+
+#endMessageEvent .eventAll_group_message {
+    opacity: 1;
+ }
+
+#endMessageEvent .eventAll_messageIcon {
+    fill: #A30000;
+    stroke: #A30000;
 }
 
 #endTerminateEvent .eventAll {

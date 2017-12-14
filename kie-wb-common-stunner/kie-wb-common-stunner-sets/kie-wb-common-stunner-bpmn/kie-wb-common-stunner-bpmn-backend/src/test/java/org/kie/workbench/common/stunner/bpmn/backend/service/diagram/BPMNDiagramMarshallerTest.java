@@ -74,6 +74,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
@@ -183,6 +184,7 @@ public class BPMNDiagramMarshallerTest {
     private static final String BPMN_INTERMEDIATE_SIGNAL_EVENTTHROWING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateSignalEventThrowing.bpmn";
     private static final String BPMN_INTERMEDIATE_TIMER_EVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateTimerEvent.bpmn";
     private static final String BPMN_ENDSIGNALEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endSignalEvent.bpmn";
+    private static final String BPMN_ENDMESSAGEEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endMessageEvent.bpmn";
     private static final String BPMN_ENDNONEEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endNoneEvent.bpmn";
     private static final String BPMN_ENDTERMINATEEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endTerminateEvent.bpmn";
     private static final String BPMN_PROCESSPROPERTIES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/processProperties.bpmn";
@@ -782,6 +784,27 @@ public class BPMNDiagramMarshallerTest {
                      endSignalEvent.getExecutionSet().getSignalScope().getValue());
         assertEquals("employee",
                      endSignalEvent.getExecutionSet().getSignalRef().getValue());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnmarshallEndMessageEvent() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_ENDMESSAGEEVENT);
+        assertDiagram(diagram,
+                      2);
+        assertEquals("EndMessageEvent",
+                     diagram.getMetadata().getTitle());
+        Node<? extends Definition, ?> endMessageEventNode = diagram.getGraph().getNode("_4A8A0A9E-D4A5-4B6E-94A6-20817A57B3C6");
+        EndMessageEvent endMessageEvent = (EndMessageEvent) endMessageEventNode.getContent().getDefinition();
+
+        assertNotNull(endMessageEvent.getExecutionSet());
+        MessageRef messageRef = endMessageEvent.getExecutionSet().getMessageRef();
+        assertEquals("msgref",
+                     messageRef.getValue());
+        DataIOSet dataIOSet = endMessageEvent.getDataIOSet();
+        AssignmentsInfo assignmentsInfo = dataIOSet.getAssignmentsinfo();
+        assertEquals("EndMessageEventInputVar1:String||||[din]var1->EndMessageEventInputVar1",
+                     assignmentsInfo.getValue());
     }
 
     public void testUnmarshallEndErrorEvent() throws Exception {
@@ -1842,6 +1865,21 @@ public class BPMNDiagramMarshallerTest {
                       0);
         assertTrue(result.contains("<bpmn2:startEvent id=\"_34C4BBFC-544F-4E23-B17B-547BB48EEB63\""));
         assertTrue(result.contains(" name=\"StartMessageEvent\""));
+        assertTrue(result.contains("<bpmn2:message "));
+        assertTrue(result.contains(" name=\"msgref\""));
+        assertTrue(result.contains("<bpmn2:messageEventDefinition"));
+    }
+
+    @Test
+    public void testMarshallEndMessageEvent() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_ENDMESSAGEEVENT);
+        String result = tested.marshall(diagram);
+        assertDiagram(result,
+                      1,
+                      1,
+                      0);
+        assertTrue(result.contains("<bpmn2:endEvent id=\"_4A8A0A9E-D4A5-4B6E-94A6-20817A57B3C6\""));
+        assertTrue(result.contains(" name=\"EndMessageEvent\""));
         assertTrue(result.contains("<bpmn2:message "));
         assertTrue(result.contains(" name=\"msgref\""));
         assertTrue(result.contains("<bpmn2:messageEventDefinition"));

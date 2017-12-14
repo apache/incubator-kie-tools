@@ -957,7 +957,7 @@ public class Bpmn2JsonMarshaller {
                 if (((MessageEventDefinition) ed).getMessageRef() != null) {
                     Message msg = ((MessageEventDefinition) ed).getMessageRef();
                     properties.put(MESSAGEREF,
-                                   msg.getId());
+                                   msg.getName());
                 }
             } else if (ed instanceof CompensateEventDefinition) {
                 if (((CompensateEventDefinition) ed).getActivityRef() != null) {

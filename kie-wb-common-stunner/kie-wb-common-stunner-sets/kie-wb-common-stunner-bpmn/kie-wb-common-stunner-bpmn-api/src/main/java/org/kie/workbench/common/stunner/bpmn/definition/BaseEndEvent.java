@@ -39,48 +39,47 @@ public abstract class BaseEndEvent implements BPMNViewDefinition,
 
     @Category
     public static final transient String category = Categories.EVENTS;
-
+    @Labels
+    protected final Set<String> labels = new HashSet<String>();
     @PropertySet
     @FormField
     @Valid
     protected BPMNGeneralSet general;
-
     @PropertySet
     @Valid
     protected BackgroundSet backgroundSet;
-
     @PropertySet
     protected FontSet fontSet;
-
     @PropertySet
     protected CircleDimensionSet dimensionsSet;
 
-    @Labels
-    protected final Set<String> labels = new HashSet<String>() {{
-        add("all");
-        add("sequence_end");
-        add("to_task_event");
-        add("from_task_event");
-        add("fromtoall");
-        add("choreography_sequence_end");
-        add("Endevents_all");
-        add("EndEventsMorph");
-        add("cm_nop");
-    }};
-
     public BaseEndEvent() {
+        initLabels();
     }
 
     public BaseEndEvent(final BPMNGeneralSet general,
                         final BackgroundSet backgroundSet,
                         final FontSet fontSet,
                         final CircleDimensionSet dimensionsSet) {
+        this();
         this.general = general;
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
         this.dimensionsSet = dimensionsSet;
     }
 
+    protected void initLabels() {
+        labels.add("all");
+        labels.add("sequence_end");
+        labels.add("to_task_event");
+        labels.add("from_task_event");
+        labels.add("fromtoall");
+        labels.add("choreography_sequence_end");
+        labels.add("Endevents_all");
+        labels.add("EndEventsMorph");
+        labels.add("cm_nop");
+    }
+    
     @Override
     public boolean hasInputVars() {
         return false;
@@ -113,20 +112,20 @@ public abstract class BaseEndEvent implements BPMNViewDefinition,
         return general;
     }
 
-    public BackgroundSet getBackgroundSet() {
-        return backgroundSet;
-    }
-
-    public FontSet getFontSet() {
-        return fontSet;
-    }
-
     public void setGeneral(final BPMNGeneralSet general) {
         this.general = general;
     }
 
+    public BackgroundSet getBackgroundSet() {
+        return backgroundSet;
+    }
+
     public void setBackgroundSet(final BackgroundSet backgroundSet) {
         this.backgroundSet = backgroundSet;
+    }
+
+    public FontSet getFontSet() {
+        return fontSet;
     }
 
     public void setFontSet(final FontSet fontSet) {

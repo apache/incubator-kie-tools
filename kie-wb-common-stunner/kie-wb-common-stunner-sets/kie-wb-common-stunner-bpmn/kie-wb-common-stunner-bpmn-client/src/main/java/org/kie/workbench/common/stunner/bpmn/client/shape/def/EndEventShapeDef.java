@@ -23,6 +23,7 @@ import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGGlyphFactor
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseEndEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
@@ -43,6 +44,8 @@ public class EndEventShapeDef
                          BPMNSVGViewFactory::endNoneEvent)
                     .put(EndSignalEvent.class,
                          BPMNSVGViewFactory::endSignalEvent)
+                    .put(EndMessageEvent.class,
+                         BPMNSVGViewFactory::endMessageEvent)
                     .put(EndTerminateEvent.class,
                          BPMNSVGViewFactory::endTerminateEvent)
                     .put(EndErrorEvent.class,
@@ -54,6 +57,8 @@ public class EndEventShapeDef
                     BPMNSVGGlyphFactory.END_NONE_EVENT_GLYPH);
                 put(EndSignalEvent.class,
                     BPMNSVGGlyphFactory.END_SIGNAL_EVENT_GLYPH);
+                put(EndMessageEvent.class,
+                    BPMNSVGGlyphFactory.END_MESSAGE_EVENT_GLYPH);
                 put(EndTerminateEvent.class,
                     BPMNSVGGlyphFactory.END_TERMINATE_EVENT_GLYPH);
                 put(EndErrorEvent.class,
