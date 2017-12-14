@@ -28,9 +28,11 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
+import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
-public class ExpressionEditorColumn extends DMNGridColumn<Optional<BaseExpressionGrid>> implements RequiresResize {
+public class ExpressionEditorColumn extends DMNGridColumn<Optional<BaseExpressionGrid>> implements RequiresResize,
+                                                                                                   HasDOMElementResources {
 
     public ExpressionEditorColumn(final HeaderMetaData headerMetaData,
                                   final GridWidget gridWidget) {
@@ -167,5 +169,13 @@ public class ExpressionEditorColumn extends DMNGridColumn<Optional<BaseExpressio
     private int getLogicalColumnIndex(GridData model) {
         final int columnIndex = model.getColumns().indexOf(this);
         return columnIndex != -1 ? model.getColumns().get(columnIndex).getIndex() : -1;
+    }
+
+    @Override
+    public void destroyResources() {
+        getHeaderMetaData().stream()
+                .filter(md -> md instanceof HasDOMElementResources)
+                .map(md -> (HasDOMElementResources) md)
+                .forEach(HasDOMElementResources::destroyResources);
     }
 }

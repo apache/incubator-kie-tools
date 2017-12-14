@@ -27,6 +27,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.client.editors.expressions.mocks.MockHasDOMElementResourcesHeaderMetaData;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
@@ -51,6 +52,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedM
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class ExpressionEditorColumnTest {
@@ -232,6 +234,16 @@ public class ExpressionEditorColumnTest {
         Assertions.assertThat(getColumnWidth(1, 0, 2)).isEqualTo(20D);
         Assertions.assertThat(getColumnWidth(2, 0, 0)).isEqualTo(50D);
         Assertions.assertThat(getColumnWidth(2, 0, 1)).isEqualTo(30D);
+    }
+
+    @Test
+    public void testHeaderDOMElementsAreDestroyed() {
+        final MockHasDOMElementResourcesHeaderMetaData mockHeaderMetaData = mock(MockHasDOMElementResourcesHeaderMetaData.class);
+        column.getHeaderMetaData().add(mockHeaderMetaData);
+
+        column.destroyResources();
+
+        verify(mockHeaderMetaData).destroyResources();
     }
 
     private void mockCells(final int rowIndex,

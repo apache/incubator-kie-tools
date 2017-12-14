@@ -24,10 +24,11 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
+import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.BaseDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.SingletonDOMElementFactory;
 
-public abstract class EditableHeaderMetaData<W extends Widget & Focusable & HasText, E extends BaseDOMElement<String, W>> extends BaseHeaderMetaData {
+public abstract class EditableHeaderMetaData<W extends Widget & Focusable & HasText, E extends BaseDOMElement<String, W>> extends BaseHeaderMetaData implements HasDOMElementResources {
 
     private static final String DEFAULT_COLUMN_GROUP = "";
 
@@ -68,6 +69,11 @@ public abstract class EditableHeaderMetaData<W extends Widget & Focusable & HasT
     @Override
     public void setColumnGroup(final String columnGroup) {
         throw new UnsupportedOperationException("Group cannot be set.");
+    }
+
+    @Override
+    public void destroyResources() {
+        factory.destroyResources();
     }
 
     public void edit(final GridBodyCellRenderContext context) {

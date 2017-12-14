@@ -23,6 +23,7 @@ import org.gwtbootstrap3.client.ui.TextArea;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.editors.expressions.mocks.MockHasDOMElementResourcesHeaderMetaData;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
@@ -178,6 +179,16 @@ public class RelationColumnTest {
                            PEER_WIDTH,
                            RELATION_GRID_WIDTH,
                            PEER_WIDTH);
+    }
+
+    @Test
+    public void testHeaderDOMElementsAreDestroyed() {
+        final MockHasDOMElementResourcesHeaderMetaData mockHeaderMetaData = mock(MockHasDOMElementResourcesHeaderMetaData.class);
+        relationColumn.getHeaderMetaData().add(mockHeaderMetaData);
+
+        relationColumn.destroyResources();
+
+        verify(mockHeaderMetaData).destroyResources();
     }
 
     private void assertMinimumWidth(final Optional<BaseExpressionGrid> peer,

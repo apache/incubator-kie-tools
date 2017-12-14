@@ -18,13 +18,16 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.literal;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.gwtbootstrap3.client.ui.TextArea;
+import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.editors.expressions.mocks.MockHasDOMElementResourcesHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.BaseDOMElementSingletonColumnTest;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextAreaDOMElement;
 import org.mockito.Mock;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class LiteralExpressionColumnTest extends BaseDOMElementSingletonColumnTest<TextAreaSingletonDOMElementFactory, TextAreaDOMElement, TextArea, LiteralExpressionColumn, LiteralExpressionGrid> {
@@ -63,5 +66,15 @@ public class LiteralExpressionColumnTest extends BaseDOMElementSingletonColumnTe
         return new LiteralExpressionColumn(headerMetaData,
                                            factory,
                                            gridWidget);
+    }
+
+    @Test
+    public void testHeaderDOMElementsAreDestroyed() {
+        final MockHasDOMElementResourcesHeaderMetaData mockHeaderMetaData = mock(MockHasDOMElementResourcesHeaderMetaData.class);
+        column.getHeaderMetaData().add(mockHeaderMetaData);
+
+        column.destroyResources();
+
+        verify(mockHeaderMetaData).destroyResources();
     }
 }

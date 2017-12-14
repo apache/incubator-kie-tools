@@ -14,62 +14,62 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.expressions.types.invocation;
+package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.TextArea;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.expressions.mocks.MockHasDOMElementResourcesHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.BaseDOMElementSingletonColumnTest;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextBoxDOMElement;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextAreaDOMElement;
 import org.mockito.Mock;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class NameColumnTest extends BaseDOMElementSingletonColumnTest<TextBoxSingletonDOMElementFactory, TextBoxDOMElement, TextBox, NameColumn, InvocationGrid> {
+public class InputClauseColumnTest extends BaseDOMElementSingletonColumnTest<TextAreaSingletonDOMElementFactory, TextAreaDOMElement, TextArea, InputClauseColumn, DecisionTableGrid> {
 
     @Mock
-    private TextBoxSingletonDOMElementFactory factory;
+    private TextAreaSingletonDOMElementFactory factory;
 
     @Mock
-    private TextBoxDOMElement domElement;
+    private TextAreaDOMElement domElement;
 
     @Mock
-    private TextBox widget;
+    private TextArea widget;
 
     @Override
-    protected TextBoxSingletonDOMElementFactory getFactory() {
+    protected TextAreaSingletonDOMElementFactory getFactory() {
         return factory;
     }
 
     @Override
-    protected TextBoxDOMElement getDomElement() {
+    protected TextAreaDOMElement getDomElement() {
         return domElement;
     }
 
     @Override
-    protected TextBox getWidget() {
+    protected TextArea getWidget() {
         return widget;
     }
 
     @Override
-    protected InvocationGrid getGridWidget() {
-        return mock(InvocationGrid.class);
+    protected DecisionTableGrid getGridWidget() {
+        return mock(DecisionTableGrid.class);
     }
 
     @Override
-    protected NameColumn getColumn() {
-        return new NameColumn(headerMetaData,
-                              factory,
-                              gridWidget);
+    protected InputClauseColumn getColumn() {
+        return new InputClauseColumn(headerMetaData,
+                                     factory,
+                                     gridWidget);
     }
 
     @Test
-    public void testHeaderDOMElementsAreDestroyed() {
+    public void checkHeaderDOMElementsAreDestroyed() {
         final MockHasDOMElementResourcesHeaderMetaData mockHeaderMetaData = mock(MockHasDOMElementResourcesHeaderMetaData.class);
         column.getHeaderMetaData().add(mockHeaderMetaData);
 

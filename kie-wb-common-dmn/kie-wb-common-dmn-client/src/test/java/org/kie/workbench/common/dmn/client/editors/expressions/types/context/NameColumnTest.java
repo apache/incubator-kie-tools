@@ -20,6 +20,7 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.editors.expressions.mocks.MockHasDOMElementResourcesHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.BaseDOMElementSingletonColumnTest;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextBoxDOMElement;
@@ -101,5 +102,15 @@ public class NameColumnTest extends BaseDOMElementSingletonColumnTest<TextBoxSin
                never()).attachDomElement(any(GridBodyCellRenderContext.class),
                                          any(Callback.class),
                                          any(Callback.class));
+    }
+
+    @Test
+    public void checkHeaderDOMElementsAreDestroyed() {
+        final MockHasDOMElementResourcesHeaderMetaData mockHeaderMetaData = mock(MockHasDOMElementResourcesHeaderMetaData.class);
+        column.getHeaderMetaData().add(mockHeaderMetaData);
+
+        column.destroyResources();
+
+        verify(mockHeaderMetaData).destroyResources();
     }
 }

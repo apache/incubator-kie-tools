@@ -32,6 +32,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.SingletonDOMElementFactory;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EditableHeaderMetaDataTest {
@@ -80,6 +81,13 @@ public class EditableHeaderMetaDataTest {
         header.setTitle("new-name");
         assertEquals("name",
                      mockHasName.getName().getValue());
+    }
+
+    @Test
+    public void checkFactoryResourcesAreDestroyed() {
+        header.destroyResources();
+
+        verify(factory).destroyResources();
     }
 
     private static class MockEditableHeaderMetaData extends EditableHeaderMetaData<TextBox, TextBoxDOMElement> {
