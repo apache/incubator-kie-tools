@@ -28,7 +28,7 @@ public class LibraryRepositoryPreferences implements BasePreference<LibraryRepos
 
     @Property(bundleKey = "LibraryRepositoryPreferences.Name",
             helpBundleKey = "LibraryRepositoryPreferences.Name.Help",
-            validators = NotEmptyValidator.class)
+            validators = {NotEmptyValidator.class, RepositoryNameValidator.class})
     String name;
 
     @Property(bundleKey = "LibraryRepositoryPreferences.Scheme",

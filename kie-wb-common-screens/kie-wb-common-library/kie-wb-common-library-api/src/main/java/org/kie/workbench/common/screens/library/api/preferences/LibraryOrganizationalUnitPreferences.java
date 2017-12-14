@@ -37,7 +37,7 @@ public class LibraryOrganizationalUnitPreferences implements BasePreference<Libr
 
     @Property(bundleKey = "LibraryOrganizationalUnitPreferences.GroupId",
             helpBundleKey = "LibraryOrganizationalUnitPreferences.GroupId.Help",
-            validators = NotEmptyValidator.class)
+            validators = {NotEmptyValidator.class, GroupIdValidator.class})
     String groupId;
 
     @Property(bundleKey = "LibraryOrganizationalUnitPreferences.AliasInSingular",

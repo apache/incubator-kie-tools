@@ -28,7 +28,7 @@ public class LibraryProjectPreferences implements BasePreference<LibraryProjectP
 
     @Property(bundleKey = "LibraryProjectPreferences.Version",
             helpBundleKey = "LibraryProjectPreferences.Version.Help",
-            validators = NotEmptyValidator.class)
+            validators = {NotEmptyValidator.class, VersionValidator.class})
     String version;
 
     @Property(bundleKey = "LibraryProjectPreferences.Description",
