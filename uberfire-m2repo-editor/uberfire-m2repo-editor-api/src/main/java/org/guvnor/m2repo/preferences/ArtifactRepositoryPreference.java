@@ -21,17 +21,20 @@ import org.uberfire.preferences.shared.PropertyFormType;
 import org.uberfire.preferences.shared.annotations.Property;
 import org.uberfire.preferences.shared.annotations.WorkbenchPreference;
 import org.uberfire.preferences.shared.bean.BasePreference;
+import org.uberfire.preferences.shared.impl.validation.NotEmptyValidator;
 
 @WorkbenchPreference(identifier = "ArtifactRepositoryPreference", bundleKey = "ArtifactRepositoryPreference.Label")
 public class ArtifactRepositoryPreference implements BasePreference<ArtifactRepositoryPreference> {
 
-    @Property(bundleKey = "ArtifactRepositoryPreference.GlobalM2RepoDir")
+    @Property(bundleKey = "ArtifactRepositoryPreference.GlobalM2RepoDir",
+            validators = NotEmptyValidator.class)
     private String globalM2RepoDir;
 
     @Property(bundleKey = "ArtifactRepositoryPreference.GlobalM2RepoDirEnabled", formType = PropertyFormType.BOOLEAN)
     private boolean globalM2RepoDirEnabled;
 
-    @Property(bundleKey = "ArtifactRepositoryPreference.WorkspaceM2RepoDir")
+    @Property(bundleKey = "ArtifactRepositoryPreference.WorkspaceM2RepoDir",
+            validators = NotEmptyValidator.class)
     private String workspaceM2RepoDir;
 
     @Property(bundleKey = "ArtifactRepositoryPreference.WorkspaceM2RepoDirEnabled", formType = PropertyFormType.BOOLEAN)

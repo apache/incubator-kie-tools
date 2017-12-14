@@ -50,8 +50,14 @@ public class NotEmptyValidatorTest {
                      validationResult.getMessagesBundleKeys().size());
     }
 
-    @Test(expected = RuntimeException.class)
-    public void notStringTest() {
-        final ValidationResult validationResult = notEmptyValidator.validate(Long.MIN_VALUE);
+    @Test
+    public void spacesOnlyTest() {
+        final ValidationResult validationResult = notEmptyValidator.validate("   ");
+
+        assertFalse(validationResult.isValid());
+        assertEquals(1,
+                     validationResult.getMessagesBundleKeys().size());
+        assertEquals("PropertyValidator.NotEmptyValidator.IsEmpty",
+                     validationResult.getMessagesBundleKeys().get(0));
     }
 }

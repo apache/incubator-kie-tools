@@ -18,7 +18,7 @@ package org.uberfire.preferences.shared;
 
 import org.uberfire.preferences.shared.impl.validation.ValidationResult;
 
-public interface PropertyValidator {
+public interface PropertyValidator<T> {
 
-    ValidationResult validate(Object value);
+    ValidationResult validate(T value);
 }

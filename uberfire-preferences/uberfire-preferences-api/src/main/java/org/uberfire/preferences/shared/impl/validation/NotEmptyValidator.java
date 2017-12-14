@@ -16,26 +16,10 @@
 
 package org.uberfire.preferences.shared.impl.validation;
 
-import java.util.ArrayList;
-import java.util.List;
+public class NotEmptyValidator extends StringPropertyValidator {
 
-import org.uberfire.preferences.shared.PropertyValidator;
-
-public class NotEmptyValidator implements PropertyValidator {
-
-    @Override
-    public ValidationResult validate(Object value) {
-        if (!(value instanceof String)) {
-            throw new RuntimeException("Only Strings can be not empty.");
-        }
-
-        List<String> validationMessages = new ArrayList<>();
-
-        if (((String) value).isEmpty()) {
-            validationMessages.add("PropertyValidator.NotEmptyValidator.IsEmpty");
-        }
-
-        return new ValidationResult(validationMessages.isEmpty(),
-                                    validationMessages);
+    public NotEmptyValidator() {
+        super(str -> str != null && !str.trim().isEmpty(),
+              "PropertyValidator.NotEmptyValidator.IsEmpty");
     }
 }
