@@ -21,6 +21,7 @@ import java.util.Optional;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectionsChangedEvent;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMenusEvent;
 
 /**
  * Base Menu implementation for MenuItems that need to be aware of Decision Table and Decision Table Cell selections.
@@ -40,6 +41,11 @@ public abstract class BaseMenu implements BaseMenuView.BaseMenuPresenter {
     public void onDecisionTableSelectionsChangedEvent(final DecisionTableSelectionsChangedEvent event) {
         final GuidedDecisionTableView.Presenter dtPresenter = event.getPresenter();
         activeDecisionTable = dtPresenter;
+        initialise();
+    }
+
+    @Override
+    public void onRefreshMenusEvent(final RefreshMenusEvent event) {
         initialise();
     }
 }

@@ -19,6 +19,7 @@ package org.drools.workbench.screens.guided.dtable.client.editor.menu;
 import com.google.gwt.dom.client.Element;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectionsChangedEvent;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMenusEvent;
 import org.uberfire.client.mvp.UberView;
 
 public interface BaseMenuView<M extends BaseMenu> extends UberView<M> {
@@ -27,15 +28,15 @@ public interface BaseMenuView<M extends BaseMenu> extends UberView<M> {
 
         void initialise();
 
-        void onDecisionTableSelectedEvent( final DecisionTableSelectedEvent event );
+        void onDecisionTableSelectedEvent(final DecisionTableSelectedEvent event);
 
-        void onDecisionTableSelectionsChangedEvent( final DecisionTableSelectionsChangedEvent event );
+        void onDecisionTableSelectionsChangedEvent(final DecisionTableSelectionsChangedEvent event);
 
+        void onRefreshMenusEvent(final RefreshMenusEvent event);
     }
 
-    void enableElement( final Element element,
-                        final boolean enabled );
+    void enableElement(final Element element,
+                       final boolean enabled);
 
-    boolean isDisabled( final Element element );
-
+    boolean isDisabled(final Element element);
 }

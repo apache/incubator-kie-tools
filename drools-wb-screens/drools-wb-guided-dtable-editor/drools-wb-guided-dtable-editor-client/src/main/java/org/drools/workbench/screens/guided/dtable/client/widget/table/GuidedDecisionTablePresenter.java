@@ -68,6 +68,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshActionsPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshAttributesPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshConditionsPanelEvent;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMenusEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMetaDataPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.lockmanager.GuidedDecisionTableLockManager;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiCell;
@@ -137,6 +138,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     private final Event<RefreshMetaDataPanelEvent> refreshMetaDataPanelEvent;
     private final Event<RefreshConditionsPanelEvent> refreshConditionsPanelEvent;
     private final Event<RefreshActionsPanelEvent> refreshActionsPanelEvent;
+    private final Event<RefreshMenusEvent> refreshMenusEvent;
     private final Event<NotificationEvent> notificationEvent;
     private final GridWidgetCellFactory gridWidgetCellFactory;
     private final GridWidgetColumnFactory gridWidgetColumnFactory;
@@ -190,6 +192,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                                         final Event<RefreshMetaDataPanelEvent> refreshMetaDataPanelEvent,
                                         final Event<RefreshConditionsPanelEvent> refreshConditionsPanelEvent,
                                         final Event<RefreshActionsPanelEvent> refreshActionsPanelEvent,
+                                        final Event<RefreshMenusEvent> refreshMenusEvent,
                                         final Event<NotificationEvent> notificationEvent,
                                         final GridWidgetCellFactory gridWidgetCellFactory,
                                         final GridWidgetColumnFactory gridWidgetColumnFactory,
@@ -215,6 +218,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         this.refreshMetaDataPanelEvent = refreshMetaDataPanelEvent;
         this.refreshConditionsPanelEvent = refreshConditionsPanelEvent;
         this.refreshActionsPanelEvent = refreshActionsPanelEvent;
+        this.refreshMenusEvent = refreshMenusEvent;
         this.notificationEvent = notificationEvent;
         this.gridWidgetCellFactory = gridWidgetCellFactory;
         this.gridWidgetColumnFactory = gridWidgetColumnFactory;
@@ -625,6 +629,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                 access.setLock(NOBODY);
             }
             refreshColumnsPage();
+            refreshMenus();
         }
     }
 
@@ -633,6 +638,10 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         refreshMetaDataPanelEvent.fire(new RefreshMetaDataPanelEvent(this, model.getMetadataCols()));
         refreshConditionsPanelEvent.fire(new RefreshConditionsPanelEvent(this, model.getConditions()));
         refreshActionsPanelEvent.fire(new RefreshActionsPanelEvent(this, model.getActionCols()));
+    }
+
+    void refreshMenus() {
+        refreshMenusEvent.fire(new RefreshMenusEvent());
     }
 
     void onIssueSelectedEvent(final @Observes IssueSelectedEvent event) {

@@ -40,6 +40,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshActionsPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshAttributesPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshConditionsPanelEvent;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMenusEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMetaDataPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.lockmanager.GuidedDecisionTableLockManager;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.cell.GridWidgetCellFactory;
@@ -204,6 +205,12 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
             //Do nothing. Default implementation throws an UnsupportedOperationException
         }
     });
+    protected Event<RefreshMenusEvent> refreshMenusEvent = spy(new EventSourceMock<RefreshMenusEvent>() {
+        @Override
+        public void fire(final RefreshMenusEvent event) {
+            //Do nothing. Default implementation throws an UnsupportedOperationException
+        }
+    });
     protected Event<NotificationEvent> notificationEvent = spy(new EventSourceMock<NotificationEvent>() {
         @Override
         public void fire(final NotificationEvent event) {
@@ -312,6 +319,7 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
                                                                                       refreshMetaDataPanelEvent,
                                                                                       refreshConditionsPanelEvent,
                                                                                       refreshActionsPanelEvent,
+                                                                                      refreshMenusEvent,
                                                                                       notificationEvent,
                                                                                       gridWidgetCellFactory,
                                                                                       gridWidgetColumnFactory,

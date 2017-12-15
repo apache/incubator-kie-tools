@@ -30,6 +30,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.guided.dtable.client.editor.clipboard.Clipboard;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectionsChangedEvent;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMenusEvent;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 @Dependent
@@ -40,25 +41,30 @@ public class RowContextMenu extends BaseMenu implements IsWidget,
     private Clipboard clipboard;
 
     @Inject
-    public RowContextMenu( final RowContextMenuView view,
-                           final Clipboard clipboard ) {
+    public RowContextMenu(final RowContextMenuView view,
+                          final Clipboard clipboard) {
         this.view = view;
         this.clipboard = clipboard;
     }
 
     @PostConstruct
     void setup() {
-        view.init( this );
+        view.init(this);
     }
 
     @Override
-    public void onDecisionTableSelectedEvent( final @Observes DecisionTableSelectedEvent event ) {
-        super.onDecisionTableSelectedEvent( event );
+    public void onDecisionTableSelectedEvent(final @Observes DecisionTableSelectedEvent event) {
+        super.onDecisionTableSelectedEvent(event);
     }
 
     @Override
-    public void onDecisionTableSelectionsChangedEvent( final @Observes DecisionTableSelectionsChangedEvent event ) {
-        super.onDecisionTableSelectionsChangedEvent( event );
+    public void onDecisionTableSelectionsChangedEvent(final @Observes DecisionTableSelectionsChangedEvent event) {
+        super.onDecisionTableSelectionsChangedEvent(event);
+    }
+
+    @Override
+    public void onRefreshMenusEvent(final @Observes RefreshMenusEvent event) {
+        super.onRefreshMenusEvent(event);
     }
 
     @Override
@@ -67,10 +73,10 @@ public class RowContextMenu extends BaseMenu implements IsWidget,
     }
 
     @Override
-    public void show( final int mx,
-                      final int my ) {
-        view.show( mx,
-                   my );
+    public void show(final int mx,
+                     final int my) {
+        view.show(mx,
+                  my);
     }
 
     @Override
@@ -80,27 +86,27 @@ public class RowContextMenu extends BaseMenu implements IsWidget,
 
     @Override
     public void initialise() {
-        if ( activeDecisionTable == null || !activeDecisionTable.getAccess().isEditable() ) {
+        if (activeDecisionTable == null || !activeDecisionTable.getAccess().isEditable()) {
             disableMenuItems();
             return;
         }
         final List<GridData.SelectedCell> selections = activeDecisionTable.getView().getModel().getSelectedCells();
-        if ( selections == null || selections.isEmpty() ) {
+        if (selections == null || selections.isEmpty()) {
             disableMenuItems();
             return;
         }
         final Map<Integer, Boolean> rowUsage = new HashMap<>();
-        for ( GridData.SelectedCell sc : selections ) {
-            rowUsage.put( sc.getRowIndex(),
-                          true );
+        for (GridData.SelectedCell sc : selections) {
+            rowUsage.put(sc.getRowIndex(),
+                         true);
         }
         enableMenuItemsForClipboard();
-        enableMenuItemsForRowOperations( rowUsage.keySet().size() == 1 );
+        enableMenuItemsForRowOperations(rowUsage.keySet().size() == 1);
     }
 
     @Override
     public void onCut() {
-        if ( activeDecisionTable != null ) {
+        if (activeDecisionTable != null) {
             activeDecisionTable.onCut();
         }
         hide();
@@ -108,7 +114,7 @@ public class RowContextMenu extends BaseMenu implements IsWidget,
 
     @Override
     public void onCopy() {
-        if ( activeDecisionTable != null ) {
+        if (activeDecisionTable != null) {
             activeDecisionTable.onCopy();
         }
         hide();
@@ -116,7 +122,7 @@ public class RowContextMenu extends BaseMenu implements IsWidget,
 
     @Override
     public void onPaste() {
-        if ( activeDecisionTable != null ) {
+        if (activeDecisionTable != null) {
             activeDecisionTable.onPaste();
         }
         hide();
@@ -124,7 +130,7 @@ public class RowContextMenu extends BaseMenu implements IsWidget,
 
     @Override
     public void onInsertRowAbove() {
-        if ( activeDecisionTable != null ) {
+        if (activeDecisionTable != null) {
             activeDecisionTable.onInsertRowAbove();
         }
         hide();
@@ -132,7 +138,7 @@ public class RowContextMenu extends BaseMenu implements IsWidget,
 
     @Override
     public void onInsertRowBelow() {
-        if ( activeDecisionTable != null ) {
+        if (activeDecisionTable != null) {
             activeDecisionTable.onInsertRowBelow();
         }
         hide();
@@ -140,31 +146,30 @@ public class RowContextMenu extends BaseMenu implements IsWidget,
 
     @Override
     public void onDeleteSelectedRows() {
-        if ( activeDecisionTable != null ) {
+        if (activeDecisionTable != null) {
             activeDecisionTable.onDeleteSelectedRows();
         }
         hide();
     }
 
     private void disableMenuItems() {
-        view.enableCutMenuItem( false );
-        view.enableCopyMenuItem( false );
-        view.enablePasteMenuItem( false );
-        view.enableInsertRowAboveMenuItem( false );
-        view.enableInsertRowBelowMenuItem( false );
-        view.enableDeleteRowMenuItem( false );
+        view.enableCutMenuItem(false);
+        view.enableCopyMenuItem(false);
+        view.enablePasteMenuItem(false);
+        view.enableInsertRowAboveMenuItem(false);
+        view.enableInsertRowBelowMenuItem(false);
+        view.enableDeleteRowMenuItem(false);
     }
 
     private void enableMenuItemsForClipboard() {
-        view.enableCutMenuItem( true );
-        view.enableCopyMenuItem( true );
-        view.enablePasteMenuItem( clipboard.hasData() );
+        view.enableCutMenuItem(true);
+        view.enableCopyMenuItem(true);
+        view.enablePasteMenuItem(clipboard.hasData());
     }
 
-    private void enableMenuItemsForRowOperations( final boolean isSingleRow ) {
-        view.enableInsertRowAboveMenuItem( isSingleRow );
-        view.enableInsertRowBelowMenuItem( isSingleRow );
-        view.enableDeleteRowMenuItem( true );
+    private void enableMenuItemsForRowOperations(final boolean isSingleRow) {
+        view.enableInsertRowAboveMenuItem(isSingleRow);
+        view.enableInsertRowBelowMenuItem(isSingleRow);
+        view.enableDeleteRowMenuItem(true);
     }
-
 }

@@ -32,6 +32,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDeci
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectionsChangedEvent;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMenusEvent;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -107,6 +108,11 @@ public class InsertMenuBuilder extends BaseMenu implements MenuFactory.CustomMen
     @Override
     public void onDecisionTableSelectionsChangedEvent(final @Observes DecisionTableSelectionsChangedEvent event) {
         super.onDecisionTableSelectionsChangedEvent(event);
+    }
+
+    @Override
+    public void onRefreshMenusEvent(final @Observes RefreshMenusEvent event) {
+        super.onRefreshMenusEvent(event);
     }
 
     @Override

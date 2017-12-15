@@ -33,6 +33,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDeci
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectionsChangedEvent;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMenusEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiModel;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTablePopoverUtils;
@@ -59,6 +60,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -126,10 +128,10 @@ public class EditMenuBuilderTest {
         uiModel.appendColumn(new BaseGridColumn<>(headerMetaData, gridColumnRenderer, 100));
         uiModel.appendRow(new BaseGridRow());
 
-        builder = new EditMenuBuilder(clipboard,
-                                      ts,
-                                      menuItemFactory,
-                                      popoverUtils);
+        builder = spy(new EditMenuBuilder(clipboard,
+                                          ts,
+                                          menuItemFactory,
+                                          popoverUtils));
         builder.setup();
     }
 
@@ -482,6 +484,13 @@ public class EditMenuBuilderTest {
         assertFalse(builder.miDeleteSelectedColumns.getMenuItem().isEnabled());
         assertFalse(builder.miDeleteSelectedRows.getMenuItem().isEnabled());
         assertFalse(builder.miOtherwiseCell.getMenuItem().isEnabled());
+    }
+
+    @Test
+    public void testOnRefreshMenusEvent() {
+        builder.onRefreshMenusEvent(new RefreshMenusEvent());
+
+        verify(builder).initialise();
     }
 
     private HashSet<Clipboard.ClipboardData> makeClipboardHashSetData() {

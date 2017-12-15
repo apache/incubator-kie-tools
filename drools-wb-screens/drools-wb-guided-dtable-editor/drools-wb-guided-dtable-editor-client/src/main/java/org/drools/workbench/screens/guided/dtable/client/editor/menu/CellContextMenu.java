@@ -28,6 +28,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.guided.dtable.client.editor.clipboard.Clipboard;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectionsChangedEvent;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMenusEvent;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 @Dependent
@@ -38,25 +39,30 @@ public class CellContextMenu extends BaseMenu implements IsWidget,
     private Clipboard clipboard;
 
     @Inject
-    public CellContextMenu( final CellContextMenuView view,
-                            final Clipboard clipboard ) {
+    public CellContextMenu(final CellContextMenuView view,
+                           final Clipboard clipboard) {
         this.view = view;
         this.clipboard = clipboard;
     }
 
     @PostConstruct
     void setup() {
-        view.init( this );
+        view.init(this);
     }
 
     @Override
-    public void onDecisionTableSelectedEvent( final @Observes DecisionTableSelectedEvent event ) {
-        super.onDecisionTableSelectedEvent( event );
+    public void onDecisionTableSelectedEvent(final @Observes DecisionTableSelectedEvent event) {
+        super.onDecisionTableSelectedEvent(event);
     }
 
     @Override
-    public void onDecisionTableSelectionsChangedEvent( final @Observes DecisionTableSelectionsChangedEvent event ) {
-        super.onDecisionTableSelectionsChangedEvent( event );
+    public void onDecisionTableSelectionsChangedEvent(final @Observes DecisionTableSelectionsChangedEvent event) {
+        super.onDecisionTableSelectionsChangedEvent(event);
+    }
+
+    @Override
+    public void onRefreshMenusEvent(final @Observes RefreshMenusEvent event) {
+        super.onRefreshMenusEvent(event);
     }
 
     @Override
@@ -65,10 +71,10 @@ public class CellContextMenu extends BaseMenu implements IsWidget,
     }
 
     @Override
-    public void show( final int mx,
-                      final int my ) {
-        view.show( mx,
-                   my );
+    public void show(final int mx,
+                     final int my) {
+        view.show(mx,
+                  my);
     }
 
     @Override
@@ -78,21 +84,21 @@ public class CellContextMenu extends BaseMenu implements IsWidget,
 
     @Override
     public void initialise() {
-        if ( activeDecisionTable == null || !activeDecisionTable.getAccess().isEditable() ) {
+        if (activeDecisionTable == null || !activeDecisionTable.getAccess().isEditable()) {
             disableMenuItems();
             return;
         }
         final List<GridData.SelectedCell> selections = activeDecisionTable.getView().getModel().getSelectedCells();
-        if ( selections == null || selections.isEmpty() ) {
+        if (selections == null || selections.isEmpty()) {
             disableMenuItems();
             return;
         }
-        enableMenuItems( selections );
+        enableMenuItems(selections);
     }
 
     @Override
     public void onCut() {
-        if ( activeDecisionTable != null ) {
+        if (activeDecisionTable != null) {
             activeDecisionTable.onCut();
         }
         hide();
@@ -100,7 +106,7 @@ public class CellContextMenu extends BaseMenu implements IsWidget,
 
     @Override
     public void onCopy() {
-        if ( activeDecisionTable != null ) {
+        if (activeDecisionTable != null) {
             activeDecisionTable.onCopy();
         }
         hide();
@@ -108,7 +114,7 @@ public class CellContextMenu extends BaseMenu implements IsWidget,
 
     @Override
     public void onPaste() {
-        if ( activeDecisionTable != null ) {
+        if (activeDecisionTable != null) {
             activeDecisionTable.onPaste();
         }
         hide();
@@ -116,26 +122,25 @@ public class CellContextMenu extends BaseMenu implements IsWidget,
 
     @Override
     public void onDeleteSelectedCells() {
-        if ( activeDecisionTable != null ) {
+        if (activeDecisionTable != null) {
             activeDecisionTable.onDeleteSelectedCells();
         }
         hide();
     }
 
     private void disableMenuItems() {
-        view.enableCutMenuItem( false );
-        view.enableCopyMenuItem( false );
-        view.enablePasteMenuItem( false );
-        view.enableDeleteCellMenuItem( false );
+        view.enableCutMenuItem(false);
+        view.enableCopyMenuItem(false);
+        view.enablePasteMenuItem(false);
+        view.enableDeleteCellMenuItem(false);
     }
 
-    private void enableMenuItems( final List<GridData.SelectedCell> selections ) {
+    private void enableMenuItems(final List<GridData.SelectedCell> selections) {
         final boolean enabled = selections.size() > 0;
 
-        view.enableCutMenuItem( enabled );
-        view.enableCopyMenuItem( enabled );
-        view.enablePasteMenuItem( clipboard.hasData() );
-        view.enableDeleteCellMenuItem( enabled );
+        view.enableCutMenuItem(enabled);
+        view.enableCopyMenuItem(enabled);
+        view.enablePasteMenuItem(clipboard.hasData());
+        view.enableDeleteCellMenuItem(enabled);
     }
-
 }

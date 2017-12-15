@@ -30,6 +30,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDeci
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectionsChangedEvent;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMenusEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiModel;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.junit.Before;
@@ -45,6 +46,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.Gr
 
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -90,8 +92,8 @@ public class RowContextMenuTest {
                                                         100));
         uiModel.appendRow(new BaseGridRow());
 
-        menu = new RowContextMenu(view,
-                                  clipboard);
+        menu = spy(new RowContextMenu(view,
+                                      clipboard));
         menu.setup();
     }
 
@@ -347,5 +349,12 @@ public class RowContextMenuTest {
                times(1)).enableInsertRowBelowMenuItem(eq(false));
         verify(view,
                times(1)).enableDeleteRowMenuItem(eq(false));
+    }
+
+    @Test
+    public void testOnRefreshMenusEvent() {
+        menu.onRefreshMenusEvent(new RefreshMenusEvent());
+
+        verify(menu).initialise();
     }
 }

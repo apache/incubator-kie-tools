@@ -30,6 +30,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDeci
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectionsChangedEvent;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMenusEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiModel;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
@@ -354,6 +355,13 @@ public class InsertMenuBuilderTest {
         builder.onAppendColumn();
 
         verify(builder, never()).openNewGuidedDecisionTableColumnWizard(any());
+    }
+
+    @Test
+    public void testOnRefreshMenusEvent() {
+        builder.onRefreshMenusEvent(new RefreshMenusEvent());
+
+        verify(builder).initialise();
     }
 
     private Pattern52 makePattern52() {

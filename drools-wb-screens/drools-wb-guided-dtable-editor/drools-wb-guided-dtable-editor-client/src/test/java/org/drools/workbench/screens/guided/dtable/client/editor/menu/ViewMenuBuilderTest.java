@@ -25,6 +25,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDeci
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTablePinnedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMenusEvent;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -49,6 +50,7 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -121,8 +123,8 @@ public class ViewMenuBuilderTest {
             return v;
         });
 
-        builder = new ViewMenuBuilder(ts,
-                                      menuItemFactory);
+        builder = spy(new ViewMenuBuilder(ts,
+                                          menuItemFactory));
         builder.setup();
         builder.setModeller(modeller);
     }
@@ -337,5 +339,12 @@ public class ViewMenuBuilderTest {
         //Verify clearing Decision Table selection disables view
         assertFalse(builder.miToggleMergeState.getMenuItem().isEnabled());
         assertFalse(builder.miViewAuditLog.getMenuItem().isEnabled());
+    }
+
+    @Test
+    public void testOnRefreshMenusEvent() {
+        builder.onRefreshMenusEvent(new RefreshMenusEvent());
+
+        verify(builder).initialise();
     }
 }

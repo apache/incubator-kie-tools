@@ -28,6 +28,7 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTablePinnedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMenusEvent;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.uberfire.ext.widgets.common.client.menu.MenuItemDividerView;
@@ -140,6 +141,11 @@ public class ViewMenuBuilder extends BaseMenu implements MenuFactory.CustomMenuB
     public void onDecisionTableSelectedEvent(final @Observes DecisionTableSelectedEvent event) {
         super.onDecisionTableSelectedEvent(event);
         enableZoomMenu(event.getPresenter().isPresent());
+    }
+
+    @Override
+    public void onRefreshMenusEvent(final @Observes RefreshMenusEvent event) {
+        super.onRefreshMenusEvent(event);
     }
 
     @Override

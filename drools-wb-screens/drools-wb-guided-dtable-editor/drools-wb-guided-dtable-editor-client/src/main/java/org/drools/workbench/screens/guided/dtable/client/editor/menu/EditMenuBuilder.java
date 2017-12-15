@@ -31,6 +31,7 @@ import org.drools.workbench.screens.guided.dtable.client.editor.clipboard.Clipbo
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectionsChangedEvent;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMenusEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTablePopoverUtils;
 import org.gwtbootstrap3.client.ui.constants.IconType;
@@ -148,6 +149,11 @@ public class EditMenuBuilder extends BaseMenu implements MenuFactory.CustomMenuB
     @Override
     public void onDecisionTableSelectionsChangedEvent(final @Observes DecisionTableSelectionsChangedEvent event) {
         super.onDecisionTableSelectionsChangedEvent(event);
+    }
+
+    @Override
+    public void onRefreshMenusEvent(final @Observes RefreshMenusEvent event) {
+        super.onRefreshMenusEvent(event);
     }
 
     @Override

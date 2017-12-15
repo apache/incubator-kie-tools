@@ -40,6 +40,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.Decisio
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshActionsPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshAttributesPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshConditionsPanelEvent;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMenusEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMetaDataPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.lockmanager.GuidedDecisionTableLockManager;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.GridWidgetColumnFactory;
@@ -113,6 +114,9 @@ public class GuidedDecisionTablePresenter_AuditLogTest {
     private EventSourceMock<RefreshActionsPanelEvent> refreshActionsPanelEvent;
 
     @Mock
+    private EventSourceMock<RefreshMenusEvent> refreshMenusEvent;
+
+    @Mock
     private DecisionTableAnalyzerProvider decisionTableAnalyzerProvider;
 
     @Mock
@@ -164,6 +168,7 @@ public class GuidedDecisionTablePresenter_AuditLogTest {
                                                        refreshMetaDataPanelEvent,
                                                        refreshConditionsPanelEvent,
                                                        refreshActionsPanelEvent,
+                                                       refreshMenusEvent,
                                                        null,
                                                        null,
                                                        gridWidgetColumnFactory,

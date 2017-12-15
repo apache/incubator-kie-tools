@@ -50,6 +50,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshActionsPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshAttributesPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshConditionsPanelEvent;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMenusEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMetaDataPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.DependentEnumsUtilities;
@@ -152,6 +153,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         dtPresenter.onUpdatedLockStatusEvent(event);
 
         verify(dtPresenter).refreshColumnsPage();
+        verify(dtPresenter).refreshMenus();
         assertEquals(CURRENT_USER, dtPresenter.getAccess().getLock());
     }
 
@@ -165,6 +167,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         dtPresenter.onUpdatedLockStatusEvent(event);
 
         verify(dtPresenter).refreshColumnsPage();
+        verify(dtPresenter).refreshMenus();
         assertEquals(OTHER_USER, dtPresenter.getAccess().getLock());
     }
 
@@ -175,6 +178,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         dtPresenter.onUpdatedLockStatusEvent(event);
 
         verify(dtPresenter).refreshColumnsPage();
+        verify(dtPresenter).refreshMenus();
         assertEquals(NOBODY, dtPresenter.getAccess().getLock());
     }
 
@@ -1674,13 +1678,19 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
 
     @Test
     public void testRefreshColumnsPage() {
-
         dtPresenter.refreshColumnsPage();
 
         verify(refreshAttributesPanelEvent).fire(any(RefreshAttributesPanelEvent.class));
         verify(refreshMetaDataPanelEvent).fire(any(RefreshMetaDataPanelEvent.class));
         verify(refreshConditionsPanelEvent).fire(any(RefreshConditionsPanelEvent.class));
         verify(refreshActionsPanelEvent).fire(any(RefreshActionsPanelEvent.class));
+    }
+
+    @Test
+    public void testRefreshMenus() {
+        dtPresenter.refreshMenus();
+
+        verify(refreshMenusEvent).fire(any(RefreshMenusEvent.class));
     }
 
     /*
