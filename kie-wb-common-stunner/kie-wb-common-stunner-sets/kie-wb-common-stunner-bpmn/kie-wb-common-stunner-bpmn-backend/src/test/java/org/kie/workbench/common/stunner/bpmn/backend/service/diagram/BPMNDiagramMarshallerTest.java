@@ -87,6 +87,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
+import org.kie.workbench.common.stunner.bpmn.definition.StartErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
@@ -179,6 +180,7 @@ public class BPMNDiagramMarshallerTest {
     private static final String BPMN_STARTTIMEREVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startTimerEvent.bpmn";
     private static final String BPMN_STARTSIGNALEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startSignalEvent.bpmn";
     private static final String BPMN_STARTMESSAGEEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startMessageEvent.bpmn";
+    private static final String BPMN_STARTERROREVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startErrorEvent.bpmn";
     private static final String BPMN_INTERMEDIATE_SIGNAL_EVENTCATCHING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateSignalEventCatching.bpmn";
     private static final String BPMN_INTERMEDIATE_ERROR_EVENTCATCHING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateErrorEventCatching.bpmn";
     private static final String BPMN_INTERMEDIATE_SIGNAL_EVENTTHROWING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateSignalEventThrowing.bpmn";
@@ -601,6 +603,31 @@ public class BPMNDiagramMarshallerTest {
         SignalRef signalRef = startSignalEvent.getExecutionSet().getSignalRef();
         assertEquals("sig1",
                      signalRef.getValue());
+    }
+
+    @Test
+    public void testUnmarshallStartErrorEvent() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_STARTERROREVENT);
+        assertDiagram(diagram,
+                      3);
+        assertEquals("startErrorEventProcess",
+                     diagram.getMetadata().getTitle());
+        Node<? extends Definition, ?> startEventNode = diagram.getGraph().getNode("3BD5BBC8-F1C7-45DE-8BDF-A06D8464A61B");
+        StartErrorEvent startErrorEvent = (StartErrorEvent) startEventNode.getContent().getDefinition();
+        assertNotNull(startErrorEvent.getGeneral());
+        assertEquals("MyStartErrorEvent",
+                     startErrorEvent.getGeneral().getName().getValue());
+        assertEquals("MyStartErrorEventDocumentation",
+                     startErrorEvent.getGeneral().getDocumentation().getValue());
+        assertNotNull(startErrorEvent.getExecutionSet());
+        assertNotNull(startErrorEvent.getExecutionSet().getErrorRef());
+        assertEquals("MyError",
+                     startErrorEvent.getExecutionSet().getErrorRef().getValue());
+
+        DataIOSet dataIOSet = startErrorEvent.getDataIOSet();
+        AssignmentsInfo assignmentsInfo = dataIOSet.getAssignmentsinfo();
+        assertEquals("||errorOutput_:String||[dout]errorOutput_->var1",
+                     assignmentsInfo.getValue());
     }
 
     @Test
@@ -1836,6 +1863,25 @@ public class BPMNDiagramMarshallerTest {
         assertTrue(result.contains("<bpmn2:signal id=\"_47718ea6-a6a4-3ceb-9e93-2111bdad0b8c\" name=\"sig1\"/>"));
         assertTrue(result.contains("<bpmn2:signalEventDefinition"));
         assertTrue(result.contains("signalRef=\"_47718ea6-a6a4-3ceb-9e93-2111bdad0b8c\"/>"));
+    }
+
+    @Test
+    public void testMarshallStartErrorEventEvent() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_STARTERROREVENT);
+        String result = tested.marshall(diagram);
+        assertDiagram(result,
+                      1,
+                      2,
+                      1);
+
+        assertTrue(result.contains("<bpmn2:startEvent"));
+        assertTrue(result.contains(" name=\"MyStartErrorEvent\""));
+        assertTrue(result.contains("<bpmn2:errorEventDefinition"));
+        assertTrue(result.contains("errorRef=\"MyError\""));
+        assertTrue(result.contains("drools:erefname=\"MyError\""));
+        assertTrue(result.contains("<bpmn2:error"));
+        assertTrue(result.contains("id=\"MyError\""));
+        assertTrue(result.contains("errorCode=\"MyError\""));
     }
 
     @Test

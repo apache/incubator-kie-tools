@@ -40,6 +40,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
+import org.kie.workbench.common.stunner.bpmn.definition.StartErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
@@ -297,6 +298,12 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
                 startMessageEventPropertiesMap);
             startMessageEventPropertiesMap.put(AssignmentsInfo.class,
                                                "assignmentsinfo");
+
+            Map<Class<?>, String> startErrorEventPropertiesMap = new HashMap<Class<?>, String>();
+            put(StartErrorEvent.class,
+                startErrorEventPropertiesMap);
+            startErrorEventPropertiesMap.put(AssignmentsInfo.class,
+                                             "assignmentsinfo");
 
             Map<Class<?>, String> intermediateTimerEventPropertiesMap = new HashMap<Class<?>, String>();
             put(IntermediateTimerEvent.class,

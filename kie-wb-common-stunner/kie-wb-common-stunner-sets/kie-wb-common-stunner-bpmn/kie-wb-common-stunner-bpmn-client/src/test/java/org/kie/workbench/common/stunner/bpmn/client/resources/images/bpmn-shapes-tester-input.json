@@ -178,6 +178,19 @@
       }
     },
     {
+      "id": "startErrorEvent",
+      "name": "Start Event - Error",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-start-error.svg",
+        "refs": "eventStartError"
+      }
+    },
+    {
       "id": "intermediateTimerEvent",
       "name": "Intermediate Event - Timer",
       "shape": {

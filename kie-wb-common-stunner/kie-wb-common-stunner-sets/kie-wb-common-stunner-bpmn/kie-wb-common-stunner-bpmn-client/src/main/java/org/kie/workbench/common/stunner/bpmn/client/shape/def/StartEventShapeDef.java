@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGGlyphFactor
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.EventInterruptingViewHandler;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseStartEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
@@ -42,17 +43,30 @@ public class StartEventShapeDef
 
     public static final SVGShapeViewResources<BaseStartEvent, BPMNSVGViewFactory> VIEW_RESOURCES =
             new SVGShapeViewResources<BaseStartEvent, BPMNSVGViewFactory>()
-                    .put(StartNoneEvent.class, BPMNSVGViewFactory::startNoneEvent)
-                    .put(StartTimerEvent.class, BPMNSVGViewFactory::startTimerEvent)
-                    .put(StartSignalEvent.class, BPMNSVGViewFactory::startSignalEvent)
-                    .put(StartMessageEvent.class, BPMNSVGViewFactory::startMessageEvent);
+
+                    .put(StartNoneEvent.class,
+                         BPMNSVGViewFactory::startNoneEvent)
+                    .put(StartTimerEvent.class,
+                         BPMNSVGViewFactory::startTimerEvent)
+                    .put(StartSignalEvent.class,
+                         BPMNSVGViewFactory::startSignalEvent)
+                    .put(StartMessageEvent.class,
+                         BPMNSVGViewFactory::startMessageEvent)
+                    .put(StartErrorEvent.class,
+                         BPMNSVGViewFactory::startErrorEvent);
 
     public static final Map<Class<? extends BaseStartEvent>, SvgDataUriGlyph> GLYPHS =
             new HashMap<Class<? extends BaseStartEvent>, SvgDataUriGlyph>() {{
-                put(StartNoneEvent.class, BPMNSVGGlyphFactory.START_NONE_EVENT_GLYPH);
-                put(StartTimerEvent.class, BPMNSVGGlyphFactory.START_TIMER_EVENT_GLYPH);
-                put(StartSignalEvent.class, BPMNSVGGlyphFactory.START_SIGNAL_EVENT_GLYPH);
-                put(StartMessageEvent.class, BPMNSVGGlyphFactory.START_MESSAGE_EVENT_GLYPH);
+                put(StartNoneEvent.class,
+                    BPMNSVGGlyphFactory.START_NONE_EVENT_GLYPH);
+                put(StartTimerEvent.class,
+                    BPMNSVGGlyphFactory.START_TIMER_EVENT_GLYPH);
+                put(StartSignalEvent.class,
+                    BPMNSVGGlyphFactory.START_SIGNAL_EVENT_GLYPH);
+                put(StartMessageEvent.class,
+                    BPMNSVGGlyphFactory.START_MESSAGE_EVENT_GLYPH);
+                put(StartErrorEvent.class,
+                    BPMNSVGGlyphFactory.START_ERROR_EVENT_GLYPH);
             }};
 
     @Override
@@ -81,7 +95,8 @@ public class StartEventShapeDef
     public SVGShapeView<?> newViewInstance(final BPMNSVGViewFactory factory,
                                            final BaseStartEvent task) {
         return VIEW_RESOURCES
-                .getResource(factory, task)
+                .getResource(factory,
+                             task)
                 .build(false);
     }
 

@@ -203,6 +203,23 @@
     opacity: 1;
 }
 
+/*TODO, UX please complete the proper values for modelling the BPMN StartErrorEvent element*/
+#startErrorEvent .eventAll {
+    fill: #E8FAE6;
+    stroke: #4AA241;
+}
+
+/*TODO, UX please complete the proper values for modelling the BPMN StartErrorEvent element*/
+#startErrorEvent .eventAll_errorIcon {
+    fill: #4AA241;
+    stroke: #4AA241;
+}
+
+/*TODO, UX please complete the proper values for modelling the BPMN StartErrorEvent element*/
+#startErrorEvent .eventAll_group_error {
+    opacity: 1;
+}
+
 #intermediateNoneEvent .eventAll {
     fill: #FBEFCF;
     stroke: #F0AB00;

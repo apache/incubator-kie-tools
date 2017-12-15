@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Spliterators;
+import java.util.function.Function;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,10 +29,13 @@ import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
+import org.kie.workbench.common.stunner.bpmn.definition.StartErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.CancelActivity;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.IsInterrupting;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.CancellingErrorEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.ErrorEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.ErrorRef;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.InterruptingErrorEventExecutionSet;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
@@ -58,6 +62,10 @@ public class ProcessErrorRefProviderTest {
     private static final int INTERMEDIATE_ERROR_EVENT_CATCHING_COUNT = 10;
 
     private static final String INTERMEDIATE_ERROR_EVENT_CATCHING_PREFIX = "INTERMEDIATE_ERROR_EVENT_CATCHING_PREFIX";
+
+    private static final int START_ERROR_EVENT_COUNT = 10;
+
+    private static final String START_ERROR_EVENT_PREFIX = "START_ERROR_EVENT";
 
     @Mock
     private SessionManager sessionManager;
@@ -102,19 +110,28 @@ public class ProcessErrorRefProviderTest {
     @Test
     public void testGetSelectorDataWithValues() {
         List<Element> nodes = new ArrayList<>();
-        nodes.addAll(mockEndErrorEventNodes(END_ERROR_EVENT_COUNT));
-        nodes.addAll(mockIntermediateErrorEventCatchingNodes(INTERMEDIATE_ERROR_EVENT_CATCHING_COUNT));
+        nodes.addAll(mockElements(END_ERROR_EVENT_COUNT,
+                                  index -> mockEndErrorEventNode(END_ERROR_EVENT_PREFIX + index)));
+        nodes.addAll(mockElements(INTERMEDIATE_ERROR_EVENT_CATCHING_COUNT,
+                                  index -> mockIntermediateErrorEventCatchingNode(INTERMEDIATE_ERROR_EVENT_CATCHING_PREFIX + index)));
+        nodes.addAll(mockElements(START_ERROR_EVENT_COUNT,
+                                  index -> mockStartErrorEventNode(START_ERROR_EVENT_PREFIX + index)));
 
         when(graph.nodes()).thenReturn(nodes);
         SelectorData selectorData = provider.getSelectorData(renderingContext);
         Map values = selectorData.getValues();
-        assertEquals(END_ERROR_EVENT_COUNT + INTERMEDIATE_ERROR_EVENT_CATCHING_COUNT,
+        assertEquals(END_ERROR_EVENT_COUNT +
+                             INTERMEDIATE_ERROR_EVENT_CATCHING_COUNT +
+                             START_ERROR_EVENT_COUNT,
                      values.size());
         verifyValues(END_ERROR_EVENT_COUNT,
                      END_ERROR_EVENT_PREFIX,
                      values);
         verifyValues(INTERMEDIATE_ERROR_EVENT_CATCHING_COUNT,
                      INTERMEDIATE_ERROR_EVENT_CATCHING_PREFIX,
+                     values);
+        verifyValues(START_ERROR_EVENT_COUNT,
+                     START_ERROR_EVENT_PREFIX,
                      values);
     }
 
@@ -129,33 +146,33 @@ public class ProcessErrorRefProviderTest {
         }
     }
 
-    private List<Node> mockEndErrorEventNodes(int count) {
-        List<Node> nodes = new ArrayList<>(count);
-        for (int i = 0; i < count; i++) {
-            nodes.add(mockEndErrorEventNode(END_ERROR_EVENT_PREFIX + i));
-        }
-        return nodes;
-    }
-
     private Node mockEndErrorEventNode(String errorRefValue) {
         EndErrorEvent event = new EndErrorEvent();
         event.setExecutionSet(new ErrorEventExecutionSet(new ErrorRef(errorRefValue)));
         return mockNode(event);
     }
 
-    private List<Node> mockIntermediateErrorEventCatchingNodes(int count) {
-        List<Node> nodes = new ArrayList<>(count);
-        for (int i = 0; i < count; i++) {
-            nodes.add(mockIntermediateErrorEventCatching(INTERMEDIATE_ERROR_EVENT_CATCHING_PREFIX + i));
-        }
-        return nodes;
-    }
-
-    private Node mockIntermediateErrorEventCatching(String errorRefValue) {
+    private Node mockIntermediateErrorEventCatchingNode(String errorRefValue) {
         IntermediateErrorEventCatching event = new IntermediateErrorEventCatching();
         event.setExecutionSet(new CancellingErrorEventExecutionSet(new CancelActivity(true),
                                                                    new ErrorRef(errorRefValue)));
         return mockNode(event);
+    }
+
+    private Element mockStartErrorEventNode(String errorRefValue) {
+        StartErrorEvent event = new StartErrorEvent();
+        event.setExecutionSet(new InterruptingErrorEventExecutionSet(new IsInterrupting(true),
+                                                                     new ErrorRef(errorRefValue)));
+        return mockNode(event);
+    }
+
+    private List<Element> mockElements(int count,
+                                       Function<Integer, Element> eventMocker) {
+        List<Element> events = new ArrayList<>(count);
+        for (int i = 0; i < count; i++) {
+            events.add(eventMocker.apply(i));
+        }
+        return events;
     }
 
     private Node mockNode(Object definition) {

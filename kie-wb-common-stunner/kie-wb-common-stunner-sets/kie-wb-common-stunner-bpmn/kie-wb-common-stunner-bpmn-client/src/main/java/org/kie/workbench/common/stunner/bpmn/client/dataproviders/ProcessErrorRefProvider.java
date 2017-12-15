@@ -30,6 +30,7 @@ import org.kie.workbench.common.forms.dynamic.model.config.SelectorDataProvider;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
+import org.kie.workbench.common.stunner.bpmn.definition.StartErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.ErrorRef;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -78,13 +79,18 @@ public class ProcessErrorRefProvider
         Diagram diagram = sessionManager.getCurrentSession().getCanvasHandler().getDiagram();
         Predicate<Node> endErrorEventsFilter = node -> ((View) node.getContent()).getDefinition() instanceof EndErrorEvent;
         Predicate<Node> intermediateErrorEventsFilter = node -> ((View) node.getContent()).getDefinition() instanceof IntermediateErrorEventCatching;
-        Predicate<Node> errorNodesFilter = endErrorEventsFilter.or(intermediateErrorEventsFilter);
+        Predicate<Node> startErrorEventsFilter = node -> ((View) node.getContent()).getDefinition() instanceof StartErrorEvent;
+        Predicate<Node> errorNodesFilter = endErrorEventsFilter
+                .or(intermediateErrorEventsFilter)
+                .or(startErrorEventsFilter);
 
         Function<Node, ErrorRef> errorRefMapper = node -> {
             if (((View) node.getContent()).getDefinition() instanceof EndErrorEvent) {
                 return ((EndErrorEvent) ((View) node.getContent()).getDefinition()).getExecutionSet().getErrorRef();
             } else if (((View) node.getContent()).getDefinition() instanceof IntermediateErrorEventCatching) {
                 return ((IntermediateErrorEventCatching) ((View) node.getContent()).getDefinition()).getExecutionSet().getErrorRef();
+            } else if (((View) node.getContent()).getDefinition() instanceof StartErrorEvent) {
+                return ((StartErrorEvent) ((View) node.getContent()).getDefinition()).getExecutionSet().getErrorRef();
             }
             return null;
         };
