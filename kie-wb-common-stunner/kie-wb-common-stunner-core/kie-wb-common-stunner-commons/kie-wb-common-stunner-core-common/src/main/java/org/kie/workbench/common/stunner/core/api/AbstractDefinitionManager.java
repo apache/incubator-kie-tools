@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.api;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.Adapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
+import org.kie.workbench.common.stunner.core.definition.clone.CloneManager;
 import org.kie.workbench.common.stunner.core.registry.DynamicRegistry;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
@@ -26,16 +27,20 @@ public abstract class AbstractDefinitionManager implements DefinitionManager {
 
     private final TypeDefinitionSetRegistry<?> definitionSetRegistry;
     private final AdapterManager adapterManager;
+    private final CloneManager cloneManager;
 
     protected AbstractDefinitionManager() {
         this.definitionSetRegistry = null;
         this.adapterManager = null;
+        this.cloneManager = null;
     }
 
     public AbstractDefinitionManager(final RegistryFactory registryFactory,
-                                     final AdapterManager adapterManager) {
+                                     final AdapterManager adapterManager,
+                                     final CloneManager cloneManager) {
         this.definitionSetRegistry = registryFactory.newDefinitionSetRegistry();
         this.adapterManager = adapterManager;
+        this.cloneManager = cloneManager;
     }
 
     @Override
@@ -57,6 +62,11 @@ public abstract class AbstractDefinitionManager implements DefinitionManager {
     protected void addAdapter(final Adapter adapter) {
         final DynamicRegistry<Adapter> adapterDynamicRegistry = (DynamicRegistry<Adapter>) adapterManager.registry();
         adapterDynamicRegistry.register(adapter);
+    }
+
+    @Override
+    public CloneManager cloneManager() {
+        return cloneManager;
     }
 }
 

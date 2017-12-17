@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.client.session.impl;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.ClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
@@ -45,6 +46,7 @@ public abstract class AbstractClientFullSession extends AbstractClientReadOnlySe
     private DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl;
     private ElementBuilderControl<AbstractCanvasHandler> builderControl;
     private KeyboardControl<AbstractCanvas, ClientSession> keyboardControl;
+    private ClipboardControl<Element, AbstractCanvas, ClientSession> clipboardControl;
 
     public AbstractClientFullSession(final AbstractCanvas canvas,
                                      final AbstractCanvasHandler canvasHandler,
@@ -59,7 +61,8 @@ public abstract class AbstractClientFullSession extends AbstractClientReadOnlySe
                                      final ContainmentAcceptorControl<AbstractCanvasHandler> containmentAcceptorControl,
                                      final DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl,
                                      final ElementBuilderControl<AbstractCanvasHandler> builderControl,
-                                     final KeyboardControl<AbstractCanvas, ClientSession> keyboardControl) {
+                                     final KeyboardControl<AbstractCanvas, ClientSession> keyboardControl,
+                                     final ClipboardControl<Element, AbstractCanvas, ClientSession> clipboardControl) {
         super(canvas,
               canvasHandler,
               selectionControl,
@@ -72,6 +75,7 @@ public abstract class AbstractClientFullSession extends AbstractClientReadOnlySe
         this.dockingAcceptorControl = dockingAcceptorControl;
         this.builderControl = builderControl;
         this.keyboardControl = keyboardControl;
+        this.clipboardControl = clipboardControl;
         getRegistrationHandler().registerCanvasHandlerControl(connectionAcceptorControl);
         connectionAcceptorControl.setCommandManagerProvider(requestCommandManagerProvider);
         getRegistrationHandler().registerCanvasHandlerControl(containmentAcceptorControl);
@@ -146,5 +150,10 @@ public abstract class AbstractClientFullSession extends AbstractClientReadOnlySe
     @Override
     public KeyboardControl<AbstractCanvas, ClientSession> getKeyboardControl() {
         return keyboardControl;
+    }
+
+    @Override
+    public ClipboardControl<Element, AbstractCanvas, ClientSession> getClipboardControl() {
+        return clipboardControl;
     }
 }

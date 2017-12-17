@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
+import org.kie.workbench.common.stunner.core.definition.clone.ClonePolicy;
 
 public abstract class BindableMorphDefinition implements MorphDefinition {
 
@@ -48,8 +49,8 @@ public abstract class BindableMorphDefinition implements MorphDefinition {
     }
 
     @Override
-    public MorphPolicy getPolicy() {
-        return MorphPolicy.DEFAULT;
+    public ClonePolicy getPolicy() {
+        return ClonePolicy.DEFAULT;
     }
 
     public boolean canMorphType(final Class<?> type) {

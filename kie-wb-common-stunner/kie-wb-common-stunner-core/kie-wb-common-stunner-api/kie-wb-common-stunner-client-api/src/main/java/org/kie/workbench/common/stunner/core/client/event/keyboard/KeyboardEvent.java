@@ -27,6 +27,9 @@ public interface KeyboardEvent {
         ARROW_DOWN(25),
         ARROW_LEFT(27),
         ARROW_RIGHT(26),
+        C(67),
+        V(86),
+        X(88),
         Z(90);
 
         private final int unicharCode;

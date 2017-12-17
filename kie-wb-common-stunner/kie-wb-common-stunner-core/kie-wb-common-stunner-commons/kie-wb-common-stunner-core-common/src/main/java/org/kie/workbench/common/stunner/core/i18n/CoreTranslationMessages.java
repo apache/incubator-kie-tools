@@ -48,4 +48,32 @@ public class CoreTranslationMessages {
     public static final String VALIDATION_FAILED = RULE_PREF + "fail";
 
     public static final String DIAGRAM_LOAD_FAIL_UNSUPPORTED_ELEMENTS = "org.kie.workbench.common.stunner.core.client.diagram.load.fail.unsupported";
+
+    public static final String COPY_SELECTION = "org.kie.workbench.common.stunner.core.client.toolbox.CopySelection";
+
+    public static final String CUT_SELECTION = "org.kie.workbench.common.stunner.core.client.toolbox.CutSelection";
+
+    public static final String PASTE_SELECTION = "org.kie.workbench.common.stunner.core.client.toolbox.PasteSelection";
+
+    public static final String VISIT_GRAPH = "org.kie.workbench.common.stunner.core.client.toolbox.VisitGraph";
+
+    public static final String VALIDATE = "org.kie.workbench.common.stunner.core.client.toolbox.Validate";
+
+    public static final String UNDO = "org.kie.workbench.common.stunner.core.client.toolbox.Undo";
+
+    public static final String SWITCH_GRID = "org.kie.workbench.common.stunner.core.client.toolbox.SwitchGrid";
+
+    public static final String REDO = "org.kie.workbench.common.stunner.core.client.toolbox.Redo";
+
+    public static final String EXPORT_PNG = "org.kie.workbench.common.stunner.core.client.toolbox.ExportPNG";
+
+    public static final String EXPORT_PDF = "org.kie.workbench.common.stunner.core.client.toolbox.ExportPDF";
+
+    public static final String EXPORT_JPG = "org.kie.workbench.common.stunner.core.client.toolbox.ExportJPG";
+
+    public static final String DELETE_SELECTION = "org.kie.workbench.common.stunner.core.client.toolbox.DeleteSelection";
+
+    public static final String CLEAR_DIAGRAM = "org.kie.workbench.common.stunner.core.client.toolbox.ClearDiagram";
+
+    public static final String CLEAR_SHAPES = "org.kie.workbench.common.stunner.core.client.toolbox.ClearShapes";
 }

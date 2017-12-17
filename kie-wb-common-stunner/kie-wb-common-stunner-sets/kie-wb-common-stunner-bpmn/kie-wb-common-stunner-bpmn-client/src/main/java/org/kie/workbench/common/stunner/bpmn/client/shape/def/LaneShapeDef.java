@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
+import java.util.Optional;
+
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
@@ -25,7 +27,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandl
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
-public class LaneShapeDef
+public class LaneShapeDef extends BaseDimensionedShapeDef
         implements BPMNSvgShapeDef<Lane> {
 
     @Override
@@ -47,7 +49,9 @@ public class LaneShapeDef
     @Override
     public SVGShapeView<?> newViewInstance(final BPMNSVGViewFactory factory,
                                            final Lane lane) {
-        return factory.lane().build(true);
+        return newViewInstance(Optional.ofNullable(lane.getDimensionsSet().getWidth()),
+                               Optional.ofNullable(lane.getDimensionsSet().getHeight()),
+                               factory.lane());
     }
 
     @Override

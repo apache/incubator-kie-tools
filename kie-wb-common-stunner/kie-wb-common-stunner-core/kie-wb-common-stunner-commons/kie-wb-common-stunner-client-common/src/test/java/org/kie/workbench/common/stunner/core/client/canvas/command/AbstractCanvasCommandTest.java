@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.command;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -45,6 +46,8 @@ public abstract class AbstractCanvasCommandTest {
     protected Metadata metadata;
     @Mock
     protected Index<?, ?> graphIndex;
+    @Mock
+    protected CanvasCommandFactory canvasCommandFactory;
 
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);

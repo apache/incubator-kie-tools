@@ -109,6 +109,45 @@ public class ProjectDiagramEditorMenuItemsBuilder {
         }};
     }
 
+    public MenuItem newCopyItem(final Command command) {
+        return buildItem(buildCopyItem(command));
+    }
+
+    private IsWidget buildCopyItem(final Command command) {
+        return new Button() {{
+            setSize(ButtonSize.SMALL);
+            setIcon(IconType.COPY);
+            setTitle("Copy selection");
+            addClickHandler(clickEvent -> command.execute());
+        }};
+    }
+
+    public MenuItem newPasteItem(final Command command) {
+        return buildItem(buildPasteItem(command));
+    }
+
+    private IsWidget buildPasteItem(final Command command) {
+        return new Button() {{
+            setSize(ButtonSize.SMALL);
+            setIcon(IconType.PASTE);
+            setTitle("Paste selection");
+            addClickHandler(clickEvent -> command.execute());
+        }};
+    }
+
+    public MenuItem newCutItem(final Command command) {
+        return buildItem(buildCutItem(command));
+    }
+
+    private IsWidget buildCutItem(final Command command) {
+        return new Button() {{
+            setSize(ButtonSize.SMALL);
+            setIcon(IconType.CUT);
+            setTitle("Cut selection");
+            addClickHandler(clickEvent -> command.execute());
+        }};
+    }
+
     public MenuItem newDeleteSelectionItem(final Command command) {
         return buildItem(buildDeleteSelectionItem(command));
     }

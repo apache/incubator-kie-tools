@@ -20,16 +20,18 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SwitchGridSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
+import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 
 @Dependent
 public class SwitchGridToolbarCommand extends AbstractToolbarCommand<AbstractClientSession, SwitchGridSessionCommand> {
 
     @Inject
-    public SwitchGridToolbarCommand(final SessionCommandFactory sessionCommandFactory) {
-        super(sessionCommandFactory.newSwitchGridCommand());
+    public SwitchGridToolbarCommand(final SessionCommandFactory sessionCommandFactory, final ClientTranslationService translationService) {
+        super(sessionCommandFactory.newSwitchGridCommand(), translationService);
     }
 
     @Override
@@ -44,13 +46,12 @@ public class SwitchGridToolbarCommand extends AbstractToolbarCommand<AbstractCli
 
     @Override
     public String getCaption() {
-        return null;
+        return translationService.getKeyValue(CoreTranslationMessages.SWITCH_GRID);
     }
 
-    // TODO: I18n.
     @Override
     public String getTooltip() {
-        return "Switch grid";
+        return translationService.getKeyValue(CoreTranslationMessages.SWITCH_GRID);
     }
 
     @Override

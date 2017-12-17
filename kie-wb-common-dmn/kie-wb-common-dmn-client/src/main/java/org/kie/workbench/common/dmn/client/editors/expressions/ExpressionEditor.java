@@ -174,6 +174,9 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
         boolean exportToPngToolbarCommandEnabled = false;
         boolean exportToJpgToolbarCommandEnabled = false;
         boolean exportToPdfToolbarCommandEnabled = false;
+        boolean copyCommandEnabled = false;
+        boolean cutCommandEnabled = false;
+        boolean pasteCommandEnabled = false;
 
         private ToolbarCommandStateHandler(final EditorToolbar toolbar) {
             this.toolbar = toolbar;
@@ -191,6 +194,9 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
             this.exportToPngToolbarCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getExportToPngToolbarCommand());
             this.exportToJpgToolbarCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getExportToJpgToolbarCommand());
             this.exportToPdfToolbarCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getExportToPdfToolbarCommand());
+            this.copyCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getCopyToolbarCommand());
+            this.cutCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getCutToolbarCommand());
+            this.pasteCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getPasteToolbarCommand());
 
             enableToolbarCommand(toolbar.getVisitGraphToolbarCommand(),
                                  false);
@@ -213,6 +219,12 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
             enableToolbarCommand(toolbar.getExportToJpgToolbarCommand(),
                                  false);
             enableToolbarCommand(toolbar.getExportToPdfToolbarCommand(),
+                                 false);
+            enableToolbarCommand(toolbar.getCopyToolbarCommand(),
+                                 false);
+            enableToolbarCommand(toolbar.getCutToolbarCommand(),
+                                 false);
+            enableToolbarCommand(toolbar.getPasteToolbarCommand(),
                                  false);
         }
 
@@ -239,6 +251,12 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
                                  exportToJpgToolbarCommandEnabled);
             enableToolbarCommand(toolbar.getExportToPdfToolbarCommand(),
                                  exportToPdfToolbarCommandEnabled);
+            enableToolbarCommand(toolbar.getCopyToolbarCommand(),
+                                 copyCommandEnabled);
+            enableToolbarCommand(toolbar.getCutToolbarCommand(),
+                                 cutCommandEnabled);
+            enableToolbarCommand(toolbar.getPasteToolbarCommand(),
+                                 pasteCommandEnabled);
         }
 
         private void enableToolbarCommand(final ToolbarCommand command,

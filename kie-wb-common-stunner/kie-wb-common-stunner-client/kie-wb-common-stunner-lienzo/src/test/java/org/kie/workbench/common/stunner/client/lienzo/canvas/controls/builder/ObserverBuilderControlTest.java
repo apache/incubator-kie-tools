@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls.builder;
 
+import java.util.Collections;
+
 import javax.enterprise.event.Event;
 
 import org.junit.Before;
@@ -74,14 +76,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.mvp.ParameterizedCommand;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -89,6 +88,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 
 @RunWith(MockitoJUnitRunner.class)
 public class ObserverBuilderControlTest {
@@ -209,6 +209,7 @@ public class ObserverBuilderControlTest {
         canvasHandler.handle(mock(AbstractCanvas.class));
         canvasHandler.draw(diagram, mock(ParameterizedCommand.class));
         when(diagram.getGraph()).thenReturn(graph);
+        when(graph.nodes()).thenReturn(Collections.emptyList());
 
 
         CanvasCommandManager commandManager = mock(CanvasCommandManager.class);

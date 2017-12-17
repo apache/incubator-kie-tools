@@ -27,20 +27,23 @@ import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.BindableMorphAdapter;
+import org.kie.workbench.common.stunner.core.definition.clone.CloneManager;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinitionProvider;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @Dependent
 public class ClientBindableMorphAdapter<S> extends BindableMorphAdapter<S> {
 
-    SyncBeanManager beanManager;
+    private final SyncBeanManager beanManager;
 
     @Inject
     public ClientBindableMorphAdapter(final SyncBeanManager beanManager,
                                       final FactoryManager factoryManager,
-                                      final DefinitionUtils definitionUtils) {
+                                      final DefinitionUtils definitionUtils,
+                                      final CloneManager cloneManager) {
         super(definitionUtils,
-              factoryManager);
+              factoryManager,
+              cloneManager);
         this.beanManager = beanManager;
     }
 
@@ -53,13 +56,6 @@ public class ClientBindableMorphAdapter<S> extends BindableMorphAdapter<S> {
             MorphDefinitionProvider provider = morphAdapter.getInstance();
             morphDefinitions.addAll(provider.getMorphDefinitions());
         }
-    }
-
-    @Override
-    protected <T> T doMerge(final S source,
-                            final T result) {
-        return ClientBindingUtils.merge(source,
-                                        result);
     }
 
     @Override

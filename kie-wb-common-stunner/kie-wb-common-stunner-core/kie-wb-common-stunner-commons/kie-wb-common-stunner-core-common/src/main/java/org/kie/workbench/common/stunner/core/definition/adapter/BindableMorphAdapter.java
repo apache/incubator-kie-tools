@@ -23,6 +23,7 @@ import java.util.Set;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.HasInheritance;
+import org.kie.workbench.common.stunner.core.definition.clone.CloneManager;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphProperty;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
@@ -30,35 +31,22 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 public abstract class BindableMorphAdapter<S> extends AbstractMorphAdapter<S> {
 
+    private final CloneManager cloneManager;
+
     public BindableMorphAdapter(final DefinitionUtils definitionUtils,
-                                final FactoryManager factoryManager) {
+                                final FactoryManager factoryManager,
+                                final CloneManager cloneManager) {
         super(definitionUtils,
               factoryManager);
+        this.cloneManager = cloneManager;
     }
-
-    protected abstract <T> T doMerge(final S source,
-                                     final T result);
 
     @Override
     @SuppressWarnings("unchecked")
     protected <T> T doMerge(final S source,
                             final MorphDefinition morphDefinition,
                             final T result) {
-        if (definitionUtils.isNonePolicy(morphDefinition)) {
-            return result;
-        }
-        if (definitionUtils.isDefaultPolicy(morphDefinition)) {
-            final Object nameProperty = getDefinitionManager().adapters().forDefinition().getMetaProperty(PropertyMetaTypes.NAME,
-                                                                                                          source);
-            final Object targetNameProperty = getDefinitionManager().adapters().forDefinition().getMetaProperty(PropertyMetaTypes.NAME,
-                                                                                                                result);
-            final Object namePropertyValue = getDefinitionManager().adapters().forProperty().getValue(nameProperty);
-            getDefinitionManager().adapters().forProperty().setValue(targetNameProperty,
-                                                                     namePropertyValue);
-            return result;
-        }
-        return doMerge(source,
-                       result);
+        return cloneManager.clone(source, result, morphDefinition.getPolicy());
     }
 
     @Override

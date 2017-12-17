@@ -35,9 +35,15 @@ public class ToolbarCommandFactory {
     private final ManagedInstance<ExportToPngToolbarCommand> exportToPngToolbarCommand;
     private final ManagedInstance<ExportToJpgToolbarCommand> exportToJpgToolbarCommand;
     private final ManagedInstance<ExportToPdfToolbarCommand> exportToPdfToolbarCommand;
+    private final ManagedInstance<CopyToolbarCommand> copyToolbarCommand;
+    private final ManagedInstance<CutToolbarCommand> cutToolbarCommand;
+    private final ManagedInstance<PasteToolbarCommand> pasteToolbarCommand;
 
     protected ToolbarCommandFactory() {
         this(null,
+             null,
+             null,
+             null,
              null,
              null,
              null,
@@ -61,7 +67,10 @@ public class ToolbarCommandFactory {
                                  final ManagedInstance<ValidateToolbarCommand> validateCommand,
                                  final ManagedInstance<ExportToPngToolbarCommand> exportToPngToolbarCommand,
                                  final ManagedInstance<ExportToJpgToolbarCommand> exportToJpgToolbarCommand,
-                                 final ManagedInstance<ExportToPdfToolbarCommand> exportToPdfToolbarCommand) {
+                                 final ManagedInstance<ExportToPdfToolbarCommand> exportToPdfToolbarCommand,
+                                 final ManagedInstance<CopyToolbarCommand> copyToolbarCommand,
+                                 final ManagedInstance<CutToolbarCommand> cutToolbarCommand,
+                                 final ManagedInstance<PasteToolbarCommand> pasteToolbarCommand) {
         this.clearStatesCommand = clearStatesCommand;
         this.visitGraphCommand = visitGraphCommand;
         this.switchGridCommand = switchGridCommand;
@@ -73,6 +82,9 @@ public class ToolbarCommandFactory {
         this.exportToPngToolbarCommand = exportToPngToolbarCommand;
         this.exportToJpgToolbarCommand = exportToJpgToolbarCommand;
         this.exportToPdfToolbarCommand = exportToPdfToolbarCommand;
+        this.copyToolbarCommand = copyToolbarCommand;
+        this.cutToolbarCommand = cutToolbarCommand;
+        this.pasteToolbarCommand = pasteToolbarCommand;
     }
 
     public ClearStatesToolbarCommand newClearStatesCommand() {
@@ -117,5 +129,17 @@ public class ToolbarCommandFactory {
 
     public ExportToPdfToolbarCommand newExportToPdfToolbarCommand() {
         return exportToPdfToolbarCommand.get();
+    }
+
+    public CopyToolbarCommand newCopyCommand() {
+        return copyToolbarCommand.get();
+    }
+
+    public CutToolbarCommand newCutToolbarCommand() {
+        return cutToolbarCommand.get();
+    }
+
+    public PasteToolbarCommand newPasteCommand() {
+        return pasteToolbarCommand.get();
     }
 }

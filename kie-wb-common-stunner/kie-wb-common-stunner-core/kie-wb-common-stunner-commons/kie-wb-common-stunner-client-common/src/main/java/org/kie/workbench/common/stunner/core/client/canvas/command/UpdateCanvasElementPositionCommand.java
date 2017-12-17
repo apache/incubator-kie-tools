@@ -18,8 +18,11 @@ package org.kie.workbench.common.stunner.core.client.canvas.command;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
+import org.kie.workbench.common.stunner.core.client.util.ShapeUtils;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Node;
 
 public class UpdateCanvasElementPositionCommand extends AbstractCanvasCommand {
 
@@ -33,7 +36,15 @@ public class UpdateCanvasElementPositionCommand extends AbstractCanvasCommand {
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
         context.updateElementPosition(element,
                                       MutationContext.STATIC);
+        moveConnectorsToTop(context);
         return buildResult();
+    }
+
+    private void moveConnectorsToTop(AbstractCanvasHandler context) {
+        if(getElement() instanceof Node){
+            ShapeUtils.moveViewConnectorsToTop(context,
+                                               (Node<?, Edge>) getElement());
+        }
     }
 
     @Override

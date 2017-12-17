@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.stunner.core.definition.clone.ClonePolicy;
 
 @Portable
 public class MorphDefinitionImpl implements MorphDefinition {
@@ -29,13 +30,13 @@ public class MorphDefinitionImpl implements MorphDefinition {
     private final String base;
     private final String defaultDefinitionId;
     private final List<String> targets;
-    private final MorphPolicy policy;
+    private final ClonePolicy policy;
 
     public MorphDefinitionImpl(final @MapsTo("definitionId") String definitionId,
                                final @MapsTo("base") String base,
                                final @MapsTo("defaultDefinitionId") String defaultDefinitionId,
                                final @MapsTo("targets") List<String> targets,
-                               final @MapsTo("policy") MorphPolicy policy) {
+                               final @MapsTo("policy") ClonePolicy policy) {
         this.definitionId = definitionId;
         this.base = base;
         this.defaultDefinitionId = defaultDefinitionId;
@@ -67,7 +68,7 @@ public class MorphDefinitionImpl implements MorphDefinition {
     }
 
     @Override
-    public MorphPolicy getPolicy() {
+    public ClonePolicy getPolicy() {
         return policy;
     }
 }

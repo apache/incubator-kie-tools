@@ -20,16 +20,18 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.VisitGraphSessionCommand;
+import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 
 @Dependent
 public class VisitGraphToolbarCommand extends AbstractToolbarCommand<ClientSession, VisitGraphSessionCommand> {
 
     @Inject
-    public VisitGraphToolbarCommand(final SessionCommandFactory sessionCommandFactory) {
-        super(sessionCommandFactory.newVisitGraphCommand());
+    public VisitGraphToolbarCommand(final SessionCommandFactory sessionCommandFactory, final ClientTranslationService translationService) {
+        super(sessionCommandFactory.newVisitGraphCommand(), translationService);
     }
 
     @Override
@@ -39,13 +41,12 @@ public class VisitGraphToolbarCommand extends AbstractToolbarCommand<ClientSessi
 
     @Override
     public String getCaption() {
-        return null;
+        return translationService.getKeyValue(CoreTranslationMessages.VISIT_GRAPH);
     }
 
-    // TODO: I18n.
     @Override
     public String getTooltip() {
-        return "Visit";
+        return translationService.getKeyValue(CoreTranslationMessages.VISIT_GRAPH);
     }
 
     @Override

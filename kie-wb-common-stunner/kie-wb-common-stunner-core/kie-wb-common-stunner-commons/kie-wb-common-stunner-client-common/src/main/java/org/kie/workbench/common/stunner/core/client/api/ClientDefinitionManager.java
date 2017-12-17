@@ -33,6 +33,7 @@ import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetRul
 import org.kie.workbench.common.stunner.core.definition.adapter.MorphAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertySetAdapter;
+import org.kie.workbench.common.stunner.core.definition.clone.CloneManager;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 
 @ApplicationScoped
@@ -48,9 +49,12 @@ public class ClientDefinitionManager extends AbstractDefinitionManager {
     @Inject
     public ClientDefinitionManager(final SyncBeanManager beanManager,
                                    final RegistryFactory registryFactory,
-                                   final AdapterManager adapterManager) {
+                                   final AdapterManager adapterManager,
+                                   final CloneManager cloneManager
+                                  ) {
         super(registryFactory,
-              adapterManager);
+              adapterManager,
+              cloneManager);
         this.beanManager = beanManager;
     }
 

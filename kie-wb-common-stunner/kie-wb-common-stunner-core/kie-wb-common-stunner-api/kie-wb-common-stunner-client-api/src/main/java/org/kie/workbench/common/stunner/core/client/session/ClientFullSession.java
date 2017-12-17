@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.client.session;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.ClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
@@ -26,6 +27,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.Key
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 
 /**
@@ -51,4 +53,6 @@ public interface ClientFullSession<C extends Canvas, H extends CanvasHandler, S 
     ElementBuilderControl<H> getBuilderControl();
 
     KeyboardControl<C, S> getKeyboardControl();
+
+    ClipboardControl<Element, C, S> getClipboardControl();
 }

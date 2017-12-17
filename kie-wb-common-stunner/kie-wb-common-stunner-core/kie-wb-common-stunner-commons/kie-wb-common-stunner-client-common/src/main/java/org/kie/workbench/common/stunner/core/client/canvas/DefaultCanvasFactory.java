@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.Edge
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.Observer;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.ClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
@@ -65,12 +66,14 @@ public class DefaultCanvasFactory
     private final ManagedInstance<ZoomControl> zoomControls;
     private final ManagedInstance<PanControl> panControls;
     private final ManagedInstance<KeyboardControl> keyboardControls;
+    private final ManagedInstance<ClipboardControl> clipboardControls;
     private final ManagedInstance<AbstractCanvas> canvasInstances;
     private final ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances;
 
     // Required by CDI proxies.
     protected DefaultCanvasFactory() {
         this(null,
+             null,
              null,
              null,
              null,
@@ -103,6 +106,7 @@ public class DefaultCanvasFactory
                                 final ManagedInstance<ZoomControl> zoomControls,
                                 final ManagedInstance<PanControl> panControls,
                                 final ManagedInstance<KeyboardControl> keyboardControls,
+                                final ManagedInstance<ClipboardControl> clipboardControls,
                                 final @Default ManagedInstance<AbstractCanvas> canvasInstances,
                                 final @Default ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances) {
         this.resizeControls = resizeControls;
@@ -121,6 +125,7 @@ public class DefaultCanvasFactory
         this.keyboardControls = keyboardControls;
         this.canvasInstances = canvasInstances;
         this.canvasHandlerInstances = canvasHandlerInstances;
+        this.clipboardControls = clipboardControls;
     }
 
     @PostConstruct
@@ -153,7 +158,9 @@ public class DefaultCanvasFactory
                 .register(PanControl.class,
                           panControls)
                 .register(KeyboardControl.class,
-                          keyboardControls);
+                          keyboardControls)
+                .register(ClipboardControl.class,
+                          clipboardControls);
     }
 
     @Override

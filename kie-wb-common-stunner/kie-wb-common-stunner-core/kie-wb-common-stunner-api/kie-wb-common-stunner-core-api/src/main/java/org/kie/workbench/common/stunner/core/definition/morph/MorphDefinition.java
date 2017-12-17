@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.definition.morph;
 
+import org.kie.workbench.common.stunner.core.definition.clone.ClonePolicy;
+
 // TODO: Refactor to #getTargets()
 //      - Bindable impl -> do not use a map, as single class a key is available
 public interface MorphDefinition {
@@ -28,5 +30,5 @@ public interface MorphDefinition {
 
     Iterable<String> getTargets(final String definitionId);
 
-    MorphPolicy getPolicy();
+    ClonePolicy getPolicy();
 }

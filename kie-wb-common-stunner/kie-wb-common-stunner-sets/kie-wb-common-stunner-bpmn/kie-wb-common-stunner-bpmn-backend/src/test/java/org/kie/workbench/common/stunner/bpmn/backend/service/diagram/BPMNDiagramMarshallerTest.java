@@ -113,6 +113,7 @@ import org.kie.workbench.common.stunner.core.backend.definition.adapter.annotati
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.binding.RuntimeBindableMorphAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
+import org.kie.workbench.common.stunner.core.definition.clone.CloneManager;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.DiagramImpl;
@@ -218,6 +219,9 @@ public class BPMNDiagramMarshallerTest {
 
     @Mock
     RuleManager rulesManager;
+
+    @Mock
+    CloneManager cloneManager;
 
     @Mock
     ApplicationFactoryManager applicationFactoryManager;
@@ -381,6 +385,7 @@ public class BPMNDiagramMarshallerTest {
         RuntimeBindableMorphAdapter<Object> morphAdapter =
                 new RuntimeBindableMorphAdapter(definitionUtils,
                                                 applicationFactoryManager,
+                                                cloneManager,
                                                 morphDefinitions);
         when(adapterRegistry.getMorphAdapter(eq(UserTask.class))).thenReturn(morphAdapter);
         when(adapterRegistry.getMorphAdapter(eq(NoneTask.class))).thenReturn(morphAdapter);

@@ -55,4 +55,11 @@ public final class CanvasViolationImpl
             return new CanvasViolationImpl(violation);
         }
     }
+
+    @Override
+    public String toString() {
+        return "CanvasViolationImpl{" +
+                "ruleViolation=" + ruleViolation +
+                '}';
+    }
 }

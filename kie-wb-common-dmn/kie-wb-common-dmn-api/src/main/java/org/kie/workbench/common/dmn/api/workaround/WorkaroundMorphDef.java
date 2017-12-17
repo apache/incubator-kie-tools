@@ -17,7 +17,7 @@ package org.kie.workbench.common.dmn.api.workaround;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
-import org.kie.workbench.common.stunner.core.definition.morph.MorphPolicy;
+import org.kie.workbench.common.stunner.core.definition.clone.ClonePolicy;
 
 /**
  * Without a portable impl of MorphDefinition, compilation fails.
@@ -46,7 +46,7 @@ public class WorkaroundMorphDef implements MorphDefinition {
     }
 
     @Override
-    public MorphPolicy getPolicy() {
+    public ClonePolicy getPolicy() {
         throw new RuntimeException("Not yet implemented.");
     }
 }

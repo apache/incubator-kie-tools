@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasInPlaceTextEditorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.ClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
@@ -73,7 +74,8 @@ public class DMNClientFullSession extends AbstractClientFullSession {
               factory.newControl(ContainmentAcceptorControl.class),
               factory.newControl(DockingAcceptorControl.class),
               factory.newControl(ElementBuilderControl.class),
-              factory.newControl(KeyboardControl.class));
+              factory.newControl(KeyboardControl.class),
+              factory.newControl(ClipboardControl.class));
         this.dragControl = factory.newControl(DragControl.class);
         this.resizeControl = factory.newControl(ResizeControl.class);
         this.canvasInPlaceTextEditorControl = factory.newControl(CanvasInPlaceTextEditorControl.class);

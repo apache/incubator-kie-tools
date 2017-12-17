@@ -20,6 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 
 @DMNEditor
@@ -27,7 +28,7 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.Session
 public class ClearToolbarCommand extends org.kie.workbench.common.stunner.client.widgets.toolbar.command.ClearToolbarCommand {
 
     @Inject
-    public ClearToolbarCommand(final @DMNEditor SessionCommandFactory sessionCommandFactory) {
-        super(sessionCommandFactory);
+    public ClearToolbarCommand(final @DMNEditor SessionCommandFactory sessionCommandFactory, final ClientTranslationService translationService) {
+        super(sessionCommandFactory, translationService);
     }
 }

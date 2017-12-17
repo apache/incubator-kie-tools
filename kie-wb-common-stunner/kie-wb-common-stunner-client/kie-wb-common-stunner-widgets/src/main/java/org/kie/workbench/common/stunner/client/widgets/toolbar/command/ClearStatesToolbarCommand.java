@@ -20,16 +20,18 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.ClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearStatesSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
+import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 
 @Dependent
 public class ClearStatesToolbarCommand extends AbstractToolbarCommand<ClientReadOnlySession, ClearStatesSessionCommand> {
 
     @Inject
-    public ClearStatesToolbarCommand(final SessionCommandFactory sessionCommandFactory) {
-        super(sessionCommandFactory.newClearStatesCommand());
+    public ClearStatesToolbarCommand(final SessionCommandFactory sessionCommandFactory, final ClientTranslationService translationService) {
+        super(sessionCommandFactory.newClearStatesCommand(), translationService);
     }
 
     @Override
@@ -39,13 +41,12 @@ public class ClearStatesToolbarCommand extends AbstractToolbarCommand<ClientRead
 
     @Override
     public String getCaption() {
-        return null;
+        return translationService.getKeyValue(CoreTranslationMessages.CLEAR_SHAPES);
     }
 
-    // TODO: I18n.
     @Override
     public String getTooltip() {
-        return "Clear shape states";
+        return translationService.getKeyValue(CoreTranslationMessages.CLEAR_SHAPES);
     }
 
     @Override

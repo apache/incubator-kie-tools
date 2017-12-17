@@ -21,6 +21,7 @@ import java.lang.annotation.Annotation;
 import javax.enterprise.inject.Default;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
+import org.kie.workbench.common.stunner.core.definition.clone.CloneManager;
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
 
 /**
@@ -49,4 +50,6 @@ public interface DefinitionManager {
      * @return The adapter manager.
      */
     AdapterManager adapters();
+
+    CloneManager cloneManager();
 }

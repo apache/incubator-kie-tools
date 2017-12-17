@@ -37,10 +37,13 @@ import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarView;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ClearStatesToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ClearToolbarCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.CopyToolbarCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.CutToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.DeleteSelectionToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ExportToJpgToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ExportToPdfToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ExportToPngToolbarCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.PasteToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.RedoToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.SwitchGridToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ToolbarCommandFactory;
@@ -148,6 +151,15 @@ public class ExpressionEditorTest {
     private ExportToPdfToolbarCommand exportToPdfToolbarCommand;
 
     @Mock
+    private PasteToolbarCommand pasteCommand;
+
+    @Mock
+    private CutToolbarCommand cutCommand;
+
+    @Mock
+    private CopyToolbarCommand copyCommand;
+
+    @Mock
     private HasExpression hasExpression;
 
     @Captor
@@ -193,6 +205,9 @@ public class ExpressionEditorTest {
         when(toolbarCommandFactory.newExportToPngToolbarCommand()).thenReturn(exportToPngToolbarCommand);
         when(toolbarCommandFactory.newExportToJpgToolbarCommand()).thenReturn(exportToJpgToolbarCommand);
         when(toolbarCommandFactory.newExportToPdfToolbarCommand()).thenReturn(exportToPdfToolbarCommand);
+        when(toolbarCommandFactory.newCopyCommand()).thenReturn(copyCommand);
+        when(toolbarCommandFactory.newCutToolbarCommand()).thenReturn(cutCommand);
+        when(toolbarCommandFactory.newPasteCommand()).thenReturn(pasteCommand);
         when(toolbarItem.getUUID()).thenReturn("uuid");
 
         final EditorToolbarFactory editorToolbarFactory = new EditorToolbarFactory(toolbarCommandFactory,
@@ -251,6 +266,9 @@ public class ExpressionEditorTest {
         assertTrue(handler.exportToPngToolbarCommandEnabled);
         assertTrue(handler.exportToJpgToolbarCommandEnabled);
         assertTrue(handler.exportToPdfToolbarCommandEnabled);
+        assertTrue(handler.copyCommandEnabled);
+        assertTrue(handler.cutCommandEnabled);
+        assertTrue(handler.pasteCommandEnabled);
     }
 
     @Test
@@ -276,6 +294,9 @@ public class ExpressionEditorTest {
         verify(editorToolbar).disable(eq((ToolbarCommand) exportToPngToolbarCommand));
         verify(editorToolbar).disable(eq((ToolbarCommand) exportToJpgToolbarCommand));
         verify(editorToolbar).disable(eq((ToolbarCommand) exportToPdfToolbarCommand));
+        verify(editorToolbar).disable(eq((ToolbarCommand) copyCommand));
+        verify(editorToolbar).disable(eq((ToolbarCommand) cutCommand));
+        verify(editorToolbar).disable(eq((ToolbarCommand) pasteCommand));
     }
 
     @Test
@@ -304,6 +325,9 @@ public class ExpressionEditorTest {
         verify(editorToolbar).enable(eq((ToolbarCommand) exportToPngToolbarCommand));
         verify(editorToolbar).enable(eq((ToolbarCommand) exportToJpgToolbarCommand));
         verify(editorToolbar).enable(eq((ToolbarCommand) exportToPdfToolbarCommand));
+        verify(editorToolbar).enable(eq((ToolbarCommand) copyCommand));
+        verify(editorToolbar).enable(eq((ToolbarCommand) cutCommand));
+        verify(editorToolbar).enable(eq((ToolbarCommand) pasteCommand));
     }
 
     @Test

@@ -31,10 +31,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ExportToPdfToolbarCommandTest {
-
-    @Mock
-    private SessionCommandFactory sessionCommandFactory;
+public class ExportToPdfToolbarCommandTest extends AbstractToolbarCommandTest{
 
     @Mock
     private ExportToPdfSessionCommand sessionCommand;
@@ -42,7 +39,7 @@ public class ExportToPdfToolbarCommandTest {
     @Test
     public void testExport() {
         when(sessionCommandFactory.newExportToPdfSessionCommand()).thenReturn(sessionCommand);
-        final ExportToPdfToolbarCommand tested = new ExportToPdfToolbarCommand(sessionCommandFactory);
+        final ExportToPdfToolbarCommand tested = new ExportToPdfToolbarCommand(sessionCommandFactory, translationService);
         verify(sessionCommandFactory,
                times(1)).newExportToPdfSessionCommand();
         assertEquals(IconType.FILE_PDF_O,

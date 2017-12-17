@@ -30,8 +30,8 @@ public final class SVGShapeViewResource {
         return builder.apply(new Arguments(resizable));
     }
 
-    public SVGShapeView build(final double width,
-                              final double height,
+    public SVGShapeView build(final Double width,
+                              final Double height,
                               final boolean resizable) {
         return builder.apply(new Arguments(width, height, resizable));
     }

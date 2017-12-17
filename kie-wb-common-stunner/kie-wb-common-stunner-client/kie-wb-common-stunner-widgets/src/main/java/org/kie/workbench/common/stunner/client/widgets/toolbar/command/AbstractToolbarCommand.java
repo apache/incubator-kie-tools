@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.client.widgets.toolbar.command;
 import org.gwtbootstrap3.client.ui.constants.IconRotate;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommand;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.kie.workbench.common.stunner.core.util.UUID;
@@ -30,11 +31,13 @@ public abstract class AbstractToolbarCommand<S extends ClientSession, C extends 
     private final String uuid;
     private final C command;
     private Toolbar<S> toolbar;
+    protected final ClientTranslationService translationService;
 
-    protected AbstractToolbarCommand(final C command) {
+    protected AbstractToolbarCommand(final C command, final ClientTranslationService translationService) {
         this.uuid = UUID.uuid();
         this.command = command;
         this.command.listen(this::checkState);
+        this.translationService = translationService;
     }
 
     protected abstract boolean requiresConfirm();

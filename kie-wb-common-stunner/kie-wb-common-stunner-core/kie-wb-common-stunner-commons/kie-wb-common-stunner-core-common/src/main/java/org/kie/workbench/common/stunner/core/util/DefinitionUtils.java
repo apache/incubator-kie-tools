@@ -30,8 +30,8 @@ import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.MorphAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.HasInheritance;
+import org.kie.workbench.common.stunner.core.definition.clone.ClonePolicy;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
-import org.kie.workbench.common.stunner.core.definition.morph.MorphPolicy;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
@@ -198,15 +198,15 @@ public class DefinitionUtils {
     }
 
     public boolean isAllPolicy(final MorphDefinition definition) {
-        return MorphPolicy.ALL.equals(definition.getPolicy());
+        return ClonePolicy.ALL.equals(definition.getPolicy());
     }
 
     public boolean isNonePolicy(final MorphDefinition definition) {
-        return MorphPolicy.NONE.equals(definition.getPolicy());
+        return ClonePolicy.NONE.equals(definition.getPolicy());
     }
 
     public boolean isDefaultPolicy(final MorphDefinition definition) {
-        return MorphPolicy.DEFAULT.equals(definition.getPolicy());
+        return ClonePolicy.DEFAULT.equals(definition.getPolicy());
     }
 
     public Annotation getQualifier(final String defSetId) {

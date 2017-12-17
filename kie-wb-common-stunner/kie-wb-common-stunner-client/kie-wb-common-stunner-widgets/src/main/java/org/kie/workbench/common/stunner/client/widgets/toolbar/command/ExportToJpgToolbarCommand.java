@@ -20,16 +20,18 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToJpgSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
+import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 
 @Dependent
 public class ExportToJpgToolbarCommand extends AbstractToolbarCommand<AbstractClientSession, ExportToJpgSessionCommand> {
 
     @Inject
-    public ExportToJpgToolbarCommand(final SessionCommandFactory sessionCommandFactory) {
-        super(sessionCommandFactory.newExportToJpgSessionCommand());
+    public ExportToJpgToolbarCommand(final SessionCommandFactory sessionCommandFactory, final ClientTranslationService translationService) {
+        super(sessionCommandFactory.newExportToJpgSessionCommand(), translationService);
     }
 
     @Override
@@ -44,12 +46,12 @@ public class ExportToJpgToolbarCommand extends AbstractToolbarCommand<AbstractCl
 
     @Override
     public String getCaption() {
-        return null;
+        return translationService.getKeyValue(CoreTranslationMessages.EXPORT_JPG);
     }
 
-    // TODO: I18n.
     @Override
     public String getTooltip() {
-        return "Export to JPG";
+        return translationService.getKeyValue(CoreTranslationMessages.EXPORT_JPG);
+
     }
 }

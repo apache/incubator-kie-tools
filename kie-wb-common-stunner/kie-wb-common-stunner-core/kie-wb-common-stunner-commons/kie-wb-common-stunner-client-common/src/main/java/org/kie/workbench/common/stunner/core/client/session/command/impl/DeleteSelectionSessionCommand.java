@@ -21,12 +21,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
@@ -51,18 +53,22 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
 
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+    private final Event<CanvasClearSelectionEvent> clearSelectionEvent;
 
     protected DeleteSelectionSessionCommand() {
         this(null,
+             null,
              null);
     }
 
     @Inject
     public DeleteSelectionSessionCommand(final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                         final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory) {
+                                         final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+                                         final Event<CanvasClearSelectionEvent> clearSelectionEvent) {
         super(false);
         this.sessionCommandManager = sessionCommandManager;
         this.canvasCommandFactory = canvasCommandFactory;
+        this.clearSelectionEvent = clearSelectionEvent;
     }
 
     @Override
@@ -94,8 +100,7 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
                         log(Level.FINE,
                             "Deleting node with id " + element.getUUID());
                         sessionCommandManager.execute(canvasHandler,
-                                                      canvasCommandFactory.deleteNode((Node) element));
-                    }
+                                                      canvasCommandFactory.deleteNode((Node) element));                    }
                 });
             } else {
                 log(Level.FINE,
@@ -103,6 +108,9 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
             }
             // Run the callback.
             callback.onSuccess();
+            clearSelectionEvent.fire(new CanvasClearSelectionEvent(getCanvasHandler()));
+
+
         }
     }
 

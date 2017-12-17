@@ -41,6 +41,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.Edge
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.EdgeBuilderControlImpl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.ClipboardControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.LocalClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
@@ -69,6 +71,7 @@ public class CaseManagementCanvasFactoryTest {
     private ManagedInstance<ZoomControl> zoomControls;
     private ManagedInstance<PanControl> panControls;
     private ManagedInstance<KeyboardControl> keyboardControls;
+    private ManagedInstance<ClipboardControl> clipboardControls;
     private ManagedInstance<AbstractCanvas> canvasInstances;
     private ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances;
 
@@ -98,6 +101,7 @@ public class CaseManagementCanvasFactoryTest {
         this.zoomControls = mockManagedInstance(ZoomWheelControlImpl.class);
         this.panControls = mockManagedInstance(PanControlImpl.class);
         this.keyboardControls = mockManagedInstance(KeyboardControlImpl.class);
+        this.clipboardControls = mockManagedInstance(LocalClipboardControl.class);
         this.canvasInstances = mockManagedInstance(CaseManagementCanvasPresenter.class,
                                                    (c) -> when(c.getWiresManager()).thenReturn(wiresManager));
         this.canvasHandlerInstances = mockManagedInstance(CaseManagementCanvasHandler.class);
@@ -113,6 +117,7 @@ public class CaseManagementCanvasFactoryTest {
                                                        zoomControls,
                                                        panControls,
                                                        keyboardControls,
+                                                       clipboardControls,
                                                        canvasInstances,
                                                        canvasHandlerInstances,
                                                        caseManagementControlFactory);

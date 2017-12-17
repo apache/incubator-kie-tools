@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
@@ -32,7 +33,7 @@ import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.svg.client.shape.factory.SVGShapeViewResources;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
-public class TaskShapeDef
+public class TaskShapeDef extends BaseDimensionedShapeDef
         implements BPMNSvgShapeDef<BaseTask> {
 
     public static final SVGShapeViewResources<BaseTask, BPMNSVGViewFactory> VIEW_RESOURCES =
@@ -61,9 +62,10 @@ public class TaskShapeDef
     @Override
     public SVGShapeView<?> newViewInstance(final BPMNSVGViewFactory factory,
                                            final BaseTask task) {
-        return VIEW_RESOURCES
-                .getResource(factory, task)
-                .build(true);
+
+        return newViewInstance(Optional.ofNullable(task.getDimensionsSet().getWidth()),
+                               Optional.ofNullable(task.getDimensionsSet().getHeight()),
+                               VIEW_RESOURCES.getResource(factory, task));
     }
 
     @Override

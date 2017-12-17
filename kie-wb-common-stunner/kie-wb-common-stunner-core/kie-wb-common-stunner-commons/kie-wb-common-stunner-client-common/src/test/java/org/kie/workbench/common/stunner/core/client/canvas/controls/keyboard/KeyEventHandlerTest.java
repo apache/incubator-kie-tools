@@ -30,6 +30,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -71,7 +72,7 @@ public class KeyEventHandlerTest {
         verify(shortcutCallback,
                times(1)).onKeyShortcut(keysArgumentCaptor.capture());
         verify(tested,
-               times(1)).reset();
+               never()).reset();
 
         final List<KeyboardEvent.Key> keys = keysArgumentCaptor.getAllValues();
         assertTrue(keys.contains(key1));

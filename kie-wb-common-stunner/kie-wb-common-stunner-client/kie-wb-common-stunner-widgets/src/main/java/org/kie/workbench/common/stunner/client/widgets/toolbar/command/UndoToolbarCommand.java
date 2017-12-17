@@ -20,16 +20,18 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.UndoSessionCommand;
+import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 
 @Dependent
 public class UndoToolbarCommand extends AbstractToolbarCommand<ClientFullSession, UndoSessionCommand> {
 
     @Inject
-    public UndoToolbarCommand(final SessionCommandFactory sessionCommandFactory) {
-        super(sessionCommandFactory.newUndoCommand());
+    public UndoToolbarCommand(final SessionCommandFactory sessionCommandFactory, final ClientTranslationService translationService) {
+        super(sessionCommandFactory.newUndoCommand(), translationService);
     }
 
     @Override
@@ -39,13 +41,12 @@ public class UndoToolbarCommand extends AbstractToolbarCommand<ClientFullSession
 
     @Override
     public String getCaption() {
-        return null;
+        return translationService.getKeyValue(CoreTranslationMessages.UNDO);
     }
 
-    // TODO: I18n.
     @Override
     public String getTooltip() {
-        return "Undo";
+        return translationService.getKeyValue(CoreTranslationMessages.UNDO);
     }
 
     @Override

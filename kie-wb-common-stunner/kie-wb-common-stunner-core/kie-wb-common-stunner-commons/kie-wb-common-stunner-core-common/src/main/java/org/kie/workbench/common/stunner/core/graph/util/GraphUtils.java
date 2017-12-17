@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiPredicate;
@@ -33,6 +34,7 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
+import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
@@ -264,15 +266,18 @@ public class GraphUtils {
 
     @SuppressWarnings("unchecked")
     public static boolean hasChildren(final Node<?, ? extends Edge> element) {
-        final List<? extends Edge> outEdges = element.getOutEdges();
-        if (null != outEdges) {
-            return
-                    outEdges.stream()
-                            .filter(edge -> (edge.getContent() instanceof Child))
-                            .findAny()
-                            .isPresent();
-        }
-        return false;
+        return Objects.nonNull(element.getOutEdges()) ?
+                element.getOutEdges().stream()
+                        .anyMatch(edge -> (edge.getContent() instanceof Child)) :
+                false;
+    }
+
+    public static boolean hasDockedNodes(final Node<?, ? extends Edge> element) {
+        return Objects.nonNull(element.getOutEdges()) ?
+                element.getOutEdges()
+                        .stream()
+                        .allMatch(edge -> (edge.getContent() instanceof Dock)) :
+                false;
     }
 
     @SuppressWarnings("unchecked")

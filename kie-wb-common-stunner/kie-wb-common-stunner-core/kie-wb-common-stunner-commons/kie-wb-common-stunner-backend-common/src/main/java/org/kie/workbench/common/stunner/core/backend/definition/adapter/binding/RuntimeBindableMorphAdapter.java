@@ -25,6 +25,7 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.BindableMorphAdapter;
+import org.kie.workbench.common.stunner.core.definition.clone.CloneManager;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinitionProvider;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
@@ -37,17 +38,21 @@ public class RuntimeBindableMorphAdapter<S> extends BindableMorphAdapter<S> {
     @Inject
     public RuntimeBindableMorphAdapter(final DefinitionUtils definitionUtils,
                                        final FactoryManager factoryManager,
+                                       final CloneManager cloneManager,
                                        final Instance<MorphDefinitionProvider> morphDefinitionInstances) {
         super(definitionUtils,
-              factoryManager);
+              factoryManager,
+              cloneManager);
         this.morphDefinitionInstances = morphDefinitionInstances;
     }
 
     public RuntimeBindableMorphAdapter(final DefinitionUtils definitionUtils,
                                        final FactoryManager factoryManager,
+                                       final CloneManager cloneManager,
                                        final Collection<MorphDefinition> morphDefinitions1) {
         super(definitionUtils,
-              factoryManager);
+              factoryManager,
+              cloneManager);
         morphDefinitions.addAll(morphDefinitions1);
     }
 
@@ -62,15 +67,6 @@ public class RuntimeBindableMorphAdapter<S> extends BindableMorphAdapter<S> {
                 morphDefinitions.addAll(morphDefinitionProvider.getMorphDefinitions());
             }
         }
-    }
-
-    @Override
-    protected <T> T doMerge(final S source,
-                            final T result) {
-        // TODO: Merge beans in server side.
-        //       See current logic on client side at ClientBindingUtils#merge
-        //       For now the morphing operations are only performed on client side.
-        return result;
     }
 
     @Override

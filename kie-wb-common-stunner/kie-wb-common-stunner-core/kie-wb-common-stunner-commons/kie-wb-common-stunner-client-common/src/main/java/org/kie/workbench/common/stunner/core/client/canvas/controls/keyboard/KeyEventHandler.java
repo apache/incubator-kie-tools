@@ -39,7 +39,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 @Dependent
 public class KeyEventHandler {
 
-    private final static int KEYS_TIMER_DELAY = 250;
+    private final static int KEYS_TIMER_DELAY = 100;
 
     private final Set<KeyboardEvent.Key> keys = new HashSet<>();
     private final List<KeyboardControl.KeyShortcutCallback> shortcutCallbacks = new ArrayList<>();
@@ -110,7 +110,6 @@ public class KeyEventHandler {
         if (!shortcutCallbacks.isEmpty() && null != _keys) {
             shortcutCallbacks.stream().forEach(s -> s.onKeyShortcut(_keys));
         }
-        reset();
     }
 
     void reset() {

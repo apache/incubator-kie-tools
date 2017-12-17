@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.workbench.common.stunner.core.definition.clone.ClonePolicy;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -33,7 +34,7 @@ public class MorphDefinitionImplTest {
     private static final String DEF_DEFINITION_ID = "default1";
     private static final List<String> TARGETS = Arrays.asList("target1",
                                                               "target2");
-    private static final MorphPolicy POLICY = MorphPolicy.ALL;
+    private static final ClonePolicy POLICY = ClonePolicy.ALL;
 
     private MorphDefinitionImpl tested;
 

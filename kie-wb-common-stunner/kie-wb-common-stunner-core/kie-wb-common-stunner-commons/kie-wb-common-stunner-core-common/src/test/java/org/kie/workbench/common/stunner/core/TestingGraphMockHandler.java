@@ -200,6 +200,7 @@ public class TestingGraphMockHandler {
                                                                         definition);
         execute(commandFactory.addNode(result));
         when(graphIndex.getNode(eq(uuid))).thenReturn(result);
+        when(graphIndex.get(eq(uuid))).thenReturn(result);
         return result;
     }
 

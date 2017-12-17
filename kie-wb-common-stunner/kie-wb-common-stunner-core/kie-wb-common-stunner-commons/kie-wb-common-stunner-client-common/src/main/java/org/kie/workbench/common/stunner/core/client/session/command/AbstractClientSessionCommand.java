@@ -18,7 +18,15 @@ package org.kie.workbench.common.stunner.core.client.session.command;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import elemental2.dom.RadioNodeList;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
+import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
+import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.uberfire.mvp.Command;
 
 public abstract class AbstractClientSessionCommand<S extends ClientSession> implements ClientSessionCommand<S> {
@@ -80,5 +88,28 @@ public abstract class AbstractClientSessionCommand<S extends ClientSession> impl
 
     protected S getSession() {
         return session;
+    }
+
+    protected Element<? extends View<?>> getElement(String uuid) {
+        AbstractCanvasHandler canvasHandler = (AbstractCanvasHandler) getSession().getCanvasHandler();
+        return canvasHandler.getGraphIndex().get(uuid);
+    }
+
+    protected AbstractCanvasHandler getCanvasHandler() {
+        return (AbstractCanvasHandler) getSession().getCanvasHandler();
+    }
+
+    protected Callback<Throwable> newDefaultCallback(String errorMessage) {
+        return new Callback<Throwable>() {
+            @Override
+            public void onSuccess() {
+                // Nothing to do.
+            }
+
+            @Override
+            public void onError(final Throwable error) {
+                LOGGER.log(Level.SEVERE,errorMessage + " Details: " + error.toString());
+            }
+        };
     }
 }

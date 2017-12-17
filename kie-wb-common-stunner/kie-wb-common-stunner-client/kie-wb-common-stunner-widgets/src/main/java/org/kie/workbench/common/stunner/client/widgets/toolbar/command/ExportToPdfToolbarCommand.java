@@ -20,16 +20,18 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPdfSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
+import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 
 @Dependent
 public class ExportToPdfToolbarCommand extends AbstractToolbarCommand<AbstractClientSession, ExportToPdfSessionCommand> {
 
     @Inject
-    public ExportToPdfToolbarCommand(final SessionCommandFactory sessionCommandFactory) {
-        super(sessionCommandFactory.newExportToPdfSessionCommand());
+    public ExportToPdfToolbarCommand(final SessionCommandFactory sessionCommandFactory, final ClientTranslationService translationService) {
+        super(sessionCommandFactory.newExportToPdfSessionCommand(), translationService);
     }
 
     @Override
@@ -44,12 +46,12 @@ public class ExportToPdfToolbarCommand extends AbstractToolbarCommand<AbstractCl
 
     @Override
     public String getCaption() {
-        return null;
+        return translationService.getKeyValue(CoreTranslationMessages.EXPORT_PDF);
     }
 
-    // TODO: I18n.
     @Override
     public String getTooltip() {
-        return "Export to PDF";
+        return translationService.getKeyValue(CoreTranslationMessages.EXPORT_PDF);
+
     }
 }

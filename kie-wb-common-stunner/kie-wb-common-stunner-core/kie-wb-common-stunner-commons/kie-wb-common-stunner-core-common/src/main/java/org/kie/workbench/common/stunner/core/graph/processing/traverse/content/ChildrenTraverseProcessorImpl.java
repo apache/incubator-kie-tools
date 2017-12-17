@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.graph.processing.traverse.content;
 import java.util.List;
 import java.util.Optional;
 import java.util.Stack;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;

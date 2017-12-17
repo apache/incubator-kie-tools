@@ -31,10 +31,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ExportToPngToolbarCommandTest {
-
-    @Mock
-    private SessionCommandFactory sessionCommandFactory;
+public class ExportToPngToolbarCommandTest extends AbstractToolbarCommandTest {
 
     @Mock
     private ExportToPngSessionCommand sessionCommand;
@@ -42,7 +39,7 @@ public class ExportToPngToolbarCommandTest {
     @Test
     public void testExport() {
         when(sessionCommandFactory.newExportToPngSessionCommand()).thenReturn(sessionCommand);
-        final ExportToPngToolbarCommand tested = new ExportToPngToolbarCommand(sessionCommandFactory);
+        final ExportToPngToolbarCommand tested = new ExportToPngToolbarCommand(sessionCommandFactory, translationService);
         verify(sessionCommandFactory,
                times(1)).newExportToPngSessionCommand();
         assertEquals(IconType.FILE_IMAGE_O,

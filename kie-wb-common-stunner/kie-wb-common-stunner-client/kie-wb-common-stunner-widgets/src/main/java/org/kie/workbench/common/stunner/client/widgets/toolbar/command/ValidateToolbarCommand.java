@@ -20,16 +20,18 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ValidateSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
+import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 
 @Dependent
 public class ValidateToolbarCommand extends AbstractToolbarCommand<AbstractClientFullSession, ValidateSessionCommand> {
 
     @Inject
-    public ValidateToolbarCommand(final SessionCommandFactory sessionCommandFactory) {
-        super(sessionCommandFactory.newValidateCommand());
+    public ValidateToolbarCommand(final SessionCommandFactory sessionCommandFactory, final ClientTranslationService translationService) {
+        super(sessionCommandFactory.newValidateCommand(), translationService);
     }
 
     @Override
@@ -39,13 +41,12 @@ public class ValidateToolbarCommand extends AbstractToolbarCommand<AbstractClien
 
     @Override
     public String getCaption() {
-        return null;
+        return translationService.getKeyValue(CoreTranslationMessages.VALIDATE);
     }
 
-    // TODO: I18n.
     @Override
     public String getTooltip() {
-        return "Validate";
+        return translationService.getKeyValue(CoreTranslationMessages.VALIDATE);
     }
 
     @Override

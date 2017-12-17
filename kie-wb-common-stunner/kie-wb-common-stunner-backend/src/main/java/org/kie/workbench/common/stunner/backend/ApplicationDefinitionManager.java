@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetRul
 import org.kie.workbench.common.stunner.core.definition.adapter.MorphAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertySetAdapter;
+import org.kie.workbench.common.stunner.core.definition.clone.CloneManager;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,9 +61,11 @@ public class ApplicationDefinitionManager extends AbstractDefinitionManager {
                                         final Instance<DefinitionAdapter<?>> definitionAdapterInstances,
                                         final Instance<PropertySetAdapter<?>> propertySetAdapterInstances,
                                         final Instance<PropertyAdapter<?, ?>> propertyAdapterInstances,
-                                        final Instance<MorphAdapter<?>> morphAdapterInstances) {
+                                        final Instance<MorphAdapter<?>> morphAdapterInstances,
+                                        final CloneManager cloneManager) {
         super(registryFactory,
-              adapterManager);
+              adapterManager,
+              cloneManager);
         this.definitionSetsInstances = definitionSetsInstances;
         this.definitionSetAdapterInstances = definitionSetAdapterInstances;
         this.definitionSetRuleAdapterInstances = definitionSetRuleAdapterInstances;

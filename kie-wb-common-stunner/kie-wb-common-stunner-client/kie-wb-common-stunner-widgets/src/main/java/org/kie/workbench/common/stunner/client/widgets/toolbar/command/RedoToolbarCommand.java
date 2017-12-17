@@ -20,16 +20,18 @@ import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconRotate;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.RedoSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
+import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 
 @Dependent
 public class RedoToolbarCommand extends AbstractToolbarCommand<ClientFullSession, RedoSessionCommand> {
 
     @Inject
-    public RedoToolbarCommand(final SessionCommandFactory sessionCommandFactory) {
-        super(sessionCommandFactory.newRedoCommand());
+    public RedoToolbarCommand(final SessionCommandFactory sessionCommandFactory, final ClientTranslationService translationService) {
+        super(sessionCommandFactory.newRedoCommand(), translationService);
     }
 
     @Override
@@ -44,13 +46,12 @@ public class RedoToolbarCommand extends AbstractToolbarCommand<ClientFullSession
 
     @Override
     public String getCaption() {
-        return null;
+        return translationService.getKeyValue(CoreTranslationMessages.REDO);
     }
 
-    // TODO: I18n.
     @Override
     public String getTooltip() {
-        return "Redo";
+        return translationService.getKeyValue(CoreTranslationMessages.REDO);
     }
 
     @Override

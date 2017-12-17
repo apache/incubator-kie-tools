@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.definition.morph;
+package org.kie.workbench.common.stunner.core.definition.clone;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
+public interface CloneManager {
 
-/**
- * The different built-in policies when morphing.
- */
-@Portable
-public enum MorphPolicy {
-    /* Keep all potential properties that match. */
-    ALL,
-    /* Discard all properties. */
-    NONE,
-    /* Keep only node's name property. */
-    DEFAULT;
+    <T> T clone(T source, ClonePolicy policy);
+
+    <S,T> T clone(S source, T target, ClonePolicy policy);
 }

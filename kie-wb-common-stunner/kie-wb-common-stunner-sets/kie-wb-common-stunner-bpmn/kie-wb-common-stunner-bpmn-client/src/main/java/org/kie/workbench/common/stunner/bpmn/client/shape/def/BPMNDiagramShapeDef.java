@@ -16,12 +16,14 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
+import java.util.Optional;
+
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
-public class BPMNDiagramShapeDef
+public class BPMNDiagramShapeDef extends BaseDimensionedShapeDef
         implements BPMNSvgShapeDef<BPMNDiagramImpl> {
 
     @Override
@@ -35,6 +37,8 @@ public class BPMNDiagramShapeDef
     @Override
     public SVGShapeView<?> newViewInstance(final BPMNSVGViewFactory factory,
                                            final BPMNDiagramImpl diagram) {
-        return factory.rectangle().build(true);
+        return newViewInstance(Optional.ofNullable(diagram.getDimensionsSet().getWidth()),
+                               Optional.ofNullable(diagram.getDimensionsSet().getHeight()),
+                               factory.rectangle());
     }
 }
