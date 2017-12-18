@@ -20,6 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.dmn.showcase.client.screens.BaseSessionScreen;
 import org.kie.workbench.common.dmn.showcase.client.screens.SessionScreenView;
 import org.kie.workbench.common.stunner.forms.client.widgets.FormPropertiesWidget;
@@ -77,7 +78,7 @@ public class SessionPropertiesScreen extends BaseSessionScreen {
 
     @Override
     protected void doOpenDiagram() {
-        view.showScreenView(formPropertiesWidget.asWidget());
+        view.showScreenView(ElementWrapperWidget.getWidget(formPropertiesWidget.getElement()));
     }
 
     @Override

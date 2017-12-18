@@ -27,8 +27,8 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.logging.client.LogConfiguration;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.common.client.api.IsElement;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.databinding.client.BindableProxy;
 import org.jboss.errai.databinding.client.BindableProxyFactory;
 import org.jboss.errai.databinding.client.HasProperties;
@@ -61,10 +61,11 @@ import org.uberfire.mvp.Command;
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
-public class FormPropertiesWidget implements IsWidget {
+public class FormPropertiesWidget implements IsElement, FormPropertiesWidgetView.Presenter {
 
     private static Logger LOGGER = Logger.getLogger(FormPropertiesWidget.class.getName());
 
+    private final FormPropertiesWidgetView view;
     private final DefinitionUtils definitionUtils;
     private final CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
     private final DynamicFormRenderer formRenderer;
@@ -75,11 +76,12 @@ public class FormPropertiesWidget implements IsWidget {
     private final DynamicFormModelGenerator modelGenerator;
 
     protected FormPropertiesWidget() {
-        this(null, null, null, null, null);
+        this(null, null, null, null, null, null);
     }
 
     @Inject
-    public FormPropertiesWidget(final DefinitionUtils definitionUtils, final CanvasCommandFactory<AbstractCanvasHandler> commandFactory, final DynamicFormRenderer formRenderer, final DynamicFormModelGenerator modelGenerator, final Event<FormPropertiesOpened> propertiesOpenedEvent) {
+    public FormPropertiesWidget(final FormPropertiesWidgetView view, final DefinitionUtils definitionUtils, final CanvasCommandFactory<AbstractCanvasHandler> commandFactory, final DynamicFormRenderer formRenderer, final DynamicFormModelGenerator modelGenerator, final Event<FormPropertiesOpened> propertiesOpenedEvent) {
+        this.view = view;
         this.definitionUtils = definitionUtils;
         this.commandFactory = commandFactory;
         this.formRenderer = formRenderer;
@@ -90,6 +92,17 @@ public class FormPropertiesWidget implements IsWidget {
     @PostConstruct
     public void init() {
         log(Level.INFO, "FormPropertiesWidget instance build.");
+        view.init(this);
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return view.getElement();
+    }
+
+    @Override
+    public DynamicFormRenderer getRenderer() {
+        return formRenderer;
     }
 
     /**
@@ -198,11 +211,6 @@ public class FormPropertiesWidget implements IsWidget {
                 callback.execute();
             }
         }
-    }
-
-    @Override
-    public Widget asWidget() {
-        return formRenderer.asWidget();
     }
 
     private AbstractCanvasHandler getCanvasHandler() {

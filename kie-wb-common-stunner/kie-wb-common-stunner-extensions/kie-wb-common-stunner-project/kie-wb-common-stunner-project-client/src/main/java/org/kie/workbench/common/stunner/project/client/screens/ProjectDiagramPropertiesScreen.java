@@ -26,6 +26,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
@@ -85,7 +86,7 @@ public class ProjectDiagramPropertiesScreen {
 
     @PostConstruct
     public void init() {
-        view.setWidget(formPropertiesWidget.asWidget());
+        view.setWidget(ElementWrapperWidget.getWidget(formPropertiesWidget.getElement()));
     }
 
     @OnStartup
@@ -149,7 +150,7 @@ public class ProjectDiagramPropertiesScreen {
     @WorkbenchPartView
     public IsWidget getWidget() {
         // TODO: return view.asWidget() - See ProjectScreenViewImpl TODO;
-        return formPropertiesWidget.asWidget();
+        return ElementWrapperWidget.getWidget(formPropertiesWidget.getElement());
     }
 
     @WorkbenchContextId

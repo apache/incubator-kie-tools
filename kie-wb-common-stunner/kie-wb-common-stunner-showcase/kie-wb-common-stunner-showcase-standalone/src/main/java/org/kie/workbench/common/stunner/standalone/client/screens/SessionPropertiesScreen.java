@@ -22,6 +22,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.stunner.forms.client.event.FormPropertiesOpened;
 import org.kie.workbench.common.stunner.forms.client.widgets.FormPropertiesWidget;
 import org.uberfire.client.annotations.WorkbenchContextId;
@@ -96,7 +97,7 @@ public class SessionPropertiesScreen {
 
     @WorkbenchPartView
     public IsWidget getWidget() {
-        return formPropertiesWidget.asWidget();
+        return ElementWrapperWidget.getWidget(formPropertiesWidget.getElement());
     }
 
     @WorkbenchContextId

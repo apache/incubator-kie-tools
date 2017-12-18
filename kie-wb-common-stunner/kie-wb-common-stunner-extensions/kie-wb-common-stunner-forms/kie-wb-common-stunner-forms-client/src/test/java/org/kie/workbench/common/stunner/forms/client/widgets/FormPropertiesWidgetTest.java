@@ -65,6 +65,8 @@ public class FormPropertiesWidgetTest {
     private static final String ROOT_UUID = "root1";
 
     @Mock
+    private FormPropertiesWidgetView view;
+    @Mock
     DefinitionUtils definitionUtils;
     @Mock
     CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
@@ -120,7 +122,8 @@ public class FormPropertiesWidgetTest {
         when(proxyProvider.getBindableProxy()).thenReturn((BindableProxy) proxy);
         when(proxyProvider.getBindableProxy(unmockedDef)).thenReturn((BindableProxy) proxy);
         when(proxy.deepUnwrap()).thenReturn(unmockedDef);
-        this.tested = new FormPropertiesWidget(definitionUtils,
+        this.tested = new FormPropertiesWidget(view,
+                                               definitionUtils,
                                                commandFactory,
                                                formRenderer,
                                                modelGenerator,
