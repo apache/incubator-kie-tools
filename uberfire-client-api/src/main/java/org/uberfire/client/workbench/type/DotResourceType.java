@@ -17,15 +17,26 @@
 package org.uberfire.client.workbench.type;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.resources.i18n.UberfireConstants;
+import org.uberfire.workbench.category.Category;
+import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.type.DotResourceTypeDefinition;
 
 @ApplicationScoped
 public class DotResourceType
         extends DotResourceTypeDefinition
         implements ClientResourceType {
+
+    public DotResourceType() {
+    }
+
+    @Inject
+    public DotResourceType(final Others category) {
+        super(category);
+    }
 
     @Override
     public IsWidget getIcon() {

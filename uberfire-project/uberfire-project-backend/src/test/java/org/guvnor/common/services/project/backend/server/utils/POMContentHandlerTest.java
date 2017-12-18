@@ -29,6 +29,7 @@ public class POMContentHandlerTest {
     private static final String GAV_GROUP_ID_XML = "<groupId>org.guvnor</groupId>";
     private static final String GAV_ARTIFACT_ID_XML = "<artifactId>test</artifactId>";
     private static final String GAV_VERSION_XML = "<version>0.0.1</version>";
+    private static final String URL_XML = "<url>url</url>";
     private static final String EXISTING_PLUGIN_XML = "<plugin>"
             + "<groupId>org.kie</groupId>"
             + "<artifactId>kie-maven-plugin</artifactId>"
@@ -45,6 +46,7 @@ public class POMContentHandlerTest {
         gav.setVersion("0.0.1");
         final POM pom = new POM("name",
                                 "description",
+                                "url",
                                 gav);
         final String xml = handler.toString(pom);
 
@@ -53,6 +55,8 @@ public class POMContentHandlerTest {
         assertContainsIgnoreWhitespace(GAV_ARTIFACT_ID_XML,
                                        xml);
         assertContainsIgnoreWhitespace(GAV_VERSION_XML,
+                                       xml);
+        assertContainsIgnoreWhitespace(URL_XML,
                                        xml);
     }
 
@@ -66,6 +70,7 @@ public class POMContentHandlerTest {
                 + "<artifactId>test</artifactId>"
                 + "<version>0.0.1</version>"
                 + "<name>name</name>"
+                + "<url>url</url>"
                 + "<description>description</description>"
                 + "</project>";
 
@@ -80,6 +85,8 @@ public class POMContentHandlerTest {
                      pom.getName());
         assertEquals("description",
                      pom.getDescription());
+        assertEquals("url",
+                     pom.getUrl());
 
         final String enrichedXml = handler.toString(pom,
                                                     xml);
@@ -89,6 +96,8 @@ public class POMContentHandlerTest {
         assertContainsIgnoreWhitespace(GAV_ARTIFACT_ID_XML,
                                        enrichedXml);
         assertContainsIgnoreWhitespace(GAV_VERSION_XML,
+                                       enrichedXml);
+        assertContainsIgnoreWhitespace(URL_XML,
                                        enrichedXml);
     }
 
@@ -107,6 +116,7 @@ public class POMContentHandlerTest {
                 + "<version>0.0.1</version>"
                 + "<packaging>something</packaging>"
                 + "<name>name</name>"
+                + "<url>url</url>"
                 + "<description>description</description>"
                 + "</project>";
 
@@ -128,6 +138,7 @@ public class POMContentHandlerTest {
                 + "<version>0.0.1</version>"
                 + "<name>name</name>"
                 + "<description>description</description>"
+                + "<url>url</url>"
                 + "<build>"
                 + "<plugins>"
                 + "<plugin>"
@@ -151,6 +162,8 @@ public class POMContentHandlerTest {
                      pom.getName());
         assertEquals("description",
                      pom.getDescription());
+        assertEquals("url",
+                     pom.getUrl());
 
         final String enrichedXml = handler.toString(pom,
                                                     xml);
@@ -162,6 +175,8 @@ public class POMContentHandlerTest {
         assertContainsIgnoreWhitespace(GAV_VERSION_XML,
                                        enrichedXml);
         assertContainsIgnoreWhitespace(EXISTING_PLUGIN_XML,
+                                       enrichedXml);
+        assertContainsIgnoreWhitespace(URL_XML,
                                        enrichedXml);
     }
 

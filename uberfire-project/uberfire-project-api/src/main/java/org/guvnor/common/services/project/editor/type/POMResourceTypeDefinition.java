@@ -16,13 +16,31 @@
 package org.guvnor.common.services.project.editor.type;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.workbench.category.Category;
+import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 @ApplicationScoped
 public class POMResourceTypeDefinition
         implements ResourceTypeDefinition {
+
+    private Category category;
+
+    public POMResourceTypeDefinition() {
+    }
+
+    @Inject
+    public POMResourceTypeDefinition(final Others category) {
+        this.category = category;
+    }
+
+    @Override
+    public Category getCategory() {
+        return this.category;
+    }
 
     @Override
     public String getShortName() {

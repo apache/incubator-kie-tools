@@ -17,17 +17,27 @@
 package org.uberfire.ext.plugin.client.type;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.Icon;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.plugin.type.DynamicMenuResourceTypeDefinition;
+import org.uberfire.workbench.category.Others;
 
 @ApplicationScoped
 public class DynamicMenuResourceType
         extends DynamicMenuResourceTypeDefinition
         implements ClientResourceType {
+
+    public DynamicMenuResourceType() {
+    }
+
+    @Inject
+    public DynamicMenuResourceType(final Others category) {
+        super(category);
+    }
 
     @Override
     public IsWidget getIcon() {

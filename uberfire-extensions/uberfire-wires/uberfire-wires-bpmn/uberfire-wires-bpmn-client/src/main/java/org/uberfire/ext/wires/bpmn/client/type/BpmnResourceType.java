@@ -16,10 +16,12 @@
 package org.uberfire.ext.wires.bpmn.client.type;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.ext.wires.bpmn.api.category.Process;
 import org.uberfire.ext.wires.bpmn.api.type.BpmnResourceTypeDefinition;
 import org.uberfire.ext.wires.bpmn.client.resources.BpmnEditorResources;
 import org.uberfire.ext.wires.bpmn.client.resources.i18n.BpmnEditorConstants;
@@ -30,6 +32,14 @@ public class BpmnResourceType
         implements ClientResourceType {
 
     private static final Image IMAGE = new Image(BpmnEditorResources.INSTANCE.images().typeBpmn());
+
+    public BpmnResourceType() {
+    }
+
+    @Inject
+    public BpmnResourceType(final Process category) {
+        super(category);
+    }
 
     @Override
     public IsWidget getIcon() {

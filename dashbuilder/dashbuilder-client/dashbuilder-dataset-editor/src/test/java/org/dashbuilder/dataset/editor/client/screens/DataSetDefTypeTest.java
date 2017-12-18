@@ -3,20 +3,21 @@ package org.dashbuilder.dataset.editor.client.screens;
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.workbench.category.Others;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class DataSetDefTypeTest {
-    
+
     private DataSetDefType tested;
-    
+
     @Before
     public void setup() {
-        tested = new DataSetDefType();
+        tested = new DataSetDefType(new Others());
     }
-    
+
     @Test
     public void testIt() {
         assertEquals("dataset", tested.getShortName());

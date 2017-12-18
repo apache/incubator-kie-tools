@@ -17,9 +17,20 @@
 package org.uberfire.ext.plugin.type;
 
 import org.uberfire.ext.plugin.model.PluginType;
+import org.uberfire.workbench.category.Category;
+import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 public class PerspectiveLayoutPluginResourceTypeDefinition extends BasePluginResourceTypeDefinition implements ResourceTypeDefinition {
+
+    private Category category;
+
+    public PerspectiveLayoutPluginResourceTypeDefinition() {
+    }
+
+    public PerspectiveLayoutPluginResourceTypeDefinition(final Others category) {
+        this.category = category;
+    }
 
     @Override
     public String getShortName() {
@@ -34,5 +45,10 @@ public class PerspectiveLayoutPluginResourceTypeDefinition extends BasePluginRes
     @Override
     public String getSuffix() {
         return "/" + PluginType.PERSPECTIVE_LAYOUT.toString().toLowerCase() + ".plugin";
+    }
+
+    @Override
+    public Category getCategory() {
+        return this.category;
     }
 }

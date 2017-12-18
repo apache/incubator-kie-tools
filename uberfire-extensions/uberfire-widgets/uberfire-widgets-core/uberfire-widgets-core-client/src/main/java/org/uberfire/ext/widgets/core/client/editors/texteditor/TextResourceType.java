@@ -17,12 +17,14 @@
 package org.uberfire.ext.widgets.core.client.editors.texteditor;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.widgets.core.client.resources.CoreImages;
 import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
+import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.type.TextResourceTypeDefinition;
 
 @ApplicationScoped
@@ -31,6 +33,14 @@ public class TextResourceType
         implements ClientResourceType {
 
     private static final Image IMAGE = new Image(CoreImages.INSTANCE.typeTextFile());
+
+    public TextResourceType() {
+    }
+
+    @Inject
+    public TextResourceType(final Others category) {
+        super(category);
+    }
 
     @Override
     public IsWidget getIcon() {

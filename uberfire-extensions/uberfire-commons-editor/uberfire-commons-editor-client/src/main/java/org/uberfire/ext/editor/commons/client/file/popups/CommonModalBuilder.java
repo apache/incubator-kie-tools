@@ -34,37 +34,37 @@ public class CommonModalBuilder {
     }
 
     public CommonModalBuilder addHeader(String title) {
-        modal.setTitle(title);
+        this.getModal().setTitle(title);
         return this;
     }
 
     public CommonModalBuilder addBody(HTMLElement element) {
-        modal.add(buildPanel(element,
-                             new ModalBody()));
+        this.getModal().add(buildPanel(element,
+                             makeModalBody()));
         return this;
     }
 
-    public CommonModalBuilder addBody(final elemental2.dom.HTMLElement htmlElement) {
-
-        final FlowPanel flowPanel = buildPanel(htmlElement, makeModalBody());
-        getModal().add(flowPanel);
+    public CommonModalBuilder addBody(elemental2.dom.HTMLElement element) {
+        this.getModal().add(buildPanel(element,
+                             makeModalBody()));
         return this;
     }
 
     public CommonModalBuilder addFooter(ModalFooter footer) {
-        modal.add(footer);
+        this.getModal().add(footer);
         return this;
     }
 
     public CommonModalBuilder addFooter(HTMLElement element) {
-        modal.add(buildPanel(element,
-                             new ModalFooter()));
+        this.getModal().add(buildPanel(element,
+                             makeModalFooter()));
         return this;
     }
 
     public CommonModalBuilder addFooter(final elemental2.dom.HTMLElement htmlElement) {
 
-        final FlowPanel flowPanel = buildPanel(htmlElement, makeModalFooter());
+        final FlowPanel flowPanel = buildPanel(htmlElement,
+                                               makeModalFooter());
         getModal().add(flowPanel);
         return this;
     }
@@ -73,7 +73,7 @@ public class CommonModalBuilder {
         return getModal();
     }
 
-    BaseModal getModal() {
+    protected BaseModal getModal() {
         return modal;
     }
 
@@ -85,15 +85,7 @@ public class CommonModalBuilder {
         return new ModalFooter();
     }
 
-    FlowPanel buildPanel(final elemental2.dom.HTMLElement element,
-                         final FlowPanel panel) {
-
-        final HTMLElement htmlElement = TemplateUtil.asErraiElement(element);
-        panel.add(build(htmlElement));
-        return panel;
-    }
-
-    private FlowPanel buildPanel(final HTMLElement element,
+    protected FlowPanel buildPanel(final HTMLElement element,
                                  final FlowPanel panel) {
 
         final HTMLElement htmlElement = TemplateUtil.asErraiElement(element);
@@ -101,7 +93,17 @@ public class CommonModalBuilder {
         return panel;
     }
 
+    protected FlowPanel buildPanel(elemental2.dom.HTMLElement element,
+                                 FlowPanel panel) {
+        panel.add(build(element));
+        return panel;
+    }
+
     private Widget build(HTMLElement element) {
+        return ElementWrapperWidget.getWidget(element);
+    }
+
+    private Widget build(elemental2.dom.HTMLElement element) {
         return ElementWrapperWidget.getWidget(element);
     }
 }

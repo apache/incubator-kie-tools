@@ -17,8 +17,19 @@
 package org.uberfire.workbench.type;
 
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.workbench.category.Category;
+import org.uberfire.workbench.category.Others;
 
 public class AnyResourceTypeDefinition implements ResourceTypeDefinition {
+
+    private Category category;
+
+    public AnyResourceTypeDefinition() {
+    }
+
+    public AnyResourceTypeDefinition(final Category category) {
+        this.category = category;
+    }
 
     @Override
     public String getShortName() {
@@ -53,5 +64,10 @@ public class AnyResourceTypeDefinition implements ResourceTypeDefinition {
     @Override
     public boolean accept(final Path path) {
         return true;
+    }
+
+    @Override
+    public Category getCategory() {
+        return this.category;
     }
 }

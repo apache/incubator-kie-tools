@@ -29,6 +29,8 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.ext.editor.commons.service.PathNamingService;
 import org.uberfire.mocks.FileSystemTestingUtils;
+import org.uberfire.workbench.category.Category;
+import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 import static org.junit.Assert.*;
@@ -261,6 +263,11 @@ public class PathNamingServiceImplTest {
             @Override
             public boolean accept(final org.uberfire.backend.vfs.Path path) {
                 return false;
+            }
+
+            @Override
+            public Category getCategory() {
+                return new Others();
             }
         };
     }

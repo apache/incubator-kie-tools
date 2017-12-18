@@ -17,11 +17,14 @@
 package org.uberfire.client.workbench.type;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.resources.UberfireResources;
 import org.uberfire.client.resources.i18n.UberfireConstants;
+import org.uberfire.workbench.category.Category;
+import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.type.AnyResourceTypeDefinition;
 
 @ApplicationScoped
@@ -30,6 +33,14 @@ public class AnyResourceType
         implements ClientResourceType {
 
     private static final Image IMAGE = new Image(UberfireResources.INSTANCE.images().typeGenericFile());
+
+    public AnyResourceType() {
+    }
+
+    @Inject
+    public AnyResourceType(Others others) {
+        super(others);
+    }
 
     @Override
     public IsWidget getIcon() {

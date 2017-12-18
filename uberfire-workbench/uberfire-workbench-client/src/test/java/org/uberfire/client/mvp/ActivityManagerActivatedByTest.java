@@ -31,7 +31,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.uberfire.client.mvp.ActivityBeansCache.ActivityAndMetaInfo;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.security.Resource;
 import org.uberfire.security.authz.AuthorizationManager;
@@ -55,11 +54,15 @@ public class ActivityManagerActivatedByTest {
      * The thing we're unit testing
      */
     @InjectMocks
-    ActivityManagerImpl activityManager;
+    private ActivityManagerImpl activityManager;
     @Mock
-    ActivityBeansCache activityBeansCache;
+    private ActivityBeansCache activityBeansCache;
     @Mock
-    SyncBeanManager iocManager;
+    private SyncBeanManager iocManager;
+
+    @Mock
+    private ResourceTypeManagerCache resourceTypeManagerCache;
+
     @Mock
     AuthorizationManager authzManager;
     private Activity activatedActivity;
@@ -89,10 +92,11 @@ public class ActivityManagerActivatedByTest {
         // We set this up assuming ActivityBeansCache is well-behaved, and hides the existence of inactive beans.
         // (of course this assumption is verified in a separate test)
         ActivityAndMetaInfo activatedActivityAndMetaInfo =
-                activityBeansCache.new ActivityAndMetaInfo(activatedActivityBean,
-                                                           0,
-                                                           Collections.<String>emptyList());
-        when(activityBeansCache.getResourceActivities()).thenReturn(singletonList(activatedActivityAndMetaInfo));
+                new ActivityAndMetaInfo(iocManager,
+                                        activatedActivityBean,
+                                        0,
+                                        Collections.<String>emptyList());
+        when(resourceTypeManagerCache.getResourceActivities()).thenReturn(singletonList(activatedActivityAndMetaInfo));
         when(activityBeansCache.getActivity("activated activity")).thenReturn(activatedActivityBean);
     }
 

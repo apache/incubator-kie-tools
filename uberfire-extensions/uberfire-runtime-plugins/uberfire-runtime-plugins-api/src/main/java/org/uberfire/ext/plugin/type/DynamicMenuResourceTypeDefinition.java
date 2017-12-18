@@ -17,11 +17,24 @@
 package org.uberfire.ext.plugin.type;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.uberfire.ext.plugin.model.PluginType;
+import org.uberfire.workbench.category.Category;
+import org.uberfire.workbench.category.Others;
 
 @ApplicationScoped
 public class DynamicMenuResourceTypeDefinition extends BasePluginResourceTypeDefinition {
+
+    private Category category;
+
+    public DynamicMenuResourceTypeDefinition() {
+    }
+
+    @Inject
+    public DynamicMenuResourceTypeDefinition(final Others category) {
+        this.category = category;
+    }
 
     @Override
     public String getShortName() {
@@ -36,5 +49,10 @@ public class DynamicMenuResourceTypeDefinition extends BasePluginResourceTypeDef
     @Override
     public String getSuffix() {
         return "/" + PluginType.DYNAMIC_MENU.toString().toLowerCase() + ".plugin";
+    }
+
+    @Override
+    public Category getCategory() {
+        return category;
     }
 }

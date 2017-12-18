@@ -52,6 +52,7 @@ import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
+import org.uberfire.workbench.category.Others;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PerspectivePluginManagerTest {
@@ -82,7 +83,7 @@ public class PerspectivePluginManagerTest {
 
     @Before
     public void setUp() {
-        when(clientTypeRegistry.resolve(any())).thenReturn(new PerspectiveLayoutPluginResourceType());
+        when(clientTypeRegistry.resolve(any())).thenReturn(new PerspectiveLayoutPluginResourceType(new Others()));
 
         perspectivePlugin = new Plugin(PERSPECTIVE_ID, PluginType.PERSPECTIVE_LAYOUT, null);
         perspectiveRenamedPlugin = new Plugin("newName", PluginType.PERSPECTIVE_LAYOUT, null);

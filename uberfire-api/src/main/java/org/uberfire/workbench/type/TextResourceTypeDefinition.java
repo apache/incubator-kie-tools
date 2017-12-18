@@ -17,8 +17,24 @@
 package org.uberfire.workbench.type;
 
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.workbench.category.Category;
+import org.uberfire.workbench.category.Others;
 
 public class TextResourceTypeDefinition implements ResourceTypeDefinition {
+
+    private Category category;
+
+    public TextResourceTypeDefinition() {
+    }
+
+    public TextResourceTypeDefinition(final Others category) {
+        this.category = category;
+    }
+
+    @Override
+    public Category getCategory() {
+        return this.category;
+    }
 
     @Override
     public String getShortName() {

@@ -98,6 +98,7 @@ public class WorkspaceProjectServiceImplNewWorkspaceWorkspaceProjectTest {
 
         pom = new POM("my project",
                       "my description",
+                      "url",
                       new GAV("groupId",
                               "artifactId",
                               "version"));

@@ -17,14 +17,29 @@
 package org.uberfire.client.screens;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import jsinterop.annotations.JsType;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.workbench.category.Category;
+import org.uberfire.workbench.category.Others;
 
 @ApplicationScoped
 @JsType
 public class TextResourceType implements ClientResourceType {
+
+    private Category category;
+
+    @Inject
+    public TextResourceType(final Others category) {
+        this.category = category;
+    }
+
+    @Override
+    public Category getCategory() {
+        return this.category;
+    }
 
     @Override
     public String getShortName() {

@@ -18,15 +18,16 @@ package org.uberfire.ext.plugin.type;
 
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.plugin.model.PluginType;
+import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 public final class TypeConverterUtil {
 
-    private static final ScreenPluginResourceTypeDefinition screenDefinition = new ScreenPluginResourceTypeDefinition();
-    private static final EditorPluginResourceTypeDefinition editorDefinition = new EditorPluginResourceTypeDefinition();
-    private static final SplashPluginResourceTypeDefinition splashDefinition = new SplashPluginResourceTypeDefinition();
-    private static final DynamicMenuResourceTypeDefinition dynamicMenuDefinition = new DynamicMenuResourceTypeDefinition();
-    private static final PerspectiveLayoutPluginResourceTypeDefinition perspectiveLayoutPluginResourceTypeDefinition = new PerspectiveLayoutPluginResourceTypeDefinition();
+    private static final ScreenPluginResourceTypeDefinition screenDefinition = new ScreenPluginResourceTypeDefinition(new Others());
+    private static final EditorPluginResourceTypeDefinition editorDefinition = new EditorPluginResourceTypeDefinition(new Others());
+    private static final SplashPluginResourceTypeDefinition splashDefinition = new SplashPluginResourceTypeDefinition(new Others());
+    private static final DynamicMenuResourceTypeDefinition dynamicMenuDefinition = new DynamicMenuResourceTypeDefinition(new Others());
+    private static final PerspectiveLayoutPluginResourceTypeDefinition perspectiveLayoutPluginResourceTypeDefinition = new PerspectiveLayoutPluginResourceTypeDefinition(new Others());
 
     public static PluginType fromPath(final Path path) {
         if (screenDefinition.accept(path)) {

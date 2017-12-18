@@ -18,6 +18,9 @@ package org.uberfire.workbench.type;
 
 import jsinterop.annotations.JsType;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.workbench.category.Category;
+import org.uberfire.workbench.category.Others;
+import org.uberfire.workbench.category.Undefined;
 
 /**
  * Definition of a Resource Type
@@ -68,4 +71,10 @@ public interface ResourceTypeDefinition {
      * @return true if matches, otherwise false
      */
     boolean accept(final Path path);
+
+    /**
+     * Defines the category for each resource. If no category is defined, {@link Undefined} should be returned
+     * @return the resource category
+     */
+    Category getCategory();
 }

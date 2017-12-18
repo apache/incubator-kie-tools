@@ -17,9 +17,20 @@
 package org.uberfire.ext.plugin.type;
 
 import org.uberfire.ext.plugin.model.PluginType;
+import org.uberfire.workbench.category.Category;
+import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 public class EditorPluginResourceTypeDefinition extends BasePluginResourceTypeDefinition implements ResourceTypeDefinition {
+
+    private Category category;
+
+    public EditorPluginResourceTypeDefinition() {
+    }
+
+    public EditorPluginResourceTypeDefinition(final Others category) {
+        this.category = category;
+    }
 
     @Override
     public String getShortName() {
@@ -34,5 +45,10 @@ public class EditorPluginResourceTypeDefinition extends BasePluginResourceTypeDe
     @Override
     public String getSuffix() {
         return "/" + PluginType.EDITOR.toString().toLowerCase() + ".plugin";
+    }
+
+    @Override
+    public Category getCategory() {
+        return this.category;
     }
 }

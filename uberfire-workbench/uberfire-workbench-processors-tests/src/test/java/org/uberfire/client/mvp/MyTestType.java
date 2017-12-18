@@ -17,13 +17,31 @@
 package org.uberfire.client.mvp;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.workbench.category.Category;
+import org.uberfire.workbench.category.Others;
 
 @ApplicationScoped
 public class MyTestType implements ClientResourceType {
+
+    private Category category;
+
+    public MyTestType() {
+    }
+
+    @Inject
+    public MyTestType(final Others category) {
+        this.category = category;
+    }
+
+    @Override
+    public Category getCategory() {
+        return this.category;
+    }
 
     @Override
     public String getShortName() {

@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.workbench.category.Undefined;
 
 import static org.mockito.Mockito.*;
 
@@ -41,6 +42,7 @@ public class ActivityBeansCacheUnitTestWrapper extends ActivityBeansCache {
     private boolean mockSplashcreen = true;
 
     public ActivityBeansCacheUnitTestWrapper() {
+        this.resourceTypeManagerCache = new ResourceTypeManagerCache(new CategoriesManagerCache(new Undefined()));
         mockDef = mock(SyncBeanDef.class);
         idMock = "mockDef1";
         when(mockDef.getName()).thenReturn(idMock);
@@ -60,12 +62,18 @@ public class ActivityBeansCacheUnitTestWrapper extends ActivityBeansCache {
 
     public void createActivitiesAndMetaInfo(int priority1,
                                             int priority2) {
-        activitiesAndMetaInfo.add(new ActivityAndMetaInfo(null,
-                                                          priority1,
-                                                          new ArrayList()));
-        activitiesAndMetaInfo.add(new ActivityAndMetaInfo(null,
-                                                          priority2,
-                                                          new ArrayList()));
+        resourceTypeManagerCache.addResourceActivity(new ActivityAndMetaInfo(null,
+                                                                             null,
+                                                                             priority1,
+                                                                             new ArrayList()));
+        resourceTypeManagerCache.addResourceActivity(new ActivityAndMetaInfo(null,
+                                                                             null,
+                                                                             priority2,
+                                                                             new ArrayList()));
+    }
+
+    public ResourceTypeManagerCache getResourceTypeManagerCache() {
+        return this.resourceTypeManagerCache;
     }
 
     @Override
@@ -89,15 +97,6 @@ public class ActivityBeansCacheUnitTestWrapper extends ActivityBeansCache {
         SyncBeanDef duplicateMockDef = mock(SyncBeanDef.class);
         when(duplicateMockDef.getName()).thenReturn(idMock);
         availableActivities.add(duplicateMockDef);
-    }
-
-    @Override
-    List<ActivityAndMetaInfo> getResourceActivities() {
-        if (mockSplashcreen) {
-            return activitiesAndMetaInfo;
-        }
-
-        return super.getResourceActivities();
     }
 
     @Override

@@ -126,7 +126,7 @@ public class WorkspaceProject
      * @return The root path of the active branch.
      */
     public Path getRootPath() {
-        return branch.getPath();
+        return this.getBranch().getPath();
     }
 
     @Override

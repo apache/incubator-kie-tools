@@ -20,12 +20,11 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -58,20 +57,33 @@ public class ActivityBeansCache {
     /**
      * All active Activities that have an {@link AssociatedResources} annotation and are not splash screens.
      */
-    private final List<ActivityAndMetaInfo> resourceActivities = new ArrayList<ActivityAndMetaInfo>();
+
     /**
      * All active activities that are splash screens.
      */
     private final List<SplashScreenActivity> splashActivities = new ArrayList<SplashScreenActivity>();
-    @Inject
     private SyncBeanManager iocManager;
-    @Inject
     private Event<NewPerspectiveEvent> newPerspectiveEventEvent;
-    @Inject
     private Event<NewWorkbenchScreenEvent> newWorkbenchScreenEventEvent;
+    protected ResourceTypeManagerCache resourceTypeManagerCache;
+
+    public ActivityBeansCache() {
+    }
+
+    @Inject
+    public ActivityBeansCache(SyncBeanManager iocManager,
+                              Event<NewPerspectiveEvent> newPerspectiveEventEvent,
+                              Event<NewWorkbenchScreenEvent> newWorkbenchScreenEventEvent,
+                              ResourceTypeManagerCache resourceTypeManagerCache) {
+        this.iocManager = iocManager;
+        this.newPerspectiveEventEvent = newPerspectiveEventEvent;
+        this.newWorkbenchScreenEventEvent = newWorkbenchScreenEventEvent;
+        this.resourceTypeManagerCache = resourceTypeManagerCache;
+    }
 
     @PostConstruct
     void init() {
+
         final Collection<SyncBeanDef<Activity>> availableActivities = getAvailableActivities();
 
         for (final SyncBeanDef<Activity> activityBean : availableActivities) {
@@ -88,39 +100,22 @@ public class ActivityBeansCache {
             } else {
                 final Pair<Integer, List<String>> metaInfo = generateActivityMetaInfo(activityBean);
                 if (metaInfo != null) {
-                    getResourceActivities().add(new ActivityAndMetaInfo(activityBean,
-                                                                        metaInfo.getK1(),
-                                                                        metaInfo.getK2()));
+                    addResourceActivity(activityBean,
+                                        metaInfo);
                 }
             }
         }
 
-        sortResourceActivitiesByPriority();
+        this.resourceTypeManagerCache.sortResourceActivitiesByPriority();
     }
 
-    /**
-     * Returns all activities in this cache that have an associated resource type.
-     */
-    List<ActivityAndMetaInfo> getResourceActivities() {
-        return resourceActivities;
-    }
-
-    void sortResourceActivitiesByPriority() {
-        sort(getResourceActivities(),
-             new Comparator<ActivityAndMetaInfo>() {
-                 @Override
-                 public int compare(final ActivityAndMetaInfo o1,
-                                    final ActivityAndMetaInfo o2) {
-
-                     if (o1.getPriority() < o2.getPriority()) {
-                         return 1;
-                     } else if (o1.getPriority() > o2.getPriority()) {
-                         return -1;
-                     } else {
-                         return 0;
-                     }
-                 }
-             });
+    private void addResourceActivity(SyncBeanDef<Activity> activityBean,
+                                     Pair<Integer, List<String>> metaInfo) {
+        ActivityAndMetaInfo activityAndMetaInfo = new ActivityAndMetaInfo(iocManager,
+                                                                          activityBean,
+                                                                          metaInfo.getK1(),
+                                                                          metaInfo.getK2());
+        this.resourceTypeManagerCache.addResourceActivity(activityAndMetaInfo);
     }
 
     Collection<SyncBeanDef<Activity>> getAvailableActivities() {
@@ -191,10 +186,11 @@ public class ActivityBeansCache {
         activitiesById.put(id,
                            activityBean);
 
-        resourceActivities.add(new ActivityAndMetaInfo(activityBean,
-                                                       Integer.valueOf(priority),
-                                                       Arrays.asList(resourceTypeName)));
-        sortResourceActivitiesByPriority();
+        this.resourceTypeManagerCache.addResourceActivity(new ActivityAndMetaInfo(iocManager,
+                                                                                  activityBean,
+                                                                                  Integer.valueOf(priority),
+                                                                                  Arrays.asList(resourceTypeName)));
+        this.resourceTypeManagerCache.sortResourceActivitiesByPriority();
     }
 
     public void addNewSplashScreenActivity(final SyncBeanDef<Activity> activityBean) {
@@ -207,7 +203,7 @@ public class ActivityBeansCache {
         splashActivities.add((SplashScreenActivity) activityBean.getInstance());
     }
 
-    public boolean hasActivity(String id){
+    public boolean hasActivity(String id) {
         return activitiesById.containsKey(id);
     }
 
@@ -236,7 +232,7 @@ public class ActivityBeansCache {
      */
     public SyncBeanDef<Activity> getActivity(final Path path) {
 
-        for (final ActivityAndMetaInfo currentActivity : getResourceActivities()) {
+        for (final ActivityAndMetaInfo currentActivity : this.resourceTypeManagerCache.getResourceActivities()) {
             for (final ClientResourceType resourceType : currentActivity.getResourceTypes()) {
                 if (resourceType.accept(path)) {
                     return currentActivity.getActivityBean();
@@ -263,51 +259,6 @@ public class ActivityBeansCache {
 
     public List<String> getActivitiesById() {
         return new ArrayList<String>(activitiesById.keySet());
-    }
-
-    class ActivityAndMetaInfo {
-
-        private final SyncBeanDef<Activity> activityBean;
-        private final int priority;
-        final List<String> resourceTypesNames;
-        ClientResourceType[] resourceTypes;
-
-        @SuppressWarnings("rawtypes")
-        ActivityAndMetaInfo(final SyncBeanDef<Activity> activityBean,
-                            final int priority,
-                            final List<String> resourceTypesNames) {
-            this.activityBean = activityBean;
-            this.priority = priority;
-            this.resourceTypesNames = resourceTypesNames;
-        }
-
-        public SyncBeanDef<Activity> getActivityBean() {
-            return activityBean;
-        }
-
-        public int getPriority() {
-            return priority;
-        }
-
-        public ClientResourceType[] getResourceTypes() {
-            if (resourceTypes == null) {
-                dynamicLookupResourceTypes();
-            }
-            return resourceTypes;
-        }
-
-        private void dynamicLookupResourceTypes() {
-            this.resourceTypes = new ClientResourceType[resourceTypesNames.size()];
-            for (int i = 0; i < resourceTypesNames.size(); i++) {
-                final String resourceTypeIdentifier = resourceTypesNames.get(i);
-                final Collection<SyncBeanDef> resourceTypeBeans = iocManager.lookupBeans(resourceTypeIdentifier);
-                if (resourceTypeBeans.isEmpty()) {
-                    throw new RuntimeException("ClientResourceType " + resourceTypeIdentifier + " not found");
-                }
-
-                this.resourceTypes[i] = (ClientResourceType) resourceTypeBeans.iterator().next().getInstance();
-            }
-        }
     }
 
     private class EditorResourceTypeNotFound extends RuntimeException {

@@ -52,6 +52,7 @@ public class POMContentHandler {
         model.setDescription(pom.getDescription());
         model.setArtifactId(pom.getGav().getArtifactId());
         model.setModelVersion(pom.getModelVersion());
+        model.setUrl(pom.getUrl());
 
         model.setGroupId(pom.getGav().getGroupId());
         model.setVersion(pom.getGav().getVersion());
@@ -135,6 +136,7 @@ public class POMContentHandler {
         POM pomModel = new POM(
                 model.getName(),
                 model.getDescription(),
+                model.getUrl(),
                 new GAV(
                         (model.getGroupId() == null ? model.getParent().getGroupId() : model.getGroupId()),
                         (model.getArtifactId() == null ? model.getParent().getArtifactId() : model.getArtifactId()),

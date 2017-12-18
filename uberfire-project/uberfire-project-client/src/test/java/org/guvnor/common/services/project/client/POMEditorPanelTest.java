@@ -103,6 +103,7 @@ public class POMEditorPanelTest {
     public void testLoadSingleModule() throws Exception {
         POM gavModel = createTestModel("pomName",
                                        "pomDescription",
+                                       "pomUrl",
                                        "group",
                                        "artifact",
                                        "1.1.1");
@@ -258,11 +259,13 @@ public class POMEditorPanelTest {
 
     private POM createTestModel(final String name,
                                 final String description,
+                                final String url,
                                 final String group,
                                 final String artifact,
                                 final String version) {
         return new POM(name,
                        description,
+                       url,
                        new GAV(group,
                                artifact,
                                version));

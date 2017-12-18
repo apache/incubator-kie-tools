@@ -19,18 +19,22 @@ import javax.enterprise.inject.Alternative;
 
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.workbench.category.Category;
 
 @Alternative
 public class JSClientResourceType implements ClientResourceType {
 
     private JSNativeClientResourceType jsNativeClientResourceType;
+    private Category category;
 
-    public JSClientResourceType(){
+    public JSClientResourceType() {
 
     }
 
-    public JSClientResourceType(JSNativeClientResourceType jsNativeClientResourceType) {
+    public JSClientResourceType(JSNativeClientResourceType jsNativeClientResourceType,
+                                Category category) {
         this.jsNativeClientResourceType = jsNativeClientResourceType;
+        this.category = category;
     }
 
     @Override
@@ -66,6 +70,11 @@ public class JSClientResourceType implements ClientResourceType {
     @Override
     public boolean accept(Path path) {
         return jsNativeClientResourceType.acceptFileName(path.getFileName());
+    }
+
+    @Override
+    public Category getCategory() {
+        return this.category;
     }
 
     public String getId() {

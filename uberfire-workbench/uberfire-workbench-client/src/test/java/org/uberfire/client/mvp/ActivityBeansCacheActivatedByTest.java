@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import javax.enterprise.event.Event;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
@@ -28,12 +29,14 @@ import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.uberfire.client.mvp.ActivityBeansCache.ActivityAndMetaInfo;
 import org.uberfire.client.workbench.annotations.AssociatedResources;
+import org.uberfire.client.workbench.events.NewPerspectiveEvent;
+import org.uberfire.client.workbench.events.NewWorkbenchScreenEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.type.DotResourceType;
+import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.workbench.category.Others;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -64,10 +67,19 @@ public class ActivityBeansCacheActivatedByTest {
             return (Class<? extends ClientResourceType>[]) new Class<?>[]{DotResourceType.class};
         }
     };
-    @InjectMocks
-    ActivityBeansCache activityBeansCache;
+
+    private ActivityBeansCache activityBeansCache;
     @Mock
-    SyncBeanManager iocManager;
+    private SyncBeanManager iocManager;
+
+    private Event<NewPerspectiveEvent> newPerspectiveEventEvent;
+    private Event<NewWorkbenchScreenEvent> newWorkbenchScreenEventEvent;
+
+    @Mock
+    private CategoriesManagerCache categoriesManagerCache;
+
+    private ResourceTypeManagerCache resourceTypeManagerCache;
+
     private ActiveSplashScreenActivity activeSplashScreenActivity;
     private SyncBeanDef activeSplashScreenActivityBean;
     private SyncBeanDef nonActiveSplashScreenActivityBean;
@@ -81,6 +93,16 @@ public class ActivityBeansCacheActivatedByTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
+
+        this.resourceTypeManagerCache = new ResourceTypeManagerCache(categoriesManagerCache);
+
+        newPerspectiveEventEvent = new EventSourceMock<>();
+        newWorkbenchScreenEventEvent = new EventSourceMock<>();
+        activityBeansCache = new ActivityBeansCache(iocManager,
+                                                    newPerspectiveEventEvent,
+                                                    newWorkbenchScreenEventEvent,
+                                                    resourceTypeManagerCache);
+
         activeSplashScreenActivity = mock(ActiveSplashScreenActivity.class);
         activeSplashScreenActivityBean = mockSplashScreenActivityBean(ActiveSplashScreenActivity.class,
                                                                       activeSplashScreenActivity);
@@ -99,7 +121,7 @@ public class ActivityBeansCacheActivatedByTest {
         activeResourceActivityBean = mockResourceActivityBean(ActiveResourceActivity.class,
                                                               activeResourceActivity);
         mockRegularBean(DotResourceType.class,
-                        new DotResourceType());
+                        new DotResourceType(new Others()));
 
         nonActiveResourceActivityBean = mockResourceActivityBean(NonActiveResourceActivity.class,
                                                                  null);
@@ -135,7 +157,7 @@ public class ActivityBeansCacheActivatedByTest {
     @Test
     public void cacheShouldNotReturnInactiveBeansFromGetResourceActivities() throws Exception {
         activityBeansCache.init();
-        List<ActivityAndMetaInfo> activityBeans = activityBeansCache.getResourceActivities();
+        List<ActivityAndMetaInfo> activityBeans = this.resourceTypeManagerCache.getResourceActivities();
 
         assertEquals(1,
                      activityBeans.size());
