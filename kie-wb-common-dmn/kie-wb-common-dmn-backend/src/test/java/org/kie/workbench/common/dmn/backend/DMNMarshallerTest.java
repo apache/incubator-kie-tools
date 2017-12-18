@@ -27,7 +27,9 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -43,6 +45,8 @@ import org.junit.runner.RunWith;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNDecisionResult;
+import org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
@@ -789,5 +793,42 @@ public class DMNMarshallerTest {
         assertFalse(runtime.getModels().isEmpty());
 
         return runtime;
+    }
+
+    @Test
+    public void test_relation_literal_expression() throws IOException {
+        final DMNRuntime runtime = roundTripUnmarshalMarshalThenUnmarshalDMN(this.getClass().getResourceAsStream("/hardcoded_relation_and_literal_expression.dmn"));
+        DMNModel dmnModel = runtime.getModels().get(0);
+
+        DMNContext dmnContext = runtime.newContext();
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel,
+                                                  dmnContext);
+        assertFalse(dmnResult.getMessages().toString(),
+                    dmnResult.hasErrors());
+
+        DMNContext result = dmnResult.getContext();
+        Object hardCodedRelation = result.get("hardcoded relation");
+        assertNotNull(hardCodedRelation);
+        assertEquals(3, ((Collection) hardCodedRelation).size());
+
+        DMNDecisionResult adultResult = dmnResult.getDecisionResultByName("Adults");
+        assertEquals(DecisionEvaluationStatus.SUCCEEDED, adultResult.getEvaluationStatus());
+        assertEquals(1, ((Collection) adultResult.getResult()).size());
+    }
+
+    @Test
+    public void test_invocation() throws IOException {
+        final DMNRuntime runtime = roundTripUnmarshalMarshalThenUnmarshalDMN(this.getClass().getResourceAsStream("/hardcoded_invokation.dmn"));
+        DMNModel dmnModel = runtime.getModels().get(0);
+
+        DMNContext dmnContext = runtime.newContext();
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel,
+                                                  dmnContext);
+        assertFalse(dmnResult.getMessages().toString(),
+                    dmnResult.hasErrors());
+
+        DMNDecisionResult adultResult = dmnResult.getDecisionResultByName("hardcoded invokation");
+        assertEquals(DecisionEvaluationStatus.SUCCEEDED, adultResult.getEvaluationStatus());
+        assertEquals(new BigDecimal(11), adultResult.getResult());
     }
 }

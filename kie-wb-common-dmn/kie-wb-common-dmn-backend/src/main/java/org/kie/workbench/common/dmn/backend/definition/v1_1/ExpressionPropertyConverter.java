@@ -18,7 +18,10 @@ package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
+import org.kie.workbench.common.dmn.api.definition.v1_1.List;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 
 public class ExpressionPropertyConverter {
 
@@ -27,6 +30,12 @@ public class ExpressionPropertyConverter {
             return LiteralExpressionPropertyConverter.wbFromDMN((org.kie.dmn.model.v1_1.LiteralExpression) dmn);
         } else if (dmn instanceof org.kie.dmn.model.v1_1.Context) {
             return ContextPropertyConverter.wbFromDMN((org.kie.dmn.model.v1_1.Context) dmn);
+        } else if (dmn instanceof org.kie.dmn.model.v1_1.Relation) {
+            return RelationPropertyConverter.wbFromDMN((org.kie.dmn.model.v1_1.Relation) dmn);
+        } else if (dmn instanceof org.kie.dmn.model.v1_1.List) {
+            return ListPropertyConverter.wbFromDMN((org.kie.dmn.model.v1_1.List) dmn);
+        } else if (dmn instanceof org.kie.dmn.model.v1_1.Invocation) {
+            return InvocationPropertyConverter.wbFromDMN((org.kie.dmn.model.v1_1.Invocation) dmn);
         }
         return null;
     }
@@ -36,6 +45,12 @@ public class ExpressionPropertyConverter {
             return LiteralExpressionPropertyConverter.dmnFromWB((LiteralExpression) wb);
         } else if (wb instanceof Context) {
             return ContextPropertyConverter.dmnFromWB((Context) wb);
+        } else if (wb instanceof Relation) {
+            return RelationPropertyConverter.dmnFromWB((Relation) wb);
+        } else if (wb instanceof List) {
+            return ListPropertyConverter.dmnFromWB((List) wb);
+        } else if (wb instanceof Invocation) {
+            return InvocationPropertyConverter.dmnFromWB((Invocation) wb);
         }
         return null;
     }

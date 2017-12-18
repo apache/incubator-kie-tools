@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_cad951c8-9cd6-4ab1-bf3f-c87891c8adeb" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.2.14" id="_cad951c8-9cd6-4ab1-bf3f-c87891c8adeb" name="hardcoded_invokation" namespace="http://www.trisotech.com/definitions/_cad951c8-9cd6-4ab1-bf3f-c87891c8adeb" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:decision id="_facc4528-e1e7-4759-840c-7fef17207d23" name="hardcoded invokation">
+    <semantic:variable id="_e07d41b2-b632-471d-9c21-993f0651e55a" name="hardcoded invokation" typeRef="feel:number"/>
+    <semantic:invocation id="_ac3924be-7d42-4507-bd44-54e55fab92e0">
+      <semantic:literalExpression id="literal__ac3924be-7d42-4507-bd44-54e55fab92e0">
+        <semantic:text>string length</semantic:text>
+      </semantic:literalExpression>
+      <semantic:binding>
+        <semantic:parameter id="_0f64e345-758a-4395-aff1-bb51e65ff7b6" name="string"/>
+        <semantic:literalExpression id="_8d8c18c0-ff60-4c4c-914c-210be7a20977">
+          <semantic:text>"Hello World"</semantic:text>
+        </semantic:literalExpression>
+      </semantic:binding>
+    </semantic:invocation>
+  </semantic:decision>
+</semantic:definitions>

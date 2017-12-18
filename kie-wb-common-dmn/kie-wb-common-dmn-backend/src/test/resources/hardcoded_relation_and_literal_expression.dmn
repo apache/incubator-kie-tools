@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_94572d1d-8075-41b4-a7af-870fed471ca7" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.2.14" id="_94572d1d-8075-41b4-a7af-870fed471ca7" name="hardcoded relation and literal expression" namespace="http://www.trisotech.com/definitions/_94572d1d-8075-41b4-a7af-870fed471ca7" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:itemDefinition label="tPerson" name="tPerson">
+    <semantic:itemComponent id="_375c9ef9-c375-42e9-a783-d922671cd363" name="name">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_e9d339e8-2385-439f-b855-c6bc7bd87191" name="age">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="true" label="tPersons" name="tPersons">
+    <semantic:typeRef>tPerson</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:decision id="_02b25ed5-8985-400d-bea2-686bc672e17c" name="hardcoded relation">
+    <semantic:variable id="_f9361501-4df0-4a57-99d4-10d1a4c09d3f" name="hardcoded relation" typeRef="tPersons"/>
+    <semantic:relation id="_af07a5b7-f7bb-4540-8479-18d28330c3fd">
+      <semantic:column id="_dfcb357d-b0d3-40e7-94d8-04d5016c4aa4" name="name" typeRef="feel:string"/>
+      <semantic:column id="_49e5b960-9ad5-45b4-92bd-99a63c3e29e3" name="age" typeRef="feel:number"/>
+      <semantic:row id="_bf48cc25-e9c1-4aa2-a6aa-c093cafdf806">
+        <semantic:literalExpression id="_85f11cdd-fe88-4add-9db6-ec31438b6aa8">
+          <semantic:text>"John Doe"</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b874affd-cb68-432b-869d-51154d5c90db">
+          <semantic:text>47</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_2ffaf8b8-e667-447a-8129-d38e393c5cd5">
+        <semantic:literalExpression id="_db39de12-d09d-479b-89af-a503dde3a3fd">
+          <semantic:text>"Person 1"</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_9f627774-2967-4925-8ef6-1cecf6868040">
+          <semantic:text>1</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_a4723e28-49e3-4eac-bf00-538067492c57">
+        <semantic:literalExpression id="_64fba439-fedb-411d-8c26-9f6ad03a257c">
+          <semantic:text>"Person 2"</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_39d8d691-4faf-45c9-a6ce-299b25ec89c0">
+          <semantic:text>2</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+    </semantic:relation>
+  </semantic:decision>
+  <semantic:decision id="_d57ddee5-f221-4390-8d34-23ac88c7ed80" name="Adults">
+    <semantic:variable id="_b0b0e2f4-8ce9-4053-9fb9-6efb1c45119c" name="Adults" typeRef="tPersons"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_02b25ed5-8985-400d-bea2-686bc672e17c"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_d7be9314-cc56-4e6a-b1d0-187cef020671">
+      <semantic:text>hardcoded relation[age &gt; 18]</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+</semantic:definitions>
