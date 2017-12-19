@@ -23,7 +23,6 @@ import com.ait.lienzo.client.core.shape.wires.IContainmentAcceptor;
 import com.ait.lienzo.client.core.shape.wires.ILayoutHandler;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -220,7 +219,7 @@ public class CaseManagementContainmentAcceptorControlImplTest {
         final WiresShape childShape = makeWiresShape(CANDIDATE_UUID);
 
         assertTrue(containmentAcceptor.containmentAllowed(parentShape,
-                                                          childShape));
+                                                          new WiresShape[]{childShape}));
         verify(canvasCommandFactory,
                times(1)).removeChild(any(Node.class),
                                      any(Node.class));
@@ -233,11 +232,11 @@ public class CaseManagementContainmentAcceptorControlImplTest {
         return makeWiresShape(Optional.empty());
     }
 
-    private WiresShape makeWiresShape(String uuid) {
+    private MockCaseManagementShape makeWiresShape(String uuid) {
         return makeWiresShape(Optional.of(uuid));
     }
 
-    private WiresShape makeWiresShape(Optional<String> uuid) {
+    private MockCaseManagementShape makeWiresShape(Optional<String> uuid) {
         final MockCaseManagementShape shape = new MockCaseManagementShape();
         uuid.ifPresent(shape::setUUID);
         WiresUtils.assertShapeGroup(shape.getGroup(),
@@ -246,40 +245,22 @@ public class CaseManagementContainmentAcceptorControlImplTest {
     }
 
     @Test
-    public void checkAcceptContainment() {
+    public void testAcceptContainment() {
         control.enable(canvasHandler);
-
-        final IContainmentAcceptor containmentAcceptor = getContainmentAcceptor();
         final WiresShape parentShape = makeWiresShape(PARENT_UUID);
         final WiresShape childShape = makeWiresShape(CANDIDATE_UUID);
-
-        assertTrue(containmentAcceptor.acceptContainment(parentShape,
-                                                         childShape));
-
-        assertTrue(parentShape.getLayoutHandler() instanceof CaseManagementContainmentAcceptorControlImpl.InterceptingLayoutHandler);
-    }
-
-    @Test
-    public void checkInterceptingLayoutHandlerAdd() {
-        control.enable(canvasHandler);
-
-        final WiresShape parentShape = makeWiresShape(PARENT_UUID);
-        final WiresShape childShape = makeWiresShape(CANDIDATE_UUID);
-        final ILayoutHandler layoutHandler = getILayoutHandler(parentShape,
-                                                               childShape);
-
-        layoutHandler.add(childShape,
-                          parentShape,
-                          new Point2D());
-
+        final MockCaseManagementShape ghost = makeWiresShape(CANDIDATE_UUID);
+        state.setGhost(Optional.of(ghost));
+        final boolean isAccept =
+                control.CONTAINMENT_ACCEPTOR.acceptContainment(parentShape,
+                                                               new WiresShape[]{childShape});
+        assertTrue(isAccept);
         verify(canvasCommandFactory,
                times(1)).setChildNode(any(Node.class),
                                       any(Node.class),
                                       eq(Optional.of(0)),
                                       eq(Optional.empty()),
                                       eq(Optional.empty()));
-
-        assertTrue(parentShape.getLayoutHandler() instanceof ILayoutHandler.DefaultLayoutHandler);
     }
 
     private ILayoutHandler getILayoutHandler(final WiresContainer parentShape,
@@ -287,7 +268,7 @@ public class CaseManagementContainmentAcceptorControlImplTest {
         final IContainmentAcceptor containmentAcceptor = getContainmentAcceptor();
 
         containmentAcceptor.acceptContainment(parentShape,
-                                              childShape);
+                                              new WiresShape[]{childShape});
         return parentShape.getLayoutHandler();
     }
 

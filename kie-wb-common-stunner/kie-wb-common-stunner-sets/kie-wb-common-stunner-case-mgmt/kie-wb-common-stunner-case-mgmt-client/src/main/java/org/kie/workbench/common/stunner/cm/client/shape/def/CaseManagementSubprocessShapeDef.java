@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 public final class CaseManagementSubprocessShapeDef
         implements StageShapeDef<BaseSubprocess, StageView> {
 
+    public static final double DROP_AREA_HEIGHT = 508d;
     public static final double WIDTH = 136d;
     public static final double HEIGHT = 48d;
 
@@ -36,6 +37,16 @@ public final class CaseManagementSubprocessShapeDef
                                    .width(this::getWidth)
                                    .height(this::getHeight)
                                    .build()::handle);
+    }
+
+    @Override
+    public double getDropAreaWidth(BaseSubprocess element) {
+        return WIDTH;
+    }
+
+    @Override
+    public double getDropAreaHeight(BaseSubprocess element) {
+        return DROP_AREA_HEIGHT;
     }
 
     @Override

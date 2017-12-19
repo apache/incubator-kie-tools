@@ -29,7 +29,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.Cl
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.LocationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.resize.ResizeControl;
@@ -39,7 +39,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomCon
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.Request;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -49,14 +48,14 @@ import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 @DMNEditor
 public class DMNClientFullSession extends AbstractClientFullSession {
 
-    private DragControl<AbstractCanvasHandler, Element> dragControl;
+    private LocationControl<AbstractCanvasHandler, Element> locationControl;
     private ResizeControl<AbstractCanvasHandler, Element> resizeControl;
     private CanvasInPlaceTextEditorControl<AbstractCanvasHandler, AbstractClientFullSession, Element> canvasInPlaceTextEditorControl;
     private ToolboxControl<AbstractCanvasHandler, Element> toolboxControl;
 
     @Inject
     @SuppressWarnings("unchecked")
-    public DMNClientFullSession(final @DMNEditor CanvasFactory<AbstractCanvas, AbstractCanvasHandler> factory,
+    public DMNClientFullSession(final CanvasFactory<AbstractCanvas, AbstractCanvasHandler> factory,
                                 final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
                                 final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                 final @Request SessionCommandManager<AbstractCanvasHandler> requestCommandManager,
@@ -76,12 +75,12 @@ public class DMNClientFullSession extends AbstractClientFullSession {
               factory.newControl(ElementBuilderControl.class),
               factory.newControl(KeyboardControl.class),
               factory.newControl(ClipboardControl.class));
-        this.dragControl = factory.newControl(DragControl.class);
+        this.locationControl = factory.newControl(LocationControl.class);
         this.resizeControl = factory.newControl(ResizeControl.class);
         this.canvasInPlaceTextEditorControl = factory.newControl(CanvasInPlaceTextEditorControl.class);
         this.toolboxControl = factory.newControl(ToolboxControl.class);
-        getRegistrationHandler().registerCanvasHandlerControl(dragControl);
-        dragControl.setCommandManagerProvider(() -> requestCommandManager);
+        getRegistrationHandler().registerCanvasHandlerControl(locationControl);
+        locationControl.setCommandManagerProvider(() -> requestCommandManager);
         getRegistrationHandler().registerCanvasHandlerControl(resizeControl);
         resizeControl.setCommandManagerProvider(() -> sessionCommandManager);
         getRegistrationHandler().registerCanvasHandlerControl(toolboxControl);
@@ -101,8 +100,8 @@ public class DMNClientFullSession extends AbstractClientFullSession {
         super.doResume();
     }
 
-    public DragControl<AbstractCanvasHandler, Element> getDragControl() {
-        return dragControl;
+    public LocationControl<AbstractCanvasHandler, Element> getLocationControl() {
+        return locationControl;
     }
 
     public ResizeControl<AbstractCanvasHandler, Element> getResizeControl() {

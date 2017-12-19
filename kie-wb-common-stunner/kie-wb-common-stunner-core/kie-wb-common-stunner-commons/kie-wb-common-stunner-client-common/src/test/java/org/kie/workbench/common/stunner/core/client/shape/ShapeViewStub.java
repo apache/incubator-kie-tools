@@ -51,12 +51,7 @@ public class ShapeViewStub implements ShapeView<Object> {
     }
 
     @Override
-    public Object setShapeX(final double x) {
-        return this;
-    }
-
-    @Override
-    public Object setShapeY(final double y) {
+    public Object setShapeLocation(Point2D location) {
         return this;
     }
 
@@ -117,6 +112,11 @@ public class ShapeViewStub implements ShapeView<Object> {
 
     @Override
     public Object setStrokeWidth(final double width) {
+        return this;
+    }
+
+    @Override
+    public Object setDragEnabled(final boolean draggable) {
         return this;
     }
 

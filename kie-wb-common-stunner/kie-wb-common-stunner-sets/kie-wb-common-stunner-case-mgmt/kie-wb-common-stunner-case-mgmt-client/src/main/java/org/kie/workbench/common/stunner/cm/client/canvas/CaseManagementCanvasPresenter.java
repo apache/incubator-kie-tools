@@ -22,6 +22,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlFactory;
 import org.kie.workbench.common.stunner.client.lienzo.Lienzo;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.widgets.canvas.view.LienzoPanel;
@@ -48,6 +49,7 @@ public class CaseManagementCanvasPresenter extends WiresCanvasPresenter {
              null,
              null,
              null,
+             null,
              null);
     }
 
@@ -59,7 +61,8 @@ public class CaseManagementCanvasPresenter extends WiresCanvasPresenter {
                                          final Event<CanvasFocusedEvent> canvasFocusedEvent,
                                          final @Lienzo Layer layer,
                                          final @CaseManagementEditor WiresCanvas.View view,
-                                         final LienzoPanel lienzoPanel) {
+                                         final LienzoPanel lienzoPanel,
+                                         final @CaseManagementEditor WiresControlFactory caseManagementControlFactory) {
         super(canvasClearEvent,
               canvasShapeAddedEvent,
               canvasShapeRemovedEvent,
@@ -67,7 +70,8 @@ public class CaseManagementCanvasPresenter extends WiresCanvasPresenter {
               canvasFocusedEvent,
               layer,
               view,
-              lienzoPanel);
+              lienzoPanel,
+              caseManagementControlFactory);
     }
 
     @SuppressWarnings("unchecked")

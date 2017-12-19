@@ -29,7 +29,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.Elem
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.LocationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.resize.ResizeControl;
@@ -45,10 +45,14 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.mockito.Mock;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DMNClientFullSessionTest {
@@ -72,7 +76,7 @@ public class DMNClientFullSessionTest {
     private PanControl<AbstractCanvas> panControl;
 
     @Mock
-    private DragControl<AbstractCanvasHandler, Element> dragControl;
+    private LocationControl<AbstractCanvasHandler, Element> locationControl;
 
     @Mock
     private ResizeControl<AbstractCanvasHandler, Element> resizeControl;
@@ -117,7 +121,7 @@ public class DMNClientFullSessionTest {
         when(factory.newCanvas()).thenReturn(canvas);
         when(factory.newCanvasHandler()).thenReturn(canvasHandler);
         when(factory.newControl(eq(ZoomControl.class))).thenReturn(zoomControl);
-        when(factory.newControl(eq(DragControl.class))).thenReturn(dragControl);
+        when(factory.newControl(eq(LocationControl.class))).thenReturn(locationControl);
         when(factory.newControl(eq(PanControl.class))).thenReturn(panControl);
         when(factory.newControl(eq(CanvasInPlaceTextEditorControl.class))).thenReturn(canvasInPlaceTextEditorControl);
         when(factory.newControl(eq(SelectionControl.class))).thenReturn(selectionControl);
@@ -148,8 +152,8 @@ public class DMNClientFullSessionTest {
                      session.getZoomControl());
         assertEquals(canvasInPlaceTextEditorControl,
                      session.getCanvasInPlaceTextEditorControl());
-        assertEquals(dragControl,
-                     session.getDragControl());
+        assertEquals(locationControl,
+                     session.getLocationControl());
         assertEquals(resizeControl,
                      session.getResizeControl());
         assertEquals(toolboxControl,
@@ -184,7 +188,7 @@ public class DMNClientFullSessionTest {
                times(1)).enable(eq(canvas));
         verify(canvasInPlaceTextEditorControl,
                times(1)).enable(eq(canvasHandler));
-        verify(dragControl,
+        verify(locationControl,
                times(1)).enable(eq(canvasHandler));
         verify(panControl,
                times(1)).enable(eq(canvas));
@@ -217,7 +221,7 @@ public class DMNClientFullSessionTest {
                times(1)).disable();
         verify(zoomControl,
                times(1)).disable();
-        verify(dragControl,
+        verify(locationControl,
                times(1)).disable();
         verify(canvasInPlaceTextEditorControl,
                times(1)).disable();

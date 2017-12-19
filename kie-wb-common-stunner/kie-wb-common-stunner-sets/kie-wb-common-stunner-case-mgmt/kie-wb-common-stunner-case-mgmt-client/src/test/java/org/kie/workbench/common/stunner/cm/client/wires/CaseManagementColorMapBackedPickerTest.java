@@ -22,7 +22,9 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.Attributes;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
+import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
@@ -50,6 +52,9 @@ public class CaseManagementColorMapBackedPickerTest {
 
     @Mock
     private Context2D context2D;
+
+    @Mock
+    private WiresLayer layer;
 
     @Mock
     private WiresShape shapeToSkip;
@@ -94,6 +99,7 @@ public class CaseManagementColorMapBackedPickerTest {
         when(dropZone.getPathPartListArray()).thenReturn(new NFastArrayList<>());
         final AbstractCaseManagementShape shape = mock(AbstractCaseManagementShape.class);
         when(shape.getDropZone()).thenReturn(Optional.of(dropZone));
+        when(dropZone.getActualPathPartListArray()).thenReturn(new NFastArrayList<PathPartList>());
 
         picker.addSupplementaryPaths(shape);
 
@@ -112,11 +118,11 @@ public class CaseManagementColorMapBackedPickerTest {
         public TestCaseManagementColorMapBackedPicker(final NFastArrayList<WiresShape> shapes,
                                                       final ScratchPad scratchPad,
                                                       final NFastArrayList<WiresShape> shapesToSkip) {
-            super(shapes,
+            super(layer,
+                  shapes,
                   scratchPad,
-                  shapesToSkip,
-                  false,
-                  0);
+                  new PickerOptions(false,
+                                    0));
         }
 
         @Override

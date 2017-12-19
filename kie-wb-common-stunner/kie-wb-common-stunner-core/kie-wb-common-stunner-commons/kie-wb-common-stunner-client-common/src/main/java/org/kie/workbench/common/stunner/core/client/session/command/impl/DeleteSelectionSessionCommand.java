@@ -19,26 +19,31 @@ package org.kie.workbench.common.stunner.core.client.session.command.impl;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
+import org.kie.workbench.common.stunner.core.client.canvas.event.AbstractCanvasHandlerEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
-import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.Node;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -78,6 +83,7 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <V> void execute(final Callback<V> callback) {
         checkNotNull("callback",
                      callback);
@@ -86,31 +92,25 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
             final SelectionControl<AbstractCanvasHandler, Element> selectionControl = getSession().getSelectionControl();
             final Collection<String> selectedItems = selectionControl.getSelectedItems();
             if (selectedItems != null && !selectedItems.isEmpty()) {
-                selectedItems.stream().forEach(selectedItemUUID -> {
-                    Element element = canvasHandler.getGraphIndex().getNode(selectedItemUUID);
-                    if (element == null) {
-                        element = canvasHandler.getGraphIndex().getEdge(selectedItemUUID);
-                        if (element != null) {
-                            log(Level.FINE,
-                                "Deleting edge with id " + element.getUUID());
-                            sessionCommandManager.execute(canvasHandler,
-                                                          canvasCommandFactory.deleteConnector((Edge) element));
-                        }
-                    } else {
-                        log(Level.FINE,
-                            "Deleting node with id " + element.getUUID());
+                // Execute the commands.
+                final CommandResult<CanvasViolation> result =
                         sessionCommandManager.execute(canvasHandler,
-                                                      canvasCommandFactory.deleteNode((Node) element));                    }
-                });
+                                                      canvasCommandFactory
+                                                              .delete(selectedItems.stream()
+                                                                              .map(uuid -> canvasHandler.getGraphIndex().get(uuid))
+                                                                              .collect(Collectors.toList())));
+                // Check the results.
+                if (!CommandUtils.isError(result)) {
+                    callback.onSuccess();
+                } else {
+                    callback.onError((V) new ClientRuntimeError("Error deleing elements [message=" +
+                                                                        result.toString() + "]"));
+                }
             } else {
-                log(Level.FINE,
-                    "Cannot delete element, no element selected on canvas.");
+                callback.onError((V) new ClientRuntimeError("Cannot delete element, no element selected on canvas"));
             }
-            // Run the callback.
-            callback.onSuccess();
+            selectionControl.clearSelection();
             clearSelectionEvent.fire(new CanvasClearSelectionEvent(getCanvasHandler()));
-
-
         }
     }
 
@@ -133,11 +133,39 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
         }
     }
 
-    private void log(final Level level,
-                     final String message) {
-        if (LogConfiguration.loggingIsEnabled()) {
-            LOGGER.log(level,
-                       message);
+    void onCanvasSelectionEvent(final @Observes CanvasSelectionEvent event) {
+        checkNotNull("event",
+                     event);
+        handleCanvasSelectionEvent(event);
+    }
+
+    void onCanvasClearSelectionEvent(final @Observes CanvasClearSelectionEvent event) {
+        checkNotNull("event",
+                     event);
+        handleCanvasClearSelectionEvent(event);
+    }
+
+    private void handleCanvasSelectionEvent(final CanvasSelectionEvent event) {
+        if (checkEventContext(event)) {
+            enable(true);
         }
+    }
+
+    private void handleCanvasClearSelectionEvent(final CanvasClearSelectionEvent event) {
+        if (checkEventContext(event)) {
+            enable(false);
+        }
+    }
+
+    private void enable(boolean enable) {
+        setEnabled(enable);
+        fire();
+    }
+
+    private boolean checkEventContext(final AbstractCanvasHandlerEvent canvasHandlerEvent) {
+        final CanvasHandler _canvasHandler = canvasHandlerEvent.getCanvasHandler();
+        return null != getSession() &&
+                getSession().getCanvasHandler() != null
+                && getSession().getCanvasHandler().equals(_canvasHandler);
     }
 }

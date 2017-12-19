@@ -49,9 +49,9 @@ public class VerticalStackLayoutManager extends AbstractNestedLayoutHandler {
             }
         }
 
-        final int currentIndex = container.getChildShapes().toList().indexOf(shape);
-        if (currentIndex != targetIndex) {
-            if (container instanceof AbstractCaseManagementShape) {
+        if (container instanceof AbstractCaseManagementShape) {
+            final int currentIndex = ((AbstractCaseManagementShape) container).getIndex(shape);
+            if (currentIndex != targetIndex) {
                 ((AbstractCaseManagementShape) container).addShape(shape,
                                                                    targetIndex);
             }
@@ -67,7 +67,8 @@ public class VerticalStackLayoutManager extends AbstractNestedLayoutHandler {
         }
 
         for (WiresShape ws : container.getChildShapes()) {
-            ws.setY(y).setX(PADDING_X);
+            ws.setLocation(new Point2D(PADDING_X,
+                                       y));
             y = y + ws.getPath().getBoundingBox().getHeight() + PADDING_Y;
         }
     }

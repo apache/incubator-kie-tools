@@ -21,6 +21,7 @@ import java.lang.annotation.Annotation;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -38,6 +39,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SingleSelection;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasUndoCommandExecutedEvent;
@@ -58,6 +60,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
  * size for the preview.
  */
 @Dependent
+@Default
 public class SessionPreviewImpl
         extends AbstractSessionViewer<AbstractClientSession, AbstractCanvasHandler>
         implements SessionDiagramPreview<AbstractClientSession> {
@@ -90,7 +93,7 @@ public class SessionPreviewImpl
                               final GraphUtils graphUtils,
                               final @Any ManagedInstance<BaseCanvasHandler> canvasHandlerFactories,
                               final @Any ManagedInstance<CanvasCommandFactory> canvasCommandFactories,
-                              final SelectionControl<AbstractCanvasHandler, ?> selectionControl,
+                              final @SingleSelection SelectionControl<AbstractCanvasHandler, ?> selectionControl,
                               final WidgetWrapperView view) {
         this.definitionManager = definitionManager;
         this.shapeManager = shapeManager;

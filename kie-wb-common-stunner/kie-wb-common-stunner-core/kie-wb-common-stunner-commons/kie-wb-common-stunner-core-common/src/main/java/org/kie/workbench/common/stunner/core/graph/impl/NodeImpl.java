@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 
 @Portable
-public class NodeImpl<C> extends ElementImpl<C> implements Node<C, Edge> {
+public class NodeImpl<C> extends AbstractElement<C> implements Node<C, Edge> {
 
     private List<Edge> inEdges = new ArrayList<Edge>();
     private List<Edge> outEdges = new ArrayList<Edge>();
@@ -42,5 +42,15 @@ public class NodeImpl<C> extends ElementImpl<C> implements Node<C, Edge> {
     @Override
     public List<Edge> getOutEdges() {
         return outEdges;
+    }
+
+    @Override
+    public Node<C, Edge> asNode() {
+        return this;
+    }
+
+    @Override
+    public Edge<C, Node> asEdge() {
+        return null;
     }
 }

@@ -31,7 +31,7 @@ import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStore;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
-public class GraphImpl<C> extends ElementImpl<C> implements Graph<C, Node> {
+public class GraphImpl<C> extends AbstractElement<C> implements Graph<C, Node> {
 
     private final GraphNodeStore<Node> nodeStore;
 
@@ -65,6 +65,16 @@ public class GraphImpl<C> extends ElementImpl<C> implements Graph<C, Node> {
     @Override
     public void clear() {
         nodeStore.clear();
+    }
+
+    @Override
+    public Node<C, Edge> asNode() {
+        return null;
+    }
+
+    @Override
+    public Edge<C, Node> asEdge() {
+        return null;
     }
 
     @Override

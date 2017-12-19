@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.client.lienzo.canvas.wires;
 import java.util.Optional;
 
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlFactory;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.junit.Before;
@@ -114,6 +115,11 @@ public class WiresCanvasTest {
             @Override
             public void deleteControl(final IsWidget controlView) {
                 //Not tested
+            }
+
+            @Override
+            protected WiresControlFactory getWiresControlFactory() {
+                return null;
             }
 
             @Override

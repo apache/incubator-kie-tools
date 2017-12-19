@@ -32,7 +32,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.Elem
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.ElementBuildRequest;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.ElementBuildRequestImpl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.event.BuildCanvasShapeEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
@@ -51,7 +51,7 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
 
     private static Logger LOGGER = Logger.getLogger(ObserverBuilderControl.class.getName());
 
-    private final Event<CanvasElementSelectedEvent> elementSelectedEvent;
+    private final Event<CanvasSelectionEvent> canvasSelectionEvent;
 
     protected ObserverBuilderControl() {
         this(null,
@@ -72,7 +72,7 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
                                   final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                   final GraphBoundsIndexer graphBoundsIndexer,
                                   final CanvasLayoutUtils canvasLayoutUtils,
-                                  final Event<CanvasElementSelectedEvent> elementSelectedEvent) {
+                                  final Event<CanvasSelectionEvent> canvasSelectionEvent) {
         super(clientDefinitionManager,
               clientFactoryServices,
               graphUtils,
@@ -80,7 +80,7 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
               canvasCommandFactory,
               graphBoundsIndexer,
               canvasLayoutUtils);
-        this.elementSelectedEvent = elementSelectedEvent;
+        this.canvasSelectionEvent = canvasSelectionEvent;
     }
 
     @SuppressWarnings("unchecked")
@@ -104,8 +104,8 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
                                                       @Override
                                                       public void onSuccess(final String uuid) {
                                                           canvasHandler.getCanvas().draw();
-                                                          elementSelectedEvent.fire(new CanvasElementSelectedEvent(canvasHandler,
-                                                                                                                   uuid));
+                                                          canvasSelectionEvent.fire(new CanvasSelectionEvent(canvasHandler,
+                                                                                                             uuid));
                                                       }
 
                                                       @Override

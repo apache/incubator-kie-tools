@@ -42,7 +42,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.registration.Ca
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementRemovedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementUpdatedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementsClearEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -67,7 +67,7 @@ public class TreeExplorer implements IsWidget {
     private final TextPropertyProviderFactory textPropertyProviderFactory;
     private final DefinitionUtils definitionUtils;
     private final ShapeManager shapeManager;
-    private final Event<CanvasElementSelectedEvent> elementSelectedEventEvent;
+    private final Event<CanvasSelectionEvent> selectionEvent;
     private final View view;
     private final DOMGlyphRenderers domGlyphRenderers;
 
@@ -77,14 +77,14 @@ public class TreeExplorer implements IsWidget {
     @Inject
     public TreeExplorer(final ChildrenTraverseProcessor childrenTraverseProcessor,
                         final TextPropertyProviderFactory textPropertyProviderFactory,
-                        final Event<CanvasElementSelectedEvent> elementSelectedEventEvent,
+                        final Event<CanvasSelectionEvent> selectionEvent,
                         final DefinitionUtils definitionUtils,
                         final ShapeManager shapeManager,
                         final DOMGlyphRenderers domGlyphRenderers,
                         final View view) {
         this.childrenTraverseProcessor = childrenTraverseProcessor;
         this.textPropertyProviderFactory = textPropertyProviderFactory;
-        this.elementSelectedEventEvent = elementSelectedEventEvent;
+        this.selectionEvent = selectionEvent;
         this.definitionUtils = definitionUtils;
         this.shapeManager = shapeManager;
         this.domGlyphRenderers = domGlyphRenderers;
@@ -187,8 +187,8 @@ public class TreeExplorer implements IsWidget {
 
     private void selectShape(final Canvas canvas,
                              final String uuid) {
-        elementSelectedEventEvent.fire(new CanvasElementSelectedEvent(canvasHandler,
-                                                                      uuid));
+        selectionEvent.fire(new CanvasSelectionEvent(canvasHandler,
+                                                     uuid));
     }
 
     void onCanvasClearEvent(@Observes CanvasClearEvent canvasClearEvent) {
@@ -360,10 +360,11 @@ public class TreeExplorer implements IsWidget {
         }
     }
 
-    void onCanvasElementSelectedEvent(final @Observes CanvasElementSelectedEvent event) {
+    void onCanvasSelectionEvent(final @Observes CanvasSelectionEvent event) {
         if (checkEventContext(event)) {
-            if (null != getCanvasHandler()) {
-                final String uuid = event.getElementUUID();
+            if (null != getCanvasHandler()
+                    && event.getIdentifiers().size() == 1) {
+                final String uuid = event.getIdentifiers().iterator().next();
 
                 if (!(uuid.equals(this.selectedItemCanvasUuid))) {
                     this.selectedItemCanvasUuid = uuid;

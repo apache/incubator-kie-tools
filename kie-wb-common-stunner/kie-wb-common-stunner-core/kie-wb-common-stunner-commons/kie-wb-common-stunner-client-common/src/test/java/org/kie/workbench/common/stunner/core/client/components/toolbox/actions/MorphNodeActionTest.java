@@ -23,7 +23,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
@@ -68,7 +68,7 @@ public class MorphNodeActionTest {
     private CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
 
     @Mock
-    private EventSourceMock<CanvasElementSelectedEvent> canvasElementSelectedEvent;
+    private EventSourceMock<CanvasSelectionEvent> canvasElementSelectedEvent;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
@@ -147,12 +147,12 @@ public class MorphNodeActionTest {
         verify(sessionCommandManager,
                times(1)).execute(eq(canvasHandler),
                                  eq(morphNodeCommand));
-        final ArgumentCaptor<CanvasElementSelectedEvent> eventArgumentCaptor =
-                ArgumentCaptor.forClass(CanvasElementSelectedEvent.class);
+        final ArgumentCaptor<CanvasSelectionEvent> eventArgumentCaptor =
+                ArgumentCaptor.forClass(CanvasSelectionEvent.class);
         verify(canvasElementSelectedEvent,
                times(1)).fire(eventArgumentCaptor.capture());
-        final CanvasElementSelectedEvent eCaptured = eventArgumentCaptor.getValue();
+        final CanvasSelectionEvent eCaptured = eventArgumentCaptor.getValue();
         assertEquals(E_UUID,
-                     eCaptured.getElementUUID());
+                     eCaptured.getIdentifiers().iterator().next());
     }
 }

@@ -79,7 +79,7 @@ public class SessionPresenterFactoryImpl implements SessionPresenterFactory<Diag
                                        final ManagedInstance<SessionDiagramPreview<AbstractClientSession>> sessionPreviewInstances,
                                        final ManagedInstance<WidgetWrapperView> diagramViewerViewInstances,
                                        final ManagedInstance<SessionPresenter.View> viewInstances,
-                                       ManagedInstance<NotificationsObserver> notificationsObserverInstances,
+                                       final ManagedInstance<NotificationsObserver> notificationsObserverInstances,
                                        final BS3PaletteFactory paletteWidgetFactory,
                                        final Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEventInstances,
                                        final ScreenResizeEventObserver screenResizeEventObserver) {

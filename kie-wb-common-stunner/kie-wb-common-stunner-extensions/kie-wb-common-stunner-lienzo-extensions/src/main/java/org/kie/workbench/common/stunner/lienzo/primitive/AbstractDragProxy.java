@@ -53,11 +53,9 @@ public abstract class AbstractDragProxy<T> {
     protected abstract void removeFromLayer(final Layer layer,
                                             final T shape);
 
-    protected abstract void setX(final T shape,
-                                 final int x);
-
-    protected abstract void setY(final T shape,
-                                 final int y);
+    protected abstract void setLocation(T shape,
+                                        int x,
+                                        int y);
 
     public AbstractDragProxy(final Layer layer,
                              final T shape,
@@ -92,10 +90,9 @@ public abstract class AbstractDragProxy<T> {
         if (!attached) {
             addToLayer(layer,
                        shapeProxy);
-            setX(shapeProxy,
-                 initialX);
-            setY(shapeProxy,
-                 initialY);
+            setLocation(shapeProxy,
+                        initialX,
+                        initialY);
             attached = true;
             callback.onStart(initialX,
                              initialY);
@@ -111,10 +108,9 @@ public abstract class AbstractDragProxy<T> {
                                                                }
                                                                final int x = getXDiff() + mouseMoveEvent.getX();
                                                                final int y = getYDiff() + mouseMoveEvent.getY();
-                                                               setX(shapeProxy,
-                                                                    x);
-                                                               setY(shapeProxy,
-                                                                    y);
+                                                               setLocation(shapeProxy,
+                                                                           x,
+                                                                           y);
                                                                scheduleMove(callback,
                                                                             x,
                                                                             y,

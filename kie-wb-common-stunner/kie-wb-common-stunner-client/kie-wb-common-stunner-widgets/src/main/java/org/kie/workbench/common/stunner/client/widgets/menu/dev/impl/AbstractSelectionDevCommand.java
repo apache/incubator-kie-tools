@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.client.widgets.menu.dev.impl;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.kie.workbench.common.stunner.client.widgets.menu.dev.AbstractMenuDevCommand;
 import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
@@ -34,7 +35,7 @@ public abstract class AbstractSelectionDevCommand extends AbstractMenuDevCommand
         super(sessionManager);
     }
 
-    protected abstract void execute(Element<View<?>> item);
+    protected abstract void execute(Collection<Element<? extends View<?>>> items);
 
     @Override
     @SuppressWarnings("unchecked")
@@ -44,22 +45,27 @@ public abstract class AbstractSelectionDevCommand extends AbstractMenuDevCommand
             final ClientFullSession session = (ClientFullSession) getSession();
             final Collection<String> selectedItems = session.getSelectionControl().getSelectedItems();
             if (null != selectedItems) {
+
                 final String uuid = selectedItems.stream().findFirst().orElse(null);
                 if (null != uuid) {
-                    final Element<View<?>> item = getCanvasHandler().getGraphIndex().getNode(uuid);
-                    if (null != item) {
-                        execute(item);
-                    }
+                    execute(selectedItems.stream()
+                                    .map(this::getViewElement)
+                                    .collect(Collectors.toList()));
                     found = true;
                 }
             }
             if (!found) {
                 LOGGER.log(Level.WARNING,
-                           "No item selected.");
+                           "No items selected.");
             }
         } catch (final ClassCastException e) {
             LOGGER.log(Level.WARNING,
                        "Session is not an instance of ClientFullSession");
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private Element<? extends View<?>> getViewElement(final String uuid) {
+        return getCanvasHandler().getGraphIndex().get(uuid);
     }
 }

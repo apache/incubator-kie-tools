@@ -22,6 +22,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl.KeyShortcutCallback;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
@@ -29,6 +30,7 @@ import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -54,6 +56,9 @@ public abstract class BaseSessionCommandKeyboardTest {
     @Mock
     protected ClientFullSession session;
 
+    @Mock
+    protected SelectionControl<AbstractCanvasHandler, Element> selectionControl;
+
     @Captor
     protected ArgumentCaptor<KeyShortcutCallback> keyShortcutCallbackCaptor;
 
@@ -63,6 +68,7 @@ public abstract class BaseSessionCommandKeyboardTest {
     public void setup() {
         this.command = spy(getCommand());
         when(session.getKeyboardControl()).thenReturn(keyboardControl);
+        when(session.getSelectionControl()).thenReturn(selectionControl);
     }
 
     @Test

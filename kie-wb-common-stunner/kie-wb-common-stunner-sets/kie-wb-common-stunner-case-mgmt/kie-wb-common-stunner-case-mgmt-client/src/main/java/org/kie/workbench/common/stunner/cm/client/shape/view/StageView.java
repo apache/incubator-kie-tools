@@ -34,11 +34,21 @@ public class StageView extends AbstractCaseManagementShape<StageView> {
     public StageView(final double width,
                      final double height,
                      final double voffset) {
+        this(create(new MultiPath(),
+                    width,
+                    height,
+                    voffset),
+             width,
+             height,
+             voffset);
+    }
+
+    private StageView(final MultiPath path,
+                      final double width,
+                      final double height,
+                      final double voffset) {
         super(CM_SHAPE_VIEW_EVENT_TYPES,
-              create(new MultiPath(),
-                     width,
-                     height,
-                     voffset),
+              path,
               width,
               height);
         this.voffset = voffset;
@@ -86,14 +96,15 @@ public class StageView extends AbstractCaseManagementShape<StageView> {
 
     @Override
     public Optional<MultiPath> makeDropZone() {
-        return Optional.of(new MultiPath().rect(0.0,
-                                                getHeight(),
+        return Optional.of(new MultiPath().rect(0d,
+                                                0d,
                                                 getWidth(),
-                                                1000.0));
+                                                getMinHeight())
+                                   .setStrokeWidth(1));
     }
 
     @Override
-    public AbstractCaseManagementShape getGhost() {
+    protected AbstractCaseManagementShape createGhost() {
         final StageView ghost = new StageView(getWidth(),
                                               getHeight(),
                                               voffset);

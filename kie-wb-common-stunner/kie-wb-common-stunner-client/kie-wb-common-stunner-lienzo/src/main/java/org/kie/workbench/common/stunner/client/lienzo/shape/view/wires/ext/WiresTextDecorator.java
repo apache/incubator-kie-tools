@@ -291,8 +291,8 @@ public class WiresTextDecorator {
     }
 
     private void updateTextBoundaries() {
-        setTextBoundaries(new BoundingBox(0d,
-                                          9d,
+        setTextBoundaries(new BoundingBox(0,
+                                          0,
                                           width,
                                           height));
     }

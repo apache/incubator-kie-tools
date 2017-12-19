@@ -41,7 +41,7 @@ import org.kie.workbench.common.forms.dynamic.service.shared.impl.StaticModelFor
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
@@ -230,11 +230,17 @@ public class FormPropertiesWidget implements IsElement, FormPropertiesWidgetView
     }
 
     @SuppressWarnings("unchecked")
-    void onCanvasElementSelectedEvent(@Observes CanvasElementSelectedEvent event) {
-        checkNotNull("event", event);
+    void onCanvasSelectionEvent(@Observes CanvasSelectionEvent event) {
+        checkNotNull("event",
+                     event);
         if (null != getCanvasHandler()) {
-            final String uuid = event.getElementUUID();
-            showByUUID(uuid, getSessionRenderMode());
+            if (event.getIdentifiers().size() == 1) {
+                final String uuid = event.getIdentifiers().iterator().next();
+                showByUUID(uuid,
+                           getSessionRenderMode());
+            } else {
+                doClear();
+            }
         }
     }
 

@@ -42,7 +42,7 @@ public class LogCommandHistoryDevCommand extends AbstractMenuDevCommand {
 
     @Override
     public String getText() {
-        return "Log Command History";
+        return "Command History - Log";
     }
 
     @Override

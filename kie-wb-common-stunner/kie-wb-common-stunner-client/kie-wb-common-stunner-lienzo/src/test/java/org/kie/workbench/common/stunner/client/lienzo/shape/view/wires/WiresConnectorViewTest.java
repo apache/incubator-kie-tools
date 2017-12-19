@@ -118,8 +118,7 @@ public class WiresConnectorViewTest {
 
     @Test
     public void testCoordinates() {
-        tested.setShapeX(50.5);
-        tested.setShapeY(321.65);
+        tested.setShapeLocation(new org.kie.workbench.common.stunner.core.graph.content.view.Point2D(50.5, 321.65));
         assertEquals(50.5,
                      tested.getShapeX(),
                      0d);

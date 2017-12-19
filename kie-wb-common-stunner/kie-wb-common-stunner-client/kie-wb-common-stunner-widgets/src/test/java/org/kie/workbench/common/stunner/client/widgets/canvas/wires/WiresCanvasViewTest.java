@@ -30,17 +30,21 @@ import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresConnectorView;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresShapeView;
+import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresCanvasViewTest {
 
     private WiresCanvasView canvas;
 
-    private com.ait.lienzo.client.widget.LienzoPanel panel;
-
-    private org.kie.workbench.common.stunner.core.client.canvas.Layer layer;
+    private LienzoPanel panel;
+    private Layer layer;
 
     @Before
     public void setup() {
@@ -56,8 +60,40 @@ public class WiresCanvasViewTest {
     }
 
     @Test
-    public void addShapeWithWiresShape() {
-        final WiresShapeView view = new WiresShapeView(new MultiPath());
+    public void testAddShape() {
+        final WiresShapeView view = createShape();
+        canvas.addShape(view);
+        assertNotNull(canvas.getWiresManager().getShape(view.uuid()));
+    }
+
+    @Test
+    public void testRemoveShape() {
+        final WiresShapeView view = createShape();
+        canvas.addShape(view);
+        assertNotNull(canvas.getWiresManager().getShape(view.uuid()));
+        canvas.removeShape(view);
+        assertNull(canvas.getWiresManager().getShape(view.uuid()));
+    }
+
+    @Test
+    public void testAddConnector() {
+        final WiresConnectorView view = createConnector();
+        canvas.addShape(view);
+        assertTrue(canvas.getWiresManager().getConnectorList().contains(view));
+    }
+
+    @Test
+    public void testRemoveConnector() {
+        final WiresConnectorView view = createConnector();
+        canvas.addShape(view);
+        assertTrue(canvas.getWiresManager().getConnectorList().contains(view));
+        canvas.removeShape(view);
+        assertFalse(canvas.getWiresManager().getConnectorList().contains(view));
+    }
+
+    @Test
+    public void assertStunnerShapeGroupId() {
+        final WiresShapeView view = createShape();
         canvas.addShape(view);
 
         assertEquals(WiresCanvas.WIRES_CANVAS_GROUP_ID,
@@ -65,15 +101,24 @@ public class WiresCanvasViewTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void addShapeWithWiresConnector() {
-        final WiresConnectorView view = new WiresConnectorView(new OrthogonalPolyLine(new Point2D(0,
-                                                                                                  0)),
-                                                               new MultiPathDecorator(new MultiPath()),
-                                                               new MultiPathDecorator(new MultiPath()));
+    public void assertStunnerConnectorGroupId() {
+        final WiresConnectorView view = createConnector();
         canvas.addShape(view);
 
         assertEquals(WiresCanvas.WIRES_CANVAS_GROUP_ID,
                      WiresUtils.getShapeGroup(view.getGroup()));
+    }
+
+    @SuppressWarnings("unchecked")
+    private WiresShapeView createShape() {
+        return new WiresShapeView(new MultiPath());
+    }
+
+    @SuppressWarnings("unchecked")
+    private WiresConnectorView createConnector() {
+        return new WiresConnectorView(new OrthogonalPolyLine(new Point2D(0,
+                                                                         0)),
+                                      new MultiPathDecorator(new MultiPath()),
+                                      new MultiPathDecorator(new MultiPath()));
     }
 }

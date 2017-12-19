@@ -125,18 +125,16 @@ public class DecoratedShapeView<T extends WiresShapeViewExt>
                 final double width,
                 final double height,
                 final boolean refresh) {
+        setupDecorator(getPath(),
+                       x,
+                       y,
+                       width,
+                       height);
         scalableContainer
                 .scaleTo(x,
                          y,
                          width,
-                         height,
-                         () -> setupDecorator(getPath(),
-                                              x,
-                                              y,
-                                              width,
-                                              height),
-                         () -> {
-                         });
+                         height);
         if (refresh) {
             refresh();
         }
@@ -175,8 +173,6 @@ public class DecoratedShapeView<T extends WiresShapeViewExt>
                                            width,
                                            height,
                                            false);
-            // Rebuild the text boundaries for the given size.
-            rebuildTextBoundaries(width, height);
             // Delegate the resize operation to the parent class.
             super.resize(x,
                          y,

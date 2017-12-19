@@ -49,15 +49,10 @@ public class WiresConnectorDragProxy extends AbstractDragProxy<WiresConnector> {
     }
 
     @Override
-    protected void setX(final WiresConnector shape,
-                        final int x) {
-        shape.getGroup().setX(x);
-    }
-
-    @Override
-    protected void setY(final WiresConnector shape,
-                        final int y) {
-        shape.getGroup().setY(y);
+    protected void setLocation(WiresConnector shape,
+                               int x,
+                               int y) {
+        shape.getGroup().setX(x).setY(y);
     }
 
     protected WiresManager getWiresManager(final Layer layer) {

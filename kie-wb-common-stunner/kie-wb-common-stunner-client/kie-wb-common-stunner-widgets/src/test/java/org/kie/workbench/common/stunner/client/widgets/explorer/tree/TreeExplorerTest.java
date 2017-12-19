@@ -33,7 +33,7 @@ import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProvider;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
@@ -78,7 +78,7 @@ public class TreeExplorerTest {
     TextPropertyProvider textPropertyProvider;
 
     @Mock
-    EventSourceMock<CanvasElementSelectedEvent> elementSelectedEvent;
+    EventSourceMock<CanvasSelectionEvent> elementSelectedEvent;
 
     @Mock
     DefinitionUtils definitionUtils;

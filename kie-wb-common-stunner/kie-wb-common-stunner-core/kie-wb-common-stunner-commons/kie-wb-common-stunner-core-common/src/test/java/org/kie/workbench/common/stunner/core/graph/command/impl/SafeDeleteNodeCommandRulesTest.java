@@ -82,7 +82,8 @@ public class SafeDeleteNodeCommandRulesTest extends AbstractGraphCommandTest {
         when(node.getInEdges()).thenReturn(nodeInEdges);
         when(node1.getOutEdges()).thenReturn(nodeOutEdges1);
         when(node1.getInEdges()).thenReturn(nodeInEdges1);
-        this.tested = new SafeDeleteNodeCommand(UUID);
+        this.tested = new SafeDeleteNodeCommand(UUID,
+                                                SafeDeleteNodeCommand.Options.defaults());
     }
 
     @Test

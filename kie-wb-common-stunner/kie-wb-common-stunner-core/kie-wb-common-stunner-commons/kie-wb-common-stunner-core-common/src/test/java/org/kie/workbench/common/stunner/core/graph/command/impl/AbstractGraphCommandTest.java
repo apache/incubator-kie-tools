@@ -107,6 +107,7 @@ public abstract class AbstractGraphCommandTest {
     public static Node mockNode(String uuid) {
         Node node = mock(Node.class);
         when(node.getUUID()).thenReturn(uuid);
+        when(node.asNode()).thenReturn(node);
         when(node.getInEdges()).thenReturn(new LinkedList());
         when(node.getOutEdges()).thenReturn(new LinkedList());
         return node;
@@ -115,6 +116,7 @@ public abstract class AbstractGraphCommandTest {
     public static Edge mockEdge(String uuid) {
         Edge edge = mock(Edge.class);
         when(edge.getUUID()).thenReturn(uuid);
+        when(edge.asEdge()).thenReturn(edge);
         return edge;
     }
 

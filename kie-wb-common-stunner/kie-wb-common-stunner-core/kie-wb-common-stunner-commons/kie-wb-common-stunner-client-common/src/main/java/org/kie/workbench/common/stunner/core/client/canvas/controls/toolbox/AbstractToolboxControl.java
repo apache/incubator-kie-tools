@@ -16,8 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -28,7 +30,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.AbstractCanvasH
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.AbstractCanvasShapeEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasShapeRemovedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.Toolbox;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxFactory;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -39,15 +41,31 @@ public abstract class AbstractToolboxControl
         implements ToolboxControl<AbstractCanvasHandler, Element> {
 
     private final ToolboxControlImpl<ActionsToolboxFactory> toolboxControl;
+    private final SingleItemSelectedShowPredicate toolboxShowPredicate;
+
+    // It makes the toolbox appear only if single selection.
+    private static class SingleItemSelectedShowPredicate implements Predicate<String> {
+
+        private String id;
+        private int count;
+
+        @Override
+        public boolean test(String s) {
+            return (null == id && count == 0) || (null != id && count == 1 && id.equals(s));
+        }
+    }
 
     protected abstract List<ActionsToolboxFactory> getFactories();
 
     @Inject
     public AbstractToolboxControl() {
-        this.toolboxControl = new ToolboxControlImpl<>(this::getFactories);
+        this.toolboxShowPredicate = new SingleItemSelectedShowPredicate();
+        this.toolboxControl = new ToolboxControlImpl<>(this::getFactories,
+                                                       toolboxShowPredicate);
     }
 
     AbstractToolboxControl(final ToolboxControlImpl<ActionsToolboxFactory> toolboxControl) {
+        this.toolboxShowPredicate = new SingleItemSelectedShowPredicate();
         this.toolboxControl = toolboxControl;
     }
 
@@ -77,10 +95,10 @@ public abstract class AbstractToolboxControl
         return toolboxControl.getToolboxes(element);
     }
 
-    void onCanvasElementSelectedEvent(final @Observes CanvasElementSelectedEvent event) {
+    void onCanvasSelectionEvent(final @Observes CanvasSelectionEvent event) {
         checkNotNull("event",
                      event);
-        handleCanvasElementSelectedEvent(event);
+        handleCanvasSelectionEvent(event);
     }
 
     void onCanvasClearSelectionEvent(final @Observes CanvasClearSelectionEvent event) {
@@ -95,22 +113,45 @@ public abstract class AbstractToolboxControl
         handleCanvasShapeRemovedEvent(event);
     }
 
-    protected void handleCanvasElementSelectedEvent(final CanvasElementSelectedEvent event) {
+    protected void handleCanvasSelectionEvent(final CanvasSelectionEvent event) {
         if (checkEventContext(event)) {
-            toolboxControl.show(event.getElementUUID());
+            if (1 == event.getIdentifiers().size()) {
+                final String uuid = event.getIdentifiers().iterator().next();
+                show(uuid);
+            } else {
+                showMultiple(event.getIdentifiers());
+            }
         }
     }
 
     protected void handleCanvasClearSelectionEvent(final CanvasClearSelectionEvent event) {
         if (checkEventContext(event)) {
-            toolboxControl.destroy();
+            destroy();
         }
     }
 
     protected void handleCanvasShapeRemovedEvent(final CanvasShapeRemovedEvent event) {
         if (checkEventContext(event)) {
-            toolboxControl.destroy();
+            destroy();
         }
+    }
+
+    private void show(final String uuid) {
+        toolboxShowPredicate.id = uuid;
+        toolboxShowPredicate.count = 1;
+        toolboxControl.show(uuid);
+    }
+
+    private void showMultiple(final Collection<String> ids) {
+        toolboxShowPredicate.id = ids.iterator().next();
+        toolboxShowPredicate.count = ids.size();
+        toolboxControl.destroy();
+    }
+
+    private void destroy() {
+        toolboxShowPredicate.id = null;
+        toolboxShowPredicate.count = 0;
+        toolboxControl.destroy();
     }
 
     private boolean checkEventContext(final AbstractCanvasHandlerEvent canvasHandlerEvent) {

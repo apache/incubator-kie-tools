@@ -33,6 +33,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultB
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.mockito.Mock;
 
@@ -63,6 +64,8 @@ public class ContainmentAcceptorControlImplTest {
     @Mock
     private Diagram diagram;
     @Mock
+    private Metadata metadata;
+    @Mock
     private Node parent;
     @Mock
     private Node candidate;
@@ -77,6 +80,8 @@ public class ContainmentAcceptorControlImplTest {
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
         when(canvas.getView()).thenReturn(canvasView);
+        when(diagram.getMetadata()).thenReturn(metadata);
+        when(metadata.getCanvasRootUUID()).thenReturn(null);
         doAnswer(invocationOnMock -> {
             final Node parent1 = (Node) invocationOnMock.getArguments()[0];
             final Node candidate1 = (Node) invocationOnMock.getArguments()[1];
@@ -123,7 +128,7 @@ public class ContainmentAcceptorControlImplTest {
     public void testAllow() {
         tested.enable(canvasHandler);
         final boolean allow = tested.allow(parent,
-                                           candidate);
+                                           new Node[]{candidate});
         assertTrue(allow);
         verify(commandManager,
                times(1)).allow(eq(canvasHandler),
@@ -138,7 +143,7 @@ public class ContainmentAcceptorControlImplTest {
     public void testAccept() {
         tested.enable(canvasHandler);
         final boolean accept = tested.accept(parent,
-                                             candidate);
+                                             new Node[]{candidate});
         assertTrue(accept);
         verify(commandManager,
                times(1)).execute(eq(canvasHandler),

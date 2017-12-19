@@ -22,6 +22,10 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 public interface StageShapeDef<W extends BPMNViewDefinition, V extends ShapeView>
         extends CaseManagementShapeDef<W, V> {
 
+    double getDropAreaWidth(final W element);
+
+    double getDropAreaHeight(final W element);
+
     double getWidth(final W element);
 
     double getHeight(final W element);

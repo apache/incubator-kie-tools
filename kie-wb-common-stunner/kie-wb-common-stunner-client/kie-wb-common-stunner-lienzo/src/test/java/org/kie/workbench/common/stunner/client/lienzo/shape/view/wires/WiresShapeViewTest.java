@@ -17,18 +17,27 @@
 package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.IDrawable;
 import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.MultiPathDecorator;
+import com.ait.lienzo.client.core.shape.OrthogonalPolyLine;
 import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
+import com.ait.lienzo.client.core.shape.wires.MagnetManager;
+import com.ait.lienzo.client.core.shape.wires.WiresConnection;
+import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
-import org.kie.workbench.common.stunner.lienzo.core.shape.wires.WiresDragConstraintEnforcer;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
@@ -37,6 +46,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -47,15 +57,19 @@ public class WiresShapeViewTest {
 
     private final static MultiPath PATH = new MultiPath();
 
-    @Mock
-    private DragConstraintEnforcer enforcer;
-
     private WiresShapeView tested;
+
+    @Mock
+    private WiresShapeControl control;
 
     @Before
     public void setup() throws Exception {
-        this.tested = new WiresShapeView(PATH);
-        this.tested.getGroup().setDragConstraints(enforcer);
+        this.tested = new WiresShapeView(PATH) {
+            @Override
+            public WiresShapeControl getControl() {
+                return control;
+            }
+        };
         assertEquals(PATH,
                      tested.getShape());
     }
@@ -73,14 +87,14 @@ public class WiresShapeViewTest {
 
     @Test
     public void testCoordinates() {
-        tested.setShapeX(50.5);
-        tested.setShapeY(321.65);
+        tested.setShapeLocation(new org.kie.workbench.common.stunner.core.graph.content.view.Point2D(50.5, 321.65));
         assertEquals(50.5,
                      tested.getShapeX(),
                      0d);
         assertEquals(321.65,
                      tested.getShapeY(),
                      0d);
+        // TODO verify call to shapeMoved()
     }
 
     @Test
@@ -119,29 +133,23 @@ public class WiresShapeViewTest {
 
     @Test
     public void testSetDragBounds() {
-        tested.setDragBounds(1.5,
-                             6.4,
-                             564.78,
-                             543.84);
-        final WiresDragConstraintEnforcer dragEnforcer = tested.getDragEnforcer();
-        assertNotNull(dragEnforcer);
-        assertTrue(dragEnforcer.getDelegate().isPresent());
-        assertEquals(dragEnforcer,
-                     tested.getGroup().getDragConstraints());
-        assertEquals(enforcer,
-                     dragEnforcer.getDelegate().get());
+        tested.setDragBounds(1.5d,
+                             6.4d,
+                             564.78d,
+                             543.84d);
+        ArgumentCaptor<BoundingBox> bbCaptor = ArgumentCaptor.forClass(BoundingBox.class);
+        verify(control, times(1)).setBoundsConstraint(bbCaptor.capture());
+        final BoundingBox bb = bbCaptor.getValue();
+        assertEquals(1.5d, bb.getMinX(), 0d);
+        assertEquals(6.4d, bb.getMinY(), 0d);
+        assertEquals(564.78d, bb.getMaxX(), 0d);
+        assertEquals(543.84d, bb.getMaxY(), 0d);
     }
 
     @Test
     public void testUnSetDragBounds() {
-        tested.setDragBounds(1.5,
-                             6.4,
-                             564.78,
-                             543.84);
         tested.unsetDragBounds();
-        assertNull(tested.getDragEnforcer());
-        assertEquals(enforcer,
-                     tested.getGroup().getDragConstraints());
+        verify(control, times(1)).setBoundsConstraint(eq(null));
     }
 
     @Test
@@ -171,6 +179,57 @@ public class WiresShapeViewTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
+    public void testConsumeChildrenAndConnectors() {
+        // Setup children shapes and connectors.
+        final Consumer<IDrawable> consumer = mock(Consumer.class);
+        final WiresShapeView child1 = newShape();
+        final WiresShapeView child2 = newShape();
+        tested.add(child1);
+        tested.add(child2);
+        final WiresConnectorView connector1 = newConnector();
+        final WiresConnectorView connector2 = newConnector();
+        final MagnetManager.Magnets magnets1 = mock(MagnetManager.Magnets.class);
+        final MagnetManager.Magnets magnets2 = mock(MagnetManager.Magnets.class);
+        final WiresMagnet magnet1 = mock(WiresMagnet.class);
+        final WiresMagnet magnet2 = mock(WiresMagnet.class);
+        final WiresConnection connection1 = mock(WiresConnection.class);
+        final WiresConnection connection2 = mock(WiresConnection.class);
+        final NFastArrayList<WiresConnection> connections1 = new NFastArrayList<WiresConnection>().add(connection1);
+        final NFastArrayList<WiresConnection> connections2 = new NFastArrayList<WiresConnection>().add(connection2);
+        when(magnets1.size()).thenReturn(1);
+        when(magnets1.getMagnet(eq(0))).thenReturn(magnet1);
+        when(magnets2.size()).thenReturn(1);
+        when(magnets2.getMagnet(eq(0))).thenReturn(magnet2);
+        when(magnet1.getConnections()).thenReturn(connections1);
+        when(magnet2.getConnections()).thenReturn(connections2);
+        when(connection1.getConnector()).thenReturn(connector1);
+        when(connection2.getConnector()).thenReturn(connector2);
+        child1.setMagnets(magnets1);
+        child2.setMagnets(magnets2);
+        // Consume.
+        tested.consumeChildrenAndConnectors(consumer);
+        // Verify.
+        verify(consumer, times(1)).accept(eq(tested.getContainer()));
+        verify(consumer, times(1)).accept(eq(child1.getContainer()));
+        verify(consumer, times(1)).accept(eq(child2.getContainer()));
+        verify(consumer, times(1)).accept(eq(connector1.getGroup()));
+        verify(consumer, times(1)).accept(eq(connector2.getGroup()));
+    }
+
+    private static WiresShapeView newShape() {
+        return new WiresShapeView(new MultiPath().circle(10));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static WiresConnectorView newConnector() {
+        return new WiresConnectorView(new OrthogonalPolyLine(new Point2D(0,
+                                                                         0)),
+                                      new MultiPathDecorator(new MultiPath()),
+                                      new MultiPathDecorator(new MultiPath()));
+    }
+
+    @Test
     public void testDecorators() {
         final List decorators = tested.getDecorators();
         assertNotNull(decorators);
@@ -184,6 +243,5 @@ public class WiresShapeViewTest {
     public void testDestroy() {
         tested.destroy();
         assertNull(tested.getParent());
-        assertNull(tested.getDragEnforcer());
     }
 }

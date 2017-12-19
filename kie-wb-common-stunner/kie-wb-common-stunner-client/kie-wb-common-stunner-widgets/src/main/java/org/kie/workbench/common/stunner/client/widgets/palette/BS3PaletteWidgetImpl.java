@@ -32,7 +32,6 @@ import org.kie.workbench.common.stunner.client.widgets.palette.categories.Defini
 import org.kie.workbench.common.stunner.client.widgets.palette.factory.BS3PaletteViewFactory;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasFocusedEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
 import org.kie.workbench.common.stunner.core.client.components.glyph.ShapeGlyphDragHandler;
 import org.kie.workbench.common.stunner.core.client.components.palette.AbstractPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteCategory;
@@ -271,11 +270,6 @@ public class BS3PaletteWidgetImpl extends AbstractPalette<DefinitionSetPalette>
     void onCanvasFocusedEvent(final @Observes CanvasFocusedEvent canvasFocusedEvent) {
         checkNotNull("canvasFocusedEvent",
                      canvasFocusedEvent);
-    }
-
-    void onCanvasElementSelectedEvent(final @Observes CanvasElementSelectedEvent canvasElementSelectedEvent) {
-        checkNotNull("canvasElementSelectedEvent",
-                     canvasElementSelectedEvent);
     }
 
     @PreDestroy

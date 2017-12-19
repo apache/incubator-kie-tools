@@ -96,6 +96,10 @@ public class CompositeCommand<T, V> extends AbstractCompositeCommand<T, V> {
             return commands.size();
         }
 
+        public Command<T, V> get(final int index) {
+            return commands.get(index);
+        }
+
         public CompositeCommand<T, V> build() {
             final CompositeCommand<T, V> compositeCommand = new CompositeCommand<T, V>(reverse);
             commands.forEach(compositeCommand::addCommand);

@@ -55,14 +55,10 @@ public interface ShapeView<T> {
     Point2D getShapeAbsoluteLocation();
 
     /**
-     * Set the cartesian coordinate value on the X axis.
+     * Set the location for shape.
+     * Note that shape's location is relative to its parent, if any.
      */
-    T setShapeX(final double x);
-
-    /**
-     * Set the cartesian coordinate value on the Y axis.
-     */
-    T setShapeY(final double y);
+    T setShapeLocation(Point2D location);
 
     /**
      * Returns the shape's opacity.
@@ -127,6 +123,11 @@ public interface ShapeView<T> {
      * Set the stroke width value.
      */
     T setStrokeWidth(final double width);
+
+    /**
+     * Specifies if the shape can be dragged.
+     */
+    T setDragEnabled(boolean draggable);
 
     /**
      * Move shape view to top.

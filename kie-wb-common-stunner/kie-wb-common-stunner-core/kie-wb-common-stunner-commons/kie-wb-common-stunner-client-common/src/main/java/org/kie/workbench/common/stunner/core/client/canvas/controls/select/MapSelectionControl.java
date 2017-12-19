@@ -1,0 +1,273 @@
+/*
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.kie.workbench.common.stunner.core.client.canvas.controls.select;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
+import org.kie.workbench.common.stunner.core.client.canvas.Layer;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasRegistationControl;
+import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasShapeRemovedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.shape.Shape;
+import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickHandler;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
+import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
+
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+
+public final class MapSelectionControl<H extends AbstractCanvasHandler>
+        extends AbstractCanvasHandlerControl<H>
+        implements SelectionControl<H, Element>,
+                   CanvasRegistationControl<H, Element> {
+
+    private final Consumer<CanvasSelectionEvent> selectionEventConsumer;
+    private final Consumer<CanvasClearSelectionEvent> clearSelectionEventConsumer;
+    private MouseClickHandler layerClickHandler;
+    private final Map<String, Boolean> items = new HashMap<>();
+
+    public static <H extends AbstractCanvasHandler> MapSelectionControl<H> build(final Consumer<CanvasSelectionEvent> selectionEventConsumer,
+                                                                                 final Consumer<CanvasClearSelectionEvent> clearSelectionEventConsumer) {
+        return new MapSelectionControl<>(selectionEventConsumer,
+                                         clearSelectionEventConsumer);
+    }
+
+    // Do not expose by default to the IOC container.
+    MapSelectionControl(final Consumer<CanvasSelectionEvent> selectionEventConsumer,
+                        final Consumer<CanvasClearSelectionEvent> clearSelectionEventConsumer) {
+        this.selectionEventConsumer = selectionEventConsumer;
+        this.clearSelectionEventConsumer = clearSelectionEventConsumer;
+    }
+
+    @Override
+    public void enable(final H canvasHandler) {
+        super.enable(canvasHandler);
+        final Layer layer = canvasHandler.getCanvas().getLayer();
+        // Click handler for the canvas area - cleans current selection, if any.
+        final MouseClickHandler clickHandler = new MouseClickHandler() {
+            @Override
+            public void handle(final MouseClickEvent event) {
+                if (event.isButtonLeft() || event.isButtonRight()) {
+                    clearSelection(false);
+                    final String canvasRootUUID = getRootUUID();
+                    fireCanvasClear();
+                    if (null != canvasRootUUID) {
+                        selectionEventConsumer.accept(new CanvasSelectionEvent(canvasHandler,
+                                                                               canvasRootUUID));
+                    }
+                }
+            }
+        };
+        layer.addHandler(ViewEventType.MOUSE_CLICK,
+                         clickHandler);
+        this.layerClickHandler = clickHandler;
+    }
+
+    @Override
+    public void register(final Element element) {
+        /** Conditions to be met:
+         * - element is not registered
+         * - element has visible representation
+         */
+        if (isEnabled()
+                && !itemsRegistered().test(element.getUUID())
+                && element.getContent() instanceof View) {
+            items.put(element.getUUID(),
+                      false);
+        }
+    }
+
+    @Override
+    public void deregister(final Element element) {
+        deselect(element);
+        items.remove(element.getUUID());
+    }
+
+    @Override
+    public SelectionControl<H, Element> select(final Element element) {
+        return select(Collections.singletonList(element.getUUID()));
+    }
+
+    @Override
+    public SelectionControl<H, Element> deselect(final Element element) {
+        return deselect(Collections.singletonList(element.getUUID()));
+    }
+
+    @Override
+    public boolean isSelected(final Element element) {
+        return isSelected(element.getUUID());
+    }
+
+    @Override
+    public Collection<String> getSelectedItems() {
+        return items.entrySet().stream()
+                .filter(Map.Entry::getValue)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public SelectionControl<H, Element> clearSelection() {
+        return clearSelection(true);
+    }
+
+    public boolean isEnabled() {
+        return super.isEnabled() && null != canvasHandler.getCanvas();
+    }
+
+    public SelectionControl<H, Element> select(final Collection<String> uuids) {
+        uuids.stream()
+                .filter(itemsRegistered())
+                .forEach(uuid -> items.put(uuid,
+                                           true));
+        updateViewShapesState();
+        fireSelectedItemsEvent();
+        return this;
+    }
+
+    public SelectionControl<H, Element> deselect(final Collection<String> uuids) {
+        uuids.stream()
+                .filter(itemsRegistered())
+                .forEach(uuid -> items.put(uuid,
+                                           false));
+        updateViewShapesState();
+        return this;
+    }
+
+    public boolean isSelected(final String uuid) {
+        return itemsRegistered().test(uuid) && items.get(uuid);
+    }
+
+    private SelectionControl<H, Element> clearSelection(final boolean fireEvent) {
+        deselect(getSelectedItems());
+        if (null != getCanvas()) {
+            getCanvas().draw();
+        }
+        if (fireEvent) {
+            fireCanvasClear();
+        }
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void updateViewShapesState() {
+        if (isEnabled()) {
+            final List<Shape> shapes = getCanvas().getShapes();
+            for (final Shape shape : shapes) {
+                final boolean isSelected = isSelected(shape.getUUID());
+                if (isSelected) {
+                    shape.applyState(ShapeState.SELECTED);
+                } else {
+                    shape.applyState(ShapeState.NONE);
+                }
+            }
+            // Batch a show operation.
+            getCanvas().draw();
+        }
+    }
+
+    @Override
+    protected void doDisable() {
+        if (isEnabled()
+                && null != layerClickHandler
+                && null != getCanvas().getLayer()) {
+            getCanvas().getLayer().removeHandler(layerClickHandler);
+            this.layerClickHandler = null;
+        }
+    }
+
+    public void onShapeRemoved(final CanvasShapeRemovedEvent shapeRemovedEvent) {
+        checkNotNull("shapeRemovedEvent",
+                     shapeRemovedEvent);
+        if (null == canvasHandler) {
+            return;
+        }
+        if (isEnabled() && getCanvas().equals(shapeRemovedEvent.getCanvas())) {
+            final Shape<?> shape = shapeRemovedEvent.getShape();
+            deselect(Collections.singletonList(shape.getUUID()));
+        }
+    }
+
+    public void onCanvasElementSelected(final CanvasSelectionEvent event) {
+        checkNotNull("event",
+                     event);
+        if (null == canvasHandler) {
+            return;
+        }
+        final boolean isSameCtxt = canvasHandler.equals(event.getCanvasHandler());
+        final boolean isSingleSelection = event.getIdentifiers().size() == 1;
+        final boolean isCanvasRoot = isSingleSelection &&
+                event.getIdentifiers().iterator().next().equals(getRootUUID());
+        final boolean equals = items.entrySet().stream()
+                .filter(Map.Entry::getValue)
+                .map(Map.Entry::getKey)
+                .anyMatch(uuid -> event.getIdentifiers().contains(uuid));
+        if (isSameCtxt && !isCanvasRoot && !equals) {
+            this.clearSelection(false);
+            select(event.getIdentifiers());
+        }
+    }
+
+    public void onCanvasClearSelection(final CanvasClearSelectionEvent event) {
+        checkNotNull("event",
+                     event);
+        if (null != canvasHandler && canvasHandler.equals(event.getCanvasHandler())) {
+            this.clearSelection(false);
+        }
+    }
+
+    public AbstractCanvasHandler getCanvasHandler() {
+        return canvasHandler;
+    }
+
+    public Predicate<String> itemsRegistered() {
+        return items::containsKey;
+    }
+
+    public Canvas getCanvas() {
+        return canvasHandler.getCanvas();
+    }
+
+    protected String getRootUUID() {
+        return canvasHandler.getDiagram().getMetadata().getCanvasRootUUID();
+    }
+
+    private void fireSelectedItemsEvent() {
+        final Collection<String> selectedItems = getSelectedItems();
+        if (!selectedItems.isEmpty()) {
+            selectionEventConsumer.accept(new CanvasSelectionEvent(canvasHandler,
+                                                                   selectedItems));
+        }
+    }
+
+    private void fireCanvasClear() {
+        clearSelectionEventConsumer.accept(new CanvasClearSelectionEvent(canvasHandler));
+    }
+}

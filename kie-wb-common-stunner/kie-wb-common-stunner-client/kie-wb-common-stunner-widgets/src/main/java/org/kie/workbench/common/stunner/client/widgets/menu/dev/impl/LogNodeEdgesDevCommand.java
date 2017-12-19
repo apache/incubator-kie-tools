@@ -25,12 +25,11 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
-import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 @Dependent
-public class LogNodeEdgesDevCommand extends AbstractSelectionDevCommand {
+public class LogNodeEdgesDevCommand extends AbstractSelectedNodeDevCommand {
 
     private static Logger LOGGER = Logger.getLogger(LogNodeEdgesDevCommand.class.getName());
 
@@ -49,10 +48,9 @@ public class LogNodeEdgesDevCommand extends AbstractSelectionDevCommand {
     }
 
     @Override
-    protected void execute(final Element<View<?>> item) {
-        final String uuid = item.getUUID();
+    protected void execute(final Node<? extends View<?>, Edge> node) {
+        final String uuid = node.getUUID();
         try {
-            final Node<View<?>, Edge> node = (Node<View<?>, Edge>) item;
             final List<Edge> inEdges = node.getInEdges();
             log(uuid,
                 inEdges,

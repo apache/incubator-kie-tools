@@ -70,7 +70,7 @@ public class ActivityView extends AbstractCaseManagementShape<ActivityView> {
     }
 
     @Override
-    public AbstractCaseManagementShape getGhost() {
+    protected AbstractCaseManagementShape createGhost() {
         final ActivityView ghost = new ActivityView(getWidth(),
                                                     getHeight());
         for (WiresShape ws : getChildShapes()) {

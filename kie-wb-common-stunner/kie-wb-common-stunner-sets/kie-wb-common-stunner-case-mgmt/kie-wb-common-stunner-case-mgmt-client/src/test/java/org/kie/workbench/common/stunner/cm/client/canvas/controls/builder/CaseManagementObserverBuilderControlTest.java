@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.cm.client.canvas.controls.builder;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.AbstractElementBuilderControl;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.EventSourceMock;
@@ -28,7 +28,7 @@ import org.uberfire.mocks.EventSourceMock;
 public class CaseManagementObserverBuilderControlTest extends BaseCaseManagementBuilderControlTest {
 
     @Mock
-    private EventSourceMock<CanvasElementSelectedEvent> elementSelectedEvent;
+    private EventSourceMock<CanvasSelectionEvent> selectionEvent;
 
     @Before
     @Override
@@ -45,6 +45,6 @@ public class CaseManagementObserverBuilderControlTest extends BaseCaseManagement
                                                         canvasCommandFactory,
                                                         graphBoundsIndexer,
                                                         canvasLayoutUtils,
-                                                        elementSelectedEvent);
+                                                        selectionEvent);
     }
 }

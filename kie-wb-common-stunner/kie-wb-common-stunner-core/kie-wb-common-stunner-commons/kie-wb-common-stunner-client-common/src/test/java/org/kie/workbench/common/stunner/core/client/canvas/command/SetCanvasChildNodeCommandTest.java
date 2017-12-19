@@ -87,11 +87,11 @@ public class SetCanvasChildNodeCommandTest extends AbstractCanvasCommandTest {
                times(1)).addChild(eq(graph1Instance.startNode),
                                   eq(graph1Instance.intermNode));
         verify(canvasHandler,
-               times(1)).applyElementMutation(eq(graph1Instance.intermNode),
-                                              any(MutationContext.class));
+               never()).applyElementMutation(eq(graph1Instance.intermNode),
+                                             any(MutationContext.class));
         verify(canvasHandler,
-               times(1)).applyElementMutation(eq(graph1Instance.startNode),
-                                              any(MutationContext.class));
+               never()).applyElementMutation(eq(graph1Instance.startNode),
+                                             any(MutationContext.class));
         verify(canvasHandler,
                times(0)).dock(any(Node.class),
                               any(Node.class));

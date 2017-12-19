@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasDecorators;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasDragBounds;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasFillGradient;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasRadius;
@@ -41,7 +42,8 @@ public class ShapeViewExtStub
                    HasFillGradient<Object>,
                    HasTitle<Object>,
                    HasSize<Object>,
-                   HasRadius<Object> {
+                   HasRadius<Object>,
+                   HasDragBounds<Object> {
 
     private final List<Object> decorators = new ArrayList<>();
     private final Optional<HasEventHandlers<ShapeViewExtStub, Object>> hasEventHandlers;
@@ -54,8 +56,8 @@ public class ShapeViewExtStub
 
     public ShapeViewExtStub(final HasEventHandlers<ShapeViewExtStub, Object> hasEventHandlers,
                             final HasControlPoints<ShapeViewExtStub> hasControlPoints) {
-        this.hasEventHandlers = Optional.of(hasEventHandlers);
-        this.hasControlPoints = Optional.of(hasControlPoints);
+        this.hasEventHandlers = Optional.ofNullable(hasEventHandlers);
+        this.hasControlPoints = Optional.ofNullable(hasControlPoints);
     }
 
     @Override
@@ -182,5 +184,15 @@ public class ShapeViewExtStub
     @Override
     public boolean areControlsVisible() {
         return hasControlPoints.isPresent() && hasControlPoints.get().areControlsVisible();
+    }
+
+    @Override
+    public Object setDragBounds(double x0, double y0, double x1, double y1) {
+        return this;
+    }
+
+    @Override
+    public Object unsetDragBounds() {
+        return this;
     }
 }

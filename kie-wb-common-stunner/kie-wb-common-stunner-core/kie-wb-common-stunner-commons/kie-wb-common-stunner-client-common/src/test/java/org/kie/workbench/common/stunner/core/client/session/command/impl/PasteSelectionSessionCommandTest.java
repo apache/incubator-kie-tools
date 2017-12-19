@@ -33,10 +33,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.command.CloneNodeCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.ClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.LocalClipboardControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
@@ -59,9 +56,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.core.client.session.command.impl.PasteSelectionSessionCommand.DEFAULT_PADDING;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
@@ -73,9 +68,6 @@ import static org.mockito.Mockito.when;
 public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboardTest {
 
     private PasteSelectionSessionCommand pasteSelectionSessionCommand;
-
-    @Mock
-    private SelectionControl selectionControl;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
@@ -97,7 +89,7 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
     private SessionCommandFactory sessionCommandFactory;
 
     @Mock
-    private Event<CanvasElementSelectedEvent> elementSelectedEvent;
+    private Event<CanvasSelectionEvent> selectionEvent;
 
     @Mock
     private ClientSessionCommand.Callback callback;
@@ -135,7 +127,6 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
         this.graphInstance = TestingGraphInstanceBuilder.newGraph2(graphMockHandler);
         node = graphInstance.startNode;
         node.setContent(view);
-        when(session.getSelectionControl()).thenReturn(selectionControl);
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(canvasHandler.getGraphIndex()).thenReturn(graphMockHandler.graphIndex);
         when(view.getBounds()).thenReturn(new BoundsImpl(new BoundImpl(20d, 20d), new BoundImpl(30d, 30d)));
@@ -160,7 +151,7 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
         ArgumentCaptor<Consumer> consumerArgumentCaptor
                 = ArgumentCaptor.forClass(Consumer.class);
         when(canvasCommandFactory.cloneNode(any(), any(), any(), consumerArgumentCaptor.capture())).thenReturn(cloneNodeCommand);
-        when(commandResult.getType()).thenAnswer(param ->{
+        when(commandResult.getType()).thenAnswer(param -> {
             consumerArgumentCaptor.getValue().accept(clone);
             return CommandResult.Type.INFO;
         });
@@ -188,27 +179,27 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
 
         //success
         verify(callback, times(3)).onSuccess();
-        ArgumentCaptor<CanvasElementSelectedEvent> canvasElementSelectedEventArgumentCaptor
-                = ArgumentCaptor.forClass(CanvasElementSelectedEvent.class);
-        verify(elementSelectedEvent, times(3)).fire(canvasElementSelectedEventArgumentCaptor.capture());
+        ArgumentCaptor<CanvasSelectionEvent> canvasElementSelectedEventArgumentCaptor
+                = ArgumentCaptor.forClass(CanvasSelectionEvent.class);
+        verify(selectionEvent, times(3)).fire(canvasElementSelectedEventArgumentCaptor.capture());
         assertTrue(canvasElementSelectedEventArgumentCaptor.getAllValues().stream()
-                           .allMatch(event -> Objects.equals(event.getElementUUID(), clone.getUUID())));
+                           .allMatch(event -> Objects.equals(event.getIdentifiers().iterator().next(), clone.getUUID())));
 
         //error
         clipboardControl.set(graphInstance.startNode);
-        reset(elementSelectedEvent, canvasCommandFactory, callback, commandResult);
+        reset(selectionEvent, canvasCommandFactory, callback, commandResult);
         when(commandResult.getType()).thenReturn(CommandResult.Type.ERROR);
         pasteSelectionSessionCommand.execute(callback);
         verify(canvasCommandFactory, times(1))
                 .cloneNode(eq(node), eq(CANVAS_UUID), eq(new Point2D(DEFAULT_PADDING, DEFAULT_PADDING)), any());
         verify(callback, never()).onSuccess();
-        verify(elementSelectedEvent, never()).fire(canvasElementSelectedEventArgumentCaptor.capture());
+        verify(selectionEvent, never()).fire(canvasElementSelectedEventArgumentCaptor.capture());
     }
 
     @Override
     protected PasteSelectionSessionCommand getCommand() {
         return new PasteSelectionSessionCommand(sessionCommandManager, canvasCommandFactory,
-                                                elementSelectedEvent, sessionCommandFactory);
+                                                selectionEvent, sessionCommandFactory);
     }
 
     @Override

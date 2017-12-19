@@ -16,9 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.Command;
@@ -34,17 +31,21 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public class DeleteNodeCommand extends AbstractCanvasGraphCommand {
 
-    private static Logger LOGGER = Logger.getLogger(DeleteNodeCommand.class.getName());
-
     private final Node candidate;
-    private transient CompositeCommand<AbstractCanvasHandler, CanvasViolation> command;
+    private final SafeDeleteNodeCommand.Options options;
+    private transient CanvasDeleteProcessor deleteProcessor;
+
+    public DeleteNodeCommand(final Node candidate) {
+        this(candidate,
+             SafeDeleteNodeCommand.Options.defaults());
+    }
 
     @SuppressWarnings("unchecked")
-    public DeleteNodeCommand(final Node candidate) {
+    public DeleteNodeCommand(final Node candidate,
+                             final SafeDeleteNodeCommand.Options options) {
         this.candidate = candidate;
-        this.command = new CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation>()
-                .reverse()
-                .build();
+        this.options = options;
+        this.deleteProcessor = new CanvasDeleteProcessor(options);
     }
 
     public Node getCandidate() {
@@ -55,23 +56,36 @@ public class DeleteNodeCommand extends AbstractCanvasGraphCommand {
     @SuppressWarnings("unchecked")
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
         return new SafeDeleteNodeCommand(candidate,
-                                         new CanvasDeleteProcessor());
+                                         deleteProcessor,
+                                         options);
     }
 
     @Override
     protected Command<AbstractCanvasHandler, CanvasViolation> newCanvasCommand(final AbstractCanvasHandler context) {
-        return command;
+        return deleteProcessor.getCommand();
     }
 
-    protected CompositeCommand<AbstractCanvasHandler, CanvasViolation> getCommand() {
-        return command;
+    CompositeCommand<AbstractCanvasHandler, CanvasViolation> getCommand() {
+        return deleteProcessor.getCommand();
     }
 
-    private class CanvasDeleteProcessor implements SafeDeleteNodeCommand.SafeDeleteNodeCommandCallback {
+    public static class CanvasDeleteProcessor implements SafeDeleteNodeCommand.SafeDeleteNodeCommandCallback {
+
+        private transient CompositeCommand<AbstractCanvasHandler, CanvasViolation> command;
+        private final SafeDeleteNodeCommand.Options options;
+
+        public CanvasDeleteProcessor(final SafeDeleteNodeCommand.Options options) {
+            this.options = options;
+            this.command = new CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation>()
+                    .reverse()
+                    .build();
+        }
 
         @Override
         public void deleteCandidateConnector(final Edge<? extends View<?>, Node> connector) {
-            doDeleteConnector(connector);
+            if (options.isDeleteCandidateConnectors()) {
+                doDeleteConnector(connector);
+            }
         }
 
         @Override
@@ -82,14 +96,12 @@ public class DeleteNodeCommand extends AbstractCanvasGraphCommand {
         @Override
         public void setEdgeTargetNode(final Node<? extends View<?>, Edge> targetNode,
                                       Edge<? extends ViewConnector<?>, Node> candidate) {
-            log("SetCanvasConnectionCommand [candidate=" + candidate.getUUID() + "]");
             getCommand().addCommand(new SetCanvasConnectionCommand(candidate));
         }
 
         @Override
         public void removeChild(final Element<?> parent,
                                 final Node<?, Edge> candidate) {
-            log("RemoveCanvasChildCommand [parent=" + parent.getUUID() + ", candidate=" + candidate.getUUID() + "]");
             getCommand().addCommand(new RemoveCanvasChildCommand((Node) parent,
                                                                  candidate));
         }
@@ -110,19 +122,20 @@ public class DeleteNodeCommand extends AbstractCanvasGraphCommand {
             doDeleteNode(node);
         }
 
+        public CompositeCommand<AbstractCanvasHandler, CanvasViolation> getCommand() {
+            return command;
+        }
+
+        public SafeDeleteNodeCommand.Options getOptions() {
+            return options;
+        }
+
         private void doDeleteNode(final Node<?, Edge> node) {
-            log("DeleteCanvasNodeCommand [node=" + node.getUUID() + "]");
             getCommand().addCommand(new DeleteCanvasNodeCommand(node));
         }
 
         private void doDeleteConnector(final Edge<? extends View<?>, Node> connector) {
-            log("DeleteCanvasConnectorCommand [connector=" + connector.getUUID() + "]");
             getCommand().addCommand(new DeleteCanvasConnectorCommand(connector));
         }
-    }
-
-    private void log(final String message) {
-        LOGGER.log(Level.FINE,
-                   message);
     }
 }

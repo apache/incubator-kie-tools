@@ -97,8 +97,7 @@ public class ConnectorDragProxyImpl implements ConnectorDragProxy<AbstractCanvas
                                        MutationContext.STATIC);
 
         // Apply connector's connections for both source and target shapes.
-        // Notice that magnet's location is set to (0,0), as this connection is transient the location doesn't matter,
-        // only setting the central magnet (0) is enough, as it's not being not sent to the server neither serialized.
+        // Using center connector strategy, so magnet index 0.
         final MagnetConnection centerConnection =
                 new MagnetConnection.Builder()
                         .atX(0)
@@ -122,6 +121,8 @@ public class ConnectorDragProxyImpl implements ConnectorDragProxy<AbstractCanvas
                                                                final int y) {
                                                callback.onStart(x,
                                                                 y);
+                                               // As using center magnet, update the connection.
+                                               connectorShapeView.updateForCenterConnection();
                                            }
 
                                            @Override
@@ -129,6 +130,8 @@ public class ConnectorDragProxyImpl implements ConnectorDragProxy<AbstractCanvas
                                                               final int y) {
                                                callback.onMove(x,
                                                                y);
+                                               // As using center magnet, update the connection.
+                                               connectorShapeView.updateForCenterConnection();
                                            }
 
                                            @Override

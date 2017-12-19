@@ -29,7 +29,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.Elem
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.LocationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.resize.ResizeControl;
@@ -104,7 +104,7 @@ public class ClientFullSessionTest {
     private CanvasInPlaceTextEditorControl<AbstractCanvasHandler, ClientSession, Element> canvasInPlaceTextEditorControl;
 
     @Mock
-    private DragControl<AbstractCanvasHandler, Element> dragControl;
+    private LocationControl<AbstractCanvasHandler, Element> locationControl;
 
     @Mock
     private ToolboxControl<AbstractCanvasHandler, Element> toolboxControl;
@@ -128,7 +128,7 @@ public class ClientFullSessionTest {
         when(factory.newControl(eq(ConnectionAcceptorControl.class))).thenReturn(connectionAcceptorControl);
         when(factory.newControl(eq(ContainmentAcceptorControl.class))).thenReturn(containmentAcceptorControl);
         when(factory.newControl(eq(DockingAcceptorControl.class))).thenReturn(dockingAcceptorControl);
-        when(factory.newControl(eq(DragControl.class))).thenReturn(dragControl);
+        when(factory.newControl(eq(LocationControl.class))).thenReturn(locationControl);
         when(factory.newControl(eq(CanvasInPlaceTextEditorControl.class))).thenReturn(canvasInPlaceTextEditorControl);
         when(factory.newControl(eq(ToolboxControl.class))).thenReturn(toolboxControl);
         when(factory.newControl(eq(ElementBuilderControl.class))).thenReturn(builderControl);
@@ -163,8 +163,8 @@ public class ClientFullSessionTest {
                      tested.getDockingAcceptorControl());
         assertEquals(canvasInPlaceTextEditorControl,
                      tested.getCanvasInPlaceTextEditorControl());
-        assertEquals(dragControl,
-                     tested.getDragControl());
+        assertEquals(locationControl,
+                     tested.getLocationControl());
         assertEquals(toolboxControl,
                      tested.getToolboxControl());
         assertEquals(builderControl,
@@ -199,7 +199,7 @@ public class ClientFullSessionTest {
                      builder.getValue().getCommandManager());
         final ArgumentCaptor<RequiresCommandManager.CommandManagerProvider> drag =
                 ArgumentCaptor.forClass(RequiresCommandManager.CommandManagerProvider.class);
-        verify(dragControl,
+        verify(locationControl,
                times(1)).setCommandManagerProvider(drag.capture());
         assertEquals(requestCommandManager,
                      drag.getValue().getCommandManager());
@@ -241,7 +241,7 @@ public class ClientFullSessionTest {
                times(1)).enable(eq(canvasHandler));
         verify(canvasInPlaceTextEditorControl,
                times(1)).enable(eq(canvasHandler));
-        verify(dragControl,
+        verify(locationControl,
                times(1)).enable(eq(canvasHandler));
         verify(toolboxControl,
                times(1)).enable(eq(canvasHandler));
@@ -280,7 +280,7 @@ public class ClientFullSessionTest {
                times(1)).disable();
         verify(canvasInPlaceTextEditorControl,
                times(1)).disable();
-        verify(dragControl,
+        verify(locationControl,
                times(1)).disable();
         verify(toolboxControl,
                times(1)).disable();

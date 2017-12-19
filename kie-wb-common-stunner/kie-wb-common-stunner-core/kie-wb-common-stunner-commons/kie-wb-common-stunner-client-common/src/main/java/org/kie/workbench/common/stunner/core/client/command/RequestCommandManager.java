@@ -16,8 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.client.command;
 
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
@@ -55,6 +57,9 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
     private static Logger LOGGER = Logger.getLogger(RequestCommandManager.class.getName());
 
     private final AbstractClientSessionManager clientSessionManager;
+    private Stack<Command<AbstractCanvasHandler, CanvasViolation>> commands;
+
+    private boolean roolback;
 
     protected RequestCommandManager() {
         this(null);
@@ -63,6 +68,7 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
     @Inject
     public RequestCommandManager(final AbstractClientSessionManager clientSessionManager) {
         this.clientSessionManager = clientSessionManager;
+        this.roolback = false;
     }
 
     @Override
@@ -74,11 +80,6 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
     protected CommandListener<AbstractCanvasHandler, CanvasViolation> getRegistryListener() {
         return registryListener;
     }
-
-    /**
-     * The current command builder instance for each client request. It aggregates the commands executed during the request.
-     */
-    private CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> currentCommandBuilder;
 
     /**
      * The custom command registry listener implementation - instead of adding commands into session's registry
@@ -103,10 +104,14 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
                 public void onExecute(final AbstractCanvasHandler context,
                                       final Command<AbstractCanvasHandler, CanvasViolation> command,
                                       final CommandResult<CanvasViolation> result) {
-                    if (!CommandUtils.isError(result)) {
+                    LOGGER.log(Level.FINEST,
+                               "Adding command [" + command + "] into current request command builder.");
+                    if (CommandUtils.isError(result)) {
                         LOGGER.log(Level.FINEST,
-                                   "Adding command [" + command + "] into current request command builder.");
-                        currentCommandBuilder.addCommand(command);
+                                   "Command failed - rollback");
+                        roolback = true;
+                    } else {
+                        commands.push(command);
                     }
                     // Notify listener, if any.
                     RequestCommandManager.this.postExecute(context,
@@ -181,7 +186,6 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
      */
     private void start() {
         if (isRequestStarted()) {
-
             LOGGER.log(Level.WARNING,
                        "Current client request has not been completed yet." +
                                "A new client request cannot be started!");
@@ -189,8 +193,8 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
         }
         LOGGER.log(Level.FINEST,
                    "New client request started.");
-        currentCommandBuilder = new CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation>()
-                .forward();
+        commands = new Stack<>();
+        roolback = false;
     }
 
     /**
@@ -198,14 +202,21 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
      * session's registry.
      */
     private void complete() {
-        LOGGER.log(Level.FINEST,
-                   "Checking if current client request has been completed...");
         if (isRequestStarted()) {
-            // If any commands have been aggregated, let's execute those.
-            if (currentCommandBuilder.size() > 0) {
+            final boolean hasCommands = !commands.isEmpty();
+            if (hasCommands && roolback) {
                 LOGGER.log(Level.FINEST,
-                           "Adding commands for current request into registry [size=" + currentCommandBuilder.size() + "]");
-                getRegistry().register(currentCommandBuilder.build());
+                           "Performing rollback for commands in current requrest.");
+                final AbstractCanvasHandler canvasHandler = getCurrentSession().getCanvasHandler();
+                commands.forEach(c -> c.undo(canvasHandler));
+            } else if (hasCommands) {
+                // If any commands have been aggregated, let's composite them and add into the registry.
+                LOGGER.log(Level.FINEST,
+                           "Adding commands for current request into registry [size=" + commands.size() + "]");
+                getRegistry().register(new CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation>()
+                                               .forward()
+                                               .addCommands(commands.stream().collect(Collectors.toList()))
+                                               .build());
             }
             clear();
             LOGGER.log(Level.FINEST,
@@ -217,10 +228,11 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
     }
 
     private boolean isRequestStarted() {
-        return null != currentCommandBuilder;
+        return null != commands;
     }
 
     private void clear() {
-        currentCommandBuilder = null;
+        commands = null;
+        roolback = false;
     }
 }

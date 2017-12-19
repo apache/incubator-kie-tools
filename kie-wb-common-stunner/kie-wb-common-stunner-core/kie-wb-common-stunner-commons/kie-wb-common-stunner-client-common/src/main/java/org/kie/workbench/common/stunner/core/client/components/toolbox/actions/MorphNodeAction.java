@@ -24,7 +24,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
@@ -51,7 +51,7 @@ public class MorphNodeAction extends AbstractToolboxAction {
 
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
-    private final Event<CanvasElementSelectedEvent> elementSelectedEvent;
+    private final Event<CanvasSelectionEvent> selectionEvent;
 
     private MorphDefinition morphDefinition;
     private String targetDefinitionId;
@@ -61,12 +61,12 @@ public class MorphNodeAction extends AbstractToolboxAction {
                            final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                            final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
                            final ClientTranslationService translationService,
-                           final Event<CanvasElementSelectedEvent> elementSelectedEvent) {
+                           final Event<CanvasSelectionEvent> selectionEvent) {
         super(definitionUtils,
               translationService);
         this.sessionCommandManager = sessionCommandManager;
         this.commandFactory = commandFactory;
-        this.elementSelectedEvent = elementSelectedEvent;
+        this.selectionEvent = selectionEvent;
     }
 
     public MorphNodeAction setMorphDefinition(final MorphDefinition morphDefinition) {
@@ -97,7 +97,7 @@ public class MorphNodeAction extends AbstractToolboxAction {
             LOGGER.log(Level.SEVERE,
                        result.toString());
         } else {
-            fireElementSelectedEvent(elementSelectedEvent,
+            fireElementSelectedEvent(selectionEvent,
                                      canvasHandler,
                                      uuid);
         }

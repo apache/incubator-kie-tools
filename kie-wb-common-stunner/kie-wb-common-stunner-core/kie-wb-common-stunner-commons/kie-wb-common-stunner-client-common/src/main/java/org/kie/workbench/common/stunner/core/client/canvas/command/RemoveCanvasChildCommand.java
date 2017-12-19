@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.core.client.canvas.command;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
-import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.util.ShapeUtils;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -42,10 +41,6 @@ public class RemoveCanvasChildCommand extends AbstractCanvasCommand {
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
         context.removeChild(parent,
                             child);
-        context.applyElementMutation(parent,
-                                     MutationContext.STATIC);
-        context.applyElementMutation(child,
-                                     MutationContext.STATIC);
         ShapeUtils.moveViewConnectorsToTop(context,
                                            child);
         return buildResult();

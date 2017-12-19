@@ -78,6 +78,7 @@ public class RequestCommandManagerTest {
         this.commandManager = new CanvasCommandManagerImpl();
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(clientSessionManager.getCurrentSession()).thenReturn(clientFullSession);
+        when(clientFullSession.getCanvasHandler()).thenReturn(canvasHandler);
         when(clientFullSession.getCommandRegistry()).thenReturn(commandRegistry);
         when(clientFullSession.getCommandManager()).thenReturn(commandManager);
         this.tested = new RequestCommandManager(clientSessionManager);
@@ -141,6 +142,30 @@ public class RequestCommandManagerTest {
                times(0)).peek();
         verify(commandRegistry,
                times(0)).pop();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testMultipleExecuteFailed() {
+        when(command.execute(eq(canvasHandler))).thenReturn(CanvasCommandResultBuilder.SUCCESS);
+        when(command1.execute(eq(canvasHandler))).thenReturn(CanvasCommandResultBuilder.SUCCESS);
+        when(command2.execute(eq(canvasHandler))).thenReturn(CanvasCommandResultBuilder.FAILED);
+        tested.onCanvasMouseDownEvent(mouseDownEvent);
+        tested.execute(canvasHandler,
+                       command);
+        tested.execute(canvasHandler,
+                       command1);
+        tested.execute(canvasHandler,
+                       command2);
+        tested.onCanvasMouseUpEvent(mouseUpEvent);
+        verify(commandRegistry,
+               times(0)).register(command);
+        verify(commandRegistry,
+               times(0)).peek();
+        verify(commandRegistry,
+               times(0)).pop();
+        verify(command, times(1)).undo(eq(canvasHandler));
+        verify(command1, times(1)).undo(eq(canvasHandler));
     }
 
     @Test

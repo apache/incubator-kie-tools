@@ -79,8 +79,7 @@ public class DockingAcceptorControlImpl extends AbstractAcceptorControl
                              final
                              Function<Command<AbstractCanvasHandler, CanvasViolation>, CommandResult<CanvasViolation>> executor) {
         return null != parent &&
-                isCommandSuccess(child,
-                                 executor.apply(canvasCommandFactory.updateDockNode(parent,
+                isCommandSuccess(executor.apply(canvasCommandFactory.updateDockNode(parent,
                                                                                     child)));
     }
 

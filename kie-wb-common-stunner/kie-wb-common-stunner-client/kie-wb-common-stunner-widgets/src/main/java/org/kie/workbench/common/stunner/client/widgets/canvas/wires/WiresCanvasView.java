@@ -72,7 +72,7 @@ public class WiresCanvasView extends CanvasView implements WiresCanvas.View {
         if (WiresUtils.isWiresShape(shapeView)) {
             WiresShape wiresShape = (WiresShape) shapeView;
             wiresManager.deregister(wiresShape);
-        } else if (WiresUtils.isWiresShape(shapeView)) {
+        } else if (WiresUtils.isWiresConnector(shapeView)) {
             WiresConnector wiresConnector = (WiresConnector) shapeView;
             wiresManager.deregister(wiresConnector);
         } else {
@@ -90,7 +90,6 @@ public class WiresCanvasView extends CanvasView implements WiresCanvas.View {
     @Override
     public WiresCanvas.View setContainmentAcceptor(final IContainmentAcceptor containmentAcceptor) {
         wiresManager.setContainmentAcceptor(containmentAcceptor);
-        wiresManager.getLayer().setContainmentAcceptor(containmentAcceptor);
         return this;
     }
 

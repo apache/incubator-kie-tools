@@ -80,6 +80,7 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<ClientFullS
             } else {
                 callback.onSuccess();
             }
+            getSession().getSelectionControl().clearSelection();
         }
     }
 

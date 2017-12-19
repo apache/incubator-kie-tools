@@ -22,7 +22,7 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.api.ClientFactoryManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
@@ -56,7 +56,7 @@ public class CreateNodeAction extends AbstractToolboxAction {
 
     private final ClientFactoryManager clientFactoryManager;
     private final CanvasLayoutUtils canvasLayoutUtils;
-    private final Event<CanvasElementSelectedEvent> elementSelectedEvent;
+    private final Event<CanvasSelectionEvent> selectionEvent;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
 
@@ -67,7 +67,7 @@ public class CreateNodeAction extends AbstractToolboxAction {
     public CreateNodeAction(final DefinitionUtils definitionUtils,
                             final ClientFactoryManager clientFactoryManager,
                             final CanvasLayoutUtils canvasLayoutUtils,
-                            final Event<CanvasElementSelectedEvent> elementSelectedEvent,
+                            final Event<CanvasSelectionEvent> selectionEvent,
                             final ClientTranslationService translationService,
                             final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                             final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory) {
@@ -75,7 +75,7 @@ public class CreateNodeAction extends AbstractToolboxAction {
               translationService);
         this.clientFactoryManager = clientFactoryManager;
         this.canvasLayoutUtils = canvasLayoutUtils;
-        this.elementSelectedEvent = elementSelectedEvent;
+        this.selectionEvent = selectionEvent;
         this.sessionCommandManager = sessionCommandManager;
         this.canvasCommandFactory = canvasCommandFactory;
     }
@@ -157,7 +157,7 @@ public class CreateNodeAction extends AbstractToolboxAction {
                                               builder.build());
 
         if (!CommandUtils.isError(result)) {
-            fireElementSelectedEvent(elementSelectedEvent,
+            fireElementSelectedEvent(selectionEvent,
                                      canvasHandler,
                                      targetNode.getUUID());
         }

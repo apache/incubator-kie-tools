@@ -113,9 +113,8 @@ public class ShapeUtils {
                               }
                           });
         // Update connector's view.
-        connectorIds.stream()
-                .forEach(id -> moveShapeToTop(canvasHandler,
-                                              id));
+        connectorIds.forEach(id -> moveShapeToTop(canvasHandler,
+                                                  id));
     }
 
     /**

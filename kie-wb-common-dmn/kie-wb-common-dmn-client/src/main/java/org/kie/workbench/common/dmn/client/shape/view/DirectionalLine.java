@@ -22,7 +22,6 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.Attributes;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.shared.core.types.ShapeType;
@@ -83,23 +82,21 @@ public class DirectionalLine extends AbstractDirectionalMultiPointShape<Directio
     @Override
     public boolean parse(final Attributes attr) {
         final Point2DArray points = attr.getControlPoints();
-
-        final Point2D p1 = points.get(0);
-        final double x1 = p1.getX();
-        final double y1 = p1.getY();
-
-        final Point2D p2 = points.get(1);
-        final double x2 = p2.getX();
-        final double y2 = p2.getY();
-
-        final PathPartList list = getPathPartList();
-
-        list.M(x1,
-               y1);
-        list.L(x2,
-               y2);
-
-        return true;
+        if (null != points && points.size() > 1) {
+            final Point2D p1 = points.get(0);
+            final double x1 = p1.getX();
+            final double y1 = p1.getY();
+            final Point2D p2 = points.get(1);
+            final double x2 = p2.getX();
+            final double y2 = p2.getY();
+            getPathPartList()
+                    .M(x1,
+                       y1)
+                    .L(x2,
+                       y2);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -129,7 +126,8 @@ public class DirectionalLine extends AbstractDirectionalMultiPointShape<Directio
 
     @Override
     public BoundingBox getBoundingBox() {
-        if (getPathPartList().size() < 1) {
+        if (getPathPartList().size() < 1
+                && !parse(getAttributes())) {
             return new BoundingBox(0,
                                    0,
                                    0,

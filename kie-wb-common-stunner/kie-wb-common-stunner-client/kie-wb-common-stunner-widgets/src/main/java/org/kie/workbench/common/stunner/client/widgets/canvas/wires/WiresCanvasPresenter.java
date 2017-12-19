@@ -18,8 +18,10 @@ package org.kie.workbench.common.stunner.client.widgets.canvas.wires;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlFactory;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.client.lienzo.Lienzo;
@@ -38,10 +40,12 @@ public class WiresCanvasPresenter extends WiresCanvas implements IsWidget {
 
     private static final int PADDING = 15;
 
+    private final WiresControlFactory wiresControlFactory;
     private final LienzoPanel lienzoPanel;
 
     protected WiresCanvasPresenter() {
         this(null,
+             null,
              null,
              null,
              null,
@@ -59,7 +63,8 @@ public class WiresCanvasPresenter extends WiresCanvas implements IsWidget {
                                 final Event<CanvasFocusedEvent> canvasFocusedEvent,
                                 final @Lienzo Layer layer,
                                 final WiresCanvas.View view,
-                                final LienzoPanel lienzoPanel) {
+                                final LienzoPanel lienzoPanel,
+                                final @Default WiresControlFactory wiresControlFactory) {
         super(canvasClearEvent,
               canvasShapeAddedEvent,
               canvasShapeRemovedEvent,
@@ -68,6 +73,7 @@ public class WiresCanvasPresenter extends WiresCanvas implements IsWidget {
               layer,
               view);
         this.lienzoPanel = lienzoPanel;
+        this.wiresControlFactory = wiresControlFactory;
     }
 
     @Override
@@ -76,8 +82,15 @@ public class WiresCanvasPresenter extends WiresCanvas implements IsWidget {
     }
 
     @Override
+    protected WiresControlFactory getWiresControlFactory() {
+        return wiresControlFactory;
+    }
+
+    @Override
     public Canvas initialize(final int width,
                              final int height) {
+        super.initialize(width,
+                         height);
         lienzoPanel.show(width,
                          height,
                          PADDING);

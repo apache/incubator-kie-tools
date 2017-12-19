@@ -29,7 +29,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasFocusedEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.components.actions.TextEditorBox;
 import org.kie.workbench.common.stunner.core.client.components.views.FloatingView;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
@@ -62,7 +62,7 @@ public class CanvasInPlaceTextEditorControlImpl
 
     private final FloatingView<IsWidget> floatingView;
     private final TextEditorBox<AbstractCanvasHandler, Element> textEditorBox;
-    private final Event<CanvasElementSelectedEvent> elementSelectedEvent;
+    private final Event<CanvasSelectionEvent> canvasSelectionEvent;
     private String uuid;
 
     private final Command floatingHideCallback = CanvasInPlaceTextEditorControlImpl.this::hide;
@@ -70,10 +70,10 @@ public class CanvasInPlaceTextEditorControlImpl
     @Inject
     public CanvasInPlaceTextEditorControlImpl(final FloatingView<IsWidget> floatingView,
                                               final TextEditorBox<AbstractCanvasHandler, Element> textEditorBox,
-                                              final Event<CanvasElementSelectedEvent> elementSelectedEvent) {
+                                              final Event<CanvasSelectionEvent> canvasSelectionEvent) {
         this.floatingView = floatingView;
         this.textEditorBox = textEditorBox;
-        this.elementSelectedEvent = elementSelectedEvent;
+        this.canvasSelectionEvent = canvasSelectionEvent;
         this.uuid = null;
     }
 
@@ -94,8 +94,8 @@ public class CanvasInPlaceTextEditorControlImpl
                                  () -> {
                                      final String idToSelect = CanvasInPlaceTextEditorControlImpl.this.uuid;
                                      CanvasInPlaceTextEditorControlImpl.this.hide();
-                                     elementSelectedEvent.fire(new CanvasElementSelectedEvent(canvasHandler,
-                                                                                              idToSelect));
+                                     canvasSelectionEvent.fire(new CanvasSelectionEvent(canvasHandler,
+                                                                                        idToSelect));
                                  });
 
         // TODO: move folatingView to support IsElement instead of IsWidget

@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
+import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
 import com.ait.lienzo.client.core.util.ScratchPad;
@@ -26,16 +27,14 @@ import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 
 public class CaseManagementColorMapBackedPicker extends ColorMapBackedPicker {
 
-    public CaseManagementColorMapBackedPicker(final NFastArrayList<WiresShape> shapes,
+    public CaseManagementColorMapBackedPicker(final WiresLayer layer,
+                                              final NFastArrayList<WiresShape> shapes,
                                               final ScratchPad scratchPad,
-                                              final NFastArrayList<WiresShape> shapesToSkip,
-                                              final boolean addHotspots,
-                                              final double borderWidth) {
-        super(shapes,
+                                              final PickerOptions options) {
+        super(layer,
+              shapes,
               scratchPad,
-              shapesToSkip,
-              addHotspots,
-              borderWidth);
+              options);
     }
 
     @Override

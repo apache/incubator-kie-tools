@@ -25,7 +25,6 @@ import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresScal
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.mockito.Mock;
 
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -65,22 +64,5 @@ public class DecoratedShapeViewTest {
     public void testTextWrapBoundariesUpdatesOnRefresh() {
         tested.refresh();
         verify(textDecorator).update();
-    }
-
-    @Test
-    public void testTextWrapBoundariesUpdatesOnResize() {
-        tested.resize(0,
-                      0,
-                      10,
-                      10,
-                      true);
-        verify(textDecorator, times(1)).resize(10d, 10d);
-    }
-
-    @Test
-    public void testTextWrapBoundariesUpdatesOnSetSize() {
-        tested.setSize(10,
-                       10);
-        verify(textDecorator, times(2)).resize(10d, 10d);
     }
 }

@@ -18,20 +18,23 @@ package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
+import com.ait.lienzo.client.core.shape.IDrawable;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
+import com.ait.lienzo.client.core.shape.wires.WiresConnection;
 import com.ait.lienzo.client.core.shape.wires.WiresLayoutContainer;
+import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.types.DragBounds;
+import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.core.client.shape.view.BoundingBox;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasDecorators;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasDragBounds;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
-import org.kie.workbench.common.stunner.lienzo.core.shape.wires.WiresDragConstraintEnforcer;
 
 public class WiresShapeView<T> extends WiresShape
         implements
@@ -40,7 +43,6 @@ public class WiresShapeView<T> extends WiresShape
         HasDecorators<Shape<?>> {
 
     private String uuid;
-    private WiresDragConstraintEnforcer dragEnforcer;
 
     public WiresShapeView(final MultiPath path) {
         this(path,
@@ -82,14 +84,10 @@ public class WiresShapeView<T> extends WiresShape
     }
 
     @Override
-    public T setShapeX(final double x) {
-        getContainer().getAttributes().setX(x);
-        return cast();
-    }
-
-    @Override
-    public T setShapeY(final double y) {
-        getContainer().getAttributes().setY(y);
+    public T setShapeLocation(final Point2D location) {
+        setLocation(new com.ait.lienzo.client.core.types.Point2D(location.getX(),
+                                                                 location.getY()));
+        shapeMoved();
         return cast();
     }
 
@@ -166,53 +164,54 @@ public class WiresShapeView<T> extends WiresShape
     }
 
     @Override
+    public T setDragEnabled(boolean draggable) {
+        setDraggable(draggable);
+        return cast();
+    }
+
+    @Override
     public T setDragBounds(final double x1,
                            final double y1,
                            final double x2,
                            final double y2) {
-        final DragBounds dragBounds = new DragBounds(x1,
-                                                     y1,
-                                                     x2,
-                                                     y2);
-        if (null == dragEnforcer) {
-            dragEnforcer = WiresDragConstraintEnforcer.enforce(this,
-                                                               dragBounds);
-        } else {
-            dragEnforcer.setDragBounds(dragBounds);
+        if (null != getControl()) {
+            getControl().setBoundsConstraint(new com.ait.lienzo.client.core.types.BoundingBox(x1,
+                                                                                              y1,
+                                                                                              x2,
+                                                                                              y2));
         }
         return cast();
     }
 
     @Override
     public T unsetDragBounds() {
-        if (null != dragEnforcer) {
-            dragEnforcer.remove();
-            dragEnforcer = null;
+        if (null != getControl()) {
+            getControl().setBoundsConstraint(null);
         }
         return cast();
     }
 
     @Override
     public T moveToTop() {
-        getContainer().moveToTop();
+        consumeChildrenAndConnectors(IDrawable::moveToTop);
         return cast();
     }
 
     @Override
     public T moveToBottom() {
-        getContainer().moveToBottom();
+        consumeChildrenAndConnectors(IDrawable::moveToBottom);
         return cast();
     }
 
     @Override
     public T moveUp() {
-        getContainer().moveUp();
+        consumeChildrenAndConnectors(IDrawable::moveUp);
         return cast();
     }
 
     @Override
     public T moveDown() {
-        getContainer().moveDown();
+        consumeChildrenAndConnectors(IDrawable::moveDown);
         return cast();
     }
 
@@ -237,13 +236,41 @@ public class WiresShapeView<T> extends WiresShape
         return cast();
     }
 
-    public WiresDragConstraintEnforcer getDragEnforcer() {
-        return dragEnforcer;
-    }
-
     @Override
     public List<Shape<?>> getDecorators() {
         return Collections.singletonList(getShape());
+    }
+
+    void consumeChildrenAndConnectors(final Consumer<IDrawable> primConsumer) {
+        // Move this shape.
+        primConsumer.accept(getContainer());
+        // Move child shapes.
+        final NFastArrayList<WiresShape> childShapes = getChildShapes();
+        if (null != childShapes) {
+            for (int i = 0; i < childShapes.size(); i++) {
+                final WiresShape shape = childShapes.get(i);
+                if (shape instanceof WiresShapeView) {
+                    ((WiresShapeView) shape).consumeChildrenAndConnectors(primConsumer);
+                } else {
+                    primConsumer.accept(shape.getContainer());
+                }
+            }
+        }
+        // Move connectors.
+        if (null != getMagnets()) {
+            for (int i = 0; i < getMagnets().size(); i++) {
+                final WiresMagnet magnet = getMagnets().getMagnet(i);
+                final NFastArrayList<WiresConnection> connections = magnet.getConnections();
+                if (null != connections) {
+                    for (int j = 0; j < connections.size(); j++) {
+                        final WiresConnection connection = connections.get(j);
+                        if (null != connection.getConnector()) {
+                            primConsumer.accept(connection.getConnector().getGroup());
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")

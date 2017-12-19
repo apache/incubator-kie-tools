@@ -93,9 +93,15 @@ public abstract class AbstractAcceptorControl
                           predicate);
     }
 
-    protected boolean isCommandSuccess(final Node candidate,
-                                       final CommandResult<CanvasViolation> result) {
+    protected boolean isCommandSuccess(final CommandResult<CanvasViolation> result) {
         return !CommandUtils.isError(result);
+    }
+
+    protected boolean isWiresParentAccept(final WiresContainer wiresContainer) {
+        if (!isEnabled() || !WiresUtils.isWiresShape(wiresContainer)) {
+            return false;
+        }
+        return true;
     }
 
     protected boolean isWiresViewAccept(final WiresContainer wiresContainer,

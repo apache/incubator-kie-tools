@@ -29,6 +29,7 @@ import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.BaseCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.select.MultipleSelection;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasUndoCommandExecutedEvent;
@@ -50,7 +51,7 @@ public class SessionPreviewImpl extends org.kie.workbench.common.stunner.client.
                               final GraphUtils graphUtils,
                               final @Any ManagedInstance<BaseCanvasHandler> canvasHandlerFactories,
                               final @Any ManagedInstance<CanvasCommandFactory> canvasCommandFactories,
-                              final SelectionControl<AbstractCanvasHandler, ?> selectionControl,
+                              final @MultipleSelection SelectionControl<AbstractCanvasHandler, ?> selectionControl,
                               final WidgetWrapperView view) {
         super(definitionManager,
               shapeManager,

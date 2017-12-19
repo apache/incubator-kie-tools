@@ -22,6 +22,7 @@ import java.util.Optional;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresContainerShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasSize;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
@@ -67,10 +68,11 @@ public abstract class AbstractCaseManagementShape<T extends WiresContainerShapeV
         return currentWidth;
     }
 
-    public void setWidth(final double width) {
+    public T setWidth(final double width) {
         this.currentWidth = width;
         setSize(width,
                 this.currentHeight);
+        return cast();
     }
 
     public double getMinHeight() {
@@ -81,10 +83,11 @@ public abstract class AbstractCaseManagementShape<T extends WiresContainerShapeV
         return currentHeight;
     }
 
-    public void setHeight(final double height) {
+    public T setHeight(final double height) {
         this.currentHeight = height;
         setSize(this.currentWidth,
                 height);
+        return cast();
     }
 
     public void logicallyReplace(final WiresShape original,
@@ -107,14 +110,6 @@ public abstract class AbstractCaseManagementShape<T extends WiresContainerShapeV
         original.setParent(null);
         replacement.setParent(this);
 
-        if (original.getMagnets() != null) {
-            original.getMagnets().shapeMoved();
-        }
-
-        if (replacement.getMagnets() != null) {
-            replacement.getMagnets().shapeMoved();
-        }
-
         getLayoutHandler().requestLayout(this);
     }
 
@@ -128,22 +123,30 @@ public abstract class AbstractCaseManagementShape<T extends WiresContainerShapeV
         }
         final List<WiresShape> existingChildShapes = new ArrayList<>();
         existingChildShapes.addAll(getChildShapes().toList());
-        existingChildShapes.stream().forEach(WiresShape::removeFromParent);
+        existingChildShapes.forEach(WiresShape::removeFromParent);
 
         existingChildShapes.remove(shape);
         existingChildShapes.add(targetIndex,
                                 shape);
 
         //The call to add(..) causes ILayoutHandler to be invoked.
-        existingChildShapes.stream().forEach(this::add);
-
-        if (shape.getMagnets() != null) {
-            shape.getMagnets().shapeMoved();
-        }
+        existingChildShapes.forEach(this::add);
     }
 
-    private int getIndex(final WiresShape shape) {
-        return getChildShapes().toList().indexOf(shape);
+    public int getIndex(final WiresShape shape) {
+        final NFastArrayList<WiresShape> children = getChildShapes();
+        int i = 0;
+        for (WiresShape child : children) {
+            if (child == shape ||
+                    (child instanceof AbstractCaseManagementShape &&
+                            shape instanceof AbstractCaseManagementShape &&
+                            ((AbstractCaseManagementShape) child).getUUID()
+                                    .equals(((AbstractCaseManagementShape) shape).getUUID()))) {
+                return i;
+            }
+            i++;
+        }
+        return i;
     }
 
     private int getNodeIndex(final Group group) {
@@ -158,5 +161,20 @@ public abstract class AbstractCaseManagementShape<T extends WiresContainerShapeV
         return optDropZone;
     }
 
-    public abstract AbstractCaseManagementShape getGhost();
+    public AbstractCaseManagementShape getGhost() {
+        final AbstractCaseManagementShape ghost = createGhost();
+        if (null != ghost) {
+            ghost.setFillAlpha(0.5d);
+            ghost.setStrokeAlpha(0.5d);
+            ghost.setUUID(getUUID());
+        }
+        return ghost;
+    }
+
+    protected abstract AbstractCaseManagementShape createGhost();
+
+    @SuppressWarnings("unchecked")
+    private T cast() {
+        return (T) this;
+    }
 }

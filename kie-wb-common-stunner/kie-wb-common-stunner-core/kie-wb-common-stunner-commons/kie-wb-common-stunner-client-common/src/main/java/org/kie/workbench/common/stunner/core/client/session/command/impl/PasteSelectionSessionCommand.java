@@ -32,7 +32,7 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.ClipboardControl;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
@@ -65,7 +65,7 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<C
 
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
-    private final Event<CanvasElementSelectedEvent> elementSelectedEvent;
+    private final Event<CanvasSelectionEvent> selectionEvent;
     private final List<String> clonedElements;
     private ClipboardControl<Element, AbstractCanvas, ClientSession> clipboardControl;
     private final CopySelectionSessionCommand copySelectionSessionCommand;
@@ -77,12 +77,12 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<C
     @Inject
     public PasteSelectionSessionCommand(final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                         final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
-                                        final Event<CanvasElementSelectedEvent> elementSelectedEvent,
+                                        final Event<CanvasSelectionEvent> selectionEvent,
                                         final SessionCommandFactory sessionCommandFactory) {
         super(true);
         this.sessionCommandManager = sessionCommandManager;
         this.canvasCommandFactory = canvasCommandFactory;
-        this.elementSelectedEvent = elementSelectedEvent;
+        this.selectionEvent = selectionEvent;
         this.clonedElements = new ArrayList<>();
         this.copySelectionSessionCommand = sessionCommandFactory.newCopySelectionCommand();
     }
@@ -137,13 +137,13 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<C
             }
 
             final CommandResult<CanvasViolation> result;
-            if(wasNodesDeletedFromGraph()){
+            if (wasNodesDeletedFromGraph()) {
                 //in case of a cut command the source elements were deleted from graph, so first undo the command to take node back into canvas
                 clipboardControl.getRollbackCommands().forEach(command -> command.undo(getCanvasHandler()));
                 result = sessionCommandManager.execute(getCanvasHandler(), commandBuilder.build());
                 //after the clone execution than delete source elements again
                 clipboardControl.getRollbackCommands().forEach(command -> command.execute(getCanvasHandler()));
-            }else {
+            } else {
                 //if elements are still on the graph, in case copy command, just execute the clone commands
                 result = sessionCommandManager.execute(getCanvasHandler(), commandBuilder.build());
             }
@@ -172,7 +172,7 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<C
     }
 
     public String getCanvasViolations(CommandResult<CanvasViolation> result) {
-        if(Objects.nonNull(result) && Objects.nonNull(result.getViolations())) {
+        if (Objects.nonNull(result) && Objects.nonNull(result.getViolations())) {
             return CommandUtils.toList(result.getViolations()).stream().map(Objects::toString).collect(Collectors.joining());
         }
         return "";
@@ -183,7 +183,7 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<C
     }
 
     private void fireSelectedElementEvent() {
-        clonedElements.stream().forEach(uuid -> elementSelectedEvent.fire(new CanvasElementSelectedEvent(getCanvasHandler(), uuid)));
+        clonedElements.stream().forEach(uuid -> selectionEvent.fire(new CanvasSelectionEvent(getCanvasHandler(), uuid)));
     }
 
     private String getNewParentUUID(Node node) {

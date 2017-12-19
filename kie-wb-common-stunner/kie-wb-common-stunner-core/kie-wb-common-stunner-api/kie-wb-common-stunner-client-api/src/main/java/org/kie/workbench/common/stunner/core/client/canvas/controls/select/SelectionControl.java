@@ -20,15 +20,13 @@ import java.util.Collection;
 
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasRegistationControl;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
 /**
  * Mediator for elements selection operations in a canvas.
  */
-public interface SelectionControl<C extends CanvasHandler, E extends Element> extends CanvasRegistationControl<C, E>,
-                                                                                      CanvasControl.SessionAware<ClientFullSession> {
+public interface SelectionControl<C extends CanvasHandler, E extends Element>
+        extends CanvasControl<C> {
 
     SelectionControl<C, E> select(final E item);
 

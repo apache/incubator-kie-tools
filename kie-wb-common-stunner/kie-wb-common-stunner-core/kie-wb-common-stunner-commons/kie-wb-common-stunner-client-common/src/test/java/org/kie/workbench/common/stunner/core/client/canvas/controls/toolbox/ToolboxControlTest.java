@@ -26,7 +26,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasShapeRemovedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxFactory;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -123,9 +123,9 @@ public class ToolboxControlTest {
     public void testElementSelectedEvent() {
         final String uuid = "uuid1";
         when(element.getUUID()).thenReturn(uuid);
-        final CanvasElementSelectedEvent event = new CanvasElementSelectedEvent(canvasHandler,
-                                                                                element.getUUID());
-        tested.onCanvasElementSelectedEvent(event);
+        final CanvasSelectionEvent event = new CanvasSelectionEvent(canvasHandler,
+                                                                    element.getUUID());
+        tested.onCanvasSelectionEvent(event);
         verify(delegated,
                times(1)).show(eq(uuid));
         verify(delegated,

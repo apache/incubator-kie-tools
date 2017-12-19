@@ -61,9 +61,8 @@ public class NodeShapeImpl<W, D extends ShapeViewDef<W, V>, V extends ShapeView>
     @Override
     public void applyPosition(final Node<View<W>, Edge> element,
                               final MutationContext mutationContext) {
-        final Point2D position = GraphUtils.getPosition(element.getContent());
-        getShapeView().setShapeX(position.getX());
-        getShapeView().setShapeY(position.getY());
+        final Point2D location = GraphUtils.getPosition(element.getContent());
+        getShapeView().setShapeLocation(location);
     }
 
     @Override

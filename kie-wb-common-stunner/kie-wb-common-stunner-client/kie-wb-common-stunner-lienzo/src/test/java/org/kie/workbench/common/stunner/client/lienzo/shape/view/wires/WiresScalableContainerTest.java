@@ -46,12 +46,6 @@ public class WiresScalableContainerTest {
     private static final double BB_HEIGHT = 45.05d;
 
     @Mock
-    private Runnable beforeCallback;
-
-    @Mock
-    private Runnable afterCallback;
-
-    @Mock
     private IPrimitive<?> whPrimitive;
 
     @Mock
@@ -99,15 +93,9 @@ public class WiresScalableContainerTest {
         tested.scaleTo(x,
                        y,
                        newWidth,
-                       newHeight,
-                       beforeCallback,
-                       afterCallback);
+                       newHeight);
         assertEquals(tested,
                      wsc);
-        verify(beforeCallback,
-               times(1)).run();
-        verify(afterCallback,
-               times(1)).run();
         verify(whAttributes,
                times(1)).setX(eq(x));
         verify(whAttributes,
@@ -127,15 +115,9 @@ public class WiresScalableContainerTest {
         tested.scaleTo(x,
                        y,
                        newSize,
-                       newSize,
-                       beforeCallback,
-                       afterCallback);
+                       newSize);
         assertEquals(tested,
                      wsc);
-        verify(beforeCallback,
-               times(1)).run();
-        verify(afterCallback,
-               times(1)).run();
         verify(tranformableContainer,
                times(1)).add(eq(nonScalablePrimitive));
         verify(tranformableContainer,
@@ -157,17 +139,11 @@ public class WiresScalableContainerTest {
         tested.scaleTo(x,
                        y,
                        newSize,
-                       newSize,
-                       beforeCallback,
-                       afterCallback);
+                       newSize);
         assertEquals(tested,
                      wsc0);
         assertEquals(tested,
                      wsc2);
-        verify(beforeCallback,
-               times(1)).run();
-        verify(afterCallback,
-               times(1)).run();
         verify(whAttributes,
                times(1)).setX(eq(x));
         verify(whAttributes,
@@ -197,15 +173,9 @@ public class WiresScalableContainerTest {
         tested.scaleTo(x,
                        y,
                        newWidth,
-                       newHeight,
-                       beforeCallback,
-                       afterCallback);
+                       newHeight);
         assertEquals(tested,
                      wsc);
-        verify(beforeCallback,
-               times(1)).run();
-        verify(afterCallback,
-               times(1)).run();
         verify(whAttributes,
                times(1)).setX(eq(x));
         verify(whAttributes,
@@ -226,15 +196,9 @@ public class WiresScalableContainerTest {
         tested.scaleTo(x,
                        y,
                        newWidth,
-                       newHeight,
-                       beforeCallback,
-                       afterCallback);
+                       newHeight);
         assertEquals(tested,
                      wsc);
-        verify(beforeCallback,
-               times(1)).run();
-        verify(afterCallback,
-               times(1)).run();
         verify(whAttributes,
                times(1)).setX(eq(x));
         verify(whAttributes,

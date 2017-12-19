@@ -23,11 +23,12 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.client.util.StunnerClientLogger;
-import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 @Dependent
-public class LogBoundsDevCommand extends AbstractSelectionDevCommand {
+public class LogBoundsDevCommand extends AbstractSelectedNodeDevCommand {
 
     private static Logger LOGGER = Logger.getLogger(LogBoundsDevCommand.class.getName());
 
@@ -46,7 +47,7 @@ public class LogBoundsDevCommand extends AbstractSelectionDevCommand {
     }
 
     @Override
-    protected void execute(final Element<View<?>> item) {
-        StunnerClientLogger.logBounds(item);
+    protected void execute(final Node<? extends View<?>, Edge> node) {
+        StunnerClientLogger.logBounds(node);
     }
 }

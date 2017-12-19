@@ -22,7 +22,7 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.Session;
@@ -33,7 +33,7 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.Session
 public class PasteSelectionSessionCommand extends org.kie.workbench.common.stunner.core.client.session.command.impl.PasteSelectionSessionCommand {
 
     @Inject
-    public PasteSelectionSessionCommand(@Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager, @CaseManagementEditor CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory, Event<CanvasElementSelectedEvent> elementSelectedEvent, @CaseManagementEditor SessionCommandFactory sessionCommandFactory) {
+    public PasteSelectionSessionCommand(@Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager, @CaseManagementEditor CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory, Event<CanvasSelectionEvent> elementSelectedEvent, @CaseManagementEditor SessionCommandFactory sessionCommandFactory) {
         super(sessionCommandManager, canvasCommandFactory, elementSelectedEvent, sessionCommandFactory);
     }
 }

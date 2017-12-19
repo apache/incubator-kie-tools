@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -42,9 +43,19 @@ public class ToolboxControlImpl<F extends ToolboxFactory<AbstractCanvasHandler, 
 
     private final Supplier<List<F>> toolboxFactories;
     private final Toolboxes toolboxes = new Toolboxes();
+    private final Predicate<String> showToolboxPredicate;
+
+    public static final Predicate<String> ALWAYS_SHOW_PREDICATE = id -> true;
 
     ToolboxControlImpl(final Supplier<List<F>> toolboxFactories) {
+        this(toolboxFactories,
+             ALWAYS_SHOW_PREDICATE);
+    }
+
+    ToolboxControlImpl(final Supplier<List<F>> toolboxFactories,
+                       final Predicate<String> showToolboxPredicate) {
         this.toolboxFactories = toolboxFactories;
+        this.showToolboxPredicate = showToolboxPredicate;
     }
 
     @Override
@@ -58,7 +69,7 @@ public class ToolboxControlImpl<F extends ToolboxFactory<AbstractCanvasHandler, 
                 final MouseClickHandler clickHandler = new MouseClickHandler() {
                     @Override
                     public void handle(final MouseClickEvent event) {
-                        if (event.isButtonLeft() || event.isButtonRight()) {
+                        if (event.isButtonLeft()) {
                             show(element);
                         }
                     }
@@ -90,19 +101,23 @@ public class ToolboxControlImpl<F extends ToolboxFactory<AbstractCanvasHandler, 
 
     @SuppressWarnings("unchecked")
     public ToolboxControl<AbstractCanvasHandler, Element> show(final String uuid) {
-        final Node node = canvasHandler.getGraphIndex().getNode(uuid);
-        // Only nodes have toolbox/es, discard processing for edges.
-        if (null != node) {
-            return show(node);
+        if (showToolboxPredicate.test(uuid)) {
+            final Node node = canvasHandler.getGraphIndex().getNode(uuid);
+            // Only nodes have toolbox/es, discard processing for edges.
+            if (null != node) {
+                return show(node);
+            }
         }
         return this;
     }
 
     public ToolboxControl<AbstractCanvasHandler, Element> show(final Element element) {
-        if (!toolboxes.isTheElement(element)) {
-            load(element);
+        if (showToolboxPredicate.test(element.getUUID())) {
+            if (!toolboxes.isTheElement(element)) {
+                load(element);
+            }
+            toolboxes.show();
         }
-        toolboxes.show();
         return this;
     }
 

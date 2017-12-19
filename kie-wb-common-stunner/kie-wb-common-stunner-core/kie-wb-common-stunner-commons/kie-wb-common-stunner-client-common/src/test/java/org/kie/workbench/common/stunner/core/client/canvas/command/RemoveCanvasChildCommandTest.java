@@ -82,11 +82,11 @@ public class RemoveCanvasChildCommandTest extends AbstractCanvasCommandTest {
                times(1)).removeChild(eq(graph1Instance.startNode),
                                      eq(graph1Instance.intermNode));
         verify(canvasHandler,
-               times(1)).applyElementMutation(eq(graph1Instance.startNode),
-                                              any(MutationContext.class));
+               never()).applyElementMutation(eq(graph1Instance.startNode),
+                                             any(MutationContext.class));
         verify(canvasHandler,
-               times(1)).applyElementMutation(eq(graph1Instance.intermNode),
-                                              any(MutationContext.class));
+               never()).applyElementMutation(eq(graph1Instance.intermNode),
+                                             any(MutationContext.class));
         verify(connectorShapeView1,
                times(1)).moveToTop();
         verify(connectorShapeView1,

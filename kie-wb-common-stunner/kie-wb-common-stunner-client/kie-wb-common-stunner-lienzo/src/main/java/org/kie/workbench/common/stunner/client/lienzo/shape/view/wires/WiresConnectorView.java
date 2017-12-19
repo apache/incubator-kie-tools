@@ -97,7 +97,7 @@ public class WiresConnectorView<T> extends WiresConnector
     @SuppressWarnings("unchecked")
     public T setControl(final WiresConnectorControl connectorControl) {
         this.connectorControl = connectorControl;
-        return (T) this;
+        return cast();
     }
 
     public WiresConnectorControl getControl() {
@@ -151,17 +151,10 @@ public class WiresConnectorView<T> extends WiresConnector
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T setShapeX(final double x) {
-        getGroup().setX(x);
-        return (T) this;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public T setShapeY(final double y) {
-        getGroup().setY(y);
-        return (T) this;
+    public T setShapeLocation(final Point2D location) {
+        getGroup().setLocation(new com.ait.lienzo.client.core.types.Point2D(location.getX(),
+                                                                            location.getY()));
+        return cast();
     }
 
     @Override
@@ -173,7 +166,7 @@ public class WiresConnectorView<T> extends WiresConnector
     @SuppressWarnings("unchecked")
     public T setAlpha(final double alpha) {
         getGroup().setAlpha(alpha);
-        return (T) this;
+        return cast();
     }
 
     @Override
@@ -196,7 +189,7 @@ public class WiresConnectorView<T> extends WiresConnector
         if (null != getTail()) {
             getTail().setFillColor(color);
         }
-        return (T) this;
+        return cast();
     }
 
     @Override
@@ -214,7 +207,7 @@ public class WiresConnectorView<T> extends WiresConnector
         if (null != getTail()) {
             getTail().setFillAlpha(alpha);
         }
-        return (T) this;
+        return cast();
     }
 
     @Override
@@ -232,7 +225,7 @@ public class WiresConnectorView<T> extends WiresConnector
         if (null != getTail()) {
             getTail().setStrokeColor(color);
         }
-        return (T) this;
+        return cast();
     }
 
     @Override
@@ -250,7 +243,7 @@ public class WiresConnectorView<T> extends WiresConnector
         if (null != getTail()) {
             getTail().setStrokeAlpha(alpha);
         }
-        return (T) this;
+        return cast();
     }
 
     @Override
@@ -268,35 +261,41 @@ public class WiresConnectorView<T> extends WiresConnector
         if (null != getTail()) {
             getTail().setStrokeWidth(width);
         }
-        return (T) this;
+        return cast();
+    }
+
+    @Override
+    public T setDragEnabled(boolean draggable) {
+        setDraggable();
+        return cast();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T moveToTop() {
         getGroup().moveToTop();
-        return (T) this;
+        return cast();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T moveToBottom() {
         getGroup().moveToBottom();
-        return (T) this;
+        return cast();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T moveUp() {
         getGroup().moveUp();
-        return (T) this;
+        return cast();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T moveDown() {
         getGroup().moveDown();
-        return (T) this;
+        return cast();
     }
 
     @Override
@@ -309,7 +308,7 @@ public class WiresConnectorView<T> extends WiresConnector
                 throw new UnsupportedOperationException("Control point type [" + type + "] not supported yet");
             }
         }
-        return (T) this;
+        return cast();
     }
 
     @Override
@@ -318,7 +317,7 @@ public class WiresConnectorView<T> extends WiresConnector
         if (null != getControl()) {
             getControl().hideControlPoints();
         }
-        return (T) this;
+        return cast();
     }
 
     @Override
@@ -466,6 +465,7 @@ public class WiresConnectorView<T> extends WiresConnector
         connection.setYOffset(0d);
     }
 
+    @SuppressWarnings("unchecked")
     private T cast() {
         return (T) this;
     }

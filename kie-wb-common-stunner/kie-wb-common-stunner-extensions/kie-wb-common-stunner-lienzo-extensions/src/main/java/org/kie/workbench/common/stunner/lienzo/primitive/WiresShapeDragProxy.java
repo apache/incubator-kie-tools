@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.lienzo.primitive;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.types.Point2D;
 
 public class WiresShapeDragProxy extends AbstractDragProxy<WiresShape> {
 
@@ -50,15 +51,11 @@ public class WiresShapeDragProxy extends AbstractDragProxy<WiresShape> {
     }
 
     @Override
-    protected void setX(final WiresShape shape,
-                        final int x) {
-        shape.setX(x);
-    }
-
-    @Override
-    protected void setY(final WiresShape shape,
-                        final int y) {
-        shape.setY(y);
+    protected void setLocation(WiresShape shape,
+                               int x,
+                               int y) {
+        shape.setLocation(new Point2D(x,
+                                      y));
     }
 
     protected WiresManager getWiresManager(final Layer layer) {

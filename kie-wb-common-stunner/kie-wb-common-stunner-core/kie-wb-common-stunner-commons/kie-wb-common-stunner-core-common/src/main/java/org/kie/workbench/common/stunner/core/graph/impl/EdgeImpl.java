@@ -22,7 +22,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 
 @Portable
-public class EdgeImpl<C> extends ElementImpl<C> implements Edge<C, Node> {
+public class EdgeImpl<C> extends AbstractElement<C> implements Edge<C, Node> {
 
     private Node sourceNode;
     private Node targetNode;
@@ -47,5 +47,15 @@ public class EdgeImpl<C> extends ElementImpl<C> implements Edge<C, Node> {
 
     public void setTargetNode(final Node targetNode) {
         this.targetNode = targetNode;
+    }
+
+    @Override
+    public Node<C, Edge> asNode() {
+        return null;
+    }
+
+    @Override
+    public Edge<C, Node> asEdge() {
+        return this;
     }
 }

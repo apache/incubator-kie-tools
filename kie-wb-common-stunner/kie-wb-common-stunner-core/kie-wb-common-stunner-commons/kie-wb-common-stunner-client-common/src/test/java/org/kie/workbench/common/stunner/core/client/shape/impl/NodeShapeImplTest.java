@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -105,9 +106,7 @@ public class NodeShapeImplTest {
         tested.applyPosition(element,
                              MutationContext.STATIC);
         verify(view,
-               times(1)).setShapeX(10d);
-        verify(view,
-               times(1)).setShapeY(20d);
+               times(1)).setShapeLocation(new Point2D(10d, 20d));
     }
 
     @Test

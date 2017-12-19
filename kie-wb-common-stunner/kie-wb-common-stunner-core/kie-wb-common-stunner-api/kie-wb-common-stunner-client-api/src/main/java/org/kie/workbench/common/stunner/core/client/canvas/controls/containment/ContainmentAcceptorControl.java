@@ -27,8 +27,8 @@ public interface ContainmentAcceptorControl<H extends CanvasHandler>
                 RequiresCommandManager<H> {
 
     boolean allow(final Element parent,
-                  final Node child);
+                  final Node[] children);
 
     boolean accept(final Element parent,
-                   final Node child);
+                   final Node[] children);
 }

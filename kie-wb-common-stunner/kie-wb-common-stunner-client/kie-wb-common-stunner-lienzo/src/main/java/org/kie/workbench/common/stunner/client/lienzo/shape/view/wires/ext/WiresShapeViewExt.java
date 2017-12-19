@@ -205,7 +205,6 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
                                                                                width,
                                                                                height);
             getShape().setFillGradient(gradient);
-            textViewDecorator.setTextBoundaries(getShape().getBoundingBox());
         }
         return cast();
     }
@@ -353,7 +352,7 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
     private HandlerRegistration[] registerDragHandler(final ViewHandler<DragEvent> eventHandler) {
         if (!getAttachableShape().isDraggable()) {
             final DragHandler dragHandler = (DragHandler) eventHandler;
-            setDraggable(true);
+            setDragEnabled(true);
             HandlerRegistration dragStartReg = addWiresDragStartHandler(wiresDragStartEvent -> {
                 final DragEvent e = buildDragEvent(wiresDragStartEvent);
                 dragHandler.start(e);

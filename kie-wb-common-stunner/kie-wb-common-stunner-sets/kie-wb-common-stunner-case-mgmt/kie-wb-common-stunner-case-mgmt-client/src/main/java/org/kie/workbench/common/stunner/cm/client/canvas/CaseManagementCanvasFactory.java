@@ -20,9 +20,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlFactory;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasFactory;
@@ -39,6 +37,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.Dock
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SingleSelection;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 
 /**
@@ -63,11 +62,9 @@ public class CaseManagementCanvasFactory
     private final ManagedInstance<ClipboardControl> clipboardControls;
     private final ManagedInstance<AbstractCanvas> canvasInstances;
     private final ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances;
-    private final WiresControlFactory caseManagementControlFactory;
 
     protected CaseManagementCanvasFactory() {
         this(null,
-             null,
              null,
              null,
              null,
@@ -89,7 +86,7 @@ public class CaseManagementCanvasFactory
                                        final @CaseManagementEditor ManagedInstance<ContainmentAcceptorControl> containmentAcceptorControls,
                                        final ManagedInstance<DockingAcceptorControl> dockingAcceptorControls,
                                        final ManagedInstance<CanvasInPlaceTextEditorControl> nameEditionControls,
-                                       final ManagedInstance<SelectionControl> selectionControls,
+                                       final @SingleSelection ManagedInstance<SelectionControl> selectionControls,
                                        final @CaseManagementEditor @Observer ManagedInstance<ElementBuilderControl> elementBuilderControls,
                                        final @CaseManagementEditor ManagedInstance<NodeBuilderControl> nodeBuilderControls,
                                        final ManagedInstance<EdgeBuilderControl> edgeBuilderControls,
@@ -98,8 +95,7 @@ public class CaseManagementCanvasFactory
                                        final ManagedInstance<KeyboardControl> keyboardControls,
                                        final ManagedInstance<ClipboardControl> clipboardControls,
                                        final @CaseManagementEditor ManagedInstance<AbstractCanvas> canvasInstances,
-                                       final @CaseManagementEditor ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances,
-                                       final @CaseManagementEditor WiresControlFactory caseManagementControlFactory) {
+                                       final @CaseManagementEditor ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances) {
         this.connectionAcceptorControls = connectionAcceptorControls;
         this.containmentAcceptorControls = containmentAcceptorControls;
         this.dockingAcceptorControls = dockingAcceptorControls;
@@ -113,7 +109,6 @@ public class CaseManagementCanvasFactory
         this.keyboardControls = keyboardControls;
         this.canvasInstances = canvasInstances;
         this.canvasHandlerInstances = canvasHandlerInstances;
-        this.caseManagementControlFactory = caseManagementControlFactory;
         this.clipboardControls = clipboardControls;
     }
 
@@ -148,9 +143,7 @@ public class CaseManagementCanvasFactory
 
     @Override
     public AbstractCanvas newCanvas() {
-        final AbstractCanvas canvas = canvasInstances.get();
-        ((WiresCanvas) canvas).getWiresManager().setWiresControlFactory(caseManagementControlFactory);
-        return canvas;
+        return canvasInstances.get();
     }
 
     @Override

@@ -51,6 +51,6 @@ public class DeleteSelectionToolbarCommand extends AbstractToolbarCommand<Client
 
     @Override
     protected boolean requiresConfirm() {
-        return true;
+        return false;
     }
 }

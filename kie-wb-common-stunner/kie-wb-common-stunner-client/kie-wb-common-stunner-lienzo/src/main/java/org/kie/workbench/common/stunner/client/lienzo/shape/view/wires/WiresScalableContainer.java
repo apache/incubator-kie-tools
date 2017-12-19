@@ -21,6 +21,7 @@ import java.util.function.Predicate;
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
+import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresLayoutContainer;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
@@ -29,16 +30,11 @@ public class WiresScalableContainer extends WiresLayoutContainer {
 
     private final NFastArrayList<IPrimitive<?>> scalableChildren = new NFastArrayList<>();
     private Group transformableContainer;
-    private double width;
-    private double height;
 
     public WiresScalableContainer() {
-        this.width = -1;
-        this.height = -1;
     }
 
     WiresScalableContainer(final Group transformableContainer) {
-        this();
         this.transformableContainer = transformableContainer;
     }
 
@@ -70,54 +66,39 @@ public class WiresScalableContainer extends WiresLayoutContainer {
         } else {
             if (null == transformableContainer) {
                 transformableContainer = new Group();
-                getGroup().add(transformableContainer);
+                addChild(transformableContainer);
             }
             transformableContainer.add(child);
         }
         return this;
     }
 
-    public void scaleTo(final double x,
-                        final double y,
-                        final double width,
-                        final double height) {
-        scaleTo(x,
-                y,
-                width,
-                height,
-                () -> {
-                },
-                () -> {
-                });
+    @Override
+    public LayoutContainer execute() {
+        scaleTo(getOffset().getX(),
+                getOffset().getY(),
+                getWidth(),
+                getHeight());
+        return super.execute();
     }
 
     public void scaleTo(final double x,
                         final double y,
                         final double width,
-                        final double height,
-                        final Runnable before,
-                        final Runnable after) {
-        if (isSizeChanged(width,
-                          height)) {
-            this.width = width;
-            this.height = height;
-            before.run();
-            if (null != transformableContainer) {
-                final BoundingBox bb = transformableContainer.getBoundingBox();
-                final double sx = width / bb.getWidth();
-                final double sy = height / bb.getHeight();
-                transformableContainer.setX(x).setY(y).setScale(sx,
-                                                                sy);
-            }
-            for (int i = 0; i < scalableChildren.size(); i++) {
-                final IPrimitive<?> child = scalableChildren.get(i);
-                scaleChildTo(child,
-                             x,
-                             y,
-                             width,
-                             height);
-            }
-            after.run();
+                        final double height) {
+        if (null != transformableContainer) {
+            final BoundingBox bb = transformableContainer.getBoundingBox();
+            final double sx = width / bb.getWidth();
+            final double sy = height / bb.getHeight();
+            transformableContainer.setX(x).setY(y).setScale(sx, sy);
+        }
+        for (int i = 0; i < scalableChildren.size(); i++) {
+            final IPrimitive<?> child = scalableChildren.get(i);
+            scaleChildTo(child,
+                         x,
+                         y,
+                         width,
+                         height);
         }
     }
 
@@ -131,10 +112,5 @@ public class WiresScalableContainer extends WiresLayoutContainer {
 
     private Predicate<IPrimitive> hasWidthHeight() {
         return primitive -> getWidth(primitive) > 0 && getHeight(primitive) > 0;
-    }
-
-    private boolean isSizeChanged(final double width,
-                                  final double height) {
-        return this.width != width || this.height != height;
     }
 }

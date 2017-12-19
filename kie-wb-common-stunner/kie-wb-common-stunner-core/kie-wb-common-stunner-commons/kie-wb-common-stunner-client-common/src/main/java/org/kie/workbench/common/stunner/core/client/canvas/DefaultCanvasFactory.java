@@ -31,10 +31,11 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.Cl
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.LocationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.resize.ResizeControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.select.MultipleSelection;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.ToolboxControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
@@ -58,7 +59,7 @@ public class DefaultCanvasFactory
     private final ManagedInstance<DockingAcceptorControl> dockingAcceptorControls;
     private final ManagedInstance<CanvasInPlaceTextEditorControl> inPlaceTextEditorControls;
     private final ManagedInstance<SelectionControl> selectionControls;
-    private final ManagedInstance<DragControl> dragControls;
+    private final ManagedInstance<LocationControl> locationControls;
     private final ManagedInstance<ToolboxControl> toolboxControls;
     private final ManagedInstance<ElementBuilderControl> elementBuilderControls;
     private final ManagedInstance<NodeBuilderControl> nodeBuilderControls;
@@ -97,8 +98,8 @@ public class DefaultCanvasFactory
                                 final ManagedInstance<ContainmentAcceptorControl> containmentAcceptorControls,
                                 final ManagedInstance<DockingAcceptorControl> dockingAcceptorControls,
                                 final ManagedInstance<CanvasInPlaceTextEditorControl> inPlaceTextEditorControls,
-                                final ManagedInstance<SelectionControl> selectionControls,
-                                final ManagedInstance<DragControl> dragControls,
+                                final @MultipleSelection ManagedInstance<SelectionControl> selectionControls,
+                                final ManagedInstance<LocationControl> locationControls,
                                 final @Default ManagedInstance<ToolboxControl> toolboxControls,
                                 final @Default @Observer ManagedInstance<ElementBuilderControl> elementBuilderControls,
                                 final ManagedInstance<NodeBuilderControl> nodeBuilderControls,
@@ -115,7 +116,7 @@ public class DefaultCanvasFactory
         this.dockingAcceptorControls = dockingAcceptorControls;
         this.inPlaceTextEditorControls = inPlaceTextEditorControls;
         this.selectionControls = selectionControls;
-        this.dragControls = dragControls;
+        this.locationControls = locationControls;
         this.toolboxControls = toolboxControls;
         this.elementBuilderControls = elementBuilderControls;
         this.nodeBuilderControls = nodeBuilderControls;
@@ -143,8 +144,8 @@ public class DefaultCanvasFactory
                           inPlaceTextEditorControls)
                 .register(SelectionControl.class,
                           selectionControls)
-                .register(DragControl.class,
-                          dragControls)
+                .register(LocationControl.class,
+                          locationControls)
                 .register(ToolboxControl.class,
                           toolboxControls)
                 .register(ElementBuilderControl.class,

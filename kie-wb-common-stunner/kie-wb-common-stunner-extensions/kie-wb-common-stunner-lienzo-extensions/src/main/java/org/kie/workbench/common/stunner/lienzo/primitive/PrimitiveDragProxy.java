@@ -48,14 +48,9 @@ public class PrimitiveDragProxy extends AbstractDragProxy<IPrimitive<?>> {
     }
 
     @Override
-    protected void setX(final IPrimitive<?> shape,
-                        final int x) {
-        shape.setX(x);
-    }
-
-    @Override
-    protected void setY(final IPrimitive<?> shape,
-                        final int y) {
-        shape.setY(y);
+    protected void setLocation(IPrimitive<?> shape,
+                               int x,
+                               int y) {
+        shape.setX(x).setY(y);
     }
 }

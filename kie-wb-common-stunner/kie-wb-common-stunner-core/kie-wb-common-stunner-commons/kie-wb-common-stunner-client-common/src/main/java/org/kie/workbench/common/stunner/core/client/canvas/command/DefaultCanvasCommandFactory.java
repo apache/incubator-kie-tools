@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
+import java.util.Collection;
 import java.util.function.Consumer;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -83,6 +84,11 @@ public class DefaultCanvasCommandFactory implements CanvasCommandFactory<Abstrac
     @Override
     public CanvasCommand<AbstractCanvasHandler> deleteNode(final Node candidate) {
         return new DeleteNodeCommand(candidate);
+    }
+
+    @Override
+    public CanvasCommand<AbstractCanvasHandler> delete(final Collection<Element> candidates) {
+        return new DeleteElementsCommand(candidates);
     }
 
     @Override

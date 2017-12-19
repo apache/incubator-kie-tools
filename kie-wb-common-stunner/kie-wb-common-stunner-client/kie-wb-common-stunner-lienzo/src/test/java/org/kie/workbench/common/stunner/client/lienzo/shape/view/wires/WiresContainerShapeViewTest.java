@@ -17,17 +17,22 @@
 package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
+import org.mockito.Mock;
 
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresContainerShapeViewTest {
+
+    @Mock
+    private WiresShapeControl control;
 
     @Test
     @SuppressWarnings("unchecked")
@@ -49,6 +54,11 @@ public class WiresContainerShapeViewTest {
 
     private WiresContainerShapeView makeShape() {
         return new WiresContainerShapeView(new ViewEventType[]{},
-                                           new MultiPath());
+                                           new MultiPath()) {
+            @Override
+            public WiresShapeControl getControl() {
+                return control;
+            }
+        };
     }
 }

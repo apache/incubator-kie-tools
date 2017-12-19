@@ -26,11 +26,13 @@ import com.ait.lienzo.client.core.shape.wires.IConnectionAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IContainmentAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IDockingAcceptor;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlFactory;
 import com.ait.lienzo.client.widget.LienzoPanel;
 import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoLayer;
 import org.kie.workbench.common.stunner.client.lienzo.util.LienzoLayerUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
+import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasClearEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasDrawnEvent;
@@ -77,6 +79,15 @@ public abstract class WiresCanvas extends AbstractCanvas<WiresCanvas.View> {
               canvasFocusedEvent,
               layer,
               view);
+    }
+
+    protected abstract WiresControlFactory getWiresControlFactory();
+
+    @Override
+    public Canvas initialize(final int width,
+                             final int height) {
+        getWiresManager().setWiresControlFactory(getWiresControlFactory());
+        return this;
     }
 
     public WiresManager getWiresManager() {

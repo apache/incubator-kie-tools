@@ -29,7 +29,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.command.AddNodeComman
 import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.command.SetConnectionTargetNodeCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPositionCommand;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
@@ -96,7 +96,7 @@ public class CreateNodeActionTest {
     private CanvasLayoutUtils canvasLayoutUtils;
 
     @Mock
-    private EventSourceMock<CanvasElementSelectedEvent> canvasElementSelectedEvent;
+    private EventSourceMock<CanvasSelectionEvent> canvasElementSelectedEvent;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
@@ -251,12 +251,12 @@ public class CreateNodeActionTest {
         assertEquals(targetNode, setTargetNodeCommand.getNode());
         assertEquals(targetNode, updateElementPositionCommand.getElement());
         assertEquals(new Point2D(100d, 500d), updateElementPositionCommand.getLocation());
-        final ArgumentCaptor<CanvasElementSelectedEvent> eventArgumentCaptor =
-                ArgumentCaptor.forClass(CanvasElementSelectedEvent.class);
+        final ArgumentCaptor<CanvasSelectionEvent> eventArgumentCaptor =
+                ArgumentCaptor.forClass(CanvasSelectionEvent.class);
         verify(canvasElementSelectedEvent,
                times(1)).fire(eventArgumentCaptor.capture());
-        final CanvasElementSelectedEvent eCaptured = eventArgumentCaptor.getValue();
+        final CanvasSelectionEvent eCaptured = eventArgumentCaptor.getValue();
         assertEquals(TARGET_NODE_UUID,
-                     eCaptured.getElementUUID());
+                     eCaptured.getIdentifiers().iterator().next());
     }
 }

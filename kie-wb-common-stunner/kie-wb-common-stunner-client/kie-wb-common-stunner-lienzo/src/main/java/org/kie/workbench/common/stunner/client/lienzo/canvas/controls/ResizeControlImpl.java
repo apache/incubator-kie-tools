@@ -32,7 +32,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanv
 import org.kie.workbench.common.stunner.core.client.canvas.controls.resize.ResizeControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.AbstractCanvasHandlerEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -147,14 +147,17 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
     }
 
     @SuppressWarnings("unchecked")
-    private void onCanvasElementSelectedEvent(@Observes CanvasElementSelectedEvent event) {
+    private void onCanvasSelectionEvent(@Observes CanvasSelectionEvent event) {
         checkNotNull("event",
                      event);
-        final String uuid = event.getElementUUID();
-        if (isSameCanvas(event) && isRegistered(uuid)) {
-            final HasControlPoints<?> hasControlPoints = getControlPointsInstance(uuid);
-            if (!hasControlPoints.areControlsVisible()) {
-                showCPs(hasControlPoints);
+        if (event.getIdentifiers().size() == 1) {
+            final String uuid = event.getIdentifiers().iterator().next();
+            if (isSameCanvas(event) && isRegistered(uuid)) {
+                hideALLCPs();
+                final HasControlPoints<?> hasControlPoints = getControlPointsInstance(uuid);
+                if (!hasControlPoints.areControlsVisible()) {
+                    showCPs(hasControlPoints);
+                }
             }
         }
     }

@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.client.command;
 
+import java.util.Collection;
 import java.util.function.Consumer;
 
-import com.sun.org.apache.xalan.internal.xsltc.dom.ClonedNodeListIterator;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -44,6 +44,8 @@ public interface CanvasCommandFactory<H extends CanvasHandler> {
                                    final String shapeSetId);
 
     CanvasCommand<H> deleteNode(final Node candidate);
+
+    CanvasCommand<H> delete(final Collection<Element> candidates);
 
     CanvasCommand<H> addConnector(final Node sourceNode,
                                   final Edge candidate,

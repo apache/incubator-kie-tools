@@ -21,7 +21,6 @@ import java.util.function.Predicate;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
@@ -55,7 +54,7 @@ public class DeleteNodeAction implements ToolboxAction<AbstractCanvasHandler> {
         this(translationService,
              sessionCommandManager,
              commandFactory,
-             deleteNodeAction -> Window.confirm(translationService.getKeyValue(CoreTranslationMessages.ARE_YOU_SURE)));
+             deleteNodeAction -> true);
     }
 
     DeleteNodeAction(final ClientTranslationService translationService,

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 import javax.enterprise.context.Dependent;
@@ -33,7 +35,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 
@@ -64,9 +66,9 @@ public class ContainmentAcceptorControlImpl extends AbstractAcceptorControl
 
     @Override
     public boolean allow(final Element parent,
-                         final Node candidate) {
+                         final Node[] children) {
         return evaluate(parent,
-                        candidate,
+                        children,
                         command -> getCommandManager().allow(getCanvasHandler(),
                                                              command),
                         true);
@@ -74,62 +76,88 @@ public class ContainmentAcceptorControlImpl extends AbstractAcceptorControl
 
     @Override
     public boolean accept(final Element parent,
-                          final Node candidate) {
+                          final Node[] children) {
         return evaluate(parent,
-                        candidate,
+                        children,
                         command -> getCommandManager().execute(getCanvasHandler(),
                                                                command),
                         false);
     }
 
     private boolean evaluate(final Element parent,
-                             final Node candidate,
+                             final Node[] children,
                              final Function<Command<AbstractCanvasHandler, CanvasViolation>, CommandResult<CanvasViolation>> executor,
-                             final boolean highlightInvalid) {
-        if (parent == null && candidate == null) {
+                             final boolean highlights) {
+        // Cannot evaluate with no candidates.
+        if (children == null || children.length == 0) {
             return false;
         }
-        final CommandResult<CanvasViolation> result =
-                executor.apply(canvasCommandFactory.updateChildNode((Node) parent,
-                                                                    candidate));
-        if (highlightInvalid && CommandUtils.isError(result)) {
-            canvasHighlight.invalid(result.getViolations());
-        } else {
-            canvasHighlight.unhighLight();
+        // Do not accept multiple containment if children do not share same parent instance.
+        if (parent == null && children.length >= 2) {
+            return false;
         }
-        return isCommandSuccess(candidate,
-                                result);
+        // Generate the commands and perform the execution.
+        final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> builder =
+                new CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation>()
+                        .forward();
+        for (final Node node : children) {
+            builder.addCommand(canvasCommandFactory.updateChildNode((Node) parent,
+                                                                    node));
+        }
+        if (builder.size() > 0) {
+            final Command<AbstractCanvasHandler, CanvasViolation> command = builder.size() == 1 ?
+                    builder.get(0) :
+                    builder.build();
+            final CommandResult<CanvasViolation> result =
+                    executor.apply(command);
+            final boolean success = isCommandSuccess(result);
+            if (highlights && !success) {
+                canvasHighlight.invalid(result.getViolations());
+            } else {
+                canvasHighlight.unhighLight();
+            }
+            return success;
+        }
+        return true;
     }
 
     private final IContainmentAcceptor CONTAINMENT_ACCEPTOR = new IContainmentAcceptor() {
         @Override
         public boolean containmentAllowed(final WiresContainer wiresContainer,
-                                          final WiresShape wiresShape) {
-            if (!isWiresViewAccept(wiresContainer,
-                                   wiresShape)) {
+                                          final WiresShape[] shapes) {
+            if (!isWiresParentAccept(wiresContainer)) {
                 return false;
             }
-            final Node childNode = WiresUtils.getNode(getCanvasHandler(),
-                                                      wiresShape);
-            final Node parentNode = WiresUtils.getNode(getCanvasHandler(),
-                                                       wiresContainer);
+            final Node parentNode = toNode(wiresContainer);
             return allow(parentNode,
-                         childNode);
+                         toNodeArray(shapes));
         }
 
         @Override
         public boolean acceptContainment(final WiresContainer wiresContainer,
-                                         final WiresShape wiresShape) {
-            if (!isWiresViewAccept(wiresContainer,
-                                   wiresShape)) {
+                                         final WiresShape[] shapes) {
+            if (!isWiresParentAccept(wiresContainer)) {
                 return false;
             }
-            final Node childNode = WiresUtils.getNode(getCanvasHandler(),
-                                                      wiresShape);
-            final Node parentNode = WiresUtils.getNode(getCanvasHandler(),
-                                                       wiresContainer);
+            final Node parentNode = toNode(wiresContainer);
             return accept(parentNode,
-                          childNode);
+                          toNodeArray(shapes));
+        }
+
+        private Node[] toNodeArray(final WiresShape[] shapes) {
+            final List<Node> nodes = new ArrayList<>(shapes.length);
+            for (final WiresShape shape : shapes) {
+                final Node node = toNode(shape);
+                if (null != node) {
+                    nodes.add(node);
+                }
+            }
+            return nodes.toArray(new Node[nodes.size()]);
+        }
+
+        private Node toNode(final WiresContainer shape) {
+            return WiresUtils.getNode(getCanvasHandler(),
+                                      shape);
         }
     };
 }

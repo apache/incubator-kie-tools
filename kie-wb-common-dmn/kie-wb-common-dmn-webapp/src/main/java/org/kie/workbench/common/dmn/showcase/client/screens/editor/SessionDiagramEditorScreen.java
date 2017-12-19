@@ -26,7 +26,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.NavigateToExpressionEditorCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
@@ -113,7 +112,7 @@ public class SessionDiagramEditorScreen {
                                       final ShowcaseDiagramService diagramService,
                                       final SessionManager sessionManager,
                                       final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                      final @DMNEditor SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory,
+                                      final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory,
                                       final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent,
                                       final MenuDevCommandsBuilder menuDevCommandsBuilder,
                                       final ScreenPanelView screenPanelView,

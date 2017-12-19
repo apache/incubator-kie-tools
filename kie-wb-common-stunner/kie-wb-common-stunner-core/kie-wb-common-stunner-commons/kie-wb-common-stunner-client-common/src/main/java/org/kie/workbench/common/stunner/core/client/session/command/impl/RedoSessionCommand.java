@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.command.util.RedoCommandHandler;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
@@ -83,13 +84,18 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<ClientFullS
     public <V> void execute(final Callback<V> callback) {
         checkNotNull("callback",
                      callback);
-        CommandResult<?> result = null;
-        if (redoCommandHandler.isEnabled()) {
-            result = redoCommandHandler.execute(getSession().getCanvasHandler(),
-                                                sessionCommandManager);
-            checkState();
+        if (!redoCommandHandler.isEnabled()) {
+            callback.onSuccess();
         }
-        callback.onSuccess();
+        final CommandResult<?> result = redoCommandHandler.execute(getSession().getCanvasHandler(),
+                                                                   sessionCommandManager);
+        checkState();
+        if (CommandUtils.isError(result)) {
+            callback.onError((V) result);
+        } else {
+            callback.onSuccess();
+        }
+        getSession().getSelectionControl().clearSelection();
     }
 
     @SuppressWarnings("unchecked")

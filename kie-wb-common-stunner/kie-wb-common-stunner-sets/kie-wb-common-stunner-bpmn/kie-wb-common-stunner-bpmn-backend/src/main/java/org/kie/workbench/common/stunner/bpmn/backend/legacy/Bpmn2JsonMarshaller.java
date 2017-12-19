@@ -2870,7 +2870,9 @@ public class Bpmn2JsonMarshaller {
 //                  bounds.setY(y);
 //             }
         } else if (element instanceof Gateway) {
-            Bounds bounds = shape.getBounds();
+            // This statement does not apply in Stunner.
+            // In Stunner gateway bounds are given by the views, so any size is allowed.
+            /*Bounds bounds = shape.getBounds();
             float width = bounds.getWidth();
             float height = bounds.getHeight();
             if (width != 40 || height != 40) {
@@ -2882,7 +2884,7 @@ public class Bpmn2JsonMarshaller {
                 y = y - ((40 - height) / 2);
                 bounds.setX(x);
                 bounds.setY(y);
-            }
+            }*/
         }
     }
 

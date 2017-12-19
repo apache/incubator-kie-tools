@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.Observer;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.ObserverBuilderControl;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
@@ -62,7 +62,7 @@ public class CaseManagementObserverBuilderControl extends ObserverBuilderControl
                                                 final @CaseManagementEditor CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                                 final GraphBoundsIndexer graphBoundsIndexer,
                                                 final CanvasLayoutUtils canvasLayoutUtils,
-                                                final Event<CanvasElementSelectedEvent> elementSelectedEvent) {
+                                                final Event<CanvasSelectionEvent> selectionEvent) {
         super(clientDefinitionManager,
               clientFactoryServices,
               graphUtils,
@@ -70,7 +70,7 @@ public class CaseManagementObserverBuilderControl extends ObserverBuilderControl
               canvasCommandFactory,
               graphBoundsIndexer,
               canvasLayoutUtils,
-              elementSelectedEvent);
+              selectionEvent);
     }
 
     @Override

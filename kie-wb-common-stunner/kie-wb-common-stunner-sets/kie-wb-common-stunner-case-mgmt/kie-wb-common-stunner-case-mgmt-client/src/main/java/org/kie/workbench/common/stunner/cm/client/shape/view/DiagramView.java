@@ -68,7 +68,7 @@ public class DiagramView extends AbstractCaseManagementShape<DiagramView> {
     }
 
     @Override
-    public AbstractCaseManagementShape getGhost() {
+    protected AbstractCaseManagementShape createGhost() {
         return null;
     }
 }

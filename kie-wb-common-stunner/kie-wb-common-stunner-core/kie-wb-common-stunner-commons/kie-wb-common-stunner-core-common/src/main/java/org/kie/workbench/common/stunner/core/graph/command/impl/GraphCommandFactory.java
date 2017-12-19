@@ -16,10 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.Collection;
+
 import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
@@ -134,6 +137,11 @@ public class GraphCommandFactory {
     @SuppressWarnings("unchecked")
     public DeleteNodeCommand deleteNode(final Node candidate) {
         return new DeleteNodeCommand(candidate);
+    }
+
+    @SuppressWarnings("unchecked")
+    public DeleteElementsCommand delete(final Collection<Element> elements) {
+        return new DeleteElementsCommand(() -> elements);
     }
 
     @SuppressWarnings("unchecked")

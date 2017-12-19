@@ -114,10 +114,14 @@ public class CaseManagementShapeDefFactory implements ShapeDefFactory<BPMNDefini
         final StageShapeDef cmShapeDef = (StageShapeDef) shapeDef;
         final double width = cmShapeDef.getWidth(bpmnDefinition);
         final double height = cmShapeDef.getHeight(bpmnDefinition);
+        final double dropWidth = cmShapeDef.getDropAreaWidth(bpmnDefinition);
+        final double dropHeight = cmShapeDef.getDropAreaHeight(bpmnDefinition);
         final double voffset = cmShapeDef.getVOffset(bpmnDefinition);
-        final StageView view = cmShapeViewFactory.newStageView(width,
-                                                               height,
-                                                               voffset);
+        final StageView view = cmShapeViewFactory.newStageView(dropWidth,
+                                                               dropHeight,
+                                                               voffset)
+                .setWidth(width)
+                .setHeight(height);
         return new CMContainerShape(cmShapeDef,
                                     view);
     }

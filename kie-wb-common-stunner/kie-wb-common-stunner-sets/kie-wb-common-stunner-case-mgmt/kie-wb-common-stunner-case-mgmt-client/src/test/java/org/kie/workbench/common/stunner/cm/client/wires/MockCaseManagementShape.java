@@ -33,7 +33,7 @@ public class MockCaseManagementShape extends AbstractCaseManagementShape<WiresCo
     }
 
     @Override
-    public AbstractCaseManagementShape getGhost() {
+    protected AbstractCaseManagementShape createGhost() {
         return new MockCaseManagementShape();
     }
 

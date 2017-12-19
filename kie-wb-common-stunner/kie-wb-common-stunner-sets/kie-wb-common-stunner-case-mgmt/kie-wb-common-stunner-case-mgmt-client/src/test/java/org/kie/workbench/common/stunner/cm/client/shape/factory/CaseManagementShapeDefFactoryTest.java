@@ -87,6 +87,8 @@ public class CaseManagementShapeDefFactoryTest {
                                                                           0,
                                                                           10,
                                                                           10));
+        when(stageView.setWidth(anyDouble())).thenReturn(stageView);
+        when(stageView.setHeight(anyDouble())).thenReturn(stageView);
         when(basicShapeViewFactory.pictureFromUri(any(SafeUri.class),
                                                   anyDouble(),
                                                   anyDouble())).thenReturn(pictureShapeView);

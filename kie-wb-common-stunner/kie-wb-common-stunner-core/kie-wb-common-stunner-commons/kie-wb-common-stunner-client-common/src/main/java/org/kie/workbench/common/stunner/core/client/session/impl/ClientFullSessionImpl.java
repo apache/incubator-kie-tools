@@ -28,7 +28,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.Cl
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.LocationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.resize.ResizeControl;
@@ -45,7 +45,7 @@ import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 @Dependent
 public class ClientFullSessionImpl extends AbstractClientFullSession {
 
-    private DragControl<AbstractCanvasHandler, Element> dragControl;
+    private LocationControl<AbstractCanvasHandler, Element> locationControl;
     private ResizeControl<AbstractCanvasHandler, Element> resizeControl;
     private CanvasInPlaceTextEditorControl<AbstractCanvasHandler, AbstractClientFullSession, Element> canvasInPlaceTextEditorControl;
     private ToolboxControl<AbstractCanvasHandler, Element> toolboxControl;
@@ -72,12 +72,12 @@ public class ClientFullSessionImpl extends AbstractClientFullSession {
               factory.newControl(ElementBuilderControl.class),
               factory.newControl(KeyboardControl.class),
               factory.newControl(ClipboardControl.class));
-        this.dragControl = factory.newControl(DragControl.class);
+        this.locationControl = factory.newControl(LocationControl.class);
         this.resizeControl = factory.newControl(ResizeControl.class);
         this.canvasInPlaceTextEditorControl = factory.newControl(CanvasInPlaceTextEditorControl.class);
         this.toolboxControl = factory.newControl(ToolboxControl.class);
-        getRegistrationHandler().registerCanvasHandlerControl(dragControl);
-        dragControl.setCommandManagerProvider(() -> requestCommandManager);
+        getRegistrationHandler().registerCanvasHandlerControl(locationControl);
+        locationControl.setCommandManagerProvider(() -> requestCommandManager);
         getRegistrationHandler().registerCanvasHandlerControl(resizeControl);
         resizeControl.setCommandManagerProvider(() -> sessionCommandManager);
         getRegistrationHandler().registerCanvasHandlerControl(toolboxControl);
@@ -85,8 +85,8 @@ public class ClientFullSessionImpl extends AbstractClientFullSession {
         canvasInPlaceTextEditorControl.setCommandManagerProvider(() -> sessionCommandManager);
     }
 
-    public DragControl<AbstractCanvasHandler, Element> getDragControl() {
-        return dragControl;
+    public LocationControl<AbstractCanvasHandler, Element> getLocationControl() {
+        return locationControl;
     }
 
     public ResizeControl<AbstractCanvasHandler, Element> getResizeControl() {

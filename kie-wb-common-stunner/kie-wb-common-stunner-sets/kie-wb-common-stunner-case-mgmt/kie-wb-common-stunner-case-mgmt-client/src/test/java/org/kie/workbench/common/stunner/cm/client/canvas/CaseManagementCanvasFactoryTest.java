@@ -20,7 +20,6 @@ import java.util.function.Consumer;
 
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlFactory;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
@@ -53,7 +52,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.select.Selec
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.mockito.Mock;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -74,9 +73,6 @@ public class CaseManagementCanvasFactoryTest {
     private ManagedInstance<ClipboardControl> clipboardControls;
     private ManagedInstance<AbstractCanvas> canvasInstances;
     private ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances;
-
-    @Mock
-    private WiresControlFactory caseManagementControlFactory;
 
     @Mock
     private Layer layer;
@@ -119,9 +115,40 @@ public class CaseManagementCanvasFactoryTest {
                                                        keyboardControls,
                                                        clipboardControls,
                                                        canvasInstances,
-                                                       canvasHandlerInstances,
-                                                       caseManagementControlFactory);
+                                                       canvasHandlerInstances);
         factory.init();
+    }
+
+    @Test
+    public void testControls() {
+        ConnectionAcceptorControl connectionAcceptorControl = factory.newControl(ConnectionAcceptorControl.class);
+        assertNotNull(connectionAcceptorControl);
+        ContainmentAcceptorControl containmentAcceptorControl = factory.newControl(ContainmentAcceptorControl.class);
+        assertNotNull(containmentAcceptorControl);
+        DockingAcceptorControl dockingAcceptorControl = factory.newControl(DockingAcceptorControl.class);
+        assertNotNull(dockingAcceptorControl);
+        CanvasInPlaceTextEditorControl canvasInPlaceTextEditorControl = factory.newControl(CanvasInPlaceTextEditorControl.class);
+        assertNotNull(canvasInPlaceTextEditorControl);
+        SelectionControl selectionControl = factory.newControl(SelectionControl.class);
+        assertNotNull(selectionControl);
+        ElementBuilderControl elementBuilderControl = factory.newControl(ElementBuilderControl.class);
+        assertNotNull(elementBuilderControl);
+        NodeBuilderControl nodeBuilderControl = factory.newControl(NodeBuilderControl.class);
+        assertNotNull(nodeBuilderControl);
+        EdgeBuilderControl edgeBuilderControl = factory.newControl(EdgeBuilderControl.class);
+        assertNotNull(edgeBuilderControl);
+        ZoomControl zoomControl = factory.newControl(ZoomControl.class);
+        assertNotNull(zoomControl);
+        PanControl panControl = factory.newControl(PanControl.class);
+        assertNotNull(panControl);
+        KeyboardControl keyboardControl = factory.newControl(KeyboardControl.class);
+        assertNotNull(keyboardControl);
+    }
+
+    @Test
+    public void testCanvases() {
+        assertNotNull(factory.newCanvas());
+        assertNotNull(factory.newCanvasHandler());
     }
 
     @SuppressWarnings("unchecked, unused")
@@ -135,16 +162,10 @@ public class CaseManagementCanvasFactoryTest {
                                                                     final Consumer<C> setup) {
         final C mock = mock(concrete);
         final ManagedInstance<T> managedInstance = mock(ManagedInstance.class);
+        when(managedInstance.isAmbiguous()).thenReturn(false);
+        when(managedInstance.isUnsatisfied()).thenReturn(false);
         when(managedInstance.get()).thenReturn(mock);
         setup.accept(mock);
         return managedInstance;
-    }
-
-    @Test
-    public void checkCanvasHasWiresControlFactorySet() {
-        factory.newCanvas();
-
-        assertEquals(wiresManager.getControlFactory(),
-                     caseManagementControlFactory);
     }
 }

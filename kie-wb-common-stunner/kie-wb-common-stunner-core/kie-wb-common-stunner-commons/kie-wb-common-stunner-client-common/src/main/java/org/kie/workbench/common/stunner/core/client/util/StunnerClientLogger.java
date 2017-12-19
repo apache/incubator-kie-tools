@@ -53,7 +53,7 @@ public class StunnerClientLogger {
         return null != message ? message : " -- No message -- ";
     }
 
-    public static void logBounds(final Element<View<?>> item) {
+    public static void logBounds(final Element<? extends View<?>> item) {
         final Bounds bounds = item.getContent().getBounds();
         final Bounds.Bound ul = bounds.getUpperLeft();
         final Bounds.Bound lr = bounds.getLowerRight();
@@ -155,7 +155,7 @@ public class StunnerClientLogger {
     }
 
     private static final Level[] LOG_LEVELS = new Level[]{
-            Level.FINE, Level.INFO, Level.WARNING, Level.SEVERE
+            Level.FINEST, Level.FINE, Level.INFO, Level.WARNING, Level.SEVERE
     };
 
     private static int getLevelIndex(final Level level) {
