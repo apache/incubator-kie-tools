@@ -18,31 +18,47 @@ package org.uberfire.ext.metadata.backend.elastic.index;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 
+import com.google.common.collect.Sets;
 import org.apache.lucene.analysis.Analyzer;
+import org.elasticsearch.client.transport.TransportClient;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Answers;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.ext.metadata.backend.elastic.metamodel.ElasticMetaObject;
 import org.uberfire.ext.metadata.backend.elastic.metamodel.ElasticMetaProperty;
 import org.uberfire.ext.metadata.backend.elastic.provider.ElasticSearchContext;
 import org.uberfire.ext.metadata.metamodel.NullMetaModelStore;
-import org.uberfire.ext.metadata.model.impl.MetaPropertyImpl;
 import org.uberfire.ext.metadata.model.schema.MetaProperty;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ElasticSearchIndexProviderTest {
 
     private ElasticSearchIndexProvider provider;
 
+    @Mock
+    private ElasticSearchContext elasticSearchContext;
+
+    @Mock
+    private Analyzer analyzer;
+
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private TransportClient transportClient;
+
     @Before
     public void setUp() {
-        this.provider = new ElasticSearchIndexProvider(new NullMetaModelStore(),
-                                                       mock(ElasticSearchContext.class),
-                                                       mock(Analyzer.class));
+        this.provider = spy(new ElasticSearchIndexProvider(new NullMetaModelStore(),
+                                                           elasticSearchContext,
+                                                           analyzer));
+
+        doReturn(transportClient).when(this.provider).getClient();
     }
 
     @Test
@@ -87,5 +103,28 @@ public class ElasticSearchIndexProviderTest {
         String type = this.provider.createElasticType(metaProperty);
         assertEquals("integer",
                      type);
+    }
+
+    @Test
+    public void testPrepareIndex() {
+        String index = this.provider.sanitizeIndex("system_ou/plugins");
+        assertEquals("system_ou_plugins",
+                     index);
+    }
+
+    @Test
+    public void testCreateIndexRequest() {
+
+        ElasticMetaObject obj = new ElasticMetaObject(() -> "type");
+        obj.addProperty(new ElasticMetaProperty("cluster.id",
+                                                "system_ou/plugins",
+                                                Sets.newHashSet(String.class)));
+        obj.addProperty(new ElasticMetaProperty("type",
+                                                "plugins",
+                                                Sets.newHashSet(String.class)));
+        this.provider.createIndexRequest(obj);
+
+        verify(transportClient).prepareIndex(eq("system_ou_plugins"),
+                                             eq("plugins"));
     }
 }

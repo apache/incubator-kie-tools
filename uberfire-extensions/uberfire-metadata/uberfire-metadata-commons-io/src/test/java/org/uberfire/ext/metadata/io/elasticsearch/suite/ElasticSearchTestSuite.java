@@ -72,8 +72,6 @@ public class ElasticSearchTestSuite {
                  "9300")
             .env("xpack.security.enabled",
                  "false")
-            .mountFrom(new File("src/test/resources/elasticsearch.yml").getAbsolutePath())
-            .to("/usr/share/elasticsearch/config/elasticsearch.yml")
             .stopOptions(StopOption.KILL,
                          StopOption.REMOVE)
             .waitForTimeout(60)

@@ -34,19 +34,19 @@ public class BatchIndexSingleThreadTest extends BaseIndexTest {
 
     @Override
     protected String[] getRepositoryNames() {
-        return new String[]{"elastic-"+this.getClass().getSimpleName()};
+        return new String[]{"elastic/"+this.getClass().getSimpleName()};
     }
 
     @Test
     //See https://bugzilla.redhat.com/show_bug.cgi?id=1288132
     public void testSingleBatchIndexExecution() throws InterruptedException {
-        final Path path1 = getBasePath("elastic-"+this.getClass().getSimpleName()).resolve("xxx");
+        final Path path1 = getBasePath("elastic/"+this.getClass().getSimpleName()).resolve("xxx");
         ioService().write(path1,
                           "xxx!");
 
         setupCountDown(3);
         //Make multiple requests for the FileSystem. We should only have one batch index operation
-        final URI fsURI = URI.create("git://elastic-"+this.getClass().getSimpleName() + "/file1");
+        final URI fsURI = URI.create("git://elastic/"+this.getClass().getSimpleName() + "/file1");
 
         final FileSystem fs1 = ioService().getFileSystem(fsURI);
         assertNotNull(fs1);

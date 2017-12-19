@@ -143,8 +143,8 @@ public class ElasticSearchIndexProvider implements IndexProvider {
                                           ElasticMetaProperty::getValue,
                                           (mp1, mp2) -> mp2));
 
-        return this.getClient().prepareIndex(clusterId,
-                                             type.toLowerCase()).setSource(document);
+        return this.getClient().prepareIndex(sanitizeIndex(clusterId),
+                                             sanitizeIndex(type)).setSource(document);
     }
 
     @Override
@@ -277,7 +277,7 @@ public class ElasticSearchIndexProvider implements IndexProvider {
                 searchSourceBuilder.size(ELASTICSEARCH_MAX_SIZE);
             }
             return Optional.of(this.getClient()
-                                       .prepareSearch(indicesToLowerCase(indexes).toArray(new String[indexes.size()]))
+                                       .prepareSearch(sanitizeIndexes(indexes).toArray(new String[indexes.size()]))
                                        .setSource(searchSourceBuilder).get());
         } catch (ElasticsearchException e) {
             logger.debug(MessageFormat.format("Can't perform search: {0}",
@@ -313,8 +313,15 @@ public class ElasticSearchIndexProvider implements IndexProvider {
         return sb.toString();
     }
 
-    private List<String> indicesToLowerCase(List<String> indices) {
-        return indices.stream().map(String::toLowerCase).collect(Collectors.toList());
+    protected List<String> sanitizeIndexes(List<String> indices) {
+        return indices.stream()
+                .map(this::sanitizeIndex)
+                .collect(Collectors.toList());
+    }
+
+    protected String sanitizeIndex(String index) {
+        return index.toLowerCase().replaceAll("/",
+                                              "_");
     }
 
     @Override
@@ -344,14 +351,14 @@ public class ElasticSearchIndexProvider implements IndexProvider {
         checkNotNull("metaObject",
                      metaObject);
         try {
-            this.getClient().admin().indices().prepareCreate(index.toLowerCase()).get();
+            this.getClient().admin().indices().prepareCreate(sanitizeIndex(index)).get();
         } catch (ResourceAlreadyExistsException ex) {
             logger.debug("Resource Already exists: " + ex.getMessage());
         }
         Map<String, Object> properties = this.createMappingMap(metaObject.getProperties());
         this.getClient().admin().indices()
-                .preparePutMapping(index.toLowerCase())
-                .setType(type.toLowerCase())
+                .preparePutMapping(sanitizeIndex(index))
+                .setType(sanitizeIndex(type))
                 .setSource(properties).get();
     }
 
@@ -362,7 +369,7 @@ public class ElasticSearchIndexProvider implements IndexProvider {
         checkNotEmpty("type",
                       type);
         try {
-            GetMappingsResponse mappingResponse = this.getClient().admin().indices().prepareGetMappings(index.toLowerCase()).addTypes(type.toLowerCase()).get();
+            GetMappingsResponse mappingResponse = this.getClient().admin().indices().prepareGetMappings(sanitizeIndex(index)).addTypes(sanitizeIndex(type)).get();
             return Optional.ofNullable(mappingResponse.getMappings().getOrDefault(index,
                                                                                   ImmutableOpenMap.of()).getOrDefault(type,
                                                                                                                       null));
@@ -385,7 +392,7 @@ public class ElasticSearchIndexProvider implements IndexProvider {
         checkNotEmpty("type",
                       type);
         Map<String, Object> properties = this.createMappingMap(metaProperties);
-        this.getClient().admin().indices().preparePutMapping(index.toLowerCase()).setType(type.toLowerCase()).setSource(properties).get();
+        this.getClient().admin().indices().preparePutMapping(sanitizeIndex(index)).setType(sanitizeIndex(type)).setSource(properties).get();
     }
 
     private Map<String, Object> createMappingMap(Collection<MetaProperty> metaProperties) {
