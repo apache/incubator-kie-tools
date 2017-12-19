@@ -32,7 +32,7 @@ public class SpecManagementServiceCDITest {
 
         final ServerTemplate serverTemplate = mock(ServerTemplate.class);
         when(serverTemplate.getContainerSpec(any())).thenReturn(null);
-        when(specManagementService.getServerTemplate("templateId")).thenReturn(serverTemplate);
+        doReturn(serverTemplate).when(specManagementService).getServerTemplate("templateId");
 
         assertTrue(specManagementService.isContainerIdValid("templateId",
                                                             "111"));
@@ -67,7 +67,7 @@ public class SpecManagementServiceCDITest {
         final ServerTemplate template = mock(ServerTemplate.class);
 
         when(template.getContainerSpec("org.jbpm:Evaluation:1.0")).thenReturn(null);
-        when(service.getServerTemplate("templateId")).thenReturn(template);
+        doReturn(template).when(service).getServerTemplate("templateId");
 
         final String containerId = service.validContainerId("templateId",
                                                             "org.jbpm:Evaluation:1.0");
@@ -84,7 +84,7 @@ public class SpecManagementServiceCDITest {
 
         when(template.getContainerSpec("org.jbpm:Evaluation:1.0")).thenReturn(containerSpec);
         when(template.getContainerSpec("org.jbpm:Evaluation:1.0-2")).thenReturn(null);
-        when(service.getServerTemplate("templateId")).thenReturn(template);
+        doReturn(template).when(service).getServerTemplate("templateId");
 
         final String containerId = service.validContainerId("templateId",
                                                             "org.jbpm:Evaluation:1.0");
@@ -102,7 +102,7 @@ public class SpecManagementServiceCDITest {
         when(template.getContainerSpec("org.jbpm:Evaluation:1.0")).thenReturn(containerSpec);
         when(template.getContainerSpec("org.jbpm:Evaluation:1.0-2")).thenReturn(containerSpec);
         when(template.getContainerSpec("org.jbpm:Evaluation:1.0-3")).thenReturn(null);
-        when(service.getServerTemplate("templateId")).thenReturn(template);
+        doReturn(template).when(service).getServerTemplate("templateId");
 
         final String containerId = service.validContainerId("templateId",
                                                             "org.jbpm:Evaluation:1.0");
