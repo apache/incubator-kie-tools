@@ -216,6 +216,19 @@
         "refs": "eventSignal"
       }
     },
+  {
+      "id": "intermediateMessageCatchingEvent",
+      "name": "Catching Intermediate Event - Message",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-intermediate.svg",
+        "refs": "eventMessage"
+      }
+    },
     {
       "id": "intermediateErrorCatchingEvent",
       "name": "Catching Intermediate Event - Error",

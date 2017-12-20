@@ -80,6 +80,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
@@ -185,6 +186,7 @@ public class BPMNDiagramMarshallerTest {
     private static final String BPMN_INTERMEDIATE_SIGNAL_EVENTCATCHING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateSignalEventCatching.bpmn";
     private static final String BPMN_INTERMEDIATE_ERROR_EVENTCATCHING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateErrorEventCatching.bpmn";
     private static final String BPMN_INTERMEDIATE_SIGNAL_EVENTTHROWING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateSignalEventThrowing.bpmn";
+    private static final String BPMN_INTERMEDIATE_MESSAGE_EVENTCATCHING= "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateMessageEventCatching.bpmn";
     private static final String BPMN_INTERMEDIATE_TIMER_EVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateTimerEvent.bpmn";
     private static final String BPMN_ENDSIGNALEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endSignalEvent.bpmn";
     private static final String BPMN_ENDMESSAGEEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endMessageEvent.bpmn";
@@ -760,6 +762,27 @@ public class BPMNDiagramMarshallerTest {
         DataIOSet dataIOSet = intermediateSignalEventThrowing.getDataIOSet();
         AssignmentsInfo assignmentsInfo = dataIOSet.getAssignmentsinfo();
         assertEquals("_input1:String||||[din]var1->_input1",
+                     assignmentsInfo.getValue());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnmarshallIntermediateMessageEventCatching() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_INTERMEDIATE_MESSAGE_EVENTCATCHING);
+        assertDiagram(diagram,
+                      2);
+        assertEquals("IntermediateMessageEventCatching",
+                     diagram.getMetadata().getTitle());
+        Node<? extends Definition, ?> intermediateMessageEventCatchingNode = diagram.getGraph().getNode("_BD708E30-CA48-4051-BAEA-BBCB5F396CEE");
+        IntermediateMessageEventCatching intermediateMessageEventCatching = (IntermediateMessageEventCatching) intermediateMessageEventCatchingNode.getContent().getDefinition();
+
+        assertNotNull(intermediateMessageEventCatching.getExecutionSet());
+        MessageRef messageRef = intermediateMessageEventCatching.getExecutionSet().getMessageRef();
+        assertEquals("msgref1",
+                     messageRef.getValue());
+        DataIOSet dataIOSet = intermediateMessageEventCatching.getDataIOSet();
+        AssignmentsInfo assignmentsInfo = dataIOSet.getAssignmentsinfo();
+        assertEquals("||IntermediateMessageEventCatchingOutputVar1:String||[dout]IntermediateMessageEventCatchingOutputVar1->var1",
                      assignmentsInfo.getValue());
     }
 
@@ -2005,6 +2028,22 @@ public class BPMNDiagramMarshallerTest {
         assertTrue(result.contains("name=\"MySignal\""));
         assertTrue(result.contains("<drools:metaData name=\"customScope\">"));
         assertTrue(result.contains("<drools:metaValue><![CDATA[processInstance]]></drools:metaValue>"));
+    }
+
+    @Test
+    public void testMarshallIntermediateMessageEventCatching() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_INTERMEDIATE_MESSAGE_EVENTCATCHING);
+        String result = tested.marshall(diagram);
+        assertDiagram(result,
+                      1,
+                      1,
+                      0);
+
+        assertTrue(result.contains("<bpmn2:intermediateCatchEvent"));
+        assertTrue(result.contains(" name=\"IntermediateMessageEventCatching\""));
+        assertTrue(result.contains("<bpmn2:message "));
+        assertTrue(result.contains(" name=\"msgref1\""));
+        assertTrue(result.contains("<bpmn2:messageEventDefinition"));
     }
 
     @Test

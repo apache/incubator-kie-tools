@@ -135,7 +135,12 @@
 .eventAll_messageIcon {
 
 }
+
 .eventAll_group_terminate {
+    opacity: 0;
+}
+
+.eventAll_group_message{
     opacity: 0;
 }
 
@@ -249,6 +254,24 @@
     opacity: 1;
 }
 
+#intermediateMessageCatchingEvent .eventAll {
+    fill: #FBEFCF;
+    stroke: #F0AB00;
+}
+
+#intermediateMessageCatchingEvent .eventAll_interm_circle {
+    stroke: #F0AB00;
+    opacity: 1;
+}
+
+#intermediateMessageCatchingEvent .eventAll_messageIcon {
+    fill: #F0AB00;
+    stroke: #F0AB00;
+}
+
+#intermediateMessageCatchingEvent .eventAll_group_message {
+    opacity: 1;
+}
 /*TODO, UX please complete the proper values for modelling the BPMN IntermediateErrorEventCatching element*/
 #intermediateErrorCatchingEvent .eventAll {
     fill: #FBEFCF;

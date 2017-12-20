@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
@@ -322,6 +323,11 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
                 intermediateErrorEventCatchingPropertiesMap);
             intermediateErrorEventCatchingPropertiesMap.put(AssignmentsInfo.class,
                                                             "assignmentsinfo");
+            Map<Class<?>, String> intermediateMessageEventCatchingPropertiesMap = new HashMap<Class<?>, String>();
+            put(IntermediateMessageEventCatching.class,
+                intermediateMessageEventCatchingPropertiesMap);
+            intermediateMessageEventCatchingPropertiesMap.put(AssignmentsInfo.class,
+                                                              "assignmentsinfo");
 
             Map<Class<?>, String> intermediateSignalEventThrowingPropertiesMap = new HashMap<Class<?>, String>();
             put(IntermediateSignalEventThrowing.class,

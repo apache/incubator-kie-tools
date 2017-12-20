@@ -18,6 +18,8 @@ package org.kie.workbench.common.stunner.bpmn.client.dataproviders;
 import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -26,6 +28,8 @@ import javax.inject.Inject;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorDataProvider;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
+import org.kie.workbench.common.stunner.bpmn.definition.EndMessageEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageRef;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -73,14 +77,29 @@ public class ProcessMessageRefProvider
 
     private Collection<String> findCurrentMessageRefs() {
         Diagram diagram = sessionManager.getCurrentSession().getCanvasHandler().getDiagram();
+
+        Predicate<Node> startMessageEventsFilter = node -> ((View) node.getContent()).getDefinition() instanceof StartMessageEvent;
+        Predicate<Node> endMessageEventsFilter = node -> ((View) node.getContent()).getDefinition() instanceof EndMessageEvent;
+        Predicate<Node> intermediateMessageEventsFilter = node -> ((View) node.getContent()).getDefinition() instanceof IntermediateMessageEventCatching;
+        Predicate<Node> messageNodesFilter = endMessageEventsFilter.or(intermediateMessageEventsFilter).or(startMessageEventsFilter);
+
+        Function<Node, MessageRef> messageRefMapper = node -> {
+            if (((View) node.getContent()).getDefinition() instanceof StartMessageEvent) {
+                return ((StartMessageEvent) ((View) node.getContent()).getDefinition()).getExecutionSet().getMessageRef();
+            } else if (((View) node.getContent()).getDefinition() instanceof EndMessageEvent) {
+                return ((EndMessageEvent) ((View) node.getContent()).getDefinition()).getExecutionSet().getMessageRef();
+            } else if (((View) node.getContent()).getDefinition() instanceof IntermediateMessageEventCatching) {
+                return ((IntermediateMessageEventCatching) ((View) node.getContent()).getDefinition()).getExecutionSet().getMessageRef();
+            }
+            return null;
+        };
+
         @SuppressWarnings("unchecked")
         Iterable<Node> it = diagram.getGraph().nodes();
         return StreamSupport.stream(it.spliterator(),
                                     false)
-                .filter(e -> e.getContent() instanceof View)
-                .filter(e -> ((View) e.getContent()).getDefinition() instanceof StartMessageEvent)
-                .map(e -> (StartMessageEvent) ((View) e.getContent()).getDefinition())
-                .map(e -> e.getExecutionSet().getMessageRef())
+                .filter(messageNodesFilter)
+                .map(messageRefMapper)
                 .filter(messageRef -> messageRef != null && messageRef.getValue() != null && !messageRef.getValue().isEmpty())
                 .map(MessageRef::getValue)
                 .collect(Collectors.toSet());

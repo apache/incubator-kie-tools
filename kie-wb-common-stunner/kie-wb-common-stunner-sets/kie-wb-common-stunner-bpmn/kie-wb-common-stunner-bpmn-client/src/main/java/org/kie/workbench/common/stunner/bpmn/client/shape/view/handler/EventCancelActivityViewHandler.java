@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.client.shape.view.handler;
 
 import com.ait.lienzo.client.core.shape.Circle;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseCatchingIntermediateEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeViewHandler;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitive;
@@ -33,8 +34,16 @@ public class EventCancelActivityViewHandler
     @Override
     public void handle(final BaseCatchingIntermediateEvent bean,
                        final SVGShapeView<?> view) {
+        boolean isCancelActivity = false;
+        boolean changeIntermediateCircleStyle = false;
         if (bean instanceof IntermediateSignalEventCatching) {
-            final boolean isCancelActivity = ((IntermediateSignalEventCatching) bean).getExecutionSet().getCancelActivity().getValue();
+            isCancelActivity = ((IntermediateSignalEventCatching) bean).getExecutionSet().getCancelActivity().getValue();
+            changeIntermediateCircleStyle = true;
+        } else if (bean instanceof IntermediateMessageEventCatching) {
+            isCancelActivity = ((IntermediateMessageEventCatching) bean).getExecutionSet().getCancelActivity().getValue();
+            changeIntermediateCircleStyle = true;
+        }
+        if (changeIntermediateCircleStyle) {
             final SVGPrimitive<?> svgPrimitive = view.getChildren()
                     .stream()
                     .filter(prim -> prim.getId().equals(INTERMEDIATE_CIRCLE_ID))
@@ -46,3 +55,4 @@ public class EventCancelActivityViewHandler
         }
     }
 }
+

@@ -41,6 +41,9 @@ public abstract class BaseCatchingIntermediateEvent
     @Category
     public static final transient String category = Categories.EVENTS;
 
+    @Labels
+    protected final Set<String> labels = new HashSet<String>();
+
     @PropertySet
     @FormField
     @Valid
@@ -55,9 +58,6 @@ public abstract class BaseCatchingIntermediateEvent
 
     @PropertySet
     protected CircleDimensionSet dimensionsSet;
-
-    @Labels
-    protected final Set<String> labels = new HashSet<>();
 
     public BaseCatchingIntermediateEvent() {
         initLabels();

@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory
 import org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.EventCancelActivityViewHandler;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseCatchingIntermediateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
@@ -46,7 +47,9 @@ public class CatchingIntermediateEventShapeDef
                     .put(IntermediateSignalEventCatching.class,
                          BPMNSVGViewFactory::intermediateSignalCatchingEvent)
                     .put(IntermediateErrorEventCatching.class,
-                         BPMNSVGViewFactory::intermediateErrorCatchingEvent);
+                         BPMNSVGViewFactory::intermediateErrorCatchingEvent)
+                    .put(IntermediateMessageEventCatching.class,
+                         BPMNSVGViewFactory::intermediateMessageCatchingEvent);
 
     public static final Map<Class<? extends BaseCatchingIntermediateEvent>, SvgDataUriGlyph> GLYPHS =
             new HashMap<Class<? extends BaseCatchingIntermediateEvent>, SvgDataUriGlyph>() {{
@@ -56,6 +59,8 @@ public class CatchingIntermediateEventShapeDef
                     BPMNSVGGlyphFactory.INTERMEDIATE_SIGNAL_EVENT_GLYPH);
                 put(IntermediateErrorEventCatching.class,
                     BPMNSVGGlyphFactory.INTERMEDIATE_ERROR_EVENT_GLYPH);
+                put(IntermediateMessageEventCatching.class,
+                    BPMNSVGGlyphFactory.INTERMEDIATE_MESSAGE_EVENT_GLYPH);
             }};
 
     @Override
