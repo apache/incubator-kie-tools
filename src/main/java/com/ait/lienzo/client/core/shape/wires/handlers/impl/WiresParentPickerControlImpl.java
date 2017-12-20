@@ -198,7 +198,7 @@ public class WiresParentPickerControlImpl implements WiresParentPickerControl,
         return getShape().getWiresManager().getLayer();
     }
 
-    protected WiresContainer getInitialParent() {
+    public WiresContainer getInitialParent() {
         return initialParent;
     }
 

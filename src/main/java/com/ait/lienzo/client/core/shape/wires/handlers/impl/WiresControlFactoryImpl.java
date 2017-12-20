@@ -1,5 +1,6 @@
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
@@ -8,6 +9,7 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectionControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlFactory;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeHighlight;
 
 public class WiresControlFactoryImpl implements WiresControlFactory {
 
@@ -22,6 +24,11 @@ public class WiresControlFactoryImpl implements WiresControlFactory {
     public WiresCompositeControl newCompositeControl(WiresCompositeControl.Context selectionContext,
                                                      WiresManager wiresManager) {
         return new WiresCompositeControlImpl(selectionContext);
+    }
+
+    @Override
+    public WiresShapeHighlight<PickerPart.ShapePart> newShapeHighlight(WiresManager wiresManager) {
+        return new WiresShapeHighlightImpl(wiresManager.getDockingAcceptor().getHotspotSize());
     }
 
     @Override

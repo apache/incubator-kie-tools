@@ -160,18 +160,20 @@ public class WiresConnectorControlImpl implements WiresConnectorControl {
 
     @Override
     public void reset() {
-        final IControlHandleList handles = m_connector.getPointHandles();
-        Point2DArray points = m_connector.getLine().getPoint2DArray();
-        for (int i = 0, j = 0; i < handles.size(); i++, j += 2) {
-            final double px = m_startPoints.get(j);
-            final double py = m_startPoints.get(j + 1);
-            final IControlHandle h = handles.getHandle(i);
-            final IPrimitive<?> prim = h.getControl();
-            prim.setX(px);
-            prim.setY(py);
-            final Point2D point = points.get(i);
-            point.setX(px);
-            point.setY(py);
+        if (null != m_startPoints) {
+            final IControlHandleList handles = m_connector.getPointHandles();
+            Point2DArray points = m_connector.getLine().getPoint2DArray();
+            for (int i = 0, j = 0; i < handles.size(); i++, j += 2) {
+                final double px = m_startPoints.get(j);
+                final double py = m_startPoints.get(j + 1);
+                final IControlHandle h = handles.getHandle(i);
+                final IPrimitive<?> prim = h.getControl();
+                prim.setX(px);
+                prim.setY(py);
+                final Point2D point = points.get(i);
+                point.setX(px);
+                point.setY(py);
+            }
         }
         m_connector.getLine().refresh();
         m_wiresManager.getLayer().getLayer().batch();

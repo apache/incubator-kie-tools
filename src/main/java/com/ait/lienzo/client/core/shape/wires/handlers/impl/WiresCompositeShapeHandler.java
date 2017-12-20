@@ -2,11 +2,13 @@ package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
+import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresCompositeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeHighlight;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragContext;
@@ -22,13 +24,14 @@ public class WiresCompositeShapeHandler
                    NodeDragEndHandler {
 
     private final WiresCompositeControl shapeControl;
-    private final WiresShapePartHighlight highlight;
+    private final WiresShapeHighlight<PickerPart.ShapePart> highlight;
 
-    public WiresCompositeShapeHandler(WiresCompositeControl shapeControl,
-                                      WiresManager manager) {
+    public WiresCompositeShapeHandler(final WiresCompositeControl shapeControl,
+                                      final WiresShapeHighlight<PickerPart.ShapePart> highlight,
+                                      final WiresManager manager) {
         super(manager);
         this.shapeControl = shapeControl;
-        this.highlight = new WiresShapePartHighlight();
+        this.highlight = highlight;
     }
 
     @Override
@@ -54,7 +57,8 @@ public class WiresCompositeShapeHandler
         if (shapeControl.isAllowed()) {
             final WiresContainer parent = shapeControl.getSharedParent();
             if (null != parent && parent instanceof WiresShape) {
-                highlight.highlightBody((WiresShape) parent);
+                highlight.highlight((WiresShape) parent,
+                                    PickerPart.ShapePart.BODY);
                 shouldRestore = false;
             }
         }
@@ -72,7 +76,7 @@ public class WiresCompositeShapeHandler
         shapeControl.onMove(dx,
                             dy);
 
-        if (shapeControl.onMoveComplete()) {
+        if (shapeControl.onMoveComplete() && shapeControl.accept()) {
             shapeControl.execute();
         } else {
             reset();

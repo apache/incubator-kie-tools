@@ -21,7 +21,6 @@ import java.util.Collection;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.types.BoundingBox;
 
 /**
  * A control that composites other wires controls, this way ot provides support for operating on
@@ -40,12 +39,13 @@ public interface WiresCompositeControl extends WiresMoveControl,
 
         public Collection<WiresConnector> getConnectors();
 
-        public BoundingBox getBounds();
     }
 
     void setContext(Context provider);
 
     boolean isAllowed();
+
+    boolean accept();
 
     WiresContainer getSharedParent();
 }

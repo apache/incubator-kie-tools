@@ -7,7 +7,10 @@ import com.ait.lienzo.client.core.types.BoundingBox;
  * Eg: WiresMoveControl implementation can use it in order to enforce
  * shape's location restrictions.
  */
-public interface WiresBoundsConstraintControl {
+public interface WiresBoundsConstraintControl extends WiresMoveControl {
 
     void setBoundsConstraint(BoundingBox boundingBox);
+
+    boolean isOutOfBounds(double dx, double dy);
+
 }
