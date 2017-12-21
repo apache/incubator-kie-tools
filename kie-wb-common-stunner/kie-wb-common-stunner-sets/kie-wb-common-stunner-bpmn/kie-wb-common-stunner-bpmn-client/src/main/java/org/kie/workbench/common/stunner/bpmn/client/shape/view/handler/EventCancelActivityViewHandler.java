@@ -16,42 +16,39 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.shape.view.handler;
 
-import com.ait.lienzo.client.core.shape.Circle;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseCatchingIntermediateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeViewHandler;
-import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitive;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
+
+import static org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.ViewHandlerHelper.setCircleDashed;
 
 public class EventCancelActivityViewHandler
         implements ShapeViewHandler<BaseCatchingIntermediateEvent, SVGShapeView<?>> {
 
     // The id for the circle to change in the SVG file.
     static final String INTERMEDIATE_CIRCLE_ID = "eventAll_interm";
-    static final double DASH = 5d;
 
     @Override
     public void handle(final BaseCatchingIntermediateEvent bean,
                        final SVGShapeView<?> view) {
-        boolean isCancelActivity = false;
-        boolean changeIntermediateCircleStyle = false;
         if (bean instanceof IntermediateSignalEventCatching) {
-            isCancelActivity = ((IntermediateSignalEventCatching) bean).getExecutionSet().getCancelActivity().getValue();
-            changeIntermediateCircleStyle = true;
+            final boolean isCancelActivity = ((IntermediateSignalEventCatching) bean).getExecutionSet().getCancelActivity().getValue();
+            setCircleDashed(view,
+                            INTERMEDIATE_CIRCLE_ID,
+                            !isCancelActivity);
+        } else if (bean instanceof IntermediateTimerEvent) {
+            final boolean isCancelActivity = ((IntermediateTimerEvent) bean).getExecutionSet().getCancelActivity().getValue();
+            setCircleDashed(view,
+                            INTERMEDIATE_CIRCLE_ID,
+                            !isCancelActivity);
         } else if (bean instanceof IntermediateMessageEventCatching) {
-            isCancelActivity = ((IntermediateMessageEventCatching) bean).getExecutionSet().getCancelActivity().getValue();
-            changeIntermediateCircleStyle = true;
-        }
-        if (changeIntermediateCircleStyle) {
-            final SVGPrimitive<?> svgPrimitive = view.getChildren()
-                    .stream()
-                    .filter(prim -> prim.getId().equals(INTERMEDIATE_CIRCLE_ID))
-                    .findFirst()
-                    .get();
-            final Circle circle = (Circle) svgPrimitive.get();
-            final double dash = isCancelActivity ? 0d : DASH;
-            circle.setDashArray(dash, dash, dash);
+            final boolean isCancelActivity = ((IntermediateMessageEventCatching) bean).getExecutionSet().getCancelActivity().getValue();
+            setCircleDashed(view,
+                            INTERMEDIATE_CIRCLE_ID,
+                            !isCancelActivity);
         }
     }
 }

@@ -156,6 +156,8 @@ import org.jboss.drools.impl.DroolsPackageImpl;
 import org.kie.workbench.common.stunner.bpmn.backend.legacy.profile.IDiagramProfile;
 import org.kie.workbench.common.stunner.bpmn.backend.legacy.util.Utils;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.Bpmn2OryxManager;
+import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.TimerSettingsTypeSerializer;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimerSettingsValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -219,10 +221,7 @@ import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonProp
 import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.STANDARDDEVIATION;
 import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.STANDARDTYPE;
 import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.TARGETNAMESPACE;
-import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.TIMECYCLE;
-import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.TIMECYCLELANGUAGE;
-import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.TIMEDATE;
-import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.TIMEDURATION;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.TIMERSETTINGS;
 import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.TIMEUNIT;
 import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.TYPE;
 import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.TYPELANGUAGE;
@@ -408,7 +407,8 @@ public class Bpmn2JsonMarshaller {
             props.put(EXPRESSIONLANGUAGE,
                       def.getExpressionLanguage());
             // backwards compat for BZ 1048191
-            putDocumentationProperty(def, props);
+            putDocumentationProperty(def,
+                                     props);
 
             for (RootElement rootElement : def.getRootElements()) {
                 if (rootElement instanceof Process) {
@@ -731,23 +731,8 @@ public class Bpmn2JsonMarshaller {
         List<EventDefinition> eventdefs = event.getEventDefinitions();
         for (EventDefinition ed : eventdefs) {
             if (ed instanceof TimerEventDefinition) {
-                TimerEventDefinition ted = (TimerEventDefinition) ed;
-                if (ted.getTimeDate() != null) {
-                    properties.put(TIMEDATE,
-                                   ((FormalExpression) ted.getTimeDate()).getBody());
-                }
-                if (ted.getTimeDuration() != null) {
-                    properties.put(TIMEDURATION,
-                                   ((FormalExpression) ted.getTimeDuration()).getBody());
-                }
-                if (ted.getTimeCycle() != null) {
-                    properties.put(TIMECYCLE,
-                                   ((FormalExpression) ted.getTimeCycle()).getBody());
-                    if (((FormalExpression) ted.getTimeCycle()).getLanguage() != null) {
-                        properties.put(TIMECYCLELANGUAGE,
-                                       ((FormalExpression) ted.getTimeCycle()).getLanguage());
-                    }
-                }
+                setTimerEventProperties((TimerEventDefinition) ed,
+                                        properties);
             } else if (ed instanceof SignalEventDefinition) {
                 if (((SignalEventDefinition) ed).getSignalRef() != null) {
                     // find signal with the corresponding id
@@ -875,23 +860,8 @@ public class Bpmn2JsonMarshaller {
         List<EventDefinition> eventdefs = event.getEventDefinitions();
         for (EventDefinition ed : eventdefs) {
             if (ed instanceof TimerEventDefinition) {
-                TimerEventDefinition ted = (TimerEventDefinition) ed;
-                if (ted.getTimeDate() != null) {
-                    properties.put(TIMEDATE,
-                                   ((FormalExpression) ted.getTimeDate()).getBody());
-                }
-                if (ted.getTimeDuration() != null) {
-                    properties.put(TIMEDURATION,
-                                   ((FormalExpression) ted.getTimeDuration()).getBody());
-                }
-                if (ted.getTimeCycle() != null) {
-                    properties.put(TIMECYCLE,
-                                   ((FormalExpression) ted.getTimeCycle()).getBody());
-                    if (((FormalExpression) ted.getTimeCycle()).getLanguage() != null) {
-                        properties.put(TIMECYCLELANGUAGE,
-                                       ((FormalExpression) ted.getTimeCycle()).getLanguage());
-                    }
-                }
+                setTimerEventProperties((TimerEventDefinition) ed,
+                                        properties);
             } else if (ed instanceof SignalEventDefinition) {
                 if (((SignalEventDefinition) ed).getSignalRef() != null) {
                     // find signal with the corresponding id
@@ -969,6 +939,25 @@ public class Bpmn2JsonMarshaller {
         }
     }
 
+    private void setTimerEventProperties(TimerEventDefinition timerEventDef,
+                                         Map<String, Object> properties) {
+        final TimerSettingsValue timerSettings = new TimerSettingsValue();
+        if (timerEventDef.getTimeDate() != null) {
+            timerSettings.setTimeDate(((FormalExpression) timerEventDef.getTimeDate()).getBody());
+        }
+        if (timerEventDef.getTimeDuration() != null) {
+            timerSettings.setTimeDuration(((FormalExpression) timerEventDef.getTimeDuration()).getBody());
+        }
+        if (timerEventDef.getTimeCycle() != null) {
+            timerSettings.setTimeCycle(((FormalExpression) timerEventDef.getTimeCycle()).getBody());
+            if (((FormalExpression) timerEventDef.getTimeCycle()).getLanguage() != null) {
+                timerSettings.setTimeCycleLanguage(((FormalExpression) timerEventDef.getTimeCycle()).getLanguage());
+            }
+        }
+        properties.put(TIMERSETTINGS,
+                       new TimerSettingsTypeSerializer().serialize(timerSettings));
+    }
+
     private List<String> marshallLanes(Lane lane,
                                        BPMNPlane plane,
                                        JsonGenerator generator,
@@ -999,7 +988,8 @@ public class Bpmn2JsonMarshaller {
                                    elementName);
             }
 
-            putDocumentationProperty(lane, laneProperties);
+            putDocumentationProperty(lane,
+                                     laneProperties);
 
             Iterator<FeatureMap.Entry> iter = lane.getAnyAttribute().iterator();
             boolean foundBgColor = false;
@@ -2719,7 +2709,8 @@ public class Bpmn2JsonMarshaller {
             properties = new LinkedHashMap<String, Object>();
         }
 
-        putDocumentationProperty(node, properties);
+        putDocumentationProperty(node,
+                                 properties);
 
         if (node.getName() != null) {
             properties.put(NAME,
@@ -2896,7 +2887,8 @@ public class Bpmn2JsonMarshaller {
                                       Map<String, Object> flowElementProperties) throws JsonGenerationException, IOException {
         Map<String, Object> properties = new LinkedHashMap<String, Object>(flowElementProperties);
 
-        putDocumentationProperty(dataObject, properties);
+        putDocumentationProperty(dataObject,
+                                 properties);
 
         if (dataObject.getName() != null && dataObject.getName().length() > 0) {
             properties.put(NAME,
@@ -2997,7 +2989,8 @@ public class Bpmn2JsonMarshaller {
                            "");
         }
 
-        putDocumentationProperty(subProcess, properties);
+        putDocumentationProperty(subProcess,
+                                 properties);
 
         // overwrite name if elementname extension element is present
         String elementName = Utils.getMetaDataValue(subProcess.getExtensionValues(),
@@ -3434,7 +3427,8 @@ public class Bpmn2JsonMarshaller {
                            elementName);
         }
 
-        putDocumentationProperty(sequenceFlow, properties);
+        putDocumentationProperty(sequenceFlow,
+                                 properties);
 
         if (sequenceFlow.isIsImmediate()) {
             properties.put(ISIMMEDIATE,
@@ -3729,7 +3723,8 @@ public class Bpmn2JsonMarshaller {
                            defaultSequenceflowColor);
         }
 
-        putDocumentationProperty(association, properties);
+        putDocumentationProperty(association,
+                                 properties);
 
         marshallProperties(properties,
                            generator);
@@ -3862,7 +3857,8 @@ public class Bpmn2JsonMarshaller {
                            StringEscapeUtils.unescapeXml(group.getCategoryValueRef().getValue()));
         }
 
-        putDocumentationProperty(group, properties);
+        putDocumentationProperty(group,
+                                 properties);
 
         marshallProperties(properties,
                            generator);

@@ -22,9 +22,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.CancelActivity;
 import org.kie.workbench.common.stunner.core.definition.annotation.Name;
@@ -44,53 +42,22 @@ public class CancellingTimerEventExecutionSet implements BPMNPropertySet {
 
     @Property
     @FormField
-    @Valid
     private CancelActivity cancelActivity;
 
     @Property
     @FormField(afterElement = "cancelActivity")
     @Valid
-    private TimeCycle timeCycle;
-
-    @Property
-    @FormField(
-            type = ListBoxFieldType.class,
-            afterElement = "timeCycle"
-    )
-    @SelectorDataProvider(
-            type = SelectorDataProvider.ProviderType.REMOTE,
-            className = "org.kie.workbench.common.stunner.bpmn.backend.dataproviders.TimeCycleLanguageProvider")
-    @Valid
-    private TimeCycleLanguage timeCycleLanguage;
-
-    @Property
-    @FormField(afterElement = "timeCycleLanguage")
-    @Valid
-    private TimeDate timeDate;
-
-    @Property
-    @FormField(afterElement = "timeDate")
-    @Valid
-    private TimeDuration timeDuration;
+    private TimerSettings timerSettings;
 
     public CancellingTimerEventExecutionSet() {
         this(new CancelActivity(),
-             new TimeCycle(),
-             new TimeCycleLanguage(),
-             new TimeDate(),
-             new TimeDuration());
+             new TimerSettings());
     }
 
     public CancellingTimerEventExecutionSet(final @MapsTo("cancelActivity") CancelActivity cancelActivity,
-                                            final @MapsTo("timeCycle") TimeCycle timeCycle,
-                                            final @MapsTo("timeCycleLanguage") TimeCycleLanguage timeCycleLanguage,
-                                            final @MapsTo("timeDate") TimeDate timeDate,
-                                            final @MapsTo("timeDuration") TimeDuration timeDuration) {
+                                            final @MapsTo("timerSettings") TimerSettings timerSettings) {
         this.cancelActivity = cancelActivity;
-        this.timeCycle = timeCycle;
-        this.timeCycleLanguage = timeCycleLanguage;
-        this.timeDate = timeDate;
-        this.timeDuration = timeDuration;
+        this.timerSettings = timerSettings;
     }
 
     public String getPropertySetName() {
@@ -105,45 +72,18 @@ public class CancellingTimerEventExecutionSet implements BPMNPropertySet {
         this.cancelActivity = cancelActivity;
     }
 
-    public TimeCycle getTimeCycle() {
-        return timeCycle;
+    public TimerSettings getTimerSettings() {
+        return timerSettings;
     }
 
-    public void setTimeCycle(final TimeCycle timeCycle) {
-        this.timeCycle = timeCycle;
-    }
-
-    public TimeCycleLanguage getTimeCycleLanguage() {
-        return timeCycleLanguage;
-    }
-
-    public void setTimeCycleLanguage(final TimeCycleLanguage timeCycleLanguage) {
-        this.timeCycleLanguage = timeCycleLanguage;
-    }
-
-    public TimeDate getTimeDate() {
-        return timeDate;
-    }
-
-    public void setTimeDate(final TimeDate timeDate) {
-        this.timeDate = timeDate;
-    }
-
-    public TimeDuration getTimeDuration() {
-        return timeDuration;
-    }
-
-    public void setTimeDuration(final TimeDuration timeDuration) {
-        this.timeDuration = timeDuration;
+    public void setTimerSettings(TimerSettings timerSettings) {
+        this.timerSettings = timerSettings;
     }
 
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(cancelActivity.hashCode(),
-                                         timeCycle.hashCode(),
-                                         timeCycleLanguage.hashCode(),
-                                         timeDate.hashCode(),
-                                         timeDuration.hashCode());
+                                         timerSettings.hashCode());
     }
 
     @Override
@@ -151,10 +91,7 @@ public class CancellingTimerEventExecutionSet implements BPMNPropertySet {
         if (o instanceof CancellingTimerEventExecutionSet) {
             CancellingTimerEventExecutionSet other = (CancellingTimerEventExecutionSet) o;
             return cancelActivity.equals(other.cancelActivity) &&
-                    timeCycle.equals(other.timeCycle) &&
-                    timeCycleLanguage.equals(other.timeCycleLanguage) &&
-                    timeDate.equals(other.timeDate) &&
-                    timeDuration.equals(other.timeDuration);
+                    timerSettings.equals(other.timerSettings);
         }
         return false;
     }

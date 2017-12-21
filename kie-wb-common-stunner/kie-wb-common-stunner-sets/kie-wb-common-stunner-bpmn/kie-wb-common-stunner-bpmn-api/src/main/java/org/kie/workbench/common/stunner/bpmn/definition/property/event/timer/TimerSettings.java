@@ -15,6 +15,9 @@
  */
 package org.kie.workbench.common.stunner.bpmn.definition.property.event.timer;
 
+import javax.validation.Valid;
+
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
@@ -23,6 +26,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.Fiel
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.LabelMode;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
+import org.kie.workbench.common.stunner.bpmn.definition.property.type.TimerSettingsType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Caption;
@@ -32,20 +36,19 @@ import org.kie.workbench.common.stunner.core.definition.annotation.property.Read
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Type;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
-import org.kie.workbench.common.stunner.core.definition.property.type.StringType;
 
 @Portable
 @Bindable
 @Property
 @FieldDefinition(labelMode = LabelMode.OVERRIDE_I18N_KEY)
-public class TimeDuration implements BPMNProperty {
+public class TimerSettings implements BPMNProperty {
 
     @Caption
     @FieldLabel
-    public static final transient String caption = "Time Duration";
+    public static final transient String caption = "Timer Settings";
 
     @Description
-    public static final transient String description = "The time duration";
+    public static final transient String description = "The timer settings";
 
     @ReadOnly
     @FieldReadOnly
@@ -55,19 +58,20 @@ public class TimeDuration implements BPMNProperty {
     public static final Boolean optional = false;
 
     @Type
-    public static final PropertyType type = new StringType();
+    public static final PropertyType type = new TimerSettingsType();
 
     @DefaultValue
     public static final transient String defaultValue = "";
 
     @Value
     @FieldValue
-    private String value = defaultValue;
+    @Valid
+    private TimerSettingsValue value = new TimerSettingsValue();
 
-    public TimeDuration() {
+    public TimerSettings() {
     }
 
-    public TimeDuration(final String value) {
+    public TimerSettings(@MapsTo("value") final TimerSettingsValue value) {
         this.value = value;
     }
 
@@ -95,11 +99,11 @@ public class TimeDuration implements BPMNProperty {
         return defaultValue;
     }
 
-    public String getValue() {
+    public TimerSettingsValue getValue() {
         return value;
     }
 
-    public void setValue(final String value) {
+    public void setValue(final TimerSettingsValue value) {
         this.value = value;
     }
 
@@ -110,11 +114,10 @@ public class TimeDuration implements BPMNProperty {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof TimeDuration) {
-            TimeDuration other = (TimeDuration) o;
+        if (o instanceof TimerSettings) {
+            TimerSettings other = (TimerSettings) o;
             return (null != value) ? value.equals(other.value) : null == other.value;
         }
         return false;
     }
 }
-

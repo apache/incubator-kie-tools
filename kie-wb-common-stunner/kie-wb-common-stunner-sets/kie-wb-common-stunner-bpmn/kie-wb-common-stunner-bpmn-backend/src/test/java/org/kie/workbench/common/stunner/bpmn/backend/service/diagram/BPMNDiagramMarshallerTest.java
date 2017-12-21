@@ -67,6 +67,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.EnumTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.IntegerTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.StringTypeSerializer;
+import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.TimerSettingsTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.VariablesTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
@@ -364,6 +365,7 @@ public class BPMNDiagramMarshallerTest {
         EnumTypeSerializer enumTypeSerializer = new EnumTypeSerializer(definitionUtils);
         AssignmentsTypeSerializer assignmentsTypeSerializer = new AssignmentsTypeSerializer();
         VariablesTypeSerializer variablesTypeSerializer = new VariablesTypeSerializer();
+        TimerSettingsTypeSerializer timerSettingsTypeSerializer = new TimerSettingsTypeSerializer();
         List<Bpmn2OryxPropertySerializer<?>> propertySerializers = new LinkedList<>();
         propertySerializers.add(stringTypeSerializer);
         propertySerializers.add(booleanTypeSerializer);
@@ -373,6 +375,7 @@ public class BPMNDiagramMarshallerTest {
         propertySerializers.add(enumTypeSerializer);
         propertySerializers.add(assignmentsTypeSerializer);
         propertySerializers.add(variablesTypeSerializer);
+        propertySerializers.add(timerSettingsTypeSerializer);
         oryxPropertyManager = new Bpmn2OryxPropertyManager(propertySerializers);
         oryxManager = new Bpmn2OryxManager(oryxIdMappings,
                                            oryxPropertyManager);
@@ -675,13 +678,13 @@ public class BPMNDiagramMarshallerTest {
                      intermediateTimerEvent.getGeneral().getName().getValue());
         assertNotNull(intermediateTimerEvent.getExecutionSet());
         assertEquals("abc",
-                     intermediateTimerEvent.getExecutionSet().getTimeCycle().getValue());
+                     intermediateTimerEvent.getExecutionSet().getTimerSettings().getValue().getTimeCycle());
         assertEquals("none",
-                     intermediateTimerEvent.getExecutionSet().getTimeCycleLanguage().getValue());
+                     intermediateTimerEvent.getExecutionSet().getTimerSettings().getValue().getTimeCycleLanguage());
         assertEquals("abc",
-                     intermediateTimerEvent.getExecutionSet().getTimeDate().getValue());
+                     intermediateTimerEvent.getExecutionSet().getTimerSettings().getValue().getTimeDate());
         assertEquals("abc",
-                     intermediateTimerEvent.getExecutionSet().getTimeDuration().getValue());
+                     intermediateTimerEvent.getExecutionSet().getTimerSettings().getValue().getTimeDuration());
     }
 
     @Test
@@ -2336,13 +2339,13 @@ public class BPMNDiagramMarshallerTest {
         assertNotNull(timerEvent.getExecutionSet());
 
         assertEquals("myTimeDateValue",
-                     timerEvent.getExecutionSet().getTimeDate().getValue());
+                     timerEvent.getExecutionSet().getTimerSettings().getValue().getTimeDate());
         assertEquals("MyTimeDurationValue",
-                     timerEvent.getExecutionSet().getTimeDuration().getValue());
+                     timerEvent.getExecutionSet().getTimerSettings().getValue().getTimeDuration());
         assertEquals("myTimeCycleValue",
-                     timerEvent.getExecutionSet().getTimeCycle().getValue());
+                     timerEvent.getExecutionSet().getTimerSettings().getValue().getTimeCycle());
         assertEquals("cron",
-                     timerEvent.getExecutionSet().getTimeCycleLanguage().getValue());
+                     timerEvent.getExecutionSet().getTimerSettings().getValue().getTimeCycleLanguage());
     }
 
     @Test

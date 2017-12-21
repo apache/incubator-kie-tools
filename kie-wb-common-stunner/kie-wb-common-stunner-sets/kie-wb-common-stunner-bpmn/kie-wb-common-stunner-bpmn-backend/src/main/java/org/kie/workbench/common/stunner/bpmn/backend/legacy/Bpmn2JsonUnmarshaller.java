@@ -166,12 +166,20 @@ import org.jboss.drools.impl.DroolsPackageImpl;
 import org.kie.workbench.common.stunner.bpmn.backend.legacy.resource.JBPMBpmn2ResourceFactoryImpl;
 import org.kie.workbench.common.stunner.bpmn.backend.legacy.util.Utils;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.Bpmn2OryxManager;
+import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.TimerSettingsTypeSerializer;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimerSettingsValue;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleReference;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.TIMECYCLE;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.TIMECYCLELANGUAGE;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.TIMEDATE;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.TIMEDURATION;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.TIMERSETTINGS;
 
 /**
  * @author Antoine Toulme
@@ -4671,24 +4679,8 @@ public class Bpmn2JsonUnmarshaller {
             if (event.getEventDefinitions() != null && event.getEventDefinitions().size() > 0) {
                 EventDefinition ed = event.getEventDefinitions().get(0);
                 if (ed instanceof TimerEventDefinition) {
-                    if (properties.get("timedate") != null && !"".equals(properties.get("timedate"))) {
-                        FormalExpression timeDateExpression = Bpmn2Factory.eINSTANCE.createFormalExpression();
-                        timeDateExpression.setBody(properties.get("timedate"));
-                        ((TimerEventDefinition) event.getEventDefinitions().get(0)).setTimeDate(timeDateExpression);
-                    }
-                    if (properties.get("timeduration") != null && !"".equals(properties.get("timeduration"))) {
-                        FormalExpression timeDurationExpression = Bpmn2Factory.eINSTANCE.createFormalExpression();
-                        timeDurationExpression.setBody(properties.get("timeduration"));
-                        ((TimerEventDefinition) event.getEventDefinitions().get(0)).setTimeDuration(timeDurationExpression);
-                    }
-                    if (properties.get("timecycle") != null && !"".equals(properties.get("timecycle"))) {
-                        FormalExpression timeCycleExpression = Bpmn2Factory.eINSTANCE.createFormalExpression();
-                        timeCycleExpression.setBody(properties.get("timecycle"));
-                        if (properties.get("timecyclelanguage") != null && properties.get("timecyclelanguage").length() > 0) {
-                            timeCycleExpression.setLanguage(properties.get("timecyclelanguage"));
-                        }
-                        ((TimerEventDefinition) event.getEventDefinitions().get(0)).setTimeCycle(timeCycleExpression);
-                    }
+                    applyTimerEventProperties((TimerEventDefinition) ed,
+                                              properties);
                 } else if (ed instanceof SignalEventDefinition) {
                     if (properties.get("signalref") != null && !"".equals(properties.get("signalref"))) {
                         ((SignalEventDefinition) ed).setSignalRef(properties.get("signalref"));
@@ -4944,24 +4936,8 @@ public class Bpmn2JsonUnmarshaller {
         try {
             EventDefinition ed = event.getEventDefinitions().get(0);
             if (ed instanceof TimerEventDefinition) {
-                if (properties.get("timedate") != null && !"".equals(properties.get("timedate"))) {
-                    FormalExpression timeDateExpression = Bpmn2Factory.eINSTANCE.createFormalExpression();
-                    timeDateExpression.setBody(properties.get("timedate"));
-                    ((TimerEventDefinition) event.getEventDefinitions().get(0)).setTimeDate(timeDateExpression);
-                }
-                if (properties.get("timeduration") != null && !"".equals(properties.get("timeduration"))) {
-                    FormalExpression timeDurationExpression = Bpmn2Factory.eINSTANCE.createFormalExpression();
-                    timeDurationExpression.setBody(properties.get("timeduration"));
-                    ((TimerEventDefinition) event.getEventDefinitions().get(0)).setTimeDuration(timeDurationExpression);
-                }
-                if (properties.get("timecycle") != null && !"".equals(properties.get("timecycle"))) {
-                    FormalExpression timeCycleExpression = Bpmn2Factory.eINSTANCE.createFormalExpression();
-                    timeCycleExpression.setBody(properties.get("timecycle"));
-                    if (properties.get("timecyclelanguage") != null && properties.get("timecyclelanguage").length() > 0) {
-                        timeCycleExpression.setLanguage(properties.get("timecyclelanguage"));
-                    }
-                    ((TimerEventDefinition) event.getEventDefinitions().get(0)).setTimeCycle(timeCycleExpression);
-                }
+                applyTimerEventProperties((TimerEventDefinition) ed,
+                                          properties);
             } else if (ed instanceof SignalEventDefinition) {
                 if (properties.get("signalref") != null && !"".equals(properties.get("signalref"))) {
                     ((SignalEventDefinition) ed).setSignalRef(properties.get("signalref"));
@@ -5083,6 +5059,48 @@ public class Bpmn2JsonUnmarshaller {
                 _simulationElementParameters.put(event.getId(),
                                                  values);
             }
+        }
+    }
+
+    protected void applyTimerEventProperties(TimerEventDefinition timerEventDef,
+                                             Map<String, String> properties) {
+        String timeDate;
+        String timeDuration;
+        String timeCycle;
+        String timeCycleLanguage;
+        String timerSettings;
+        timerSettings = properties.get(TIMERSETTINGS);
+
+        if (timerSettings != null && !"".equals(timerSettings)) {
+            TimerSettingsValue timerSettingsObj = new TimerSettingsTypeSerializer().parse(timerSettings);
+            timeDate = timerSettingsObj.getTimeDate();
+            timeDuration = timerSettingsObj.getTimeDuration();
+            timeCycle = timerSettingsObj.getTimeCycle();
+            timeCycleLanguage = timerSettingsObj.getTimeCycleLanguage();
+        } else {
+            timeDate = properties.get(TIMEDATE);
+            timeDuration = properties.get(TIMEDURATION);
+            timeCycle = properties.get(TIMECYCLE);
+            timeCycleLanguage = properties.get(TIMECYCLELANGUAGE);
+        }
+
+        if (timeDate != null && !"".equals(timeDate)) {
+            FormalExpression timeDateExpression = Bpmn2Factory.eINSTANCE.createFormalExpression();
+            timeDateExpression.setBody(timeDate);
+            timerEventDef.setTimeDate(timeDateExpression);
+        }
+        if (timeDuration != null && !"".equals(timeDuration)) {
+            FormalExpression timeDurationExpression = Bpmn2Factory.eINSTANCE.createFormalExpression();
+            timeDurationExpression.setBody(timeDuration);
+            timerEventDef.setTimeDuration(timeDurationExpression);
+        }
+        if (timeCycle != null && !"".equals(timeCycle)) {
+            FormalExpression timeCycleExpression = Bpmn2Factory.eINSTANCE.createFormalExpression();
+            timeCycleExpression.setBody(timeCycle);
+            if (timeCycleLanguage != null && timeCycleLanguage.length() > 0) {
+                timeCycleExpression.setLanguage(timeCycleLanguage);
+            }
+            timerEventDef.setTimeCycle(timeCycleExpression);
         }
     }
 

@@ -59,10 +59,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.Err
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.SignalRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.SignalScope;
-import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimeCycle;
-import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimeCycleLanguage;
-import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimeDate;
-import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimeDuration;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimerSettings;
 import org.kie.workbench.common.stunner.bpmn.definition.property.gateway.DefaultRoute;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.DistributionType;
@@ -160,14 +157,8 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
                 "priority");
             put(ExclusiveDatabasedGateway.class,
                 "Exclusive_Databased_Gateway");
-            put(TimeDate.class,
-                "timedate");
-            put(TimeDuration.class,
-                "timeduration");
-            put(TimeCycle.class,
-                "timecycle");
-            put(TimeCycleLanguage.class,
-                "timecyclelanguage");
+            put(TimerSettings.class,
+                "timersettings");
             put(EmbeddedSubprocess.class,
                 "Subprocess");
             put(AdHoc.class,

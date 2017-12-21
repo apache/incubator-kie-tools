@@ -40,6 +40,7 @@ public final class Bpmn2JsonPropertyIds {
     public static final String TIMEDURATION = "timeduration";
     public static final String TIMECYCLE = "timecycle";
     public static final String TIMECYCLELANGUAGE = "timecyclelanguage";
+    public static final String TIMERSETTINGS = "timersettings";
     public static final String SIGNALREF = "signalref";
     public static final String ERRORREF = "errorref";
     public static final String CONDITIONLANGUAGE = "conditionlanguage";

@@ -22,15 +22,15 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
-import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class EventCancelActivityViewHandlerTest extends EventViewHandlerTestBase {
+public class EventInterruptingViewHandlerTest extends EventViewHandlerTestBase {
 
-    private EventCancelActivityViewHandler tested;
+    private EventInterruptingViewHandler tested;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -38,15 +38,15 @@ public class EventCancelActivityViewHandlerTest extends EventViewHandlerTestBase
         when(prim.getId()).thenReturn(EventCancelActivityViewHandler.INTERMEDIATE_CIRCLE_ID);
         when(prim.get()).thenReturn(circle);
         when(view.getChildren()).thenReturn(Collections.singletonList(prim));
-        tested = new EventCancelActivityViewHandler();
+        tested = new EventInterruptingViewHandler();
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testHandleTimerIsNotCancel() {
-        final IntermediateTimerEvent bean =
-                new IntermediateTimerEvent.IntermediateTimerEventBuilder().build();
-        bean.getExecutionSet().getCancelActivity().setValue(false);
+    public void testHandleTimerIsNotInterrupting() {
+        final StartTimerEvent bean =
+                new StartTimerEvent.StartTimerEventBuilder().build();
+        bean.getExecutionSet().getIsInterrupting().setValue(false);
         tested.handle(bean,
                       view);
         verifyCircleDashed(circle);
@@ -54,10 +54,10 @@ public class EventCancelActivityViewHandlerTest extends EventViewHandlerTestBase
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testHandleTimerIsCancel() {
-        final IntermediateTimerEvent bean =
-                new IntermediateTimerEvent.IntermediateTimerEventBuilder().build();
-        bean.getExecutionSet().getCancelActivity().setValue(true);
+    public void testHandleTimerIsInterrupting() {
+        final StartTimerEvent bean =
+                new StartTimerEvent.StartTimerEventBuilder().build();
+        bean.getExecutionSet().getIsInterrupting().setValue(true);
         tested.handle(bean,
                       view);
         verifyCircleNotDashed(circle);
@@ -65,10 +65,10 @@ public class EventCancelActivityViewHandlerTest extends EventViewHandlerTestBase
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testHandleSignalIsNotCancel() {
-        final IntermediateSignalEventCatching bean =
-                new IntermediateSignalEventCatching.IntermediateSignalEventCatchingBuilder().build();
-        bean.getExecutionSet().getCancelActivity().setValue(false);
+    public void testHandleMessageEventIsNotInterrupting() {
+        final StartMessageEvent bean =
+                new StartMessageEvent.StartMessageEventBuilder().build();
+        bean.getExecutionSet().getIsInterrupting().setValue(false);
         tested.handle(bean,
                       view);
         verifyCircleDashed(circle);
@@ -76,10 +76,10 @@ public class EventCancelActivityViewHandlerTest extends EventViewHandlerTestBase
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testHandleSignalIsCancel() {
-        final IntermediateSignalEventCatching bean =
-                new IntermediateSignalEventCatching.IntermediateSignalEventCatchingBuilder().build();
-        bean.getExecutionSet().getCancelActivity().setValue(true);
+    public void testHandleMessageEventIsInterrupting() {
+        final StartMessageEvent bean =
+                new StartMessageEvent.StartMessageEventBuilder().build();
+        bean.getExecutionSet().getIsInterrupting().setValue(true);
         tested.handle(bean,
                       view);
         verifyCircleNotDashed(circle);
