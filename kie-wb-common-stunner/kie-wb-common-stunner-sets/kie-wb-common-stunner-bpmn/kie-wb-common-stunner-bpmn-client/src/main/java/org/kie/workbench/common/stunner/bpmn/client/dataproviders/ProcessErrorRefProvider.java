@@ -15,94 +15,62 @@
  */
 package org.kie.workbench.common.stunner.bpmn.client.dataproviders;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import javax.inject.Inject;
 
-import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
-import org.kie.workbench.common.forms.dynamic.model.config.SelectorDataProvider;
-import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.StartErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.ErrorRef;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
-import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.uberfire.commons.data.Pair;
 
 public class ProcessErrorRefProvider
-        implements SelectorDataProvider {
+        extends AbstractProcessFilteredNodeProvider {
 
-    private SessionManager sessionManager;
+    private static final Predicate<Node> startErrorEventsFilter = node -> ((View) node.getContent()).getDefinition() instanceof StartErrorEvent;
+
+    private static final Predicate<Node> intermediateErrorEventsFilter = node -> ((View) node.getContent()).getDefinition() instanceof IntermediateErrorEventCatching;
+
+    private static final Predicate<Node> endErrorEventsFilter = node -> ((View) node.getContent()).getDefinition() instanceof EndErrorEvent;
+
+    private static final Predicate<Node> allErrorEventsFilter = startErrorEventsFilter
+            .or(intermediateErrorEventsFilter)
+            .or(endErrorEventsFilter);
 
     @Inject
     public ProcessErrorRefProvider(final SessionManager sessionManager) {
-        this.sessionManager = sessionManager;
+        super(sessionManager);
     }
 
     @Override
-    public String getProviderName() {
-        return getClass().getSimpleName();
+    public Predicate<Node> getFilter() {
+        return allErrorEventsFilter;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public SelectorData getSelectorData(final FormRenderingContext context) {
-        Map<Object, String> values = new TreeMap<>(this::safeCompare);
-        findCurrentErrorRefs().forEach(error -> {
-            values.put(error,
-                       error);
-        });
-        return new SelectorData(values,
-                                null);
-    }
-
-    private int safeCompare(Object obj1,
-                            Object obj2) {
-        if (obj1 == null) {
-            return obj2 != null ? -1 : 0;
-        } else if (obj2 == null) {
-            return 1;
-        } else {
-            return obj1.toString().compareTo(obj2.toString());
-        }
-    }
-
-    private Collection<String> findCurrentErrorRefs() {
-        Diagram diagram = sessionManager.getCurrentSession().getCanvasHandler().getDiagram();
-        Predicate<Node> endErrorEventsFilter = node -> ((View) node.getContent()).getDefinition() instanceof EndErrorEvent;
-        Predicate<Node> intermediateErrorEventsFilter = node -> ((View) node.getContent()).getDefinition() instanceof IntermediateErrorEventCatching;
-        Predicate<Node> startErrorEventsFilter = node -> ((View) node.getContent()).getDefinition() instanceof StartErrorEvent;
-        Predicate<Node> errorNodesFilter = endErrorEventsFilter
-                .or(intermediateErrorEventsFilter)
-                .or(startErrorEventsFilter);
-
-        Function<Node, ErrorRef> errorRefMapper = node -> {
-            if (((View) node.getContent()).getDefinition() instanceof EndErrorEvent) {
-                return ((EndErrorEvent) ((View) node.getContent()).getDefinition()).getExecutionSet().getErrorRef();
-            } else if (((View) node.getContent()).getDefinition() instanceof IntermediateErrorEventCatching) {
-                return ((IntermediateErrorEventCatching) ((View) node.getContent()).getDefinition()).getExecutionSet().getErrorRef();
-            } else if (((View) node.getContent()).getDefinition() instanceof StartErrorEvent) {
-                return ((StartErrorEvent) ((View) node.getContent()).getDefinition()).getExecutionSet().getErrorRef();
+    public Function<Node, Pair<Object, String>> getMapper() {
+        return node -> {
+            ErrorRef errorRef = null;
+            if (startErrorEventsFilter.test(node)) {
+                errorRef = ((StartErrorEvent) ((View) node.getContent()).getDefinition()).getExecutionSet().getErrorRef();
+            } else if (intermediateErrorEventsFilter.test(node)) {
+                errorRef = ((IntermediateErrorEventCatching) ((View) node.getContent()).getDefinition()).getExecutionSet().getErrorRef();
+            } else if (endErrorEventsFilter.test(node)) {
+                errorRef = ((EndErrorEvent) ((View) node.getContent()).getDefinition()).getExecutionSet().getErrorRef();
             }
-            return null;
-        };
 
-        @SuppressWarnings("unchecked")
-        Iterable<Node> it = diagram.getGraph().nodes();
-        return StreamSupport.stream(it.spliterator(),
-                                    false)
-                .filter(errorNodesFilter)
-                .map(errorRefMapper)
-                .filter(errorRef -> errorRef != null && errorRef.getValue() != null && !errorRef.getValue().isEmpty())
-                .map(ErrorRef::getValue)
-                .collect(Collectors.toSet());
+            if (errorRef != null && errorRef.getValue() != null && !errorRef.getValue().isEmpty()) {
+                return new Pair<>(errorRef.getValue(),
+                                  errorRef.getValue(),
+                                  Pair.PairEqualsMode.K1);
+            } else {
+                return null;
+            }
+        };
     }
 }

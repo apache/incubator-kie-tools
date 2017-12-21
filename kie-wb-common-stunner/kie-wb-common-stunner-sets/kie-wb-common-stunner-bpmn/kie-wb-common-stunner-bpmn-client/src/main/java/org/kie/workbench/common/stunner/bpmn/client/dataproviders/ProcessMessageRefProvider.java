@@ -15,93 +15,62 @@
  */
 package org.kie.workbench.common.stunner.bpmn.client.dataproviders;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import javax.inject.Inject;
 
-import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
-import org.kie.workbench.common.forms.dynamic.model.config.SelectorDataProvider;
-import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.stunner.bpmn.definition.EndMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageRef;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
-import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.uberfire.commons.data.Pair;
 
 public class ProcessMessageRefProvider
-        implements SelectorDataProvider {
+        extends AbstractProcessFilteredNodeProvider {
 
-    private SessionManager sessionManager;
+    private static final Predicate<Node> startMessageEventsFilter = node -> ((View) node.getContent()).getDefinition() instanceof StartMessageEvent;
+
+    private static final Predicate<Node> intermediateMessageEventsFilter = node -> ((View) node.getContent()).getDefinition() instanceof IntermediateMessageEventCatching;
+
+    private static final Predicate<Node> endMessageEventsFilter = node -> ((View) node.getContent()).getDefinition() instanceof EndMessageEvent;
+
+    private static final Predicate<Node> allMessageEventsFilter = startMessageEventsFilter
+            .or(intermediateMessageEventsFilter)
+            .or(endMessageEventsFilter);
 
     @Inject
     public ProcessMessageRefProvider(final SessionManager sessionManager) {
-        this.sessionManager = sessionManager;
+        super(sessionManager);
     }
 
     @Override
-    public String getProviderName() {
-        return getClass().getSimpleName();
+    public Predicate<Node> getFilter() {
+        return allMessageEventsFilter;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public SelectorData getSelectorData(final FormRenderingContext context) {
-        Map<Object, String> values = new TreeMap<>(this::safeCompare);
-        findCurrentMessageRefs().forEach(message -> {
-            values.put(message,
-                       message);
-        });
-        return new SelectorData(values,
-                                null);
-    }
-
-    private int safeCompare(Object obj1,
-                            Object obj2) {
-        if (obj1 == null) {
-            return obj2 != null ? -1 : 0;
-        } else if (obj2 == null) {
-            return 1;
-        } else {
-            return obj1.toString().compareTo(obj2.toString());
-        }
-    }
-
-    private Collection<String> findCurrentMessageRefs() {
-        Diagram diagram = sessionManager.getCurrentSession().getCanvasHandler().getDiagram();
-
-        Predicate<Node> startMessageEventsFilter = node -> ((View) node.getContent()).getDefinition() instanceof StartMessageEvent;
-        Predicate<Node> endMessageEventsFilter = node -> ((View) node.getContent()).getDefinition() instanceof EndMessageEvent;
-        Predicate<Node> intermediateMessageEventsFilter = node -> ((View) node.getContent()).getDefinition() instanceof IntermediateMessageEventCatching;
-        Predicate<Node> messageNodesFilter = endMessageEventsFilter.or(intermediateMessageEventsFilter).or(startMessageEventsFilter);
-
-        Function<Node, MessageRef> messageRefMapper = node -> {
-            if (((View) node.getContent()).getDefinition() instanceof StartMessageEvent) {
-                return ((StartMessageEvent) ((View) node.getContent()).getDefinition()).getExecutionSet().getMessageRef();
-            } else if (((View) node.getContent()).getDefinition() instanceof EndMessageEvent) {
-                return ((EndMessageEvent) ((View) node.getContent()).getDefinition()).getExecutionSet().getMessageRef();
-            } else if (((View) node.getContent()).getDefinition() instanceof IntermediateMessageEventCatching) {
-                return ((IntermediateMessageEventCatching) ((View) node.getContent()).getDefinition()).getExecutionSet().getMessageRef();
+    public Function<Node, Pair<Object, String>> getMapper() {
+        return node -> {
+            MessageRef messageRef = null;
+            if (startMessageEventsFilter.test(node)) {
+                messageRef = ((StartMessageEvent) ((View) node.getContent()).getDefinition()).getExecutionSet().getMessageRef();
+            } else if (intermediateMessageEventsFilter.test(node)) {
+                messageRef = ((IntermediateMessageEventCatching) ((View) node.getContent()).getDefinition()).getExecutionSet().getMessageRef();
+            } else if (endMessageEventsFilter.test(node)) {
+                messageRef = ((EndMessageEvent) ((View) node.getContent()).getDefinition()).getExecutionSet().getMessageRef();
             }
-            return null;
-        };
 
-        @SuppressWarnings("unchecked")
-        Iterable<Node> it = diagram.getGraph().nodes();
-        return StreamSupport.stream(it.spliterator(),
-                                    false)
-                .filter(messageNodesFilter)
-                .map(messageRefMapper)
-                .filter(messageRef -> messageRef != null && messageRef.getValue() != null && !messageRef.getValue().isEmpty())
-                .map(MessageRef::getValue)
-                .collect(Collectors.toSet());
+            if (messageRef != null && messageRef.getValue() != null && !messageRef.getValue().isEmpty()) {
+                return new Pair<>(messageRef.getValue(),
+                                  messageRef.getValue(),
+                                  Pair.PairEqualsMode.K1);
+            } else {
+                return null;
+            }
+        };
     }
 }

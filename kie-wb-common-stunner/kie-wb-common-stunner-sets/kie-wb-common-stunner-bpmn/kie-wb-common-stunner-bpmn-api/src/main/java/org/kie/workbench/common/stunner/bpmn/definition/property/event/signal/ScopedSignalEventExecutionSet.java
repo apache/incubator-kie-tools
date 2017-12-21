@@ -26,6 +26,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
+import org.kie.workbench.common.stunner.bpmn.forms.model.ComboBoxFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
@@ -42,7 +43,11 @@ public class ScopedSignalEventExecutionSet implements BPMNPropertySet {
     public static final transient String propertySetName = "Implementation/Execution";
 
     @Property
-    @FormField
+    @FormField(type = ComboBoxFieldType.class)
+    @SelectorDataProvider(
+            type = SelectorDataProvider.ProviderType.CLIENT,
+            className = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.ProcessSignalRefProvider"
+    )
     @Valid
     private SignalRef signalRef;
 
