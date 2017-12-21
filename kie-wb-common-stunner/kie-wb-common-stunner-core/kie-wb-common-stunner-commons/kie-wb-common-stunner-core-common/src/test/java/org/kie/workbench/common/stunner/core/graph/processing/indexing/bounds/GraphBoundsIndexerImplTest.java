@@ -39,9 +39,6 @@ import static org.junit.Assert.assertNull;
 @RunWith(MockitoJUnitRunner.class)
 public class GraphBoundsIndexerImplTest {
 
-    private TestingGraphMockHandler graphTestHandler;
-    private TestingGraphInstanceBuilder.TestGraph1 graphInstance;
-
     private TestingGraphMockHandler graphTestHandlerParent;
     private TestingGraphInstanceBuilder.TestGraph2 graphInstanceParent;
 
@@ -81,13 +78,13 @@ public class GraphBoundsIndexerImplTest {
                                                                 getAtY,
                                                                 size[0],
                                                                 size[1],
-                                                                null);
+                                                                graphInstanceParent.parentNode);
         assertNotNull(node);
         Node<View<?>, Edge> nodeFreePosition = graphBoundsIndexerImpl.getAt(getAtX,
-                                                                            getAtY + 200,
+                                                                            getAtY + 400,
                                                                             size[0],
                                                                             size[1],
-                                                                            null);
+                                                                            graphInstanceParent.parentNode);
         assertNull(nodeFreePosition);
     }
 

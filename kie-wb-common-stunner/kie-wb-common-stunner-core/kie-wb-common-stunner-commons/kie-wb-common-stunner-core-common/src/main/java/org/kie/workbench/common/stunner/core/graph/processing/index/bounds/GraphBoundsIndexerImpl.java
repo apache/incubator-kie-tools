@@ -65,21 +65,26 @@ public class GraphBoundsIndexerImpl implements GraphBoundsIndexer {
                                      final double width,
                                      final double height,
                                      final Element parentNode) {
+        Point2D parentNodePosition;
+        double xToCheck = 0;
+        double yToCheck = 0;
+        if (parentNode != null) {
+            parentNodePosition=GraphUtils.getPosition((View) parentNode.asNode().getContent());
+            xToCheck = x + parentNodePosition.getX();
+            yToCheck = y + parentNodePosition.getY();
+        }
         Node<View<?>, Edge> element;
-
         Point2D[] pointsToCheck = new Point2D[5];
-
-        pointsToCheck[0] = new Point2D(x,
-                                       y);
-        pointsToCheck[1] = new Point2D(x + width,
-                                       y);
-        pointsToCheck[2] = new Point2D(x + (width / 2),
-                                       y + (height / 2));
-        pointsToCheck[3] = new Point2D(x,
-                                       y + height);
-        pointsToCheck[4] = new Point2D(x + width,
-                                       y + height);
-
+        pointsToCheck[0] = new Point2D(xToCheck,
+                                       yToCheck);
+        pointsToCheck[1] = new Point2D(xToCheck + width,
+                                       yToCheck);
+        pointsToCheck[2] = new Point2D(xToCheck + (width / 2),
+                                       yToCheck + (height / 2));
+        pointsToCheck[3] = new Point2D(xToCheck,
+                                       yToCheck + height);
+        pointsToCheck[4] = new Point2D(xToCheck + width,
+                                       yToCheck + height);
         for (Point2D point : pointsToCheck) {
             element = findElementAt(point.getX(),
                                     point.getY());
