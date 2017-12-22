@@ -186,7 +186,7 @@
       },
       "icon": {
         "path": "icons/event/",
-        "file": "event-start-error.svg",
+        "file": "event-start.svg",
         "refs": "eventStartError"
       }
     },
@@ -238,7 +238,7 @@
       },
       "icon": {
         "path": "icons/event/",
-        "file": "event-intermediate-error.svg",
+        "file": "event-intermediate.svg",
         "refs": "eventIntermediateError"
       }
     },
@@ -329,7 +329,7 @@
       },
       "icon": {
         "path": "icons/event/",
-        "file": "event-end-error.svg",
+        "file": "event-end.svg",
         "refs": "eventEndError"
       }
     }

@@ -26,7 +26,7 @@
 	<g transform="translate(4,3) scale(0.05,0.05)" style="opacity:1">
     		<use xlink:href="event-message.svg#eventMessage"/>
 	</g>
-	<g style="opacity:1">
+	<g transform="translate(1.5,1.5) scale(0.75,0.75)" style="opacity:1">
 		<use xlink:href="event-end-error.svg#eventEndError"/>
 	</g>
 </svg>

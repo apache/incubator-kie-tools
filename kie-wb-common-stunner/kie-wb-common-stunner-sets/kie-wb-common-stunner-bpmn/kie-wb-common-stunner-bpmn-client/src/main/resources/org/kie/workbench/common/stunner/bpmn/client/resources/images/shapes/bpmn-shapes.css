@@ -208,19 +208,21 @@
     opacity: 1;
 }
 
-/*TODO, UX please complete the proper values for modelling the BPMN StartErrorEvent element*/
 #startErrorEvent .eventAll {
     fill: #E8FAE6;
     stroke: #4AA241;
 }
 
-/*TODO, UX please complete the proper values for modelling the BPMN StartErrorEvent element*/
 #startErrorEvent .eventAll_errorIcon {
+    opacity: 1;
     fill: #4AA241;
     stroke: #4AA241;
 }
 
-/*TODO, UX please complete the proper values for modelling the BPMN StartErrorEvent element*/
+#startErrorEvent .eventAll_errorIconFilled {
+    opacity: 0;
+}
+
 #startErrorEvent .eventAll_group_error {
     opacity: 1;
 }
@@ -272,22 +274,25 @@
 #intermediateMessageCatchingEvent .eventAll_group_message {
     opacity: 1;
 }
-/*TODO, UX please complete the proper values for modelling the BPMN IntermediateErrorEventCatching element*/
+
 #intermediateErrorCatchingEvent .eventAll {
     fill: #FBEFCF;
     stroke: #F0AB00;
 }
 
-/*TODO, UX please complete the proper values for modelling the BPMN IntermediateErrorEventCatching element*/
 #intermediateErrorCatchingEvent .eventAll_interm_circle {
     stroke: #F0AB00;
     opacity: 1;
 }
 
-/*TODO, UX please complete the proper values for modelling the BPMN IntermediateErrorEventCatching element*/
 #intermediateErrorCatchingEvent .eventAll_errorIcon {
-    fill: blue;
-    stroke: yellow;
+    fill: #F0AB00;
+    stroke: #F0AB00;
+    opacity: 1;
+}
+
+#intermediateErrorCatchingEvent .eventAll_errorIconFilled {
+    opacity: 0;
 }
 
 #intermediateErrorCatchingEvent .eventAll_group_error {
@@ -425,16 +430,19 @@
     opacity: 1;
 }
 
-/*TODO, UX please complete the proper values for modelling the BPMN EndErrorEvent element*/
 #endErrorEvent .eventAll {
     fill: #FCE7E7;
     stroke: #A30000;
 }
 
-/*TODO, UX please complete the proper values for modelling the BPMN EndErrorEvent element*/
 #endErrorEvent .eventAll_errorIcon {
-    fill: yellow;
-    stroke: blue;
+    opacity: 0;
+}
+
+#endErrorEvent .eventAll_errorIconFilled {
+    opacity: 1;
+    fill: #A30000;
+    stroke: #A30000;
 }
 
 #endErrorEvent .eventAll_group_error {
