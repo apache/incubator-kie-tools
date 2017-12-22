@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:drools="http://www.jboss.org/drools" id="_njUVoNqZEeekZeh7PjPmgQ" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" exporter="jBPM Designer" exporterVersion="6.2.0" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_var1Item" structureRef="String"/>
+  <bpmn2:itemDefinition id="msgrefType"/>
+  <bpmn2:message id="_1e500066-f114-3f8e-83db-c626b982b46a" itemRef="msgrefType" name="msgref"/>
+  <bpmn2:process id="evaluation.IntermediateTrowingMessageEvent" drools:version="1.0" name="IntermediateMessageEventThrowing" isExecutable="true">
+    <bpmn2:property id="var1" itemSubjectRef="_var1Item"/>
+    <bpmn2:intermediateThrowEvent id="_85823DF6-02A0-4B8D-AE7A-61641A3A2E4B" drools:selectable="true" color:background-color="#8cabff" color:border-color="#008cec" color:color="#000000" name="IntermediateMessageEventThrowing">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[IntermediateMessageEventThrowing]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:dataInput id="_85823DF6-02A0-4B8D-AE7A-61641A3A2E4B_IntermediateMessageEventThrowingInputVar1InputX" drools:dtype="String" name="IntermediateMessageEventThrowingInputVar1"/>
+      <bpmn2:dataInputAssociation id="_njUVotqZEeekZeh7PjPmgQ">
+        <bpmn2:sourceRef>var1</bpmn2:sourceRef>
+        <bpmn2:targetRef>_85823DF6-02A0-4B8D-AE7A-61641A3A2E4B_IntermediateMessageEventThrowingInputVar1InputX</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:inputSet id="_njUVodqZEeekZeh7PjPmgQ">
+        <bpmn2:dataInputRefs>_85823DF6-02A0-4B8D-AE7A-61641A3A2E4B_IntermediateMessageEventThrowingInputVar1InputX</bpmn2:dataInputRefs>
+      </bpmn2:inputSet>
+      <bpmn2:messageEventDefinition id="_njUVo9qZEeekZeh7PjPmgQ" drools:msgref="msgref" messageRef="_1e500066-f114-3f8e-83db-c626b982b46a"/>
+    </bpmn2:intermediateThrowEvent>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_njUVpNqZEeekZeh7PjPmgQ">
+    <bpmndi:BPMNPlane id="_njUVpdqZEeekZeh7PjPmgQ" bpmnElement="evaluation.IntermediateTrowingMessageEvent">
+      <bpmndi:BPMNShape id="_njUVptqZEeekZeh7PjPmgQ" bpmnElement="_85823DF6-02A0-4B8D-AE7A-61641A3A2E4B">
+        <dc:Bounds height="30.0" width="30.0" x="120.0" y="75.0"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmn2:relationship id="_njUVp9qZEeekZeh7PjPmgQ" type="BPSimData">
+    <bpmn2:extensionElements>
+      <bpsim:BPSimData>
+        <bpsim:Scenario xsi:type="bpsim:Scenario" id="default" name="Simulationscenario">
+          <bpsim:ScenarioParameters xsi:type="bpsim:ScenarioParameters" baseTimeUnit="min"/>
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_85823DF6-02A0-4B8D-AE7A-61641A3A2E4B" id="_njUVqNqZEeekZeh7PjPmgQ">
+            <bpsim:TimeParameters xsi:type="bpsim:TimeParameters">
+              <bpsim:ProcessingTime xsi:type="bpsim:Parameter">
+                <bpsim:UniformDistribution max="10.0" min="5.0"/>
+              </bpsim:ProcessingTime>
+            </bpsim:TimeParameters>
+          </bpsim:ElementParameters>
+        </bpsim:Scenario>
+      </bpsim:BPSimData>
+    </bpmn2:extensionElements>
+    <bpmn2:source>_njUVoNqZEeekZeh7PjPmgQ</bpmn2:source>
+    <bpmn2:target>_njUVoNqZEeekZeh7PjPmgQ</bpmn2:target>
+  </bpmn2:relationship>
+</bpmn2:definitions>

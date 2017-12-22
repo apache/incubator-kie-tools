@@ -98,6 +98,9 @@ public interface BPMNSVGViewFactory {
     SVGShapeViewResource intermediateMessageCatchingEvent();
 
     @SVGSource(PATH_EVENT_ALL)
+    SVGShapeViewResource intermediateMessageThrowingEvent();
+
+    @SVGSource(PATH_EVENT_ALL)
     SVGShapeViewResource intermediateTimerEvent();
 
     @SVGSource(PATH_EVENT_ALL)

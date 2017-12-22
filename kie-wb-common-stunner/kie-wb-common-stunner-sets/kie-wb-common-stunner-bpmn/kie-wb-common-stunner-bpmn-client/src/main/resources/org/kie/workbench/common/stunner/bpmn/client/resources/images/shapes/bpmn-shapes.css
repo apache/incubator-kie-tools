@@ -314,6 +314,27 @@
     opacity: 1;
 }
 
+
+#intermediateMessageThrowingEvent .eventAll {
+    fill: #8cabff;
+    fill-opacity: 0.5;
+    stroke: #008cec;
+}
+
+#intermediateMessageThrowingEvent .eventAll_interm_circle {
+    stroke: #008cec;
+    opacity: 1;
+}
+
+#intermediateMessageThrowingEvent .eventAll_messageIcon {
+    fill: #008cec;
+    stroke: #008cec;
+}
+
+#intermediateMessageThrowingEvent .eventAll_group_message {
+    opacity: 1;
+}
+
 #intermediateTimerEvent .eventAll {
     fill: #FBEFCF;
     stroke: #F0AB00;
@@ -330,6 +351,20 @@
 }
 
 #intermediateTimerEvent .eventAll_group_timer {
+    opacity: 1;
+}
+
+#intermediateMessageEvent .eventAll_interm_circle {
+    stroke: #F0AB00;
+    opacity: 1;
+}
+
+#intermediateMessageEvent .eventAll_timerIcon {
+    fill: #F0AB00;
+    stroke: #F0AB00;
+}
+
+#intermediateMessageEvent .eventAll_group_timer {
     opacity: 1;
 }
 

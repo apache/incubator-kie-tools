@@ -28,8 +28,8 @@
 	</g>
 	<g transform="translate(4,4) scale(0.05,0.05)" style="opacity:1">
     	  <use xlink:href="event-message.svg#eventMessage"/>
-        </g>
+    </g>
 	<g style="opacity:1">
-			<use xlink:href="event-intermediate-error.svg#eventIntermediateError"/>
+	 	  <use xlink:href="event-intermediate-error.svg#eventIntermediateError"/>
 	</g>
 </svg>

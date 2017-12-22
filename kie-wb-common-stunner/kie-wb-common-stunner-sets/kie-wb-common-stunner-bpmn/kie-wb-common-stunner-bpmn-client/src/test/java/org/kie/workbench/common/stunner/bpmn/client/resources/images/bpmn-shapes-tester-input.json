@@ -256,6 +256,19 @@
       }
     },
     {
+      "id": "intermediateMessageThrowingEvent",
+      "name": "Throwing Intermediate Event - Message",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-intermediate.svg",
+        "refs": "eventMessage"
+      }
+    },
+    {
       "id": "endNoneEvent",
       "name": "End Event",
       "shape": {

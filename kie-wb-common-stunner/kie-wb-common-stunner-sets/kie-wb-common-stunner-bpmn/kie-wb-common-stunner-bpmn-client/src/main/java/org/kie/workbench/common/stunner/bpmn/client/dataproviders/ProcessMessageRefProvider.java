@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.definition.EndMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageRef;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -34,12 +35,14 @@ public class ProcessMessageRefProvider
 
     private static final Predicate<Node> startMessageEventsFilter = node -> ((View) node.getContent()).getDefinition() instanceof StartMessageEvent;
 
-    private static final Predicate<Node> intermediateMessageEventsFilter = node -> ((View) node.getContent()).getDefinition() instanceof IntermediateMessageEventCatching;
+    private static final Predicate<Node> intermediateMessageCatchingEventsFilter = node -> ((View) node.getContent()).getDefinition() instanceof IntermediateMessageEventCatching;
+    private static final Predicate<Node> intermediateMessageThrowingEventsFilter = node -> ((View) node.getContent()).getDefinition() instanceof IntermediateMessageEventThrowing;
 
     private static final Predicate<Node> endMessageEventsFilter = node -> ((View) node.getContent()).getDefinition() instanceof EndMessageEvent;
 
     private static final Predicate<Node> allMessageEventsFilter = startMessageEventsFilter
-            .or(intermediateMessageEventsFilter)
+            .or(intermediateMessageCatchingEventsFilter)
+            .or(intermediateMessageThrowingEventsFilter)
             .or(endMessageEventsFilter);
 
     @Inject
@@ -58,8 +61,10 @@ public class ProcessMessageRefProvider
             MessageRef messageRef = null;
             if (startMessageEventsFilter.test(node)) {
                 messageRef = ((StartMessageEvent) ((View) node.getContent()).getDefinition()).getExecutionSet().getMessageRef();
-            } else if (intermediateMessageEventsFilter.test(node)) {
+            } else if (intermediateMessageCatchingEventsFilter.test(node)) {
                 messageRef = ((IntermediateMessageEventCatching) ((View) node.getContent()).getDefinition()).getExecutionSet().getMessageRef();
+            } else if (intermediateMessageThrowingEventsFilter.test(node)) {
+                messageRef = ((IntermediateMessageEventThrowing) ((View) node.getContent()).getDefinition()).getExecutionSet().getMessageRef();
             } else if (endMessageEventsFilter.test(node)) {
                 messageRef = ((EndMessageEvent) ((View) node.getContent()).getDefinition()).getExecutionSet().getMessageRef();
             }
