@@ -39,6 +39,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.Locatio
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.resize.ResizeControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.select.MultipleSelection;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.ToolboxControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
@@ -93,7 +94,7 @@ public class DMNCanvasFactory
                             final ManagedInstance<ContainmentAcceptorControl> containmentAcceptorControls,
                             final ManagedInstance<DockingAcceptorControl> dockingAcceptorControls,
                             final ManagedInstance<CanvasInPlaceTextEditorControl> inPlaceTextEditorControls,
-                            final ManagedInstance<SelectionControl> selectionControls,
+                            final @MultipleSelection ManagedInstance<SelectionControl> selectionControls,
                             final ManagedInstance<LocationControl> locationControls,
                             final @DMNEditor ManagedInstance<ToolboxControl> toolboxControls,
                             final @Default @Observer ManagedInstance<ElementBuilderControl> elementBuilderControls,

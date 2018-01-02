@@ -55,7 +55,7 @@ public class DMNClientFullSession extends AbstractClientFullSession {
 
     @Inject
     @SuppressWarnings("unchecked")
-    public DMNClientFullSession(final CanvasFactory<AbstractCanvas, AbstractCanvasHandler> factory,
+    public DMNClientFullSession(final @DMNEditor CanvasFactory<AbstractCanvas, AbstractCanvasHandler> factory,
                                 final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
                                 final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                 final @Request SessionCommandManager<AbstractCanvasHandler> requestCommandManager,

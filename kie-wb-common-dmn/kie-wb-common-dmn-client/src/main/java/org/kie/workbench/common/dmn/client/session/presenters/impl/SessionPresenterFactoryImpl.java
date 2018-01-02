@@ -44,7 +44,7 @@ public class SessionPresenterFactoryImpl extends org.kie.workbench.common.stunne
     public SessionPresenterFactoryImpl(final SessionManager sessionManager,
                                        final ManagedInstance<CanvasCommandManager<AbstractCanvasHandler>> commandManagerInstances,
                                        final ManagedInstance<ViewerToolbarFactory> viewerToolbarFactoryInstances,
-                                       final @DMNEditor ManagedInstance<EditorToolbarFactory> editorToolbarFactoryInstances,
+                                       final ManagedInstance<EditorToolbarFactory> editorToolbarFactoryInstances,
                                        final @DMNEditor ManagedInstance<SessionDiagramPreview<AbstractClientSession>> sessionPreviewInstances,
                                        final ManagedInstance<WidgetWrapperView> diagramViewerViewInstances,
                                        final ManagedInstance<SessionPresenter.View> viewInstances,
