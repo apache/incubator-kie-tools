@@ -31,5 +31,7 @@ public class RelationEditorDefinitionTest {
         assertNotNull(relation.get().getRow());
         assertNotNull(relation.get().getRow().get(0).getExpression().get(0));
         assertNotNull(relation.get().getColumn());
+
+        assertNotNull(relation.get().getRow().get(0).getId());
     }
 }

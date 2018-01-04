@@ -34,7 +34,7 @@ public class PerformanceIndicator extends BusinessContextElement {
              new Description(),
              new Name(),
              "",
-             new ArrayList<>());
+             null);
     }
 
     public PerformanceIndicator(final @MapsTo("id") Id id,

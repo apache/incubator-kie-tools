@@ -32,6 +32,11 @@ public class Invocation extends Expression implements HasExpression {
     private List<Binding> binding;
 
     public Invocation() {
+        this(new Id(),
+             new Description(),
+             new QName(),
+             null,
+             null);
     }
 
     public Invocation(final @MapsTo("id") Id id,

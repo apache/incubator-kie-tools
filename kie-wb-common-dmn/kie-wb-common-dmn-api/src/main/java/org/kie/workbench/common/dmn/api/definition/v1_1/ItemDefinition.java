@@ -40,7 +40,7 @@ public class ItemDefinition extends NamedElement {
              new Name(),
              new QName(),
              new UnaryTests(),
-             new ArrayList<>(),
+             null,
              "",
              false);
     }

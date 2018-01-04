@@ -36,10 +36,10 @@ public class DecisionService extends NamedElement {
         this(new Id(),
              new Description(),
              new Name(),
-             new ArrayList<>(),
-             new ArrayList<>(),
-             new ArrayList<>(),
-             new ArrayList<>());
+             null,
+             null,
+             null,
+             null);
     }
 
     public DecisionService(final @MapsTo("id") Id id,

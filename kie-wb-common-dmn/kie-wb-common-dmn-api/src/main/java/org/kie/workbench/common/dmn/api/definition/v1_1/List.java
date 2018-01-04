@@ -29,6 +29,10 @@ public class List extends Expression {
     private java.util.List<Expression> expression;
 
     public List() {
+        this(new Id(),
+             new Description(),
+             new QName(),
+             null);
     }
 
     public List(final @MapsTo("id") Id id,

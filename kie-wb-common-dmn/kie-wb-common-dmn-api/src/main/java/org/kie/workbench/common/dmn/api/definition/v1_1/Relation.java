@@ -33,8 +33,8 @@ public class Relation extends Expression {
         this(new Id(),
              new Description(),
              new QName(),
-             new ArrayList<>(),
-             new ArrayList<>());
+             null,
+             null);
     }
 
     public Relation(final @MapsTo("id") Id id,

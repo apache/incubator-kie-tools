@@ -33,7 +33,7 @@ public class ElementCollection extends NamedElement {
         this(new Id(),
              new Description(),
              new Name(),
-             new ArrayList<>());
+             null);
     }
 
     public ElementCollection(final @MapsTo("id") Id id,

@@ -35,8 +35,8 @@ public class OrganizationalUnit extends BusinessContextElement {
              new Description(),
              new Name(),
              "",
-             new ArrayList<>(),
-             new ArrayList<>());
+             null,
+             null);
     }
 
     public OrganizationalUnit(final @MapsTo("id") Id id,

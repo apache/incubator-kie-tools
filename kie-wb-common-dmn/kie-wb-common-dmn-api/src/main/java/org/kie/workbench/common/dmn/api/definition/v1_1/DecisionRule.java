@@ -32,8 +32,8 @@ public class DecisionRule extends DMNElement {
     public DecisionRule() {
         this(new Id(),
              new Description(),
-             new ArrayList<>(),
-             new ArrayList<>());
+             null,
+             null);
     }
 
     public DecisionRule(final @MapsTo("id") Id id,
