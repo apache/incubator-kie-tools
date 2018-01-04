@@ -77,8 +77,8 @@ public class JavaFileHandler1Test extends JavaFileHandlerBaseTest {
             assertEquals( fileContents[ 3 ], fileHandler.buildResult( ) );
 
             fieldDescr = DescriptorFactoryImpl.getInstance( ).createFieldDescr( "public int field100 = 12;" );
-            StringBuilder indentStr = new StringBuilder(System.getProperty("line.separator") +
-                                                                System.getProperty("line.separator") + "    ");
+            StringBuilder indentStr = new StringBuilder(System.lineSeparator() +
+                                                                System.lineSeparator() + "    ");
             TextTokenElementDescr indent = new TextTokenElementDescr( "", 0, indentStr.length( ) - 1, 1, 0 );
             indent.setSourceBuffer( indentStr );
 
@@ -87,7 +87,8 @@ public class JavaFileHandler1Test extends JavaFileHandlerBaseTest {
             assertEquals( fileContents[ 4 ], fileHandler.buildResult( ) );
 
             methodDescr = DescriptorFactoryImpl.getInstance( ).createMethodDescr( "public java.lang.String getAddress() { return null; }" );
-            indentStr = new StringBuilder( "\n\n    " );
+            indentStr = new StringBuilder(System.lineSeparator() +
+                    System.lineSeparator() + "    ");
             indent = new TextTokenElementDescr( "", 0, indentStr.length( ) - 1, 1, 0 );
             indent.setSourceBuffer( indentStr );
 

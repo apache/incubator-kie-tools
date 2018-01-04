@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Matcher;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.drools.core.beliefsystem.abductive.Abducible;
@@ -197,7 +198,7 @@ public class ImpactAnalysisJavaFileTest extends BaseIndexingTest<JavaResourceTyp
         loc = loc.replace("target/test-classes/", "src/test/java/");
         String pkgName = this.getClass().getPackage().getName();
         loc = loc + pkgName.replaceAll("\\.", "/") + "/" + fileName;
-        loc = loc.replaceAll("/", File.separator);
+        loc = loc.replaceAll("/", Matcher.quoteReplacement(File.separator));
         loc = loc.replace("file:", "");
 
         return loc;

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.services.datamodeller.driver;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
 import javax.annotation.Generated;
 import javax.enterprise.inject.Instance;
 import javax.persistence.Entity;
@@ -1583,7 +1585,8 @@ public class JavaRoasterModelDriverTest {
 
     private String readFile(org.uberfire.java.nio.file.Path path) {
         String substring = path.toString().substring(path.toString().indexOf("test-classes") + "test-classes".length());
-        InputStream resourceAsStream = getClass().getResourceAsStream(substring);
+        String platformIndependentSubstring = substring.replaceAll(Matcher.quoteReplacement(File.separator), "/");
+        InputStream resourceAsStream = getClass().getResourceAsStream(platformIndependentSubstring);
 
         StringBuilder drl = new StringBuilder();
         try {

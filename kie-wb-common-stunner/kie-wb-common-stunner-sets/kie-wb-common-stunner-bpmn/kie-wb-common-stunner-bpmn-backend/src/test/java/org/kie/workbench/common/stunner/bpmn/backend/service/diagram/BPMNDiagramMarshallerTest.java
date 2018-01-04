@@ -210,6 +210,8 @@ public class BPMNDiagramMarshallerTest {
     private static final String BPMN_MAGNETSINLANE = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/magnetsInLane.bpmn";
     private static final String BPMN_ENDERROR_EVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endErrorEvent.bpmn";
 
+    private static final String NEW_LINE = System.lineSeparator();
+
     @Mock
     DefinitionManager definitionManager;
 
@@ -1912,6 +1914,7 @@ public class BPMNDiagramMarshallerTest {
                       1,
                       3,
                       2);
+
         assertTrue(result.contains("<bpmn2:startEvent"));
         assertTrue(result.contains(" name=\"StartSignalEvent1\""));
         assertTrue(result.contains("<bpmn2:signal id=\"_47718ea6-a6a4-3ceb-9e93-2111bdad0b8c\" name=\"sig1\"/>"));
@@ -2158,8 +2161,8 @@ public class BPMNDiagramMarshallerTest {
         assertTrue(result.contains("<bpmn2:sourceRef>_FC6D8570-8C67-40C2-8B7B-953DE15765FB_output2OutputX</bpmn2:sourceRef>"));
         assertTrue(result.contains("<bpmn2:targetRef>pv2</bpmn2:targetRef>"));
 
-        String flatResult = result.replace('\n',
-                                           ' ').replaceAll("( )+",
+        String flatResult = result.replace(NEW_LINE,
+                                           " ").replaceAll("( )+",
                                                            " ");
         assertTrue(flatResult.contains("<drools:metaData name=\"elementname\"> <drools:metaValue><![CDATA[my subprocess]]></drools:metaValue> </drools:metaData>"));
         assertTrue(flatResult.contains("<drools:metaData name=\"customAsync\"> <drools:metaValue><![CDATA[true]]></drools:metaValue>"));
@@ -2192,8 +2195,8 @@ public class BPMNDiagramMarshallerTest {
                       5,
                       4);
         assertTrue(result.contains("<![CDATA[admin,kiemgmt]]>"));
-        result = result.replace('\n',
-                                ' ');
+        result = result.replace(NEW_LINE,
+                                " ");
         assertTrue(result.matches("(.*)<bpmn2:resourceAssignmentExpression(.*)>user</bpmn2:formalExpression>(.*)"));
         assertTrue(result.matches("(.*)<bpmn2:resourceAssignmentExpression(.*)>user1</bpmn2:formalExpression>(.*)"));
     }
@@ -2207,8 +2210,8 @@ public class BPMNDiagramMarshallerTest {
                       3,
                       2);
         assertTrue(result.contains("MyUserTask</bpmn2:from>"));
-        String flatResult = result.replace('\n',
-                                           ' ').replaceAll("( )+",
+        String flatResult = result.replace(NEW_LINE,
+                                           " ").replaceAll("( )+",
                                                            " ");
         assertTrue(flatResult.contains("<drools:metaData name=\"customAsync\"> <drools:metaValue><![CDATA[true]]></drools:metaValue>"));
         assertTrue(flatResult.contains("<drools:metaData name=\"customAutoStart\"> <drools:metaValue><![CDATA[true]]></drools:metaValue>"));
@@ -2266,21 +2269,21 @@ public class BPMNDiagramMarshallerTest {
         assertTrue(result.contains("name=\"Java Script Task\" scriptFormat=\"http://www.java.com/java\""));
 
         assertTrue(result.contains("<bpmn2:script><![CDATA[var str = FirstName + LastName;]]></bpmn2:script>"));
-        assertTrue(result.contains("<bpmn2:script><![CDATA[if (name.toString().equals(\"Jay\")) {\n" +
-                                           "\n" +
-                                           "      System.out.println(\"Hello\\n\" + name.toString() + \"\\n\");\n" +
-                                           "\n" +
-                                           "} else {\n" +
-                                           "\n" +
-                                           "\n" +
-                                           "  System.out.println(\"Hi\\n\" + name.toString() + \"\\n\");\n" +
-                                           "\n" +
-                                           "\n" +
-                                           "}\n" +
+        assertTrue(result.contains("<bpmn2:script><![CDATA[if (name.toString().equals(\"Jay\")) {" + NEW_LINE +
+                                           NEW_LINE +
+                                           "      System.out.println(\"Hello\\n\" + name.toString() + \"\\n\");" + NEW_LINE +
+                                           NEW_LINE +
+                                           "} else {" + NEW_LINE +
+                                           NEW_LINE +
+                                           NEW_LINE +
+                                           "  System.out.println(\"Hi\\n\" + name.toString() + \"\\n\");" + NEW_LINE +
+                                           NEW_LINE +
+                                           NEW_LINE +
+                                           "}" + NEW_LINE +
                                            "]]></bpmn2:script>"));
 
-        String flatResult = result.replace('\n',
-                                           ' ').replaceAll("( )+",
+        String flatResult = result.replace(NEW_LINE,
+                                           " ").replaceAll("( )+",
                                                            " ");
         assertTrue(flatResult.contains("<drools:metaData name=\"customAsync\"> <drools:metaValue><![CDATA[true]]></drools:metaValue>"));
     }
@@ -2297,8 +2300,8 @@ public class BPMNDiagramMarshallerTest {
                       6,
                       5);
         assertTrue(result.contains("language=\"http://www.javascript.com/javascript\"><![CDATA[age >= 10;]]></bpmn2:conditionExpression>"));
-        assertTrue(result.contains("language=\"http://www.java.com/java\"><![CDATA[age\n" +
-                                           "<\n" +
+        assertTrue(result.contains("language=\"http://www.java.com/java\"><![CDATA[age" + NEW_LINE +
+                                           "<" + NEW_LINE +
                                            "10;]]></bpmn2:conditionExpression>"));
     }
 
@@ -2335,8 +2338,8 @@ public class BPMNDiagramMarshallerTest {
                       2);
 
         assertTrue(result.contains("<bpmn2:businessRuleTask "));
-        String flatResult = result.replace('\n',
-                                           ' ').replaceAll("( )+",
+        String flatResult = result.replace(NEW_LINE,
+                                           " ").replaceAll("( )+",
                                                            " ");
         assertTrue(flatResult.contains("<drools:metaData name=\"customAsync\"> <drools:metaValue><![CDATA[true]]></drools:metaValue>"));
 
