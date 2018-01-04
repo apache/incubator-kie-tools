@@ -44,7 +44,7 @@ import org.uberfire.java.nio.file.attribute.FileAttribute;
 import static org.junit.Assert.*;
 
 @RunWith(org.jboss.byteman.contrib.bmunit.BMUnitRunner.class)
-@BMScript(value = "byteman/elastic.btm")
+@BMScript(dir = "byteman", value = "elastic.btm")
 public class ComplexFieldsTest extends BaseIndexTest {
 
     protected IOService ioService() {

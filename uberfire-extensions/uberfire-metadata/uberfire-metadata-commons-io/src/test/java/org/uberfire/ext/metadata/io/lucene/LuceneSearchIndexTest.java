@@ -34,7 +34,7 @@ import org.uberfire.java.nio.file.Path;
 import static org.junit.Assert.*;
 
 @RunWith(org.jboss.byteman.contrib.bmunit.BMUnitRunner.class)
-@BMScript(value = "byteman/lucene.btm")
+@BMScript(dir = "byteman", value = "lucene.btm")
 public class LuceneSearchIndexTest extends BaseIndexTest {
 
     @Override

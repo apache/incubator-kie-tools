@@ -167,6 +167,54 @@ public class GeneralPathTest {
     }
 
     @Test
+    public void startsWithWindows() {
+        when(fs.getSeparator()).thenReturn("\\");
+
+        final Path path = create(fs,
+                                 "c:\\path\\to\\file.txt",
+                                 false);
+        final Path unixFormatPath = create(fs,
+                                           "/c:/path/to/file.txt",
+                                           false);
+
+        assertTrue(path.startsWith(create(fs,
+                                          "c:\\",
+                                          false)));
+        assertTrue(path.startsWith(create(fs,
+                                          "c:\\path",
+                                          false)));
+        assertTrue(path.startsWith(create(fs,
+                                          "c:\\path\\to\\",
+                                          false)));
+        assertTrue(path.startsWith(create(fs,
+                                          "c:\\path\\to\\file.txt",
+                                          false)));
+        assertFalse(path.startsWith(create(fs,
+                                           "c:\\to\\file.txt",
+                                           false)));
+        assertFalse(path.startsWith(create(fs,
+                                           "d:\\",
+                                           false)));
+        assertFalse(path.startsWith(create(fs,
+                                           "/d:/",
+                                           false)));
+        assertFalse(path.startsWith(create(fs,
+                                           "d:\\path\\to\\file.txt",
+                                           false)));
+        assertTrue(path.startsWith(create(fs,
+                                          "/c:/",
+                                          false)));
+        assertTrue(path.startsWith(create(fs,
+                                          "/c:/path/",
+                                          false)));
+        assertTrue(unixFormatPath.startsWith(create(fs,
+                                                    "c:\\",
+                                                    false)));
+        assertTrue(unixFormatPath.startsWith(path));
+        assertTrue(path.startsWith(unixFormatPath));
+    }
+
+    @Test
     public void endsWith() {
         when(fs.getSeparator()).thenReturn("/");
 
@@ -192,6 +240,42 @@ public class GeneralPathTest {
         assertFalse(path.endsWith(create(fs,
                                          "txt",
                                          false)));
+    }
+
+    @Test
+    public void endsWithWindows() {
+        when(fs.getSeparator()).thenReturn("\\");
+
+        final Path path = create(fs,
+                                 "c:\\path\\to\\file.txt",
+                                 false);
+        final Path unixFormatPath = create(fs,
+                                           "/c:/path/to/file.txt",
+                                           false);
+
+        assertTrue(path.endsWith(create(fs,
+                                        "file.txt",
+                                        false)));
+        assertFalse(path.endsWith(create(fs,
+                                         "anotherfile.txt",
+                                         false)));
+        assertTrue(path.endsWith(create(fs,
+                                        "to\\file.txt",
+                                        false)));
+        assertTrue(path.endsWith(create(fs,
+                                        "to/file.txt",
+                                        false)));
+        assertFalse(path.endsWith(create(fs,
+                                         "c:\\different\\path\\to\\file.txt",
+                                         false)));
+        assertFalse(path.endsWith(create(fs,
+                                         "d:\\path\\to\\another\\file.txt",
+                                         false)));
+        assertTrue(unixFormatPath.endsWith(create(fs,
+                                                  "to\\file.txt",
+                                                  false)));
+        assertTrue(path.endsWith(unixFormatPath));
+        assertTrue(unixFormatPath.endsWith(path));
     }
 
     @Test
@@ -1035,6 +1119,73 @@ public class GeneralPathTest {
 
         final Path relative11 = path11.relativize(other11);
         assertThat(relative11).isNotNull().isEqualTo(other11);
+
+        final Path path12 = create(fs,
+                                   "/c:/path/to",
+                                   false);
+        final Path other12 = create(fs,
+                                    "c:\\path\\to\\some\\place",
+                                    false);
+
+        final Path relative12 = path12.relativize(other12);
+        assertThat(relative12).isNotNull();
+        assertThat(relative12.toString()).isEqualTo("some\\place");
+
+        final Path path13 = create(fs,
+                                   "c:\\path\\to\\some\\place",
+                                   false);
+        final Path other13 = create(fs,
+                                    "/c:/path/to",
+                                    false);
+
+        final Path relative13 = path13.relativize(other13);
+        assertThat(relative13).isNotNull();
+        assertThat(relative13.toString()).isEqualTo("..\\..");
+
+        final Path path14 = create(fs,
+                                   "/c:/path/to/some/place",
+                                   false);
+        final Path other14 = create(fs,
+                                    "c:\\path\\to",
+                                    false);
+
+        final Path relative14 = path14.relativize(other14);
+        assertThat(relative14).isNotNull();
+        assertThat(relative14.toString()).isEqualTo("../..");
+
+        final Path path15 = create(fs,
+                                   "/c:/path/to/some/place",
+                                   false);
+        final Path other15 = create(fs,
+                                    "c:\\path\\to\\some\\other\\place",
+                                    false);
+
+        final Path relative15 = path15.relativize(other15);
+        assertThat(relative15).isNotNull();
+        assertThat(relative15.toString()).isEqualTo("../other/place");
+
+        final Path path16 = create(fs,
+                                   "c:\\path\\to\\some\\place",
+                                   false);
+        final Path other16 = create(fs,
+                                    "/c:/path/to/some/other/place",
+                                    false);
+
+        final Path relative16 = path16.relativize(other16);
+        assertThat(relative16).isNotNull();
+        assertThat(relative16.toString()).isEqualTo("..\\other\\place");
+
+        final Path path17 = create(fs,
+                                   "c:\\path\\to\\some\\place",
+                                   false);
+        final Path other17 = create(fs,
+                                    "/c:/path/to/some/place",
+                                    false);
+
+        final Path relative17 = path17.relativize(other17);
+        assertThat(relative17).isNotNull();
+        assertThat(relative17.toString()).isEmpty();
+        assertThat(other17.relativize(path17).toString().isEmpty());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -1044,7 +1195,7 @@ public class GeneralPathTest {
         when(fsprovider.getScheme()).thenReturn("file");
         when(fs.provider()).thenReturn(fsprovider);
 
-        when(fs.getSeparator()).thenReturn("/");
+        when(fs.getSeparator()).thenReturn("\\");
 
         final Path path = create(fs,
                                  "c:\\path\\to",
@@ -1063,7 +1214,7 @@ public class GeneralPathTest {
         when(fsprovider.getScheme()).thenReturn("file");
         when(fs.provider()).thenReturn(fsprovider);
 
-        when(fs.getSeparator()).thenReturn("/");
+        when(fs.getSeparator()).thenReturn("\\");
 
         final Path path = create(fs,
                                  "some\\place",
@@ -1082,7 +1233,7 @@ public class GeneralPathTest {
         when(fsprovider.getScheme()).thenReturn("file");
         when(fs.provider()).thenReturn(fsprovider);
 
-        when(fs.getSeparator()).thenReturn("/");
+        when(fs.getSeparator()).thenReturn("\\");
 
         final Path path = create(fs,
                                  "",
@@ -1101,7 +1252,7 @@ public class GeneralPathTest {
         when(fsprovider.getScheme()).thenReturn("file");
         when(fs.provider()).thenReturn(fsprovider);
 
-        when(fs.getSeparator()).thenReturn("/");
+        when(fs.getSeparator()).thenReturn("\\");
 
         final Path path = create(fs,
                                  "d:\\path\\to",
@@ -1109,6 +1260,25 @@ public class GeneralPathTest {
         final Path other = create(fs,
                                   "c:\\path\\to",
                                   false);
+
+        path.relativize(other);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRelativizeWindowsIllegal5() {
+        final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
+        when(fsprovider.isDefault()).thenReturn(true);
+        when(fsprovider.getScheme()).thenReturn("file");
+        when(fs.provider()).thenReturn(fsprovider);
+
+        when(fs.getSeparator()).thenReturn("\\");
+
+        final Path path = create(fs,
+                "/d:/path/to",
+                false);
+        final Path other = create(fs,
+                "c:\\path\\to",
+                false);
 
         path.relativize(other);
     }

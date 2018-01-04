@@ -516,6 +516,7 @@ public abstract class CommonIOServiceDotFileTest {
         final SeekableByteChannel sbc = ioService().newByteChannel(file,
                                                                    StandardOpenOption.READ);
         String readContent = readSbc(sbc);
+        sbc.close();
 
         assertEquals(content,
                      readContent);

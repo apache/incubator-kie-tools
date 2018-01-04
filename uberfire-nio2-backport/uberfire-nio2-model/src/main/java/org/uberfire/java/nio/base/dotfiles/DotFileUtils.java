@@ -62,16 +62,15 @@ public final class DotFileUtils {
             if (path instanceof AttrHolder) {
                 ((AttrHolder) path).getAttrStorage().loadContent(properties);
             }
+
+            if (!hasContent) {
+                quietlyCloseStream(out);
+            }
         } else {
+            quietlyCloseStream(out);
             path.getFileSystem().provider().deleteIfExists(dot(path));
         }
 
-        if (!hasContent) {
-            try {
-                out.close();
-            } catch (java.io.IOException e) {
-            }
-        }
 
         return hasContent;
     }
@@ -120,5 +119,14 @@ public final class DotFileUtils {
         }
 
         return result;
+    }
+
+    private static void quietlyCloseStream(OutputStream out) {
+       if (out != null) {
+           try {
+               out.close();
+           } catch (java.io.IOException e) {
+           }
+       }
     }
 }

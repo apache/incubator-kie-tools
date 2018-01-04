@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.uberfire.apache.commons.io.FilenameUtils;
@@ -369,46 +370,30 @@ public abstract class AbstractPath<FS extends FileSystem>
         checkNotNull("other",
                      other);
 
+        if (other.isAbsolute() != isAbsolute()) {
+            return false;
+        }
+
         if (!(other instanceof AbstractPath)) {
             return false;
         }
 
         final AbstractPath<?> that = (AbstractPath) other;
 
-        if (that.path.length > path.length) {
+        int thisNameCount = getNameCount();
+        int thatNameCount = that.getNameCount();
+
+        if (thatNameCount > thisNameCount) {
             return false;
         }
 
-        int thisOffsetCount = getNameCount();
-        int thatOffsetCount = that.getNameCount();
+        List<String> thisNames = getNamesIncludingRoot();
+        List<String> thatNames = that.getNamesIncludingRoot();
 
-        if (thatOffsetCount > thisOffsetCount) {
-            return false;
-        }
-
-        if ((thatOffsetCount == thisOffsetCount) &&
-                (path.length != that.path.length)) {
-            return false;
-        }
-
-        for (int i = 0; i < thatOffsetCount; i++) {
-            final Pair<Integer, Integer> o1 = offsets.get(i);
-            final Pair<Integer, Integer> o2 = that.offsets.get(i);
-            if (!o1.equals(o2)) {
+        for (int i = 0; i < thatNames.size(); i++) {
+            if (!thisNames.get(i).equals(thatNames.get(i))) {
                 return false;
             }
-        }
-
-        int i = 0;
-        while (i < that.path.length) {
-            if (this.path[i] != that.path[i]) {
-                return false;
-            }
-            i++;
-        }
-
-        if (i < path.length && this.path[i] != fs.getSeparator().charAt(0)) {
-            return false;
         }
 
         return true;
@@ -432,54 +417,45 @@ public abstract class AbstractPath<FS extends FileSystem>
 
         final AbstractPath<?> that = (AbstractPath) other;
 
-        int thisLen = path.length;
-        int thatLen = that.path.length;
-
-        if (thatLen > thisLen) {
-            return false;
-        }
-
-        if (thisLen > 0 && thatLen == 0) {
-            return false;
-        }
-
-        if (that.isAbsolute() && !this.isAbsolute()) {
-            return false;
-        }
-
-        int thisOffsetCount = getNameCount();
-        int thatOffsetCount = that.getNameCount();
-
-        if (thatOffsetCount > thisOffsetCount) {
-            return false;
-        } else {
-            if (thatOffsetCount == thisOffsetCount) {
-                if (thisOffsetCount == 0) {
-                    return true;
-                }
-                int expectedLen = thisLen;
-                if (this.isAbsolute() && !that.isAbsolute()) {
-                    expectedLen--;
-                }
-                if (thatLen != expectedLen) {
-                    return false;
-                }
-            } else {
-                if (that.isAbsolute()) {
-                    return false;
-                }
+        if (that.isAbsolute()) {
+            if (!isAbsolute()) {
+                return false;
+            }
+            if (!equalRoots(that)) {
+                return false;
             }
         }
 
-        int thisPos = offsets.get(thisOffsetCount - thatOffsetCount).getK1();
-        int thatPos = that.offsets.get(0).getK1();
-
-        if ((thatLen - thatPos) != (thisLen - thisPos)) {
+        if (endsWithSeparator() != that.endsWithSeparator()) {
             return false;
         }
 
-        while (thatPos < thatLen) {
-            if (this.path[thisPos++] != that.path[thatPos++]) {
+        int thisNameCount = getNameCount();
+        int thatNameCount = that.getNameCount();
+
+        if (thatNameCount > thisNameCount) {
+            return false;
+        }
+
+        if (thisNameCount > 0 && thatNameCount == 0) {
+            return false;
+        }
+
+        if (thatNameCount == thisNameCount) {
+            if (thisNameCount == 0) {
+                return true;
+            }
+        } else {
+            if (that.isAbsolute()) {
+                return false;
+            }
+        }
+
+        int thisPosition = thisNameCount;
+        int thatPosition = thatNameCount;
+
+        while (thatPosition > 0) {
+            if (!getName(--thisPosition).equals(that.getName(--thatPosition))) {
                 return false;
             }
         }
@@ -577,16 +553,16 @@ public abstract class AbstractPath<FS extends FileSystem>
                                                    otherx,
                                                    AbstractPath.class);
 
-        if (this.equals(other)) {
-            return emptyPath();
-        }
-
         if (isAbsolute() != other.isAbsolute()) {
             throw new IllegalArgumentException("Could not relativize path 'otherx', 'isAbsolute()' for 'this' and 'otherx' should be equal.");
         }
 
-        if (isAbsolute() && !this.getRoot().equals(other.getRoot())) {
+        if (isAbsolute() && !equalRoots(other)) {
             throw new IllegalArgumentException("Could not relativize path 'otherx', 'getRoot()' for 'this' and 'otherx' should be equal.");
+        }
+
+        if (getNamesIncludingRoot().equals(other.getNamesIncludingRoot())) {
+            return emptyPath();
         }
 
         if (this.path.length == 0) {
@@ -622,8 +598,10 @@ public abstract class AbstractPath<FS extends FileSystem>
             if (sb.length() > 0) {
                 sb.append(getSeparator());
             }
-            sb.append(((AbstractPath<FS>) other.subpath(i,
-                                                        other.getNameCount())).toString(false));
+            String subpath = ((AbstractPath<FS>) other.subpath(i,
+                                                               other.getNameCount())).toString(false);
+            subpath = other.getSeparator() == getSeparator() ? subpath : subpath.replaceAll(other.quoteSeparator(), quoteSeparator());
+            sb.append(subpath);
         }
 
         return newPath(fs,
@@ -688,7 +666,7 @@ public abstract class AbstractPath<FS extends FileSystem>
         if (usesWindowsFormat) {
             return '\\';
         }
-        return fs.getSeparator().toCharArray()[0];
+        return '/';
     }
 
     public void clearCache() {
@@ -803,5 +781,35 @@ public abstract class AbstractPath<FS extends FileSystem>
             this.isRoot = isRoot;
             this.path = path;
         }
+    }
+
+    private List<String> getNamesIncludingRoot() {
+        String[] names = toString().split(String.valueOf(quoteSeparator()));
+        if (!usesWindowsFormat && isAbsolute() && names.length > 0) {
+            return Arrays.asList(Arrays.copyOfRange(names, 1, names.length));
+        }
+        return Arrays.asList(names);
+    }
+
+    private static String stripAllSeparators(String path) {
+        return path.replaceAll("/", "").
+                replaceAll(Matcher.quoteReplacement("\\"), "");
+    }
+
+    private boolean equalRoots(AbstractPath other) {
+        String thisRootName = stripAllSeparators(getRoot().toString());
+        String otherRootName = stripAllSeparators(other.getRoot().toString());
+        if (!thisRootName.equals(otherRootName) || !host.equals(other.getHost())) {
+            return false;
+        }
+        return true;
+    }
+
+    private String quoteSeparator() {
+        return Matcher.quoteReplacement(String.valueOf(getSeparator()));
+    }
+
+    private boolean endsWithSeparator() {
+        return path[path.length-1] == getSeparator();
     }
 }

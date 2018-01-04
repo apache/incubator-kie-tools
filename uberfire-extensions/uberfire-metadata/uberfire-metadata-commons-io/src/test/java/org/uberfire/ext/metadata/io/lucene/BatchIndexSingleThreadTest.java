@@ -29,7 +29,7 @@ import static org.junit.Assert.*;
 
 @RunWith(org.jboss.byteman.contrib.bmunit.BMUnitRunner.class)
 @BMUnitConfig(debug = true)
-@BMScript(value = "byteman/lucene.btm")
+@BMScript(dir = "byteman", value = "lucene.btm")
 public class BatchIndexSingleThreadTest extends BaseIndexTest {
 
     @Override

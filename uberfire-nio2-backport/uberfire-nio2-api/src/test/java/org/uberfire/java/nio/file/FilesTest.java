@@ -22,12 +22,14 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.util.HashSet;
 
+import org.junit.Assume;
 import org.junit.Test;
 import org.uberfire.java.nio.base.BasicFileAttributesImpl;
 import org.uberfire.java.nio.base.NotImplementedException;
 import org.uberfire.java.nio.channels.SeekableByteChannel;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
+import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.fest.assertions.api.Assertions.fail;
@@ -56,6 +58,7 @@ public class FilesTest extends AbstractBaseTest {
             }
             sb.append((char) i);
         }
+        in.close();
         assertThat(sb.toString()).isEqualTo("content");
     }
 
@@ -94,8 +97,8 @@ public class FilesTest extends AbstractBaseTest {
         sbc.close();
 
         final SeekableByteChannel sbc2 = Files.newByteChannel(newTempDir().resolve("file.temp2.txt"));
-        assertThat(sbc).isNotNull();
-        sbc.close();
+        assertThat(sbc2).isNotNull();
+        sbc2.close();
     }
 
     @Test(expected = FileAlreadyExistsException.class)
@@ -1124,6 +1127,8 @@ public class FilesTest extends AbstractBaseTest {
 
     @Test
     public void isExecutable() throws IOException {
+        Assume.assumeFalse(SimpleFileSystemProvider.OSType.currentOS().equals(SimpleFileSystemProvider.OSType.WINDOWS));
+
         final Path path = Files.createTempFile("foo",
                                                "bar");
 

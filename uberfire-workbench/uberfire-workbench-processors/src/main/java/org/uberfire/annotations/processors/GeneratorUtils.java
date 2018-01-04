@@ -1353,19 +1353,21 @@ public class GeneratorUtils {
     }
 
     public static String formatAssociatedResources(final Collection<String> resourceTypes) {
+        final String newLine = System.getProperty("line.separator");
+
         if (resourceTypes == null || resourceTypes.size() == 0) {
             return null;
         }
 
         final StringBuilder sb = new StringBuilder();
 
-        sb.append("@AssociatedResources").append("({\n");
+        sb.append("@AssociatedResources").append("({" + newLine);
         for (final String resourceType : resourceTypes) {
-            sb.append("    ").append(resourceType).append(".class").append(",\n");
+            sb.append("    ").append(resourceType).append(".class").append("," + newLine);
         }
-        sb.delete(sb.length() - 2,
+        sb.delete(sb.length() - (newLine.length() + 1),
                   sb.length());
-        sb.append("\n})\n");
+        sb.append(newLine + "})" + newLine);
 
         return sb.toString();
     }

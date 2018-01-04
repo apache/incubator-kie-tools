@@ -56,8 +56,14 @@ public class SimpleWindowsFileStoreTest {
         assertThat(fileStore.name()).isNotNull().isEqualTo("c:\\");
         assertThat(fileStore.type()).isNull();
         assertThat(fileStore.isReadOnly()).isFalse();
-        assertThat(fileStore.getTotalSpace()).isEqualTo(0L);
-        assertThat(fileStore.getUsableSpace()).isEqualTo(0L);
+
+        if (SimpleFileSystemProvider.OSType.currentOS().equals(SimpleFileSystemProvider.OSType.WINDOWS)) {
+            assertThat(fileStore.getTotalSpace()).isNotEqualTo(0L);
+            assertThat(fileStore.getUsableSpace()).isNotEqualTo(0L);
+        } else {
+            assertThat(fileStore.getTotalSpace()).isEqualTo(0L);
+            assertThat(fileStore.getUsableSpace()).isEqualTo(0L);
+        }
 
         assertThat(fileStore.supportsFileAttributeView(BasicFileAttributeView.class)).isTrue();
         assertThat(fileStore.supportsFileAttributeView(MyFileAttributeView.class)).isFalse();

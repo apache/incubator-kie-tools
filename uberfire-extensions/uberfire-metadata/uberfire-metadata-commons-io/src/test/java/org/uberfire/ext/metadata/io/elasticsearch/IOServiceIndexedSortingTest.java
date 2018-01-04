@@ -41,7 +41,7 @@ import static org.junit.Assert.*;
 import static org.uberfire.ext.metadata.io.KObjectUtil.toKCluster;
 
 @RunWith(org.jboss.byteman.contrib.bmunit.BMUnitRunner.class)
-@BMScript(value = "byteman/elastic.btm")
+@BMScript(dir = "byteman", value = "elastic.btm")
 public class IOServiceIndexedSortingTest extends BaseIndexTest {
 
     @Override

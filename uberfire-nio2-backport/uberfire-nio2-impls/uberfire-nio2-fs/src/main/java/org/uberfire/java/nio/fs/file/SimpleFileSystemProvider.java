@@ -744,7 +744,7 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
         return s;
     }
 
-    enum OSType {
+    public enum OSType {
         WINDOWS,
         UNIX_LIKE;
 

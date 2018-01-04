@@ -59,6 +59,12 @@ public class SimpleUnixFileSystemTest {
                                       "file.txt")).isNotNull().isEqualTo(GeneralPathImpl.create(fileSystem,
                                                                                                 "/path/to/file.txt",
                                                                                                 false));
+        assertThat(fileSystem.getPath("/",
+                                      "path",
+                                      "to",
+                                      "file.txt")).isNotNull().isEqualTo(GeneralPathImpl.create(fileSystem,
+                                                                                                "/path/to/file.txt",
+                                                                                                false));
 
         try {
             fileSystem.close();

@@ -37,7 +37,7 @@ import static org.uberfire.ext.metadata.io.KObjectUtil.toKCluster;
 
 @RunWith(BMUnitRunner.class)
 @BMUnitConfig(debug = true)
-@BMScript(value = "byteman/elastic.btm")
+@BMScript(dir = "byteman", value = "elastic.btm")
 public class IOServiceIndexedDeleteFileTest extends BaseIndexTest {
 
     @Override

@@ -34,7 +34,7 @@ import org.uberfire.java.nio.file.Path;
 import static org.junit.Assert.*;
 
 @RunWith(org.jboss.byteman.contrib.bmunit.BMUnitRunner.class)
-@BMScript(value = "byteman/elastic.btm")
+@BMScript(dir = "byteman", value = "elastic.btm")
 public class ElasticSearchIndexTest extends BaseIndexTest {
 
     @Override

@@ -121,20 +121,24 @@ public class SimpleFileSystemProviderAttrsRelatedTest {
 
         tempFile.setReadable(false);
 
-        try {
-            fsProvider.checkAccess(path2,
-                                   READ);
-            fail("can't have read access on file");
-        } catch (Exception ex) {
+        if (SimpleFileSystemProvider.OSType.currentOS().equals(SimpleFileSystemProvider.OSType.UNIX_LIKE)) {
+            try {
+                fsProvider.checkAccess(path2,
+                                       READ);
+                fail("can't have read access on file");
+            } catch (Exception ex) {
+            }
         }
 
         tempFile.setReadable(true);
 
-        try {
-            fsProvider.checkAccess(path2,
-                                   EXECUTE);
-            fail("can't have execute access on file");
-        } catch (Exception ex) {
+        if (SimpleFileSystemProvider.OSType.currentOS().equals(SimpleFileSystemProvider.OSType.UNIX_LIKE)) {
+            try {
+                fsProvider.checkAccess(path2,
+                                       EXECUTE);
+                fail("can't have execute access on file");
+            } catch (Exception ex) {
+            }
         }
 
         tempFile.setExecutable(true);

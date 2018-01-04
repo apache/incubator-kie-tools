@@ -40,7 +40,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(org.jboss.byteman.contrib.bmunit.BMUnitRunner.class)
-@BMScript(value = "byteman/elastic.btm")
+@BMScript(dir = "byteman", value = "elastic.btm")
 public class BatchIndexConcurrencyTest extends BaseIndexTest {
 
     private MetaIndexEngine metaIndexEngine;

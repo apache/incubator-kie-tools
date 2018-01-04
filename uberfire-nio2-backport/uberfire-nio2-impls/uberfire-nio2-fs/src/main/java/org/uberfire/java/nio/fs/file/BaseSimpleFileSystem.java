@@ -40,6 +40,11 @@ import static org.kie.soup.commons.validation.Preconditions.checkNotNull;
 public abstract class BaseSimpleFileSystem implements FileSystem,
                                                       FileSystemId {
 
+    public static final char UNIX_SEPARATOR = '/';
+    public static final char WINDOWS_SEPARATOR = '\\';
+    public static final String UNIX_SEPARATOR_STRING = "/";
+    public static final String WINDOWS_SEPARATOR_STRING = "\\";
+
     private final FileSystemProvider provider;
     private final String defaultDirectory;
     private final Set<String> supportedFileAttributeViews;
@@ -103,7 +108,25 @@ public abstract class BaseSimpleFileSystem implements FileSystem,
     @Override
     public String getSeparator() {
         return System.getProperty("file.separator",
-                                  "/");
+                                  UNIX_SEPARATOR_STRING);
+    }
+
+    public String getSeparator(final String path) {
+        int unixIndex = path.indexOf(UNIX_SEPARATOR);
+        int windowsIndex = path.indexOf(WINDOWS_SEPARATOR);
+        if (unixIndex >= 0) {
+            if (windowsIndex >= 0) {
+                // path contains a mix of '/' and '\' so pick the first one
+                return (unixIndex < windowsIndex) ? UNIX_SEPARATOR_STRING : WINDOWS_SEPARATOR_STRING;
+            } else {
+                return UNIX_SEPARATOR_STRING;
+            }
+        } else {
+            if (windowsIndex >= 0) {
+                return WINDOWS_SEPARATOR_STRING;
+            }
+        }
+        return getSeparator();
     }
 
     @Override
@@ -120,11 +143,12 @@ public abstract class BaseSimpleFileSystem implements FileSystem,
                                           false);
         }
         final StringBuilder sb = new StringBuilder();
-        sb.append(first);
+        sb.append(removeTrailingSlash(first));
+        String separator = getSeparator(first);
         for (final String segment : more) {
             if (segment.length() > 0) {
-                if (sb.length() > 0) {
-                    sb.append(getSeparator());
+                if (sb.length() > 0 && sb.lastIndexOf(separator) != sb.length()-1) {
+                    sb.append(separator);
                 }
                 sb.append(segment);
             }
@@ -135,16 +159,20 @@ public abstract class BaseSimpleFileSystem implements FileSystem,
     }
 
     private String removeTrailingSlash(final String path) {
+        if (path.equals("/")) {
+            return path;
+        }
         for (final File root : roots) {
             if (root.toString().equals(path)) {
                 return path;
             }
         }
-        if (path.endsWith(getSeparator())) {
-            return path.substring(0,
-                                  path.length() - getSeparator().length());
+        if (path.endsWith(UNIX_SEPARATOR_STRING)) {
+            return path.substring(0, path.length() - UNIX_SEPARATOR_STRING.length());
         }
-
+        if (path.endsWith(WINDOWS_SEPARATOR_STRING)) {
+            return path.substring(0, path.length() - WINDOWS_SEPARATOR_STRING.length());
+        }
         return path;
     }
 

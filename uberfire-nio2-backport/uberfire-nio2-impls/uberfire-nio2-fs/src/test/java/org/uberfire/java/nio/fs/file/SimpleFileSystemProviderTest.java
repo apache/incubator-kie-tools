@@ -50,9 +50,9 @@ public class SimpleFileSystemProviderTest {
     @Before
     @After
     public void cleanup() {
-        new File(System.getProperty("user.dir") + "/temp").delete();
-        new File(System.getProperty("user.dir") + "/temp2").delete();
-        new File(System.getProperty("user.dir") + "/xxxxxx").delete();
+        FileUtils.deleteQuietly(new File(System.getProperty("user.dir") + "/temp"));
+        FileUtils.deleteQuietly(new File(System.getProperty("user.dir") + "/temp2"));
+        FileUtils.deleteQuietly(new File(System.getProperty("user.dir") + "/xxxxxx"));
     }
 
     @Test
@@ -238,11 +238,10 @@ public class SimpleFileSystemProviderTest {
                                                  false);
         assertThat(path.toFile().exists()).isFalse();
 
-        final SeekableByteChannel channel = fsProvider.newByteChannel(path,
-                                                                      null);
-
-        assertThat(channel).isNotNull();
-        assertThat(path.toFile().exists()).isTrue();
+        try (final SeekableByteChannel channel = fsProvider.newByteChannel(path, null)) {
+            assertThat(channel).isNotNull();
+            assertThat(path.toFile().exists()).isTrue();
+        }
         path.toFile().delete();
         assertThat(path.toFile().exists()).isFalse();
     }
@@ -1079,7 +1078,7 @@ public class SimpleFileSystemProviderTest {
     public void checkDeleteNonEmptyDir() throws IOException {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
-        final String userSourcePath = System.getProperty("user.dir") + "/temp";
+        final String userSourcePath = System.getProperty("user.dir") + System.getProperty("file.separator") + "temp";
 
         final Path dir = GeneralPathImpl.create(fsProvider.getFileSystem(URI.create("file:///")),
                                                 userSourcePath,

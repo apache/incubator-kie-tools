@@ -139,8 +139,10 @@ public class FileUtilityMethodsTest extends AbstractBaseTest {
         writer.write("content");
         writer.close();
 
-        Files.copy(Files.newInputStream(dir.resolve("myfile.txt")),
+        final InputStream is = Files.newInputStream(dir.resolve("myfile.txt"));
+        Files.copy(is,
                    dir.resolve("my_new_file.txt"));
+        is.close();
 
         final BufferedReader reader = Files.newBufferedReader(dir.resolve("my_new_file.txt"),
                                                               Charset.defaultCharset());
@@ -165,9 +167,11 @@ public class FileUtilityMethodsTest extends AbstractBaseTest {
         writer2.write("empty_content");
         writer2.close();
 
-        Files.copy(Files.newInputStream(dir.resolve("myfile.txt")),
+        final InputStream is = Files.newInputStream(dir.resolve("myfile.txt"));
+        Files.copy(is,
                    dir.resolve("my_new_file.txt"),
                    REPLACE_EXISTING);
+        is.close();
 
         final BufferedReader reader = Files.newBufferedReader(dir.resolve("my_new_file.txt"),
                                                               Charset.defaultCharset());
@@ -186,9 +190,11 @@ public class FileUtilityMethodsTest extends AbstractBaseTest {
         writer.write("content");
         writer.close();
 
-        Files.copy(Files.newInputStream(dir.resolve("myfile.txt")),
+        final InputStream is = Files.newInputStream(dir.resolve("myfile.txt"));
+        Files.copy(is,
                    dir.resolve("my_new_file.txt"),
                    REPLACE_EXISTING);
+        is.close();
 
         final BufferedReader reader = Files.newBufferedReader(dir.resolve("my_new_file.txt"),
                                                               Charset.defaultCharset());
@@ -246,8 +252,10 @@ public class FileUtilityMethodsTest extends AbstractBaseTest {
         writer.write("content");
         writer.close();
 
+        final OutputStream os = Files.newOutputStream(dir.resolve("my_new_file.txt"));
         Files.copy(dir.resolve("myfile.txt"),
-                   Files.newOutputStream(dir.resolve("my_new_file.txt")));
+                   os);
+        os.close();
 
         final BufferedReader reader = Files.newBufferedReader(dir.resolve("my_new_file.txt"),
                                                               Charset.defaultCharset());
@@ -259,14 +267,18 @@ public class FileUtilityMethodsTest extends AbstractBaseTest {
 
     @Test(expected = NoSuchFileException.class)
     public void copyPath2OutNotExists() throws IOException {
-        Files.copy(newTempDir().resolve("myfile.txt"),
-                   Files.newOutputStream(newTempDir().resolve("my_new_file.txt")));
+        try (OutputStream os = Files.newOutputStream(newTempDir().resolve("my_new_file.txt"))) {
+            Files.copy(newTempDir().resolve("myfile.txt"),
+                       os);
+        }
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void copyPath2OutNull1() throws IOException {
-        Files.copy(null,
-                   Files.newOutputStream(newTempDir().resolve("my_new_file.txt")));
+        try (OutputStream os = Files.newOutputStream(newTempDir().resolve("my_new_file.txt"))) {
+            Files.copy(null,
+                       os);
+        }
     }
 
     @Test(expected = IllegalArgumentException.class)
