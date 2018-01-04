@@ -17,13 +17,16 @@
 package org.drools.workbench.screens.guided.dtable.client.wizard.table.pages;
 
 import com.google.gwt.view.client.MultiSelectionModel;
+import com.google.gwtmockito.GwtMockito;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.Validator;
 import org.drools.workbench.screens.guided.dtable.client.wizard.table.pages.cells.ActionSetFieldCell;
 import org.drools.workbench.screens.guided.dtable.client.wizard.table.pages.cells.ActionSetFieldPatternCell;
+import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.html.Text;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,9 +41,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@WithClassesToStub(Text.class)
+@WithClassesToStub({Text.class})
 @RunWith(GwtMockitoTestRunner.class)
 public class ActionSetFieldsPageViewImplTest {
+
+    @Mock
+    Label noAvailablePatternsLabel;
 
     @Mock
     ActionSetFieldPatternCell actionSetFieldPatternCell;
@@ -60,6 +66,8 @@ public class ActionSetFieldsPageViewImplTest {
 
     @Before
     public void setUp() throws Exception {
+        GwtMockito.useProviderForType(Label.class, aClass -> noAvailablePatternsLabel);
+
         view.setup();
         view.setValidator(mock(Validator.class));
         ActionSetFieldsPageView.Presenter presenter = mock(ActionSetFieldsPageView.Presenter.class);
@@ -83,5 +91,8 @@ public class ActionSetFieldsPageViewImplTest {
         assertTrue(selectionModel.isSelected(setFieldCol52));
     }
 
-
+    @Test
+    public void testNoAvailablePattern() throws Exception {
+        verify(noAvailablePatternsLabel).setText(GuidedDecisionTableConstants.INSTANCE.DecisionTableWizardNoAvailablePatterns());
+    }
 }
