@@ -30,7 +30,6 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
@@ -112,6 +111,17 @@ public abstract class BaseEditor {
     protected Integer originalHash;
     private boolean displayShowMoreVersions;
 
+    //for test purposes only
+    BaseEditor(VersionRecordManager versionRecordManager,
+               BaseEditorView baseView,
+               BasicFileMenuBuilder menuBuilder,
+               Event<ChangeTitleWidgetEvent> changeTitleNotification) {
+        this.versionRecordManager = versionRecordManager;
+        this.baseView = baseView;
+        this.menuBuilder = menuBuilder;
+        this.changeTitleNotification = changeTitleNotification;
+    }
+
     protected BaseEditor() {
     }
 
@@ -166,12 +176,7 @@ public abstract class BaseEditor {
                 this.place.getParameter("version",
                                         null),
                 path,
-                new Callback<VersionRecord>() {
-                    @Override
-                    public void callback(VersionRecord versionRecord) {
-                        selectVersion(versionRecord);
-                    }
-                });
+                this::selectVersion);
 
         if (displayShowMoreVersions) {
             versionRecordManager.setShowMoreCommand(
@@ -353,6 +358,11 @@ public abstract class BaseEditor {
         changeTitleNotification.fire(new ChangeTitleWidgetEvent(place,
                                                                 getTitleText(),
                                                                 getTitle()));
+        versionRecordManager.init(
+                this.place.getParameter("version",
+                                        null),
+                versionRecordManager.getCurrentPath(),
+                this::selectVersion);
     }
 
     /**
