@@ -18,15 +18,12 @@ package org.drools.workbench.screens.guided.dtree.client.widget.shapes;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
-import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
 import com.ait.lienzo.client.core.shape.Circle;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Picture;
-import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.lienzo.shared.core.types.Color;
+import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
 import com.google.gwt.resources.client.ImageResource;
@@ -75,13 +72,6 @@ public abstract class BaseGuidedDecisionTreeShape<T extends Node> extends WiresB
 
         add( circle );
         add( nodeLabel );
-
-        nodeLabel.addNodeMouseClickHandler( new NodeMouseClickHandler() {
-            @Override
-            public void onNodeMouseClick( final NodeMouseClickEvent nodeMouseClickEvent ) {
-                selectionManager.selectShape( BaseGuidedDecisionTreeShape.this );
-            }
-        } );
 
         if ( !isReadOnly ) {
             setupControls();
@@ -168,37 +158,19 @@ public abstract class BaseGuidedDecisionTreeShape<T extends Node> extends WiresB
         controls.add( ctrlGroupEditIcon );
     }
 
-    protected Group setupControl( final ImageResource resource,
-                                  final Command command ) {
+    protected Group setupControl(final ImageResource resource,
+                                 final Command command) {
         final Group controlGroup = new Group();
-        new Picture( resource, picture1 -> {
-            //This is a hack for Lienzo 1.2 (and possibly 2.x?). There is a bug in Picture when
-            //we want to add it to Lienzo's SelectionLayer. We work around it here by adding
-            //the Picture to a Group containing a "near invisible" Rectangle that we use to
-            //capture the NodeMouseClickEvents.
-            final double offsetX = -picture1.getImageData().getWidth() / 2;
-            final double offsetY = -picture1.getImageData().getHeight() / 2;
-            final Rectangle selector = new Rectangle( picture1.getImageData().getWidth(),
-                    picture1.getImageData().getHeight() );
-            selector.setFillColor( Color.rgbToBrowserHexColor( 255,
-                    255,
-                    255 ) );
-            selector.setAlpha( 0.01 );
-            selector.setLocation( new Point2D( offsetX,
-                    offsetY ) );
-            picture1.setLocation( new Point2D( offsetX,
-                    offsetY ) );
-            controlGroup.add( picture1 );
-            controlGroup.add( selector );
-        },
-        false );
+        final Picture p = new Picture(resource,
+                                      picture1 -> {
+                                          final double offsetX = -picture1.getImageData().getWidth() / 2;
+                                          final double offsetY = -picture1.getImageData().getHeight() / 2;
+                                          picture1.setLocation(new Point2D(offsetX, offsetY));
+                                          picture1.addNodeMouseClickHandler(e -> command.execute());
+                                      },
+                                      ImageSelectionMode.SELECT_BOUNDS);
+        controlGroup.add(p);
 
-        controlGroup.addNodeMouseClickHandler( new NodeMouseClickHandler() {
-            @Override
-            public void onNodeMouseClick( final NodeMouseClickEvent nodeMouseClickEvent ) {
-                command.execute();
-            }
-        } );
         return controlGroup;
     }
 

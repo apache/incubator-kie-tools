@@ -15,7 +15,6 @@
  */
 package org.drools.workbench.screens.guided.dtree.client.widget.shapes;
 
-import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Rectangle;
@@ -26,7 +25,6 @@ import com.ait.lienzo.client.widget.LienzoPanel;
 import com.ait.lienzo.shared.core.types.Color;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
-import com.google.gwt.event.shared.HandlerRegistration;
 import org.uberfire.ext.wires.core.client.util.ShapeFactoryUtil;
 
 public class NodeLabel extends Group {
@@ -50,6 +48,7 @@ public class NodeLabel extends Group {
                                                               180,
                                                               180 ) );
         container.setAlpha( 0.50 );
+        text.setFillBoundsForSelection(true);
         text.setTextAlign( TextAlign.CENTER );
         text.setTextBaseLine( TextBaseLine.MIDDLE );
         text.setFillColor( Color.rgbToBrowserHexColor( 0,
@@ -76,21 +75,6 @@ public class NodeLabel extends Group {
         container.setHeight( ch );
         container.setLocation( new Point2D( -cw / 2,
                                             -ch / 2 ) );
-    }
-
-    @Override
-    public HandlerRegistration addNodeMouseClickHandler( final NodeMouseClickHandler handler ) {
-        final HandlerRegistration ch = container.addNodeMouseClickHandler( handler );
-        final HandlerRegistration th = text.addNodeMouseClickHandler( handler );
-        final HandlerRegistration nh = super.addNodeMouseClickHandler( handler );
-        return new HandlerRegistration() {
-            @Override
-            public void removeHandler() {
-                ch.removeHandler();
-                th.removeHandler();
-                nh.removeHandler();
-            }
-        };
     }
 
     public double getWidth() {
