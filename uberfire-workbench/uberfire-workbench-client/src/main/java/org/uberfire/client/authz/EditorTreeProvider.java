@@ -25,12 +25,14 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.WorkbenchEditorActivity;
 import org.uberfire.client.resources.i18n.PermissionTreeI18n;
 import org.uberfire.security.Resource;
 import org.uberfire.security.ResourceAction;
+import org.uberfire.security.ResourceType;
 import org.uberfire.security.authz.Permission;
 import org.uberfire.security.authz.PermissionManager;
 import org.uberfire.security.client.authz.tree.LoadCallback;
@@ -47,6 +49,7 @@ import static org.uberfire.client.authz.PerspectiveAction.READ;
 public class EditorTreeProvider implements PermissionTreeProvider {
 
     private ActivityBeansCache activityBeansCache;
+    private SyncBeanManager iocManager;
     private PermissionManager permissionManager;
     private PermissionTreeI18n i18n;
     private String resourceName = null;
@@ -60,9 +63,11 @@ public class EditorTreeProvider implements PermissionTreeProvider {
 
     @Inject
     public EditorTreeProvider(final ActivityBeansCache activityBeansCache,
+                              final SyncBeanManager iocManager,
                               final PermissionManager permissionManager,
                               final PermissionTreeI18n i18n) {
         this.activityBeansCache = activityBeansCache;
+        this.iocManager = iocManager;
         this.permissionManager = permissionManager;
         this.i18n = i18n;
         this.resourceName = i18n.editorResourceName();
@@ -102,11 +107,35 @@ public class EditorTreeProvider implements PermissionTreeProvider {
     public void registerEditor(final String editorId,
                                final String editorName) {
         final SyncBeanDef<Activity> editorBeanDef = activityBeansCache.getActivity(editorId);
+        WorkbenchEditorActivity editor = null;
         if (editorBeanDef != null) {
-            final WorkbenchEditorActivity editor = (WorkbenchEditorActivity) editorBeanDef.getInstance();
-            registeredEditors.add(new RegisteredEditor(editorId,
-                                                       editorName,
-                                                       editor));
+            try {
+                editor = (WorkbenchEditorActivity) editorBeanDef.getInstance();
+
+                // We only need the Editor's Resource definition and not an Editor instance itself as
+                // this can interfere with Event handling across multiple instances at runtime. Therefore
+                // extract the required information before disposing of the Editor instance.
+                final String identifier = editor.getIdentifier();
+                final ResourceType resourceType = editor.getResourceType();
+                final Resource resource = new Resource() {
+                    @Override
+                    public String getIdentifier() {
+                        return identifier;
+                    }
+
+                    @Override
+                    public ResourceType getResourceType() {
+                        return resourceType;
+                    }
+                };
+                registeredEditors.add(new RegisteredEditor(editorId,
+                                                           editorName,
+                                                           resource));
+            } finally {
+                if (editor != null) {
+                    iocManager.destroyBean(editor);
+                }
+            }
         }
     }
 
@@ -138,7 +167,7 @@ public class EditorTreeProvider implements PermissionTreeProvider {
         final PermissionLeafNode node = new PermissionLeafNode();
         node.setNodeName(editor.editorName);
 
-        final Permission readPermission = newPermission(editor.activity,
+        final Permission readPermission = newPermission(editor.resource,
                                                         READ);
         node.addPermission(readPermission,
                            i18n.editorRead());
@@ -170,14 +199,14 @@ public class EditorTreeProvider implements PermissionTreeProvider {
 
         private String editorId;
         private String editorName;
-        private WorkbenchEditorActivity activity;
+        private Resource resource;
 
         public RegisteredEditor(final String editorId,
                                 final String editorName,
-                                final WorkbenchEditorActivity activity) {
+                                final Resource resource) {
             this.editorId = editorId;
             this.editorName = editorName;
-            this.activity = activity;
+            this.resource = resource;
         }
     }
 }

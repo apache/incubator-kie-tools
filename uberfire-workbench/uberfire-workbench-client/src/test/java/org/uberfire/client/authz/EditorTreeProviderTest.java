@@ -20,9 +20,12 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.Activity;
@@ -35,11 +38,13 @@ import org.uberfire.security.client.authz.tree.PermissionNode;
 import org.uberfire.security.client.authz.tree.PermissionTree;
 import org.uberfire.security.client.authz.tree.impl.DefaultLoadOptions;
 import org.uberfire.security.impl.authz.DefaultPermissionManager;
+import org.uberfire.workbench.model.ActivityResourceType;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -59,6 +64,12 @@ public class EditorTreeProviderTest {
     @Mock
     private PermissionTree permissionTree;
 
+    @Mock
+    private SyncBeanManager iocManager;
+
+    @Captor
+    private ArgumentCaptor<WorkbenchEditorActivity> editorActivityCaptor;
+
     private PermissionManager permissionManager;
     private EditorTreeProvider provider;
     private PermissionNode root;
@@ -75,6 +86,7 @@ public class EditorTreeProviderTest {
 
         permissionManager = new DefaultPermissionManager();
         provider = new EditorTreeProvider(activityBeansCache,
+                                          iocManager,
                                           permissionManager,
                                           i18n);
 
@@ -88,6 +100,7 @@ public class EditorTreeProviderTest {
         final WorkbenchEditorActivity bean = mock(WorkbenchEditorActivity.class);
         when(beanDef.getInstance()).thenReturn(bean);
         when(bean.getIdentifier()).thenReturn(editorId);
+        when(bean.getResourceType()).thenReturn(ActivityResourceType.EDITOR);
         return beanDef;
     }
 
@@ -98,6 +111,17 @@ public class EditorTreeProviderTest {
                               options,
                               children -> assertEquals(children.size(),
                                                        0));
+    }
+
+    @Test
+    public void testRegisterEditorDiscardsEditorInstance() {
+        provider.registerEditor(EDITOR1_ID,
+                                EDITOR1_NAME);
+        verify(iocManager).destroyBean(editorActivityCaptor.capture());
+
+        final WorkbenchEditorActivity editorActivity = editorActivityCaptor.getValue();
+        assertEquals(EDITOR1_ID,
+                     editorActivity.getIdentifier());
     }
 
     @Test
