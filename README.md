@@ -17,7 +17,7 @@ And for those who prefer the top-down approach, you can find a detailed descript
 
 ## Uberfire Community Support
 
-Visit our IRC channel (#uberfire on freenode) to hang out and share solutions with the Uberfire community.
+Visit our IRC channel (#appformer on freenode) to hang out and share solutions with the Uberfire community.
 
 ## Contributing to Uberfire
 
@@ -37,7 +37,7 @@ In order to build and contribute to our documentation, follow this steps
 - View the built docs in uberfire-docs/docs/_book/index.html and uberfire-docs/uberfire-docs.pdf
 - Submit a pull request to get your changes accepted
 
-##License
+## License
 
 Uberfire Framework is released under Apache 2 License.
 
