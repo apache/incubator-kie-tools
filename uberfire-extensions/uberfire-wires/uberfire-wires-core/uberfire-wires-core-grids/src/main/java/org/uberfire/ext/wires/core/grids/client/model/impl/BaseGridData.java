@@ -236,14 +236,7 @@ public class BaseGridData implements GridData {
         }
 
         this.rows.removeAll(rows);
-
-        if (index < oldBlockStart) {
-            this.rows.addAll(index,
-                             rows);
-        } else if (index > oldBlockStart) {
-            this.rows.addAll(index - rows.size() + 1,
-                             rows);
-        }
+        this.rows.addAll(index, rows);
 
         final Range oldBlockExtent = new Range(oldBlockStart,
                                                oldBlockEnd);

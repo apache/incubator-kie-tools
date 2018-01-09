@@ -614,6 +614,9 @@ public class BaseGridDataIndexManager {
                 updateMergeMetaData(oldBlockEnd + 1,
                                     _columnIndex);
             }
+            if (oldBlockEnd == rows.size() - 1) {
+                updateMergeMetaData(oldBlockEnd, _columnIndex);
+            }
         }
 
         //Update indexes for where rows were inserted

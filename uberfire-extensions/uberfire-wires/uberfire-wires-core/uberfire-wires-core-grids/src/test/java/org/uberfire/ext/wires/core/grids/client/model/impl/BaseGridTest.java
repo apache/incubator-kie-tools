@@ -19,6 +19,7 @@ import com.ait.lienzo.client.core.shape.Group;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
+import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
@@ -27,6 +28,28 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.im
 import static org.junit.Assert.*;
 
 public abstract class BaseGridTest {
+
+    protected GridData gridData;
+
+    protected GridRow[] gridRows;
+
+    protected GridColumn<String>[] gridColumns;
+
+    protected void constructGridData(final int columnCount, final int rowCount) {
+        gridData = new BaseGridData();
+
+        gridColumns = new GridColumn[columnCount];
+        for (int i = 0; i < columnCount; i++) {
+            gridColumns[i] = new MockMergableGridColumn<>("col" + i, 100);
+            gridData.appendColumn(gridColumns[i]);
+        }
+
+        gridRows = new GridRow[rowCount];
+        for (int i = 0; i < rowCount; i++) {
+            gridRows[i] = new BaseGridRow();
+            gridData.appendRow(gridRows[i]);
+        }
+    }
 
     public void assertGridIndexes(final GridData data,
                                   final boolean[] expectedRowMergeStates,

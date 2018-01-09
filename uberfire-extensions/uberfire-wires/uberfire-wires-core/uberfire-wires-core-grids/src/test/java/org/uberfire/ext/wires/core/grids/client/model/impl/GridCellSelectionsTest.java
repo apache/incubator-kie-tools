@@ -3272,7 +3272,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                                               0)));
 
         //Move rows
-        data.moveRowsTo(4,
+        data.moveRowsTo(1,
                         new ArrayList<GridRow>() {{
                             add(row0);
                             add(row1);
@@ -3420,7 +3420,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                                               0)));
 
         //Move rows
-        data.moveRowsTo(4,
+        data.moveRowsTo(1,
                         new ArrayList<GridRow>() {{
                             add(row0);
                             add(row1);
