@@ -91,7 +91,7 @@ public class CommandUtilsTest {
 
     @Test
     public void testMoveTwoRowsDown() throws Exception {
-        CommandUtils.moveRows(allRows, Arrays.asList(decisionRuleOne, decisionRuleTwo), 1);
+        CommandUtils.moveRows(allRows, Arrays.asList(decisionRuleOne, decisionRuleTwo), 2);
 
         Assertions.assertThat(allRows).containsSequence(decisionRuleThree, decisionRuleOne, decisionRuleTwo);
     }

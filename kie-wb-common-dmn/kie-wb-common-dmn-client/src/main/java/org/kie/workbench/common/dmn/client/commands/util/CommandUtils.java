@@ -46,8 +46,19 @@ public class CommandUtils {
         });
     }
 
-    public static <T> void moveRows(final List<T> allRows, final List<T> rowsToMove, final int index) {
+    public static <T> void moveRows(final List<T> allRows,
+                                    final List<T> rowsToMove,
+                                    final int index) {
+        final int oldBlockStart = allRows.indexOf(rowsToMove.get(0));
+
         allRows.removeAll(rowsToMove);
-        allRows.addAll(index, rowsToMove);
+
+        if (index < oldBlockStart) {
+            allRows.addAll(index,
+                           rowsToMove);
+        } else if (index > oldBlockStart) {
+            allRows.addAll(index - rowsToMove.size() + 1,
+                           rowsToMove);
+        }
     }
 }
