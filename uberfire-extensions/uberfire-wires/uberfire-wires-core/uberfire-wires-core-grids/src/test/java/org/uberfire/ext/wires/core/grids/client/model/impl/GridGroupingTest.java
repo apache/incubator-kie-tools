@@ -19,7 +19,6 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
-import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 
@@ -4410,7 +4409,7 @@ public class GridGroupingTest extends BaseGridTest {
                               0);
 
         //Move row
-        gridData.moveRowsTo(2,
+        gridData.moveRowsTo(4,
                             new ArrayList<GridRow>() {{
                                 add(gridRows[1]);
                                 add(gridRows[2]);
@@ -4510,7 +4509,7 @@ public class GridGroupingTest extends BaseGridTest {
                               0);
 
         //Move row
-        gridData.moveRowsTo(3,
+        gridData.moveRowsTo(4,
                             new ArrayList<GridRow>() {{
                                 add(gridRows[1]);
                                 add(gridRows[2]);

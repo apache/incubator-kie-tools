@@ -22,7 +22,9 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridTest.Expected.build;
 
 public class GridCellSelectionsTest extends BaseGridTest {
@@ -3272,7 +3274,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                                               0)));
 
         //Move rows
-        data.moveRowsTo(1,
+        data.moveRowsTo(4,
                         new ArrayList<GridRow>() {{
                             add(row0);
                             add(row1);
@@ -3420,7 +3422,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                                               0)));
 
         //Move rows
-        data.moveRowsTo(1,
+        data.moveRowsTo(4,
                         new ArrayList<GridRow>() {{
                             add(row0);
                             add(row1);

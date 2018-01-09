@@ -1549,7 +1549,7 @@ public class GridRowsMergedTest extends BaseGridTest {
     }
 
     @Test
-    public void testMergedBlock_MoveRowsDown_Indexes2and3to3() {
+    public void testMergedBlock_MoveRowsDown_Indexes2and3to4() {
         constructGridData(2, 5);
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
@@ -1599,7 +1599,7 @@ public class GridRowsMergedTest extends BaseGridTest {
                           });
 
         //Move row
-        gridData.moveRowsTo(3,
+        gridData.moveRowsTo(4,
                             Arrays.asList(gridRows[2], gridRows[3]));
 
         // row0 = a, b
@@ -1641,99 +1641,7 @@ public class GridRowsMergedTest extends BaseGridTest {
     }
 
     @Test
-    public void testMergedBlock_MoveRowsDown_Indexes0and1and2to1() {
-        constructGridData(2, 5);
-
-        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                final String value = columnIndex == 0 ? (rowIndex == 1 ? "b" : "a") : (rowIndex == 2 ? "a" : "b");
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>(value));
-            }
-        }
-
-        // row0 = a, b
-        // row1 = b, b
-        // row2 = a, a
-        // row3 = a, b
-        // row4 = a, b
-
-        assertGridIndexes(gridData,
-                          new boolean[]{true, true, true, true, true},
-                          new boolean[]{false, false, false, false, false},
-                          new Expected[][]{
-                                  {Expected.build(false,
-                                                  1,
-                                                  "a"), Expected.build(true,
-                                                                       2,
-                                                                       "b")},
-                                  {Expected.build(false,
-                                                  1,
-                                                  "b"), Expected.build(true,
-                                                                       0,
-                                                                       "b")},
-                                  {Expected.build(true,
-                                                  3,
-                                                  "a"), Expected.build(false,
-                                                                       1,
-                                                                       "a")},
-                                  {Expected.build(true,
-                                                  0,
-                                                  "a"), Expected.build(true,
-                                                                       2,
-                                                                       "b")},
-                                  {Expected.build(true,
-                                                  0,
-                                                  "a"), Expected.build(true,
-                                                                       0,
-                                                                       "b")}
-                          });
-
-        //Move row
-        gridData.moveRowsTo(1,
-                            Arrays.asList(gridRows[0], gridRows[1], gridRows[2]));
-
-        // row0 = a, b
-        // row1 = a, b
-        // row2 = b, b
-        // row3 = a, a
-        // row4 = a, b
-
-        assertGridIndexes(gridData,
-                          new boolean[]{true, true, true, true, true},
-                          new boolean[]{false, false, false, false, false},
-                          new Expected[][]{
-                                  {Expected.build(true,
-                                                  2,
-                                                  "a"), Expected.build(true,
-                                                                       3,
-                                                                       "b")},
-                                  {Expected.build(true,
-                                                  0,
-                                                  "a"), Expected.build(true,
-                                                                       0,
-                                                                       "b")},
-                                  {Expected.build(false,
-                                                  1,
-                                                  "b"), Expected.build(true,
-                                                                       0,
-                                                                       "b")},
-                                  {Expected.build(true,
-                                                  2,
-                                                  "a"), Expected.build(false,
-                                                                       1,
-                                                                       "a")},
-                                  {Expected.build(true,
-                                                  0,
-                                                  "a"), Expected.build(false,
-                                                                       1,
-                                                                       "b")}
-                          });
-    }
-
-    @Test
-    public void testMergedBlock_MoveRowsDown_Indexes0and1to3() {
+    public void testMergedBlock_MoveRowsDown_Indexes0and1and2to3() {
         constructGridData(2, 5);
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
@@ -1784,6 +1692,98 @@ public class GridRowsMergedTest extends BaseGridTest {
 
         //Move row
         gridData.moveRowsTo(3,
+                            Arrays.asList(gridRows[0], gridRows[1], gridRows[2]));
+
+        // row0 = a, b
+        // row1 = a, b
+        // row2 = b, b
+        // row3 = a, a
+        // row4 = a, b
+
+        assertGridIndexes(gridData,
+                          new boolean[]{true, true, true, true, true},
+                          new boolean[]{false, false, false, false, false},
+                          new Expected[][]{
+                                  {Expected.build(true,
+                                                  2,
+                                                  "a"), Expected.build(true,
+                                                                       3,
+                                                                       "b")},
+                                  {Expected.build(true,
+                                                  0,
+                                                  "a"), Expected.build(true,
+                                                                       0,
+                                                                       "b")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "b"), Expected.build(true,
+                                                                       0,
+                                                                       "b")},
+                                  {Expected.build(true,
+                                                  2,
+                                                  "a"), Expected.build(false,
+                                                                       1,
+                                                                       "a")},
+                                  {Expected.build(true,
+                                                  0,
+                                                  "a"), Expected.build(false,
+                                                                       1,
+                                                                       "b")}
+                          });
+    }
+
+    @Test
+    public void testMergedBlock_MoveRowsDown_Indexes0and1to4() {
+        constructGridData(2, 5);
+
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
+                final String value = columnIndex == 0 ? (rowIndex == 1 ? "b" : "a") : (rowIndex == 2 ? "a" : "b");
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>(value));
+            }
+        }
+
+        // row0 = a, b
+        // row1 = b, b
+        // row2 = a, a
+        // row3 = a, b
+        // row4 = a, b
+
+        assertGridIndexes(gridData,
+                          new boolean[]{true, true, true, true, true},
+                          new boolean[]{false, false, false, false, false},
+                          new Expected[][]{
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a"), Expected.build(true,
+                                                                       2,
+                                                                       "b")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "b"), Expected.build(true,
+                                                                       0,
+                                                                       "b")},
+                                  {Expected.build(true,
+                                                  3,
+                                                  "a"), Expected.build(false,
+                                                                       1,
+                                                                       "a")},
+                                  {Expected.build(true,
+                                                  0,
+                                                  "a"), Expected.build(true,
+                                                                       2,
+                                                                       "b")},
+                                  {Expected.build(true,
+                                                  0,
+                                                  "a"), Expected.build(true,
+                                                                       0,
+                                                                       "b")}
+                          });
+
+        //Move row
+        gridData.moveRowsTo(4,
                             Arrays.asList(gridRows[0], gridRows[1]));
 
         // row0 = a, a
@@ -2335,7 +2335,7 @@ public class GridRowsMergedTest extends BaseGridTest {
                           });
 
         //Move row
-        gridData.moveRowsTo(2,
+        gridData.moveRowsTo(3,
                             Arrays.asList(gridRows[0], gridRows[1]));
 
         // row0 = b, 2
@@ -2427,14 +2427,14 @@ public class GridRowsMergedTest extends BaseGridTest {
                           });
 
         //Move row
-        gridData.moveRowsTo(2,
+        gridData.moveRowsTo(4,
                             Arrays.asList(gridRows[0], gridRows[1], gridRows[2]));
 
-        // row3 = b, 3
-        // row4 = a, 4
-        // row0 = a, 0
-        // row1 = b, 1
-        // row2 = a, 2
+        // row0 = b, 3
+        // row1 = a, 4
+        // row2 = a, 0
+        // row3 = b, 1
+        // row4 = a, 2
 
         assertGridIndexes(gridData,
                           new boolean[]{false, true, true, false, false},
