@@ -52,6 +52,11 @@ public class PerspectiveDragComponent implements PerspectiveEditorCoreComponent,
     }
 
     @Override
+    public String getDragComponentIconClass() {
+        return "fa fa-file-o";
+    }
+
+    @Override
     public IsWidget getPreviewWidget(RenderingContext ctx) {
         return getShowWidget(ctx);
     }

@@ -103,7 +103,7 @@ public class DisplayerEditorTest {
 
     @Before
     public void init() throws Exception {
-        when(displayerPrototypes.getProto(any(DisplayerType.class))).thenReturn(displayerSettings);
+        when(displayerPrototypes.getProto(any(DisplayerType.class), any(DisplayerSubType.class))).thenReturn(displayerSettings);
         when(displayerSettings.cloneInstance()).thenReturn(tableSettings);
         when(displayerLocator.lookupDisplayer(displayerSettings)).thenReturn(displayer);
         when(displayerLocator.lookupDisplayer(tableSettings)).thenReturn(tableDisplayer);
@@ -118,11 +118,13 @@ public class DisplayerEditorTest {
     @Test
     public void testBrandNewDisplayer() {
         when(view.getBrandNewDisplayerTitle()).thenReturn("New displayer");
+        presenter.setDisplayerType(DisplayerType.SELECTOR);
+        presenter.setDisplayerSubType(DisplayerSubType.SELECTOR_DROPDOWN);
         presenter.init(null);
 
         assertEquals(presenter.isBrandNewDisplayer(), true);
         verify(displayerSettings).setTitle("New displayer");
-        verify(displayerPrototypes).getProto(any(DisplayerType.class));
+        verify(displayerPrototypes).getProto(DisplayerType.SELECTOR, DisplayerSubType.SELECTOR_DROPDOWN);
         verify(displayerLocator).lookupDisplayer(displayerSettings);
         verify(displayer).draw();
 

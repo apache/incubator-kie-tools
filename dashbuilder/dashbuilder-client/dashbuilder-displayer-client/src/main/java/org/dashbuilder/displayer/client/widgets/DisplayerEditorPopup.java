@@ -20,6 +20,8 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.web.bindery.event.shared.HandlerRegistration;
 import org.dashbuilder.displayer.DisplayerSettings;
+import org.dashbuilder.displayer.DisplayerSubType;
+import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.client.resources.i18n.CommonConstants;
 import org.gwtbootstrap3.client.shared.event.ModalHiddenEvent;
 import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
@@ -46,7 +48,8 @@ public class DisplayerEditorPopup extends BaseModal {
     private HandlerRegistration showHandlerRegistration;
     private String editDisplayerTitle = CommonConstants.INSTANCE.displayer_editor_title();
     private String newDisplayerTitle = CommonConstants.INSTANCE.displayer_editor_new();
-
+    private DisplayerType displayerType = null;
+    private DisplayerSubType displayerSubType = null;
     private ButtonPressed buttonPressed = ButtonPressed.CLOSE;
 
     @Inject
@@ -80,6 +83,14 @@ public class DisplayerEditorPopup extends BaseModal {
         this.editDisplayerTitle = editDisplayerTitle;
     }
 
+    public void setDisplayerType(DisplayerType displayerType) {
+        this.displayerType = displayerType;
+    }
+
+    public void setDisplayerSubType(DisplayerSubType displayerSubType) {
+        this.displayerSubType = displayerSubType;
+    }
+
     public void setOnSaveCommand(Command saveCommand) {
         this.editor.setOnSaveCommand(saveCommand);
     }
@@ -96,6 +107,8 @@ public class DisplayerEditorPopup extends BaseModal {
         return new ModalShownHandler() {
             @Override
             public void onShown(ModalShownEvent modalShownEvent) {
+                editor.setDisplayerType(displayerType);
+                editor.setDisplayerSubType(displayerSubType);
                 editor.init(settings);
                 setTitle(editor.isBrandNewDisplayer() ? newDisplayerTitle : editDisplayerTitle);
                 removeShownHandler();

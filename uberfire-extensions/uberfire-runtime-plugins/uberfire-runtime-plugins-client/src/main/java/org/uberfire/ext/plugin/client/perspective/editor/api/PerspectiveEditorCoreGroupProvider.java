@@ -45,6 +45,11 @@ public class PerspectiveEditorCoreGroupProvider implements PerspectiveEditorComp
     }
 
     @Override
+    public Integer getOrder() {
+        return Integer.MAX_VALUE;
+    }
+
+    @Override
     public LayoutDragComponentGroup getInstance() {
         LayoutDragComponentGroup group = new LayoutDragComponentGroup(getName(), true);
         Collection<SyncBeanDef<PerspectiveEditorCoreComponent>> beanDefs = beanManager.lookupBeans(PerspectiveEditorCoreComponent.class);

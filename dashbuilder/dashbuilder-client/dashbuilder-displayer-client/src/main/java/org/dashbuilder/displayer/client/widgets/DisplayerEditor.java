@@ -109,6 +109,8 @@ public class DisplayerEditor implements IsWidget {
     protected Event<DisplayerEditorClosedEvent> closeEvent;
     protected Command onCloseCommand = () -> {};
     protected Command onSaveCommand = () -> {};
+    protected DisplayerType displayerType = DisplayerType.BARCHART;
+    protected DisplayerSubType displayerSubType = null;
 
     DisplayerListener displayerListener = new AbstractDisplayerListener() {
         public void onError(Displayer displayer, ClientRuntimeError error) {
@@ -143,13 +145,21 @@ public class DisplayerEditor implements IsWidget {
         view.init(this);
     }
 
+    public void setDisplayerType(DisplayerType displayerType) {
+        this.displayerType = displayerType != null ? displayerType : DisplayerType.BARCHART;
+    }
+
+    public void setDisplayerSubType(DisplayerSubType displayerSubType) {
+        this.displayerSubType = displayerSubType;
+    }
+
     public void init(DisplayerSettings settings) {
         if (settings != null) {
             brandNewDisplayer = false;
             displayerSettings = settings;
         } else {
             brandNewDisplayer = true;
-            displayerSettings = displayerPrototypes.getProto(DisplayerType.BARCHART);
+            displayerSettings = displayerPrototypes.getProto(displayerType, displayerSubType);
             displayerSettings.setTitle(view.getBrandNewDisplayerTitle());
         }
         selectedTypeSettings = displayerSettings;

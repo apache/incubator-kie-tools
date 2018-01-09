@@ -71,6 +71,11 @@ public class ScreenLayoutDragComponent implements PerspectiveEditorCoreComponent
     }
 
     @Override
+    public String getDragComponentIconClass() {
+        return "fa fa-desktop";
+    }
+
+    @Override
     public IsWidget getPreviewWidget(RenderingContext ctx) {
         return getShowWidget(ctx);
     }

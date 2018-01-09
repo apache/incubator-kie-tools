@@ -26,6 +26,18 @@ public interface LayoutDragComponent {
     public static final String FORMAT = "text";
     static DndDataJSONConverter converter = new DndDataJSONConverter();
 
+    /**
+     * The CSS classes used to display the component's icon on the drag palette.
+     *
+     * @return A CSS class reference
+     */
+    default String getDragComponentIconClass() {
+        return "fa fa-arrows";
+    }
+
+    /**
+     * The title displayed in the component drag palette.
+     */
     String getDragComponentTitle();
 
     /**

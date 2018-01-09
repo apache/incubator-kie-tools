@@ -22,7 +22,7 @@ import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
  * Any class implementing this interface class is used to add an instance of {@link LayoutDragComponentGroup} to
  * the Perspective Editor's component palette.
  */
-public interface PerspectiveEditorComponentGroupProvider {
+public interface PerspectiveEditorComponentGroupProvider extends Comparable {
 
     /**
      * Return the name of the component group displayed in the component palette.
@@ -34,4 +34,32 @@ public interface PerspectiveEditorComponentGroupProvider {
      * listed under the group's category in the component palette.
      */
     LayoutDragComponentGroup getInstance();
+
+    /**
+     * How important is this group in relation to other groups available. For example, more relevant groups
+     * are displayed first in the component palette.
+     */
+    default Integer getOrder() {
+        return 0;
+    }
+
+    @Override
+    default int compareTo(Object o) {
+        if (this == o) {
+            return 0;
+        }
+        if (o == null) {
+            return -1;
+        }
+        try {
+            PerspectiveEditorComponentGroupProvider other = (PerspectiveEditorComponentGroupProvider) o;
+            if (other.getOrder() == this.getOrder()) {
+                return this.getName().compareTo(other.getName());
+            }
+            return this.getOrder().compareTo(other.getOrder()) * -1;
+        }
+        catch (ClassCastException e) {
+            return -1;
+        }
+    }
 }

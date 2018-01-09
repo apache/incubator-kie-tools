@@ -40,6 +40,11 @@ public class LayoutDragComponentWidget implements IsElement {
     @Inject
     @DataField
     Span title;
+
+    @Inject
+    @DataField
+    private Span icon;
+
     @Inject
     @DataField
     private Div dndcomponent;
@@ -50,6 +55,7 @@ public class LayoutDragComponentWidget implements IsElement {
 
     public void init(LayoutDragComponent dragComponent) {
         title.setTextContent(dragComponent.getDragComponentTitle());
+        icon.setClassName(dragComponent.getDragComponentIconClass() + " le-icon");
         dndcomponent.setOnmousedown(e -> addCSSClass(dndcomponent,
                                                      "le-dndcomponent-selected"));
         dndcomponent.setOnmouseup(e -> {

@@ -45,6 +45,11 @@ public class HTMLLayoutDragComponent implements PerspectiveEditorCoreComponent,
     }
 
     @Override
+    public String getDragComponentIconClass() {
+        return "fa fa-html5";
+    }
+
+    @Override
     public IsWidget getPreviewWidget(RenderingContext container) {
         return getShowWidget(container);
     }

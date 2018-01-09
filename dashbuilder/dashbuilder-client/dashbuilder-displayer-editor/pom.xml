@@ -103,6 +103,14 @@
       <artifactId>dashbuilder-displayer-screen</artifactId>
     </dependency>
 
+    <!-- Test dependencies -->
+
+    <dependency>
+      <groupId>com.google.gwt.gwtmockito</groupId>
+      <artifactId>gwtmockito</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
 </project>

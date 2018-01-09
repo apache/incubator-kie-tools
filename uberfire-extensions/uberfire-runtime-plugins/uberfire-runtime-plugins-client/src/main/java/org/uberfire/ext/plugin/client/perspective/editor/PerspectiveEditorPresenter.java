@@ -175,8 +175,8 @@ public class PerspectiveEditorPresenter extends BaseEditor {
             PerspectiveEditorComponentGroupProvider dragComponentGroup = beanDef.getInstance();
             result.add(dragComponentGroup);
         }
-        // Sort the results by name
-        Collections.sort(result, (g1, g2) -> g1.getName().compareTo(g2.getName()));
+        // Sort the results
+        Collections.sort(result);
         return result;
     }
 

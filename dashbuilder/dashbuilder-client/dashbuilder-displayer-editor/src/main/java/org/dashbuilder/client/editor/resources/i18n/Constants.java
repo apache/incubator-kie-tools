@@ -26,4 +26,25 @@ public interface Constants extends Messages {
 
     String DisplayerComponent();
 
+    String drag_group_name_reporting();
+
+    String drag_component_name_barchart();
+
+    String drag_component_name_piechart();
+
+    String drag_component_name_areachart();
+
+    String drag_component_name_linechart();
+
+    String drag_component_name_bubblechart();
+
+    String drag_component_name_meterchart();
+
+    String drag_component_name_mapchart();
+
+    String drag_component_name_metric();
+
+    String drag_component_name_table();
+
+    String drag_component_name_filter();
 }

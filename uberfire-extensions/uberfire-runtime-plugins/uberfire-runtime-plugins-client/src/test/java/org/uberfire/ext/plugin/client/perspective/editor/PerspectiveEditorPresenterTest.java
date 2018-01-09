@@ -76,12 +76,6 @@ public class PerspectiveEditorPresenterTest {
     PerspectiveEditorSettings settings;
 
     @Mock
-    PerspectiveEditorComponentGroupProvider perspectiveEditorGroupA;
-
-    @Mock
-    PerspectiveEditorComponentGroupProvider perspectiveEditorGroupB;
-
-    @Mock
     SyncBeanDef<PerspectiveEditorComponentGroupProvider> perspectiveEditorGroupBeanA;
 
     @Mock
@@ -93,11 +87,34 @@ public class PerspectiveEditorPresenterTest {
     @InjectMocks
     PerspectiveEditorPresenter presenter;
 
+    PerspectiveEditorComponentGroupProvider perspectiveEditorGroupA;
+    PerspectiveEditorComponentGroupProvider perspectiveEditorGroupB;
     LayoutDragComponentGroup dragComponentGroupA;
     LayoutDragComponentGroup dragComponentGroupB;
 
     public static final String COMPONENT_GROUP_A = "A";
     public static final String COMPONENT_GROUP_B = "B";
+
+    class PerspectiveEditorTestGroupProvider implements PerspectiveEditorComponentGroupProvider {
+
+        private String name;
+        private LayoutDragComponentGroup componentGroup;
+
+        public PerspectiveEditorTestGroupProvider(String name, LayoutDragComponentGroup componentGroup) {
+            this.name = name;
+            this.componentGroup = componentGroup;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public LayoutDragComponentGroup getInstance() {
+            return componentGroup;
+        }
+    }
 
     @Before
     public void setUp() {
@@ -106,13 +123,11 @@ public class PerspectiveEditorPresenterTest {
         when(pluginController.canUpdate(any())).thenReturn(true);
 
         dragComponentGroupA = new LayoutDragComponentGroup(COMPONENT_GROUP_A);
-        when(perspectiveEditorGroupA.getName()).thenReturn(COMPONENT_GROUP_A);
-        when(perspectiveEditorGroupA.getInstance()).thenReturn(dragComponentGroupA);
+        perspectiveEditorGroupA = new PerspectiveEditorTestGroupProvider(COMPONENT_GROUP_A, dragComponentGroupA);
         when(perspectiveEditorGroupBeanA.getInstance()).thenReturn(perspectiveEditorGroupA);
 
         dragComponentGroupB = new LayoutDragComponentGroup(COMPONENT_GROUP_B);
-        when(perspectiveEditorGroupB.getName()).thenReturn(COMPONENT_GROUP_B);
-        when(perspectiveEditorGroupB.getInstance()).thenReturn(dragComponentGroupB);
+        perspectiveEditorGroupB = new PerspectiveEditorTestGroupProvider(COMPONENT_GROUP_B, dragComponentGroupB);
         when(perspectiveEditorGroupBeanB.getInstance()).thenReturn(perspectiveEditorGroupB);
 
         when(beanManager.lookupBeans(PerspectiveEditorComponentGroupProvider.class))
