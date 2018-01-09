@@ -45,7 +45,7 @@ public class DiagramSet implements BPMNPropertySet, BPMNBaseInfo {
 
     @org.kie.workbench.common.stunner.core.definition.annotation.Name
     @FieldLabel
-    public static final transient String propertySetName = "BPMN Process";
+    public static final transient String propertySetName = "Process";
 
     @Property
     @FormField
@@ -90,7 +90,6 @@ public class DiagramSet implements BPMNPropertySet, BPMNBaseInfo {
 
     @Property
     @FormField(
-            type = TextAreaFieldType.class,
             afterElement = "adHoc"
     )
     @Valid
