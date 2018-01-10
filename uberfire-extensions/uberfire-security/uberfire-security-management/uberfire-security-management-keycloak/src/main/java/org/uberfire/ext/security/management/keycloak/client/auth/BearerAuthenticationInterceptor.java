@@ -18,16 +18,12 @@ package org.uberfire.ext.security.management.keycloak.client.auth;
 
 import java.lang.reflect.Method;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.ext.Provider;
 
-import org.jboss.resteasy.annotations.interception.ClientInterceptor;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.spi.interception.AcceptedByMethod;
 import org.jboss.resteasy.spi.interception.ClientExecutionContext;
 import org.jboss.resteasy.spi.interception.ClientExecutionInterceptor;
 
-@Provider
-@ClientInterceptor
 /**
  * A Resteasy client interceptor used for Keycloak's client authentication based on the Bearer authentication method.
  * It does not intercept the "grantToken" and "refreshToken" calls from the token service endpoint (those requests are basic authentication based).
