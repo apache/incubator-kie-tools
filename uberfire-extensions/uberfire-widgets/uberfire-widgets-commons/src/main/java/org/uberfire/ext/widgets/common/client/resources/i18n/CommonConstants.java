@@ -153,6 +153,12 @@ public interface CommonConstants
 
     String liveSearchNotFoundMessage();
 
+    String liveSearchElementsSelected(int elements);
+
+    String liveSearchClearSelectionMessage();
+
+    String liveSearchResetSelectionMessage();
+
     String PerspectiveSelectHint();
 
     String PerspectiveSearchHint();

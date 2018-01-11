@@ -34,6 +34,7 @@ import org.uberfire.ext.security.management.client.widgets.management.events.Per
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchDropDown;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchResults;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchService;
+import org.uberfire.ext.widgets.common.client.dropdown.SingleLiveSearchSelectionHandler;
 import org.uberfire.security.authz.AuthorizationResult;
 import org.uberfire.security.authz.Permission;
 import org.uberfire.security.client.authz.tree.HasResources;
@@ -48,6 +49,7 @@ public class MultiplePermissionNodeEditor extends BasePermissionNodeEditor {
     View view;
     PermissionWidgetFactory widgetFactory;
     LiveSearchDropDown liveSearchDropDown;
+    SingleLiveSearchSelectionHandler<String> selectionHandler = new SingleLiveSearchSelectionHandler<>();
     Event<PermissionChangedEvent> permissionChangedEvent;
     Event<PermissionNodeAddedEvent> permissionNodeAddedEvent;
     Event<PermissionNodeRemovedEvent> permissionNodeRemovedEvent;
@@ -130,8 +132,8 @@ public class MultiplePermissionNodeEditor extends BasePermissionNodeEditor {
             liveSearchDropDown.setNotFoundMessage(view.getChildrenNotFoundMsg(resourceName));
             liveSearchDropDown.setMaxItems(50);
             liveSearchDropDown.setWidth(220);
-            liveSearchDropDown.setSearchService(childrenSearchService);
-            liveSearchDropDown.setOnChange(() -> onChildSelected(liveSearchDropDown.getSelectedKey()));
+            liveSearchDropDown.init(childrenSearchService, selectionHandler);
+            liveSearchDropDown.setOnChange(() -> onChildSelected(selectionHandler.getSelectedKey()));
 
             view.setAddChildEnabled(true);
             view.setResourceName(resourceName);

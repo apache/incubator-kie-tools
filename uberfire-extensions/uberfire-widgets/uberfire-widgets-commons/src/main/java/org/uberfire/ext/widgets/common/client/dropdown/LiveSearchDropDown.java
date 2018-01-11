@@ -18,35 +18,45 @@ package org.uberfire.ext.widgets.common.client.dropdown;
 
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.Command;
 
 @Dependent
-public class LiveSearchDropDown implements IsWidget {
+public class LiveSearchDropDown<TYPE> implements IsWidget {
 
-    View view;
-    int maxItems = 10;
-    LiveSearchService searchService = null;
-    boolean searchEnabled = true;
-    boolean searchCacheEnabled = true;
-    Map<String,LiveSearchResults> searchCache = new HashMap<>();
-    String selectedKey = null;
-    String selectedValue = null;
-    String lastSearch = null;
-    String searchHint = null;
-    String selectorHint = null;
-    String notFoundMessage = null;
-    Command onChange;
+    private View<TYPE> view;
+    private int maxItems = 10;
+    private LiveSearchService<TYPE> searchService = null;
+    private boolean changeCallbackEnabled = true;
+    private boolean searchEnabled = true;
+    private boolean clearSelectionEnabled;
+    private boolean searchCacheEnabled = true;
+    private Map<String, LiveSearchResults<TYPE>> searchCache = new HashMap<>();
+    private LiveSearchSelectionHandler selectionHandler;
+
+    private ManagedInstance<LiveSearchSelectorItem<TYPE>> liveSearchSelectorItems;
+    private String lastSearch = null;
+    private String searchHint = null;
+    private String selectorHint = null;
+    private String notFoundMessage = null;
+    private Command onChange;
+
+
     @Inject
-    public LiveSearchDropDown(View view) {
+    public LiveSearchDropDown(View view,
+                              ManagedInstance<LiveSearchSelectorItem<TYPE>> liveSearchSelectorItems) {
         this.view = view;
-        view.init(this);
+        this.liveSearchSelectorItems = liveSearchSelectorItems;
+
+        this.view.init(this);
 
         searchHint = view.getDefaultSearchHintI18nMessage();
         selectorHint = view.getDefaultSelectorHintI18nMessage();
@@ -67,6 +77,11 @@ public class LiveSearchDropDown implements IsWidget {
         view.setSearchEnabled(searchEnabled);
     }
 
+    public void setClearSelectionEnabled(boolean clearSelectionEnabled) {
+        this.clearSelectionEnabled = clearSelectionEnabled;
+        view.setClearSelectionEnabled(clearSelectionEnabled);
+    }
+
     public void setSelectorHint(String text) {
         selectorHint = text;
         view.setDropDownText(text);
@@ -81,12 +96,12 @@ public class LiveSearchDropDown implements IsWidget {
         this.notFoundMessage = noItemsMessage;
     }
 
-    public void setOnChange(Command onChange) {
-        this.onChange = onChange;
-    }
-
-    public void setSearchService(LiveSearchService searchService) {
+    public void init(LiveSearchService searchService,
+                     LiveSearchSelectionHandler selectionHandler) {
         this.searchService = searchService;
+        this.selectionHandler = selectionHandler;
+        selectionHandler.setLiveSearchSelectionCallback(() -> onItemSelected());
+        view.setClearSelectionMessage(selectionHandler.isMultipleSelection());
     }
 
     public boolean isSearchCacheEnabled() {
@@ -107,20 +122,6 @@ public class LiveSearchDropDown implements IsWidget {
 
     public void setWidth(int minWidth) {
         view.setWidth(minWidth);
-    }
-
-    public String getSelectedKey() {
-        return selectedKey;
-    }
-
-    public String getSelectedValue() {
-        return selectedValue;
-    }
-
-    public void setSelectedItem(String key, String value) {
-        this.selectedKey = key;
-        this.selectedValue = value;
-        view.setSelectedValue(selectedValue);
     }
 
     public void clear() {
@@ -146,13 +147,31 @@ public class LiveSearchDropDown implements IsWidget {
         }
     }
 
+    public void setSelectedItem(final TYPE key) {
+        searchService.search("",
+                             1000,
+                             results -> {
+                                 results.stream()
+                                         .filter(entry -> entry.getKey().equals(key))
+                                         .findFirst().ifPresent(entry -> {
+                                     changeCallbackEnabled = false;
+                                     LiveSearchSelectorItem<TYPE> item = getSelectorItemForEntry(entry);
+                                     selectionHandler.selectItem(item);
+                                     item.select();
+                                     view.clearItems();
+                                     lastSearch = null;
+                                     changeCallbackEnabled = true;
+                                 });
+                             });
+    }
+
     protected void doSearch(String pattern) {
         view.searchInProgress(searchHint);
         searchService.search(lastSearch,
                              maxItems,
                              results -> {
                                  addToSearchCache(pattern,
-                                         results);
+                                                  results);
                                  showResults(results);
                                  view.searchFinished();
                              });
@@ -165,17 +184,29 @@ public class LiveSearchDropDown implements IsWidget {
     protected void addToSearchCache(String pattern,
                                     LiveSearchResults searchResults) {
         searchCache.put(pattern,
-                searchResults);
+                        searchResults);
     }
 
-    public void showResults(LiveSearchResults results) {
+    public void showResults(LiveSearchResults<TYPE> results) {
         view.clearItems();
         if (results.isEmpty()) {
             view.noItems(notFoundMessage);
+        } else {
+            results.forEach(LiveSearchDropDown.this::getSelectorItemForEntry);
         }
-        for (LiveSearchEntry entry : results) {
-            view.addItem(entry.getKey(), entry.getValue());
-        }
+    }
+
+    public LiveSearchSelectorItem<TYPE> getSelectorItemForEntry(LiveSearchEntry<TYPE> entry) {
+        LiveSearchSelectorItem<TYPE> item = liveSearchSelectorItems.get();
+
+        item.init(entry.getKey(),
+                  entry.getValue());
+
+        selectionHandler.registerItem(item);
+
+        view.addItem(item);
+
+        return item;
     }
 
     void onItemsShown() {
@@ -184,28 +215,49 @@ public class LiveSearchDropDown implements IsWidget {
         });
     }
 
-    // View callbacks
+    public void setOnChange(Command onChange) {
+        this.onChange = onChange;
+    }
 
-    void onItemSelected(String key, String value) {
-        selectedKey = key;
-        selectedValue = value;
-        view.setDropDownText(value);
-        if (onChange != null) {
+    public void setEnabled(boolean enabled) {
+        view.setEnabled(enabled);
+    }
+
+    void onItemSelected() {
+        String message = selectionHandler.getDropDownMenuHeader();
+
+        if(message == null) {
+            message = selectorHint;
+        }
+
+        view.setDropDownText(message);
+
+        if (onChange != null & changeCallbackEnabled) {
             onChange.execute();
         }
     }
 
-    public interface View extends UberView<LiveSearchDropDown> {
+    public void clearSelection() {
+        selectionHandler.clearSelection();
+
+        if (onChange != null & changeCallbackEnabled) {
+            onChange.execute();
+        }
+    }
+
+    public interface View<TYPE> extends UberView<LiveSearchDropDown<TYPE>> {
 
         void clearItems();
 
         void noItems(String msg);
 
-        void addItem(String key, String value);
+        void addItem(LiveSearchSelectorItem<TYPE> item);
 
         void setSelectedValue(String selectedItem);
 
         void setSearchEnabled(boolean enabled);
+
+        void setClearSelectionEnabled(boolean clearSelectionEnabled);
 
         void setSearchHint(String text);
 
@@ -226,5 +278,20 @@ public class LiveSearchDropDown implements IsWidget {
         String getDefaultSelectorHintI18nMessage();
 
         String getDefaultNotFoundI18nMessage();
+
+        // For single selection
+        String getDefaultResetSelectionI18nMessage();
+
+        // For multiple selection
+        String getDefaultClearSelectionI18nMessage();
+
+        void setEnabled(boolean enabled);
+
+        void setClearSelectionMessage(boolean multipleSelection);
+    }
+
+    @PreDestroy
+    public void destroy() {
+        liveSearchSelectorItems.destroyAll();
     }
 }

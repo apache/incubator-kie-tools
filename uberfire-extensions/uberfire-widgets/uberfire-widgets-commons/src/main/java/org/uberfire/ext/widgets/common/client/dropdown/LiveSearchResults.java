@@ -20,11 +20,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 
-public class LiveSearchResults extends ArrayList<LiveSearchEntry> {
+public class LiveSearchResults<TYPE> extends ArrayList<LiveSearchEntry<TYPE>> {
 
     private int maxEntries = -1;
     private static Comparator<LiveSearchEntry> _byValue = (e1, e2) -> e1.getValue().compareTo(e2.getValue());
-    private static Comparator<LiveSearchEntry> _byKey = (e1, e2) -> e1.getValue().compareTo(e2.getValue());
+    private static Comparator<LiveSearchEntry> _byKey = (e1, e2) -> e1.getKey().toString().compareTo(e2.getKey().toString());
 
     public LiveSearchResults() {
         super();

@@ -37,7 +37,7 @@ public class PerspectiveDropDown implements IsWidget {
     LiveSearchDropDown liveSearchDropDown;
     PerspectiveNameProvider perspectiveNameProvider;
     Set<String> perspectiveIdsExcluded;
-    LiveSearchService searchService = (pattern, maxResults, callback) -> {
+    LiveSearchService<String> searchService = (pattern, maxResults, callback) -> {
 
         LiveSearchResults result = new LiveSearchResults(maxResults);
         for (SyncBeanDef<Activity> beanDef : activityBeansCache.getPerspectiveActivities()) {
@@ -52,6 +52,7 @@ public class PerspectiveDropDown implements IsWidget {
         result.sortByValue();
         callback.afterSearch(result);
     };
+    SingleLiveSearchSelectionHandler<String> selectionHandler = new SingleLiveSearchSelectionHandler<>();
 
     @Inject
     public PerspectiveDropDown(ActivityBeansCache activityBeansCache,
@@ -66,7 +67,7 @@ public class PerspectiveDropDown implements IsWidget {
         liveSearchDropDown.setSelectorHint(CommonConstants.INSTANCE.PerspectiveSelectHint());
         liveSearchDropDown.setSearchHint(CommonConstants.INSTANCE.PerspectiveSearchHint());
         liveSearchDropDown.setNotFoundMessage(CommonConstants.INSTANCE.PerspectiveNotFound());
-        liveSearchDropDown.setSearchService(searchService);
+        liveSearchDropDown.init(searchService, selectionHandler);
     }
 
     @Override
@@ -93,7 +94,7 @@ public class PerspectiveDropDown implements IsWidget {
     }
 
     public PerspectiveActivity getSelectedPerspective() {
-        String selected = liveSearchDropDown.getSelectedKey();
+        String selected = selectionHandler.getSelectedKey();
         if (selected == null) {
             return null;
         }
@@ -103,13 +104,11 @@ public class PerspectiveDropDown implements IsWidget {
     }
 
     public void setSelectedPerspective(String perspectiveId) {
-        String item = getItemName(perspectiveId);
-        liveSearchDropDown.setSelectedItem(perspectiveId, item);
+        liveSearchDropDown.setSelectedItem(perspectiveId);
     }
 
     public void setSelectedPerspective(PerspectiveActivity selectedPerspective) {
-        String item = getItemName(selectedPerspective);
-        liveSearchDropDown.setSelectedItem(selectedPerspective.getIdentifier(), item);
+        liveSearchDropDown.setSelectedItem(selectedPerspective.getIdentifier());
     }
 
     public void setMaxItems(int maxItems) {

@@ -16,17 +16,17 @@
 
 package org.uberfire.ext.widgets.common.client.dropdown;
 
-public class LiveSearchEntry {
+public class LiveSearchEntry<TYPE> {
 
-    String key;
-    String value;
+    private TYPE key;
+    private String value;
 
-    public LiveSearchEntry(String key, String value) {
+    public LiveSearchEntry(TYPE key, String value) {
         this.key = key;
         this.value = value;
     }
 
-    public String getKey() {
+    public TYPE getKey() {
         return key;
     }
 

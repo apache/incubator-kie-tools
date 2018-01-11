@@ -16,7 +16,7 @@
 
 package org.uberfire.ext.widgets.common.client.dropdown;
 
-public interface LiveSearchCallback {
+public interface LiveSearchCallback<TYPE> {
 
-    void afterSearch(LiveSearchResults results);
+    void afterSearch(LiveSearchResults<TYPE> results);
 }

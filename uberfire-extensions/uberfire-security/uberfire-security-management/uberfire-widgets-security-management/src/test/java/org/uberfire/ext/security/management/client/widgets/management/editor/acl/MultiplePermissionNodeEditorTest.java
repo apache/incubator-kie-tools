@@ -488,7 +488,7 @@ public class MultiplePermissionNodeEditorTest {
         permissionResourceChildrenAvailable.add(permissionChildNode3);
         presenter.edit(permissionResourceNode);
 
-        LiveSearchService searchService = presenter.getChildrenSearchService();
+        LiveSearchService<String> searchService = presenter.getChildrenSearchService();
         searchService.search("", -1, results -> {
             assertEquals(results.size(), 2);
             assertEquals(results.get(0).getKey(), "read.p1");

@@ -16,9 +16,9 @@
 
 package org.uberfire.ext.widgets.common.client.dropdown;
 
-public interface LiveSearchService {
+public interface LiveSearchService<TYPE> {
 
     void search(String pattern,
                 int maxResults,
-                LiveSearchCallback callback);
+                LiveSearchCallback<TYPE> callback);
 }

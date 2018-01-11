@@ -35,6 +35,7 @@ import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchCallback;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchDropDown;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchResults;
+import org.uberfire.ext.widgets.common.client.dropdown.SingleLiveSearchSelectionHandler;
 
 @Dependent
 public class DropDownEditor implements IsWidget, LeafAttributeEditor<String> {
@@ -69,7 +70,9 @@ public class DropDownEditor implements IsWidget, LeafAttributeEditor<String> {
     }
 
     public View view;
-    LiveSearchDropDown dropDown;
+    LiveSearchDropDown<String> dropDown;
+    SingleLiveSearchSelectionHandler<String> selectionHandler = new SingleLiveSearchSelectionHandler<>();
+
     Event<org.dashbuilder.common.client.event.ValueChangeEvent<String>> valueChangeEvent;
     Collection<Entry> entries = new ArrayList<>();
     String selectorHint;
@@ -89,7 +92,7 @@ public class DropDownEditor implements IsWidget, LeafAttributeEditor<String> {
         view.init(this);
         view.setDropDown(dropDown);
         dropDown.setSearchEnabled(false);
-        dropDown.setSearchService(this::getDropDownEntries);
+        dropDown.init(this::getDropDownEntries, selectionHandler);
         dropDown.setOnChange(this::onEntrySelected);
     }
 
@@ -98,7 +101,7 @@ public class DropDownEditor implements IsWidget, LeafAttributeEditor<String> {
         return view.asWidget();
     }
 
-    public void getDropDownEntries(String pattern, int maxResults, LiveSearchCallback callback) {
+    public void getDropDownEntries(String pattern, int maxResults, LiveSearchCallback<String> callback) {
         final LiveSearchResults results = new LiveSearchResults();
         entries.stream()
                 .filter(e -> e.getHint().contains(pattern))
@@ -113,7 +116,7 @@ public class DropDownEditor implements IsWidget, LeafAttributeEditor<String> {
     }
 
     public String getSelectedValue() {
-        String hint = dropDown.getSelectedValue();
+        String hint = selectionHandler.getSelectedValue();
         Entry entry = getEntryByHint(hint);
         return entry.getValue();
     }
@@ -151,7 +154,7 @@ public class DropDownEditor implements IsWidget, LeafAttributeEditor<String> {
             for (Entry entry : entries) {
                 this.entries.add(entry);
                 if (entry.getValue().equals(value)) {
-                    this.dropDown.setSelectedItem(entry.getValue(), entry.getHint());
+                    this.dropDown.setSelectedItem(entry.getValue());
                 }
             }
         }
@@ -200,9 +203,9 @@ public class DropDownEditor implements IsWidget, LeafAttributeEditor<String> {
         this.value = value;
         Entry entry = getEntryByValue(value);
         if (entry != null) {
-            this.dropDown.setSelectedItem(value, entry.getHint());
+            this.dropDown.setSelectedItem(value);
         } else {
-            this.dropDown.setSelectedItem(selectorHint, selectorHint);
+            this.dropDown.setSelectedItem(selectorHint);
         }
     }
 }

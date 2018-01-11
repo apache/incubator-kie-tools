@@ -18,12 +18,15 @@ package org.uberfire.ext.widgets.common.client.dropdown;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.*;
@@ -33,17 +36,17 @@ import static org.mockito.Mockito.*;
 public class LiveSearchDropDownTest {
 
     @Mock
-    LiveSearchDropDownView view;
+    LiveSearchDropDownView<String> view;
 
     @Mock
-    LiveSearchCallback searchCallback;
+    LiveSearchCallback<String> searchCallback;
 
     @Spy
-    LiveSearchService searchService = new LiveSearchService() {
-
+    LiveSearchService<String> searchService = new LiveSearchService<String>() {
+        @Override
         public void search(String pattern,
-                           int max,
-                           LiveSearchCallback callback) {
+                           int maxResults,
+                           LiveSearchCallback<String> callback) {
             LiveSearchResults results = new LiveSearchResults();
             switch (pattern) {
                 case "a":
@@ -63,19 +66,44 @@ public class LiveSearchDropDownTest {
         }
     };
 
+    @Spy
+    SingleLiveSearchSelectionHandler<String> selectionHandler = new SingleLiveSearchSelectionHandler<>();
+
     @Mock
     Command onChangeCommand;
 
     @Mock
     ClickEvent clickEvent;
 
-    LiveSearchDropDown presenter;
+    LiveSearchDropDown<String> presenter;
+
+    @Mock
+    ManagedInstance<LiveSearchSelectorItem<String>> selectorItems;
 
     @Before
     public void setUp() {
-        presenter = spy(new LiveSearchDropDown(view));
+
+        when(selectorItems.get()).thenAnswer(new Answer<LiveSearchSelectorItem<String>>() {
+            @Override
+            public LiveSearchSelectorItem<String> answer(InvocationOnMock invocationOnMock) throws Throwable {
+                final LiveSearchSelectorItem<String> result = mock(LiveSearchSelectorItem.class);
+
+                doAnswer((Answer<Void>) invocationOnMock1 -> {
+                    String key = (String) invocationOnMock1.getArguments()[0];
+                    String value = (String) invocationOnMock1.getArguments()[1];
+
+                    when(result.getKey()).thenReturn(key);
+                    when(result.getValue()).thenReturn(value);
+                    return null;
+                }).when(result).init(any(), any());
+
+                return result;
+            }
+        });
+
+        presenter = spy(new LiveSearchDropDown(view, selectorItems));
         presenter.setOnChange(onChangeCommand);
-        presenter.setSearchService(searchService);
+        presenter.init(searchService, selectionHandler);
 
         doAnswer(invocationOnMock -> {
             ClickEvent event = (ClickEvent) invocationOnMock.getArguments()[0];
@@ -116,7 +144,7 @@ public class LiveSearchDropDownTest {
                      "a");
 
         verify(view).clearItems();
-        verify(view).addItem("1", "a");
+        verify(view).addItem(any());
         verify(view).searchFinished();
 
         verify(searchService).search(eq("a"),
@@ -150,7 +178,7 @@ public class LiveSearchDropDownTest {
         presenter.search("a"); // 2nd search is ignored as it's a repetition
 
         verify(view).clearItems();
-        verify(view).addItem("1", "a");
+        verify(view).addItem(any());
         verify(view).searchFinished();
 
         verify(searchService).search(eq("a"),
@@ -185,7 +213,7 @@ public class LiveSearchDropDownTest {
         verify(view,
                times(6)).clearItems();
         verify(view,
-               times(3)).addItem("1", "a");
+               times(3)).addItem(any());
         verify(view,
                times(3)).noItems(anyString());
     }
@@ -221,7 +249,7 @@ public class LiveSearchDropDownTest {
         verify(view,
                times(6)).clearItems();
         verify(view,
-               times(3)).addItem("1", "a");
+               times(3)).addItem(any());
         verify(view,
                times(3)).noItems(anyString());
     }
@@ -233,7 +261,7 @@ public class LiveSearchDropDownTest {
         ArgumentCaptor<LiveSearchResults> resultsCaptor = ArgumentCaptor.forClass(LiveSearchResults.class);
         verify(presenter).showResults(resultsCaptor.capture());
 
-        LiveSearchResults results = resultsCaptor.getValue();
+        LiveSearchResults<String> results = resultsCaptor.getValue();
         assertEquals(results.size(),
                      3);
         assertEquals(results.get(0).getValue(),
@@ -246,12 +274,25 @@ public class LiveSearchDropDownTest {
 
     @Test
     public void testItemSelected() {
-        presenter.onItemSelected("1", "a");
 
-        assertEquals(presenter.getSelectedKey(), "1");
-        assertEquals(presenter.getSelectedValue(), "a");
+        doAnswer(invocationOnMock -> {
+            LiveSearchResults results = new LiveSearchResults();
+            results.add("1", "a");
+            results.add("2", "b");
+            results.add("3", "c");
+
+            LiveSearchCallback callback = (LiveSearchCallback)invocationOnMock.getArguments()[2];
+            callback.afterSearch(results);
+
+            return null;
+        }).when(searchService).search(anyString(), anyInt(), any());
+
+
+        presenter.setSelectedItem("1");
+
+        assertEquals("1", selectionHandler.getSelectedKey());
         verify(view).setDropDownText("a");
-        verify(onChangeCommand).execute();
+        verify(onChangeCommand, never()).execute();
     }
 
     @Test

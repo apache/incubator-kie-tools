@@ -25,8 +25,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchDropDown;
+import org.uberfire.ext.widgets.common.client.dropdown.SingleLiveSearchSelectionHandler;
 
 import static junit.framework.Assert.*;
 import static org.mockito.Mockito.*;
@@ -38,7 +40,10 @@ public class DropDownEditorTest {
     DropDownEditor.View view;
 
     @Mock
-    LiveSearchDropDown liveSearchDropDown;
+    LiveSearchDropDown<String> liveSearchDropDown;
+
+    @Spy
+    SingleLiveSearchSelectionHandler<String> selectionHandler = new SingleLiveSearchSelectionHandler<>();
 
     @Mock
     Event<ValueChangeEvent<String>> valueChangeEvent;
@@ -49,6 +54,7 @@ public class DropDownEditorTest {
     @Before
     public void setup() {
         presenter = new DropDownEditor(view, liveSearchDropDown, valueChangeEvent);
+        presenter.selectionHandler = selectionHandler;
         entries.add(presenter.newEntry("entry1", "Entry 1"));
         entries.add(presenter.newEntry("entry2", "Entry 2"));
         presenter.setEntries(entries);
@@ -58,7 +64,7 @@ public class DropDownEditorTest {
     @Test
     public void testInit() {
         verify(liveSearchDropDown).setSearchEnabled(false);
-        verify(liveSearchDropDown).setSearchService(any());
+        verify(liveSearchDropDown).init(any(), any());
         assertNull(presenter.getValue());
     }
 
@@ -73,7 +79,7 @@ public class DropDownEditorTest {
 
     @Test
     public void testSelect() {
-        when(liveSearchDropDown.getSelectedValue()).thenReturn("Entry 1");
+        when(selectionHandler.getSelectedValue()).thenReturn("Entry 1");
         presenter.setValue("entry2");
         presenter.onEntrySelected();
 
@@ -88,24 +94,24 @@ public class DropDownEditorTest {
     @Test
     public void testSetValue() {
         presenter.setValue("entry2");
-        verify(liveSearchDropDown).setSelectedItem("entry2", "Entry 2");
+        verify(liveSearchDropDown).setSelectedItem("entry2");
         assertEquals(presenter.getValue(), "entry2");
 
         presenter.setSelectHint("- select - ");
         presenter.setValue(null);
-        verify(liveSearchDropDown).setSelectedItem("- select - ", "- select - ");
+        verify(liveSearchDropDown).setSelectedItem("- select - ");
         assertNull(presenter.getValue());
 
         reset(liveSearchDropDown);
         presenter.clear();
         presenter.setValue("entry2");
         presenter.setEntries(entries);
-        verify(liveSearchDropDown).setSelectedItem("entry2", "Entry 2");
+        verify(liveSearchDropDown).setSelectedItem("entry2");
 
         reset(liveSearchDropDown);
         presenter.clear();
         presenter.setEntries(entries);
-        verify(liveSearchDropDown, never()).setSelectedItem(anyString(), anyString());
+        verify(liveSearchDropDown, never()).setSelectedItem(anyString());
     }
 
     @Test

@@ -27,13 +27,17 @@ import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsConstants;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchDropDown;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchResults;
+import org.uberfire.ext.widgets.common.client.dropdown.SingleLiveSearchSelectionHandler;
 import org.uberfire.mvp.Command;
 
 @Dependent
 public class PriorityDropDown implements IsWidget {
 
-    LiveSearchDropDown liveSearchDropDown;
+    LiveSearchDropDown<String> liveSearchDropDown;
+    SingleLiveSearchSelectionHandler<String> selectionHandler = new SingleLiveSearchSelectionHandler<>();
     List<String> priorityItemList;
+
+
     @Inject
     public PriorityDropDown(LiveSearchDropDown liveSearchDropDown) {
         this.liveSearchDropDown = liveSearchDropDown;
@@ -51,7 +55,7 @@ public class PriorityDropDown implements IsWidget {
         LiveSearchResults liveSearchResults = new LiveSearchResults(priorityItemList).sortByKey();
         liveSearchDropDown.setSelectorHint(UsersManagementWidgetsConstants.INSTANCE.selectPriorityHint());
         liveSearchDropDown.setSearchEnabled(false);
-        liveSearchDropDown.setSearchService((pattern, maxResults, callback) -> callback.afterSearch(liveSearchResults));
+        liveSearchDropDown.init((pattern, maxResults, callback) -> callback.afterSearch(liveSearchResults), selectionHandler);
     }
 
     @Override
@@ -66,7 +70,7 @@ public class PriorityDropDown implements IsWidget {
     }
 
     public int getSelectedPriority() {
-        String selected = liveSearchDropDown.getSelectedKey();
+        String selected = selectionHandler.getSelectedKey();
         if (selected == null) {
             return -1;
         }
@@ -77,7 +81,7 @@ public class PriorityDropDown implements IsWidget {
     public void setSelectedPriority(int ordinal) {
         Priority priority = resolvePriority(ordinal);
         String item = priorityItemList.get(priority.getIndex());
-        liveSearchDropDown.setSelectedItem(item, item);
+        liveSearchDropDown.setSelectedItem(item);
     }
 
     public void setWidth(int minWidth) {

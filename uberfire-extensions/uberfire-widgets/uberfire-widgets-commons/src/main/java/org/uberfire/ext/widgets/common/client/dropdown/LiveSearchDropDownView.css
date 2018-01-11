@@ -1,0 +1,36 @@
+.appformer-live-search-button-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.appformer-live-search-spinner-panel {
+    display: none;
+    margin-left: 10px;
+    height: 30px;
+}
+
+.appformer-live-search-spinner {
+    display: table-cell;
+}
+
+.appformer-live-search-spinner-text {
+    display: table-cell;
+    padding-left: 10px;
+    vertical-align: middle
+}
+
+.appformer-live-search-dropdown-menu {
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.appformer-live-search-selector-reset-panel{
+    border-top: 1px solid #bbb;
+}
+
+.appformer-live-search-selector-reset-anchor {
+    margin-right: 10px;
+    cursor: pointer;
+    float: right;
+}
