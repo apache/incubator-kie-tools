@@ -22,7 +22,12 @@ import org.uberfire.ext.editor.commons.client.htmleditor.HtmlEditorPresenter;
 import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 public class EditHTMLPresenterTest {
 
@@ -86,6 +91,7 @@ public class EditHTMLPresenterTest {
         presenter.okClick();
 
         verify(view).hide();
+        verify(presenter).destroyHtmlEditor();
         verify(modalConfigurationContext,
                never()).configurationCancelled();
         verify(modalConfigurationContext).configurationFinished();
@@ -97,6 +103,7 @@ public class EditHTMLPresenterTest {
         presenter.cancelClick();
 
         verify(view).hide();
+        verify(presenter).destroyHtmlEditor();
         verify(modalConfigurationContext).configurationCancelled();
         verify(modalConfigurationContext,
                never()).configurationFinished();

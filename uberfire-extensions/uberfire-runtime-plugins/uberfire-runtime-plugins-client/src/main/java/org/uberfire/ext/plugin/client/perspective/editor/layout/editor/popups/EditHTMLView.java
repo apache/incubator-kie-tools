@@ -74,6 +74,7 @@ public class EditHTMLView implements EditHTMLPresenter.View {
             if (ButtonPressed.CLOSE.equals(buttonPressed)) {
                 presenter.closeClick();
             }
+            presenter.destroyHtmlEditor();
         });
 
         modal.setWidth("960px");

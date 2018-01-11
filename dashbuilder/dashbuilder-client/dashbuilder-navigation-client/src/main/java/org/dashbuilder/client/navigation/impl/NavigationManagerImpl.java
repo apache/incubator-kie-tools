@@ -16,6 +16,8 @@
 package org.dashbuilder.client.navigation.impl;
 
 import java.util.List;
+import java.util.Optional;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -78,7 +80,12 @@ public class NavigationManagerImpl implements NavigationManager {
 
     @Override
     public NavTree getNavTree() {
-        return navTree == null ? defaultNavTree : navTree;
+        return !hasNavTree() ? defaultNavTree : navTree;
+    }
+
+    @Override
+    public boolean hasNavTree() {
+        return Optional.ofNullable(navTree).isPresent();
     }
 
     @Override

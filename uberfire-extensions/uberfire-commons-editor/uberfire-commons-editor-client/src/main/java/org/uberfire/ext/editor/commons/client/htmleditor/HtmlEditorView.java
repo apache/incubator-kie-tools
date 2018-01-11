@@ -23,7 +23,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.dom.Anchor;
@@ -36,8 +35,6 @@ import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.ForEvent;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.workbench.docks.UberfireDocksInteractionEvent;
 import org.uberfire.ext.editor.commons.client.EditorTitle;
@@ -182,6 +179,7 @@ public class HtmlEditorView implements HtmlEditorPresenter.View,
     private EditorTitle title;
     private boolean loaded = false;
     private JavaScriptObject jsEditor;
+    private String identifier;
 
     @Inject
     public HtmlEditorView(final TranslationService translationService,
@@ -231,17 +229,28 @@ public class HtmlEditorView implements HtmlEditorPresenter.View,
     @Override
     public void load() {
         if (!loaded) {
-            final String identifier = String.valueOf(System.currentTimeMillis());
-            final String editorId = "html-editor-" + identifier;
-            final String toolbarId = "html-editor-toolbar-" + identifier;
 
-            configureScreenComponents(editorId,
-                                      toolbarId);
-            loadEditor(editorId,
-                       toolbarId);
-
+            identifier = String.valueOf(System.currentTimeMillis());
             loaded = true;
+
+            configureScreenComponents(getEditorId(), getToolbarId());
+            loadEditor(getEditorId(), getToolbarId());
         }
+    }
+
+    private String getToolbarId() {
+        return "html-editor-toolbar-" + identifier;
+    }
+
+    private String getEditorId() {
+        return "html-editor-" + identifier;
+    }
+
+    @Override
+    public void destroy() {
+        destroyEditor();
+
+        loaded = false;
     }
 
     @Override
@@ -256,10 +265,18 @@ public class HtmlEditorView implements HtmlEditorPresenter.View,
     }
 
     public final native void synchronizeView() /*-{
+
         var editor = this.@org.uberfire.ext.editor.commons.client.htmleditor.HtmlEditorView::jsEditor;
 
-        if (editor.currentView == "source") {
-            editor.fire("change_view", "composer");
+        try {
+            if (editor.currentView == "source") {
+                editor.fire("change_view", "composer");
+            }
+        } catch (e) {
+            // Ignore.
+            // `wysihtml` (0.6.0-beta1) introduced new checks to the `editor.fire`.
+            // These asserts don't work as expected in some scenarios. See (RHDM-219).
+            // If this library was updated, consider to remove it.
         }
     }-*/;
 
@@ -286,6 +303,13 @@ public class HtmlEditorView implements HtmlEditorPresenter.View,
         });
 
         this.@org.uberfire.ext.editor.commons.client.htmleditor.HtmlEditorView::jsEditor = editor;
+    }-*/;
+
+    protected native void destroyEditor() /*-{
+
+        var editor = this.@org.uberfire.ext.editor.commons.client.htmleditor.HtmlEditorView::jsEditor;
+
+        editor.destroy();
     }-*/;
 
     public void docksInteractionEvent(@Observes UberfireDocksInteractionEvent event) {

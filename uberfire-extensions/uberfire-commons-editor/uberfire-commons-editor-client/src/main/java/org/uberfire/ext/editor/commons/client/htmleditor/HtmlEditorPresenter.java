@@ -48,6 +48,10 @@ public class HtmlEditorPresenter {
         view.setContent(content);
     }
 
+    public void destroy() {
+        view.destroy();
+    }
+
     public interface View extends UberElement<HtmlEditorPresenter>,
                                   BaseEditorView {
 
@@ -56,5 +60,7 @@ public class HtmlEditorPresenter {
         void setContent(String content);
 
         void load();
+
+        void destroy();
     }
 }

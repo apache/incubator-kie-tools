@@ -12,6 +12,7 @@ import org.dashbuilder.client.navigation.event.NavTreeChangedEvent;
 import org.dashbuilder.client.navigation.event.NavTreeLoadedEvent;
 import org.dashbuilder.client.navigation.impl.NavigationManagerImpl;
 import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
+import org.dashbuilder.client.widgets.common.LoadingBox;
 import org.dashbuilder.navigation.NavFactory;
 import org.dashbuilder.navigation.NavGroup;
 import org.dashbuilder.navigation.NavItem;
@@ -33,8 +34,22 @@ import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class NavTreeEditorTest {
@@ -53,6 +68,9 @@ public class NavTreeEditorTest {
 
     @Mock
     EventSourceMock<NavItemEditCancelledEvent> navItemEditCancelledEvent;
+
+    @Mock
+    LoadingBox loadingBox;
 
     @Mock
     EventSourceMock<NavItemGotoEvent> navItemGotoEvent;
@@ -104,33 +122,43 @@ public class NavTreeEditorTest {
 
     NavTree NAV_TREE = new NavTreeBuilder()
             .group("level1a", "level1a", "level1a", true)
-                .group("level2a", "level2a", "level2a", true)
-                .endGroup()
+            .group("level2a", "level2a", "level2a", true)
+            .endGroup()
             .endGroup()
             .group("level1b", "level1b", "level1b", true)
-                .group("level2b", "level2b", "level2b", true)
-                .endGroup()
+            .group("level2b", "level2b", "level2b", true)
+            .endGroup()
             .endGroup()
             .build();
 
     @Before
     public void setUp() {
-        navigationManager = new NavigationManagerImpl(new CallerMock<>(navServices), navController,
-                navTreeLoadedEvent, navTreeChangedEvent, navItemGotoEvent);
+        navigationManager = spy(new NavigationManagerImpl(new CallerMock<>(navServices),
+                                                          navController,
+                                                          navTreeLoadedEvent,
+                                                          navTreeChangedEvent,
+                                                          navItemGotoEvent));
 
-        navTreeEditor = spy(new NavTreeEditor(view, navigationManager, beanManager,
-                placeManager, perspectiveTreeProvider, targetPerspectiveEditor,
-                perspectivePluginManager, navItemEditStartedEvent, navItemEditCancelledEvent));
+        navTreeEditor = spy(new NavTreeEditor(view,
+                                              navigationManager,
+                                              beanManager,
+                                              placeManager,
+                                              perspectiveTreeProvider,
+                                              targetPerspectiveEditor,
+                                              perspectivePluginManager,
+                                              navItemEditStartedEvent,
+                                              navItemEditCancelledEvent,
+                                              loadingBox));
 
         navTreeEditor.setChildEditorClass(NavRootNodeEditor.class);
 
         navItemEditor = spy(new NavItemDefaultEditor(navItemEditorView, beanManager, placeManager,
-                perspectiveTreeProvider, targetPerspectiveEditor, perspectivePluginManager,
-                navItemEditStartedEvent, navItemEditCancelledEvent));
+                                                     perspectiveTreeProvider, targetPerspectiveEditor, perspectivePluginManager,
+                                                     navItemEditStartedEvent, navItemEditCancelledEvent));
 
         navRootNodeEditor = spy(new NavRootNodeEditor(navRootNodeEditorView, beanManager, placeManager,
-                perspectiveTreeProvider, targetPerspectiveEditor, perspectivePluginManager,
-                navItemEditStartedEvent, navItemEditCancelledEvent));
+                                                      perspectiveTreeProvider, targetPerspectiveEditor, perspectivePluginManager,
+                                                      navItemEditStartedEvent, navItemEditCancelledEvent));
 
         when(beanManager.lookupBean(NavItemDefaultEditor.class)).thenReturn(navItemEditorBeanDef);
         when(beanManager.lookupBean(NavRootNodeEditor.class)).thenReturn(navRootNodeEditorBeanDef);
@@ -335,6 +363,7 @@ public class NavTreeEditorTest {
         NavTree navTree = navTreeEditor.getNavTree();
         assertNotNull(navTree.getItemById(newEditor.getNavItem().getId()));
     }
+
     @Test
     public void testNewPerspectiveActionAvailable() {
         NavItemEditor navItemEditor = navTreeEditor.newGroup();
@@ -370,5 +399,52 @@ public class NavTreeEditorTest {
         navItemEditor.startEdition();
         navItemEditor.cancelEdition();
         verify(navItemEditor, times(1)).edit(any());
+    }
+
+    @Test
+    public void testOnNewTreeClicked() {
+
+        navTreeEditor.onNewTreeClicked();
+
+        verify(navTreeEditor).saveDefaultNavTree();
+        verify(navTreeEditor).newGroup();
+    }
+
+    @Test
+    public void testSaveDefaultNavTreeWhenNavigationManagerDoesNotHaveNavTree() {
+
+        doReturn(false).when(navigationManager).hasNavTree();
+
+        navTreeEditor.saveDefaultNavTree();
+
+        verify(navTreeEditor).showLoading();
+        verify(navigationManager).saveNavTree(any(NavTree.class), any(Command.class));
+    }
+
+    @Test
+    public void testSaveDefaultNavTreeWhenNavigationManagerHasNavTree() {
+
+        doReturn(true).when(navigationManager).hasNavTree();
+
+        navTreeEditor.saveDefaultNavTree();
+
+        verify(navTreeEditor, never()).showLoading();
+        verify(navigationManager, never()).saveNavTree(any(NavTree.class), any(Command.class));
+    }
+
+    @Test
+    public void testShowLoading() {
+
+        navTreeEditor.showLoading();
+
+        verify(loadingBox).show();
+    }
+
+    @Test
+    public void testHideLoading() {
+
+        navTreeEditor.hideLoading();
+
+        verify(loadingBox).hide();
     }
 }

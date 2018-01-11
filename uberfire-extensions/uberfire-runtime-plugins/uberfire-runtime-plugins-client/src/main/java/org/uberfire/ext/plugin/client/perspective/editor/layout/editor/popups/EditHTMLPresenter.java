@@ -65,6 +65,7 @@ public class EditHTMLPresenter {
 
     void cancelClick() {
         view.hide();
+        destroyHtmlEditor();
         modalConfigurationContext.configurationCancelled();
     }
 
@@ -72,7 +73,12 @@ public class EditHTMLPresenter {
         view.hide();
         modalConfigurationContext.setComponentProperty(HTMLLayoutDragComponent.HTML_CODE_PARAMETER,
                                                        htmlEditor.getContent());
+        destroyHtmlEditor();
         modalConfigurationContext.configurationFinished();
+    }
+
+    public void destroyHtmlEditor() {
+        htmlEditor.destroy();
     }
 
     public HtmlEditorPresenter.View getHtmlEditorView() {
