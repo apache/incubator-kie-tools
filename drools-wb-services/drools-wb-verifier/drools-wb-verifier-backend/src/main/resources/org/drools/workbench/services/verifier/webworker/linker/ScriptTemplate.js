@@ -26,6 +26,7 @@ $self = self;
 $wnd = self;
 $doc = self;
 $sessionId = null;
+window = self;
 
 /*
  * Here we have the template for the main function.
