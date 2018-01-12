@@ -33,6 +33,7 @@ import org.kie.workbench.common.forms.dynamic.test.model.Employee;
 import org.kie.workbench.common.forms.dynamic.test.util.TestFormGenerator;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
+import org.kie.workbench.common.forms.processing.engine.handling.FormField;
 import org.kie.workbench.common.forms.processing.engine.handling.FormHandler;
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
@@ -50,6 +51,9 @@ public class DynamicFormRendererTest extends TestCase {
     private FieldLayoutComponent component;
 
     private FieldRenderer fieldRenderer;
+
+    @Mock
+    private FormField formField;
 
     @GwtMock
     private SubFormWidget widget;
@@ -81,7 +85,10 @@ public class DynamicFormRendererTest extends TestCase {
         when(view.getFieldLayoutComponentForField(any(FieldDefinition.class))).thenReturn(component);
 
         when(component.getFieldRenderer()).thenReturn(fieldRenderer);
-        when(fieldRenderer.getInputWidget()).thenReturn(widget);
+
+        when(formField.getWidget()).thenReturn(widget);
+
+        when(fieldRenderer.getFormField()).thenReturn(formField);
 
         FormHandlerGeneratorManager generatorManager = new FormHandlerGeneratorManager(context -> formHandler,
                                                                                        context -> formHandler);

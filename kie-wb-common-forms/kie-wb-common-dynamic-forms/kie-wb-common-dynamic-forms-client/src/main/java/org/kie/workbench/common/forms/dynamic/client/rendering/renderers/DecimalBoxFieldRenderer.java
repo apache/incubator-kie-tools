@@ -20,15 +20,17 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.databinding.client.api.Converter;
 import org.kie.workbench.common.forms.common.rendering.client.util.valueConverters.ValueConvertersFactory;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.decimalBox.DecimalBox;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.decimalBox.definition.DecimalBoxFieldDefinition;
 
 @Dependent
-public class DecimalBoxFieldRenderer extends FieldRenderer<DecimalBoxFieldDefinition>
+public class DecimalBoxFieldRenderer extends FieldRenderer<DecimalBoxFieldDefinition, DefaultFormGroup>
         implements RequiresValueConverter {
 
     private DecimalBox decimalBox;
@@ -44,22 +46,24 @@ public class DecimalBoxFieldRenderer extends FieldRenderer<DecimalBoxFieldDefini
     }
 
     @Override
-    public void initInputWidget() {
+    protected FormGroup getFormGroup(RenderMode renderMode) {
+        DefaultFormGroup formGroup = formGroupsInstance.get();
 
-        decimalBox.setId(field.getId());
-        decimalBox.setPlaceholder(field.getPlaceHolder());
-        decimalBox.setMaxLength(field.getMaxLength());
-        decimalBox.setEnabled(!field.getReadOnly());
-    }
+        if (renderMode.equals(RenderMode.PRETTY_MODE)) {
+            formGroup.render(new HTML(),
+                             field);
+        } else {
+            String inputId = generateUniqueId();
+            decimalBox.setId(inputId);
+            decimalBox.setPlaceholder(field.getPlaceHolder());
+            decimalBox.setMaxLength(field.getMaxLength());
+            decimalBox.setEnabled(!field.getReadOnly());
+            formGroup.render(inputId,
+                             decimalBox.asWidget(),
+                             field);
+        }
 
-    @Override
-    public IsWidget getInputWidget() {
-        return decimalBox;
-    }
-
-    @Override
-    public IsWidget getPrettyViewWidget() {
-        return new HTML();
+        return formGroup;
     }
 
     @Override

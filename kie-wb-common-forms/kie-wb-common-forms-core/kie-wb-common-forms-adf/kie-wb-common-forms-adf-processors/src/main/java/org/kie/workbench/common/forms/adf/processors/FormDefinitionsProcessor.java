@@ -61,11 +61,12 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector
 import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.forms.adf.definitions.annotations.layout.Column;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldHelp;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldReadOnly;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldRequired;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.LabelMode;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.I18nMode;
 import org.kie.workbench.common.forms.adf.definitions.settings.ColSpan;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.forms.adf.processors.util.FormGenerationUtils;
@@ -274,7 +275,7 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
                                         fieldInfo.getter);
                 }
 
-                if (fieldDefinitionAnnotation.labelMode().equals(LabelMode.OVERRIDE)) {
+                if (fieldDefinitionAnnotation.i18nMode().equals(I18nMode.OVERRIDE)) {
 
                     annotation = GeneratorUtils.getAnnotation(elementUtils,
                                                               fieldInfo.fieldElement,
@@ -293,6 +294,26 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
                             throw new Exception("Problem processing FieldDefinition [" + modelClassName + "]: field marked as @FieldLabel should have getter");
                         }
                         templateContext.put("label",
+                                            fieldInfo.getter);
+                    }
+
+                    annotation = GeneratorUtils.getAnnotation(elementUtils,
+                                                              fieldInfo.fieldElement,
+                                                              FieldHelp.class.getName());
+
+                    if (annotation != null) {
+                        if (templateContext.containsKey("helpMessage")) {
+                            throw new Exception("Problem processing FieldDefinition [" + modelClassName + "]: it has more than one field marked as @FieldHelp");
+                        }
+
+                        if (!fieldInfo.fieldElement.asType().toString().equals(String.class.getName())) {
+                            throw new Exception("Problem processing FieldDefinition [" + modelClassName + "]: field marked as @FieldHelp must be a String");
+                        }
+
+                        if (fieldInfo.getter == null) {
+                            throw new Exception("Problem processing FieldDefinition [" + modelClassName + "]: field marked as @FieldHelp should have getter");
+                        }
+                        templateContext.put("helpMessage",
                                             fieldInfo.getter);
                     }
                 }
@@ -460,6 +481,7 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
                 String fieldName = fieldInfo.fieldElement.getSimpleName().toString();
 
                 String fieldLabel = fieldName;
+                String helpMessage = "";
                 String binding = fieldName;
 
                 String methodName = "getFormElement_" + fieldName;
@@ -470,7 +492,7 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
 
                 org.kie.workbench.common.forms.model.TypeKind typeKind = org.kie.workbench.common.forms.model.TypeKind.BASE;
 
-                boolean overrideI18nLabel = false;
+                boolean overrideI18n = false;
 
                 TypeMirror finalType = fieldInfo.fieldElement.asType();
 
@@ -484,7 +506,7 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
                         if (fieldDefinitionAnnotation != null) {
 
                             // Override the using the i18n mechanism
-                            if (fieldDefinitionAnnotation.labelMode().equals(LabelMode.OVERRIDE_I18N_KEY)) {
+                            if (fieldDefinitionAnnotation.i18nMode().equals(I18nMode.OVERRIDE_I18N_KEY)) {
                                 Collection<FieldInfo> labelInfos = extractFieldInfos((TypeElement) finalTypeElement,
                                                                                      fieldElement -> fieldElement.getAnnotation(FieldLabel.class) != null);
 
@@ -495,6 +517,18 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
                                 FieldInfo labelInfo = labelInfos.iterator().next();
 
                                 fieldLabel = finalType.toString() + i18nSettings.separator() + labelInfo.fieldElement.getSimpleName();
+
+                                Collection<FieldInfo> helpMessages = extractFieldInfos((TypeElement) finalTypeElement,
+                                                                                     fieldElement -> fieldElement.getAnnotation(FieldHelp.class) != null);
+
+                                if (helpMessages != null && helpMessages.size() > 0) {
+                                    if(helpMessages.size() != 1) {
+                                        throw new Exception("Problem processing FieldDefinition [" + finalType + "]: it has more than one field marked as @FieldHelp");
+                                    }
+                                    FieldInfo helpInfo = helpMessages.iterator().next();
+
+                                    helpMessage = finalType.toString() + i18nSettings.separator() + helpInfo.fieldElement.getSimpleName();
+                                }
                             }
 
                             Collection<FieldInfo> fieldValue = extractFieldInfos((TypeElement) finalTypeElement,
@@ -511,7 +545,7 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
 
                             finalType = valueInfo.getFieldElement().asType();
 
-                            overrideI18nLabel = !fieldDefinitionAnnotation.labelMode().equals(LabelMode.DONT_OVERRIDE);
+                            overrideI18n = !fieldDefinitionAnnotation.i18nMode().equals(I18nMode.DONT_OVERRIDE);
                         } else {
                             FormDefinition formDefinitionAnnotation = finalTypeElement.getAnnotation(FormDefinition.class);
 
@@ -522,7 +556,7 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
                                 if (labelInfos != null && labelInfos.size() == 1) {
                                     FieldInfo labelInfo = labelInfos.iterator().next();
                                     fieldLabel = finalType.toString() + i18nSettings.separator() + labelInfo.fieldElement.getSimpleName();
-                                    overrideI18nLabel = true;
+                                    overrideI18n = true;
                                 }
                                 typeKind = org.kie.workbench.common.forms.model.TypeKind.OBJECT;
                             }
@@ -583,9 +617,11 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
 
                     elementContext.put("preferredType",
                                        typeName);
-                    if (!overrideI18nLabel) {
+                    if (!overrideI18n) {
                         fieldLabel = settings.labelKey();
+                        helpMessage = settings.helpMessageKey();
                     }
+
                     elementContext.put("required",
                                        Boolean.valueOf(settings.required()).toString());
                     elementContext.put("readOnly",
@@ -617,14 +653,17 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
                                        "1");
                 }
 
-                if (!overrideI18nLabel) {
+                if (!overrideI18n) {
                     if (!StringUtils.isEmpty(i18nSettings.keyPreffix())) {
                         fieldLabel = i18nSettings.keyPreffix() + i18nSettings.separator() + fieldLabel;
+                        helpMessage = i18nSettings.keyPreffix() + i18nSettings.separator() + helpMessage;
                     }
                 }
 
                 elementContext.put("labelKey",
                                    fieldLabel);
+                elementContext.put("helpMessageKey",
+                                   helpMessage);
                 elementContext.put("afterElement",
                                    afterElement);
 

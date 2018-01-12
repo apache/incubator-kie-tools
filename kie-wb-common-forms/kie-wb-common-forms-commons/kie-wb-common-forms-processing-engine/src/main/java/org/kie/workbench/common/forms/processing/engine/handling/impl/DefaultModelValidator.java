@@ -84,7 +84,7 @@ public class DefaultModelValidator<MODEL> implements ModelValidator<MODEL> {
                     continue;
                 }
                 isValid = false;
-                formField.setError(constraintViolation.getMessage());
+                formField.showError(constraintViolation.getMessage());
             }
         } catch (IllegalArgumentException ex) {
             GWT.log("Error trying to validate model: model does not any validation constraint. ");
@@ -109,7 +109,7 @@ public class DefaultModelValidator<MODEL> implements ModelValidator<MODEL> {
 
                 if (checkBinding(formField,
                                  propertyName)) {
-                    formField.setError(constraintViolation.getMessage());
+                    formField.showError(constraintViolation.getMessage());
                     return false;
                 }
             }

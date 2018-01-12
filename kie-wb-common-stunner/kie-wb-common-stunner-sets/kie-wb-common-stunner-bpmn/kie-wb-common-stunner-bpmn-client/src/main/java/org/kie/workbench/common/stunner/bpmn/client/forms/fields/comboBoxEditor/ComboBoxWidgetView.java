@@ -16,9 +16,10 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.comboBoxEditor;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 
-public interface ComboBoxWidgetView {
+public interface ComboBoxWidgetView extends IsWidget {
 
     static final String CUSTOM_PROMPT = "New" + ListBoxValues.EDIT_SUFFIX;
     static final String ENTER_TYPE_PROMPT = "Enter name" + ListBoxValues.EDIT_SUFFIX;

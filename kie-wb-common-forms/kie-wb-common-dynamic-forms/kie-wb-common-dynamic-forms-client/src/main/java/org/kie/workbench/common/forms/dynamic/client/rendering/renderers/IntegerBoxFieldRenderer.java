@@ -20,15 +20,18 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.databinding.client.api.Converter;
 import org.kie.workbench.common.forms.common.rendering.client.util.valueConverters.ValueConvertersFactory;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.integerBox.IntegerBox;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.integerBox.definition.IntegerBoxFieldDefinition;
 
 @Dependent
-public class IntegerBoxFieldRenderer extends FieldRenderer<IntegerBoxFieldDefinition>
+public class IntegerBoxFieldRenderer extends FieldRenderer<IntegerBoxFieldDefinition, DefaultFormGroup>
         implements RequiresValueConverter {
 
     private IntegerBox integerBox;
@@ -44,21 +47,30 @@ public class IntegerBoxFieldRenderer extends FieldRenderer<IntegerBoxFieldDefini
     }
 
     @Override
-    public void initInputWidget() {
-        integerBox.setId(field.getId());
-        integerBox.setPlaceholder(field.getPlaceHolder());
-        integerBox.setMaxLength(field.getMaxLength());
-        integerBox.setEnabled(!field.getReadOnly());
-    }
+    protected FormGroup getFormGroup(RenderMode renderMode) {
 
-    @Override
-    public IsWidget getInputWidget() {
-        return integerBox;
-    }
+        Widget widget;
 
-    @Override
-    public IsWidget getPrettyViewWidget() {
-        return new HTML();
+        String inputId = generateUniqueId();
+
+        if (renderMode.equals(RenderMode.PRETTY_MODE)) {
+            widget = new HTML();
+            widget.getElement().setId(inputId);
+        } else {
+            integerBox.setId(inputId);
+            integerBox.setPlaceholder(field.getPlaceHolder());
+            integerBox.setMaxLength(field.getMaxLength());
+            integerBox.setEnabled(!field.getReadOnly());
+            widget = integerBox.asWidget();
+        }
+
+        DefaultFormGroup formGroup = formGroupsInstance.get();
+
+        formGroup.render(inputId,
+                         widget,
+                         field);
+
+        return formGroup;
     }
 
     @Override

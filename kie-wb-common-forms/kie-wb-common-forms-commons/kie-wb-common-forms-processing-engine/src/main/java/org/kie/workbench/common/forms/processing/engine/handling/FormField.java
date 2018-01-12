@@ -41,7 +41,7 @@ public interface FormField {
 
     void clearError();
 
-    void setError(String error);
+    void showError(String error);
 
     IsWidget getWidget();
 

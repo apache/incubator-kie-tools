@@ -33,6 +33,8 @@ public class FieldElement extends AbstractFormElement {
 
     private String labelKey;
 
+    private String helpMessageKey;
+
     private boolean required = false;
 
     private boolean readOnly = false;
@@ -71,6 +73,14 @@ public class FieldElement extends AbstractFormElement {
 
     public void setLabelKey(String labelKey) {
         this.labelKey = labelKey;
+    }
+
+    public String getHelpMessageKey() {
+        return helpMessageKey;
+    }
+
+    public void setHelpMessageKey(String helpMessageKey) {
+        this.helpMessageKey = helpMessageKey;
     }
 
     public boolean isRequired() {

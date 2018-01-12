@@ -85,7 +85,7 @@ public class DynamicModelValidator implements ModelValidator<Map<String, Object>
                                                                                                    constraint.getParams(),
                                                                                                    model.get(formField.getFieldBinding()));
                         if (!constraintViolations.isEmpty()) {
-                            formField.setError(constraintViolations.iterator().next().getMessage());
+                            formField.showError(constraintViolations.iterator().next().getMessage());
                             return false;
                         }
                     } catch (IllegalArgumentException ex) {

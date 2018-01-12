@@ -23,7 +23,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.Fiel
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldReadOnly;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.LabelMode;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.I18nMode;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
@@ -39,7 +39,7 @@ import org.kie.workbench.common.stunner.core.definition.property.type.StringType
 @Portable
 @Bindable
 @Property
-@FieldDefinition(labelMode = LabelMode.OVERRIDE_I18N_KEY)
+@FieldDefinition(i18nMode = I18nMode.OVERRIDE_I18N_KEY)
 public class Priority implements BPMNProperty {
 
     @Caption

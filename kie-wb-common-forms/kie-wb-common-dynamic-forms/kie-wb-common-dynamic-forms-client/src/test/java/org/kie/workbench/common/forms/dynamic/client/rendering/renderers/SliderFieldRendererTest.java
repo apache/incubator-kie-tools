@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.forms.dynamic.client.rendering.renderers;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwtmockito.GwtMock;
 import org.jboss.errai.databinding.client.api.Converter;
 import org.junit.Before;
@@ -63,7 +62,6 @@ public class SliderFieldRendererTest {
                 field = fieldMock;
             }
         });
-        doNothing().when(fieldRenderer).initInputWidget();
     }
 
     @Test
@@ -80,21 +78,6 @@ public class SliderFieldRendererTest {
                      name);
     }
 
-    @Test
-    public void testGetInputWidget() {
-        IsWidget widget = fieldRenderer.getInputWidget();
-        assertSame(sliderMock,
-                   widget);
-    }
-
-    @Test
-    public void testGetPrettyViewWidget() {
-        IsWidget widget = fieldRenderer.getPrettyViewWidget();
-        assertSame(sliderMock,
-                   widget);
-        verify(fieldRenderer).initInputWidget();
-        verify(fieldRenderer).getInputWidget();
-    }
 
     @Test
     public void testGetConverterInteger() {

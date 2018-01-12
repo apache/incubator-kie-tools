@@ -2,6 +2,7 @@
             FieldElement field = new FieldElement( "${fieldName}", "${binding}", new TypeInfoImpl( TypeKind.${type}, "${className}", ${isList}) );
             field.setPreferredType( ${preferredType}.class );
             field.setLabelKey( "${labelKey}" );
+            field.setHelpMessageKey("${helpMessageKey}");
             field.setRequired( ${required} );
             field.setReadOnly( ${readOnly} );
         <#list params?keys as param>

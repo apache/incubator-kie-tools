@@ -29,7 +29,7 @@ public class TimerSettingsFieldProvider extends BasicTypeFieldProvider<TimerSett
 
     @Override
     public int getPriority() {
-        return 100;
+        return 50000;
     }
 
     @Override

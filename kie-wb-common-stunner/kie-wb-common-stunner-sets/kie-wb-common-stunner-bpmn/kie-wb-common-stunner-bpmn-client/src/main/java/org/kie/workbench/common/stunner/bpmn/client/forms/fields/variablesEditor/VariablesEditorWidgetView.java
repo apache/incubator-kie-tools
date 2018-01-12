@@ -18,10 +18,11 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.variablesEdito
 
 import java.util.List;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.VariableRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 
-public interface VariablesEditorWidgetView {
+public interface VariablesEditorWidgetView extends IsWidget {
 
     interface Presenter {
 

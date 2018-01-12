@@ -31,7 +31,8 @@ import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHand
 import org.kie.workbench.common.forms.processing.engine.handling.IsNestedModel;
 
 @Templated
-public class SubFormWidget extends Composite implements TakesValue<Object>, IsNestedModel {
+public class SubFormWidget extends Composite implements TakesValue<Object>,
+                                                        IsNestedModel {
 
     @Inject
     private DynamicFormRenderer formRenderer;

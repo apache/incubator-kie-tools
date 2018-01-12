@@ -21,14 +21,16 @@ import java.util.Map;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.Radio;
 import org.jboss.errai.databinding.client.api.Converter;
 import org.kie.workbench.common.forms.common.rendering.client.util.valueConverters.ValueConvertersFactory;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.selectors.radiogroup.RadioGroupBase;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.RequiresValueConverter;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.selectors.SelectorFieldRenderer;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorOption;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.definition.RadioGroupBaseDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.definition.StringRadioGroupFieldDefinition;
@@ -78,19 +80,21 @@ public abstract class RadioGroupFieldRendererBase<FIELD extends RadioGroupBaseDe
     }
 
     @Override
-    public void initInputWidget() {
-        input = getRadioGroup();
-        refreshSelectorOptions();
-    }
+    protected FormGroup getFormGroup(RenderMode renderMode) {
 
-    @Override
-    public IsWidget getInputWidget() {
-        return input;
-    }
+        DefaultFormGroup formGroup = formGroupsInstance.get();
 
-    @Override
-    public IsWidget getPrettyViewWidget() {
-        return new HTML();
+        if (renderMode.equals(RenderMode.PRETTY_MODE)) {
+            formGroup.render(new HTML(),
+                             field);
+        } else {
+            input = getRadioGroup();
+            refreshSelectorOptions();
+            formGroup.render(input,
+                             field);
+        }
+
+        return formGroup;
     }
 
     @Override

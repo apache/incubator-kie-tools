@@ -22,15 +22,17 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.ValueListBox;
 import org.jboss.errai.databinding.client.api.Converter;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.forms.common.rendering.client.util.valueConverters.ValueConvertersFactory;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.util.DefaultValueListBoxRenderer;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.RequiresValueConverter;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.selectors.SelectorFieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.resources.i18n.FormRenderingConstants;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorOption;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.ListBoxBaseDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
@@ -61,11 +63,32 @@ public abstract class AbstractListBoxFieldRenderer<FIELD extends ListBoxBaseDefi
     }
 
     @Override
+    protected FormGroup getFormGroup(RenderMode renderMode) {
+        DefaultFormGroup formGroup = formGroupsInstance.get();
+
+        if (renderMode.equals(RenderMode.PRETTY_MODE)) {
+            formGroup.render(new HTML(),
+                             field);
+        } else {
+            String inputId = generateUniqueId();
+            widgetList.setId(inputId);
+            widgetList.setEnabled(!field.getReadOnly());
+            refreshSelectorOptions();
+
+            formGroup.render(inputId,
+                             widgetList,
+                             field);
+        }
+
+        return formGroup;
+    }
+
+    @Override
     protected void refreshInput(Map<TYPE, String> optionsValues,
                                 TYPE selectedValue) {
         List<TYPE> values = optionsValues.keySet().stream().collect(Collectors.toList());
 
-        if(field.getAddEmptyOption()) {
+        if (field.getAddEmptyOption()) {
             if (!values.contains(null)) {
                 values.add(0,
                            null);
@@ -87,23 +110,7 @@ public abstract class AbstractListBoxFieldRenderer<FIELD extends ListBoxBaseDefi
         widgetList.setAcceptableValues(values);
     }
 
-    @Override
-    public void initInputWidget() {
-        widgetList.setEnabled(!field.getReadOnly());
-        refreshSelectorOptions();
-    }
-
     public abstract TYPE getEmptyValue();
-
-    @Override
-    public IsWidget getPrettyViewWidget() {
-        return new HTML();
-    }
-
-    @Override
-    public IsWidget getInputWidget() {
-        return widgetList;
-    }
 
     @Override
     public String getSupportedCode() {

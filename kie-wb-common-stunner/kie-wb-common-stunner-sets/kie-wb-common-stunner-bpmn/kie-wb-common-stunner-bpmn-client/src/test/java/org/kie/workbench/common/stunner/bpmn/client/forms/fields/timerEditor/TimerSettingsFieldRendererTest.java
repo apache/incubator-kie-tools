@@ -44,18 +44,6 @@ public class TimerSettingsFieldRendererTest {
     }
 
     @Test
-    public void testGetPrettyWidget() {
-        assertEquals(widget,
-                     renderer.getPrettyViewWidget());
-    }
-
-    @Test
-    public void testGetInputWidget() {
-        assertEquals(widget,
-                     renderer.getInputWidget());
-    }
-
-    @Test
     public void testGetSupportedCode() {
         assertEquals("TimerSettingsFieldType",
                      renderer.getSupportedCode());

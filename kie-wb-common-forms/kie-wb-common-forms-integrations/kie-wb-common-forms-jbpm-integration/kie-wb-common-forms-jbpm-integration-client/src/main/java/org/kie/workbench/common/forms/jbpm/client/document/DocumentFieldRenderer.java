@@ -20,13 +20,14 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.jbpm.model.authoring.document.definition.DocumentFieldDefinition;
 
 @Dependent
-public class DocumentFieldRenderer extends FieldRenderer<DocumentFieldDefinition> {
+public class DocumentFieldRenderer extends FieldRenderer<DocumentFieldDefinition, DefaultFormGroup> {
 
     private DocumentFieldRendererView view;
 
@@ -46,19 +47,14 @@ public class DocumentFieldRenderer extends FieldRenderer<DocumentFieldDefinition
     }
 
     @Override
-    public void initInputWidget() {
+    protected FormGroup getFormGroup(RenderMode renderMode) {
+        DefaultFormGroup formGroup = formGroupsInstance.get();
+
         view.setReadOnly(field.getReadOnly() || !renderingContext.getRenderMode().equals(RenderMode.EDIT_MODE));
-    }
 
-    @Override
-    public IsWidget getInputWidget() {
-        return view;
-    }
+        formGroup.render(view.asWidget(), field);
 
-    @Override
-    public IsWidget getPrettyViewWidget() {
-        initInputWidget();
-        return getInputWidget();
+        return formGroup;
     }
 
     @Override

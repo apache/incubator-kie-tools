@@ -20,23 +20,33 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.FormGroupDisplayer;
-import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.FormGroupDisplayerFactory;
-import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.FormGroupDisplayerWidgetAware;
-import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.impl.configError.ConfigErrorFormGroupDisplayer;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.configError.ConfigErrorDisplayer;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeListener;
+import org.kie.workbench.common.forms.processing.engine.handling.FormField;
 
-public abstract class FieldRenderer<F extends FieldDefinition> {
+public abstract class FieldRenderer<F extends FieldDefinition, FORM_GROUP extends FormGroup> {
 
     protected FormRenderingContext renderingContext;
     protected F field;
-    protected DefaultDynamicFormField formField = null;
-    protected FormGroupDisplayer group;
+    protected FormFieldImpl formField = null;
     protected List<FieldChangeListener> fieldChangeListeners = new ArrayList<>();
+
+    @Inject
+    protected ManagedInstance<FORM_GROUP> formGroupsInstance;
+
+    @Inject
+    private ConfigErrorDisplayer errorDisplayer;
 
     public void init(FormRenderingContext renderingContext,
                      F field) {
@@ -49,33 +59,15 @@ public abstract class FieldRenderer<F extends FieldDefinition> {
         FieldConfigStatus configStatus = checkFieldConfig();
 
         if (!configStatus.isWellConfigured()) {
-            ConfigErrorFormGroupDisplayer errorGroup = FormGroupDisplayerFactory.getErrorGroup();
+            errorDisplayer.render(configStatus.getConfigErrors());
 
-            errorGroup.render(configStatus.getConfigErrors());
-
-            group = errorGroup;
+            return errorDisplayer;
         } else {
-            IsWidget widget = null;
 
-            if (renderingContext.getRenderMode().equals(RenderMode.PRETTY_MODE)) {
-                widget = getPrettyViewWidget();
-            } else {
-                initInputWidget();
+            FormGroup formGroup = getFormGroup(renderingContext.getRenderMode());
 
-                widget = getInputWidget();
-            }
-
-            FormGroupDisplayerWidgetAware formGroup = FormGroupDisplayerFactory.getGeneratorForRenderer(
-                    renderingContext,
-                    this);
-
-            formGroup.render(widget.asWidget(),
-                             field);
-
-            group = formGroup;
-
-            formField = new DefaultDynamicFormField(field,
-                                                    widget.asWidget()) {
+            formField = new FormFieldImpl(field,
+                                          formGroup) {
                 @Override
                 protected void doSetReadOnly(boolean readOnly) {
                     if (renderingContext.getRenderMode().equals(RenderMode.PRETTY_MODE)) {
@@ -101,11 +93,18 @@ public abstract class FieldRenderer<F extends FieldDefinition> {
             };
 
             formField.setReadOnly(renderingContext.getRenderMode().equals(RenderMode.READ_ONLY_MODE));
+
+            return ElementWrapperWidget.getWidget(formGroup.getElement());
         }
-        return group;
     }
 
-    public DefaultDynamicFormField getFormField() {
+    protected abstract FormGroup getFormGroup(RenderMode renderMode);
+
+    protected String generateUniqueId() {
+        return Document.get().createUniqueId();
+    }
+
+    public FormField getFormField() {
         return formField;
     }
 
@@ -122,12 +121,6 @@ public abstract class FieldRenderer<F extends FieldDefinition> {
     }
 
     public abstract String getName();
-
-    public abstract void initInputWidget();
-
-    public abstract IsWidget getInputWidget();
-
-    public abstract IsWidget getPrettyViewWidget();
 
     public abstract String getSupportedCode();
 
@@ -156,5 +149,10 @@ public abstract class FieldRenderer<F extends FieldDefinition> {
         public boolean isWellConfigured() {
             return configErrors == null || configErrors.isEmpty();
         }
+    }
+
+    @PreDestroy
+    public void preDestroy() {
+        formGroupsInstance.destroyAll();
     }
 }

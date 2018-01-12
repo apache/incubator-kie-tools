@@ -323,7 +323,7 @@ public class FormHandlerImplTest extends AbstractFormEngineTest {
             }
 
             @Override
-            public void setError(String error) {
+            public void showError(String error) {
 
             }
 

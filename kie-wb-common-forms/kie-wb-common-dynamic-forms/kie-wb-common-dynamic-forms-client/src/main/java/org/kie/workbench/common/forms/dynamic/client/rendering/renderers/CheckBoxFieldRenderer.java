@@ -18,14 +18,15 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers;
 
 import javax.enterprise.context.Dependent;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.SimpleCheckBox;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.checkbox.CheckBoxFormGroup;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.definition.CheckBoxFieldDefinition;
 
 @Dependent
-public class CheckBoxFieldRenderer extends FieldRenderer<CheckBoxFieldDefinition> {
+public class CheckBoxFieldRenderer extends FieldRenderer<CheckBoxFieldDefinition, CheckBoxFormGroup> {
 
     private SimpleCheckBox checkbox;
 
@@ -35,20 +36,16 @@ public class CheckBoxFieldRenderer extends FieldRenderer<CheckBoxFieldDefinition
     }
 
     @Override
-    public void initInputWidget() {
+    protected FormGroup getFormGroup(RenderMode renderMode) {
         checkbox = new SimpleCheckBox();
         checkbox.setEnabled(!field.getReadOnly() && renderingContext.getRenderMode().equals(RenderMode.EDIT_MODE));
-    }
 
-    @Override
-    public IsWidget getInputWidget() {
-        return checkbox;
-    }
+        CheckBoxFormGroup formGroup = formGroupsInstance.get();
 
-    @Override
-    public IsWidget getPrettyViewWidget() {
-        initInputWidget();
-        return getInputWidget();
+        formGroup.render(checkbox,
+                         field);
+
+        return formGroup;
     }
 
     @Override

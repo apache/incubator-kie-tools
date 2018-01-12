@@ -18,11 +18,12 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.assigneeEditor
 
 import java.util.List;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssigneeRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeType;
 
-public interface AssigneeEditorWidgetView {
+public interface AssigneeEditorWidgetView extends IsWidget {
 
     interface Presenter {
 

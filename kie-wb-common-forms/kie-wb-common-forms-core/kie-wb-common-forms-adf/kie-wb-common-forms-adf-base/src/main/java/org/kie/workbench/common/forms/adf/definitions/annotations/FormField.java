@@ -55,6 +55,11 @@ public @interface FormField {
     boolean readonly() default false;
 
     /**
+     * I18n key for the field help message
+     */
+    String helpMessageKey() default "";
+
+    /**
      * Define how the field has to be added to the form layout
      */
     LayoutSettings layoutSettings() default @LayoutSettings;

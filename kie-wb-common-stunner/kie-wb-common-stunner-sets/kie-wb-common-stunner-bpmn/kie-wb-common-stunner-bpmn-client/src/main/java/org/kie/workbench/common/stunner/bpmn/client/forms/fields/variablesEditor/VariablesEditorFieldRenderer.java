@@ -26,6 +26,9 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.VariableRow;
@@ -37,7 +40,7 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 
 @Dependent
-public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorFieldDefinition>
+public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorFieldDefinition, DefaultFormGroup>
         implements VariablesEditorWidgetView.Presenter {
 
     private final AbstractClientSessionManager sessionManager;
@@ -69,23 +72,17 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
     }
 
     @Override
-    public void initInputWidget() {
+    protected FormGroup getFormGroup(RenderMode renderMode) {
+        DefaultFormGroup formGroup = formGroupsInstance.get();
+
         view.init(this);
         graph = sessionManager.getCurrentSession().getCanvasHandler().getDiagram().getGraph();
+
+        formGroup.render(view.asWidget(), field);
+
+        return formGroup;
     }
 
-    @Override
-    public IsWidget getInputWidget() {
-        return (VariablesEditorWidgetViewImpl) view;
-    }
-
-    @Override
-    public IsWidget getPrettyViewWidget() {
-        initInputWidget();
-        return getInputWidget();
-    }
-
-    @Override
     protected void setReadOnly(final boolean readOnly) {
 
     }

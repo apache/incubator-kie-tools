@@ -22,8 +22,10 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Assignee;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssigneeRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
@@ -32,14 +34,14 @@ import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeEditorFieldDefi
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeType;
 
 @Dependent
-public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFieldDefinition>
+public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFieldDefinition, DefaultFormGroup>
         implements AssigneeEditorWidgetView.Presenter {
 
     private AssigneeEditorWidgetView view;
 
     private List<String> names = new ArrayList<String>();
 
-    ListBoxValues nameListBoxValues;
+    private ListBoxValues nameListBoxValues;
 
     @Inject
     public AssigneeEditorFieldRenderer(final AssigneeEditorWidgetView assigneeEditor) {
@@ -62,24 +64,19 @@ public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFie
     }
 
     @Override
-    public void initInputWidget() {
-        view.init(this);
-    }
+    protected FormGroup getFormGroup(RenderMode renderMode) {
+        DefaultFormGroup formGroup = formGroupsInstance.get();
 
-    @Override
-    public IsWidget getInputWidget() {
-        return (AssigneeEditorWidgetViewImpl) view;
+        view.init(this);
+
+        formGroup.render(view.asWidget(), field);
+
+        return formGroup;
     }
 
     @Override
     public String getSupportedCode() {
         return AssigneeEditorFieldDefinition.FIELD_TYPE.getTypeName();
-    }
-
-    @Override
-    public IsWidget getPrettyViewWidget() {
-        initInputWidget();
-        return getInputWidget();
     }
 
     @Override

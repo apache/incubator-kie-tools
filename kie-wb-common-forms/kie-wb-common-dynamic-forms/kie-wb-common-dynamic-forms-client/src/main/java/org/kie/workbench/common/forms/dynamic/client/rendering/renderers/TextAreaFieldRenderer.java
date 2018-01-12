@@ -19,40 +19,49 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.jboss.errai.databinding.client.api.Converter;
 import org.kie.workbench.common.forms.common.rendering.client.util.valueConverters.ObjectToStringConverter;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.definition.TextAreaFieldDefinition;
 
 @Dependent
-public class TextAreaFieldRenderer extends FieldRenderer<TextAreaFieldDefinition> implements RequiresValueConverter {
+public class TextAreaFieldRenderer extends FieldRenderer<TextAreaFieldDefinition, DefaultFormGroup> implements RequiresValueConverter {
 
     @Override
     public String getName() {
         return "TextArea";
     }
 
-    private TextArea textArea = new TextArea();
+    private TextArea textArea;
 
     @Override
-    public void initInputWidget() {
-        textArea = new TextArea();
-        textArea.setPlaceholder(field.getPlaceHolder());
-        textArea.setVisibleLines(field.getRows());
-        textArea.setEnabled(!field.getReadOnly());
-        textArea.setVisibleLines(field.getRows());
-    }
+    protected FormGroup getFormGroup(RenderMode renderMode) {
 
-    @Override
-    public IsWidget getInputWidget() {
-        return textArea;
-    }
+        DefaultFormGroup formGroup = formGroupsInstance.get();
 
-    @Override
-    public IsWidget getPrettyViewWidget() {
-        return new HTML();
+        if (renderMode.equals(RenderMode.PRETTY_MODE)) {
+            HTML html = new HTML();
+            formGroup.render(html,
+                             field);
+        } else {
+            String inputId = generateUniqueId();
+
+            textArea = new TextArea();
+            textArea.setId(inputId);
+            textArea.setPlaceholder(field.getPlaceHolder());
+            textArea.setVisibleLines(field.getRows());
+            textArea.setEnabled(!field.getReadOnly());
+            textArea.setVisibleLines(field.getRows());
+            formGroup.render(inputId,
+                             textArea,
+                             field);
+        }
+
+        return formGroup;
     }
 
     @Override

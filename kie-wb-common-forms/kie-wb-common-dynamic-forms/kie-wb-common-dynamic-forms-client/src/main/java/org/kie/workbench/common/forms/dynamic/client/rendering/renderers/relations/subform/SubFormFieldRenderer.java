@@ -22,10 +22,9 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.gwtbootstrap3.client.ui.FieldSet;
-import org.gwtbootstrap3.client.ui.Legend;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.fieldSet.FieldSetFormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.subform.widget.SubFormWidget;
 import org.kie.workbench.common.forms.dynamic.client.resources.i18n.FormRenderingConstants;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
@@ -33,26 +32,27 @@ import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
 
 @Dependent
-public class SubFormFieldRenderer extends FieldRenderer<SubFormFieldDefinition> {
-
-    private FieldSet container = new FieldSet();
+public class SubFormFieldRenderer extends FieldRenderer<SubFormFieldDefinition, FieldSetFormGroup> {
 
     @Inject
     private SubFormWidget subFormWidget;
 
     @Override
-    public void initInputWidget() {
-        container.clear();
-        container.add(new Legend(field.getLabel()));
-        container.add(subFormWidget);
-        if (renderingContext != null && field.getNestedForm() != null && renderingContext.getAvailableForms().containsKey(field.getNestedForm())) {
-            FormRenderingContext nestedContext = renderingContext.getCopyFor(field.getNestedForm(),
-                                                                             null);
-            if (field.getReadOnly()) {
-                nestedContext.setRenderMode(RenderMode.READ_ONLY_MODE);
-            }
-            subFormWidget.render(nestedContext);
+    protected FormGroup getFormGroup(RenderMode renderMode) {
+
+        FormRenderingContext nestedContext = renderingContext.getCopyFor(field.getNestedForm(),
+                                                                         null);
+
+        if (field.getReadOnly()) {
+            nestedContext.setRenderMode(RenderMode.READ_ONLY_MODE);
         }
+        subFormWidget.render(nestedContext);
+
+        FieldSetFormGroup formGroup = formGroupsInstance.get();
+        formGroup.render(subFormWidget,
+                         field);
+
+        return formGroup;
     }
 
     @Override
@@ -65,17 +65,6 @@ public class SubFormFieldRenderer extends FieldRenderer<SubFormFieldDefinition> 
             configErrors.add(FormRenderingConstants.SubFormWrongForm);
         }
         return configErrors;
-    }
-
-    @Override
-    public IsWidget getInputWidget() {
-        return subFormWidget;
-    }
-
-    @Override
-    public IsWidget getPrettyViewWidget() {
-        initInputWidget();
-        return getInputWidget();
     }
 
     @Override

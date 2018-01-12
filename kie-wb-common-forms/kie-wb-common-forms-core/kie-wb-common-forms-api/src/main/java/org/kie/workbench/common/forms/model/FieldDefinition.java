@@ -39,6 +39,10 @@ public interface FieldDefinition {
 
     void setReadOnly(Boolean readOnly);
 
+    String getHelpMessage();
+
+    void setHelpMessage(String helpMessage);
+
     String getBinding();
 
     void setBinding(String binding);

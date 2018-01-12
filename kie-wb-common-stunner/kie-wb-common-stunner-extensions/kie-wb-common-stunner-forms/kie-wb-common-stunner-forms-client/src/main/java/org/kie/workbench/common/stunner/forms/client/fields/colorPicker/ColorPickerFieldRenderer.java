@@ -21,11 +21,13 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.stunner.forms.model.ColorPickerFieldDefinition;
 
 @Dependent
-public class ColorPickerFieldRenderer extends FieldRenderer<ColorPickerFieldDefinition> {
+public class ColorPickerFieldRenderer extends FieldRenderer<ColorPickerFieldDefinition, DefaultFormGroup> {
 
     private ColorPickerWidget colorPicker;
 
@@ -40,24 +42,19 @@ public class ColorPickerFieldRenderer extends FieldRenderer<ColorPickerFieldDefi
     }
 
     @Override
-    public void initInputWidget() {
+    protected FormGroup getFormGroup(RenderMode renderMode) {
         colorPicker.setReadOnly(!renderingContext.getRenderMode().equals(RenderMode.EDIT_MODE));
-    }
 
-    @Override
-    public IsWidget getInputWidget() {
-        return colorPicker;
+        DefaultFormGroup formGroup = formGroupsInstance.get();
+
+        formGroup.render(colorPicker, field);
+
+        return formGroup;
     }
 
     @Override
     public String getSupportedCode() {
         return ColorPickerFieldDefinition.FIELD_TYPE.getTypeName();
-    }
-
-    @Override
-    public IsWidget getPrettyViewWidget() {
-        initInputWidget();
-        return getInputWidget();
     }
 
     @Override

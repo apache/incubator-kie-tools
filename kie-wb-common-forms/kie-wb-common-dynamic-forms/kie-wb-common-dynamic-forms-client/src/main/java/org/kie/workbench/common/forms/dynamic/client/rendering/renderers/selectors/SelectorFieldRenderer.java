@@ -29,6 +29,7 @@ import org.jboss.errai.databinding.client.BindableListWrapper;
 import org.kie.workbench.common.forms.dynamic.client.config.ClientSelectorDataProviderManager;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldDefinitionFieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.service.shared.BackendSelectorDataProviderService;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
@@ -37,7 +38,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.S
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorOption;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeListener;
 
-public abstract class SelectorFieldRenderer<FIELD extends SelectorFieldBaseDefinition<OPTION, TYPE>, OPTION extends SelectorOption<TYPE>, TYPE> extends FieldRenderer<FIELD> implements FieldDefinitionFieldRenderer<FIELD> {
+public abstract class SelectorFieldRenderer<FIELD extends SelectorFieldBaseDefinition<OPTION, TYPE>, OPTION extends SelectorOption<TYPE>, TYPE> extends FieldRenderer<FIELD, DefaultFormGroup> implements FieldDefinitionFieldRenderer<FIELD> {
 
     @Inject
     protected SelectorDataProviderManager clientProviderManager;

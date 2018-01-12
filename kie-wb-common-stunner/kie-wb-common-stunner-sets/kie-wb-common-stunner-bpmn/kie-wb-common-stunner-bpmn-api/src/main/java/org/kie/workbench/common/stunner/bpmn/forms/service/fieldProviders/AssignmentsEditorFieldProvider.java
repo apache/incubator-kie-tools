@@ -28,7 +28,7 @@ public class AssignmentsEditorFieldProvider extends BasicTypeFieldProvider<Assig
 
     @Override
     public int getPriority() {
-        return 100;
+        return 20000;
     }
 
     @Override

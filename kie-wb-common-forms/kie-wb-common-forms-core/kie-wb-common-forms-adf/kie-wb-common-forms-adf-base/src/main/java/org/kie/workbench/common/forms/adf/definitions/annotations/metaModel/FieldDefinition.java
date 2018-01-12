@@ -32,8 +32,8 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSetti
 public @interface FieldDefinition {
 
     /**
-     * Specifies how the Field Label should be calculated. By default let's the engine calculate it using the
+     * Specifies how the i18n for the field should be calculated. By default let's the engine calculate it using the
      * {@link I18nSettings} specified on the {@link FormDefinition}
      */
-    LabelMode labelMode() default LabelMode.DONT_OVERRIDE;
+    I18nMode i18nMode() default I18nMode.DONT_OVERRIDE;
 }

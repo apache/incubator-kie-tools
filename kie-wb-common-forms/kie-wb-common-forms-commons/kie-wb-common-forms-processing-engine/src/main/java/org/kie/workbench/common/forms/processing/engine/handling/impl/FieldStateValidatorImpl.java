@@ -95,13 +95,13 @@ public class FieldStateValidatorImpl implements FieldStateValidator {
                                                  Object value) {
         String message = translationService.getTranslation(ProcessingEngineConstants.FieldStateValidatorImplFieldIsRequired);
         if (value == null) {
-            field.setError(message);
+            field.showError(message);
             return false;
         }
         if (validators.containsKey(value.getClass())) {
             Predicate predicate = validators.get(value.getClass());
             if (!predicate.test(value)) {
-                field.setError(message);
+                field.showError(message);
                 return false;
             }
         }

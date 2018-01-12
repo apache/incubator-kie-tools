@@ -18,6 +18,7 @@ package org.kie.workbench.common.forms.fields.shared;
 
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.SkipFormField;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.TypeInfo;
 import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
@@ -52,10 +53,18 @@ public abstract class AbstractFieldDefinition implements FieldDefinition {
     protected Boolean readOnly = Boolean.FALSE;
 
     @FormField(
-            labelKey = "validateOnChange",
-            afterElement = "readOnly"
+            afterElement = "readOnly",
+            labelKey = "validateOnChange"
     )
     protected Boolean validateOnChange = Boolean.TRUE;
+
+    @FormField(
+            type = TextAreaFieldType.class,
+            afterElement = "validateOnChange",
+            labelKey = "helpMessage",
+            helpMessageKey = "helpMessage.helpMessage"
+    )
+    private String helpMessage;
 
     @SkipFormField
     protected String binding;
@@ -117,6 +126,16 @@ public abstract class AbstractFieldDefinition implements FieldDefinition {
     }
 
     @Override
+    public String getHelpMessage() {
+        return helpMessage;
+    }
+
+    @Override
+    public void setHelpMessage(String helpMessage) {
+        this.helpMessage = helpMessage;
+    }
+
+    @Override
     public String getBinding() {
         return binding;
     }
@@ -163,6 +182,7 @@ public abstract class AbstractFieldDefinition implements FieldDefinition {
         setRequired(other.getRequired());
         setReadOnly(other.getReadOnly());
         setValidateOnChange(other.getValidateOnChange());
+        setHelpMessage(other.getHelpMessage());
 
         doCopyFrom(other);
     }
@@ -198,6 +218,9 @@ public abstract class AbstractFieldDefinition implements FieldDefinition {
         if (validateOnChange != null ? !validateOnChange.equals(that.validateOnChange) : that.validateOnChange != null) {
             return false;
         }
+        if (helpMessage != null ? !helpMessage.equals(that.helpMessage) : that.helpMessage != null) {
+            return false;
+        }
         if (binding != null ? !binding.equals(that.binding) : that.binding != null) {
             return false;
         }
@@ -217,6 +240,8 @@ public abstract class AbstractFieldDefinition implements FieldDefinition {
         result = 31 * result + (readOnly != null ? readOnly.hashCode() : 0);
         result = ~~result;
         result = 31 * result + (validateOnChange != null ? validateOnChange.hashCode() : 0);
+        result = ~~result;
+        result = 31 * result + (helpMessage != null ? helpMessage.hashCode() : 0);
         result = ~~result;
         result = 31 * result + (binding != null ? binding.hashCode() : 0);
         result = ~~result;

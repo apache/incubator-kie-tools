@@ -38,7 +38,7 @@ public class AssigneeEditorFieldProvider extends BasicTypeFieldProvider<Assignee
 
     @Override
     public int getPriority() {
-        return 100;
+        return 10000;
     }
 
     @Override

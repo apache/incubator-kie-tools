@@ -21,20 +21,18 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.gwtbootstrap3.client.ui.FieldSet;
-import org.gwtbootstrap3.client.ui.Legend;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.fieldSet.FieldSetFormGroup;
 import org.kie.workbench.common.forms.dynamic.client.resources.i18n.FormRenderingConstants;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
 
 @Dependent
-public class MultipleSubFormFieldRenderer extends FieldRenderer<MultipleSubFormFieldDefinition> {
-
-    private FieldSet container = new FieldSet();
+public class MultipleSubFormFieldRenderer extends FieldRenderer<MultipleSubFormFieldDefinition, FieldSetFormGroup> {
 
     @Inject
-    private MultipleSubFormWidget subFormWidget;
+    private MultipleSubFormWidget multipleSubFormWidget;
 
     @Override
     public String getName() {
@@ -42,12 +40,15 @@ public class MultipleSubFormFieldRenderer extends FieldRenderer<MultipleSubFormF
     }
 
     @Override
-    public void initInputWidget() {
-        container.clear();
-        container.add(new Legend(field.getLabel()));
-        subFormWidget.config(field,
-                             renderingContext);
-        container.add(subFormWidget);
+    protected FormGroup getFormGroup(RenderMode renderMode) {
+        FieldSetFormGroup formGroup = formGroupsInstance.get();
+
+        multipleSubFormWidget.config(field,
+                                     renderingContext);
+
+        formGroup.render(multipleSubFormWidget,
+                         field);
+        return formGroup;
     }
 
     @Override
@@ -71,23 +72,12 @@ public class MultipleSubFormFieldRenderer extends FieldRenderer<MultipleSubFormF
     }
 
     @Override
-    public IsWidget getInputWidget() {
-        return subFormWidget;
-    }
-
-    @Override
-    public IsWidget getPrettyViewWidget() {
-        initInputWidget();
-        return getInputWidget();
-    }
-
-    @Override
     public String getSupportedCode() {
         return MultipleSubFormFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override
     protected void setReadOnly(boolean readOnly) {
-        subFormWidget.setReadOnly(readOnly);
+        multipleSubFormWidget.setReadOnly(readOnly);
     }
 }

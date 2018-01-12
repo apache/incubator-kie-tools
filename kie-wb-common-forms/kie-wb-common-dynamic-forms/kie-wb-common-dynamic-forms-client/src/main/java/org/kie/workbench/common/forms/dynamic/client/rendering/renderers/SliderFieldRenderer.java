@@ -19,16 +19,17 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.i18n.client.NumberFormat;
-import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.databinding.client.api.Converter;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.slider.Slider;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.slider.converters.IntegerToDoubleConverter;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.slider.SliderFormGroup;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.definition.SliderBaseDefinition;
 
 @Dependent
-public class SliderFieldRenderer extends FieldRenderer<SliderBaseDefinition>
+public class SliderFieldRenderer extends FieldRenderer<SliderBaseDefinition, SliderFormGroup>
         implements RequiresValueConverter {
 
     private Slider slider;
@@ -39,16 +40,25 @@ public class SliderFieldRenderer extends FieldRenderer<SliderBaseDefinition>
     }
 
     @Override
-    public void initInputWidget() {
+    protected FormGroup getFormGroup(RenderMode renderMode) {
         slider = new Slider(field.getMin().doubleValue(),
                             field.getMax().doubleValue(),
                             field.getPrecision().doubleValue(),
                             field.getStep().doubleValue());
+
+        slider.setId(generateUniqueId());
         slider.setEnabled(!field.getReadOnly() && renderingContext.getRenderMode().equals(RenderMode.EDIT_MODE));
 
         int precision = field.getPrecision().intValue();
         NumberFormat format = createFormatter(precision);
         slider.setFormatter((Double value) -> format.format(value));
+
+        SliderFormGroup formGroup = formGroupsInstance.get();
+
+        formGroup.render(slider,
+                         field);
+
+        return formGroup;
     }
 
     private NumberFormat createFormatter(int precision) {
@@ -61,17 +71,6 @@ public class SliderFieldRenderer extends FieldRenderer<SliderBaseDefinition>
             }
         }
         return NumberFormat.getFormat(pattern);
-    }
-
-    @Override
-    public IsWidget getInputWidget() {
-        return slider;
-    }
-
-    @Override
-    public IsWidget getPrettyViewWidget() {
-        initInputWidget();
-        return getInputWidget();
     }
 
     @Override

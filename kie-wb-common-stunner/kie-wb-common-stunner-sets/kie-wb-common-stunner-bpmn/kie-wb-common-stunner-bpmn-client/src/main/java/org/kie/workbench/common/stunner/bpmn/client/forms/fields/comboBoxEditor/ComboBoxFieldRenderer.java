@@ -23,27 +23,27 @@ import org.kie.workbench.common.stunner.bpmn.forms.model.ComboBoxFieldDefinition
 
 @Dependent
 public class ComboBoxFieldRenderer
-    extends AbstractComboBoxFieldRenderer<ComboBoxFieldDefinition> {
+        extends AbstractComboBoxFieldRenderer<ComboBoxFieldDefinition> {
 
-  public static final String TYPE_NAME = ComboBoxFieldDefinition.FIELD_TYPE.getTypeName();
+    public static final String TYPE_NAME = ComboBoxFieldDefinition.FIELD_TYPE.getTypeName();
 
-  @Inject
-  public ComboBoxFieldRenderer(final ComboBoxWidgetView comboBoxEditor) {
-    super(comboBoxEditor);
-  }
+    @Inject
+    public ComboBoxFieldRenderer(final ComboBoxWidgetView comboBoxEditor) {
+        super(comboBoxEditor);
+    }
 
-  @Override
-  public String getName() {
-    return TYPE_NAME;
-  }
+    @Override
+    public String getName() {
+        return TYPE_NAME;
+    }
 
-  @Override
-  public String getSupportedCode() {
-    return TYPE_NAME;
-  }
+    @Override
+    public String getSupportedCode() {
+        return TYPE_NAME;
+    }
 
-  @Override
-  public Class<ComboBoxFieldDefinition> getSupportedFieldDefinition() {
-    return ComboBoxFieldDefinition.class;
-  }
+    @Override
+    public Class<ComboBoxFieldDefinition> getSupportedFieldDefinition() {
+        return ComboBoxFieldDefinition.class;
+    }
 }

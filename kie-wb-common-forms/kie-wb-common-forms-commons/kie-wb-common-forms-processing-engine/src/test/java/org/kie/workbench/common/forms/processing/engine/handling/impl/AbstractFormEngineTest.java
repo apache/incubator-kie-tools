@@ -213,7 +213,7 @@ public abstract class AbstractFormEngineTest extends TestCase {
             verify(field,
                    atLeastOnce()).clearError();
             verify(field,
-                   setErrorTimes).setError(anyString());
+                   setErrorTimes).showError(anyString());
         });
     }
 }

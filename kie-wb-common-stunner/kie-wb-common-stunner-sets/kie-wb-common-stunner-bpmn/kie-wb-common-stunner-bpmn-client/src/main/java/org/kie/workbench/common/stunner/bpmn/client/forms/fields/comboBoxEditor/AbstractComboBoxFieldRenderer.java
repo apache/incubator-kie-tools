@@ -23,8 +23,10 @@ import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.selectors.SelectorFieldRenderer;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.StringSelectorOption;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ComboBoxFieldDefinition;
@@ -59,20 +61,14 @@ public abstract class AbstractComboBoxFieldRenderer<T extends ComboBoxFieldDefin
   }
 
   @Override
-  public void initInputWidget() {
+  protected FormGroup getFormGroup(RenderMode renderMode) {
+    DefaultFormGroup formGroup = formGroupsInstance.get();
+
     view.setReadOnly(field.getReadOnly());
     refreshSelectorOptions();
-  }
 
-  @Override
-  public IsWidget getInputWidget() {
-    return (ComboBoxWidgetViewImpl) view;
-  }
-
-  @Override
-  public IsWidget getPrettyViewWidget() {
-    initInputWidget();
-    return getInputWidget();
+    formGroup.render(view.asWidget(), field);
+    return formGroup;
   }
 
   @Override

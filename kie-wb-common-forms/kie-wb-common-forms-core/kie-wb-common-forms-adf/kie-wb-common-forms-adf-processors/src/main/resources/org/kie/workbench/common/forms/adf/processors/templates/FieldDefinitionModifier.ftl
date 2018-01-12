@@ -5,6 +5,9 @@ class ${fieldModifierName} implements FieldStatusModifier<${modelClassName}> {
 <#if label??>
                 field.setLabel( model.${label}() );
 </#if>
+<#if helpMessage??>
+                field.setHelpMessage( model.${helpMessage}() );
+</#if>
 <#if readOnly??>
                 field.setReadOnly( Boolean.TRUE.equals( model.${readOnly}() ) );
 </#if>

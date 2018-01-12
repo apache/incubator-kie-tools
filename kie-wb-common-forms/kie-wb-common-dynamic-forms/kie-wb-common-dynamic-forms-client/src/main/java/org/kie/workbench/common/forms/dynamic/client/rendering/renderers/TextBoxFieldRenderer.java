@@ -19,15 +19,17 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.jboss.errai.databinding.client.api.Converter;
 import org.kie.workbench.common.forms.common.rendering.client.util.valueConverters.ValueConvertersFactory;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.definition.TextBoxBaseDefinition;
 
 @Dependent
-public class TextBoxFieldRenderer extends FieldRenderer<TextBoxBaseDefinition>  implements RequiresValueConverter {
+public class TextBoxFieldRenderer extends FieldRenderer<TextBoxBaseDefinition, DefaultFormGroup> implements RequiresValueConverter {
 
     private TextBox textBox = new TextBox();
 
@@ -37,22 +39,27 @@ public class TextBoxFieldRenderer extends FieldRenderer<TextBoxBaseDefinition>  
     }
 
     @Override
-    public void initInputWidget() {
-        textBox = new TextBox();
-        textBox.setId(field.getId());
-        textBox.setPlaceholder(field.getPlaceHolder());
-        textBox.setMaxLength(field.getMaxLength());
-        textBox.setEnabled(!field.getReadOnly());
-    }
+    protected FormGroup getFormGroup(RenderMode renderMode) {
 
-    @Override
-    public IsWidget getInputWidget() {
-        return textBox;
-    }
+        DefaultFormGroup formGroup = formGroupsInstance.get();
 
-    @Override
-    public IsWidget getPrettyViewWidget() {
-        return new HTML();
+        if (renderMode.equals(RenderMode.PRETTY_MODE)) {
+            HTML html = new HTML();
+            formGroup.render(html,
+                             field);
+        } else {
+            String inputId = generateUniqueId();
+            textBox = new TextBox();
+            textBox.setId(inputId);
+            textBox.setPlaceholder(field.getPlaceHolder());
+            textBox.setMaxLength(field.getMaxLength());
+            textBox.setEnabled(!field.getReadOnly());
+            formGroup.render(inputId,
+                             textBox,
+                             field);
+        }
+
+        return formGroup;
     }
 
     @Override

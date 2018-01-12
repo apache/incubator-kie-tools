@@ -171,7 +171,7 @@ public class DynamicFormRenderer implements IsWidget, IsFormView {
             for (FieldDefinition field : context.getRootForm().getFields()) {
                 if (field instanceof SubFormFieldDefinition) {
                     FieldLayoutComponent component = view.getFieldLayoutComponentForField(field);
-                    SubFormWidget subFormWidget = (SubFormWidget) component.getFieldRenderer().getInputWidget();
+                    SubFormWidget subFormWidget = (SubFormWidget) component.getFieldRenderer().getFormField().getWidget();
                     subFormWidget.unBind();
                 }
             }

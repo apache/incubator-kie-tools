@@ -28,7 +28,7 @@ public class ConditionalComboBoxFieldProvider extends BasicTypeFieldProvider<Con
 
   @Override
   public int getPriority() {
-    return 1000;
+    return 40000;
   }
 
   @Override

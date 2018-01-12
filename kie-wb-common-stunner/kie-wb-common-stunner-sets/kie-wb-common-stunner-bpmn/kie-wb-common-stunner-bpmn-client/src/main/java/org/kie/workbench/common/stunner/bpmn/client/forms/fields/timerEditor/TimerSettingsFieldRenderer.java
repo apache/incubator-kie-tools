@@ -20,10 +20,13 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.stunner.bpmn.forms.model.TimerSettingsFieldDefinition;
 
 public class TimerSettingsFieldRenderer
-        extends FieldRenderer<TimerSettingsFieldDefinition> {
+        extends FieldRenderer<TimerSettingsFieldDefinition, DefaultFormGroup> {
 
     private final TimerSettingsFieldEditorWidget widget;
 
@@ -33,28 +36,22 @@ public class TimerSettingsFieldRenderer
     }
 
     @Override
+    protected FormGroup getFormGroup(RenderMode renderMode) {
+        DefaultFormGroup formGroup  = formGroupsInstance.get();
+
+        formGroup.render(widget, field);
+
+        return formGroup;
+    }
+
+    @Override
     public String getName() {
         return TimerSettingsFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override
-    public void initInputWidget() {
-        //No initialization required in this case.
-    }
-
-    @Override
-    public IsWidget getPrettyViewWidget() {
-        return getInputWidget();
-    }
-
-    @Override
     protected void setReadOnly(final boolean readOnly) {
         //readonly mode not required in this case.
-    }
-
-    @Override
-    public IsWidget getInputWidget() {
-        return widget;
     }
 
     @Override

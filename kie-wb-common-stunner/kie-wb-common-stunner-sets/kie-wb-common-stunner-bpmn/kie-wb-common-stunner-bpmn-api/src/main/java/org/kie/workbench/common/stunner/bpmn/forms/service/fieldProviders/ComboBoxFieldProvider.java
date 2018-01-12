@@ -28,7 +28,7 @@ public class ComboBoxFieldProvider extends BasicTypeFieldProvider<ComboBoxFieldD
 
     @Override
     public int getPriority() {
-        return 100;
+        return 30000;
     }
 
     @Override

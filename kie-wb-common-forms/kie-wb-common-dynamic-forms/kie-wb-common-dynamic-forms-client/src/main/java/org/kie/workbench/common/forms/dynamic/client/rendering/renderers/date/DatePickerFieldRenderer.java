@@ -18,17 +18,19 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.date;
 
 import javax.enterprise.context.Dependent;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker;
 import org.gwtbootstrap3.extras.datetimepicker.client.ui.DateTimePicker;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.flatViews.impl.DateFlatView;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.datePicker.definition.DatePickerFieldDefinition;
 
 @Dependent
-public class DatePickerFieldRenderer extends FieldRenderer<DatePickerFieldDefinition> {
+public class DatePickerFieldRenderer extends FieldRenderer<DatePickerFieldDefinition, DefaultFormGroup> {
 
     private Widget input;
 
@@ -40,37 +42,48 @@ public class DatePickerFieldRenderer extends FieldRenderer<DatePickerFieldDefini
     }
 
     @Override
-    public void initInputWidget() {
+    protected FormGroup getFormGroup(RenderMode renderMode) {
+
+        DefaultFormGroup formGroup = formGroupsInstance.get();
+
+        if (renderMode.equals(RenderMode.PRETTY_MODE)) {
+            formGroup.render(new DateFlatView(),
+                             field);
+        } else {
+            String inputId = generateUniqueId();
+            input = getDateWidget(inputId);
+            formGroup.render(inputId,
+                             input,
+                             field);
+        }
+
+        return formGroup;
+    }
+
+    private Widget getDateWidget(String inputId) {
         if (field.getShowTime()) {
             DateTimePicker box = new DateTimePicker();
+            box.setId(inputId);
             box.setPlaceholder(field.getPlaceHolder());
             box.setEnabled(!field.getReadOnly());
             box.setAutoClose(true);
             box.setHighlightToday(true);
             box.setShowTodayButton(true);
             handler = readOnly -> box.setEnabled(!readOnly);
-            input = box;
-        } else {
-            final DatePicker box = new DatePicker();
-            box.setPlaceholder(field.getPlaceHolder());
-            box.setEnabled(!field.getReadOnly());
-            box.setAutoClose(true);
-            box.setHighlightToday(true);
-            box.setShowTodayButton(true);
-            box.setContainer(RootPanel.get());
-            handler = readOnly -> box.setEnabled(!readOnly);
-            input = box;
+            return box;
         }
-    }
 
-    @Override
-    public IsWidget getInputWidget() {
-        return input;
-    }
+        DatePicker box = new DatePicker();
+        box.setId(inputId);
+        box.setPlaceholder(field.getPlaceHolder());
+        box.setEnabled(!field.getReadOnly());
+        box.setAutoClose(true);
+        box.setHighlightToday(true);
+        box.setShowTodayButton(true);
+        box.setContainer(RootPanel.get());
+        handler = readOnly -> box.setEnabled(!readOnly);
 
-    @Override
-    public IsWidget getPrettyViewWidget() {
-        return new DateFlatView();
+        return box;
     }
 
     @Override

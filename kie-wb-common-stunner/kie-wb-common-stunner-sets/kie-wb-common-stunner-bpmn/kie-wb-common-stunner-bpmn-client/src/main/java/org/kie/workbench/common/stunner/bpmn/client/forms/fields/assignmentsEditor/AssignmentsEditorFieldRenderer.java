@@ -21,12 +21,15 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ContextUtils;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssignmentsEditorFieldDefinition;
 
 @Dependent
-public class AssignmentsEditorFieldRenderer extends FieldRenderer<AssignmentsEditorFieldDefinition> {
+public class AssignmentsEditorFieldRenderer extends FieldRenderer<AssignmentsEditorFieldDefinition, DefaultFormGroup> {
 
     private AssignmentsEditorWidget assignmentsEditor;
 
@@ -41,28 +44,23 @@ public class AssignmentsEditorFieldRenderer extends FieldRenderer<AssignmentsEdi
     }
 
     @Override
-    public void initInputWidget() {
+    protected FormGroup getFormGroup(RenderMode renderMode) {
+        DefaultFormGroup formGroup = formGroupsInstance.get();
+
         assignmentsEditor.setBPMNModel(null);
         Object model = ContextUtils.getModel(renderingContext);
         if (model instanceof BPMNDefinition) {
             assignmentsEditor.setBPMNModel((BPMNDefinition) model);
         }
-    }
 
-    @Override
-    public IsWidget getPrettyViewWidget() {
-        initInputWidget();
-        return getInputWidget();
+        formGroup.render(assignmentsEditor, field);
+
+        return formGroup;
     }
 
     @Override
     protected void setReadOnly(final boolean readOnly) {
 
-    }
-
-    @Override
-    public IsWidget getInputWidget() {
-        return assignmentsEditor;
     }
 
     @Override

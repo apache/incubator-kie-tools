@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processi
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.FormGenerationContext;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.FormElementProcessor;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.util.PropertyValueExtractor;
@@ -79,6 +80,9 @@ public abstract class AbstractFieldElementProcessor implements FormElementProces
                                                     1).toUpperCase() + element.getName().substring(1);
             }
             field.setLabel(label);
+
+            String helpMessage = context.getI18nHelper().getTranslation(element.getHelpMessageKey());
+            field.setHelpMessage(helpMessage);
 
             field.setRequired(element.isRequired());
             field.setReadOnly(element.isReadOnly());

@@ -38,7 +38,7 @@ public class VariablesEditorFieldProvider extends BasicTypeFieldProvider<Variabl
 
     @Override
     public int getPriority() {
-        return 100;
+        return 60000;
     }
 
     @Override
