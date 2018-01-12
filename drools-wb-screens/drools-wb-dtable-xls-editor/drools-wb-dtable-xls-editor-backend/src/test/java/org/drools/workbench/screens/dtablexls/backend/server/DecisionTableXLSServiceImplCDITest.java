@@ -103,6 +103,20 @@ public class DecisionTableXLSServiceImplCDITest extends CDITestSetup {
         });
     }
 
+    @Test
+    public void testValidateMultiplePatterns() throws Exception {
+        final String resourcePath = "dtables/src/main/resources/guvnor/feature/dtables/SampleDTExt1.xls";
+        final List<ValidationMessage> messages = validateResource(resourcePath);
+        Assertions.assertThat(messages).hasSize(0);
+    }
+
+    @Test
+    public void testValidateColumnsNotInStandardOrder() throws Exception {
+        final String resourcePath = "dtables/src/main/resources/guvnor/feature/dtables/SampleDTExt2.xls";
+        final List<ValidationMessage> messages = validateResource(resourcePath);
+        Assertions.assertThat(messages).hasSize(0);
+    }
+
     /**
      * Covers RHDM-216 - From accumulate causes validation errors
      */
