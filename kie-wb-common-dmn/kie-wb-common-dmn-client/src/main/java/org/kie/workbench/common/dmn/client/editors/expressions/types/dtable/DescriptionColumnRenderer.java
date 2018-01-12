@@ -17,15 +17,13 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
 import com.ait.lienzo.client.core.shape.Group;
-import com.ait.lienzo.client.core.shape.Text;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextBoxDOMElement;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.single.impl.BaseGridColumnSingletonDOMElementRenderer;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.GridRendererTheme;
 
 public class DescriptionColumnRenderer extends BaseGridColumnSingletonDOMElementRenderer<String, TextBox, TextBoxDOMElement> {
 
@@ -40,16 +38,6 @@ public class DescriptionColumnRenderer extends BaseGridColumnSingletonDOMElement
             return null;
         }
 
-        final GridRenderer renderer = context.getRenderer();
-        final GridRendererTheme theme = renderer.getTheme();
-
-        final Group g = new Group();
-        final Text t = theme.getBodyText()
-                .setText(cell.getValue().getValue())
-                .setListening(false)
-                .setX(context.getCellWidth() / 2)
-                .setY(context.getCellHeight() / 2);
-        g.add(t);
-        return g;
+        return RendererUtils.getCenteredCellText(context, cell);
     }
 }

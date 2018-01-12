@@ -17,18 +17,13 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
 import com.ait.lienzo.client.core.shape.Group;
-import com.ait.lienzo.client.core.shape.Text;
-import com.ait.lienzo.client.core.shape.TextLineBreakWrap;
-import com.ait.lienzo.shared.core.types.TextAlign;
 import org.gwtbootstrap3.client.ui.TextArea;
-import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme;
+import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextAreaDOMElement;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.single.impl.BaseGridColumnSingletonDOMElementRenderer;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.GridRendererTheme;
 
 public class InputClauseColumnRenderer extends BaseGridColumnSingletonDOMElementRenderer<String, TextArea, TextAreaDOMElement> {
 
@@ -43,19 +38,6 @@ public class InputClauseColumnRenderer extends BaseGridColumnSingletonDOMElement
             return null;
         }
 
-        final GridRenderer renderer = context.getRenderer();
-        final GridRendererTheme theme = renderer.getTheme();
-
-        final Group g = new Group();
-        final Text t = theme.getBodyText()
-                .setText(cell.getValue().getValue())
-                .setListening(false)
-                .setX(5)
-                .setY(5)
-                .setFontFamily(BaseExpressionGridTheme.FONT_FAMILY_EXPRESSION)
-                .setTextAlign(TextAlign.LEFT);
-        t.setWrapper(new TextLineBreakWrap(t));
-        g.add(t);
-        return g;
+        return RendererUtils.getExpressionCellText(context, cell);
     }
 }
