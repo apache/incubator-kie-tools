@@ -62,7 +62,7 @@ public class ConditionExpressionLanguage implements BPMNProperty {
 
     @Value
     @FieldValue
-    private String value = defaultValue;
+    private String value;
 
     public ConditionExpressionLanguage() {
     }

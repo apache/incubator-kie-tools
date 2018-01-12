@@ -84,7 +84,7 @@ public class EmbeddedSubprocess extends BaseSubprocess implements DataIOModel {
                     new SimulationSet(),
                     new OnEntryAction(""),
                     new OnExitAction(""),
-                    new ScriptLanguage(""),
+                    new ScriptLanguage(),
                     new IsAsync(),
                     new ProcessData());
         }

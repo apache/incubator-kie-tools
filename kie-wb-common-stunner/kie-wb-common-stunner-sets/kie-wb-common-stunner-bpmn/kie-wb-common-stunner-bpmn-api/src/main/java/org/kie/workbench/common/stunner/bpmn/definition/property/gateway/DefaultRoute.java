@@ -63,7 +63,7 @@ public class DefaultRoute implements BPMNProperty {
 
     @Value
     @FieldValue
-    private String value = defaultValue;
+    private String value;
 
     public DefaultRoute() {
     }

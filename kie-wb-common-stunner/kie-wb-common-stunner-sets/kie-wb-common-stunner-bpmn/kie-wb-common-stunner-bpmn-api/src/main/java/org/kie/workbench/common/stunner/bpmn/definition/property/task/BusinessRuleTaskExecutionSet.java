@@ -98,10 +98,10 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
     private AdHocAutostart adHocAutostart;
 
     public BusinessRuleTaskExecutionSet() {
-        this(new RuleFlowGroup(""),
+        this(new RuleFlowGroup(),
              new OnEntryAction(""),
              new OnExitAction(""),
-             new ScriptLanguage(""),
+             new ScriptLanguage(),
              new IsAsync(),
              new AdHocAutostart());
     }

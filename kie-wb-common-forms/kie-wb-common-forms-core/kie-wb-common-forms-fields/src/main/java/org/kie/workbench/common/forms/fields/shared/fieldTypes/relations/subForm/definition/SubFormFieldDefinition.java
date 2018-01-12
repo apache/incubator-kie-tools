@@ -48,7 +48,7 @@ public class SubFormFieldDefinition extends AbstractFieldDefinition implements H
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,
             className = "org.kie.workbench.common.forms.editor.backend.dataProviders.VFSSelectorFormProvider")
-    protected String nestedForm = "";
+    protected String nestedForm = null;
 
     public SubFormFieldDefinition() {
         super(Object.class.getName());

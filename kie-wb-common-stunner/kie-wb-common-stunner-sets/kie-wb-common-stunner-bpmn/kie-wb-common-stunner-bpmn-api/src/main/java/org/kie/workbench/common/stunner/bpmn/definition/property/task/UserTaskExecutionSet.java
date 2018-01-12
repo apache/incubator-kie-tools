@@ -180,7 +180,7 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
              new AdHocAutostart(),
              new OnEntryAction(""),
              new OnExitAction(""),
-             new ScriptLanguage(""));
+             new ScriptLanguage());
     }
 
     public UserTaskExecutionSet(final @MapsTo("taskName") TaskName taskName,

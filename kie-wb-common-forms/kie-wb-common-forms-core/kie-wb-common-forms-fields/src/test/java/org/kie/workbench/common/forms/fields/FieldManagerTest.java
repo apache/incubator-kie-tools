@@ -21,7 +21,6 @@ import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
 
-import junit.framework.TestCase;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;

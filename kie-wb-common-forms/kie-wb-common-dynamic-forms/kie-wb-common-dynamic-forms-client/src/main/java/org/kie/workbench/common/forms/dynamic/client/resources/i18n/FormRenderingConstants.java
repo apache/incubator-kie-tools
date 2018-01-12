@@ -40,4 +40,7 @@ public interface FormRenderingConstants {
 
     @TranslationKey(defaultValue = "")
     String SubFormWrongForm = "SubForm.wrongForm";
+
+    @TranslationKey(defaultValue = "")
+    String ListBoxFieldRendererEmptyOptionText = "ListBoxFieldRenderer.emptyOptionText";
 }

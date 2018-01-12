@@ -62,7 +62,7 @@ public class CalledElement implements BPMNProperty {
 
     @Value
     @FieldValue
-    private String value = defaultValue;
+    private String value;
 
     public CalledElement() {
     }

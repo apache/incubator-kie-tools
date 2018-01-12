@@ -17,13 +17,20 @@
 package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.selectors.listBox;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.DecimalSelectorOption;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.DecimalListBoxFieldDefinition;
 
 @Dependent
 public class DecimalListBoxFieldRenderer
         extends AbstractListBoxFieldRenderer<DecimalListBoxFieldDefinition, DecimalSelectorOption, Double> {
+
+    @Inject
+    public DecimalListBoxFieldRenderer(TranslationService translationService) {
+        super(translationService);
+    }
 
     @Override
     public Class<DecimalListBoxFieldDefinition> getSupportedFieldDefinition() {

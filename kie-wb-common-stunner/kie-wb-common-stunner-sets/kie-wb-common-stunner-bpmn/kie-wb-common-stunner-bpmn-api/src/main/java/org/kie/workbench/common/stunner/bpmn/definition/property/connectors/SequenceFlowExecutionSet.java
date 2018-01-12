@@ -77,7 +77,7 @@ public class SequenceFlowExecutionSet implements BPMNPropertySet {
     public SequenceFlowExecutionSet() {
         this(new Priority(""),
              new ConditionExpression(""),
-             new ConditionExpressionLanguage("")
+             new ConditionExpressionLanguage()
         );
     }
 

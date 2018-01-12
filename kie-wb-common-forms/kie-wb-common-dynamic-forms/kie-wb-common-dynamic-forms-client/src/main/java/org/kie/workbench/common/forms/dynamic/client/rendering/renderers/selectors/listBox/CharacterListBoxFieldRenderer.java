@@ -17,14 +17,21 @@
 package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.selectors.listBox;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import org.jboss.errai.databinding.client.api.Converter;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.CharacterSelectorOption;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.CharacterListBoxFieldDefinition;
 
 @Dependent
 public class CharacterListBoxFieldRenderer
         extends AbstractListBoxFieldRenderer<CharacterListBoxFieldDefinition, CharacterSelectorOption, Character> {
+
+    @Inject
+    public CharacterListBoxFieldRenderer(TranslationService translationService) {
+        super(translationService);
+    }
 
     @Override
     public Class<CharacterListBoxFieldDefinition> getSupportedFieldDefinition() {

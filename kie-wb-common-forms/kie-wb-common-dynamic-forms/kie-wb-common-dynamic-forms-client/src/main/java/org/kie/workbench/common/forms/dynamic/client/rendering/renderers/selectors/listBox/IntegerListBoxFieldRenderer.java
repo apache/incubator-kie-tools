@@ -17,13 +17,20 @@
 package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.selectors.listBox;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.IntegerSelectorOption;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.IntegerListBoxFieldDefinition;
 
 @Dependent
 public class IntegerListBoxFieldRenderer
         extends AbstractListBoxFieldRenderer<IntegerListBoxFieldDefinition, IntegerSelectorOption, Long> {
+
+    @Inject
+    public IntegerListBoxFieldRenderer(TranslationService translationService) {
+        super(translationService);
+    }
 
     @Override
     public Class<IntegerListBoxFieldDefinition> getSupportedFieldDefinition() {

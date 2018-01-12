@@ -72,8 +72,8 @@ public class ScriptTaskExecutionSet implements BPMNPropertySet {
     private IsAsync isAsync;
 
     public ScriptTaskExecutionSet() {
-        this(new Script(""),
-             new ScriptLanguage(""),
+        this(new Script(),
+             new ScriptLanguage(),
              new IsAsync());
     }
 

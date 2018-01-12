@@ -52,7 +52,7 @@ public class MultipleSubFormFieldDefinition extends AbstractFieldDefinition impl
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,
             className = "org.kie.workbench.common.forms.editor.backend.dataProviders.VFSSelectorFormProvider")
-    protected String creationForm = "";
+    protected String creationForm = null;
 
     @FormField(
             labelKey = "multipleSubform.editionForm",
@@ -62,7 +62,7 @@ public class MultipleSubFormFieldDefinition extends AbstractFieldDefinition impl
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,
             className = "org.kie.workbench.common.forms.editor.backend.dataProviders.VFSSelectorFormProvider")
-    protected String editionForm = "";
+    protected String editionForm = null;
 
     @FormField(
             labelKey = "multipleSubform.columns",

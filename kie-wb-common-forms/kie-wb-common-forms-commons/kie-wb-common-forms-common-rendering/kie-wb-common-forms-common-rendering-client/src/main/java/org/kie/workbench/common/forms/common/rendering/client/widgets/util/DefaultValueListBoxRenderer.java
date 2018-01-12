@@ -23,6 +23,8 @@ import com.google.gwt.text.shared.Renderer;
 
 public class DefaultValueListBoxRenderer<T> implements Renderer<T> {
 
+    public static final String NULL_STR = "null";
+
     private Map<T, String> values;
 
     public void setValues(Map<T, String> values) {
@@ -31,11 +33,9 @@ public class DefaultValueListBoxRenderer<T> implements Renderer<T> {
 
     @Override
     public String render(T value) {
-        if (value == null) {
-            return "";
-        }
-        if (values == null || !values.containsKey(value)) {
-            return "";
+
+        if(values == null || !values.containsKey(value)) {
+            return NULL_STR;
         }
 
         return values.get(value);

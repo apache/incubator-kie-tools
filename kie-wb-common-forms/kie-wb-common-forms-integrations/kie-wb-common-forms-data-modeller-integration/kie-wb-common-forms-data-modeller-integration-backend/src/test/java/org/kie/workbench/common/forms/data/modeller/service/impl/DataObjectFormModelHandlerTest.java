@@ -241,7 +241,7 @@ public class DataObjectFormModelHandlerTest extends AbstractDataObjectTest {
         formModel = handler.createFormModel(dataObject, path);
 
         SubFormFieldDefinition subForm = (SubFormFieldDefinition) checkCommonProperties("address");
-        assertEquals("",
+        assertEquals(null,
                      subForm.getNestedForm());
     }
 
@@ -250,9 +250,9 @@ public class DataObjectFormModelHandlerTest extends AbstractDataObjectTest {
         formModel = handler.createFormModel(dataObject, path);
 
         MultipleSubFormFieldDefinition multipleSubform = (MultipleSubFormFieldDefinition) checkCommonProperties("address_list");
-        assertEquals("",
+        assertEquals(null,
                      multipleSubform.getCreationForm());
-        assertEquals("",
+        assertEquals(null,
                      multipleSubform.getEditionForm());
         assertEquals(Collections.emptyList(),
                      multipleSubform.getColumnMetas());
