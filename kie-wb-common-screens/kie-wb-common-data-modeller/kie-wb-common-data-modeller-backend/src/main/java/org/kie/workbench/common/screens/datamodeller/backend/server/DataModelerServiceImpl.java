@@ -106,7 +106,6 @@ import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
-import org.uberfire.java.nio.file.FileSystem;
 
 @Service
 @ApplicationScoped
@@ -450,9 +449,8 @@ public class DataModelerServiceImpl
     /**
      * Updates Java code provided in the source parameter with the data object values provided in the dataObject
      * parameter. This method does not write any changes in the file system.
-     *
-     * @param source     Java code to be updated.
-     * @param path       Path to the java file. (used for error messages adf and project )
+     * @param source Java code to be updated.
+     * @param path Path to the java file. (used for error messages adf and project )
      * @param dataObject Data object definition.
      * @return returns a GenerationResult object with the updated Java code and the dataObject parameter as is.
      */
@@ -495,10 +493,9 @@ public class DataModelerServiceImpl
     /**
      * Updates data object provided in the dataObject parameter with the Java code provided in the source parameter.
      * This method does not write changes in the file system.
-     *
      * @param dataObject Data object definition to be updated.
-     * @param source     Java code to use for the update.
-     * @param path       Path to the java file. (used for error messages adf)
+     * @param source Java code to use for the update.
+     * @param path Path to the java file. (used for error messages adf)
      * @return returns a GenerationResult object with the updated data object and the source and path parameter as is.
      */
     @Override
@@ -711,6 +708,18 @@ public class DataModelerServiceImpl
             throw new ServiceException("Source file couldn't be updated, path: " + path.toURI() + ", dataObject: " + (dataObject != null ? dataObject.getClassName() : null) + ".",
                                        e);
         }
+    }
+
+    public Path copy(final Path path,
+                     final String newName,
+                     final String comment,
+                     final boolean refactor) {
+        return copy(path,
+                    newName,
+                    null,
+                    Paths.convert(Paths.convert(path).getParent()),
+                    comment,
+                    refactor);
     }
 
     public Path copy(final Path path,

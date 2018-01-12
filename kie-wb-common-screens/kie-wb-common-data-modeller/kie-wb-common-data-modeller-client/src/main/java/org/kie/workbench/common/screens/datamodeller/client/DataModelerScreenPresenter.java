@@ -372,13 +372,21 @@ public class DataModelerScreenPresenter
                                 javaAssetUpdateValidator,
                                 details -> {
                                     view.showBusyIndicator(org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Copying());
-                                    modelerService.call(getCopySuccessCallback(copyPopUpPresenter.getView()),
-                                                        getCopyErrorCallback(copyPopUpPresenter.getView())).copy(versionRecordManager.getCurrentPath(),
-                                                                                                                 details.getNewFileName(),
-                                                                                                                 copyPopUpPresenter.getView().getPackageName(),
-                                                                                                                 copyPopUpPresenter.getView().getTargetPath(),
-                                                                                                                 details.getCommitMessage(),
-                                                                                                                 true);
+                                    if (copyPopUpPresenter.getView().getTargetPath() != null) {
+                                        modelerService.call(getCopySuccessCallback(copyPopUpPresenter.getView()),
+                                                            getCopyErrorCallback(copyPopUpPresenter.getView())).copy(versionRecordManager.getCurrentPath(),
+                                                                                                                     details.getNewFileName(),
+                                                                                                                     copyPopUpPresenter.getView().getPackageName(),
+                                                                                                                     copyPopUpPresenter.getView().getTargetPath(),
+                                                                                                                     details.getCommitMessage(),
+                                                                                                                     true);
+                                    } else {
+                                        modelerService.call(getCopySuccessCallback(copyPopUpPresenter.getView()),
+                                                            getCopyErrorCallback(copyPopUpPresenter.getView())).copy(versionRecordManager.getCurrentPath(),
+                                                                                                                     details.getNewFileName(),
+                                                                                                                     details.getCommitMessage(),
+                                                                                                                     true);
+                                    }
                                 });
     }
 

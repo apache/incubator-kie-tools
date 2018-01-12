@@ -75,6 +75,7 @@ import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.mockito.Mockito.*;
 
@@ -104,6 +105,9 @@ public abstract class DataModelerScreenPresenterTestBase {
 
     @Mock
     protected EventSourceMock<DataModelerWorkbenchFocusEvent> dataModelerFocusEvent;
+
+    @Mock
+    protected EventSourceMock<NotificationEvent> notificationEvent;
 
     @Mock
     protected DataModelerService modelerService;
@@ -242,6 +246,7 @@ public abstract class DataModelerScreenPresenterTestBase {
                 publishBatchMessagesEvent = DataModelerScreenPresenterTestBase.this.publishBatchMessagesEvent;
                 lockRequired = DataModelerScreenPresenterTestBase.this.lockRequired;
                 dataModelerFocusEvent = DataModelerScreenPresenterTestBase.this.dataModelerFocusEvent;
+                notification = DataModelerScreenPresenterTestBase.this.notificationEvent;
                 modelerService = new CallerMock<>(DataModelerScreenPresenterTestBase.this.modelerService);
                 validationPopup = DataModelerScreenPresenterTestBase.this.validationPopup;
                 validationService = new CallerMock<>(DataModelerScreenPresenterTestBase.this.validationService);

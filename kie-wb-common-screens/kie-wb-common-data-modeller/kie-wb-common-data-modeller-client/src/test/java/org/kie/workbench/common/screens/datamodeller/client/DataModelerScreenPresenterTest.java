@@ -23,13 +23,19 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
 import org.guvnor.messageconsole.events.UnpublishMessagesEvent;
+import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchFocusEvent;
 import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.widgets.metadata.client.validation.JavaAssetUpdateValidator;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
+import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
+import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
+import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -39,6 +45,31 @@ import static org.mockito.Mockito.*;
 
 public class DataModelerScreenPresenterTest
         extends DataModelerScreenPresenterTestBase {
+
+    private static final String FILE_NAME = "FILE_NAME";
+
+    private static final String COMMIT_MESSAGE = "COMMIT_MESSAGE";
+
+    private ArgumentCaptor<Path> pathArgumentCaptor;
+
+    private ArgumentCaptor<Validator> validatorArgumentCaptor;
+
+    private ArgumentCaptor<CommandWithFileNameAndCommitMessage> commandWithFileNameArgumentCaptor;
+
+    @Mock
+    private FileNameAndCommitMessage commitMessage;
+
+    @Mock
+    protected CopyPopUpPresenter.View copyPopUpPresenterView;
+
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+        when(copyPopUpPresenter.getView()).thenReturn(copyPopUpPresenterView);
+        pathArgumentCaptor = ArgumentCaptor.forClass(Path.class);
+        validatorArgumentCaptor = ArgumentCaptor.forClass(Validator.class);
+        commandWithFileNameArgumentCaptor = ArgumentCaptor.forClass(CommandWithFileNameAndCommitMessage.class);
+    }
 
     /**
      * This test emulates the loading of a java file that was parsed without errors.
@@ -509,6 +540,57 @@ public class DataModelerScreenPresenterTest
                times(1)).showCopyValidationMessages(any(Command.class),
                                                     any(Command.class),
                                                     anyListOf(ValidationMessage.class));
+    }
+
+    @Test
+    public void onCopyWithTargetPathTest() {
+        prepareOnCopyTest();
+        presenter.onCopy();
+        verify(copyPopUpPresenter,
+               times(1)).show(pathArgumentCaptor.capture(),
+                              validatorArgumentCaptor.capture(),
+                              commandWithFileNameArgumentCaptor.capture());
+
+        Path targetPath = mock(Path.class);
+        when(copyPopUpPresenterView.getTargetPath()).thenReturn(targetPath);
+        commandWithFileNameArgumentCaptor.getValue().execute(commitMessage);
+
+        verify(modelerService,
+               times(1)).copy(path,
+                              FILE_NAME,
+                              null,
+                              targetPath,
+                              COMMIT_MESSAGE,
+                              true);
+    }
+
+    @Test
+    public void onCopyWithNoTargetPathTest() {
+        prepareOnCopyTest();
+        presenter.onCopy();
+        verify(copyPopUpPresenter,
+               times(1)).show(pathArgumentCaptor.capture(),
+                              validatorArgumentCaptor.capture(),
+                              commandWithFileNameArgumentCaptor.capture());
+
+        when(copyPopUpPresenterView.getTargetPath()).thenReturn(null);
+        commandWithFileNameArgumentCaptor.getValue().execute(commitMessage);
+
+        verify(modelerService,
+               times(1)).copy(path,
+                              FILE_NAME,
+                              COMMIT_MESSAGE,
+                              true);
+    }
+
+    private void prepareOnCopyTest() {
+        when(validationService.validateForCopy(any(Path.class),
+                                               any(DataObject.class))).thenReturn(Collections.emptyList());
+        presenter.context = mock(DataModelerContext.class);
+
+        when(commitMessage.getCommitMessage()).thenReturn(COMMIT_MESSAGE);
+        when(commitMessage.getNewFileName()).thenReturn(FILE_NAME);
+        when(versionRecordManager.getCurrentPath()).thenReturn(path);
     }
 
     @Test
