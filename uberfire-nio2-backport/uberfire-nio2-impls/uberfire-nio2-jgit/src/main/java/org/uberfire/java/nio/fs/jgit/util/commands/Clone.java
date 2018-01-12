@@ -73,15 +73,17 @@ public class Clone {
                       remote,
                       refSpecList);
 
-            final StoredConfig config = git.getRepository().getConfig();
-            config.setBoolean("remote",
-                              "origin",
-                              "mirror",
-                              true);
-            try {
-                config.save();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            if (isMirror) {
+                final StoredConfig config = git.getRepository().getConfig();
+                config.setBoolean("remote",
+                                  "origin",
+                                  "mirror",
+                                  true);
+                try {
+                    config.save();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
 
             git.syncRemote(remote);

@@ -81,12 +81,12 @@ public interface Git {
 
     static Git clone(final File repoDest,
                      final String origin,
-                     final boolean b,
+                     final boolean isMirror,
                      final CredentialsProvider credential,
                      final KetchLeaderCache leaders) throws InvalidRemoteException {
         return new Clone(repoDest,
                          origin,
-                         true,
+                         isMirror,
                          credential,
                          leaders).execute().get();
     }

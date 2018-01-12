@@ -167,6 +167,7 @@ import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.
 import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_ENV_KEY_INIT;
 import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_ENV_KEY_PASSWORD;
 import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_ENV_KEY_USER_NAME;
+import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_ENV_KEY_MIRROR;
 import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.SCHEME;
 import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.SCHEME_SIZE;
 import static org.uberfire.java.nio.fs.jgit.util.model.PathType.DIRECTORY;
@@ -628,14 +629,16 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         return env.get(key).toString();
     }
 
-    private Git createNewGitRepo(Map<String, ?> env,
-                                 String fsName) {
+    Git createNewGitRepo(Map<String, ?> env,
+                         String fsName) {
         final Git git;
 
         String envUsername = extractEnvProperty(GIT_ENV_KEY_USER_NAME,
                                                 env);
         String envPassword = extractEnvProperty(GIT_ENV_KEY_PASSWORD,
                                                 env);
+        Boolean envMirror = (Boolean) env.get(GIT_ENV_KEY_MIRROR);
+        boolean isMirror = envMirror == null ? true : envMirror;
 
         CredentialsProvider credential = buildCredential(envUsername,
                                                          envPassword);
@@ -663,7 +666,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                 } else {
                     git = Git.clone(repoDest,
                                     origin,
-                                    true,
+                                    isMirror,
                                     credential,
                                     config.isEnableKetch() ? leaders : null);
                 }

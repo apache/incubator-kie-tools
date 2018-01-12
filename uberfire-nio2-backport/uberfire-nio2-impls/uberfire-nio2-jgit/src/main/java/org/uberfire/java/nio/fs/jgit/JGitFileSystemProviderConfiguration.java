@@ -58,6 +58,7 @@ public class JGitFileSystemProviderConfiguration {
     public static final String GIT_ENV_KEY_USER_NAME = "username";
     public static final String GIT_ENV_KEY_PASSWORD = "password";
     public static final String GIT_ENV_KEY_INIT = "init";
+    public static final String GIT_ENV_KEY_MIRROR = "mirror";
     public static final String SCHEME = "git";
     public static final int SCHEME_SIZE = (SCHEME + "://").length();
     public static final int DEFAULT_SCHEME_SIZE = ("default://").length();

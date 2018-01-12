@@ -19,6 +19,7 @@ package org.uberfire.java.nio.fs.jgit;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -34,6 +35,8 @@ import org.uberfire.java.nio.fs.jgit.util.commands.ListRefs;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.fest.assertions.api.Assertions.fail;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class JGitMirrorTest extends AbstractTestInfra {
 
@@ -48,6 +51,42 @@ public class JGitMirrorTest extends AbstractTestInfra {
                                         TARGET_GIT);
         new Clone(directory,
                   ORIGIN,
+                  true,
+                  CredentialsProvider.getDefault(),
+                  null).execute();
+
+        final Git cloned = Git.open(directory);
+
+        assertThat(cloned).isNotNull();
+
+        assertThat(cloned.getRepository().getAllRefs()).is(new Condition<Map<String, Ref>>() {
+            @Override
+            public boolean matches(final Map<String, Ref> refs) {
+                final boolean hasMasterRef = refs.get("refs/heads/master") != null;
+                final boolean hasPullRequestRef = refs.get("refs/pull/1/head") != null;
+
+                return hasMasterRef && hasPullRequestRef;
+            }
+        });
+
+        final boolean isMirror = cloned.getRepository().getConfig().getBoolean("remote",
+                                                                               "origin",
+                                                                               "mirror",
+                                                                               false);
+        assertTrue(isMirror);
+
+        URIish remoteUri = cloned.remoteList().call().get(0).getURIs().get(0);
+        String remoteUrl = remoteUri.getScheme() + "://" + remoteUri.getHost() + remoteUri.getPath();
+        assertThat(remoteUrl).isEqualTo(ORIGIN);
+    }
+
+    @Test
+    public void testToHTTPUnmirrorSuccess() throws IOException, GitAPIException {
+        final File parentFolder = createTempDirectory();
+        final File directory = new File(parentFolder,
+                                        TARGET_GIT);
+        new Clone(directory,
+                  ORIGIN,
                   false,
                   CredentialsProvider.getDefault(),
                   null).execute();
@@ -56,12 +95,21 @@ public class JGitMirrorTest extends AbstractTestInfra {
 
         assertThat(cloned).isNotNull();
 
-        assertThat(new ListRefs(cloned.getRepository()).execute()).is(new Condition<List<Ref>>() {
+        assertThat(cloned.getRepository().getAllRefs()).is(new Condition<Map<String, Ref>>() {
             @Override
-            public boolean matches(final List<Ref> refs) {
-                return refs.size() > 0;
+            public boolean matches(final Map<String, Ref> refs) {
+                final boolean hasMasterRef = refs.get("refs/heads/master") != null;
+                final boolean hasPullRequestRef = refs.get("refs/pull/1/head") != null;
+
+                return hasMasterRef && !hasPullRequestRef;
             }
         });
+
+        final boolean isMirror = cloned.getRepository().getConfig().getBoolean("remote",
+                                                                               "origin",
+                                                                               "mirror",
+                                                                               false);
+        assertFalse(isMirror);
 
         assertThat(new ListRefs(cloned.getRepository()).execute().get(0).getName()).isEqualTo("refs/heads/master");
 
