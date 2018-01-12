@@ -209,9 +209,14 @@ public class TestingGraphMockHandler {
                         final Optional<Set<String>> labels) {
         final Object definition = newDef(id,
                                          labels);
+        return newEdge(uuid, definition);
+    }
+
+    private Edge newEdge(String uuid, Object definition) {
         final Edge<Definition<Object>, Node> edge = edgeFactory.build(uuid,
                                                                       definition);
         when(graphIndex.getEdge(eq(uuid))).thenReturn(edge);
+        when(graphIndex.get(eq(uuid))).thenReturn(edge);
         return edge;
     }
 
@@ -221,10 +226,9 @@ public class TestingGraphMockHandler {
                 def.get() :
                 newDef("def-" + uuid,
                        Optional.empty());
-        final Edge<Definition<Object>, Node> edge = edgeFactory.build(uuid,
-                                                                      definition);
-        when(graphIndex.getEdge(eq(uuid))).thenReturn(edge);
-        return edge;
+
+
+        return newEdge(uuid, definition);
     }
 
     @SuppressWarnings("unchecked")

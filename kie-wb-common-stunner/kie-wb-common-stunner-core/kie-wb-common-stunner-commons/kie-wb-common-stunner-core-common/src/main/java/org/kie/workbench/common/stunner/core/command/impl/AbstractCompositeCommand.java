@@ -111,6 +111,10 @@ public abstract class AbstractCompositeCommand<T, V> implements Command<T, V> {
         return commands.size();
     }
 
+    public boolean isEmpty() {
+        return commands.isEmpty();
+    }
+
     public List<Command<T, V>> getCommands() {
         return commands;
     }

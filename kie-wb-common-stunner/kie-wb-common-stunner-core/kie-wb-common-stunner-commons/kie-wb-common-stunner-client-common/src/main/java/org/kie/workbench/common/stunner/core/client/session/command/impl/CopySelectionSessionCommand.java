@@ -71,18 +71,9 @@ public class CopySelectionSessionCommand extends AbstractClientSessionCommand<Cl
                 //for now just copy Nodes not Edges
                 final SelectionControl<AbstractCanvasHandler, Element> selectionControl = getSession().getSelectionControl();
 
-                //for now throw error in case trying to copy not Node elements
-                if (selectionControl.getSelectedItems().stream()
-                        .map(this::getElement)
-                        .anyMatch(element -> !(element instanceof Node))) {
-                    clipboardControl.clear();
-                    throw new RuntimeException("Copy node only is allowed");
-                }
-
                 //for now just copy Nodes not Edges
                 clipboardControl.set(selectionControl.getSelectedItems().stream()
                                              .map(this::getElement)
-                                             .filter(element -> element instanceof Node)
                                              .toArray(Element[]::new));
 
                 callback.onSuccess();

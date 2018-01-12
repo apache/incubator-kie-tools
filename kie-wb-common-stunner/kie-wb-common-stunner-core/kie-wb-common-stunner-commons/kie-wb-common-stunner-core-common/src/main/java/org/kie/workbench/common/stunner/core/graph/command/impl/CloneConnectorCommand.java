@@ -15,10 +15,14 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.Optional;
+import java.util.function.Consumer;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.definition.clone.ClonePolicy;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -43,16 +47,22 @@ public final class CloneConnectorCommand extends AbstractGraphCompositeCommand {
     private transient Node<? extends View<?>, Edge> targetNode;
     private final String sourceNodeUUID;
     private final String targetNodeUUID;
+    private final Optional<Consumer<Edge>> callback;
 
     public CloneConnectorCommand() {
         this(null, null, null);
     }
 
     public CloneConnectorCommand(final @MapsTo("candidate") Edge candidate, final @MapsTo("sourceNodeUUID") String sourceNodeUUID, final @MapsTo("targetNodeUUID") String targetNodeUUID) {
+        this(candidate, sourceNodeUUID, targetNodeUUID, null);
+    }
+
+    public CloneConnectorCommand(Edge candidate, String sourceNodeUUID, String targetNodeUUID, Consumer<Edge> callback) {
         this.candidate = PortablePreconditions.checkNotNull("candidate",
                                                             candidate);
         this.sourceNodeUUID = PortablePreconditions.checkNotNull("sourceNodeUUID", sourceNodeUUID);
         this.targetNodeUUID = PortablePreconditions.checkNotNull("targetNodeUUID", targetNodeUUID);
+        this.callback = Optional.ofNullable(callback);
     }
 
     @Override
@@ -63,7 +73,7 @@ public final class CloneConnectorCommand extends AbstractGraphCompositeCommand {
         this.sourceNode = (Node<? extends View<?>, Edge>) getNode(context, sourceNodeUUID);
         this.targetNode = (Node<? extends View<?>, Edge>) getNode(context, targetNodeUUID);
 
-        if(!(candidate.getContent() instanceof ViewConnector)){
+        if (!(candidate.getContent() instanceof ViewConnector)) {
             throw new IllegalArgumentException("Candidate: " + candidate.getTargetNode() + " content should be a ViewConnector");
         }
 
@@ -91,6 +101,15 @@ public final class CloneConnectorCommand extends AbstractGraphCompositeCommand {
     }
 
     @Override
+    public CommandResult<RuleViolation> execute(GraphCommandExecutionContext context) {
+        CommandResult<RuleViolation> commandResult = super.execute(context);
+        if (!CommandUtils.isError(commandResult)) {
+            callback.ifPresent(c -> c.accept(clone));
+        }
+        return commandResult;
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
         return new DeleteConnectorCommand(clone).execute(context);
@@ -104,5 +123,4 @@ public final class CloneConnectorCommand extends AbstractGraphCompositeCommand {
     protected Edge getCandidate() {
         return candidate;
     }
-
 }

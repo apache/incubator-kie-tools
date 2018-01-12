@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanv
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
 @ApplicationScoped
@@ -54,7 +55,7 @@ public class LocalClipboardControl extends AbstractCanvasControl<AbstractCanvas>
     public ClipboardControl<Element, AbstractCanvas, ClientSession> set(Element... element) {
         clear();
         elements.addAll(Arrays.stream(element).collect(Collectors.toSet()));
-        elementsParent.putAll(elements.stream().collect(Collectors.toMap(Element::getUUID, e -> GraphUtils.getParent(e.asNode()).getUUID())));
+        elementsParent.putAll(elements.stream().filter(e -> e instanceof Node).collect(Collectors.toMap(Element::getUUID, e -> GraphUtils.getParent(e.asNode()).getUUID())));
         return this;
     }
 

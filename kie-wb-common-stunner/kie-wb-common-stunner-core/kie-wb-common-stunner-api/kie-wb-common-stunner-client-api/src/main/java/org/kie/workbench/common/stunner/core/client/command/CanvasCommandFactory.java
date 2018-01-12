@@ -96,5 +96,7 @@ public interface CanvasCommandFactory<H extends CanvasHandler> {
 
     CanvasCommand<H> clearCanvas();
 
-    CanvasCommand<H> cloneNode(Node candidate, String parentUuid, Point2D cloneLocation, Consumer<Node> cloneNodeCallback);
+    CanvasCommand<H> cloneNode(Node candidate, String parentUuid, Point2D cloneLocation, Consumer<Node> callback);
+
+    CanvasCommand<H> cloneConnector(Edge candidate, String sourceUUID, String targetUUID, String shapeSetId, Consumer<Edge> callback);
 }

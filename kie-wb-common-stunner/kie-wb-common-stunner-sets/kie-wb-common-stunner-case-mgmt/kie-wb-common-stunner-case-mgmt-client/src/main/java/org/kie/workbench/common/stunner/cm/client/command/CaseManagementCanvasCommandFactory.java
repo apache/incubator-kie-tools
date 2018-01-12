@@ -96,7 +96,7 @@ public class CaseManagementCanvasCommandFactory extends DefaultCanvasCommandFact
     }
 
     @Override
-    public CanvasCommand<AbstractCanvasHandler> cloneNode(Node candidate, String parentUuid, Point2D cloneLocation, Consumer<Node> cloneNodeCallback) {
-        return new CaseManagementCloneNodeCommand(candidate, parentUuid, cloneLocation, cloneNodeCallback, getChildrenTraverseProcessors());
+    public CanvasCommand<AbstractCanvasHandler> cloneNode(Node candidate, String parentUuid, Point2D cloneLocation, Consumer<Node> callback) {
+        return new CaseManagementCloneNodeCommand(candidate, parentUuid, cloneLocation, callback, getChildrenTraverseProcessors());
     }
 }

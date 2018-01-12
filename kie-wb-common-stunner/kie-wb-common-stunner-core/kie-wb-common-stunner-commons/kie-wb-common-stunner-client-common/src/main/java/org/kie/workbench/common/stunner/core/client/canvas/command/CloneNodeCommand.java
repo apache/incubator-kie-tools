@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -80,7 +79,7 @@ public class CloneNodeCommand extends AbstractCanvasGraphCommand {
     private Consumer<Node> cloneNodeCallback(AbstractCanvasHandler context) {
         return clone -> {
             //check if not a redo operation, in case size == 1 it was set before
-            if (!Objects.equals(command.size(), 0)) {
+            if (!command.isEmpty()) {
                 command = buildCommand();
             }
             command.addCommand(getCloneCanvasNodeCommand(GraphUtils.getParent(clone).asNode(), clone, context.getDiagram().getMetadata().getShapeSetId()));
@@ -97,5 +96,9 @@ public class CloneNodeCommand extends AbstractCanvasGraphCommand {
 
     public ManagedInstance<ChildrenTraverseProcessor> getChildrenTraverseProcessor() {
         return childrenTraverseProcessor;
+    }
+
+    public Node getCandidate() {
+        return candidate;
     }
 }

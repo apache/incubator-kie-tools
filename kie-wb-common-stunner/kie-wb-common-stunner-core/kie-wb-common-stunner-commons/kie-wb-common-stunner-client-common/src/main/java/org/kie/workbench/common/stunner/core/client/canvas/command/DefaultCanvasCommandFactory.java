@@ -210,6 +210,11 @@ public class DefaultCanvasCommandFactory implements CanvasCommandFactory<Abstrac
         return new CloneNodeCommand(candidate, parentUuid, cloneLocation, cloneNodeCallback, childrenTraverseProcessors);
     }
 
+    @Override
+    public CanvasCommand<AbstractCanvasHandler> cloneConnector(Edge candidate, String sourceUUID, String targetUUID, String shapeSetId, Consumer<Edge> callback) {
+        return new CloneConnectorCommand(candidate, sourceUUID, targetUUID, shapeSetId, callback);
+    }
+
     protected ChildrenTraverseProcessor newChildrenTraverseProcessor() {
         return childrenTraverseProcessors.get();
     }

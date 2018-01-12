@@ -36,9 +36,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
@@ -98,6 +96,18 @@ public class CopySelectionSessionCommandTest extends BaseSessionCommandKeyboardT
         when(selectionControl.getSelectedItems()).thenThrow(new RuntimeException());
         copySelectionSessionCommand.execute(callback);
         verify(callback, never()).onSuccess();
+    }
+
+    @Test
+    public void testExecuteMultiSelection() {
+        copySelectionSessionCommand.bind(session);
+
+        when(selectionControl.getSelectedItems()).thenReturn(Arrays.asList(graphInstance.startNode.getUUID(),
+                                                                           graphInstance.edge1.getUUID(),
+                                                                           graphInstance.intermNode.getUUID()));
+        copySelectionSessionCommand.execute(callback);
+        verify(clipboardControl, times(1))
+                .set(graphInstance.startNode, graphInstance.edge1, graphInstance.intermNode);
     }
 
     @Override

@@ -16,14 +16,18 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
+import java.util.DoubleSummaryStatistics;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -34,6 +38,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.ClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key;
@@ -41,6 +46,7 @@ import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
+import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
@@ -50,6 +56,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+import org.kie.workbench.common.stunner.core.util.Counter;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher.doKeysMatch;
@@ -66,9 +73,10 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<C
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
     private final Event<CanvasSelectionEvent> selectionEvent;
-    private final List<String> clonedElements;
+    private final Map<String, String> clonedElements;
     private ClipboardControl<Element, AbstractCanvas, ClientSession> clipboardControl;
     private final CopySelectionSessionCommand copySelectionSessionCommand;
+    private transient DoubleSummaryStatistics yPositionStatistics;
 
     protected PasteSelectionSessionCommand() {
         this(null, null, null, null);
@@ -83,7 +91,7 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<C
         this.sessionCommandManager = sessionCommandManager;
         this.canvasCommandFactory = canvasCommandFactory;
         this.selectionEvent = selectionEvent;
-        this.clonedElements = new ArrayList<>();
+        this.clonedElements = new HashMap<>();
         this.copySelectionSessionCommand = sessionCommandFactory.newCopySelectionCommand();
     }
 
@@ -117,39 +125,41 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<C
                      callback);
 
         if (clipboardControl.hasElements()) {
-            final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder = new CompositeCommand.Builder<>();
+            final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> nodesCommandBuilder = createCommandBuilder();
 
-            //for now just pasting Nodes not Edges
-            commandBuilder.addCommands(clipboardControl.getElements().stream()
-                                               .filter(element -> element instanceof Node)
-                                               .map(Element::asNode)
-                                               .filter(Objects::nonNull)
-                                               .map(node -> (Node<View<?>, Edge>) node)
-                                               .map(node -> {
-                                                   String newParentUUID = getNewParentUUID(node);
-                                                   return canvasCommandFactory.cloneNode(node, newParentUUID, calculateNewLocation(node, newParentUUID), cloneNodeCallback());
-                                               })
-                                               .collect(Collectors.toList()));
+            Counter processedNodesCountdown = new Counter((int) clipboardControl.getElements().stream()
+                    .filter(element -> element instanceof Node).count());
 
-            // Execute the command.
-            if (Objects.equals(commandBuilder.size(), 0)) {
+            //first processing nodes
+            nodesCommandBuilder.addCommands(clipboardControl.getElements().stream()
+                                                    .filter(element -> element instanceof Node)
+                                                    .filter(Objects::nonNull)
+                                                    .map(node -> (Node<View<?>, Edge>) node)
+                                                    .map(node -> {
+                                                        String newParentUUID = getNewParentUUID(node);
+                                                        return canvasCommandFactory.cloneNode(node, newParentUUID, calculateNewLocation(node, newParentUUID), cloneNodeCallback(node, processedNodesCountdown));
+                                                    })
+                                                    .collect(Collectors.toList()));
+
+            if (Objects.equals(nodesCommandBuilder.size(), 0)) {
                 return;
             }
 
-            final CommandResult<CanvasViolation> result;
+            // Execute the command for cloning nodes
+            CommandResult<CanvasViolation> finalResult;
             if (wasNodesDeletedFromGraph()) {
                 //in case of a cut command the source elements were deleted from graph, so first undo the command to take node back into canvas
                 clipboardControl.getRollbackCommands().forEach(command -> command.undo(getCanvasHandler()));
-                result = sessionCommandManager.execute(getCanvasHandler(), commandBuilder.build());
+                finalResult = executeCommands(nodesCommandBuilder, processedNodesCountdown);
                 //after the clone execution than delete source elements again
                 clipboardControl.getRollbackCommands().forEach(command -> command.execute(getCanvasHandler()));
             } else {
                 //if elements are still on the graph, in case copy command, just execute the clone commands
-                result = sessionCommandManager.execute(getCanvasHandler(), commandBuilder.build());
+                finalResult = executeCommands(nodesCommandBuilder, processedNodesCountdown);
             }
 
-            if (CommandUtils.isError(result)) {
-                LOGGER.severe("Error on paste selection." + getCanvasViolations(result));
+            if (CommandUtils.isError(finalResult)) {
+                LOGGER.severe("Error pasting selection." + getCanvasViolations(finalResult));
                 return;
             }
 
@@ -162,6 +172,72 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<C
         }
     }
 
+    private CommandResult<CanvasViolation> executeCommands(CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder, Counter processedNodesCountdown) {
+        CommandResult<CanvasViolation> nodesResult = sessionCommandManager.execute(getCanvasHandler(), commandBuilder.build());
+        if (CommandUtils.isError(nodesResult)) {
+            return nodesResult;
+        }
+        // Processing connectors: after all nodes has been cloned (this is necessary because we need the cloned nodes UUIDs to than clone the Connectors
+        CommandResult<CanvasViolation> connectorsResult = processConnectors(processedNodesCountdown);
+
+        //After nodes and connectors command execution than it is necessary to update the command registry (to allow a single undo/redo)
+        if(!CommandUtils.isError(connectorsResult)) {
+            updateCommandsRegistry();
+        }
+
+        return new CanvasCommandResultBuilder()
+                .setType(nodesResult.getType())
+                .addViolations((Objects.nonNull(nodesResult.getViolations()) ?
+                        StreamSupport.stream(nodesResult.getViolations().spliterator(), false).collect(Collectors.toList()) :
+                        Collections.emptyList()))
+                .addViolations((Objects.nonNull(connectorsResult.getViolations()) ?
+                        StreamSupport.stream(connectorsResult.getViolations().spliterator(), false).collect(Collectors.toList()) :
+                        Collections.emptyList()))
+                .build();
+    }
+
+    private void updateCommandsRegistry() {
+        Command<AbstractCanvasHandler, CanvasViolation> connectorsExecutedCommand = sessionCommandManager.getRegistry().pop();
+        Command<AbstractCanvasHandler, CanvasViolation> nodesExecutedCommand = sessionCommandManager.getRegistry().pop();
+        sessionCommandManager.getRegistry().register(new CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation>()
+                                                             .addCommand(nodesExecutedCommand)
+                                                             .addCommand(connectorsExecutedCommand)
+                                                             .reverse()
+                                                             .build());
+    }
+
+    private CommandResult<CanvasViolation> processConnectors(Counter processedNodesCountdown) {
+        if (processedNodesCountdown.equalsToValue(0)) {
+            final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder = createCommandBuilder();
+            commandBuilder.addCommands(clipboardControl.getElements().stream()
+                                               .filter(element -> element instanceof Edge)
+                                               .filter(Objects::nonNull)
+                                               .map(edge -> (Edge) edge)
+                                               .filter(edge -> Objects.nonNull(edge.getSourceNode()) &&
+                                                       Objects.nonNull(clonedElements.get(edge.getSourceNode().getUUID())) &&
+                                                       Objects.nonNull(edge.getTargetNode()) &&
+                                                       Objects.nonNull(clonedElements.get(edge.getTargetNode().getUUID())))
+                                               .map(edge -> canvasCommandFactory.cloneConnector(edge,
+                                                                                                clonedElements.get(edge.getSourceNode().getUUID()),
+                                                                                                clonedElements.get(edge.getTargetNode().getUUID()),
+                                                                                                getCanvasHandler().getDiagram().getMetadata().getShapeSetId(),
+                                                                                                cloneEdgeCallback(edge)))
+                                               .collect(Collectors.toList()));
+
+            return sessionCommandManager.execute(getCanvasHandler(), commandBuilder.build());
+        }
+
+        return new CanvasCommandResultBuilder().build();
+    }
+
+    private CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> createCommandBuilder() {
+        return new CompositeCommand.Builder<>();
+    }
+
+    private Consumer<Edge> cloneEdgeCallback(Edge candidate) {
+        return clone -> clonedElements.put(candidate.getUUID(), clone.getUUID());
+    }
+
     public boolean wasNodesDeletedFromGraph() {
         return clipboardControl.getElements().stream().allMatch(element -> Objects.isNull(getElement(element.getUUID())));
     }
@@ -169,6 +245,7 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<C
     public void clear() {
         clipboardControl.clear();
         clonedElements.clear();
+        yPositionStatistics = null;
     }
 
     public String getCanvasViolations(CommandResult<CanvasViolation> result) {
@@ -178,24 +255,29 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<C
         return "";
     }
 
-    private Consumer<Node> cloneNodeCallback() {
-        return clone -> clonedElements.add(clone.getUUID());
+    private Consumer<Node> cloneNodeCallback(Node candidate, Counter processedNodesCountdown) {
+        return clone -> {
+            clonedElements.put(candidate.getUUID(), clone.getUUID());
+            processedNodesCountdown.decrement();
+        };
     }
 
     private void fireSelectedElementEvent() {
-        clonedElements.stream().forEach(uuid -> selectionEvent.fire(new CanvasSelectionEvent(getCanvasHandler(), uuid)));
+        selectionEvent.fire(new CanvasSelectionEvent(getCanvasHandler(), clonedElements.values()));
     }
 
     private String getNewParentUUID(Node node) {
         //getting parent if selected
-        Optional<Element> selectedParent = getSelectedParentElement();
+        Optional<Element> selectedParent = getSelectedParentElement(node.getUUID());
         if (selectedParent.isPresent() && !Objects.equals(selectedParent.get().getUUID(), node.getUUID()) && checkIfExistsOnCanvas(selectedParent.get().getUUID())) {
             return selectedParent.get().getUUID();
         }
 
         //getting node parent if no different parent is selected
         String nodeParentUUID = clipboardControl.getParent(node.getUUID());
-        if (selectedParent.isPresent() && Objects.equals(selectedParent.get().getUUID(), node.getUUID()) && Objects.nonNull(nodeParentUUID) && checkIfExistsOnCanvas(nodeParentUUID)) {
+        if (selectedParent.isPresent() &&
+                Objects.equals(selectedParent.get().getUUID(), node.getUUID()) &&
+                Objects.nonNull(nodeParentUUID) && checkIfExistsOnCanvas(nodeParentUUID)) {
             return nodeParentUUID;
         }
 
@@ -211,12 +293,17 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<C
         return getCanvasHandler().getDiagram().getMetadata().getCanvasRootUUID();
     }
 
-    private Optional<Element> getSelectedParentElement() {
+    private Optional<Element> getSelectedParentElement(String nodeUUID) {
         if (null != getSession().getSelectionControl()) {
             Collection<String> selectedItems = getSession().getSelectionControl().getSelectedItems();
             if (Objects.nonNull(selectedItems) && !selectedItems.isEmpty()) {
-                String selectedUUID = selectedItems.stream().filter(Objects::nonNull).findFirst().orElse(null);
-                return Optional.ofNullable(getElement(selectedUUID));
+                Optional<String> selectedParent = selectedItems.stream()
+                        .filter(Objects::nonNull)
+                        .filter(item -> Objects.equals(item, nodeUUID))
+                        .findFirst();
+                return (selectedParent.isPresent() ?
+                        selectedParent : selectedItems.stream().filter(Objects::nonNull).findFirst())
+                        .map(this::getElement);
             }
         }
         return Optional.empty();
@@ -232,11 +319,26 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<C
 
         //node is still on canvas (not deleted)
         if (existsOnCanvas(node)) {
-            return new Point2D(position.getX() + DEFAULT_PADDING, position.getY() + DEFAULT_PADDING);
+            double x = position.getX();
+            double max = getYPositionStatistics().getMax();
+            double min = getYPositionStatistics().getMin();
+            double y = max + (position.getY() - min) + DEFAULT_PADDING;
+            return new Point2D(x, y);
         }
 
         //default or node was deleted
         return position;
+    }
+
+    private DoubleSummaryStatistics getYPositionStatistics() {
+        if (Objects.isNull(yPositionStatistics)) {
+            yPositionStatistics = Stream.concat(clipboardControl.getElements().stream()
+                                                        .filter(element -> element instanceof Node)
+                                                        .map(element -> ((View) element.getContent()).getBounds().getLowerRight()),
+                                                clipboardControl.getElements().stream().filter(element -> element instanceof Node)
+                                                        .map(element -> ((View) element.getContent()).getBounds().getUpperLeft())).mapToDouble(bound -> bound.getY()).summaryStatistics();
+        }
+        return yPositionStatistics;
     }
 
     private boolean hasParentChanged(Node<? extends View<?>, Edge> node, String newParentUUID) {

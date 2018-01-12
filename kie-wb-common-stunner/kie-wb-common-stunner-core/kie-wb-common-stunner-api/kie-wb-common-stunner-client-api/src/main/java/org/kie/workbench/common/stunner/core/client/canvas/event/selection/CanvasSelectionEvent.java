@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.event.selection;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -30,15 +31,13 @@ public final class CanvasSelectionEvent
     public CanvasSelectionEvent(final CanvasHandler canvasHandler,
                                 final Collection<String> identifiers) {
         super(canvasHandler);
-        this.identifiers = identifiers;
+        this.identifiers = new LinkedList<>(identifiers);
     }
 
     public CanvasSelectionEvent(final CanvasHandler canvasHandler,
                                 final String uuid) {
         super(canvasHandler);
-        this.identifiers = new LinkedList<String>() {{
-            add(uuid);
-        }};
+        this.identifiers = new LinkedList<>(Arrays.asList(uuid));
     }
 
     public Collection<String> getIdentifiers() {
