@@ -45,7 +45,7 @@ public class LRUPomModelCache extends LRUCache<Project, PomModel> {
         this.projectService = projectService;
     }
 
-    public synchronized void invalidateProjectCache(@Observes final InvalidateDMOProjectCacheEvent event) {
+    public void invalidateProjectCache(@Observes final InvalidateDMOProjectCacheEvent event) {
         PortablePreconditions.checkNotNull("event",
                                            event);
         final Path resourcePath = event.getResourcePath();

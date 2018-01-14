@@ -15,9 +15,6 @@
 
 package org.kie.workbench.common.services.datamodel.backend.server.cache;
 
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.StreamSupport.stream;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -49,8 +46,11 @@ import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.file.DirectoryStream.Filter;
 import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.DirectoryStream.Filter;
+
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.StreamSupport.stream;
 
 /**
  * A simple LRU cache for Package DataModelOracles
@@ -98,7 +98,7 @@ public class LRUDataModelOracleCache extends LRUCache<Package, PackageDataModelO
         this.evaluator = evaluator;
     }
 
-    public synchronized void invalidatePackageCache(@Observes final InvalidateDMOPackageCacheEvent event) {
+    public void invalidatePackageCache(@Observes final InvalidateDMOPackageCacheEvent event) {
         PortablePreconditions.checkNotNull("event",
                                            event);
         final Path resourcePath = event.getResourcePath();
@@ -110,7 +110,7 @@ public class LRUDataModelOracleCache extends LRUCache<Package, PackageDataModelO
         }
     }
 
-    public synchronized void invalidateProjectPackagesCache(@Observes final InvalidateDMOProjectCacheEvent event) {
+    public void invalidateProjectPackagesCache(@Observes final InvalidateDMOProjectCacheEvent event) {
         PortablePreconditions.checkNotNull("event",
                                            event);
         final Path resourcePath = event.getResourcePath();
@@ -144,8 +144,8 @@ public class LRUDataModelOracleCache extends LRUCache<Package, PackageDataModelO
     }
 
     //Check the DataModelOracle for the Package has been created, otherwise create one!
-    public synchronized PackageDataModelOracle assertPackageDataModelOracle(final KieProject project,
-                                                                            final Package pkg) {
+    public PackageDataModelOracle assertPackageDataModelOracle(final KieProject project,
+                                                               final Package pkg) {
         PackageDataModelOracle oracle = getEntry(pkg);
         if (oracle == null) {
             oracle = makePackageDataModelOracle(project,

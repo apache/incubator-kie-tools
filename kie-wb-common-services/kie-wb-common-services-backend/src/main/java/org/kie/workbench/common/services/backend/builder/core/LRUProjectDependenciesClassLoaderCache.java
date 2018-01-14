@@ -17,6 +17,7 @@
 package org.kie.workbench.common.services.backend.builder.core;
 
 import java.net.URLClassLoader;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -33,19 +34,19 @@ public class LRUProjectDependenciesClassLoaderCache extends LRUCache<KieProject,
 
     private BuildInfoService buildInfoService;
 
-    public LRUProjectDependenciesClassLoaderCache( ) {
+    public LRUProjectDependenciesClassLoaderCache() {
     }
 
     @Inject
-    public LRUProjectDependenciesClassLoaderCache( BuildInfoService buildInfoService ) {
+    public LRUProjectDependenciesClassLoaderCache(BuildInfoService buildInfoService) {
         this.buildInfoService = buildInfoService;
     }
 
-    protected void setBuildInfoService( final BuildInfoService buildInfoService ) {
+    protected void setBuildInfoService(final BuildInfoService buildInfoService) {
         this.buildInfoService = buildInfoService;
     }
 
-    public synchronized ClassLoader assertDependenciesClassLoader(final KieProject project) {
+    public ClassLoader assertDependenciesClassLoader(final KieProject project) {
         ClassLoader classLoader = getEntry(project);
         if (classLoader == null) {
             classLoader = buildClassLoader(project);
@@ -55,8 +56,8 @@ public class LRUProjectDependenciesClassLoaderCache extends LRUCache<KieProject,
         return classLoader;
     }
 
-    public synchronized void setDependenciesClassLoader(final KieProject project,
-                                                        ClassLoader classLoader) {
+    public void setDependenciesClassLoader(final KieProject project,
+                                           ClassLoader classLoader) {
         setEntry(project,
                  classLoader);
     }
@@ -87,7 +88,7 @@ public class LRUProjectDependenciesClassLoaderCache extends LRUCache<KieProject,
         } else {
             //this case should never happen. But if ProjectClassLoader calculation for KieModuleMetadata changes at
             //the error will be notified for implementation review.
-            throw new RuntimeException("It was not posible to calculate project dependencies class loader for project: "
+            throw new RuntimeException("It was not possible to calculate project dependencies class loader for project: "
                                                + project.getKModuleXMLPath());
         }
     }

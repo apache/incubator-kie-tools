@@ -76,10 +76,12 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.workbench.events.ResourceChange;
 import org.uberfire.workbench.events.ResourceChangeType;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.*;
-import static org.kie.workbench.common.services.backend.builder.core.BaseFileNameResolver.*;
-import static org.kie.workbench.common.services.backend.builder.core.BuildMessageBuilder.*;
-import static org.kie.workbench.common.services.backend.builder.core.MessageConverter.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.workbench.common.services.backend.builder.core.BaseFileNameResolver.getBaseFileName;
+import static org.kie.workbench.common.services.backend.builder.core.BuildMessageBuilder.makeErrorMessage;
+import static org.kie.workbench.common.services.backend.builder.core.BuildMessageBuilder.makeWarningMessage;
+import static org.kie.workbench.common.services.backend.builder.core.MessageConverter.convertMessages;
+import static org.kie.workbench.common.services.backend.builder.core.MessageConverter.convertValidationMessages;
 
 public class Builder implements Serializable {
 
@@ -205,12 +207,12 @@ public class Builder implements Serializable {
     }
 
     public BuildResults build() {
+        final BuildResults results = new BuildResults(projectGAV);
         synchronized (kieFileSystem) {
             //KieBuilder is not re-usable for successive "full" builds
             kieBuilder = createKieBuilder(kieFileSystem);
 
             //Record RTEs from KieBuilder - that can fail if a rule uses an inaccessible class
-            final BuildResults results = new BuildResults(projectGAV);
             try {
                 final Results kieResults = ((InternalKieBuilder) kieBuilder).buildAll(classFilter).getResults();
                 results.addAllBuildMessages(convertMessages(kieResults.getMessages(),
@@ -232,64 +234,64 @@ public class Builder implements Serializable {
                                            pomModel);
                 }
             }
+        }
 
-            //Add validate messages from external helpers
-            for (Map.Entry<Path, BuildValidationHelper> e : nonKieResourceValidationHelpers.entrySet()) {
-                final org.uberfire.backend.vfs.Path vfsPath = Paths.convert(e.getKey());
-                final List<ValidationMessage> validationMessages = e.getValue().validate(vfsPath);
-                nonKieResourceValidationHelperMessages.put(e.getKey(),
-                                                           validationMessages);
-                results.addAllBuildMessages(convertValidationMessages(validationMessages));
-            }
+        //Add validate messages from external helpers
+        for (Map.Entry<Path, BuildValidationHelper> e : nonKieResourceValidationHelpers.entrySet()) {
+            final org.uberfire.backend.vfs.Path vfsPath = Paths.convert(e.getKey());
+            final List<ValidationMessage> validationMessages = e.getValue().validate(vfsPath);
+            nonKieResourceValidationHelperMessages.put(e.getKey(),
+                                                       validationMessages);
+            results.addAllBuildMessages(convertValidationMessages(validationMessages));
+        }
 
-            //Check external imports are available. These are loaded when a DMO is requested, but it's better to report them early
-            final Path nioExternalImportsPath = projectRoot.resolve("project.imports");
-            if (Files.exists(nioExternalImportsPath)) {
-                final org.uberfire.backend.vfs.Path externalImportsPath = Paths.convert(nioExternalImportsPath);
-                final ProjectImports projectImports = importsService.load(externalImportsPath);
-                final Imports imports = projectImports.getImports();
-                for (final Import item : imports.getImports()) {
-                    final String fullyQualifiedClassName = item.getType();
-                    try {
-                        Class clazz = this.getClass().getClassLoader().loadClass(item.getType());
-                    } catch (ClassNotFoundException cnfe) {
-                        logger.warn(cnfe.getMessage());
-                        final String msg = MessageFormat.format(ERROR_CLASS_NOT_FOUND,
-                                                                fullyQualifiedClassName);
-                        results.addBuildMessage(makeWarningMessage(msg));
-                    }
+        //Check external imports are available. These are loaded when a DMO is requested, but it's better to report them early
+        final Path nioExternalImportsPath = projectRoot.resolve("project.imports");
+        if (Files.exists(nioExternalImportsPath)) {
+            final org.uberfire.backend.vfs.Path externalImportsPath = Paths.convert(nioExternalImportsPath);
+            final ProjectImports projectImports = importsService.load(externalImportsPath);
+            final Imports imports = projectImports.getImports();
+            for (final Import item : imports.getImports()) {
+                final String fullyQualifiedClassName = item.getType();
+                try {
+                    Class clazz = this.getClass().getClassLoader().loadClass(item.getType());
+                } catch (ClassNotFoundException cnfe) {
+                    logger.warn(cnfe.getMessage());
+                    final String msg = MessageFormat.format(ERROR_CLASS_NOT_FOUND,
+                                                            fullyQualifiedClassName);
+                    results.addBuildMessage(makeWarningMessage(msg));
                 }
             }
-
-            //At the end we are interested to ensure that external .jar files referenced as dependencies don't have
-            // referential inconsistencies. We will at least provide a basic algorithm to ensure that if an external class
-            // X references another external class Y, Y is also accessible by the class loader.
-            final KieModuleMetaData kieModuleMetaData = getKieModuleMetaDataIgnoringErrors();
-
-            //store the project dependencies ClassLoader for optimization purposes.
-            updateDependenciesClassLoader(project,
-                                          kieModuleMetaData);
-
-            results.addAllBuildMessages(verifyClasses(kieModuleMetaData));
-
-            return results;
         }
+
+        //Store the project dependencies ClassLoader for optimization purposes.
+        final KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData(getKieModuleIgnoringErrors(),
+                                                                                                   DependencyFilter.COMPILE_FILTER);
+        updateDependenciesClassLoader(project,
+                                      kieModuleMetaData);
+
+        results.addAllBuildMessages(verifyClasses(kieModuleMetaData));
+
+        return results;
     }
 
-    public BuildResults build(Path resource,
-                              InputStream inputStream) {
+    public BuildResults build(final Path resource,
+                              final InputStream inputStream) {
         synchronized (kieFileSystem) {
             final String destinationPath = destinationPath(resource);
             final Resource inputStreamResource = KieServices.Factory.get().getResources().newInputStreamResource(new BufferedInputStream(inputStream));
 
             kieFileSystem.write(destinationPath,
                                 inputStreamResource);
-
-            return build();
         }
+
+        return build();
     }
 
-    private List<BuildMessage> verifyClasses(KieModuleMetaData kieModuleMetaData) {
+    private List<BuildMessage> verifyClasses(final KieModuleMetaData kieModuleMetaData) {
+        //At the end we are interested to ensure that external .jar files referenced as dependencies don't have
+        // referential inconsistencies. We will at least provide a basic algorithm to ensure that if an external class
+        // X references another external class Y, Y is also accessible by the class loader.
         return new ClassVerifier(kieModuleMetaData,
                                  getTypeSourceResolver(kieModuleMetaData)).verify(getWhiteList(kieModuleMetaData));
     }
@@ -323,69 +325,41 @@ public class Builder implements Serializable {
                            ioService.newInputStream(resource));
     }
 
-    public IncrementalBuildResults deleteResource(final Path resource) {
-        synchronized (kieFileSystem) {
-            checkNotNull("resource",
-                         resource);
-
-            checkAFullBuildHasBeenPerformed();
-
-            //Resource Type might have been validated "externally" (i.e. it's not covered by Kie). Clear any errors.
-            final IncrementalBuildResults results = new IncrementalBuildResults(projectGAV);
-            final BuildValidationHelper validator = getBuildValidationHelper(resource);
-            if (validator != null) {
-                nonKieResourceValidationHelpers.remove(resource);
-                results.addAllRemovedMessages(convertValidationMessages(nonKieResourceValidationHelperMessages.remove(resource)));
-            }
-
-            removeResource(resource);
-            buildIncrementally(results,
-                               destinationPath(resource));
-
-            return results;
-        }
-    }
-
-    private void removeResource(final Path resource) {
-        kieFileSystem.delete(destinationPath(resource));
-        removeJavaClass(resource);
-    }
-
     private IncrementalBuildResults addResource(final Path resource,
                                                 final InputStream inputStream) {
+        checkNotNull("resource",
+                     resource);
+
+        //Only files can be processed
+        if (!Files.isRegularFile(resource)) {
+            return new IncrementalBuildResults(projectGAV);
+        }
+
+        checkAFullBuildHasBeenPerformed();
+
+        //Resource Type might require "external" validation (i.e. it's not covered by Kie)
+        final IncrementalBuildResults results = new IncrementalBuildResults(projectGAV);
+        final BuildValidationHelper validator = getBuildValidationHelper(resource);
+        if (validator != null) {
+            final List<ValidationMessage> addedValidationMessages = validator.validate(Paths.convert(resource));
+
+            results.addAllAddedMessages(convertValidationMessages(addedValidationMessages));
+            results.addAllRemovedMessages(convertValidationMessages(nonKieResourceValidationHelperMessages.remove(resource)));
+
+            nonKieResourceValidationHelpers.put(resource,
+                                                validator);
+            nonKieResourceValidationHelperMessages.put(resource,
+                                                       addedValidationMessages);
+        }
+
         synchronized (kieFileSystem) {
-            checkNotNull("resource",
-                         resource);
-
-            //Only files can be processed
-            if (!Files.isRegularFile(resource)) {
-                return new IncrementalBuildResults(projectGAV);
-            }
-
-            checkAFullBuildHasBeenPerformed();
-
-            //Resource Type might require "external" validation (i.e. it's not covered by Kie)
-            final IncrementalBuildResults results = new IncrementalBuildResults(projectGAV);
-            final BuildValidationHelper validator = getBuildValidationHelper(resource);
-            if (validator != null) {
-                final List<ValidationMessage> addedValidationMessages = validator.validate(Paths.convert(resource));
-
-                results.addAllAddedMessages(convertValidationMessages(addedValidationMessages));
-                results.addAllRemovedMessages(convertValidationMessages(nonKieResourceValidationHelperMessages.remove(resource)));
-
-                nonKieResourceValidationHelpers.put(resource,
-                                                    validator);
-                nonKieResourceValidationHelperMessages.put(resource,
-                                                           addedValidationMessages);
-            }
-
             addNewResource(resource,
                            inputStream);
             buildIncrementally(results,
                                destinationPath(resource));
-
-            return results;
         }
+
+        return results;
     }
 
     private void addNewResource(final Path path,
@@ -400,36 +374,61 @@ public class Builder implements Serializable {
         addJavaClass(path);
     }
 
+    public IncrementalBuildResults deleteResource(final Path resource) {
+        checkNotNull("resource",
+                     resource);
+
+        checkAFullBuildHasBeenPerformed();
+
+        //Resource Type might have been validated "externally" (i.e. it's not covered by Kie). Clear any errors.
+        final IncrementalBuildResults results = new IncrementalBuildResults(projectGAV);
+        final BuildValidationHelper validator = getBuildValidationHelper(resource);
+        if (validator != null) {
+            nonKieResourceValidationHelpers.remove(resource);
+            results.addAllRemovedMessages(convertValidationMessages(nonKieResourceValidationHelperMessages.remove(resource)));
+        }
+
+        synchronized (kieFileSystem) {
+            removeResource(resource);
+            buildIncrementally(results,
+                               destinationPath(resource));
+        }
+
+        return results;
+    }
+
+    private void removeResource(final Path resource) {
+        kieFileSystem.delete(destinationPath(resource));
+        removeJavaClass(resource);
+    }
+
     private String destinationPath(final Path resource) {
         return resource.toUri().toString().substring(projectPrefix.length() + 1);
     }
 
     public IncrementalBuildResults updateResource(final Path resource) {
-        synchronized (kieFileSystem) {
-            return addResource(resource);
-        }
+        return addResource(resource);
     }
 
     public IncrementalBuildResults updateResource(final Path resource,
-                                                  InputStream inputStream) {
-        synchronized (kieFileSystem) {
-            return addResource(resource,
-                               inputStream);
-        }
+                                                  final InputStream inputStream) {
+        return addResource(resource,
+                           inputStream);
     }
 
     public IncrementalBuildResults applyBatchResourceChanges(final Map<org.uberfire.backend.vfs.Path, Collection<ResourceChange>> changes) {
+        checkNotNull("changes",
+                     changes);
+
+        checkAFullBuildHasBeenPerformed();
+
+        //Add all changes to KieFileSystem before executing the build
+        final List<String> changedFilesKieBuilderPaths = new ArrayList<String>();
+        final List<ValidationMessage> nonKieResourceValidatorAddedMessages = new ArrayList<ValidationMessage>();
+        final List<ValidationMessage> nonKieResourceValidatorRemovedMessages = new ArrayList<ValidationMessage>();
+        final IncrementalBuildResults results = new IncrementalBuildResults(projectGAV);
+
         synchronized (kieFileSystem) {
-            checkNotNull("changes",
-                         changes);
-
-            checkAFullBuildHasBeenPerformed();
-
-            //Add all changes to KieFileSystem before executing the build
-            final List<String> changedFilesKieBuilderPaths = new ArrayList<String>();
-            final List<ValidationMessage> nonKieResourceValidatorAddedMessages = new ArrayList<ValidationMessage>();
-            final List<ValidationMessage> nonKieResourceValidatorRemovedMessages = new ArrayList<ValidationMessage>();
-
             for (final Map.Entry<org.uberfire.backend.vfs.Path, Collection<ResourceChange>> pathCollectionEntry : changes.entrySet()) {
                 for (final ResourceChange change : pathCollectionEntry.getValue()) {
                     final ResourceChangeType type = change.getType();
@@ -452,29 +451,26 @@ public class Builder implements Serializable {
 
                             update(nonKieResourceValidatorAddedMessages,
                                    nonKieResourceValidatorRemovedMessages,
-                                   resource,
-                                   destinationPath);
+                                   resource);
 
                             break;
                         case DELETE:
                             delete(nonKieResourceValidatorRemovedMessages,
-                                   resource,
-                                   destinationPath);
+                                   resource);
                     }
                 }
             }
 
             //Perform the Incremental build and get messages from incremental build
-            final IncrementalBuildResults results = new IncrementalBuildResults(projectGAV);
             buildIncrementally(results,
                                toArray(changedFilesKieBuilderPaths));
-
-            //Copy in BuildMessages for non-KIE resources
-            results.addAllAddedMessages(convertValidationMessages(nonKieResourceValidatorAddedMessages));
-            results.addAllRemovedMessages(convertValidationMessages(nonKieResourceValidatorRemovedMessages));
-
-            return results;
         }
+
+        //Copy in BuildMessages for non-KIE resources
+        results.addAllAddedMessages(convertValidationMessages(nonKieResourceValidatorAddedMessages));
+        results.addAllRemovedMessages(convertValidationMessages(nonKieResourceValidatorRemovedMessages));
+
+        return results;
     }
 
     private String[] toArray(List<String> stringList) {
@@ -483,27 +479,9 @@ public class Builder implements Serializable {
         return stringArray;
     }
 
-    private void delete(final List<ValidationMessage> nonKieResourceValidatorRemovedMessages,
-                        final Path resource,
-                        final String destinationPath) {
-        //Resource Type might have been validated "externally" (i.e. it's not covered by Kie). Clear any errors.
-        nonKieResourceValidationHelpers.remove(resource);
-        final List<ValidationMessage> removedValidationMessages = nonKieResourceValidationHelperMessages.remove(resource);
-        if (!(removedValidationMessages == null || removedValidationMessages.isEmpty())) {
-            for (ValidationMessage validationMessage : removedValidationMessages) {
-                nonKieResourceValidatorRemovedMessages.add(validationMessage);
-            }
-        }
-
-        //The file has already been deleted so we can't check if the Path is a file or folder :(
-        kieFileSystem.delete(destinationPath);
-        removeJavaClass(resource);
-    }
-
     private void update(final List<ValidationMessage> nonKieResourceValidatorAddedMessages,
                         final List<ValidationMessage> nonKieResourceValidatorRemovedMessages,
-                        final Path resource,
-                        final String destinationPath) {
+                        final Path resource) {
         //Resource Type might require "external" validation (i.e. it's not covered by Kie)
         final BuildValidationHelper validator = getBuildValidationHelper(resource);
         if (validator != null) {
@@ -527,14 +505,22 @@ public class Builder implements Serializable {
                                                        addedValidationMessages);
         }
 
-        //Add new resource
-        final InputStream is = ioService.newInputStream(resource);
-        final BufferedInputStream bis = new BufferedInputStream(is);
-        kieFileSystem.write(destinationPath,
-                            KieServices.Factory.get().getResources().newInputStreamResource(bis));
-        addJavaClass(resource);
-        handles.put(getBaseFileName(destinationPath),
-                    Paths.convert(resource));
+        addNewResource(resource,
+                       ioService.newInputStream(resource));
+    }
+
+    private void delete(final List<ValidationMessage> nonKieResourceValidatorRemovedMessages,
+                        final Path resource) {
+        //Resource Type might have been validated "externally" (i.e. it's not covered by Kie). Clear any errors.
+        nonKieResourceValidationHelpers.remove(resource);
+        final List<ValidationMessage> removedValidationMessages = nonKieResourceValidationHelperMessages.remove(resource);
+        if (!(removedValidationMessages == null || removedValidationMessages.isEmpty())) {
+            for (ValidationMessage validationMessage : removedValidationMessages) {
+                nonKieResourceValidatorRemovedMessages.add(validationMessage);
+            }
+        }
+
+        removeResource(resource);
     }
 
     private void buildIncrementally(final IncrementalBuildResults results,
@@ -630,9 +616,7 @@ public class Builder implements Serializable {
     }
 
     public boolean isBuilt() {
-        synchronized (kieFileSystem) {
-            return kieBuilder != null;
-        }
+        return kieBuilder != null;
     }
 
     private void visitPaths(final DirectoryStream<Path> directoryStream) {

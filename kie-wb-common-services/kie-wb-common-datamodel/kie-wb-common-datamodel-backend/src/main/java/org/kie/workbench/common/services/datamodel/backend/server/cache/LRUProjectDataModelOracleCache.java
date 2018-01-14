@@ -53,7 +53,7 @@ public class LRUProjectDataModelOracleCache
         this.buildInfoService = buildInfoService;
     }
 
-    public synchronized void invalidateProjectCache(@Observes final InvalidateDMOProjectCacheEvent event) {
+    public void invalidateProjectCache(@Observes final InvalidateDMOProjectCacheEvent event) {
         PortablePreconditions.checkNotNull("event",
                                            event);
         final Path resourcePath = event.getResourcePath();
@@ -66,7 +66,7 @@ public class LRUProjectDataModelOracleCache
     }
 
     //Check the ProjectOracle for the Project has been created, otherwise create one!
-    public synchronized ProjectDataModelOracle assertProjectDataModelOracle(final KieProject project) {
+    public ProjectDataModelOracle assertProjectDataModelOracle(final KieProject project) {
         ProjectDataModelOracle projectOracle = getEntry(project);
         if (projectOracle == null) {
             projectOracle = makeProjectOracle(project);
