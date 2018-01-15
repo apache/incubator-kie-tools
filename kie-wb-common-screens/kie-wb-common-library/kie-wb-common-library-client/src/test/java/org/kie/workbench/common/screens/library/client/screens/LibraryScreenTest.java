@@ -75,6 +75,9 @@ public class LibraryScreenTest {
     private OrgUnitsMetricsScreen orgUnitsMetricsScreen;
 
     @Mock
+    private OrgUnitsMetricsScreen.View orgUnitsMetricsView;
+
+    @Mock
     private ContributorsListPresenter contributorsListPresenter;
 
     @Mock
@@ -102,6 +105,7 @@ public class LibraryScreenTest {
         doReturn(importRepositoryPopUpPresenter).when(importRepositoryPopUpPresenters).get();
         doReturn(editContributorsPopUpPresenter).when(editContributorsPopUpPresenters).get();
         doReturn(deleteOrganizationalUnitPopUpPresenter).when(deleteOrganizationalUnitPopUpPresenters).get();
+        doReturn(orgUnitsMetricsView).when(orgUnitsMetricsScreen).getView();
 
         doReturn(true).when(projectController).canCreateProjects();
         doReturn(true).when(organizationalUnitController).canUpdateOrgUnit(any());
@@ -245,5 +249,12 @@ public class LibraryScreenTest {
                                                                                     organizationalUnit));
 
         verify(view).setContributorsCount(contributors.size());
+    }
+
+    @Test
+    public void showMetrics() {
+        libraryScreen.showMetrics();
+        verify(orgUnitsMetricsScreen).refresh();
+        verify(view).updateContent(any());
     }
 }

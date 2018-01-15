@@ -127,6 +127,10 @@ public class OrgUnitsMetricsScreen {
         displayerCoordinator.drawAll();
     }
 
+    public void refresh() {
+        displayerCoordinator.redrawAll();
+    }
+
     public void onClose() {
         displayerCoordinator.closeAll();
         view.clear();

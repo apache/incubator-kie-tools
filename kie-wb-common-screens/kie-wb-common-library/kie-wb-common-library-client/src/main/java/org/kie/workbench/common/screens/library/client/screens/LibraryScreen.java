@@ -163,6 +163,7 @@ public class LibraryScreen {
     }
 
     public void showMetrics() {
+        orgUnitsMetricsScreen.refresh();
         view.updateContent(orgUnitsMetricsScreen.getView().getElement());
     }
 
