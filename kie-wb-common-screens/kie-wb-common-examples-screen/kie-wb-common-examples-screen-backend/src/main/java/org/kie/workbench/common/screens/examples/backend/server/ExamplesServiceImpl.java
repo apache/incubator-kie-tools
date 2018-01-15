@@ -81,6 +81,7 @@ import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.rpc.SessionInfo;
 
 import static org.guvnor.structure.repositories.EnvironmentParameters.SCHEME;
+import static org.guvnor.structure.repositories.EnvironmentParameters.MIRROR;
 import static org.guvnor.structure.server.config.ConfigType.REPOSITORY;
 
 @Service
@@ -269,6 +270,8 @@ public class ExamplesServiceImpl implements ExamplesService {
                     "git");
                 put("replaceIfExists",
                     true);
+                put(MIRROR,
+                    false);
             }};
 
             final ConfigGroup repositoryConfig = configurationFactory.newConfigGroup(REPOSITORY,

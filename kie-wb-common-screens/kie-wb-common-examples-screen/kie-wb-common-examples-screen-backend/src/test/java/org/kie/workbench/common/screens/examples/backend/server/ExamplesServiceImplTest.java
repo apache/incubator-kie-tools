@@ -31,9 +31,11 @@ import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.structure.backend.config.ConfigurationFactoryImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
+import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
@@ -74,7 +76,7 @@ public class ExamplesServiceImplTest {
     private IOService ioService;
 
     @Mock
-    private ConfigurationFactory configurationFactory;
+    private ConfigurationFactoryImpl configurationFactory;
 
     @Mock
     private RepositoryFactory repositoryFactory;
@@ -552,10 +554,16 @@ public class ExamplesServiceImplTest {
         ExampleRepository playgroundRepository = new ExampleRepository("file:///home/user/folder/.kie-wb-playground");
         service.setPlaygroundRepository(playgroundRepository);
 
-        ConfigGroup configGroup = mock(ConfigGroup.class);
+        ConfigGroup configGroup = new ConfigGroup();
         when(configurationFactory.newConfigGroup(any(ConfigType.class),
                                                  anyString(),
                                                  anyString())).thenReturn(configGroup);
+        doCallRealMethod().when(configurationFactory).newConfigItem(anyString(),
+                                                                    anyBoolean());
+        doCallRealMethod().when(configurationFactory).newConfigItem(anyString(),
+                                                                    anyString());
+        doCallRealMethod().when(configurationFactory).newConfigItem(anyString(),
+                                                                    any(Object.class));
 
         Repository repository = mock(Repository.class);
         when(repositoryFactory.newRepository(configGroup)).thenReturn(repository);
@@ -564,6 +572,8 @@ public class ExamplesServiceImplTest {
 
         assertEquals(repository,
                      result);
+        assertEquals(false,
+                     configGroup.getConfigItem(EnvironmentParameters.MIRROR).getValue());
 
         verify(repositoryFactory,
                times(1)).newRepository(configGroup);
