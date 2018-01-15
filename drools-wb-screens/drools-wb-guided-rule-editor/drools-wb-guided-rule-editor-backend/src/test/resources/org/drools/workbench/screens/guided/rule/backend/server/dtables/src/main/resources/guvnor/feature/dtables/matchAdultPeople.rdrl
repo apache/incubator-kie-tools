@@ -1,0 +1,10 @@
+package guvnor.feature.dtables;
+
+import java.lang.Number;
+
+rule "matchAdultPeople"
+	dialect "mvel"
+	when
+		$p : Person( age > 18 )
+	then
+end

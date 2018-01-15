@@ -1,0 +1,12 @@
+package guvnor.feature.dtables;
+
+import java.lang.Number;
+
+rule "sendElectionInvitation" extends "matchAdultPeople"
+	dialect "mvel"
+	when
+	then
+		Message fact0 = new Message();
+		fact0.setMessage( $p.name + ": please vote for your candidate" );
+		insert( fact0 );
+end
