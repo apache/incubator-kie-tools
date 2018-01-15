@@ -74,6 +74,9 @@ public class DateRangePickerOptions {
     public native void setTimePicker24Hour(Boolean timePicker24Hour);
 
     @JsProperty
+    public native void setSingleDatePicker(Boolean singleDatePicker);
+
+    @JsProperty
     protected native void setLocale(Object locale);
 
     @JsProperty(name = "locale.format")
