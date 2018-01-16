@@ -120,9 +120,10 @@ public class LibraryToolbarView implements LibraryToolbarPresenter.View,
         return ts.format(LibraryConstants.NotEnoughPermissionsToAccessLibrary);
     }
 
-    private Option createOption(String ou) {
+    Option createOption(String ou) {
         Option option = (Option) document.createElement("option");
         option.setText(ou);
+        option.setValue(ou);
         return option;
     }
 }
