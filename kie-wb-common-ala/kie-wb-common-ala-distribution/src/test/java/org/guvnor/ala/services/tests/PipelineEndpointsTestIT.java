@@ -17,7 +17,6 @@
 package org.guvnor.ala.services.tests;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +28,7 @@ import org.apache.commons.io.FileUtils;
 import org.guvnor.ala.build.maven.config.impl.MavenBuildConfigImpl;
 import org.guvnor.ala.build.maven.config.impl.MavenBuildExecConfigImpl;
 import org.guvnor.ala.build.maven.config.impl.MavenProjectConfigImpl;
+import org.guvnor.ala.build.maven.executor.MavenTestUtils;
 import org.guvnor.ala.docker.config.DockerProviderConfig;
 import org.guvnor.ala.docker.config.impl.ContextAwareDockerProvisioningConfig;
 import org.guvnor.ala.docker.config.impl.ContextAwareDockerRuntimeExecConfig;
@@ -58,9 +58,12 @@ public class PipelineEndpointsTestIT {
 
     private File tempPath;
 
+    private String gitUrl;
+
     @Before
-    public void setUp() throws IOException {
+    public void setUp() throws Exception {
         tempPath = Files.createTempDirectory("xxx").toFile();
+        gitUrl = MavenTestUtils.createGitRepoWithPom(tempPath);
     }
 
     @After
@@ -138,9 +141,7 @@ public class PipelineEndpointsTestIT {
         input.put("out-dir",
                   tempPath.getAbsolutePath());
         input.put("origin",
-                  "https://github.com/kiegroup/drools-workshop");
-        input.put("project-dir",
-                  "drools-webapp-example");
+                  gitUrl);
 
         proxyPipeline.runPipeline("mypipe",
                                   input,

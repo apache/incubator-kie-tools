@@ -16,12 +16,10 @@
 package org.guvnor.ala.wildfly.executor.tests;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.arquillian.cube.CubeController;
 import org.arquillian.cube.HostIp;
 import org.arquillian.cube.requirement.ArquillianConditionalRunner;
 import org.guvnor.ala.build.maven.config.MavenBuildConfig;
@@ -30,6 +28,7 @@ import org.guvnor.ala.build.maven.config.MavenProjectConfig;
 import org.guvnor.ala.build.maven.executor.MavenBuildConfigExecutor;
 import org.guvnor.ala.build.maven.executor.MavenBuildExecConfigExecutor;
 import org.guvnor.ala.build.maven.executor.MavenProjectConfigExecutor;
+import org.guvnor.ala.build.maven.executor.MavenTestUtils;
 import org.guvnor.ala.pipeline.Input;
 import org.guvnor.ala.pipeline.Pipeline;
 import org.guvnor.ala.pipeline.PipelineFactory;
@@ -52,7 +51,6 @@ import org.guvnor.ala.wildfly.executor.tests.requirement.RequiresNotWindows;
 import org.guvnor.ala.wildfly.model.WildflyRuntime;
 import org.guvnor.ala.wildfly.service.WildflyRuntimeManager;
 import org.jboss.arquillian.junit.InSequence;
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -71,22 +69,16 @@ import static org.junit.Assert.*;
 @RequiresNotWindows
 public class WildflyExecutorTest {
 
-    private static final String CONTAINER = "swarm";
     private static File tempPath;
+    private static String gitUrl;
 
     @HostIp
     private String ip;
 
-    @ArquillianResource
-    private CubeController cc;
-
     @BeforeClass
-    public static void setUp() {
-        try {
-            tempPath = Files.createTempDirectory("xxx").toFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static void setUp() throws Exception {
+        tempPath = Files.createTempDirectory("xxx").toFile();
+        gitUrl = MavenTestUtils.createGitRepoWithPom(tempPath);
     }
 
     @AfterClass
@@ -96,13 +88,6 @@ public class WildflyExecutorTest {
 
     @Test
     @InSequence(1)
-    public void shouldBeAbleToCreateAndStartTest() {
-        cc.create(CONTAINER);
-        cc.start(CONTAINER);
-    }
-
-    @Test
-    @InSequence(2)
     public void testAPI() {
         final SourceRegistry sourceRegistry = new InMemorySourceRegistry();
         final BuildRegistry buildRegistry = new InMemoryBuildRegistry();
@@ -150,9 +135,7 @@ public class WildflyExecutorTest {
                                  put("out-dir",
                                      tempPath.getAbsolutePath());
                                  put("origin",
-                                     "https://github.com/salaboy/drools-workshop");
-                                 put("project-dir",
-                                     "drools-webapp-example");
+                                     gitUrl);
                                  put("provider-name",
                                      "wildlfy-test");
                                  put("wildfly-user",
@@ -231,7 +214,7 @@ public class WildflyExecutorTest {
     }
 
     @Test
-    @InSequence(3)
+    @InSequence(2)
     public void testRedeploy() {
         final SourceRegistry sourceRegistry = new InMemorySourceRegistry();
         final BuildRegistry buildRegistry = new InMemoryBuildRegistry();
@@ -275,9 +258,7 @@ public class WildflyExecutorTest {
                                  put("branch",
                                      "master");
                                  put("origin",
-                                     "https://github.com/salaboy/drools-workshop");
-                                 put("project-dir",
-                                     "drools-webapp-example");
+                                     gitUrl);
                                  put("provider-name",
                                      "wildlfy-test");
                                  put("wildfly-user",
@@ -354,10 +335,4 @@ public class WildflyExecutorTest {
         wildflyAccessInterface.dispose();
     }
 
-    @Test
-    @InSequence(4)
-    public void shouldBeAbleToStopAndDestroyTest() {
-        cc.stop(CONTAINER);
-        cc.destroy(CONTAINER);
-    }
 }

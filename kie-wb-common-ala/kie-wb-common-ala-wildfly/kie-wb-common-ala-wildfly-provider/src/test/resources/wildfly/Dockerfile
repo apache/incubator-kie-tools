@@ -1,4 +1,4 @@
-FROM jboss/wildfly:10.0.0.Final
+FROM jboss/wildfly:10.1.0.Final
 EXPOSE 8080
 EXPOSE 9990
 RUN /opt/jboss/wildfly/bin/add-user.sh admin Admin#70365 --silent

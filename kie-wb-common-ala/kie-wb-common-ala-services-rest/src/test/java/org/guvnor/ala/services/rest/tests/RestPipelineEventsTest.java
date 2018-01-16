@@ -1,7 +1,6 @@
 package org.guvnor.ala.services.rest.tests;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +15,7 @@ import org.guvnor.ala.build.maven.config.impl.MavenProjectConfigImpl;
 import org.guvnor.ala.build.maven.executor.MavenBuildConfigExecutor;
 import org.guvnor.ala.build.maven.executor.MavenBuildExecConfigExecutor;
 import org.guvnor.ala.build.maven.executor.MavenProjectConfigExecutor;
+import org.guvnor.ala.build.maven.executor.MavenTestUtils;
 import org.guvnor.ala.config.BuildConfig;
 import org.guvnor.ala.config.ProjectConfig;
 import org.guvnor.ala.config.ProviderConfig;
@@ -90,6 +90,8 @@ public class RestPipelineEventsTest {
     private PipelineService pipelineService;
 
     private File tempPath;
+
+    private String gitUrl;
 
     @Inject
     private MockPipelineEventListener listener;
@@ -169,8 +171,9 @@ public class RestPipelineEventsTest {
     }
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() throws Exception {
         tempPath = Files.createTempDirectory("zzz").toFile();
+        gitUrl = MavenTestUtils.createGitRepoWithPom(tempPath);
     }
 
     @After
@@ -201,9 +204,7 @@ public class RestPipelineEventsTest {
         input.put("out-dir",
                   tempPath.getAbsolutePath());
         input.put("origin",
-                  "https://github.com/salaboy/drools-workshop");
-        input.put("project-dir",
-                  "drools-webapp-example");
+                  gitUrl);
 
         pipelineService.runPipeline("mypipe",
                                     input,

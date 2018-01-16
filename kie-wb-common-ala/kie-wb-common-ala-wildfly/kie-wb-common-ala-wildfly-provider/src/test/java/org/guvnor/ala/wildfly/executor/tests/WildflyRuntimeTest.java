@@ -17,11 +17,9 @@
 package org.guvnor.ala.wildfly.executor.tests;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
@@ -29,23 +27,19 @@ import java.util.Properties;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.project.MavenProject;
 import org.appformer.maven.integration.embedder.MavenProjectLoader;
-import org.arquillian.cube.CubeController;
 import org.arquillian.cube.HostIp;
 import org.arquillian.cube.requirement.ArquillianConditionalRunner;
+import org.guvnor.ala.build.maven.executor.MavenTestUtils;
 import org.guvnor.ala.build.maven.model.impl.MavenProjectImpl;
 import org.guvnor.ala.build.maven.util.MavenBuildExecutor;
 import org.guvnor.ala.build.maven.util.RepositoryVisitor;
 import org.guvnor.ala.registry.inmemory.InMemorySourceRegistry;
 import org.guvnor.ala.source.Source;
-import org.guvnor.ala.source.git.GitHub;
-import org.guvnor.ala.source.git.GitRepository;
 import org.guvnor.ala.source.git.config.impl.GitConfigImpl;
 import org.guvnor.ala.source.git.executor.GitConfigExecutor;
 import org.guvnor.ala.wildfly.access.WildflyAppState;
 import org.guvnor.ala.wildfly.access.WildflyClient;
 import org.guvnor.ala.wildfly.executor.tests.requirement.RequiresNotWindows;
-import org.jboss.arquillian.junit.InSequence;
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -64,22 +58,16 @@ import static org.junit.Assert.*;
 @RequiresNotWindows
 public class WildflyRuntimeTest {
 
-    private static final String CONTAINER = "swarm";
     private static File tempPath;
+    private static String gitUrl;
 
     @HostIp
     private String ip;
 
-    @ArquillianResource
-    private CubeController cc;
-
     @BeforeClass
-    public static void setUp() {
-        try {
-            tempPath = Files.createTempDirectory("ooo").toFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static void setUp() throws Exception {
+        tempPath = Files.createTempDirectory("ooo").toFile();
+        gitUrl = MavenTestUtils.createGitRepoWithPom(tempPath);
     }
 
     @AfterClass
@@ -88,26 +76,10 @@ public class WildflyRuntimeTest {
     }
 
     @Test
-    @InSequence(1)
-    public void shouldBeAbleToCreateAndStartTest() {
-        cc.create(CONTAINER);
-        cc.start(CONTAINER);
-    }
-
-    @Test
-    @InSequence(2)
     public void waitForAppBuildTest() {
-        final GitHub gitHub = new GitHub();
-        final GitRepository repository = (GitRepository) gitHub.getRepository("salaboy/drools-workshop",
-                                                                              new HashMap<String, String>() {
-                                                                                  {
-                                                                                      put("out-dir",
-                                                                                          tempPath.getAbsolutePath());
-                                                                                  }
-                                                                              });
         final Optional<Source> _source = new GitConfigExecutor(new InMemorySourceRegistry()).apply(new GitConfigImpl(tempPath.getAbsolutePath(),
                                                                                                                      "master",
-                                                                                                                     "https://github.com/salaboy/drools-workshop",
+                                                                                                                     gitUrl,
                                                                                                                      "drools-workshop-build",
                                                                                                                      "true"));
 
@@ -120,7 +92,7 @@ public class WildflyRuntimeTest {
         Properties properties = new Properties();
         properties.setProperty("failIfNoTests",
                                "false");
-        final Path projectRoot = source.getPath().resolve("drools-webapp-example");
+        final Path projectRoot = source.getPath();
         final InputStream pomStream = org.uberfire.java.nio.file.Files.newInputStream(projectRoot.resolve("pom.xml"));
         final MavenProject project = MavenProjectLoader.parseMavenPom(pomStream);
         RepositoryVisitor repositoryVisitor = new RepositoryVisitor(projectRoot,
@@ -131,7 +103,7 @@ public class WildflyRuntimeTest {
                                                                                                 project.getName(),
                                                                                                 expectedBinary,
                                                                                                 source.getPath(),
-                                                                                                source.getPath().resolve("drools-webapp-example"),
+                                                                                                source.getPath(),
                                                                                                 source.getPath().resolve("target").resolve(expectedBinary).toAbsolutePath(),
                                                                                                 repositoryVisitor.getRoot().getAbsolutePath(),
                                                                                                 null);
@@ -175,10 +147,4 @@ public class WildflyRuntimeTest {
         assertTrue(appState.getState().equals(RUNNING));
     }
 
-    @Test
-    @InSequence(3)
-    public void shouldBeAbleToStopAndDestroyTest() {
-        cc.stop(CONTAINER);
-        cc.destroy(CONTAINER);
-    }
 }

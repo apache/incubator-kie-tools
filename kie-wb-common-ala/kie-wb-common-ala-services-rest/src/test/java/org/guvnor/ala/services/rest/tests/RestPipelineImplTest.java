@@ -2,7 +2,7 @@
 package org.guvnor.ala.services.rest.tests;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +20,7 @@ import org.guvnor.ala.build.maven.config.impl.MavenProjectConfigImpl;
 import org.guvnor.ala.build.maven.executor.MavenBuildConfigExecutor;
 import org.guvnor.ala.build.maven.executor.MavenBuildExecConfigExecutor;
 import org.guvnor.ala.build.maven.executor.MavenProjectConfigExecutor;
+import org.guvnor.ala.build.maven.executor.MavenTestUtils;
 import org.guvnor.ala.config.BuildConfig;
 import org.guvnor.ala.config.ProjectConfig;
 import org.guvnor.ala.config.ProviderConfig;
@@ -109,6 +110,8 @@ public class RestPipelineImplTest {
 
     private File tempPath;
 
+    private String gitUrl;
+
     @Inject
     private MockPipelineEventListener listener;
 
@@ -194,8 +197,10 @@ public class RestPipelineImplTest {
     }
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() throws Exception {
         tempPath = Files.createTempDirectory("xxx").toFile();
+        final InputStream pom = Thread.currentThread().getContextClassLoader().getResourceAsStream("docker-test-pom.xml");
+        gitUrl = MavenTestUtils.createGitRepoWithPom(tempPath, pom);
     }
 
     @After
@@ -329,9 +334,7 @@ public class RestPipelineImplTest {
         input.put("out-dir",
                   tempPath.getAbsolutePath());
         input.put("origin",
-                  "https://github.com/kiegroup/drools-workshop");
-        input.put("project-dir",
-                  "drools-webapp-example");
+                  gitUrl);
 
         String pipelineExecutionId = pipelineService.runPipeline("mypipe",
                                                                  input,

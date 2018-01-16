@@ -25,7 +25,6 @@ import java.io.PipedOutputStream;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
@@ -39,15 +38,13 @@ import org.guvnor.ala.build.maven.util.MavenBuildExecutor;
 import org.guvnor.ala.build.maven.util.RepositoryVisitor;
 import org.guvnor.ala.registry.inmemory.InMemorySourceRegistry;
 import org.guvnor.ala.source.Source;
-import org.guvnor.ala.source.git.GitHub;
 import org.guvnor.ala.source.git.config.impl.GitConfigImpl;
 import org.guvnor.ala.source.git.executor.GitConfigExecutor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.uberfire.java.nio.file.InvalidPathException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Maven Compilation output parsing to evaluate the process output
@@ -59,9 +56,12 @@ public class MavenCliOutputTest {
 
     private File tempPath;
 
+    private String gitUrl;
+
     @Before
-    public void setUp() throws IOException {
+    public void setUp() throws Exception {
         tempPath = Files.createTempDirectory("zzz").toFile();
+        gitUrl = MavenTestUtils.createGitRepoWithPom(tempPath);
     }
 
     @After
@@ -71,18 +71,9 @@ public class MavenCliOutputTest {
 
     @Test
     public void buildAppAndWaitForMavenOutputTest() throws IOException {
-        final GitHub gitHub = new GitHub();
-        gitHub.getRepository("salaboy/drools-workshop",
-                             new HashMap<String, String>() {
-                                 {
-                                     put("out-dir",
-                                         tempPath.getAbsolutePath());
-                                 }
-                             });
-
         final Optional<Source> _source = new GitConfigExecutor(new InMemorySourceRegistry()).apply(new GitConfigImpl(tempPath.getAbsolutePath(),
                                                                                                                      "master",
-                                                                                                                     "https://github.com/kiegroup/drools-workshop",
+                                                                                                                     gitUrl,
                                                                                                                      "drools-workshop",
                                                                                                                      "true"));
 
@@ -135,14 +126,14 @@ public class MavenCliOutputTest {
      */
     private void buildMavenProject(Source source,
                                    PrintStream out,
-                                   PrintStream err) throws org.uberfire.java.nio.IOException, InvalidPathException, SecurityException, UnsupportedOperationException, IllegalArgumentException {
+                                   PrintStream err) throws org.uberfire.java.nio.IOException, SecurityException, UnsupportedOperationException, IllegalArgumentException {
         List<String> goals = new ArrayList<>();
         goals.add("package");
         Properties p = new Properties();
         p.setProperty("failIfNoTests",
                       "false");
 
-        final InputStream pomStream = org.uberfire.java.nio.file.Files.newInputStream(source.getPath().resolve("drools-webapp-example").resolve("pom.xml"));
+        final InputStream pomStream = org.uberfire.java.nio.file.Files.newInputStream(source.getPath().resolve("pom.xml"));
         MavenProject project = MavenProjectLoader.parseMavenPom(pomStream);
 
         final String expectedBinary = project.getArtifact().getArtifactId() + "-" + project.getArtifact().getVersion() + "." + project.getArtifact().getType();
@@ -151,7 +142,7 @@ public class MavenCliOutputTest {
                                                                                                 project.getName(),
                                                                                                 expectedBinary,
                                                                                                 source.getPath(),
-                                                                                                source.getPath().resolve("drools-webapp-example"),
+                                                                                                source.getPath(),
                                                                                                 source.getPath().resolve("target").resolve(expectedBinary).toAbsolutePath(),
                                                                                                 null,
                                                                                                 null);

@@ -17,7 +17,7 @@
 package org.guvnor.ala.docker.executor;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.List;
 
@@ -29,6 +29,7 @@ import org.guvnor.ala.build.maven.config.impl.MavenProjectConfigImpl;
 import org.guvnor.ala.build.maven.executor.MavenBuildConfigExecutor;
 import org.guvnor.ala.build.maven.executor.MavenBuildExecConfigExecutor;
 import org.guvnor.ala.build.maven.executor.MavenProjectConfigExecutor;
+import org.guvnor.ala.build.maven.executor.MavenTestUtils;
 import org.guvnor.ala.docker.access.DockerAccessInterface;
 import org.guvnor.ala.docker.access.impl.DockerAccessInterfaceImpl;
 import org.guvnor.ala.docker.config.DockerProviderConfig;
@@ -68,14 +69,18 @@ public class DockerExecutorTest {
 
     private File tempPath;
 
+    private String gitUrl;
+
     @BeforeClass
     public static void beforeClass() {
         Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
     }
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() throws Exception {
         tempPath = Files.createTempDirectory("xxx").toFile();
+        final InputStream pom = Thread.currentThread().getContextClassLoader().getResourceAsStream("docker-test-pom.xml");
+        gitUrl = MavenTestUtils.createGitRepoWithPom(tempPath, pom);
     }
 
     @After
@@ -133,9 +138,7 @@ public class DockerExecutorTest {
                                  put("out-dir",
                                      tempPath.getAbsolutePath());
                                  put("origin",
-                                     "https://github.com/kiegroup/drools-workshop");
-                                 put("project-dir",
-                                     "drools-webapp-example");
+                                     gitUrl);
                              }
                          },
                          pipe,

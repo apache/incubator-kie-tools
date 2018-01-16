@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Files;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.google.common.collect.MapDifference;
@@ -30,9 +30,10 @@ import org.apache.commons.io.FileUtils;
 import org.apache.maven.project.MavenProject;
 import org.appformer.maven.integration.embedder.MavenProjectLoader;
 import org.guvnor.ala.build.maven.util.RepositoryVisitor;
+import org.guvnor.ala.registry.inmemory.InMemorySourceRegistry;
 import org.guvnor.ala.source.Source;
-import org.guvnor.ala.source.git.GitHub;
-import org.guvnor.ala.source.git.GitRepository;
+import org.guvnor.ala.source.git.config.impl.GitConfigImpl;
+import org.guvnor.ala.source.git.executor.GitConfigExecutor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,9 +47,16 @@ public class RepositoryVisitorTest {
 
     private File tempPath;
 
+    private String gitUrl;
+
     @Before
-    public void setUp() throws IOException {
+    public void setUp() throws Exception {
         tempPath = Files.createTempDirectory("yyy").toFile();
+        File repo = new File(tempPath, "repo");
+        repo.mkdirs();
+        File iml = new File(repo, "demo.iml");
+        iml.createNewFile();
+        gitUrl = MavenTestUtils.createGitRepoWithPom(tempPath, iml);
     }
 
     @After
@@ -59,39 +67,40 @@ public class RepositoryVisitorTest {
     @Test
     public void repositoryVisitorDiffDeletedTest() throws IOException {
         final IOServiceNio2WrapperImpl ioService = new IOServiceNio2WrapperImpl();
-        final GitHub gitHub = new GitHub();
-        final GitRepository repository = (GitRepository) gitHub.getRepository("mbarkley/appformer-playground",
-                                                                              new HashMap<String, String>() {
-                                                                                  {
-                                                                                      put("out-dir",
-                                                                                          tempPath.getAbsolutePath());
-                                                                                  }
-                                                                              });
-        final Source source = repository.getSource("master");
 
-        final InputStream pomStream = org.uberfire.java.nio.file.Files.newInputStream(source.getPath().resolve("users-new").resolve("pom.xml"));
+        final Optional<Source> sourceOptional = new GitConfigExecutor(new InMemorySourceRegistry()).apply(new GitConfigImpl(tempPath.getAbsolutePath(),
+                                                                                                                    "master",
+                                                                                                                    gitUrl,
+                                                                                                                    "users-new",
+                                                                                                                    "true"));
+
+        assertTrue(sourceOptional.isPresent());
+
+        final Source source = sourceOptional.get();
+
+        final InputStream pomStream = org.uberfire.java.nio.file.Files.newInputStream(source.getPath().resolve("pom.xml"));
         final MavenProject project = MavenProjectLoader.parseMavenPom(pomStream);
 
-        RepositoryVisitor repositoryVisitor = new RepositoryVisitor(source.getPath().resolve("users-new"),
+        RepositoryVisitor repositoryVisitor = new RepositoryVisitor(source.getPath(),
                                                                     project.getName());
 
         System.out.println("Root: " + repositoryVisitor.getRoot().getAbsolutePath());
 
         Map<String, String> identityHash = repositoryVisitor.getIdentityHash();
 
-        final URI originRepo = URI.create("git://" + repository.getName());
+        final URI originRepo = URI.create("git://users-new");
 
         final FileSystem fs = FileSystems.getFileSystem(originRepo);
 
         ioService.startBatch(fs);
-        ioService.write(fs.getPath("/users-new/file.txt"),
+        ioService.write(fs.getPath("/file.txt"),
                         "temp");
-        ioService.write(fs.getPath("/users-new/pom.xml"),
+        ioService.write(fs.getPath("/pom.xml"),
                         "hi there" + UUID.randomUUID().toString());
         ioService.endBatch();
-        ioService.delete(source.getPath().resolve("users-new").resolve("demo.iml"));
+        ioService.delete(source.getPath().resolve("demo.iml"));
 
-        RepositoryVisitor newRepositoryVisitor = new RepositoryVisitor(source.getPath().resolve("users-new"),
+        RepositoryVisitor newRepositoryVisitor = new RepositoryVisitor(source.getPath(),
                                                                        repositoryVisitor.getRoot().getAbsolutePath().trim(),
                                                                        false);
 
@@ -108,7 +117,7 @@ public class RepositoryVisitorTest {
         }
         assertEquals(1,
                      entriesDiffering.size());
-        assertNotNull(entriesDiffering.get("/users-new/pom.xml"));
+        assertNotNull(entriesDiffering.get("/pom.xml"));
 
         Map<String, String> deletedFiles = difference.entriesOnlyOnLeft();
         System.out.println(" Size of Deleted Files: " + deletedFiles.size());
@@ -117,7 +126,7 @@ public class RepositoryVisitorTest {
         }
         assertEquals(1,
                      deletedFiles.size());
-        assertNotNull(deletedFiles.get("/users-new/demo.iml"));
+        assertNotNull(deletedFiles.get("/demo.iml"));
         Map<String, String> addedFiles = difference.entriesOnlyOnRight();
         System.out.println(" Size of added Files: " + addedFiles.size());
         for (String key : addedFiles.keySet()) {
@@ -125,6 +134,6 @@ public class RepositoryVisitorTest {
         }
         assertEquals(1,
                      addedFiles.size());
-        assertNotNull(addedFiles.get("/users-new/file.txt"));
+        assertNotNull(addedFiles.get("/file.txt"));
     }
 }

@@ -16,7 +16,6 @@
 package org.guvnor.ala.build.maven.executor;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
@@ -53,9 +52,12 @@ public class MavenProjectConfigExecutorTest {
 
     private File tempPath;
 
+    private String gitUrl;
+
     @Before
-    public void setUp() throws IOException {
+    public void setUp() throws Exception {
         tempPath = Files.createTempDirectory("yyy").toFile();
+        gitUrl = MavenTestUtils.createGitRepoWithPom(tempPath);
     }
 
     @After
@@ -95,9 +97,7 @@ public class MavenProjectConfigExecutorTest {
                                  put("out-dir",
                                      tempPath.getAbsolutePath());
                                  put("origin",
-                                     "https://github.com/kiegroup/drools-workshop");
-                                 put("project-dir",
-                                     "drools-webapp-example");
+                                     gitUrl);
                              }
                          },
                          pipe,
@@ -126,8 +126,6 @@ public class MavenProjectConfigExecutorTest {
                                      "drools-workshop-pipe");
                                  put("branch",
                                      "master");
-                                 put("project-dir",
-                                     "drools-webapp-example");
                              }
                          },
                          pipe,
@@ -179,9 +177,7 @@ public class MavenProjectConfigExecutorTest {
                                  put("out-dir",
                                      tempPath.getAbsolutePath());
                                  put("origin",
-                                     "https://github.com/kiegroup/drools-workshop");
-                                 put("project-dir",
-                                     "drools-webapp-example");
+                                     gitUrl);
                              }
                          },
                          pipe,
@@ -210,8 +206,6 @@ public class MavenProjectConfigExecutorTest {
                                      "drools-workshop-pipe2");
                                  put("branch",
                                      "master");
-                                 put("project-dir",
-                                     "drools-webapp-example");
                              }
                          },
                          pipe,

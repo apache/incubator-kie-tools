@@ -5,7 +5,7 @@
     http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
     <extension qualifier="docker">
         
-        <property name="autoStartContainers">[none]</property>
+        <property name="clean">true</property>
         <property name="serverVersion">1.22</property>
         <property name="definitionFormat">CUBE</property>
         <property name="dockerContainers">
@@ -16,10 +16,11 @@
                 remove: true
               exposedPorts: [8080/tcp, 9990/tcp]
               await:
-                   strategy: polling
-                   sleepPollingTime: 5 s
-                   iterations: 5
-                   type: ping
+                   strategy: http
+                   responseCode: 200
+                   url: http://localhost:8080
+                   sleepPollingTime: 1 s
+                   iterations: 30
               portBindings: [8080/tcp, 9990/tcp]
         </property>
     </extension>
