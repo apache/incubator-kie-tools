@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,12 +25,11 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.org.omg.spec.CMMN_20151109_DC.Point;
 
-
 /**
  * <p>Java class for Edge complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="Edge"&gt;
  *   &lt;complexContent&gt;
@@ -43,40 +42,35 @@ import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.org.omg.spec.CMMN
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Edge", propOrder = {
-    "waypoint"
+        "waypoint"
 })
 public abstract class Edge
-    extends DiagramElement
-{
+        extends DiagramElement {
 
     protected List<Point> waypoint;
 
     /**
      * Gets the value of the waypoint property.
-     * 
+     * <p>
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the waypoint property.
-     * 
+     * <p>
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getWaypoint().add(newItem);
      * </pre>
-     * 
-     * 
+     * <p>
+     * <p>
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link Point }
-     * 
-     * 
      */
     public List<Point> getWaypoint() {
         if (waypoint == null) {
@@ -84,5 +78,4 @@ public abstract class Edge
         }
         return this.waypoint;
     }
-
 }

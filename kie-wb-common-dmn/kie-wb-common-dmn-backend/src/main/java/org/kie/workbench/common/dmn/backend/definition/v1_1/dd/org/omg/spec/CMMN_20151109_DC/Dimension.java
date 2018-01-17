@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,14 +21,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * Dimension specifies two lengths (width and height) along the x and y axes in some x-y coordinate system.
- * 
+ * <p>
  * <p>Java class for Dimension complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="Dimension"&gt;
  *   &lt;complexContent&gt;
@@ -39,8 +38,6 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Dimension", namespace = "http://www.omg.org/spec/CMMN/20151109/DC")
@@ -53,7 +50,6 @@ public class Dimension {
 
     /**
      * Gets the value of the width property.
-     * 
      */
     public double getWidth() {
         return width;
@@ -61,7 +57,6 @@ public class Dimension {
 
     /**
      * Sets the value of the width property.
-     * 
      */
     public void setWidth(double value) {
         this.width = value;
@@ -69,7 +64,6 @@ public class Dimension {
 
     /**
      * Gets the value of the height property.
-     * 
      */
     public double getHeight() {
         return height;
@@ -77,10 +71,8 @@ public class Dimension {
 
     /**
      * Sets the value of the height property.
-     * 
      */
     public void setHeight(double value) {
         this.height = value;
     }
-
 }

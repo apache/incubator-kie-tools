@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,15 +15,6 @@
  */
 
 package org.kie.workbench.common.dmn.backend;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -104,6 +95,15 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.commons.uuid.UUID;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DMNMarshallerTest {
@@ -247,7 +247,7 @@ public class DMNMarshallerTest {
         // round trip test
         roundTripUnmarshalThenMarshalUnmarshal(this.getClass().getResourceAsStream("/diamond.dmn"),
                                                this::checkDiamongGraph);
-        
+
         // additionally, check the marshalled is still DMN executable as expected
 
         DMNMarshaller m = new DMNMarshaller(new XMLEncoderDiagramMetadataMarshaller(),
@@ -279,38 +279,38 @@ public class DMNMarshallerTest {
         DMNContext result = dmnResult.getContext();
         assertEquals("Hello, John Doe.",
                      result.get("My Decision"));
-        
+
         // additionally, check DMN DD/DI for version 1.1
-        
-        org.kie.dmn.api.marshalling.v1_1.DMNMarshaller dmnMarshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList(new DDExtensionsRegister()));        
+
+        org.kie.dmn.api.marshalling.v1_1.DMNMarshaller dmnMarshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList(new DDExtensionsRegister()));
         Definitions definitions = dmnMarshaller.unmarshal(mString);
-        
+
         assertNotNull(definitions.getExtensionElements());
         assertNotNull(definitions.getExtensionElements().getAny());
         assertEquals(1, definitions.getExtensionElements().getAny().size());
         org.kie.workbench.common.dmn.backend.definition.v1_1.dd.DMNDiagram ddRoot = (org.kie.workbench.common.dmn.backend.definition.v1_1.dd.DMNDiagram) definitions.getExtensionElements().getAny().get(0);
-        
+
         DMNShape myname = findShapeByDMNI(ddRoot, "_4cd17e52-6253-41d6-820d-5824bf5197f3");
         assertBounds(500, 500, 100, 50, myname.getBounds());
         assertColor(255, 255, 255, myname.getBgColor());
         assertColor(0, 0, 0, myname.getBorderColor());
         assertEquals(0.5, myname.getBorderSize().getValue(), 0);
         assertDMNStyle("Open Sans", 24, 1, 255, 0, 0, myname.getFontStyle());
-        
+
         DMNShape prefix = findShapeByDMNI(ddRoot, "_e920f38a-293c-41b8-adb3-69d0dc184fab");
         assertBounds(300, 400, 100, 50, prefix.getBounds());
         assertColor(0, 253, 25, prefix.getBgColor());
         assertColor(253, 0, 0, prefix.getBorderColor());
         assertEquals(1, prefix.getBorderSize().getValue(), 0);
         assertDMNStyle("Times New Roman", 8, 2.5, 70, 60, 50, prefix.getFontStyle());
-        
+
         DMNShape postfix = findShapeByDMNI(ddRoot, "_f49f9c34-29d5-4e72-91d2-f4f92117c8da");
         assertBounds(700, 400, 100, 50, postfix.getBounds());
         assertColor(247, 255, 0, postfix.getBgColor());
         assertColor(0, 51, 255, postfix.getBorderColor());
         assertEquals(2, postfix.getBorderSize().getValue(), 0);
         assertDMNStyle("Arial", 10, 1.5, 50, 60, 70, postfix.getFontStyle());
-        
+
         DMNShape mydecision = findShapeByDMNI(ddRoot, "_9b061fc3-8109-42e2-9fe4-fc39c90b654e");
         assertBounds(487.5, 275, 125, 75, mydecision.getBounds());
         assertColor(255, 255, 255, mydecision.getBgColor());
@@ -318,7 +318,7 @@ public class DMNMarshallerTest {
         assertEquals(0.5, mydecision.getBorderSize().getValue(), 0);
         assertDMNStyle("Monospaced", 32, 3.5, 55, 66, 77, mydecision.getFontStyle());
     }
-    
+
     private void assertDMNStyle(String fontName, double fontSize, double fontBorderSize, int r, int g, int b, DMNStyle style) {
         assertEquals(fontName, style.getFontName());
         assertEquals(fontSize, style.getFontSize(), 0);
@@ -745,7 +745,7 @@ public class DMNMarshallerTest {
         assertTrue(node.getContent() instanceof View);
         assertTrue(clazz.isInstance(((View<?>) node.getContent()).getDefinition()));
     }
-    
+
     @Test
     public void test_Simple_structured_context() throws IOException {
         final DMNRuntime runtime = roundTripUnmarshalMarshalThenUnmarshalDMN(this.getClass().getResourceAsStream("/Simple_structured_context.dmn"));

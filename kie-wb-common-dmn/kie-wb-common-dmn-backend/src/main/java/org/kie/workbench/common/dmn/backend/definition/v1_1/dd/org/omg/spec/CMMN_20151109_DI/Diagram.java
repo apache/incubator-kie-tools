@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,12 +21,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * <p>Java class for Diagram complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="Diagram"&gt;
  *   &lt;complexContent&gt;
@@ -39,14 +38,11 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Diagram")
 public abstract class Diagram
-    extends DiagramElement
-{
+        extends DiagramElement {
 
     @XmlAttribute(name = "name")
     protected String name;
@@ -57,11 +53,8 @@ public abstract class Diagram
 
     /**
      * Gets the value of the name property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is
+     * {@link String }
      */
     public String getName() {
         return name;
@@ -69,11 +62,8 @@ public abstract class Diagram
 
     /**
      * Sets the value of the name property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is
+     * {@link String }
      */
     public void setName(String value) {
         this.name = value;
@@ -81,11 +71,8 @@ public abstract class Diagram
 
     /**
      * Gets the value of the documentation property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is
+     * {@link String }
      */
     public String getDocumentation() {
         return documentation;
@@ -93,11 +80,8 @@ public abstract class Diagram
 
     /**
      * Sets the value of the documentation property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is
+     * {@link String }
      */
     public void setDocumentation(String value) {
         this.documentation = value;
@@ -105,11 +89,8 @@ public abstract class Diagram
 
     /**
      * Gets the value of the resolution property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Double }
-     *     
+     * @return possible object is
+     * {@link Double }
      */
     public Double getResolution() {
         return resolution;
@@ -117,14 +98,10 @@ public abstract class Diagram
 
     /**
      * Sets the value of the resolution property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Double }
-     *     
+     * @param value allowed object is
+     * {@link Double }
      */
     public void setResolution(Double value) {
         this.resolution = value;
     }
-
 }

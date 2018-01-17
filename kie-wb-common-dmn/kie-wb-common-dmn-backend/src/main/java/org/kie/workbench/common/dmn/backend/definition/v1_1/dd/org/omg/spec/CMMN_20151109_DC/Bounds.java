@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,14 +24,13 @@ import javax.xml.bind.annotation.XmlType;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
-
 /**
  * Bounds specifies a rectangular area in some x-y coordinate system that is defined by a location (x and y) and a size (width and height).
- * 
+ * <p>
  * <p>Java class for Bounds complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="Bounds"&gt;
  *   &lt;complexContent&gt;
@@ -44,8 +43,6 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Bounds", namespace = "http://www.omg.org/spec/CMMN/20151109/DC")
@@ -67,7 +64,6 @@ public class Bounds {
 
     /**
      * Gets the value of the x property.
-     * 
      */
     public double getX() {
         return x;
@@ -75,7 +71,6 @@ public class Bounds {
 
     /**
      * Sets the value of the x property.
-     * 
      */
     public void setX(double value) {
         this.x = value;
@@ -83,7 +78,6 @@ public class Bounds {
 
     /**
      * Gets the value of the y property.
-     * 
      */
     public double getY() {
         return y;
@@ -91,7 +85,6 @@ public class Bounds {
 
     /**
      * Sets the value of the y property.
-     * 
      */
     public void setY(double value) {
         this.y = value;
@@ -99,7 +92,6 @@ public class Bounds {
 
     /**
      * Gets the value of the width property.
-     * 
      */
     public double getWidth() {
         return width;
@@ -107,7 +99,6 @@ public class Bounds {
 
     /**
      * Sets the value of the width property.
-     * 
      */
     public void setWidth(double value) {
         this.width = value;
@@ -115,7 +106,6 @@ public class Bounds {
 
     /**
      * Gets the value of the height property.
-     * 
      */
     public double getHeight() {
         return height;
@@ -123,10 +113,8 @@ public class Bounds {
 
     /**
      * Sets the value of the height property.
-     * 
      */
     public void setHeight(double value) {
         this.height = value;
     }
-
 }

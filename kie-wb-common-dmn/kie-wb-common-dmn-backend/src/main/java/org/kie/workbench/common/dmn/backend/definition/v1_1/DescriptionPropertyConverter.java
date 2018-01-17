@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,7 +21,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Description;
 public class DescriptionPropertyConverter {
 
     public static Description wbFromDMN(final String dmn) {
-        if ( dmn == null ) {
+        if (dmn == null) {
             return new Description("");
         } else {
             return new Description(dmn);
@@ -31,7 +31,7 @@ public class DescriptionPropertyConverter {
     public static String dmnFromWB(final Description wb) {
         if (wb == null) {
             return null;
-        } else if ( wb.getValue() == null || wb.getValue().isEmpty() ) {
+        } else if (wb.getValue() == null || wb.getValue().isEmpty()) {
             return null;
         } else {
             return wb.getValue();

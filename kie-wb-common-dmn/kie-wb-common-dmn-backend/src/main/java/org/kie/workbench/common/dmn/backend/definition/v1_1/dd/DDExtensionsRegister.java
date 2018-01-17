@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,15 +33,15 @@ public class DDExtensionsRegister implements DMNExtensionRegister {
 
     @Override
     public void beforeMarshal(Object o, QNameMap qmap) {
-        if ( o instanceof DMNModelInstrumentedBase ) {
+        if (o instanceof DMNModelInstrumentedBase) {
             DMNModelInstrumentedBase base = (DMNModelInstrumentedBase) o;
-            
+
             String ddPrefix = base.getPrefixForNamespaceURI(DMNDiagram.DMNV11_DD).orElse("dd");
             qmap.registerMapping(new QName(DMNDiagram.DMNV11_DD, "DMNDiagram", ddPrefix), "DMNDiagram");
             qmap.registerMapping(new QName(DMNDiagram.DMNV11_DD, "DMNShape", ddPrefix), "DMNShape");
             qmap.registerMapping(new QName(DMNDiagram.DMNV11_DD, "DMNFontStyle", ddPrefix), "DMNFontStyle");
             qmap.registerMapping(new QName(DMNDiagram.DMNV11_DD, "BorderSize", ddPrefix), "BorderSize");
-            
+
             String dcPrefix = base.getPrefixForNamespaceURI(DMNDiagram.DMNV11_DC).orElse("dc");
             qmap.registerMapping(new QName(DMNDiagram.DMNV11_DC, "Bounds", dcPrefix), "Bounds");
             qmap.registerMapping(new QName(DMNDiagram.DMNV11_DC, "BgColor", dcPrefix), "BgColor");
@@ -49,6 +49,4 @@ public class DDExtensionsRegister implements DMNExtensionRegister {
             qmap.registerMapping(new QName(DMNDiagram.DMNV11_DC, "FontColor", dcPrefix), "FontColor");
         }
     }
-
-    
 }

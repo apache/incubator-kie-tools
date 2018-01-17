@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,16 +22,16 @@ import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.org.omg.spec.CMMN
 
 @XStreamAlias("Style")
 public class Style {
-    
+
     @XStreamAsAttribute
     private String fontName;
-    
+
     @XStreamAlias("FontColor")
     private Color fontColor;
-    
+
     @XStreamAsAttribute
     private Double fontSize;
-    
+
     public String getFontName() {
         return fontName;
     }
@@ -39,19 +39,19 @@ public class Style {
     public void setFontName(String fontName) {
         this.fontName = fontName;
     }
-    
+
     public Color getFontColor() {
         return fontColor;
     }
-    
+
     public void setFontColor(Color fontColor) {
         this.fontColor = fontColor;
     }
-    
+
     public Double getFontSize() {
         return fontSize;
     }
-    
+
     public void setFontSize(Double fontSize) {
         this.fontSize = fontSize;
     }

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,14 +21,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * A Point specifies an location in some x-y coordinate system.
- * 
+ * <p>
  * <p>Java class for Point complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="Point"&gt;
  *   &lt;complexContent&gt;
@@ -39,8 +38,6 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Point", namespace = "http://www.omg.org/spec/CMMN/20151109/DC")
@@ -53,7 +50,6 @@ public class Point {
 
     /**
      * Gets the value of the x property.
-     * 
      */
     public double getX() {
         return x;
@@ -61,7 +57,6 @@ public class Point {
 
     /**
      * Sets the value of the x property.
-     * 
      */
     public void setX(double value) {
         this.x = value;
@@ -69,7 +64,6 @@ public class Point {
 
     /**
      * Gets the value of the y property.
-     * 
      */
     public double getY() {
         return y;
@@ -77,10 +71,8 @@ public class Point {
 
     /**
      * Sets the value of the y property.
-     * 
      */
     public void setY(double value) {
         this.y = value;
     }
-
 }

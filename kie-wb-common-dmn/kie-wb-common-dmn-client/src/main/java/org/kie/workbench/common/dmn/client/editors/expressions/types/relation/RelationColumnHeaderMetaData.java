@@ -42,4 +42,10 @@ public class RelationColumnHeaderMetaData extends EditableHeaderMetaData<TextBox
         // No implementation of equals/hashCode as each instance is considered different to another
         return this == o;
     }
+
+    @Override
+    public int hashCode() {
+        // This default implementation is needed because of the CheckStyle plugin
+        return super.hashCode();
+    }
 }

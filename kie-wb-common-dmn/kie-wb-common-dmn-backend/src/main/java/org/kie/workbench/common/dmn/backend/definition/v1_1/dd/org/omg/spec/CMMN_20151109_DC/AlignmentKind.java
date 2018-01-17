@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,10 +20,9 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * <p>Java class for AlignmentKind.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
  * <p>
  * <pre>
@@ -35,7 +34,6 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/restriction&gt;
  * &lt;/simpleType&gt;
  * </pre>
- * 
  */
 @XmlType(name = "AlignmentKind", namespace = "http://www.omg.org/spec/CMMN/20151109/DC")
 @XmlEnum
@@ -58,7 +56,7 @@ public enum AlignmentKind {
     }
 
     public static AlignmentKind fromValue(String v) {
-        for (AlignmentKind c: AlignmentKind.values()) {
+        for (AlignmentKind c : AlignmentKind.values()) {
             if (c.value.equals(v)) {
                 return c;
             }

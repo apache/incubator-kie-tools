@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,14 +23,13 @@ import javax.xml.bind.annotation.XmlType;
 
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
-
 /**
  * Color is a data type that represents a color value in the RGB format.
- * 
+ * <p>
  * <p>Java class for Color complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="Color"&gt;
  *   &lt;complexContent&gt;
@@ -42,8 +41,6 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Color", namespace = "http://www.omg.org/spec/CMMN/20151109/DC")
@@ -52,18 +49,17 @@ public class Color {
     @XmlAttribute(name = "red", required = true)
     @XStreamAsAttribute
     protected int red;
-    
+
     @XmlAttribute(name = "green", required = true)
     @XStreamAsAttribute
     protected int green;
-    
+
     @XmlAttribute(name = "blue", required = true)
     @XStreamAsAttribute
     protected int blue;
 
     /**
      * Gets the value of the red property.
-     * 
      */
     public int getRed() {
         return red;
@@ -71,7 +67,6 @@ public class Color {
 
     /**
      * Sets the value of the red property.
-     * 
      */
     public void setRed(int value) {
         this.red = value;
@@ -79,7 +74,6 @@ public class Color {
 
     /**
      * Gets the value of the green property.
-     * 
      */
     public int getGreen() {
         return green;
@@ -87,7 +81,6 @@ public class Color {
 
     /**
      * Sets the value of the green property.
-     * 
      */
     public void setGreen(int value) {
         this.green = value;
@@ -95,7 +88,6 @@ public class Color {
 
     /**
      * Gets the value of the blue property.
-     * 
      */
     public int getBlue() {
         return blue;
@@ -103,10 +95,8 @@ public class Color {
 
     /**
      * Sets the value of the blue property.
-     * 
      */
     public void setBlue(int value) {
         this.blue = value;
     }
-
 }
