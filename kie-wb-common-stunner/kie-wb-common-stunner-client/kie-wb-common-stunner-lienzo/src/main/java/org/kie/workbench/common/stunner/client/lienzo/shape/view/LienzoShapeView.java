@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,14 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.client.animation;
+package org.kie.workbench.common.stunner.client.lienzo.shape.view;
 
-public interface Animation<S> {
+import com.ait.lienzo.client.core.shape.Shape;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasDecorators;
+import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
-    interface AnimationCallback {
+public interface LienzoShapeView<V>
+        extends ShapeView<V>,
+                HasDecorators<Shape<?>> {
 
-        void onStart();
-
-        void onFrame();
-
-        void onComplete();
-    }
-
-    S getSource();
-
-    Animation setCallback(final AnimationCallback callback);
-
-    Animation setDuration(final long duration);
-
-    AnimationHandle run();
 }

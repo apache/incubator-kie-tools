@@ -21,8 +21,7 @@ import com.ait.lienzo.client.core.shape.wires.IContainmentAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IDockingAcceptor;
 import com.ait.lienzo.client.core.shape.wires.ILocationAcceptor;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
-import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresParentPickerCachedControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeControlImpl;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
@@ -31,10 +30,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresShapeView;
 import org.mockito.Mock;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -49,7 +45,7 @@ public class StunnerWiresShapeControlTest {
     private WiresShapeControlImpl delegate;
 
     @Mock
-    private StunnerWiresParentPickerControl parentPickerControl;
+    private WiresParentPickerCachedControl parentPickerControl;
 
     @Mock
     private WiresShapeView shapeView;
@@ -76,20 +72,5 @@ public class StunnerWiresShapeControlTest {
                                      eq(10d));
         verify(shapeView,
                times(1)).moveToTop();
-    }
-
-    /**
-     * TODO: This test method can be removed once moving
-     * to lienzo 2.0.295 (once removing the constructor used
-     * for creating a wires shape instances as well).
-     */
-    @Test
-    public void testCreateCustomParentPicker() {
-        WiresShape shape = mock(WiresShape.class);
-        tested = new StunnerWiresShapeControl(shape
-                , wiresManager);
-        final WiresParentPickerControl parentPickerControl = tested.getParentPickerControl();
-        assertNotNull(parentPickerControl);
-        assertTrue(parentPickerControl instanceof StunnerWiresParentPickerControl);
     }
 }

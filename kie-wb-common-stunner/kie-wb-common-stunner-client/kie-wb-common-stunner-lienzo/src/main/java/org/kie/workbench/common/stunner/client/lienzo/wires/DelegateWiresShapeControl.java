@@ -71,6 +71,16 @@ public abstract class DelegateWiresShapeControl implements WiresShapeControl {
     }
 
     @Override
+    public boolean accept() {
+        return getDelegate().accept();
+    }
+
+    @Override
+    public boolean isOutOfBounds(double dx, double dy) {
+        return getDelegate().isOutOfBounds(dx, dy);
+    }
+
+    @Override
     public void clear() {
         getDelegate().clear();
     }

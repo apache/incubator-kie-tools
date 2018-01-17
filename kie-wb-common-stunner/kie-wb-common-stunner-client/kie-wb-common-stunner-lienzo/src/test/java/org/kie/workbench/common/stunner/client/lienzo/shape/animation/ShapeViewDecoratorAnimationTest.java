@@ -21,12 +21,14 @@ import java.util.Collections;
 import com.ait.lienzo.client.core.animation.AnimationCallback;
 import com.ait.lienzo.client.core.animation.AnimationProperties;
 import com.ait.lienzo.client.core.animation.AnimationTweener;
+import com.ait.lienzo.client.core.animation.IAnimationCallback;
+import com.ait.lienzo.client.core.animation.IAnimationHandle;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.LienzoShapeView;
-import org.kie.workbench.common.stunner.core.client.shape.Shape;
+import org.kie.workbench.common.stunner.core.client.animation.AnimationHandle;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
@@ -38,14 +40,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class ShapeDecoratorAnimationTest {
+public class ShapeViewDecoratorAnimationTest {
 
     private static final String COLOR = "color1";
     private static final double STROKE_WIDTH = 14;
     private static final double STROKE_ALPHA = 0.44;
-
-    @Mock
-    private Shape<?> shape;
 
     @Mock
     private LienzoShapeView<?> shapeView;
@@ -53,17 +52,21 @@ public class ShapeDecoratorAnimationTest {
     @Mock
     private com.ait.lienzo.client.core.shape.Shape<?> decorator;
 
-    private ShapeDecoratorAnimation tested;
+    @Mock
+    private IAnimationHandle decoratorAnimationHandle;
+
+    private ShapeViewDecoratorAnimation tested;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
-        when(shape.getShapeView()).thenReturn(shapeView);
+        when(decorator.animate(any(AnimationTweener.class), any(AnimationProperties.class), anyDouble(), any(IAnimationCallback.class)))
+                .thenReturn(decoratorAnimationHandle);
         when(shapeView.getDecorators()).thenReturn(Collections.singletonList(decorator));
-        this.tested = new ShapeDecoratorAnimation(COLOR,
-                                                  STROKE_WIDTH,
-                                                  STROKE_ALPHA);
-        this.tested.forShape(shape);
+        this.tested = new ShapeViewDecoratorAnimation(() -> shapeView,
+                                                      COLOR,
+                                                      STROKE_WIDTH,
+                                                      STROKE_ALPHA);
     }
 
     @Test
@@ -75,8 +78,17 @@ public class ShapeDecoratorAnimationTest {
                                  propertiesArgumentCaptor.capture(),
                                  anyDouble(),
                                  any(AnimationCallback.class));
-        final AnimationProperties animationProperties = propertiesArgumentCaptor.getValue();
-        assertEquals(3,
-                     animationProperties.size());
+        assertEquals(3, propertiesArgumentCaptor.getValue().size());
+    }
+
+    @Test
+    public void testAnimationHandler() {
+        final AnimationHandle handle = tested.run();
+        handle.run();
+        verify(decoratorAnimationHandle, times(1)).run();
+        handle.stop();
+        verify(decoratorAnimationHandle, times(1)).stop();
+        handle.isRunning();
+        verify(decoratorAnimationHandle, times(1)).isRunning();
     }
 }

@@ -16,35 +16,13 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.wires;
 
-import com.ait.lienzo.client.core.shape.wires.WiresManager;
-import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
-import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresContainmentControlImpl;
-import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresDockingControlImpl;
-import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresMagnetsControlImpl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeControlImpl;
-import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
 public class StunnerWiresShapeControl extends DelegateWiresShapeControl {
 
     private final WiresShapeControlImpl delegate;
-
-    public StunnerWiresShapeControl(final WiresShape shape,
-                                    final WiresManager wiresManager) {
-        final ColorMapBackedPicker.PickerOptions pickerOptions =
-                new ColorMapBackedPicker.PickerOptions(true,
-                                                       wiresManager.getDockingAcceptor().getHotspotSize());
-        // TODO: There is no need to use StunnerWiresParentPickerControl once moving to lienzo 2.0.295
-        // TODO: so no need to build the WiresShapeControlImpl instance here neither, it can be provided just as a constructor argument.
-        final StunnerWiresParentPickerControl parentPickerControl =
-                new StunnerWiresParentPickerControl(shape,
-                                                    pickerOptions);
-        this.delegate = new WiresShapeControlImpl(parentPickerControl,
-                                                  new WiresMagnetsControlImpl(shape),
-                                                  new WiresDockingControlImpl(parentPickerControl),
-                                                  new WiresContainmentControlImpl(parentPickerControl));
-    }
 
     StunnerWiresShapeControl(final WiresShapeControlImpl delegate) {
         this.delegate = delegate;

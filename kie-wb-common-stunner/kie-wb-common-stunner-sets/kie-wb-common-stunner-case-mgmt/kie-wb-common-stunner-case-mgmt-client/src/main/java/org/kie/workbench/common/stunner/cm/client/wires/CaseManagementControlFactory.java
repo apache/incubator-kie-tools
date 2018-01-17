@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.cm.client.wires;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
@@ -26,8 +27,10 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectionControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlFactory;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeHighlight;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresConnectionControlImpl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresConnectorControlImpl;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeHighlightImpl;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 
 @ApplicationScoped
@@ -51,6 +54,11 @@ public class CaseManagementControlFactory implements WiresControlFactory {
     public WiresCompositeControl newCompositeControl(WiresCompositeControl.Context provider,
                                                      WiresManager wiresManager) {
         throw new UnsupportedOperationException("Case Management does not yet support multiple shape handling.");
+    }
+
+    @Override
+    public WiresShapeHighlight<PickerPart.ShapePart> newShapeHighlight(WiresManager wiresManager) {
+        return new WiresShapeHighlightImpl(wiresManager.getDockingAcceptor().getHotspotSize());
     }
 
     @Override

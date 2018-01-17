@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.client.lienzo.wires;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 
+import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
@@ -27,7 +28,9 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectionControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlFactory;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeHighlight;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresControlFactoryImpl;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeControlImpl;
 
 @ApplicationScoped
 @Default
@@ -46,7 +49,7 @@ public class StunnerWiresControlFactory implements WiresControlFactory {
     @Override
     public WiresShapeControl newShapeControl(final WiresShape shape,
                                              final WiresManager wiresManager) {
-        return new StunnerWiresShapeControl(shape, wiresManager);
+        return new StunnerWiresShapeControl(new WiresShapeControlImpl(shape, wiresManager));
     }
 
     @Override
@@ -68,6 +71,11 @@ public class StunnerWiresControlFactory implements WiresControlFactory {
     @Override
     public WiresCompositeControl newCompositeControl(final WiresCompositeControl.Context context,
                                                      final WiresManager wiresManager) {
-        return new StunnerWiresCompositeControl(context);
+        return delegate.newCompositeControl(context, wiresManager);
+    }
+
+    @Override
+    public WiresShapeHighlight<PickerPart.ShapePart> newShapeHighlight(final WiresManager wiresManager) {
+        return new StunnerWiresShapeHighlight(wiresManager);
     }
 }

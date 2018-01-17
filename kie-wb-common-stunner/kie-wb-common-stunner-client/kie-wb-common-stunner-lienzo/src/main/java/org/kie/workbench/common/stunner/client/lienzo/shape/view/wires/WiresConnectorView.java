@@ -33,9 +33,9 @@ import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.shared.core.types.ColorName;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.LienzoShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.BoundingBox;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
-import org.kie.workbench.common.stunner.core.client.shape.view.HasDecorators;
 import org.kie.workbench.common.stunner.core.client.shape.view.IsConnector;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.util.ShapeUtils;
@@ -46,10 +46,9 @@ import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
 public class WiresConnectorView<T> extends WiresConnector
         implements
-        ShapeView<T>,
+        LienzoShapeView<T>,
         IsConnector<T>,
-        HasControlPoints<T>,
-        HasDecorators<Shape<?>> {
+        HasControlPoints<T> {
 
     protected String uuid;
     private WiresConnectorControl connectorControl;

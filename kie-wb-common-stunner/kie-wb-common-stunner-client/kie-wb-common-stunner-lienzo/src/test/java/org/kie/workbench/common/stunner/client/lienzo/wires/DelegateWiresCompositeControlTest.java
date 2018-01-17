@@ -67,6 +67,10 @@ public class DelegateWiresCompositeControlTest {
     public void testControlMethods() {
         tested.execute();
         verify(delegate, times(1)).execute();
+        tested.accept();
+        verify(delegate, times(1)).accept();
+        tested.isOutOfBounds(1d, 2d);
+        verify(delegate, times(1)).isOutOfBounds(eq(1d), eq(2d));
         tested.clear();
         verify(delegate, times(1)).clear();
         tested.reset();

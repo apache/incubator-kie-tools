@@ -30,17 +30,15 @@ import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.LienzoShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.BoundingBox;
-import org.kie.workbench.common.stunner.core.client.shape.view.HasDecorators;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasDragBounds;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
 public class WiresShapeView<T> extends WiresShape
         implements
-        ShapeView<T>,
-        HasDragBounds<T>,
-        HasDecorators<Shape<?>> {
+        LienzoShapeView<T>,
+        HasDragBounds<T> {
 
     private String uuid;
 

@@ -20,6 +20,7 @@ import com.ait.lienzo.client.core.shape.wires.IConnectionAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IContainmentAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IDockingAcceptor;
 import com.ait.lienzo.client.core.shape.wires.ILocationAcceptor;
+import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
@@ -27,6 +28,7 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresCompositeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectionControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeHighlight;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresControlFactoryImpl;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
@@ -117,10 +119,15 @@ public class StunnerWiresControlFactoryTest {
 
     @Test
     public void testNewCompositeControl() {
-        final WiresCompositeControl compositeControl = tested.newCompositeControl(compositeContext,
-                                                                                  wiresManager);
+        assertEquals(compositeControl,
+                     tested.newCompositeControl(compositeContext,
+                                                wiresManager));
+    }
 
-        assertNotNull(compositeControl);
-        assertTrue(compositeControl instanceof StunnerWiresCompositeControl);
+    @Test
+    public void testNewShapeHighlight() {
+        final WiresShapeHighlight<PickerPart.ShapePart> instance = tested.newShapeHighlight(wiresManager);
+        assertNotNull(instance);
+        assertTrue(instance instanceof StunnerWiresShapeHighlight);
     }
 }
