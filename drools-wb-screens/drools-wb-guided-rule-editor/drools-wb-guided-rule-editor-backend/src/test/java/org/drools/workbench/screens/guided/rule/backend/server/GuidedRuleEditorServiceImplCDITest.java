@@ -44,14 +44,14 @@ public class GuidedRuleEditorServiceImplCDITest extends CDITestSetup {
 
     @Test
     public void testValidateRuleThatInherit() throws Exception {
-        final String resourcePath = "dtables/src/main/resources/guvnor/feature/dtables/sendElectionInvitation.rdrl";
+        final String resourcePath = "rules/src/main/resources/guvnor/feature/rules/sendElectionInvitation.rdrl";
         final List<ValidationMessage> messages = validateResource(resourcePath);
         Assertions.assertThat(messages).hasSize(0);
     }
 
     @Test
     public void testValidateRuleThatInheritNonExistingRule() throws Exception {
-        final String resourcePath = "dtables/src/main/resources/guvnor/feature/dtables/sendElectionInvitationNonExisting.rdrl";
+        final String resourcePath = "rules/src/main/resources/guvnor/feature/rules/sendElectionInvitationNonExisting.rdrl";
         final List<ValidationMessage> messages = validateResource(resourcePath);
         Assertions.assertThat(messages).isNotEmpty();
         messages.forEach(message -> Assertions.assertThat(message.getText()).contains(NON_EXISTING_PARENT));

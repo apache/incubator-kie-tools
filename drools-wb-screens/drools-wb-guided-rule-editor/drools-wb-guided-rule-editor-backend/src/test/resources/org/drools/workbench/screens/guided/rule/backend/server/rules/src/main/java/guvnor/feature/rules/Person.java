@@ -1,4 +1,4 @@
-package guvnor.feature.dtables;
+package guvnor.feature.rules;
 
 // $HASH(ee15bb4bdabae23dd989493b198c753e) (added manually)
 public class Person {
@@ -24,8 +24,6 @@ public class Person {
         this.age = age;
     }
 
-
-    
     public String getSex() {
         return this.sex;
     }
@@ -65,8 +63,4 @@ public class Person {
     public void setDummy(int dummy ) {
         this.dummy = dummy;
     }
-
-
-
-
 }

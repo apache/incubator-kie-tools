@@ -1,4 +1,4 @@
-package guvnor.feature.dtables;
+package guvnor.feature.rules;
 
 import java.math.BigDecimal;
 
