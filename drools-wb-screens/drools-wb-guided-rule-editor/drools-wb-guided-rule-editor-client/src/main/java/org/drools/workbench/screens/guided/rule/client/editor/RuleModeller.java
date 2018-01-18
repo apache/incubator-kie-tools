@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -90,7 +91,7 @@ public class RuleModeller extends Composite
             hasModifiedWidgets = true;
         }
     };
-    private final RuleSelector ruleSelector = new RuleSelector();
+    private final RuleSelector ruleSelector = GWT.create(RuleSelector.class);
 
     //used by Guided Rule (DRL + DSLR)
     public RuleModeller(final RuleModel model,
