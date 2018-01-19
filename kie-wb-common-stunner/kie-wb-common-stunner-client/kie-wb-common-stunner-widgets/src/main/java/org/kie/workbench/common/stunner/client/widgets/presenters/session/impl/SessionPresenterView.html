@@ -12,42 +12,18 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<!--
-<table style="background-color:#D3D3D3;">
-    <tr>
-        <td>
-            <span data-field="loadingPanel" class="label label-danger" style="margin: 5px; position: absolute; padding: 5px;">Loading</span>
-        </td>
-        <td>
-            <div data-field="toolbarPanel" style=" width: 100%; margin: 5px; text-align: center;"></div>
-        </td>
-    </tr>
-    <tr>
-        <td style="vertical-align: top; padding-top: 15px;">
-            <div data-field="palettePanel" style="width: 100%;"></div>
-        </td>
-        <td style="padding-right: 10px;padding-top: 5px;padding-bottom: 10px;">
-            <div data-field="canvasPanel" style="width: 100%;"></div>
-        </td>
-    </tr>
-</table>
-
--->
 <div>
-    <div class="session-container" data-field="sessionContainer">
-        <div>
-            <span data-field="loadingPanel" class="label label-danger loading-panel">Loading</span>
-        </div>
-
-        <div data-field="toolbarPanel" class="toolbar-panel">
-        </div>
-
-        <div class="diagram-container">
-
-            <div data-field="palettePanel" class="palette-panel"></div>
-
-            <div data-field="canvasPanel" class="canvas-panel"></div>
-        </div>
+  <!-- The outer <div> is important - for some reason - to receive browser events in sessionContainer -->
+  <div class="session-container" data-field="sessionContainer">
+    <div>
+      <span data-field="loadingPanel" class="label label-danger loading-panel">Loading</span>
     </div>
+
+    <div data-field="toolbarPanel" class="toolbar-panel"></div>
+
+    <div data-field="diagramContainer" class="diagram-container">
+      <div data-field="palettePanel" class="palette-panel"></div>
+      <div data-field="canvasPanel" class="canvas-panel"></div>
+    </div>
+  </div>
 </div>

@@ -80,6 +80,11 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
     }
 
     @Override
+    public ExpressionEditorView getView() {
+        return view;
+    }
+
+    @Override
     public void init(final SessionPresenter<AbstractClientFullSession, ?, Diagram> presenter) {
         this.toolbarCommandStateHandler = new ToolbarCommandStateHandler((EditorToolbar) presenter.getToolbar());
     }

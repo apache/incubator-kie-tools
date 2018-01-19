@@ -18,14 +18,14 @@ package org.kie.workbench.common.stunner.client.widgets.views.session;
 
 import javax.enterprise.context.Dependent;
 
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
 
 @Dependent
 public class ScreenPanelViewImpl implements ScreenPanelView {
 
-    private final FlowPanel panel = new FlowPanel();
+    private final ResizeFlowPanel panel = new ResizeFlowPanel();
 
     @Override
     public ScreenPanelView setWidget(final IsWidget widget) {

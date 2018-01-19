@@ -33,7 +33,6 @@ import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import org.gwtbootstrap3.extras.notify.client.constants.NotifyType;
 import org.gwtbootstrap3.extras.notify.client.ui.Notify;
 import org.gwtbootstrap3.extras.notify.client.ui.NotifySettings;
-import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -42,6 +41,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.stunner.client.widgets.palette.PaletteWidget;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.PaletteDefinition;
+import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
 
 // TODO: i18n.
 @Dependent
@@ -62,7 +62,7 @@ public class SessionPresenterView extends Composite
 
     @Inject
     @DataField
-    private FlowPanel canvasPanel;
+    private ResizeFlowPanel canvasPanel;
 
     @Inject
     @DataField
@@ -70,9 +70,11 @@ public class SessionPresenterView extends Composite
 
     @Inject
     @DataField
-    private Div sessionContainer;
+    private SessionContainer sessionContainer;
 
     private final NotifySettings settings = NotifySettings.newSettings();
+
+    private ScrollType scrollType = ScrollType.AUTO;
 
     private double paletteInitialTop;
 
@@ -122,6 +124,11 @@ public class SessionPresenterView extends Composite
     }
 
     @Override
+    public ScrollType getContentScrollType() {
+        return scrollType;
+    }
+
+    @Override
     public SessionPresenterView setToolbarWidget(final IsWidget widget) {
         setWidgetForPanel(toolbarPanel,
                           widget);
@@ -133,6 +140,25 @@ public class SessionPresenterView extends Composite
         setWidgetForPanel(palettePanel,
                           ElementWrapperWidget.getWidget(paletteWidget.getElement()));
         return this;
+    }
+
+    @Override
+    public SessionPresenterView setCanvasWidget(final IsWidget widget) {
+        setWidgetForPanel(canvasPanel,
+                          widget);
+        return this;
+    }
+
+    @Override
+    public void setContentScrollType(final ScrollType type) {
+        final Style style = sessionContainer.getElement().getStyle();
+        switch (type) {
+            case AUTO:
+                style.setOverflow(Style.Overflow.AUTO);
+                break;
+            case CUSTOM:
+                style.setOverflow(Style.Overflow.HIDDEN);
+        }
     }
 
     @Override
@@ -172,16 +198,14 @@ public class SessionPresenterView extends Composite
     }
 
     @Override
-    public SessionPresenterView setCanvasWidget(final IsWidget widget) {
-        setWidgetForPanel(canvasPanel,
-                          widget);
+    public SessionPresenterView showLoading(final boolean loading) {
+        loadingPanel.setVisible(loading);
         return this;
     }
 
     @Override
-    public SessionPresenterView showLoading(final boolean loading) {
-        loadingPanel.setVisible(loading);
-        return this;
+    public void onResize() {
+        canvasPanel.onResize();
     }
 
     protected void setWidgetForPanel(final Panel panel,

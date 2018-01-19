@@ -19,6 +19,8 @@ package org.kie.workbench.common.stunner.client.widgets.presenters.session;
 import java.util.function.Predicate;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.ProvidesResize;
+import com.google.gwt.user.client.ui.RequiresResize;
 import org.kie.workbench.common.stunner.client.widgets.notification.Notification;
 import org.kie.workbench.common.stunner.client.widgets.palette.PaletteWidget;
 import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
@@ -31,7 +33,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
 /**
  * A session's presenter type for generic client session instances.
- * <p>
+ * <p/>
  * A session presenter is a client side component that has same goals as a SessionViewer/Editor, so displaying a diagram
  * and handling the different controls for either viewing or authoring purposes, but it provides some additional
  * features:
@@ -58,7 +60,9 @@ public interface SessionPresenter<S extends ClientSession, H extends CanvasHandl
         void afterSessionOpened();
     }
 
-    interface View extends IsWidget {
+    interface View extends IsWidget,
+                           RequiresResize,
+                           ProvidesResize {
 
         IsWidget getCanvasWidget();
 
@@ -66,11 +70,15 @@ public interface SessionPresenter<S extends ClientSession, H extends CanvasHandl
 
         IsWidget getPaletteWidget();
 
+        ScrollType getContentScrollType();
+
         View setCanvasWidget(final IsWidget widget);
 
         View setToolbarWidget(final IsWidget widget);
 
         View setPaletteWidget(final PaletteWidget<PaletteDefinition> paletteWidget);
+
+        void setContentScrollType(final ScrollType handler);
 
         View showLoading(final boolean loading);
 
@@ -81,6 +89,11 @@ public interface SessionPresenter<S extends ClientSession, H extends CanvasHandl
         View showError(final String message);
 
         void destroy();
+
+        enum ScrollType {
+            AUTO,
+            CUSTOM
+        }
     }
 
     SessionPresenter<S, H, D> withToolbar(final boolean hasToolbar);

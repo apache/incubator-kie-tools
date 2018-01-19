@@ -24,6 +24,7 @@ import javax.enterprise.event.Event;
 
 import com.ait.lienzo.client.core.event.INodeXYEvent;
 import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
+import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Viewport;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
@@ -195,6 +196,18 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
             viewport = gridLayer.getViewport();
         }
         return viewport;
+    }
+
+    @Override
+    public Layer getLayer() {
+        // A GridWidget's Layer may not have been set IF the grid has not been attached to a Layer.
+        // This is possible when a nested Expression Editor is on a newly created non-visible row as the
+        // GridRenderer ignores rows/cells outside of the Layer's visible extents.
+        Layer layer = super.getLayer();
+        if (layer == null) {
+            layer = gridLayer;
+        }
+        return layer;
     }
 
     @Override

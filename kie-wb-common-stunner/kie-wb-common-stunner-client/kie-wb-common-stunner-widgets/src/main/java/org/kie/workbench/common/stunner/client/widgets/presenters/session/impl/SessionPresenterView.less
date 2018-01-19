@@ -7,6 +7,10 @@
 
 .diagram-container {
     display: flex;
+    width: 100%;
+    /* Height is 100% - toolbar-panel.height - (2 * toolbar-panel.margin) */
+    /* See https://github.com/less/less.js/issues/974 for explanation of syntax */
+    height: ~"calc( 100% - 48px - 10px)";
 }
 
 .loading-panel {
@@ -48,6 +52,7 @@
     float: right;
     z-index: 0;
     left: 0;
-    padding-right: 10px;
-    padding-bottom: 10px;
+    display: flex;
+    width: 100%;
+    height: 100%;
 }

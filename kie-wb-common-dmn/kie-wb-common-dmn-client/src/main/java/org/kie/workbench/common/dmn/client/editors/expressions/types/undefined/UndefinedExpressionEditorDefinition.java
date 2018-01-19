@@ -51,7 +51,7 @@ public class UndefinedExpressionEditorDefinition implements ExpressionEditorDefi
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private Event<ExpressionEditorSelectedEvent> editorSelectedEvent;
-    private TranslationService ts;
+    private TranslationService translationService;
 
     public UndefinedExpressionEditorDefinition() {
         //CDI proxy
@@ -64,14 +64,14 @@ public class UndefinedExpressionEditorDefinition implements ExpressionEditorDefi
                                                final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                                final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                                final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
-                                               final TranslationService ts) {
+                                               final TranslationService translationService) {
         this.gridPanel = gridPanel;
         this.gridLayer = gridLayer;
         this.sessionManager = sessionManager;
         this.sessionCommandManager = sessionCommandManager;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.editorSelectedEvent = editorSelectedEvent;
-        this.ts = ts;
+        this.translationService = translationService;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class UndefinedExpressionEditorDefinition implements ExpressionEditorDefi
 
     @Override
     public String getName() {
-        return ts.getTranslation(DMNEditorConstants.ExpressionEditor_UndefinedExpressionType);
+        return translationService.getTranslation(DMNEditorConstants.ExpressionEditor_UndefinedExpressionType);
     }
 
     @Override

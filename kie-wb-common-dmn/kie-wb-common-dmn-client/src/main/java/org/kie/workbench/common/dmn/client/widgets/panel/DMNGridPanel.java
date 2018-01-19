@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.widgets.panel;
 
 import com.ait.lienzo.client.core.types.Transform;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
@@ -58,12 +59,20 @@ public class DMNGridPanel extends GridLienzoPanel {
     }
 
     @Override
-    public void updatePanelSize() {
-        super.updatePanelSize();
-        final TransformMediator restriction = mousePanMediator.getTransformMediator();
-        final Transform transform = restriction.adjust(gridLayer.getViewport().getTransform(),
-                                                       gridLayer.getVisibleBounds());
-        gridLayer.getViewport().setTransform(transform);
-        gridLayer.batch();
+    public void onResize() {
+        doResize(() -> {
+            updatePanelSize();
+            refreshScrollPosition();
+
+            final TransformMediator restriction = mousePanMediator.getTransformMediator();
+            final Transform transform = restriction.adjust(gridLayer.getViewport().getTransform(),
+                                                           gridLayer.getVisibleBounds());
+            gridLayer.getViewport().setTransform(transform);
+            gridLayer.batch();
+        });
+    }
+
+    void doResize(final Scheduler.ScheduledCommand command) {
+        Scheduler.get().scheduleDeferred(command);
     }
 }

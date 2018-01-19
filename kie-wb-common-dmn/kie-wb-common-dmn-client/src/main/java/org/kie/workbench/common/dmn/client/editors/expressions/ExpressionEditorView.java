@@ -17,6 +17,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions;
 
 import java.util.Optional;
 
+import com.google.gwt.user.client.ui.ProvidesResize;
 import org.jboss.errai.common.client.api.IsElement;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
@@ -24,6 +25,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.RequiresResize;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -31,7 +33,9 @@ import org.uberfire.client.mvp.UberElement;
 import org.uberfire.mvp.Command;
 
 public interface ExpressionEditorView extends org.jboss.errai.ui.client.local.api.IsElement,
-                                              UberElement<ExpressionEditorView.Presenter> {
+                                              UberElement<ExpressionEditorView.Presenter>,
+                                              RequiresResize,
+                                              ProvidesResize {
 
     interface Presenter extends IsElement {
 
@@ -46,6 +50,8 @@ public interface ExpressionEditorView extends org.jboss.errai.ui.client.local.ap
         void onExpressionEditorSelected(final ExpressionEditorSelectedEvent event);
 
         void setExitCommand(final Command exitCommand);
+
+        ExpressionEditorView getView();
 
         void exit();
     }

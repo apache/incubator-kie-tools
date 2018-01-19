@@ -31,11 +31,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.widgets.presenters.AbstractCanvasHandlerViewerTest;
+import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -61,6 +63,15 @@ public class SessionPresenterViewTest extends AbstractCanvasHandlerViewerTest {
 
     @Mock
     private FlowPanel palettePanel;
+
+    @Mock
+    private SessionContainer sessionContainer;
+
+    @Mock
+    private com.google.gwt.user.client.Element sessionContainerElement;
+
+    @Mock
+    private Style sessionContainerElementStyle;
 
     private ContextMenuHandler handler;
 
@@ -95,6 +106,14 @@ public class SessionPresenterViewTest extends AbstractCanvasHandlerViewerTest {
             return null;
         })).when(tested).onScroll(scrollEvent);
 
+        doAnswer((invocation -> {
+            setFinal(tested,
+                     SessionPresenterView.class.getDeclaredField("sessionContainer"),
+                     sessionContainer);
+            invocation.callRealMethod();
+            return null;
+        })).when(tested).setContentScrollType(any(SessionPresenter.View.ScrollType.class));
+
         when(tested.addDomHandler(any(),
                                   any())).thenAnswer((invocation -> {
             handler = invocation.getArgumentAt(0,
@@ -105,6 +124,9 @@ public class SessionPresenterViewTest extends AbstractCanvasHandlerViewerTest {
         when(scrollEvent.getRelativeElement()).thenReturn(element);
         when(palettePanel.getElement()).thenReturn(paletteElement);
         when(paletteElement.getStyle()).thenReturn(paletteStyle);
+
+        doReturn(sessionContainerElement).when(sessionContainer).getElement();
+        doReturn(sessionContainerElementStyle).when(sessionContainerElement).getStyle();
 
         tested.init();
     }
@@ -135,7 +157,7 @@ public class SessionPresenterViewTest extends AbstractCanvasHandlerViewerTest {
     }
 
     @Test
-    public void testOnScroll(){
+    public void testOnScroll() {
         reset(element);
 
         when(element.getScrollTop()).thenReturn(100);
@@ -145,5 +167,19 @@ public class SessionPresenterViewTest extends AbstractCanvasHandlerViewerTest {
 
         verify(paletteStyle, times(1)).setTop(100, Style.Unit.PX);
         verify(paletteStyle, times(1)).setLeft(200, Style.Unit.PX);
+    }
+
+    @Test
+    public void testSetContentScrollTypeAuto() {
+        tested.setContentScrollType(SessionPresenter.View.ScrollType.AUTO);
+
+        verify(sessionContainerElementStyle).setOverflow(Style.Overflow.AUTO);
+    }
+
+    @Test
+    public void testSetContentScrollTypeCustom() {
+        tested.setContentScrollType(SessionPresenter.View.ScrollType.CUSTOM);
+
+        verify(sessionContainerElementStyle).setOverflow(Style.Overflow.HIDDEN);
     }
 }

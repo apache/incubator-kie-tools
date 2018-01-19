@@ -22,6 +22,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
+import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 
 import static org.junit.Assert.assertEquals;
@@ -53,6 +54,8 @@ public class NavigateToDRGEditorCommandTest extends BaseNavigationCommandTest {
         verify(session).resume();
         verify(command).hidePaletteWidget(eq(false));
         verify(command).addDRGEditorToCanvasWidget();
+        verify(sessionPresenterView).setCanvasWidget(view);
+        verify(sessionPresenterView).setContentScrollType(eq(SessionPresenter.View.ScrollType.AUTO));
     }
 
     @Test
@@ -65,6 +68,8 @@ public class NavigateToDRGEditorCommandTest extends BaseNavigationCommandTest {
         verify(session).pause();
         verify(command).hidePaletteWidget(eq(true));
         verify(command).addExpressionEditorToCanvasWidget();
+        verify(sessionPresenterView).setCanvasWidget(editorContainerForErrai1090);
+        verify(sessionPresenterView).setContentScrollType(eq(SessionPresenter.View.ScrollType.CUSTOM));
     }
 
     @Test

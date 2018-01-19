@@ -18,6 +18,9 @@ package org.kie.workbench.common.dmn.client.commands.general;
 
 import java.util.Optional;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
@@ -38,6 +41,7 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.command.impl.AbstractGraphCommand;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
 
 public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
 
@@ -102,11 +106,39 @@ public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
     }
 
     protected void addExpressionEditorToCanvasWidget() {
-        presenter.getView().setCanvasWidget(ElementWrapperWidget.getWidget(editor.getElement()));
+        final ResizeFlowPanel container = wrapElementForErrai1090();
+        presenter.getView().setCanvasWidget(container);
+        presenter.getView().setContentScrollType(SessionPresenter.View.ScrollType.CUSTOM);
+
+        Scheduler.get().scheduleDeferred(container::onResize);
+    }
+
+    // See https://issues.jboss.org/browse/ERRAI-1090
+    // The Widget returned from ElementWrapperWidget does not implement interfaces
+    // defined on the editor.getElement() and hence RequiresResize is lost.
+    // Wrap the editor in a ResizeFlowPanel to support RequiresResize.
+    protected ResizeFlowPanel wrapElementForErrai1090() {
+        final Widget w = ElementWrapperWidget.getWidget(editor.getElement());
+        final ResizeFlowPanel container = new ResizeFlowPanel() {
+
+            @Override
+            public void onResize() {
+                super.onResize();
+                editor.getView().onResize();
+            }
+        };
+        container.getElement().setId("dmn-expression-editor-container");
+        container.getElement().getStyle().setDisplay(Style.Display.FLEX);
+        container.getElement().getStyle().setWidth(100.0, Style.Unit.PCT);
+        container.getElement().getStyle().setHeight(100.0, Style.Unit.PCT);
+        container.add(w);
+
+        return container;
     }
 
     protected void addDRGEditorToCanvasWidget() {
         presenter.getView().setCanvasWidget(((AbstractSessionPresenter) presenter).getDisplayer().getView());
+        presenter.getView().setContentScrollType(SessionPresenter.View.ScrollType.AUTO);
     }
 
     protected void hidePaletteWidget(final boolean hidden) {

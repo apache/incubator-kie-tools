@@ -34,10 +34,12 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.mockito.Mock;
+import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -45,6 +47,9 @@ public abstract class BaseNavigationCommandTest {
 
     @Mock
     protected ExpressionEditorView.Presenter editor;
+
+    @Mock
+    protected ResizeFlowPanel editorContainerForErrai1090;
 
     @Mock
     protected AbstractSessionPresenter sessionPresenter;
@@ -101,8 +106,7 @@ public abstract class BaseNavigationCommandTest {
         this.command = spy(getCommand());
 
         doNothing().when(command).hidePaletteWidget(any(Boolean.class));
-        doNothing().when(command).addDRGEditorToCanvasWidget();
-        doNothing().when(command).addExpressionEditorToCanvasWidget();
+        doReturn(editorContainerForErrai1090).when(command).wrapElementForErrai1090();
     }
 
     protected abstract BaseNavigateCommand getCommand();

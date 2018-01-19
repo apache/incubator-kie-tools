@@ -32,6 +32,7 @@ import org.gwtbootstrap3.client.ui.constants.ColumnSize;
 import org.kie.workbench.common.stunner.client.widgets.explorer.navigator.NavigatorItem;
 import org.kie.workbench.common.stunner.client.widgets.explorer.navigator.NavigatorItemView;
 import org.kie.workbench.common.stunner.client.widgets.explorer.navigator.NavigatorView;
+import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
 
 @Dependent
 public class BootstrapNavigatorView
@@ -45,7 +46,7 @@ public class BootstrapNavigatorView
     private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
 
     @UiField
-    FlowPanel mainPanel;
+    ResizeFlowPanel mainPanel;
 
     @UiField
     FlowPanel loadingPanel;

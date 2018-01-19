@@ -14,50 +14,14 @@
   ~ limitations under the License.
   -->
 
-<div>
-    <style scoped>
-        /*
-        This is the same width as the canvas. It's used to stop the Toolbar
-        from repositioning when the Expression Editor is opened/closed
-        */
-        .kie-dmn-container {
-            width: 1415px;
-            height: 600px;
-            position: relative;
-            top: 0;
-            overflow: hidden;
-        }
-
-        .expression-editor {
-            position: absolute;
-            z-index: 1;
-        }
-
-        .control-buttons {
-            position: absolute;
-            top: 475px;
-            z-index: 1000;
-        }
-
-        .exit-button {
-            position: absolute;
-            top: 508px;
-            z-index: 1000;
-        }
-
-    </style>
-
-    <div class="kie-dmn-container">
-        <div class="expression-editor">
-            <div data-field="dmn-table"></div>
-        </div>
-
-        <div class="control-buttons">
-            <div data-field="editorControls"></div>
-        </div>
-
-        <div class="exit-button">
-            <button class="btn btn-danger" type="button" data-field="exitButton" data-i18n-key="exitButton"></button>
-        </div>
+<div class="kie-dmn-container">
+    <div class="exit-button">
+        <button class="btn btn-danger" type="button" data-field="exitButton" data-i18n-key="exitButton"></button>
+    </div>
+    <div class="control-buttons">
+        <div data-field="editorControls"></div>
+    </div>
+    <div class="expression-editor">
+        <div data-field="dmn-table"></div>
     </div>
 </div>

@@ -19,6 +19,8 @@ package org.kie.workbench.common.dmn.client.widgets.grid;
 import java.util.Arrays;
 import java.util.Optional;
 
+import com.ait.lienzo.client.core.shape.Node;
+import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.jboss.errai.common.client.api.IsElement;
 import org.junit.Before;
@@ -43,6 +45,7 @@ import org.uberfire.mocks.EventSourceMock;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class BaseExpressionGridTest {
@@ -57,6 +60,9 @@ public class BaseExpressionGridTest {
     private DMNGridLayer gridLayer;
 
     @Mock
+    private Viewport viewport;
+
+    @Mock
     private SessionManager sessionManager;
 
     @Mock
@@ -68,6 +74,9 @@ public class BaseExpressionGridTest {
     @Mock
     private BaseUIModelMapper mapper;
 
+    @Mock
+    private Node gridParent;
+
     private BaseExpressionGrid grid;
 
     @Before
@@ -78,16 +87,16 @@ public class BaseExpressionGridTest {
         final Optional<LiteralExpression> expression = Optional.of(mock(LiteralExpression.class));
         final Optional<HasName> hasName = Optional.of(mock(HasName.class));
 
-        this.grid = new BaseExpressionGrid(parent,
-                                           hasExpression,
-                                           expression,
-                                           hasName,
-                                           gridPanel,
-                                           gridLayer,
-                                           renderer,
-                                           sessionManager,
-                                           sessionCommandManager,
-                                           editorSelectedEvent) {
+        this.grid = spy(new BaseExpressionGrid(parent,
+                                               hasExpression,
+                                               expression,
+                                               hasName,
+                                               gridPanel,
+                                               gridLayer,
+                                               renderer,
+                                               sessionManager,
+                                               sessionCommandManager,
+                                               editorSelectedEvent) {
             @Override
             protected BaseUIModelMapper makeUiModelMapper() {
                 return mapper;
@@ -107,7 +116,9 @@ public class BaseExpressionGridTest {
             public Optional<IsElement> getEditorControls() {
                 return Optional.empty();
             }
-        };
+        });
+
+        doReturn(viewport).when(gridLayer).getViewport();
     }
 
     @Test
@@ -145,6 +156,36 @@ public class BaseExpressionGridTest {
                            new MockColumnData(COL_0_ACTUAL, 25.0),
                            new MockColumnData(COL_1_ACTUAL, 35.0),
                            new MockColumnData(225.0, COL_2_MIN));
+    }
+
+    @Test
+    public void testGetViewportGridAttachedToLayer() {
+        doReturn(gridParent).when(grid).getParent();
+        doReturn(viewport).when(gridParent).getViewport();
+
+        assertEquals(viewport,
+                     grid.getViewport());
+    }
+
+    @Test
+    public void testGetViewportGridNotAttachedToLayer() {
+        assertEquals(viewport,
+                     grid.getViewport());
+    }
+
+    @Test
+    public void testGetLayerGridAttachedToLayer() {
+        doReturn(gridParent).when(grid).getParent();
+        doReturn(gridLayer).when(gridParent).getLayer();
+
+        assertEquals(gridLayer,
+                     grid.getLayer());
+    }
+
+    @Test
+    public void testGetLayerGridNotAttachedToLayer() {
+        assertEquals(gridLayer,
+                     grid.getLayer());
     }
 
     private void assertMinimumWidth(final double expectedMinimumWidth,
