@@ -1,0 +1,11 @@
+<kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <kbase name="kbase1" default="true" eventProcessingMode="stream" equalsBehavior="identity">
+    <ksession name="ksession" type="stateful" default="true" clockType="realtime">
+      <workItemHandlers>
+        <workItemHandler type="org.jboss.qa.brms.workitems.ResultWIHandler" name="ResultWI"/>
+        <workItemHandler type="org.jboss.qa.brms.workitems.SimpleWIHandler" name="SimpleWI"/>
+      </workItemHandlers>
+    </ksession>
+  </kbase>
+  <kbase name="defaultKieBase" default="false" eventProcessingMode="stream" equalsBehavior="identity"/>
+</kmodule>
