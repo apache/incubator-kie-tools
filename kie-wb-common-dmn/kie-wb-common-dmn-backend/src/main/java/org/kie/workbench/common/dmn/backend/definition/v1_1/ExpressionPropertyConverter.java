@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
@@ -39,6 +40,8 @@ public class ExpressionPropertyConverter {
             return InvocationPropertyConverter.wbFromDMN((org.kie.dmn.model.v1_1.Invocation) dmn);
         } else if (dmn instanceof org.kie.dmn.model.v1_1.FunctionDefinition) {
             return FunctionDefinitionPropertyConverter.wbFromDMN((org.kie.dmn.model.v1_1.FunctionDefinition) dmn);
+        } else if (dmn instanceof org.kie.dmn.model.v1_1.DecisionTable) {
+            return DecisionTablePropertyConverter.wbFromDMN((org.kie.dmn.model.v1_1.DecisionTable) dmn);
         }
         return null;
     }
@@ -56,6 +59,8 @@ public class ExpressionPropertyConverter {
             return InvocationPropertyConverter.dmnFromWB((Invocation) wb);
         } else if (wb instanceof FunctionDefinition) {
             return FunctionDefinitionPropertyConverter.dmnFromWB((FunctionDefinition) wb);
+        } else if (wb instanceof DecisionTable) {
+            return DecisionTablePropertyConverter.dmnFromWB((DecisionTable) wb);
         }
         return null;
     }

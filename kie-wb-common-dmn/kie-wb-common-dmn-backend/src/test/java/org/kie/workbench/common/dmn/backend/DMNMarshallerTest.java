@@ -874,4 +874,23 @@ public class DMNMarshallerTest {
         assertEquals(3, ((BigDecimal) adultResult.getResult()).intValue());
     }
 
+    @Test
+    public void test_decision_table() throws IOException {
+        final DMNRuntime runtime = roundTripUnmarshalMarshalThenUnmarshalDMN(this.getClass().getResourceAsStream("/positive_or_negative.dmn"));
+        DMNModel dmnModel = runtime.getModels().get(0);
+
+        checkDecisionTableForPositiveOrNegative(runtime, dmnModel, 47, "positive");
+        checkDecisionTableForPositiveOrNegative(runtime, dmnModel, -1, "negative");
+    }
+
+    private void checkDecisionTableForPositiveOrNegative(final DMNRuntime runtime, DMNModel dmnModel, int number, String result) {
+        DMNContext context = runtime.newContext();
+        context.set("a number", number);
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertFalse(dmnResult.getMessages().toString(), dmnResult.hasErrors());
+
+        DMNDecisionResult adultResult = dmnResult.getDecisionResultByName("positive or negative");
+        assertEquals(DecisionEvaluationStatus.SUCCEEDED, adultResult.getEvaluationStatus());
+        assertEquals(result, adultResult.getResult());
+    }
 }

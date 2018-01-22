@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_f330b756-e84e-401d-ac3a-2e72e710d4ed" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.2.14.1" id="_f330b756-e84e-401d-ac3a-2e72e710d4ed" name="positive or negative" namespace="http://www.trisotech.com/definitions/_f330b756-e84e-401d-ac3a-2e72e710d4ed" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:inputData id="_36a99c42-86e7-472f-a206-cb897cf75e02" name="a number">
+    <semantic:variable id="_f87e28b0-4e91-49ce-a665-a0d953a3cac7" name="a number" typeRef="feel:number"/>
+  </semantic:inputData>
+  <semantic:decision id="_f9f209df-1d64-4c27-90e9-3ad42cb47c07" name="positive or negative">
+    <semantic:variable id="_7b41617d-fe6b-4f1a-908f-e266adf3f52a" name="positive or negative" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_36a99c42-86e7-472f-a206-cb897cf75e02"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" id="_2bc73729-fd75-4c17-b073-337d9e8cda02" outputLabel="positive or negative">
+      <semantic:input id="_0193bd49-07e2-44fd-a863-266f63917fc4">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>a number</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_f9ebe108-8a30-427d-a035-2459ca53b1de"/>
+      <semantic:rule id="_cb263db0-cb40-4360-a9ca-e65a7b79e395">
+        <semantic:inputEntry id="_836bd9da-3ae6-4617-b24f-eebf056be934">
+          <semantic:text>&gt;=0</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_a6c813f2-ea1c-4ddd-804e-392ec5a7802a">
+          <semantic:text>"positive"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_dcf3324a-fb6b-4096-9c12-72ca07c5c333">
+        <semantic:inputEntry id="_80df1c1a-6a0c-4ee3-ba17-8deae9387b7e">
+          <semantic:text>&lt;0</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_8a7b4b14-a4df-4830-afdc-a41f5b0bef52">
+          <semantic:text>"negative"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+</semantic:definitions>

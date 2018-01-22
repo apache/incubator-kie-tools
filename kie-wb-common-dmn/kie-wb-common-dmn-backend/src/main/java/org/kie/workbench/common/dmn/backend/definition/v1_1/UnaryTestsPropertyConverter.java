@@ -41,7 +41,7 @@ public class UnaryTestsPropertyConverter {
         result.setId(wb.getId().getValue());
         result.setDescription(wb.getDescription().getValue());
         result.setText(wb.getText());
-        result.setText(wb.getExpressionLanguage());
+        result.setExpressionLanguage(wb.getExpressionLanguage());
 
         return result;
     }
