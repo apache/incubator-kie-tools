@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.kie.dmn.backend.marshalling.v1_1.xstream.MarshallingUtils;
@@ -37,6 +38,14 @@ public class QNamePropertyConverter {
                                     final Consumer<javax.xml.namespace.QName> setter) {
         if (qname != null) {
             setter.accept(MarshallingUtils.parseQNameString(qname.getValue()));
+        }
+    }
+
+    public static Optional<javax.xml.namespace.QName> dmnFromWB(final QName wb) {
+        if (wb != null) {
+            return Optional.of(MarshallingUtils.parseQNameString(wb.getValue()));
+        } else {
+            return Optional.empty();
         }
     }
 }

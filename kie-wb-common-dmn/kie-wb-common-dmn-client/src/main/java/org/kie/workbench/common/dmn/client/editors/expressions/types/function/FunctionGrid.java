@@ -169,7 +169,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
     private FunctionDefinition.Kind extractExpressionLanguage() {
         if (expression.isPresent()) {
             final FunctionDefinition function = expression.get();
-            final Map<QName, String> attributes = function.getOtherAttributes();
+            final Map<QName, String> attributes = function.getAdditionalAttributes();
             final String code = attributes.getOrDefault(FunctionDefinition.KIND_QNAME,
                                                         FunctionDefinition.Kind.FEEL.code());
             return FunctionDefinition.Kind.determineFromString(code);

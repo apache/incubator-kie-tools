@@ -52,7 +52,7 @@ public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dm
         Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         Name name = new Name(dmn.getName());
         InformationItem informationItem = InformationItemPropertyConverter.wbFromDMN(dmn.getVariable());
-        FunctionDefinition functionDefinition = FunctionDefinitionConverter.wbFromDMN(dmn.getEncapsulatedLogic());
+        FunctionDefinition functionDefinition = FunctionDefinitionPropertyConverter.wbFromDMN(dmn.getEncapsulatedLogic());
         BusinessKnowledgeModel bkm = new BusinessKnowledgeModel(id,
                                                                 description,
                                                                 name,
@@ -73,7 +73,7 @@ public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dm
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));
         result.setName(source.getName().getValue());
         result.setVariable(InformationItemPropertyConverter.dmnFromWB(source.getVariable()));
-        result.setEncapsulatedLogic(FunctionDefinitionConverter.dmnFromWB(source.getEncapsulatedLogic()));
+        result.setEncapsulatedLogic(FunctionDefinitionPropertyConverter.dmnFromWB(source.getEncapsulatedLogic()));
         // DMN spec table 2: Requirements connection rules
         List<Edge<?, ?>> inEdges = (List<Edge<?, ?>>) node.getInEdges();
         for (Edge<?, ?> e : inEdges) {

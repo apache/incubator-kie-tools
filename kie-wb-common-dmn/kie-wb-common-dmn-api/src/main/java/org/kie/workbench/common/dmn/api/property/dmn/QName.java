@@ -58,7 +58,7 @@ public class QName implements DMNProperty {
     public static final PropertyType type = new StringType();
 
     @DefaultValue
-    public static final transient String defaultValue = "My QName";
+    public static final transient String defaultValue = "feel:string";
 
     @Value
     @FieldValue

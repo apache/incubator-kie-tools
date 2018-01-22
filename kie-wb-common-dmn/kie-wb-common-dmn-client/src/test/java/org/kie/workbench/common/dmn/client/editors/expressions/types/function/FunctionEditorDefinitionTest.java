@@ -125,7 +125,7 @@ public class FunctionEditorDefinitionTest {
 
         final FunctionDefinition model = oModel.get();
         assertEquals(FunctionDefinition.Kind.FEEL.code(),
-                     model.getOtherAttributes().get(FunctionDefinition.KIND_QNAME));
+                     model.getAdditionalAttributes().get(FunctionDefinition.KIND_QNAME));
         assertTrue(model.getExpression() instanceof LiteralExpression);
     }
 

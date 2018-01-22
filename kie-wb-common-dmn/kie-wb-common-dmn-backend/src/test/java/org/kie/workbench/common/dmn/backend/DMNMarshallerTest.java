@@ -831,4 +831,47 @@ public class DMNMarshallerTest {
         assertEquals(DecisionEvaluationStatus.SUCCEEDED, adultResult.getEvaluationStatus());
         assertEquals(new BigDecimal(11), adultResult.getResult());
     }
+
+    @Test
+    public void test_function_definition_and_invocation() throws IOException {
+        final DMNRuntime runtime = roundTripUnmarshalMarshalThenUnmarshalDMN(this.getClass().getResourceAsStream("/hardcoded_function_definition.dmn"));
+        DMNModel dmnModel = runtime.getModels().get(0);
+
+        DMNContext emptyContext = runtime.newContext();
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+        assertFalse(dmnResult.getMessages().toString(), dmnResult.hasErrors());
+
+        DMNDecisionResult adultResult = dmnResult.getDecisionResultByName("hardcoded decision");
+        assertEquals(DecisionEvaluationStatus.SUCCEEDED, adultResult.getEvaluationStatus());
+        assertEquals(47, ((BigDecimal) adultResult.getResult()).intValue());
+    }
+
+    @Test
+    public void test_function_definition_and_invoke_in_ctx() throws IOException {
+        final DMNRuntime runtime = roundTripUnmarshalMarshalThenUnmarshalDMN(this.getClass().getResourceAsStream("/function_definition_and_invoke_in_ctx.dmn"));
+        DMNModel dmnModel = runtime.getModels().get(0);
+
+        DMNContext emptyContext = runtime.newContext();
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+        assertFalse(dmnResult.getMessages().toString(), dmnResult.hasErrors());
+
+        DMNDecisionResult adultResult = dmnResult.getDecisionResultByName("hardcoded decision");
+        assertEquals(DecisionEvaluationStatus.SUCCEEDED, adultResult.getEvaluationStatus());
+        assertEquals(3, ((BigDecimal) adultResult.getResult()).intValue());
+    }
+
+    @Test
+    public void test_hardcoded_decision_a_function() throws IOException {
+        final DMNRuntime runtime = roundTripUnmarshalMarshalThenUnmarshalDMN(this.getClass().getResourceAsStream("/hardcoded_decision_a_function.dmn"));
+        DMNModel dmnModel = runtime.getModels().get(0);
+
+        DMNContext emptyContext = runtime.newContext();
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+        assertFalse(dmnResult.getMessages().toString(), dmnResult.hasErrors());
+
+        DMNDecisionResult adultResult = dmnResult.getDecisionResultByName("hardcoded invokation");
+        assertEquals(DecisionEvaluationStatus.SUCCEEDED, adultResult.getEvaluationStatus());
+        assertEquals(3, ((BigDecimal) adultResult.getResult()).intValue());
+    }
+
 }

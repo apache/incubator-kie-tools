@@ -28,7 +28,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 @Portable
 public class FunctionDefinition extends Expression implements HasExpression {
 
-    public static final QName KIND_QNAME = new QName("http://www.drools.org/kie/dmn/1.1:kind");
+    public static final QName KIND_QNAME = new QName("{" + DMNModelInstrumentedBase.URI_KIE + "}kind");
 
     private Expression expression;
 

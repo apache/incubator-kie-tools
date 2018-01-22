@@ -16,16 +16,13 @@
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
-import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 
@@ -40,8 +37,6 @@ public abstract class DMNElement extends DMNModelInstrumentedBase {
     @FormField(afterElement = "id")
     @Valid
     protected Description description;
-
-    private Map<QName, String> otherAttributes = new HashMap<>();
 
     private DMNElement.ExtensionElements extensionElements;
 
@@ -72,10 +67,6 @@ public abstract class DMNElement extends DMNModelInstrumentedBase {
 
     public void setDescription(final Description description) {
         this.description = description;
-    }
-
-    public Map<QName, String> getOtherAttributes() {
-        return otherAttributes;
     }
 
     public ExtensionElements getExtensionElements() {

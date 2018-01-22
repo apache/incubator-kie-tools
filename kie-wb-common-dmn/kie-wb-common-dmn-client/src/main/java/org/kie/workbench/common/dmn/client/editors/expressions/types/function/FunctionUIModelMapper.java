@@ -94,7 +94,7 @@ public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition>
     }
 
     private FunctionDefinition.Kind extractExpressionLanguage(final FunctionDefinition function) {
-        final Map<QName, String> attributes = function.getOtherAttributes();
+        final Map<QName, String> attributes = function.getAdditionalAttributes();
         final String code = attributes.getOrDefault(FunctionDefinition.KIND_QNAME,
                                                     FunctionDefinition.Kind.FEEL.code());
         return FunctionDefinition.Kind.determineFromString(code);

@@ -90,8 +90,8 @@ public class FunctionEditorDefinition implements ExpressionEditorDefinition<Func
     @Override
     public Optional<FunctionDefinition> getModelClass() {
         final FunctionDefinition function = new FunctionDefinition();
-        function.getOtherAttributes().put(FunctionDefinition.KIND_QNAME,
-                                          FunctionDefinition.Kind.FEEL.code());
+        function.getAdditionalAttributes().put(FunctionDefinition.KIND_QNAME,
+                                               FunctionDefinition.Kind.FEEL.code());
         function.setExpression(new LiteralExpression());
         return Optional.of(function);
     }

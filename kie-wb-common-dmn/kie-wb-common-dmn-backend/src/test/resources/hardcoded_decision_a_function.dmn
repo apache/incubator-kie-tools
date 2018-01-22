@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_9b558a80-0780-4354-9c82-bfe17b7cda80" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.2.14.1" id="_9b558a80-0780-4354-9c82-bfe17b7cda80" name="hardcoded decision a function" namespace="http://www.trisotech.com/definitions/_9b558a80-0780-4354-9c82-bfe17b7cda80" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:decision id="_135adca0-ae72-4ab1-ac16-265c71c48b82" name="hardcoded decision a function">
+    <semantic:variable id="_189cac37-875e-4a87-ae53-718e866020d2" name="hardcoded decision a function"/>
+    <semantic:functionDefinition xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="F" id="_b20e4c03-9f2d-4fb2-b8c7-81b9d46873a6">
+      <semantic:formalParameter id="_ee55a652-3bdd-4e14-b5de-068de8799c76" name="p1" typeRef="feel:number"/>
+      <semantic:formalParameter id="_541cada2-744a-4ee3-bfcc-5662830c8bf5" name="p2" typeRef="feel:number"/>
+      <semantic:literalExpression id="_0faf4e9e-03ba-43b5-9c99-8bda79f304f7">
+        <semantic:text>p1 + p2</semantic:text>
+      </semantic:literalExpression>
+    </semantic:functionDefinition>
+  </semantic:decision>
+  <semantic:decision id="_370c9525-c156-48c1-b636-904f5418f961" name="hardcoded invokation">
+    <semantic:variable id="_0aba3a31-3777-4818-8ef9-b198f15c29df" name="hardcoded invokation" typeRef="feel:number"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_135adca0-ae72-4ab1-ac16-265c71c48b82"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_d59f4475-2273-4f83-813b-9d327ba1861b">
+      <semantic:text>hardcoded decision a function(1,2)</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+</semantic:definitions>

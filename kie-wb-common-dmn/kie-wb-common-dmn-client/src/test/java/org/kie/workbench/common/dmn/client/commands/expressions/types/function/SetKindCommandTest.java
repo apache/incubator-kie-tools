@@ -88,7 +88,7 @@ public class SetKindCommandTest {
     @Before
     public void setup() {
         this.function = new FunctionDefinition();
-        this.function.getOtherAttributes().put(FunctionDefinition.KIND_QNAME,
+        this.function.getAdditionalAttributes().put(FunctionDefinition.KIND_QNAME,
                                                originalKind.code());
         this.function.setExpression(originalExpression);
 
@@ -134,7 +134,7 @@ public class SetKindCommandTest {
                      c.execute(gce));
 
         assertEquals(newKind.code(),
-                     function.getOtherAttributes().get(FunctionDefinition.KIND_QNAME));
+                     function.getAdditionalAttributes().get(FunctionDefinition.KIND_QNAME));
         assertEquals(newExpression,
                      function.getExpression());
     }
@@ -152,7 +152,7 @@ public class SetKindCommandTest {
                      c.undo(gce));
 
         assertEquals(originalKind.code(),
-                     function.getOtherAttributes().get(FunctionDefinition.KIND_QNAME));
+                     function.getAdditionalAttributes().get(FunctionDefinition.KIND_QNAME));
         assertEquals(originalExpression,
                      function.getExpression());
     }
@@ -171,7 +171,7 @@ public class SetKindCommandTest {
                      c.undo(gce));
 
         assertEquals(originalKind.code(),
-                     function.getOtherAttributes().get(FunctionDefinition.KIND_QNAME));
+                     function.getAdditionalAttributes().get(FunctionDefinition.KIND_QNAME));
         assertNull(function.getExpression());
     }
 

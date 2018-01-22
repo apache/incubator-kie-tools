@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.commands.expressions.types.function;
 import java.util.Map;
 import java.util.Optional;
 
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
@@ -104,14 +105,15 @@ public class SetKindCommand extends AbstractCanvasGraphCommand implements VetoEx
     }
 
     private FunctionDefinition.Kind getKind() {
-        final Map<QName, String> attributes = function.getOtherAttributes();
+        final Map<QName, String> attributes = function.getAdditionalAttributes();
         return FunctionDefinition.Kind.determineFromString(attributes.get(FunctionDefinition.KIND_QNAME));
     }
 
     private void setKind(final FunctionDefinition.Kind kind) {
-        final Map<QName, String> attributes = function.getOtherAttributes();
-        attributes.put(FunctionDefinition.KIND_QNAME,
-                       kind.code());
+        final Map<String, String> nsContext = function.getNsContext();
+        nsContext.put("drools", DMNModelInstrumentedBase.URI_KIE);
+        final Map<QName, String> attributes = function.getAdditionalAttributes();
+        attributes.put(FunctionDefinition.KIND_QNAME, kind.code());
     }
 
     @Override

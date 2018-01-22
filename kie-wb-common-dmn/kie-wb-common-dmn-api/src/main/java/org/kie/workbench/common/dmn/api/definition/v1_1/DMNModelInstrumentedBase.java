@@ -20,11 +20,17 @@ import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.kie.workbench.common.dmn.api.definition.DMNDefinition;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 
 public abstract class DMNModelInstrumentedBase implements DMNDefinition {
 
+    public static final String URI_FEEL = org.kie.dmn.model.v1_1.DMNModelInstrumentedBase.URI_FEEL;
+    public static final String URI_DMN = org.kie.dmn.model.v1_1.DMNModelInstrumentedBase.URI_DMN;
+    public static final String URI_KIE = org.kie.dmn.model.v1_1.DMNModelInstrumentedBase.URI_KIE;
+
     private Map<String, String> nameSpaces = new HashMap<>();
+    private Map<QName, String> additionalAttributes = new HashMap<>();
 
     @NonPortable
     protected static abstract class BaseNodeBuilder<T extends DMNModelInstrumentedBase> implements Builder<T> {
@@ -38,5 +44,13 @@ public abstract class DMNModelInstrumentedBase implements DMNDefinition {
     @Override
     public Map<String, String> getNsContext() {
         return nameSpaces;
+    }
+
+    public void setAdditionalAttributes(Map<QName, String> additionalAttributes) {
+        this.additionalAttributes = additionalAttributes;
+    }
+
+    public Map<QName, String> getAdditionalAttributes() {
+        return additionalAttributes;
     }
 }

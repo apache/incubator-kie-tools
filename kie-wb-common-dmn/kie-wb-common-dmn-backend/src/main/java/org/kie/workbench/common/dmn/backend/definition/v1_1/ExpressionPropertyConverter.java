@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.List;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
@@ -36,6 +37,8 @@ public class ExpressionPropertyConverter {
             return ListPropertyConverter.wbFromDMN((org.kie.dmn.model.v1_1.List) dmn);
         } else if (dmn instanceof org.kie.dmn.model.v1_1.Invocation) {
             return InvocationPropertyConverter.wbFromDMN((org.kie.dmn.model.v1_1.Invocation) dmn);
+        } else if (dmn instanceof org.kie.dmn.model.v1_1.FunctionDefinition) {
+            return FunctionDefinitionPropertyConverter.wbFromDMN((org.kie.dmn.model.v1_1.FunctionDefinition) dmn);
         }
         return null;
     }
@@ -51,6 +54,8 @@ public class ExpressionPropertyConverter {
             return ListPropertyConverter.dmnFromWB((List) wb);
         } else if (wb instanceof Invocation) {
             return InvocationPropertyConverter.dmnFromWB((Invocation) wb);
+        } else if (wb instanceof FunctionDefinition) {
+            return FunctionDefinitionPropertyConverter.dmnFromWB((FunctionDefinition) wb);
         }
         return null;
     }

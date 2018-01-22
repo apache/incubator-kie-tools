@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_8c5411e5-2d37-422e-bfcc-b3cc12866bd2" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.2.14.1" id="_8c5411e5-2d37-422e-bfcc-b3cc12866bd2" name="function_definition_and_invoke_in_ctx" namespace="http://www.trisotech.com/definitions/_8c5411e5-2d37-422e-bfcc-b3cc12866bd2" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:decision id="_d35df937-28a8-4b30-bc57-0b7a56f325fd" name="hardcoded decision">
+    <semantic:variable id="_07af2030-f3ab-4bca-a872-e70027daf3ae" name="hardcoded decision" typeRef="feel:number"/>
+    <semantic:context id="_3bb3dfa1-ec9c-483f-8034-241baf4eea52">
+      <semantic:contextEntry>
+        <semantic:variable id="_f14063f5-8a7d-4066-a3c5-b899a48d91c0" name="my function"/>
+        <semantic:functionDefinition id="_e94c5832-4ae2-42d5-80cb-e965306a56a5">
+          <semantic:formalParameter id="_d70d09af-2759-4232-8c87-0cbcbd78d83d" name="p1" typeRef="feel:number"/>
+          <semantic:formalParameter id="_2cd83b33-330f-4d67-a3d2-8d227bf5f7c4" name="p2" typeRef="feel:number"/>
+          <semantic:context id="context__e94c5832-4ae2-42d5-80cb-e965306a56a5">
+            <semantic:contextEntry>
+              <semantic:variable id="_498118c6-e506-4491-98f0-7710b37b1e32" name="intermediate"/>
+              <semantic:literalExpression id="_f031391f-278b-4fd6-bf3d-f95e0e769d21">
+                <semantic:text>p1 + p2</semantic:text>
+              </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry>
+              <semantic:literalExpression id="_7af5db1a-bde8-476b-8a9c-471e4ff71ec4">
+                <semantic:text>intermediate</semantic:text>
+              </semantic:literalExpression>
+            </semantic:contextEntry>
+          </semantic:context>
+        </semantic:functionDefinition>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:literalExpression id="_eacfaa69-5d43-4f03-a19e-29c46bfef851">
+          <semantic:text>my function(1, 2)</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+    </semantic:context>
+  </semantic:decision>
+</semantic:definitions>
