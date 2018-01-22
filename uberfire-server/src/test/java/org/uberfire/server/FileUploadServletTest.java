@@ -48,6 +48,8 @@ public class FileUploadServletTest {
     private static final String PARAM_FILENAME = "fileName";
 
     private static final String TEST_ROOT_PATH = "default://master@test-repository/test-project/src/main/resources/test";
+    private static final String TEST_ROOT_PATH_WITH_SPACES = "default://master@mtest-repository/my test project/src/main/resources/test";
+
 
     private static final String BOUNDARY = "---------------------------9051914041544843365972754266";
     private static final String BOUNDARY_DELIMITER = "--";
@@ -78,7 +80,7 @@ public class FileUploadServletTest {
      * @throws Exception
      */
     @Test
-    public void uploadByNameAndFolderWithSpaces() throws Exception {
+    public void uploadByNameWithSpacesAndFolder() throws Exception {
 
         //test the upload of a file name with blank spaces into a given folder.
         String targetFileName = "File Name With Spaces.some extension";
@@ -86,6 +88,26 @@ public class FileUploadServletTest {
 
         doUploadTestByNameAndFolder(targetFileName,
                                     TEST_ROOT_PATH,
+                                    fileContent);
+
+    }
+
+    /**
+     * Tests the uploading of a file given the following parameters:
+     * <p>
+     * 1) a destination folder on the server side (with blank spaces).
+     * 2) a destination file name (with blank spaces).
+     * @throws Exception
+     */
+    @Test
+    public void uploadByNameAndFolderWithSpaces() throws Exception {
+
+        //test the upload of a file name with blank spaces into a given folder.
+        String targetFileName = "File Name With Spaces.some extension";
+        String fileContent = "the local file content";
+
+        doUploadTestByNameAndFolder(targetFileName,
+                                    TEST_ROOT_PATH_WITH_SPACES,
                                     fileContent);
     }
 
@@ -97,7 +119,7 @@ public class FileUploadServletTest {
      * @throws Exception
      */
     @Test
-    public void uploadByNameAndFolderWithNoSpaces() throws Exception {
+    public void uploadByNameWithNoSpacesAndFolder() throws Exception {
 
         //test the upload of a file name with NO blank spaces into a given folder.
         String targetFileName = "FileNameWithNoSpaces.someextension";
@@ -111,11 +133,30 @@ public class FileUploadServletTest {
     /**
      * Tests the uploading of a file given the following parameters:
      * <p>
+     * 1) a destination folder on the server side (with blank spaces).
+     * 2) a destination file name (with NO blank spaces).
+     * @throws Exception
+     */
+    @Test
+    public void uploadByNameWithNoSpacesAndFolderWithSpaces() throws Exception {
+
+        //test the upload of a file name with NO blank spaces into a given folder.
+        String targetFileName = "FileNameWithNoSpaces.someextension";
+        String fileContent = "the local file content";
+
+        doUploadTestByNameAndFolder(targetFileName,
+                                    TEST_ROOT_PATH_WITH_SPACES,
+                                    fileContent);
+    }
+
+    /**
+     * Tests the uploading of a file given the following parameters:
+     * <p>
      * 1) a destination path, composed of a folder and a file name with blank spaces.
      * @throws Exception
      */
     @Test
-    public void uploadByPathWithSpaces() throws Exception {
+    public void uploadByPathWithSpacesAndFolderNoSpaces() throws Exception {
 
         //test the upload of a file name with blank spaces into a given folder.
         String targetPath = TEST_ROOT_PATH + "/" + "File Name With Spaces.some extension";
@@ -123,6 +164,28 @@ public class FileUploadServletTest {
 
         doUploadTestByPath(targetPath,
                            fileContent);
+
+
+
+    }
+
+    /**
+     * Tests the uploading of a file given the following parameters:
+     * <p>
+     * 1) a destination path, composed of a folder with blank spaces and a file name with blank spaces.
+     * @throws Exception
+     */
+    @Test
+    public void uploadByPathWithSpacesAndFolderWithSpaces() throws Exception {
+
+        //test the upload of a file name with blank spaces into a given folder.
+        String targetPathWithSpaces = TEST_ROOT_PATH_WITH_SPACES.replaceAll("\\s", "%20") + "/" + "File Name With Spaces.some extension";
+        String fileContent = "the local file content";
+
+        doUploadTestByPath(targetPathWithSpaces,
+                           fileContent);
+
+
     }
 
     /**
@@ -132,13 +195,30 @@ public class FileUploadServletTest {
      * @throws Exception
      */
     @Test
-    public void uploadByPathWithNoSpaces() throws Exception {
+    public void uploadByPathWithNoSpacesAndFolderWithNoSpaces() throws Exception {
 
         //test the upload of a file name with blank spaces into a given folder.
-        String targetPath = TEST_ROOT_PATH + "/" + "FileNameWithNoSpaces.someextension";
+        String targetPath = TEST_ROOT_PATH.replaceAll("\\s", "%20") + "/" + "FileNameWithNoSpaces.someextension";
         String fileContent = "the local file content";
 
         doUploadTestByPath(targetPath,
+                           fileContent);
+
+    }
+
+    /**
+     * Tests the uploading of a file given the following parameters:
+     * <p>
+     * 1) a destination path, composed of a folder and a file name with no blank spaces.
+     * @throws Exception
+     */
+    @Test
+    public void uploadByPathWithNoSpacesAndFolderWithSpaces() throws Exception {
+
+        //test the upload of a file name with blank spaces into a given folder.
+        String targetPathWithSpaces = TEST_ROOT_PATH_WITH_SPACES.replaceAll("\\s", "%20") + "/" + "FileNameWithNoSpaces.someextension";
+        String fileContent = "the local file content";
+        doUploadTestByPath(targetPathWithSpaces,
                            fileContent);
     }
 
@@ -183,7 +263,7 @@ public class FileUploadServletTest {
                times(1)).getParameter(PARAM_FILENAME);
 
         //Expected URI
-        URI expectedURI = new URI(targetFolderName + "/" + FileServletUtil.encodeFileName(targetFileName));
+        URI expectedURI = new URI(targetFolderName.replaceAll("\\s", "%20") + "/" + FileServletUtil.encodeFileName(targetFileName));
 
         verify(ioService,
                times(1)).get(eq(expectedURI));

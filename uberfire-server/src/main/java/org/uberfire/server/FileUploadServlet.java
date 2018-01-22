@@ -65,7 +65,7 @@ public class FileUploadServlet
 
                 //See https://bugzilla.redhat.com/show_bug.cgi?id=1202926
                 final String encodedFileName = FileServletUtil.encodeFileName(request.getParameter(PARAM_FILENAME));
-                final URI uri = new URI(request.getParameter(PARAM_FOLDER) + "/" + encodedFileName);
+                final URI uri = new URI(request.getParameter(PARAM_FOLDER).replaceAll("\\s", "%20") + "/" + encodedFileName);
 
                 final FileItem fileItem = getFileItem(request);
 

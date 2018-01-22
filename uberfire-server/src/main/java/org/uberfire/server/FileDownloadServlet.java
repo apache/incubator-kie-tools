@@ -49,7 +49,7 @@ public class FileDownloadServlet
         try {
 
             //See https://bugzilla.redhat.com/show_bug.cgi?id=1202926
-            final String encodedPath = FileServletUtil.encodeFileNamePart(request.getParameter("path"));
+            final String encodedPath = FileServletUtil.encodeFileNamePart(request.getParameter("path").replaceAll("\\s", "%20"));
             final URI uri = new URI(encodedPath);
 
             if (!validateAccess(uri,

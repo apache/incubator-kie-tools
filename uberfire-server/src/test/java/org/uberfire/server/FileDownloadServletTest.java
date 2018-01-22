@@ -40,6 +40,8 @@ public class FileDownloadServletTest {
     private static final String PARAM_PATH = "path";
 
     private static final String TEST_ROOT_PATH = "default://master@test-repository/test-project/src/main/resources/test";
+    private static final String TEST_ROOT_PATH_WITH_SPACES = "default://master@mtest-repository/my test project/src/main/resources/test";
+
 
     @Mock
     private IOService ioService;
@@ -79,7 +81,8 @@ public class FileDownloadServletTest {
         String fileName = "File Name With Spaces.some extension";
         String fileContent = "the local file content";
 
-        doDownloadByPath(TEST_ROOT_PATH,
+
+        doDownloadByPath(TEST_ROOT_PATH_WITH_SPACES,
                          fileName,
                          fileContent);
     }
@@ -106,7 +109,7 @@ public class FileDownloadServletTest {
         when(pathFileName.toString()).thenReturn(sourceFileName);
 
         //Expected URI
-        URI expectedURI = new URI(FileServletUtil.encodeFileNamePart(sourcePath));
+        URI expectedURI = new URI(FileServletUtil.encodeFileNamePart(sourcePath.replaceAll("\\s", "%20")));
 
         //mock the path generation
         when(ioService.get(expectedURI)).thenReturn(path);
