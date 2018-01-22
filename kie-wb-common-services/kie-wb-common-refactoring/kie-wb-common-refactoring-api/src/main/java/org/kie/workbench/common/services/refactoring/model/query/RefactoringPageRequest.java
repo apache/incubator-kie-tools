@@ -31,17 +31,35 @@ public class RefactoringPageRequest extends PageRequest {
 
     private String queryName;
     private Set<ValueIndexTerm> queryTerms;
+    private Boolean distinctResults;
+
+    public RefactoringPageRequest(final String queryName,
+                                  final Set<ValueIndexTerm> queryTerms,
+                                  final int startRowIndex,
+                                  final Integer pageSize) {
+        this(queryName,
+             queryTerms,
+             startRowIndex,
+             pageSize,
+             Boolean.FALSE);
+    }
 
     public RefactoringPageRequest(@MapsTo("queryName") final String queryName,
                                   @MapsTo("queryTerms") final Set<ValueIndexTerm> queryTerms,
                                   @MapsTo("startRowIndex") final int startRowIndex,
-                                  @MapsTo("pageSize") final Integer pageSize) {
+                                  @MapsTo("pageSize") final Integer pageSize,
+                                  @MapsTo("distinctResults") Boolean distinctResults) {
         super(startRowIndex,
               pageSize);
         this.queryName = PortablePreconditions.checkNotNull("queryName",
                                                             queryName);
         this.queryTerms = PortablePreconditions.checkNotNull("queryTerms",
                                                              queryTerms);
+        this.distinctResults = distinctResults;
+    }
+
+    public Boolean distinctResults() {
+        return distinctResults;
     }
 
     public String getQueryName() {

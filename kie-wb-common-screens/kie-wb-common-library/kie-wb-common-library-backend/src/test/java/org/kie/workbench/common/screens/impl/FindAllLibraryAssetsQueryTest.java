@@ -16,7 +16,10 @@
 package org.kie.workbench.common.screens.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
@@ -32,6 +35,8 @@ import org.kie.workbench.common.services.refactoring.model.query.RefactoringPage
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.uberfire.ext.metadata.model.KObject;
+import org.uberfire.ext.metadata.model.impl.KObjectImpl;
 import org.uberfire.paging.PageResponse;
 
 import static org.junit.Assert.*;
@@ -121,6 +126,37 @@ public class FindAllLibraryAssetsQueryTest
                 fail("Exception thrown: " + e.getMessage());
             }
         }
+    }
+
+    @Test
+    public void cleanupLibraryResults() {
+        //This is a temporary way to cleanup index results
+        //for library assets list and count.
+        //In cluster environment library index each file more than once.
+        //The index should be revised on next release (7.6).
+        KObject k1 = new KObjectImpl("",
+                                     "",
+                                     "",
+                                     "",
+                                     "",
+                                     new ArrayList<>(),
+                                     false);
+        KObject k2 = new KObjectImpl("",
+                                     "",
+                                     "",
+                                     "",
+                                     "",
+                                     new ArrayList<>(),
+                                     false);
+        List<KObject> kObjects = service.distinct(Arrays.asList(k1,
+                                                                k1,
+                                                                k2));
+        assertEquals(2,
+                     kObjects.size());
+        assertEquals(k1,
+                     kObjects.get(0));
+        assertEquals(k2,
+                     kObjects.get(1));
     }
 
     @Test

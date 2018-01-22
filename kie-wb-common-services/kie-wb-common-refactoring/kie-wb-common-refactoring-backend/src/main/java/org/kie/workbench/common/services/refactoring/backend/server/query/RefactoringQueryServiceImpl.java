@@ -102,11 +102,24 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
                                                                         query,
                                                                         sort,
                                                                         0);
+
+            if (request.distinctResults()) {
+                found = distinct(found);
+            }
+
             return found.size();
         } catch (final Exception ex) {
             throw new RuntimeException("Error during Query!",
                                        ex);
         }
+    }
+
+    public List<KObject> distinct(List<KObject> found) {
+        //This is a temporary way to cleanup index results
+        //for library assets list and count.
+        //In cluster environment library index each file more than once.
+        //The index should be revised on next release (7.6).
+        return found.stream().distinct().collect(Collectors.toList());
     }
 
     @Override
@@ -126,7 +139,7 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
         final int pageSize = request.getPageSize();
         final int startIndex = request.getStartRowIndex();
 
-        final List<KObject> kObjects
+        List<KObject> kObjects
                 = search(query,
                          sort,
                          () -> (startIndex),
@@ -136,10 +149,14 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
         );
 
         if (!kObjects.isEmpty()) {
+            if (request.distinctResults()) {
+                kObjects = distinct(kObjects);
+            }
+
             final ResponseBuilder responseBuilder = namedQuery.getResponseBuilder();
             return responseBuilder.buildResponse(pageSize,
                                                  startIndex,
-                                                 kObjects);
+                                                 new ArrayList<>(kObjects));
         } else {
             return emptyResponse;
         }

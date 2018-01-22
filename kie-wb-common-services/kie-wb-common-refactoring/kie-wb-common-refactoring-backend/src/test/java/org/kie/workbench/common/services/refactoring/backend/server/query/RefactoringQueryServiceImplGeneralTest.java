@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.kie.workbench.common.services.refactoring.backend.server.query;
 
@@ -37,22 +37,22 @@ public class RefactoringQueryServiceImplGeneralTest extends BaseIndexingTest<Tes
 
     protected Set<NamedQuery> getQueries() {
         return new HashSet<NamedQuery>() {{
-            add( new FindResourceReferencesQuery() {
+            add(new FindResourceReferencesQuery() {
                 @Override
                 public ResponseBuilder getResponseBuilder() {
-                    return new DefaultResponseBuilder( ioService() );
+                    return new DefaultResponseBuilder(ioService());
                 }
-            } );
+            });
         }};
     }
 
     @Test
     public void testGetNamedQueries() throws IOException, InterruptedException {
         final Set<String> queryNames = service.getQueries();
-        assertNotNull( queryNames );
-        assertEquals( 1,
-                      queryNames.size() );
-        assertTrue( queryNames.contains( "FindResourceReferencesQuery" ) );
+        assertNotNull(queryNames);
+        assertEquals(1,
+                     queryNames.size());
+        assertTrue(queryNames.contains("FindResourceReferencesQuery"));
     }
 
     @Override
@@ -74,5 +74,4 @@ public class RefactoringQueryServiceImplGeneralTest extends BaseIndexingTest<Tes
     protected String getRepositoryName() {
         return testName.getMethodName();
     }
-
 }

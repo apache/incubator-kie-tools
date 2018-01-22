@@ -252,7 +252,8 @@ public class LibraryServiceImpl implements LibraryService {
         final PageResponse<RefactoringPageRow> findRulesByProjectQuery = refactoringQueryService.query(new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
                                                                                                                                   queryTerms,
                                                                                                                                   query.getStartIndex(),
-                                                                                                                                  query.getAmount()));
+                                                                                                                                  query.getAmount(),
+                                                                                                                                  Boolean.TRUE));
         final List<FolderItem> assets = findRulesByProjectQuery
                 .getPageRowList()
                 .stream()
@@ -428,7 +429,8 @@ public class LibraryServiceImpl implements LibraryService {
         return refactoringQueryService.queryHitCount(new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
                                                                                 queryTerms,
                                                                                 0,
-                                                                                null));
+                                                                                null,
+                                                                                Boolean.TRUE));
     }
 
     private OrganizationalUnit getDefaultOrganizationalUnit() {
