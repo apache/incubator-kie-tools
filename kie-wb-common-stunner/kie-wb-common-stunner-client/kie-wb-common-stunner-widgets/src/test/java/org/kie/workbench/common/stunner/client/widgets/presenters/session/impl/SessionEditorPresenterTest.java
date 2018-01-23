@@ -41,11 +41,15 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientF
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.inOrder;
@@ -104,6 +108,12 @@ public class SessionEditorPresenterTest {
     @Mock
     private Diagram diagram;
 
+    @Captor
+    private ArgumentCaptor<ScreenMaximizedEvent> screenMaximizedEventArgumentCaptor;
+
+    @Captor
+    private ArgumentCaptor<ScreenMinimizedEvent> screenMinimizedEventArgumentCaptor;
+
     @Before
     public void init() throws Exception {
 
@@ -144,9 +154,12 @@ public class SessionEditorPresenterTest {
         screenResizeEventObserver.onEventReceived(new ScreenMinimizedEvent(false));
 
         InOrder inOrder = inOrder(paletteWidget);
-        inOrder.verify(paletteWidget).setVisible(true);
-        inOrder.verify(paletteWidget).setVisible(false);
-        inOrder.verify(paletteWidget,
-                       times(2)).setVisible(true);
+        inOrder.verify(paletteWidget, times(2)).onScreenMaximized(screenMaximizedEventArgumentCaptor.capture());
+        inOrder.verify(paletteWidget, times(2)).onScreenMinimized(screenMinimizedEventArgumentCaptor.capture());
+
+        assertTrue(screenMaximizedEventArgumentCaptor.getAllValues().get(0).isDiagramScreen());
+        assertFalse(screenMaximizedEventArgumentCaptor.getAllValues().get(1).isDiagramScreen());
+        assertTrue(screenMinimizedEventArgumentCaptor.getAllValues().get(0).isDiagramScreen());
+        assertFalse(screenMinimizedEventArgumentCaptor.getAllValues().get(1).isDiagramScreen());
     }
 }

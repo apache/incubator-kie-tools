@@ -19,6 +19,8 @@ package org.kie.workbench.common.stunner.client.widgets.palette;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.stunner.core.client.components.palette.Palette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.PaletteDefinition;
+import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMaximizedEvent;
+import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMinimizedEvent;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 
@@ -49,6 +51,15 @@ public interface PaletteWidget<D extends PaletteDefinition>
                               final double y);
     }
 
+    interface PaletteVisibility {
+
+        boolean isVisible();
+    }
+
+    PaletteVisibility VISIBLE = () -> true;
+
+    PaletteVisibility HIDDEN = () -> false;
+
     PaletteWidget<D> onItemDrop(final ItemDropCallback callback);
 
     PaletteWidget<D> onItemDragStart(final ItemDragStartCallback callback);
@@ -57,7 +68,11 @@ public interface PaletteWidget<D extends PaletteDefinition>
 
     void unbind();
 
-    void setVisible(boolean visible);
+    void setVisible(PaletteVisibility visibility);
+
+    void onScreenMaximized(ScreenMaximizedEvent event);
+
+    void onScreenMinimized(ScreenMinimizedEvent event);
 
     HTMLElement getElement();
 }

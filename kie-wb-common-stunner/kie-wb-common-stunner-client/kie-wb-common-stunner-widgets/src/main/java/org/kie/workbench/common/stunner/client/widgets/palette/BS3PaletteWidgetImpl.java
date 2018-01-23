@@ -36,6 +36,8 @@ import org.kie.workbench.common.stunner.core.client.components.glyph.ShapeGlyphD
 import org.kie.workbench.common.stunner.core.client.components.palette.AbstractPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteCategory;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPalette;
+import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMaximizedEvent;
+import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMinimizedEvent;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
@@ -152,8 +154,18 @@ public class BS3PaletteWidgetImpl extends AbstractPalette<DefinitionSetPalette>
     }
 
     @Override
-    public void setVisible(boolean visible) {
-        view.showEmptyView(!visible);
+    public void setVisible(final PaletteVisibility visibility) {
+        view.showEmptyView(!visibility.isVisible());
+    }
+
+    @Override
+    public void onScreenMaximized(final ScreenMaximizedEvent event) {
+        setVisible(event.isDiagramScreen() ? PaletteWidget.VISIBLE : PaletteWidget.HIDDEN);
+    }
+
+    @Override
+    public void onScreenMinimized(final ScreenMinimizedEvent event) {
+        setVisible(PaletteWidget.VISIBLE);
     }
 
     protected ShapeFactory getShapeFactory() {

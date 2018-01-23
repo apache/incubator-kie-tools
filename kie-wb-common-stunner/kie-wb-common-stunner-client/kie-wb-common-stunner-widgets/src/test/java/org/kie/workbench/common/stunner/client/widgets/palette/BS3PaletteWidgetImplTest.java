@@ -23,10 +23,13 @@ import org.kie.workbench.common.stunner.client.widgets.palette.categories.Defini
 import org.kie.workbench.common.stunner.client.widgets.palette.factory.BS3PaletteViewFactory;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.glyph.ShapeGlyphDragHandler;
+import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMaximizedEvent;
+import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMinimizedEvent;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -70,5 +73,40 @@ public class BS3PaletteWidgetImplTest {
         verify(categoryWidgetInstance).destroyAll();
         verify(viewFactory).destroy();
         verify(view).destroy();
+    }
+
+    @Test
+    public void checkOnScreenMaximisedDiagramEditor() {
+        final ScreenMaximizedEvent event = new ScreenMaximizedEvent(true);
+        palette.onScreenMaximized(event);
+
+        verify(view).showEmptyView(false);
+    }
+
+    @Test
+    public void checkOnScreenMaximisedNotDiagramEditor() {
+        //showEmptyView(true) is called in the palette.init() method so reset for this test
+        reset(view);
+
+        final ScreenMaximizedEvent event = new ScreenMaximizedEvent(false);
+        palette.onScreenMaximized(event);
+
+        verify(view).showEmptyView(true);
+    }
+
+    @Test
+    public void checkOnScreenMinimisedDiagramEditor() {
+        final ScreenMinimizedEvent event = new ScreenMinimizedEvent(true);
+        palette.onScreenMinimized(event);
+
+        verify(view).showEmptyView(false);
+    }
+
+    @Test
+    public void checkOnScreenMinimisedNotDiagramEditor() {
+        final ScreenMinimizedEvent event = new ScreenMinimizedEvent(false);
+        palette.onScreenMinimized(event);
+
+        verify(view).showEmptyView(false);
     }
 }

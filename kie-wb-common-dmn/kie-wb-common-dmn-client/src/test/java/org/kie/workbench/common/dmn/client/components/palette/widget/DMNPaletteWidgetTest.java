@@ -22,6 +22,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.commands.general.BaseNavigateCommand;
 import org.kie.workbench.common.stunner.client.widgets.palette.PaletteWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.factory.BS3PaletteViewFactory;
 import org.kie.workbench.common.stunner.core.client.ShapeSet;
@@ -30,6 +31,8 @@ import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.Palette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteItem;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionsPalette;
+import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMaximizedEvent;
+import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMinimizedEvent;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
@@ -291,5 +294,66 @@ public class DMNPaletteWidgetTest {
         verify(paletteItemWidgets).destroyAll();
         verify(viewFactory).destroy();
         verify(view).destroy();
+    }
+
+    @Test
+    public void checkOnScreenMaximisedDiagramEditor() {
+        final ScreenMaximizedEvent event = new ScreenMaximizedEvent(true);
+        widget.onScreenMaximized(event);
+
+        verify(view).showEmptyView(false);
+    }
+
+    @Test
+    public void checkOnScreenMaximisedDiagramEditorShowingExpressionEditor() {
+        widget.setVisible(BaseNavigateCommand.HIDDEN);
+
+        //reset view to ensure we're only verifying the effect of the ScreenMaximizedEvent
+        reset(view);
+
+        final ScreenMaximizedEvent event = new ScreenMaximizedEvent(true);
+        widget.onScreenMaximized(event);
+
+        verify(view, never()).showEmptyView(anyBoolean());
+    }
+
+    @Test
+    public void checkOnScreenMaximisedNotDiagramEditor() {
+        //showEmptyView(true) is called in the palette.init() method so reset for this test
+        reset(view);
+
+        final ScreenMaximizedEvent event = new ScreenMaximizedEvent(false);
+        widget.onScreenMaximized(event);
+
+        verify(view).showEmptyView(true);
+    }
+
+    @Test
+    public void checkOnScreenMinimisedDiagramEditor() {
+        final ScreenMinimizedEvent event = new ScreenMinimizedEvent(true);
+        widget.onScreenMinimized(event);
+
+        verify(view).showEmptyView(false);
+    }
+
+    @Test
+    public void checkOnScreenMinimisedDiagramEditorShowingExpressionEditor() {
+        widget.setVisible(BaseNavigateCommand.HIDDEN);
+
+        //reset view to ensure we're only verifying the effect of the ScreenMinimizedEvent
+        reset(view);
+
+        final ScreenMinimizedEvent event = new ScreenMinimizedEvent(true);
+        widget.onScreenMinimized(event);
+
+        verify(view, never()).showEmptyView(anyBoolean());
+    }
+
+    @Test
+    public void checkOnScreenMinimisedNotDiagramEditor() {
+        final ScreenMinimizedEvent event = new ScreenMinimizedEvent(false);
+        widget.onScreenMinimized(event);
+
+        verify(view).showEmptyView(false);
     }
 }

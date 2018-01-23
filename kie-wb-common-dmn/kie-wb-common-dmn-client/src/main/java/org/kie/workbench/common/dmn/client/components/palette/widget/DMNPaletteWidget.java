@@ -24,11 +24,15 @@ import javax.inject.Inject;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.dmn.client.commands.general.BaseNavigateCommand;
 import org.kie.workbench.common.stunner.client.widgets.palette.BS3PaletteWidget;
+import org.kie.workbench.common.stunner.client.widgets.palette.PaletteWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.factory.BS3PaletteViewFactory;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.AbstractPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionsPalette;
+import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMaximizedEvent;
+import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMinimizedEvent;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
@@ -49,6 +53,7 @@ public class DMNPaletteWidget extends AbstractPalette<DefinitionsPalette>
     protected ItemDragUpdateCallback itemDragUpdateCallback;
 
     private ManagedInstance<DMNPaletteItemWidget> paletteItemWidgets;
+    private PaletteVisibility visibility = PaletteWidget.VISIBLE;
 
     private BS3PaletteViewFactory viewFactory;
 
@@ -209,7 +214,24 @@ public class DMNPaletteWidget extends AbstractPalette<DefinitionsPalette>
     }
 
     @Override
-    public void setVisible(boolean visible) {
-        view.showEmptyView(!visible);
+    public void setVisible(final PaletteVisibility visibility) {
+        this.visibility = visibility;
+        view.showEmptyView(!visibility.isVisible());
+    }
+
+    @Override
+    public void onScreenMaximized(final ScreenMaximizedEvent event) {
+        if (visibility.equals(BaseNavigateCommand.HIDDEN)) {
+            return;
+        }
+        setVisible(event.isDiagramScreen() ? PaletteWidget.VISIBLE : PaletteWidget.HIDDEN);
+    }
+
+    @Override
+    public void onScreenMinimized(final ScreenMinimizedEvent event) {
+        if (visibility.equals(BaseNavigateCommand.HIDDEN)) {
+            return;
+        }
+        setVisible(PaletteWidget.VISIBLE);
     }
 }

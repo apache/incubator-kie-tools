@@ -25,6 +25,7 @@ import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
+import org.kie.workbench.common.stunner.client.widgets.palette.PaletteWidget;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.AbstractSessionPresenter;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -44,6 +45,8 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
 
 public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
+
+    public static final PaletteWidget.PaletteVisibility HIDDEN = () -> false;
 
     static final NoOperationGraphCommand NOP_GRAPH_COMMAND = new NoOperationGraphCommand();
 
@@ -142,7 +145,7 @@ public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
     }
 
     protected void hidePaletteWidget(final boolean hidden) {
-        presenter.getPalette().setVisible(!hidden);
+        presenter.getPalette().setVisible(hidden ? HIDDEN : PaletteWidget.VISIBLE);
     }
 
     private CanvasHandler getCanvasHandler() {
