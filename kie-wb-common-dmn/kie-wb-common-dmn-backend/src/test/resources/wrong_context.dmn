@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_a6568597-5990-4d50-9676-6e461eeda346" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.2.14.2" id="_a6568597-5990-4d50-9676-6e461eeda346" name="wrong context" namespace="http://www.trisotech.com/definitions/_a6568597-5990-4d50-9676-6e461eeda346" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:decision id="_653b3426-933a-4050-9568-ab2a66b43c36" name="hardcoded wrong context">
+    <semantic:variable id="_5228fa04-3fda-4ffc-aff8-ed6bcb2d6d90" name="hardcoded wrong context" typeRef="feel:number"/>
+    <semantic:context id="_c04184ab-bd82-490e-9e38-a04abb7d7ef6">
+      <semantic:contextEntry>
+        <semantic:variable id="_6ee53777-61ff-4802-a515-3c48c4c3a2c1" name="ciao"/>
+        <semantic:literalExpression/>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:literalExpression id="_b111bd2e-19e2-4308-b504-4f25f3bd606f">
+          <semantic:text>47</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+    </semantic:context>
+  </semantic:decision>
+</semantic:definitions>

@@ -38,9 +38,11 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus;
+import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
 import org.kie.dmn.core.util.KieHelper;
 import org.kie.dmn.model.v1_1.Definitions;
@@ -48,6 +50,7 @@ import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Association;
 import org.kie.workbench.common.dmn.api.definition.v1_1.AuthorityRequirement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationRequirement;
@@ -892,5 +895,46 @@ public class DMNMarshallerTest {
         DMNDecisionResult adultResult = dmnResult.getDecisionResultByName("positive or negative");
         assertEquals(DecisionEvaluationStatus.SUCCEEDED, adultResult.getEvaluationStatus());
         assertEquals(result, adultResult.getResult());
+    }
+
+    @Test
+    public void test_wrong_context() throws IOException {
+        // DROOLS-2217
+        // SPECIAL CASE: to represent a partially edited DMN file.
+        // consider a LiteralExpression with null text as missing expression altogether.
+
+        final DMNRuntime runtime = roundTripUnmarshalMarshalThenUnmarshalDMN(this.getClass().getResourceAsStream("/wrong_context.dmn"));
+        DMNModel dmnModel = runtime.getModels().get(0);
+
+        // the DMN file is schema valid but is not a valid-DMN (a context-entry value is a literal expression missing text, which is null)
+        assertTrue(dmnModel.hasErrors());
+
+        // identify the error message for context-entry "ciao":
+        DMNMessage m0 = dmnModel.getMessages(DMNMessage.Severity.ERROR).get(0);
+        assertTrue("expected a message identifying the problem on a context entry for 'ciao'",
+                   m0.getMessage().startsWith("No expression defined for name 'ciao'"));
+
+        DecisionNode d0 = dmnModel.getDecisionById("_653b3426-933a-4050-9568-ab2a66b43c36");
+        // the identified DMN Decision is composed of a DMN Context where the first context-entry value is a literal expression missing text (text is null).
+        org.kie.dmn.model.v1_1.Context d0c = (org.kie.dmn.model.v1_1.Context) d0.getDecision().getExpression();
+        org.kie.dmn.model.v1_1.Expression contextEntryValue = d0c.getContextEntry().get(0).getExpression();
+        assertTrue(contextEntryValue instanceof org.kie.dmn.model.v1_1.LiteralExpression);
+        assertEquals(null, ((org.kie.dmn.model.v1_1.LiteralExpression) contextEntryValue).getText());
+
+        // -- Stunner side.
+
+        DMNMarshaller m = new DMNMarshaller(new XMLEncoderDiagramMetadataMarshaller(), applicationFactoryManager);
+        Graph<?, ?> g = m.unmarshall(null, this.getClass().getResourceAsStream("/wrong_context.dmn"));
+        DiagramImpl diagram = new DiagramImpl("", null);
+
+        Node<?, ?> decisionNode = g.getNode("_653b3426-933a-4050-9568-ab2a66b43c36");
+        assertNodeContentDefinitionIs(decisionNode, Decision.class);
+        View<Decision> view = ((View<Decision>) decisionNode.getContent());
+
+        // the identified DMN Decision is composed of a DMN Context where the first context-entry has missing Expression.
+        Context expression = (Context) view.getDefinition().getExpression();
+        assertEquals("a literalexpression with null text is threated as a missing expression altogether.",
+                     null,
+                     expression.getContextEntry().get(0).getExpression());
     }
 }
