@@ -19,6 +19,7 @@ package org.guvnor.messageconsole.client.console;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -44,16 +45,9 @@ import org.uberfire.rpc.SessionInfo;
 @ApplicationScoped
 public class MessageConsoleService {
 
-    @Inject
     private SyncBeanManager iocManager;
-
-    @Inject
     private PlaceManager placeManager;
-
-    @Inject
     private SessionInfo sessionInfo;
-
-    @Inject
     private User identity;
 
     private ListDataProvider<MessageConsoleServiceRow> dataProvider = new ListDataProvider<MessageConsoleServiceRow>();
@@ -62,6 +56,21 @@ public class MessageConsoleService {
     private static final String MESSAGE_CONSOLE = "org.kie.workbench.common.screens.messageconsole.MessageConsole";
 
     private String currentPerspective;
+
+    public MessageConsoleService() {
+        //CDI proxy
+    }
+
+    @Inject
+    public MessageConsoleService(final SyncBeanManager iocManager,
+                                 final PlaceManager placeManager,
+                                 final SessionInfo sessionInfo,
+                                 final User identity) {
+        this.iocManager = iocManager;
+        this.placeManager = placeManager;
+        this.sessionInfo = sessionInfo;
+        this.identity = identity;
+    }
 
     public void publishMessages(final @Observes PublishMessagesEvent publishEvent) {
         publishMessages(publishEvent.getSessionId(),
@@ -131,6 +140,7 @@ public class MessageConsoleService {
 
         list.addAll(index,
                     newRows);
+        list.sort(MessageConsoleServiceRow.DESC_ORDER);
     }
 
     private void unpublishMessages(final String sessionId,
@@ -227,5 +237,10 @@ public class MessageConsoleService {
 
     private Collection<SyncBeanDef<MessageConsoleWhiteList>> getAvailableWhiteLists() {
         return iocManager.lookupBeans(MessageConsoleWhiteList.class);
+    }
+
+    //This is required for Unit Testing
+    ListDataProvider<MessageConsoleServiceRow> getDataProvider() {
+        return dataProvider;
     }
 }
