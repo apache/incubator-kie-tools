@@ -123,8 +123,22 @@ public class ShapeViewExtStub
     }
 
     @Override
+    public Object setRadiusConstraints(final double minRadius,
+                                       final double maxRadius) {
+        return this;
+    }
+
+    @Override
     public Object setSize(final double width,
                           final double height) {
+        return this;
+    }
+
+    @Override
+    public Object setSizeConstraints(final double minWidth,
+                                     final double minHeight,
+                                     final double maxWidth,
+                                     final double maxHeight) {
         return this;
     }
 

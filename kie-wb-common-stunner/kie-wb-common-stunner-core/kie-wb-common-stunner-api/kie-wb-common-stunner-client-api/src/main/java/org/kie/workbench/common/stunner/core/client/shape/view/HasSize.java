@@ -20,4 +20,9 @@ public interface HasSize<T> {
 
     T setSize(final double width,
               final double height);
+
+    T setSizeConstraints(final double minWidth,
+                         final double minHeight,
+                         final double maxWidth,
+                         final double maxHeight);
 }

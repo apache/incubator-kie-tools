@@ -22,6 +22,7 @@ import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.ControlHandleList;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle;
 import com.ait.lienzo.client.core.shape.wires.WiresShapeControlHandleList;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresScalableContainer;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasSize;
@@ -36,12 +37,12 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventTy
  * So the internal multi-path instance "decorates" the given shape and the others
  * shape's children, if any, by providing a non visible square in which
  * the different control points.
- * <p>
+ * <p/>
  * This way any kind of path or primitive instance can be added
  * as child for this shape and even if that instance cannot be resized
  * or supports some control point handler, due to it's state, the already
  * provided multi-path instance is used for these goals.
- * <p>
+ * <p/>
  * When scaling this shape, it scales all children for fitting the given
  * new size, and the multi-path instance is rebuild to provide the right
  * magnets and control points.
@@ -104,6 +105,18 @@ public class DecoratedShapeView<T extends WiresShapeViewExt>
                              width,
                              height);
         refresh();
+        return (T) this;
+    }
+
+    @Override
+    public T setSizeConstraints(final double minWidth,
+                                final double minHeight,
+                                final double maxWidth,
+                                final double maxHeight) {
+        getPath().setSizeConstraints(new BoundingBox(minWidth,
+                                                     minHeight,
+                                                     maxWidth,
+                                                     maxHeight));
         return (T) this;
     }
 

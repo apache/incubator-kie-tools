@@ -43,6 +43,10 @@ public class LaneShapeDef extends BaseDimensionedShapeDef
         return newSizeHandlerBuilder()
                 .width(e -> e.getDimensionsSet().getWidth().getValue())
                 .height(e -> e.getDimensionsSet().getHeight().getValue())
+                .minWidth(task -> 200d)
+                .maxWidth(task -> 1200d)
+                .minHeight(task -> 200d)
+                .maxHeight(task -> 1200d)
                 .build();
     }
 

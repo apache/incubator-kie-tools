@@ -63,4 +63,9 @@ public class WiresContainerShapeView<T extends WiresContainerShapeView>
         this.getChildren().forEach(WiresContainerShapeView::destroy);
         super.preDestroy();
     }
+
+    @SuppressWarnings("unchecked")
+    protected T cast() {
+        return (T) this;
+    }
 }

@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGGlyphFactory;
@@ -33,9 +32,6 @@ import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandl
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.svg.client.shape.factory.SVGShapeViewResources;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
-import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeViewResource;
-
-import static java.util.Objects.nonNull;
 
 public class SubprocessShapeDef extends BaseDimensionedShapeDef
         implements BPMNSvgShapeDef<BaseSubprocess>{
@@ -63,6 +59,10 @@ public class SubprocessShapeDef extends BaseDimensionedShapeDef
         return newSizeHandlerBuilder()
                 .width(task -> task.getDimensionsSet().getWidth().getValue())
                 .height(task -> task.getDimensionsSet().getHeight().getValue())
+                .minWidth(task -> 25d)
+                .maxWidth(task -> 1200d)
+                .minHeight(task -> 25d)
+                .maxHeight(task -> 1200d)
                 .build();
     }
 

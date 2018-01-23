@@ -36,15 +36,33 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 public class SizeHandler<W, V extends ShapeView> implements ShapeViewHandler<View<W>, V> {
 
     private final Function<W, Double> widthProvider;
+    private final Function<W, Double> minWidthProvider;
+    private final Function<W, Double> maxWidthProvider;
     private final Function<W, Double> heightProvider;
+    private final Function<W, Double> minHeightProvider;
+    private final Function<W, Double> maxHeightProvider;
     private final Function<W, Double> radiusProvider;
+    private final Function<W, Double> minRadiusProvider;
+    private final Function<W, Double> maxRadiusProvider;
 
     private SizeHandler(final Function<W, Double> widthProvider,
+                        final Function<W, Double> minWidthProvider,
+                        final Function<W, Double> maxWidthProvider,
                         final Function<W, Double> heightProvider,
-                        final Function<W, Double> radiusProvider) {
+                        final Function<W, Double> minHeightProvider,
+                        final Function<W, Double> maxHeightProvider,
+                        final Function<W, Double> radiusProvider,
+                        final Function<W, Double> minRadiusProvider,
+                        final Function<W, Double> maxRadiusProvider) {
         this.widthProvider = widthProvider;
+        this.minWidthProvider = minWidthProvider;
+        this.maxWidthProvider = maxWidthProvider;
         this.heightProvider = heightProvider;
+        this.minHeightProvider = minHeightProvider;
+        this.maxHeightProvider = maxHeightProvider;
         this.radiusProvider = radiusProvider;
+        this.minRadiusProvider = minRadiusProvider;
+        this.maxRadiusProvider = maxRadiusProvider;
     }
 
     @Override
@@ -57,10 +75,18 @@ public class SizeHandler<W, V extends ShapeView> implements ShapeViewHandler<Vie
             final Double beanWidth = widthProvider.apply(bean);
             final Double beanHeight = heightProvider.apply(bean);
             final double width = null != beanWidth ? beanWidth : boundsWidth;
+            final double minWidth = minWidthProvider.apply(bean);
+            final double maxWidth = maxWidthProvider.apply(bean);
             final double height = null != beanHeight ? beanHeight : boundsHeight;
+            final double minHeight = minHeightProvider.apply(bean);
+            final double maxHeight = maxHeightProvider.apply(bean);
             if (width > 0 && height > 0) {
                 ((HasSize) view).setSize(width, height);
             }
+            if (minWidth > 0 && minHeight > 0 && maxWidth > 0 && maxHeight > 0) {
+                ((HasSize) view).setSizeConstraints(minWidth, minHeight, maxWidth, maxHeight);
+            }
+
         }
         if (view instanceof HasRadius) {
             final Double beanRadius = radiusProvider.apply(bean);
@@ -68,8 +94,13 @@ public class SizeHandler<W, V extends ShapeView> implements ShapeViewHandler<Vie
                     (boundsWidth > boundsHeight ?
                         boundsWidth / 2 :
                         boundsHeight / 2);
+            final double minRadius = minRadiusProvider.apply(bean);
+            final double maxRadius = maxRadiusProvider.apply(bean);
             if (radius > 0) {
                 ((HasRadius) view).setRadius(radius);
+            }
+            if (minRadius > 0 && maxRadius > 0) {
+                ((HasRadius) view).setRadiusConstraints(minRadius, maxRadius);
             }
         }
     }
@@ -77,16 +108,39 @@ public class SizeHandler<W, V extends ShapeView> implements ShapeViewHandler<Vie
     public static class Builder<W, V extends ShapeView> {
 
         private Function<W, Double> widthProvider;
+        private Function<W, Double> minWidthProvider;
+        private Function<W, Double> maxWidthProvider;
         private Function<W, Double> heightProvider;
+        private Function<W, Double> minHeightProvider;
+        private Function<W, Double> maxHeightProvider;
         private Function<W, Double> radiusProvider;
+        private Function<W, Double> minRadiusProvider;
+        private Function<W, Double> maxRadiusProvider;
 
         public Builder() {
             this.widthProvider = value -> null;
+            this.minWidthProvider = value -> 25d;
+            this.maxWidthProvider = value -> 30000d;
             this.heightProvider = value -> null;
+            this.minHeightProvider = value -> 25d;
+            this.maxHeightProvider = value -> 3000d;
+            this.radiusProvider = value -> null;
+            this.minRadiusProvider = value -> 10d;
+            this.maxRadiusProvider = value -> 3000d;
         }
 
         public Builder<W, V> width(Function<W, Double> provider) {
             this.widthProvider = provider;
+            return this;
+        }
+
+        public Builder<W, V> minWidth(Function<W, Double> provider) {
+            this.minWidthProvider = provider;
+            return this;
+        }
+
+        public Builder<W, V> maxWidth(Function<W, Double> provider) {
+            this.maxWidthProvider = provider;
             return this;
         }
 
@@ -95,15 +149,41 @@ public class SizeHandler<W, V extends ShapeView> implements ShapeViewHandler<Vie
             return this;
         }
 
+        public Builder<W, V> minHeight(Function<W, Double> provider) {
+            this.minHeightProvider = provider;
+            return this;
+        }
+
+        public Builder<W, V> maxHeight(Function<W, Double> provider) {
+            this.maxHeightProvider = provider;
+            return this;
+        }
+
         public Builder<W, V> radius(Function<W, Double> provider) {
             this.radiusProvider = provider;
             return this;
         }
 
+        public Builder<W, V> minRadius(Function<W, Double> provider) {
+            this.minRadiusProvider = provider;
+            return this;
+        }
+
+        public Builder<W, V> maxRadius(Function<W, Double> provider) {
+            this.maxRadiusProvider = provider;
+            return this;
+        }
+
         public SizeHandler<W, V> build() {
             return new SizeHandler<>(widthProvider,
+                                     minWidthProvider,
+                                     maxWidthProvider,
                                      heightProvider,
-                                     radiusProvider);
+                                     minHeightProvider,
+                                     maxHeightProvider,
+                                     radiusProvider,
+                                     minRadiusProvider,
+                                     maxRadiusProvider);
         }
     }
 }

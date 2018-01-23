@@ -22,6 +22,7 @@ import java.util.Optional;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresContainerShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasSize;
@@ -87,6 +88,18 @@ public abstract class AbstractCaseManagementShape<T extends WiresContainerShapeV
         this.currentHeight = height;
         setSize(this.currentWidth,
                 height);
+        return cast();
+    }
+
+    @Override
+    public T setSizeConstraints(final double minWidth,
+                                final double minHeight,
+                                final double maxWidth,
+                                final double maxHeight) {
+        getPath().setSizeConstraints(new BoundingBox(minWidth,
+                                                     minHeight,
+                                                     maxWidth,
+                                                     maxHeight));
         return cast();
     }
 
@@ -172,9 +185,4 @@ public abstract class AbstractCaseManagementShape<T extends WiresContainerShapeV
     }
 
     protected abstract AbstractCaseManagementShape createGhost();
-
-    @SuppressWarnings("unchecked")
-    private T cast() {
-        return (T) this;
-    }
 }

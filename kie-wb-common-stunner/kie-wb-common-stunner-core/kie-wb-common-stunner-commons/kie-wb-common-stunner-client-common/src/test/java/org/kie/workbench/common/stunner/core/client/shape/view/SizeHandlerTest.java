@@ -85,4 +85,56 @@ public class SizeHandlerTest {
         verify(view, never()).setSize(anyDouble(), anyDouble());
         verify(view, never()).setRadius(anyDouble());
     }
+
+    @Test
+    public void testHandleInvalidSizeConstraints() {
+        tested = new SizeHandler.Builder<Object, ShapeViewExtStub>()
+                .minWidth(o -> 0d)
+                .maxWidth(o -> 0d)
+                .minHeight(o -> 0d)
+                .maxHeight(o -> 0d)
+                .build();
+        final Object bean = mock(Object.class);
+        tested.handle(new ViewImpl<>(bean, BoundsImpl.build()), view);
+
+        verify(view, never()).setSizeConstraints(anyDouble(), anyDouble(), anyDouble(), anyDouble());
+    }
+
+    @Test
+    public void testHandleValidSizeConstraints() {
+        tested = new SizeHandler.Builder<Object, ShapeViewExtStub>()
+                .minWidth(o -> 10d)
+                .maxWidth(o -> 100d)
+                .minHeight(o -> 10d)
+                .maxHeight(o -> 100d)
+                .build();
+        final Object bean = mock(Object.class);
+        tested.handle(new ViewImpl<>(bean, BoundsImpl.build()), view);
+
+        verify(view, times(1)).setSizeConstraints(10d, 10d, 100d, 100d);
+    }
+
+    @Test
+    public void testHandleInvalidRadiusConstraints() {
+        tested = new SizeHandler.Builder<Object, ShapeViewExtStub>()
+                .minRadius(o -> 0d)
+                .maxRadius(o -> 0d)
+                .build();
+        final Object bean = mock(Object.class);
+        tested.handle(new ViewImpl<>(bean, BoundsImpl.build()), view);
+
+        verify(view, never()).setRadiusConstraints(anyDouble(), anyDouble());
+    }
+
+    @Test
+    public void testHandleValidRadiusConstraints() {
+        tested = new SizeHandler.Builder<Object, ShapeViewExtStub>()
+                .minRadius(o -> 10d)
+                .maxRadius(o -> 100d)
+                .build();
+        final Object bean = mock(Object.class);
+        tested.handle(new ViewImpl<>(bean, BoundsImpl.build()), view);
+
+        verify(view, times(1)).setRadiusConstraints(10d, 100d);
+    }
 }
