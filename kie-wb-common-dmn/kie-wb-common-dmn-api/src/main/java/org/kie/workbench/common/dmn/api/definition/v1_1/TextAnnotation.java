@@ -35,12 +35,10 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 
 @Portable
@@ -51,12 +49,6 @@ public class TextAnnotation extends Artifact implements DMNViewDefinition {
 
     @Category
     public static final transient String stunnerCategory = Categories.NODES;
-
-    @Title
-    public static final transient String stunnerTitle = "DMN TextAnnotation";
-
-    @Description
-    public static final transient String stunnerDescription = "DMN TextAnnotation";
 
     @Labels
     private final Set<String> stunnerLabels = new HashSet<String>() {{
@@ -124,14 +116,6 @@ public class TextAnnotation extends Artifact implements DMNViewDefinition {
 
     public String getStunnerCategory() {
         return stunnerCategory;
-    }
-
-    public String getStunnerTitle() {
-        return stunnerTitle;
-    }
-
-    public String getStunnerDescription() {
-        return stunnerDescription;
     }
 
     public Set<String> getStunnerLabels() {

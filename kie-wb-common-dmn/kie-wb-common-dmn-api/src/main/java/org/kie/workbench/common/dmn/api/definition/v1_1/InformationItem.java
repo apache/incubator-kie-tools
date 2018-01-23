@@ -25,7 +25,6 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
@@ -35,10 +34,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 @PropertySet
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED, startElement = "id")
 public class InformationItem extends NamedElement implements DMNPropertySet {
-
-    @FieldLabel
-    @org.kie.workbench.common.stunner.core.definition.annotation.Name
-    public static final transient String propertySetName = "InformationItem";
 
     @Property
     @FormField(afterElement = "name")
@@ -59,10 +54,6 @@ public class InformationItem extends NamedElement implements DMNPropertySet {
               description,
               name);
         this.typeRef = typeRef;
-    }
-
-    public String getPropertySetName() {
-        return propertySetName;
     }
 
     // -----------------------

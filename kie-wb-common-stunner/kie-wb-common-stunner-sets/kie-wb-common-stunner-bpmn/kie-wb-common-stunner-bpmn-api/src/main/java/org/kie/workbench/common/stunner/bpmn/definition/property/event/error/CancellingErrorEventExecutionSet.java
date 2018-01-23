@@ -23,12 +23,10 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.CancelActivity;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ComboBoxFieldType;
-import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -39,10 +37,6 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @FormDefinition(startElement = "errorRef",
         policy = FieldPolicy.ONLY_MARKED)
 public class CancellingErrorEventExecutionSet implements BPMNPropertySet {
-
-    @Name
-    @FieldLabel
-    public static final transient String propertySetName = "Implementation/Execution";
 
     @Property
     private CancelActivity cancelActivity;
@@ -65,10 +59,6 @@ public class CancellingErrorEventExecutionSet implements BPMNPropertySet {
                                             final @MapsTo("errorRef") ErrorRef errorRef) {
         this.cancelActivity = cancelActivity;
         this.errorRef = errorRef;
-    }
-
-    public String getPropertySetName() {
-        return propertySetName;
     }
 
     public CancelActivity getCancelActivity() {

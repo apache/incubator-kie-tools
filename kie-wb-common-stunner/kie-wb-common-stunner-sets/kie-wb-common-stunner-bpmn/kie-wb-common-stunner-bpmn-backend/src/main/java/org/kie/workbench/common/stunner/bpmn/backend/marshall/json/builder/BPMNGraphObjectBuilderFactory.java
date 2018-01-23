@@ -21,7 +21,7 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxManager;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
-import org.kie.workbench.common.stunner.core.backend.definition.adapter.annotation.RuntimeDefinitionAdapter;
+import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.BindableMorphAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.MorphAdapter;
 import org.kie.workbench.common.stunner.core.definition.exception.DefinitionNotFoundException;
@@ -79,7 +79,7 @@ public class BPMNGraphObjectBuilderFactory implements GraphObjectBuilderFactory 
                 return new NodePropertyMorphBuilderImpl(defClass,
                                                         propertyMorphDefinition);
             } else {
-                Class<? extends ElementFactory> elementFactory = RuntimeDefinitionAdapter.getGraphFactory(defClass);
+                Class<? extends ElementFactory> elementFactory = BackendDefinitionAdapter.getGraphFactory(defClass);
                 if (isNodeFactory(elementFactory)) {
                     return new NodeBuilderImpl(defClass);
                 } else if (isEdgeFactory(elementFactory)) {

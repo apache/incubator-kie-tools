@@ -507,28 +507,25 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
 
                             // Override the using the i18n mechanism
                             if (fieldDefinitionAnnotation.i18nMode().equals(I18nMode.OVERRIDE_I18N_KEY)) {
+                                fieldLabel = finalType.toString() + i18nSettings.separator() + fieldDefinitionAnnotation.labelKeySuffix();
                                 Collection<FieldInfo> labelInfos = extractFieldInfos((TypeElement) finalTypeElement,
                                                                                      fieldElement -> fieldElement.getAnnotation(FieldLabel.class) != null);
 
-                                if (labelInfos == null || labelInfos.size() != 1) {
-                                    throw new Exception("Problem processing FieldDefinition [" + finalType + "]: it should have one field marked as @FieldLabel");
+                                if (labelInfos != null && labelInfos.size() == 1) {
+                                    FieldInfo labelInfo = labelInfos.iterator().next();
+                                    fieldLabel = finalType.toString() + i18nSettings.separator() + labelInfo.fieldElement.getSimpleName();
+
                                 }
 
-                                FieldInfo labelInfo = labelInfos.iterator().next();
-
-                                fieldLabel = finalType.toString() + i18nSettings.separator() + labelInfo.fieldElement.getSimpleName();
-
+                                helpMessage = finalType.toString() + i18nSettings.separator() + fieldDefinitionAnnotation.helpMessageKeySuffix();
                                 Collection<FieldInfo> helpMessages = extractFieldInfos((TypeElement) finalTypeElement,
-                                                                                     fieldElement -> fieldElement.getAnnotation(FieldHelp.class) != null);
+                                                                                       fieldElement -> fieldElement.getAnnotation(FieldHelp.class) != null);
 
-                                if (helpMessages != null && helpMessages.size() > 0) {
-                                    if(helpMessages.size() != 1) {
-                                        throw new Exception("Problem processing FieldDefinition [" + finalType + "]: it has more than one field marked as @FieldHelp");
-                                    }
+                                if (helpMessages != null && helpMessages.size() == 1) {
                                     FieldInfo helpInfo = helpMessages.iterator().next();
-
                                     helpMessage = finalType.toString() + i18nSettings.separator() + helpInfo.fieldElement.getSimpleName();
                                 }
+
                             }
 
                             Collection<FieldInfo> fieldValue = extractFieldInfos((TypeElement) finalTypeElement,
@@ -550,6 +547,7 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
                             FormDefinition formDefinitionAnnotation = finalTypeElement.getAnnotation(FormDefinition.class);
 
                             if (formDefinitionAnnotation != null) {
+                                fieldLabel = finalType.toString() + i18nSettings.separator() + FieldDefinition.LABEL;
                                 Collection<FieldInfo> labelInfos = extractFieldInfos((TypeElement) finalTypeElement,
                                                                                      fieldElement -> fieldElement.getAnnotation(FieldLabel.class) != null);
 
@@ -558,6 +556,17 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
                                     fieldLabel = finalType.toString() + i18nSettings.separator() + labelInfo.fieldElement.getSimpleName();
                                     overrideI18n = true;
                                 }
+
+                                helpMessage = finalType.toString() + i18nSettings.separator() + FieldDefinition.HELP_MESSAGE;
+                                Collection<FieldInfo> helpMessages = extractFieldInfos((TypeElement) finalTypeElement,
+                                                                                       fieldElement -> fieldElement.getAnnotation(FieldHelp.class) != null);
+
+                                if (helpMessages != null && helpMessages.size() == 1) {
+                                    FieldInfo helpInfo = helpMessages.iterator().next();
+                                    helpMessage = finalType.toString() + i18nSettings.separator() + helpInfo.fieldElement.getSimpleName();
+                                    overrideI18n = true;
+                                }
+
                                 typeKind = org.kie.workbench.common.forms.model.TypeKind.OBJECT;
                             }
                         }
@@ -617,8 +626,11 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
 
                     elementContext.put("preferredType",
                                        typeName);
-                    if (!overrideI18n) {
+                    if (!overrideI18n && !isEmpty(settings.labelKey())) {
                         fieldLabel = settings.labelKey();
+                    }
+
+                    if (!overrideI18n && !isEmpty(settings.helpMessageKey())) {
                         helpMessage = settings.helpMessageKey();
                     }
 
@@ -654,7 +666,7 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
                 }
 
                 if (!overrideI18n) {
-                    if (!StringUtils.isEmpty(i18nSettings.keyPreffix())) {
+                    if (!isEmpty(i18nSettings.keyPreffix())) {
                         fieldLabel = i18nSettings.keyPreffix() + i18nSettings.separator() + fieldLabel;
                         helpMessage = i18nSettings.keyPreffix() + i18nSettings.separator() + helpMessage;
                     }
@@ -868,5 +880,9 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
 
     private TypeElement getParent(TypeElement classElement) {
         return (TypeElement) processingEnv.getTypeUtils().asElement(classElement.getSuperclass());
+    }
+
+    private static final boolean isEmpty(final String s) {
+        return StringUtils.isEmpty(s);
     }
 }

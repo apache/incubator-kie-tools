@@ -17,19 +17,13 @@ package org.kie.workbench.common.stunner.bpmn.definition.property.task;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
-import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
 @Portable
 @Bindable
 @PropertySet
 public class EmptyTaskExecutionSet implements BPMNPropertySet {
-
-    @Name
-    @FieldLabel
-    public static final transient String propertySetName = "Empty Implementation/Execution";
 
     @Override
     public int hashCode() {

@@ -31,7 +31,10 @@ import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.TaskGeneralSet;
+import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
@@ -45,6 +48,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import static org.jgroups.util.Util.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.eq;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(ContextUtils.class)
@@ -52,6 +56,15 @@ public class DefaultRouteFormProviderTest {
 
     @Mock
     SessionManager canvasSessionManager;
+
+    @Mock
+    DefinitionManager definitionManager;
+
+    @Mock
+    AdapterManager adapterManager;
+
+    @Mock
+    DefinitionAdapter<Object> definitionAdapter;
 
     @Mock
     FormRenderingContext context;
@@ -92,8 +105,12 @@ public class DefaultRouteFormProviderTest {
         PowerMockito.when(ContextUtils.getModel(Mockito.any(FormRenderingContext.class))).
                 thenReturn(gateway);
 
+        Mockito.when(definitionManager.adapters()).thenReturn(adapterManager);
+        Mockito.when(adapterManager.forDefinition()).thenReturn(definitionAdapter);
+
         Mockito.when(defaultRouteFormProvider.getExclusiveDatabasedGatewayNode(Mockito.any(ExclusiveDatabasedGateway.class))).
                 thenReturn(gatewayNode);
+        Mockito.when(defaultRouteFormProvider.getDefinitionManager()).thenReturn(definitionManager);
 
         Mockito.doCallRealMethod().when(defaultRouteFormProvider).getSelectorData(Mockito.any(FormRenderingContext.class));
         Mockito.doCallRealMethod().when(defaultRouteFormProvider).getGatewayOutEdges(Mockito.any(FormRenderingContext.class));
@@ -139,6 +156,8 @@ public class DefaultRouteFormProviderTest {
                                           null,
                                           null,
                                           null);
+        Mockito.when(definitionAdapter.getTitle(eq(userTask1))).thenReturn("User Task");
+
         UserTask userTask2 = new UserTask(new TaskGeneralSet(new Name("UserTask2"),
                                                              null),
                                           null,
@@ -147,6 +166,8 @@ public class DefaultRouteFormProviderTest {
                                           null,
                                           null,
                                           null);
+        Mockito.when(definitionAdapter.getTitle(eq(userTask2))).thenReturn("User Task");
+
         ScriptTask scriptTask3 = new ScriptTask(new TaskGeneralSet(new Name("ScriptTask3"),
                                                                    null),
                                                 null,
@@ -155,17 +176,23 @@ public class DefaultRouteFormProviderTest {
                                                 null,
                                                 null,
                                                 null);
+        Mockito.when(definitionAdapter.getTitle(eq(scriptTask3))).thenReturn("Script Task");
+
         ExclusiveDatabasedGateway gateway4 = new ExclusiveDatabasedGateway(new BPMNGeneralSet("Gateway4"),
                                                                            null,
                                                                            null,
                                                                            null,
                                                                            null);
+        Mockito.when(definitionAdapter.getTitle(eq(gateway4))).thenReturn("Exclusive Gateway");
+
         // Test object with empty name
         ExclusiveDatabasedGateway gateway5 = new ExclusiveDatabasedGateway(new BPMNGeneralSet(""),
                                                                            null,
                                                                            null,
                                                                            null,
                                                                            null);
+        Mockito.when(definitionAdapter.getTitle(eq(gateway5))).thenReturn("Exclusive Gateway");
+
         Mockito.when(defaultRouteFormProvider.getEdgeTarget(edge1)).thenReturn(userTask1);
         Mockito.when(defaultRouteFormProvider.getEdgeTarget(edge2)).thenReturn(userTask2);
         Mockito.when(defaultRouteFormProvider.getEdgeTarget(edge3)).thenReturn(scriptTask3);

@@ -24,9 +24,7 @@ import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType;
-import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
@@ -37,10 +35,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
         startElement = "width"
 )
 public class RectangleDimensionsSet implements DMNPropertySet {
-
-    @Name
-    @FieldLabel
-    public static final transient String propertySetName = "Shape Dimensions";
 
     @Property
     @FormField(
@@ -78,10 +72,6 @@ public class RectangleDimensionsSet implements DMNPropertySet {
                                   final @MapsTo("height") Height height) {
         this.width = width;
         this.height = height;
-    }
-
-    public String getPropertySetName() {
-        return propertySetName;
     }
 
     public Width getWidth() {

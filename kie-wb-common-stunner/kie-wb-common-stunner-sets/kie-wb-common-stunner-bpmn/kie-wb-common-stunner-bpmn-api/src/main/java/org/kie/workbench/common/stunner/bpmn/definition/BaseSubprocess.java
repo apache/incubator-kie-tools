@@ -27,7 +27,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Rect
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
-import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
@@ -39,9 +38,6 @@ public abstract class BaseSubprocess implements BPMNViewDefinition {
 
     @Category
     public static final transient String category = Categories.ACTIVITIES;
-
-    @Description
-    public static final transient String description = "A subprocess is a decomposable activity.";
 
     @PropertySet
     @FormField
@@ -98,10 +94,6 @@ public abstract class BaseSubprocess implements BPMNViewDefinition {
 
     public String getCategory() {
         return category;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public BPMNGeneralSet getGeneral() {

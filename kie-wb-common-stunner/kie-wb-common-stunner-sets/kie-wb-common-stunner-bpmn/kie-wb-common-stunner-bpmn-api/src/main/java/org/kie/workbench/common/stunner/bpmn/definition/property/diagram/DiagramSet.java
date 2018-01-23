@@ -23,7 +23,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.I18nMode;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNBaseInfo;
@@ -41,11 +41,8 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
         policy = FieldPolicy.ONLY_MARKED,
         startElement = "name"
 )
-public class DiagramSet implements BPMNPropertySet, BPMNBaseInfo {
-
-    @org.kie.workbench.common.stunner.core.definition.annotation.Name
-    @FieldLabel
-    public static final transient String propertySetName = "Process";
+public class DiagramSet implements BPMNPropertySet,
+                                   BPMNBaseInfo {
 
     @Property
     @FormField
@@ -99,11 +96,11 @@ public class DiagramSet implements BPMNPropertySet, BPMNBaseInfo {
     private Executable executable;
 
     public DiagramSet() {
-        this(new Name(""),
+        this(new Name(),
              new Documentation(),
-             new Id(""),
-             new Package(""),
-             new Version(Version.defaultValue),
+             new Id(),
+             new Package(),
+             new Version(),
              new AdHoc(),
              new ProcessInstanceDescription(),
              new Executable());
@@ -130,16 +127,12 @@ public class DiagramSet implements BPMNPropertySet, BPMNBaseInfo {
     public DiagramSet(final String name) {
         this(new Name(name),
              new Documentation(),
-             new Id(""),
-             new Package(""),
-             new Version(Version.defaultValue),
-             new AdHoc(AdHoc.defaultValue),
+             new Id(),
+             new Package(),
+             new Version(),
+             new AdHoc(),
              new ProcessInstanceDescription(),
              new Executable());
-    }
-
-    public String getPropertySetName() {
-        return propertySetName;
     }
 
     public Name getName() {

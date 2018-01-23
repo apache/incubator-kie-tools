@@ -44,6 +44,12 @@ public class BindableAdapterUtils {
                                   null);
     }
 
+    public static String getDefinitionSetDomain(final Class<?> type) {
+        final String n = type.getName();
+        return n.substring(0,
+                           n.lastIndexOf("."));
+    }
+
     public static String getDefinitionSetId(final Class<?> type,
                                             final AdapterRegistry registry) {
         if (null != registry &&
@@ -91,6 +97,12 @@ public class BindableAdapterUtils {
 
     private static String getGenericClassId(final Class<?> type) {
         return type.getSimpleName();
+    }
+
+    public static String toSimpleName(final Object o) {
+        final String definitionId = getDefinitionId(o.getClass());
+        return definitionId.substring(definitionId.lastIndexOf(".") + 1,
+                                      definitionId.length());
     }
 
     public static <T> Collection<Class<?>> toClassCollection(final Iterable<T> source) {

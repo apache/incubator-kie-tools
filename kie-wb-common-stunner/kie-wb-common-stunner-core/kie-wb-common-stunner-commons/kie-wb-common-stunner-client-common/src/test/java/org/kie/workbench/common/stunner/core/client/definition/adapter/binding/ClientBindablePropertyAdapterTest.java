@@ -16,9 +16,14 @@
 
 package org.kie.workbench.common.stunner.core.client.definition.adapter.binding;
 
+import java.util.HashMap;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
+import org.kie.workbench.common.stunner.core.definition.property.type.BooleanType;
+import org.kie.workbench.common.stunner.core.definition.property.type.StringType;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
@@ -29,16 +34,32 @@ public class ClientBindablePropertyAdapterTest extends AbstractClientBindableAda
 
     private ClientBindablePropertyAdapter clientBindablePropertyAdapter;
 
+    private final HashMap<Class, String> typesFieldNames = new HashMap<>();
+    private final HashMap<Class, PropertyType> types = new HashMap<>();
+    private final HashMap<Class, String> captionFieldNames = new HashMap<>();
+    private final HashMap<Class, String> descFieldNames = new HashMap<>();
+    private final HashMap<Class, String> readOnlyFieldNames = new HashMap<>();
+    private final HashMap<Class, String> optionalFieldNames = new HashMap<>();
+    private final HashMap<Class, String> valueFieldNames = new HashMap<>();
+    private final HashMap<Class, String> allowedFieldNames = new HashMap<>();
+
     @Before
     @Override
     public void init() {
         super.init();
-
         clientBindablePropertyAdapter = new ClientBindablePropertyAdapter(translationService);
+        clientBindablePropertyAdapter.setBindings(typesFieldNames,
+                                                  types,
+                                                  captionFieldNames,
+                                                  descFieldNames,
+                                                  readOnlyFieldNames,
+                                                  optionalFieldNames,
+                                                  valueFieldNames,
+                                                  allowedFieldNames);
     }
 
     @Test
-    public void testFunctionallity() {
+    public void test() {
         String description = clientBindablePropertyAdapter.getDescription(model);
 
         verify(translationService).getPropertyDescription(model.getClass().getName());
@@ -52,5 +73,23 @@ public class ClientBindablePropertyAdapterTest extends AbstractClientBindableAda
 
         assertEquals(PROPERTY_CAPTION,
                      caption);
+    }
+
+    @Test
+    public void testDefaultTypes() {
+        types.put(Foo.class, new StringType());
+        types.put(Bar.class, new BooleanType());
+        final PropertyType fooType = clientBindablePropertyAdapter.getType(new Foo());
+        final PropertyType barType = clientBindablePropertyAdapter.getType(new Bar());
+        assertEquals(StringType.class, fooType.getClass());
+        assertEquals(BooleanType.class, barType.getClass());
+    }
+
+    private static final class Foo {
+
+    }
+
+    private static final class Bar {
+
     }
 }

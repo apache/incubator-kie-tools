@@ -67,10 +67,10 @@ import org.kie.workbench.common.stunner.backend.ApplicationFactoryManager;
 import org.kie.workbench.common.stunner.backend.definition.factory.TestScopeModelFactory;
 import org.kie.workbench.common.stunner.backend.service.XMLEncoderDiagramMetadataMarshaller;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
-import org.kie.workbench.common.stunner.core.backend.definition.adapter.annotation.RuntimeDefinitionAdapter;
-import org.kie.workbench.common.stunner.core.backend.definition.adapter.annotation.RuntimeDefinitionSetAdapter;
-import org.kie.workbench.common.stunner.core.backend.definition.adapter.annotation.RuntimePropertyAdapter;
-import org.kie.workbench.common.stunner.core.backend.definition.adapter.annotation.RuntimePropertySetAdapter;
+import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionAdapter;
+import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionSetAdapter;
+import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendPropertyAdapter;
+import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendPropertySetAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.diagram.DiagramImpl;
@@ -151,10 +151,10 @@ public class DMNMarshallerTest {
                                               applicationFactoryManager);
         testScopeModelFactory = new TestScopeModelFactory(new DMNDefinitionSet.DMNDefinitionSetBuilder().build());
         // Definition manager.
-        final RuntimeDefinitionAdapter definitionAdapter = new RuntimeDefinitionAdapter(definitionUtils);
-        final RuntimeDefinitionSetAdapter definitionSetAdapter = new RuntimeDefinitionSetAdapter(definitionAdapter);
-        final RuntimePropertySetAdapter propertySetAdapter = new RuntimePropertySetAdapter();
-        final RuntimePropertyAdapter propertyAdapter = new RuntimePropertyAdapter();
+        final BackendDefinitionAdapter definitionAdapter = new BackendDefinitionAdapter(definitionUtils);
+        final BackendDefinitionSetAdapter definitionSetAdapter = new BackendDefinitionSetAdapter(definitionAdapter);
+        final BackendPropertySetAdapter propertySetAdapter = new BackendPropertySetAdapter();
+        final BackendPropertyAdapter propertyAdapter = new BackendPropertyAdapter();
         when(adapterManager.forDefinitionSet()).thenReturn(definitionSetAdapter);
         when(adapterManager.forDefinition()).thenReturn(definitionAdapter);
         when(adapterManager.forPropertySet()).thenReturn(propertySetAdapter);
@@ -190,7 +190,7 @@ public class DMNMarshallerTest {
             }
             Object model = testScopeModelFactory.accepts(id) ? testScopeModelFactory.build(id) : null;
             if (null != model) {
-                Class<? extends ElementFactory> element = RuntimeDefinitionAdapter.getGraphFactory(model.getClass());
+                Class<? extends ElementFactory> element = BackendDefinitionAdapter.getGraphFactory(model.getClass());
                 if (element.isAssignableFrom(NodeFactory.class)) {
                     Node node = viewNodeFactory.build(uuid,
                                                       model);
@@ -215,7 +215,7 @@ public class DMNMarshallerTest {
             }
             Object model = testScopeModelFactory.accepts(id) ? testScopeModelFactory.build(id) : null;
             if (null != model) {
-                Class<? extends ElementFactory> element = RuntimeDefinitionAdapter.getGraphFactory(model.getClass());
+                Class<? extends ElementFactory> element = BackendDefinitionAdapter.getGraphFactory(model.getClass());
                 if (element.isAssignableFrom(NodeFactory.class)) {
                     Node node = viewNodeFactory.build(uuid,
                                                       model);

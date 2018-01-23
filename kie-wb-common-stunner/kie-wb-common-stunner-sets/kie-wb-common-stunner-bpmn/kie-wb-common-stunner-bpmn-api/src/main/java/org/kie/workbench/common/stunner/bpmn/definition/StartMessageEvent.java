@@ -35,9 +35,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationAttributeSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
@@ -52,12 +50,6 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
         policy = FieldPolicy.ONLY_MARKED
 )
 public class StartMessageEvent extends BaseStartEvent implements DataIOModel {
-
-    @Title
-    public static final transient String title = "Start Message Event";
-
-    @Description
-    public static final transient String description = "A process instance is started on receive of a message.";
 
     @PropertySet
     @FormField(afterElement = "general")
@@ -103,15 +95,6 @@ public class StartMessageEvent extends BaseStartEvent implements DataIOModel {
     protected void initLabels() {
         super.initLabels();
         labels.add("messageflow_end");
-    }
-
-    @Override
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public InterruptingMessageEventExecutionSet getExecutionSet() {

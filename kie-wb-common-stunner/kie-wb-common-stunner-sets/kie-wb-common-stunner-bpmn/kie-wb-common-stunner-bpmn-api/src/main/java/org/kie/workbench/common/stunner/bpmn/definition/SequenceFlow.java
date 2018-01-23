@@ -31,7 +31,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanConnect;
 import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
@@ -69,9 +68,6 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 )
 public class SequenceFlow extends BaseConnector {
 
-    @Title
-    public static final transient String title = "Sequence Flow";
-
     @PropertySet
     @FormField(
             afterElement = "general"
@@ -104,11 +100,6 @@ public class SequenceFlow extends BaseConnector {
               backgroundSet,
               fontSet);
         this.executionSet = executionSet;
-    }
-
-    @Override
-    public String getTitle() {
-        return title;
     }
 
     public SequenceFlowExecutionSet getExecutionSet() {

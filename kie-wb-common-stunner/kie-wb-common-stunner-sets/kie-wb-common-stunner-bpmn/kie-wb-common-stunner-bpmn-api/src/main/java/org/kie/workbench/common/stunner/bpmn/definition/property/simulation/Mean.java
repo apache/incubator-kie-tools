@@ -19,72 +19,23 @@ package org.kie.workbench.common.stunner.bpmn.definition.property.simulation;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
-import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.Caption;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.DefaultValue;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.Optional;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.ReadOnly;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.Type;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
-import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
-import org.kie.workbench.common.stunner.core.definition.property.type.DoubleType;
 
 @Portable
 @Bindable
 @Property
 public class Mean implements BPMNProperty {
 
-    @Caption
-    public static final transient String caption = "Processing time (mean)";
-
-    @Description
-    public static final transient String description = "Processing time (mean)";
-
-    @ReadOnly
-    public static final Boolean readOnly = false;
-
-    @Optional
-    public static final Boolean optional = false;
-
-    @Type
-    public static final PropertyType type = new DoubleType();
-
-    @DefaultValue
-    public static final Double defaultValue = 0d;
-
     @Value
-    private Double value = defaultValue;
+    private Double value;
 
     public Mean() {
+        this(0d);
     }
 
     public Mean(final Double value) {
         this.value = value;
-    }
-
-    public String getCaption() {
-        return caption;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public boolean isReadOnly() {
-        return readOnly;
-    }
-
-    public boolean isOptional() {
-        return optional;
-    }
-
-    public PropertyType getType() {
-        return type;
-    }
-
-    public Double getDefaultValue() {
-        return defaultValue;
     }
 
     public Double getValue() {

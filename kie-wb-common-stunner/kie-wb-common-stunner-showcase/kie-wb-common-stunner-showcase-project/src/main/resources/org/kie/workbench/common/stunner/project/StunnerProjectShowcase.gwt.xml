@@ -69,7 +69,6 @@
   <!-- Stunner. -->
   <inherits name="org.kie.workbench.common.stunner.project.StunnerProjectClient"/>
   <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>
-  <inherits name="org.kie.workbench.common.stunner.basicset.StunnerBasicSetClient"/>
   <inherits name="org.kie.workbench.common.stunner.bpmn.StunnerBpmnProjectClient"/>
   <inherits name="org.kie.workbench.common.stunner.cm.StunnerCaseManagementProjectClient"/>
 

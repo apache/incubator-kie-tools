@@ -28,8 +28,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radi
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.Description;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
@@ -43,12 +41,6 @@ import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
         policy = FieldPolicy.ONLY_MARKED
 )
 public class ParallelGateway extends BaseGateway {
-
-    @Title
-    public static final transient String title = "Parallel Gateway";
-
-    @Description
-    public static final transient String description = "Parallel Gateway";
 
     @NonPortable
     public static class ParallelGatewayBuilder implements Builder<ParallelGateway> {
@@ -73,14 +65,5 @@ public class ParallelGateway extends BaseGateway {
               backgroundSet,
               fontSet,
               dimensionsSet);
-    }
-
-    @Override
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
     }
 }

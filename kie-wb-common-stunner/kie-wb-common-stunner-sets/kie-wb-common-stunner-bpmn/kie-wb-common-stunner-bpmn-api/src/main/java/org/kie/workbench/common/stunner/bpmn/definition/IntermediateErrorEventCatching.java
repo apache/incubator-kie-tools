@@ -33,9 +33,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.Can
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
@@ -50,13 +48,6 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
         policy = FieldPolicy.ONLY_MARKED
 )
 public class IntermediateErrorEventCatching extends BaseCatchingIntermediateEvent {
-
-    @Title
-    public static final transient String title = "Intermediate Error Event";
-
-    @Description
-    public static final transient String description = "Catches a named error, which was thrown by an inner scope (e.g. subprocess). " +
-            "This event needs to be attached to the boundary of an activity.";
 
     @PropertySet
     @FormField(afterElement = "general")
@@ -104,15 +95,6 @@ public class IntermediateErrorEventCatching extends BaseCatchingIntermediateEven
         super.initLabels();
         labels.remove("sequence_end");
         labels.remove("FromEventbasedGateway");
-    }
-
-    @Override
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public DataIOSet getDataIOSet() {

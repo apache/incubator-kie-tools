@@ -33,11 +33,9 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Rect
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
@@ -55,14 +53,6 @@ public class Lane implements BPMNViewDefinition {
 
     @Category
     public static final transient String category = Categories.CONTAINERS;
-
-    @Title
-    public static final transient String title = "Lane";
-
-    @Description
-    public static final transient String description = "Pools and Lanes represent responsibilities for activities in a process. " +
-            "A pool or a lane can be an organization, a role, or a system. " +
-            "Lanes sub-divide pools or other lanes hierarchically.";
 
     @PropertySet
     @FormField
@@ -115,15 +105,6 @@ public class Lane implements BPMNViewDefinition {
 
     public String getCategory() {
         return category;
-    }
-
-    @Override
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public Set<String> getLabels() {

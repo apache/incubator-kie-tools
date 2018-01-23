@@ -39,5 +39,5 @@ public @interface DefinitionSet {
 
     Class<? extends ElementFactory> graphFactory();
 
-    Class<? extends Annotation> qualifier() default Default.class;
+    Class<? extends Annotation> qualifier();
 }

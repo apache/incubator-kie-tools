@@ -33,36 +33,42 @@ public class DeepCloneProcess extends AbstractCloneProcess {
     private final ClassUtils classUtils;
 
     protected DeepCloneProcess() {
-        this(null, null, null);
+        this(null,
+             null,
+             null);
     }
 
     @Inject
-    public DeepCloneProcess(final FactoryManager factoryManager, final AdapterManager adapterManager, final ClassUtils classUtils) {
-        super(factoryManager, adapterManager);
+    public DeepCloneProcess(final FactoryManager factoryManager,
+                            final AdapterManager adapterManager,
+                            final ClassUtils classUtils) {
+        super(factoryManager,
+              adapterManager);
         this.classUtils = classUtils;
     }
 
     @Override
-    public <S, T> T clone(S source, T target) {
-        //the adapterManager.forDefinition().getProperties return a flattened set of properties (properties of propertySet as well)
-        //in this way it could be a conflict with same property IDs, this could be improved by not retuning the flattened properties
+    public <S, T> T clone(S source,
+                          T target) {
         adapterManager.forDefinition().getProperties(source)
                 .stream()
                 .filter(p -> !adapterManager.forProperty().isReadOnly(p))
-                .filter(p -> !Objects.equals(adapterManager.forProperty().getValue(p), adapterManager.forProperty().getDefaultValue(p)))
                 .map(p -> {
                     String id = adapterManager.forProperty().getId(p);
                     Optional<?> propertyTarget = adapterManager.forDefinition().getProperties(target)
                             .stream()
-                            .filter(prop -> Objects.equals(adapterManager.forProperty().getId(prop), id))
+                            .filter(prop -> Objects.equals(adapterManager.forProperty().getId(prop),
+                                                           id))
                             .findFirst();
-                    return propertyTarget.isPresent() ? new AbstractMap.SimpleEntry(p, propertyTarget.get()) : null;
+                    return propertyTarget.isPresent() ? new AbstractMap.SimpleEntry(p,
+                                                                                    propertyTarget.get()) : null;
                 })
                 .filter(Objects::nonNull)
                 .filter(entry -> isAllowedToClone(adapterManager.forProperty().getValue(entry.getKey())))
                 .forEach(entry -> {
                     Object value = adapterManager.forProperty().getValue(entry.getKey());
-                    adapterManager.forProperty().setValue(entry.getValue(), value);
+                    adapterManager.forProperty().setValue(entry.getValue(),
+                                                          value);
                 });
 
         return target;

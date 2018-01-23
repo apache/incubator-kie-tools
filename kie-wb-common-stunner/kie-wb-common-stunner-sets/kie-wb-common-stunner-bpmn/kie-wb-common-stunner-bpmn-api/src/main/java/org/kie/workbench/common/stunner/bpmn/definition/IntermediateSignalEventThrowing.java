@@ -33,9 +33,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.Sc
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
@@ -50,13 +48,6 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
         policy = FieldPolicy.ONLY_MARKED
 )
 public class IntermediateSignalEventThrowing extends BaseThrowingIntermediateEvent {
-
-    @Title
-    public static final transient String title = "Intermediate Signal Event";
-
-    @Description
-    public static final transient String description = "The throwing signal event fires up a signal. Afterwards it continues process execution. " +
-            "One signal thrown can be caught multiple times by different catching signal events.";
 
     @PropertySet
     @FormField(afterElement = "general")
@@ -92,15 +83,6 @@ public class IntermediateSignalEventThrowing extends BaseThrowingIntermediateEve
               fontSet,
               dimensionsSet);
         this.executionSet = executionSet;
-    }
-
-    @Override
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public ScopedSignalEventExecutionSet getExecutionSet() {

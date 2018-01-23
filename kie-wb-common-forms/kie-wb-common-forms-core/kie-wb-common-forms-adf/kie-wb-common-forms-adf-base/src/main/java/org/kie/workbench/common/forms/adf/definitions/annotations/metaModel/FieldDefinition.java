@@ -31,9 +31,16 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSetti
 @Target({ElementType.TYPE})
 public @interface FieldDefinition {
 
+    String LABEL = "label";
+    String HELP_MESSAGE = "helpMessage";
+
     /**
      * Specifies how the i18n for the field should be calculated. By default let's the engine calculate it using the
      * {@link I18nSettings} specified on the {@link FormDefinition}
      */
     I18nMode i18nMode() default I18nMode.DONT_OVERRIDE;
+
+    String labelKeySuffix() default LABEL;
+
+    String helpMessageKeySuffix() default HELP_MESSAGE;
 }

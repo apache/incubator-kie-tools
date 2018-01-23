@@ -34,11 +34,9 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Rect
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
@@ -56,12 +54,6 @@ public class BPMNDiagramImpl implements BPMNDiagram {
 
     @Category
     public static final transient String category = Categories.CONTAINERS;
-
-    @Title
-    public static final transient String title = "BPMN Diagram";
-
-    @Description
-    public static final transient String description = "BPMN Diagram";
 
     @PropertySet
     @FormField
@@ -98,7 +90,7 @@ public class BPMNDiagramImpl implements BPMNDiagram {
 
         @Override
         public BPMNDiagramImpl build() {
-            return new BPMNDiagramImpl(new DiagramSet(""),
+            return new BPMNDiagramImpl(new DiagramSet(),
                                        new ProcessData(),
                                        new BackgroundSet(),
                                        new FontSet(),
@@ -124,15 +116,6 @@ public class BPMNDiagramImpl implements BPMNDiagram {
 
     public String getCategory() {
         return category;
-    }
-
-    @Override
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public Set<String> getLabels() {

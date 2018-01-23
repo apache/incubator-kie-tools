@@ -41,10 +41,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptLang
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ConditionalComboBoxFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
@@ -63,12 +61,6 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
         policy = FieldPolicy.ONLY_MARKED
 )
 public class EmbeddedSubprocess extends BaseSubprocess implements DataIOModel {
-
-    @Title
-    public static final transient String title = "Embedded Sub-Process";
-
-    @Description
-    public static final transient String description = "An embedded sub-process.";
 
     @NonPortable
     public static class EmbeddedSubprocessBuilder implements Builder<EmbeddedSubprocess> {
@@ -181,10 +173,6 @@ public class EmbeddedSubprocess extends BaseSubprocess implements DataIOModel {
     @Override
     public boolean isSingleOutputVar() {
         return false;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public ProcessData getProcessData() {

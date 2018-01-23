@@ -52,6 +52,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBa
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphProperty;
 import org.kie.workbench.common.stunner.core.definition.builder.VoidBuilder;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 import org.kie.workbench.common.stunner.core.processors.definition.BindableDefinitionAdapterGenerator;
 import org.kie.workbench.common.stunner.core.processors.definitionset.BindableDefinitionSetAdapterGenerator;
 import org.kie.workbench.common.stunner.core.processors.definitionset.DefinitionSetProxyGenerator;
@@ -68,6 +69,7 @@ import org.kie.workbench.common.stunner.core.processors.rule.ContainmentRuleGene
 import org.kie.workbench.common.stunner.core.processors.rule.DockingRuleGenerator;
 import org.kie.workbench.common.stunner.core.processors.rule.EdgeCardinalityRuleGenerator;
 import org.kie.workbench.common.stunner.core.processors.rule.ExtensionRuleGenerator;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.annotations.processors.AbstractErrorAbsorbingProcessor;
 import org.uberfire.annotations.processors.AbstractGenerator;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
@@ -108,7 +110,6 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
     public static final String ANNOTATION_PROPERTY_SET = "org.kie.workbench.common.stunner.core.definition.annotation.PropertySet";
 
     public static final String ANNOTATION_PROPERTY = "org.kie.workbench.common.stunner.core.definition.annotation.Property";
-    public static final String ANNOTATION_PROPERTY_DEFAULT_VALUE = "org.kie.workbench.common.stunner.core.definition.annotation.property.DefaultValue";
     public static final String ANNOTATION_PROPERTY_ALLOWED_VALUES = "org.kie.workbench.common.stunner.core.definition.annotation.property.AllowedValues";
     public static final String ANNOTATION_PROPERTY_VALUE = "org.kie.workbench.common.stunner.core.definition.annotation.property.Value";
     public static final String ANNOTATION_PROPERTY_CAPTION = "org.kie.workbench.common.stunner.core.definition.annotation.property.Caption";
@@ -354,7 +355,7 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                              defSetClassName,
                              ANNOTATION_DESCRIPTION,
                              processingContext.getDefSetAnnotations().getDescriptionFieldNames(),
-                             true);
+                             false);
             // Definitions identifiers.
             DefinitionSet definitionSetAnn = e.getAnnotation(DefinitionSet.class);
             List<? extends TypeMirror> mirrors = null;
@@ -435,13 +436,13 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                              defintionClassName,
                              ANNOTATION_DEFINITION_TITLE,
                              processingContext.getDefinitionAnnotations().getTitleFieldNames(),
-                             true);
+                             false);
             // Description fields.
             processFieldName(classElement,
                              defintionClassName,
                              ANNOTATION_DESCRIPTION,
                              processingContext.getDefinitionAnnotations().getDescriptionFieldNames(),
-                             true);
+                             false);
             // Labels fields.
             processFieldName(classElement,
                              defintionClassName,
@@ -699,7 +700,7 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                              propertyClassName,
                              ANNOTATION_NAME,
                              processingContext.getPropertySetAnnotations().getNameFieldNames(),
-                             true);
+                             false);
             // Properties fields.
             Map<String, Element> propertyElements = getFieldNames(classElement,
                                                                   ANNOTATION_PROPERTY);
@@ -738,12 +739,6 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                              ANNOTATION_PROPERTY_VALUE,
                              processingContext.getPropertyAnnotations().getValueFieldNames(),
                              true);
-            // Default Value fields.
-            processFieldName(classElement,
-                             propertyClassName,
-                             ANNOTATION_PROPERTY_DEFAULT_VALUE,
-                             processingContext.getPropertyAnnotations().getDefaultValueFieldNames(),
-                             true);
             // Allowed Values fields.
             processFieldName(classElement,
                              propertyClassName,
@@ -755,40 +750,62 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                              propertyClassName,
                              ANNOTATION_PROPERTY_CAPTION,
                              processingContext.getPropertyAnnotations().getCaptionFieldNames(),
-                             true);
+                             false);
             // Description fields.
             processFieldName(classElement,
                              propertyClassName,
                              ANNOTATION_DESCRIPTION,
                              processingContext.getPropertyAnnotations().getDescriptionFieldNames(),
-                             true);
-            // Type fields.
-            processFieldName(classElement,
-                             propertyClassName,
-                             ANNOTATION_PROPERTY_TYPE,
-                             processingContext.getPropertyAnnotations().getTypeFieldNames(),
-                             true);
+                             false);
+            // Property Type field.
+            final boolean propTypeAnnFound = processFieldName(classElement,
+                                                              propertyClassName,
+                                                              ANNOTATION_PROPERTY_TYPE,
+                                                              processingContext.getPropertyAnnotations().getTypeFieldNames(),
+                                                              false);
+            // In case no property type annotation found, try to resolve a default type by checking the class for
+            // the value object.
+            if (!propTypeAnnFound) {
+                Map<String, Element> fieldNames = getFieldNames(classElement,
+                                                                ANNOTATION_PROPERTY_VALUE);
+                if (!fieldNames.isEmpty()) {
+                    final TypeElement te = (TypeElement) fieldNames.values().iterator().next();
+                    final String type = te.getQualifiedName().toString();
+                    final Class<?> typeClass = Class.forName(type);
+                    final Class<? extends PropertyType> defaultPropertyType =
+                            DefinitionUtils.getDefaultPropertyType(typeClass);
+                    if (null != defaultPropertyType) {
+                        processingContext.getPropertyAnnotations().getTypes().put(propertyClassName,
+                                                                                  defaultPropertyType.getName());
+                    } else {
+                        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                                                                 "No property type specified for class " + propertyClassName,
+                                                                 classElement);
+                    }
+                }
+            }
+
             // Read only fields.
             processFieldName(classElement,
                              propertyClassName,
                              ANNOTATION_PROPERTY_READONLY,
                              processingContext.getPropertyAnnotations().getReadOnlyFieldNames(),
-                             true);
+                             false);
             // Optional fields.
             processFieldName(classElement,
                              propertyClassName,
                              ANNOTATION_PROPERTY_OPTIONAL,
                              processingContext.getPropertyAnnotations().getOptionalFieldNames(),
-                             true);
+                             false);
         }
         return false;
     }
 
-    private void processFieldName(final TypeElement classElement,
-                                  final String propertyClassName,
-                                  final String annotation,
-                                  final Map<String, String> ctxMap,
-                                  final boolean mandatory) {
+    private boolean processFieldName(final TypeElement classElement,
+                                     final String propertyClassName,
+                                     final String annotation,
+                                     final Map<String, String> ctxMap,
+                                     final boolean mandatory) {
         Map<String, Element> fieldNames = getFieldNames(classElement,
                                                         annotation);
         boolean empty = fieldNames.isEmpty();
@@ -798,7 +815,9 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
         if (!empty) {
             ctxMap.put(propertyClassName,
                        fieldNames.keySet().iterator().next());
+            return true;
         }
+        return false;
     }
 
     private Map<String, Element> getFieldNames(TypeElement classElement,

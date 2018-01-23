@@ -37,7 +37,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
@@ -54,9 +53,6 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
         startElement = "general"
 )
 public class ScriptTask extends BaseTask {
-
-    @Title
-    public static final transient String title = "Script Task";
 
     @PropertySet
     @FormField(
@@ -99,11 +95,6 @@ public class ScriptTask extends BaseTask {
               simulationSet,
               taskType);
         this.executionSet = executionSet;
-    }
-
-    @Override
-    public String getTitle() {
-        return title;
     }
 
     public ScriptTaskExecutionSet getExecutionSet() {

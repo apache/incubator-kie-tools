@@ -27,12 +27,12 @@ import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
 class ClientBindablePropertyAdapter extends AbstractClientBindableAdapter<Object> implements BindablePropertyAdapter<Object, Object> {
 
     private Map<Class, String> propertyTypeFieldNames;
+    private Map<Class, PropertyType> propertyTypes;
     private Map<Class, String> propertyCaptionFieldNames;
     private Map<Class, String> propertyDescriptionFieldNames;
     private Map<Class, String> propertyReadOnlyFieldNames;
     private Map<Class, String> propertyOptionalFieldNames;
     private Map<Class, String> propertyValueFieldNames;
-    private Map<Class, String> propertyDefaultValueFieldNames;
     private Map<Class, String> propertyAllowedValuesFieldNames;
 
     public ClientBindablePropertyAdapter(StunnerTranslationService translationService) {
@@ -41,20 +41,20 @@ class ClientBindablePropertyAdapter extends AbstractClientBindableAdapter<Object
 
     @Override
     public void setBindings(final Map<Class, String> propertyTypeFieldNames,
+                            final Map<Class, PropertyType> propertyTypes,
                             final Map<Class, String> propertyCaptionFieldNames,
                             final Map<Class, String> propertyDescriptionFieldNames,
                             final Map<Class, String> propertyReadOnlyFieldNames,
                             final Map<Class, String> propertyOptionalFieldNames,
                             final Map<Class, String> propertyValueFieldNames,
-                            final Map<Class, String> propertyDefaultValueFieldNames,
                             final Map<Class, String> propertyAllowedValuesFieldNames) {
         this.propertyTypeFieldNames = propertyTypeFieldNames;
+        this.propertyTypes = propertyTypes;
         this.propertyCaptionFieldNames = propertyCaptionFieldNames;
         this.propertyDescriptionFieldNames = propertyDescriptionFieldNames;
         this.propertyReadOnlyFieldNames = propertyReadOnlyFieldNames;
         this.propertyOptionalFieldNames = propertyOptionalFieldNames;
         this.propertyValueFieldNames = propertyValueFieldNames;
-        this.propertyDefaultValueFieldNames = propertyDefaultValueFieldNames;
         this.propertyAllowedValuesFieldNames = propertyAllowedValuesFieldNames;
     }
 
@@ -65,8 +65,12 @@ class ClientBindablePropertyAdapter extends AbstractClientBindableAdapter<Object
 
     @Override
     public PropertyType getType(final Object pojo) {
-        return getProxiedValue(pojo,
-                               getPropertyTypeFieldNames().get(pojo.getClass()));
+        final PropertyType type = getProxiedValue(pojo,
+                                                  getPropertyTypeFieldNames().get(pojo.getClass()));
+        if (null == type) {
+            return getPropertyTypes().get(pojo.getClass());
+        }
+        return type;
     }
 
     @Override
@@ -91,26 +95,22 @@ class ClientBindablePropertyAdapter extends AbstractClientBindableAdapter<Object
 
     @Override
     public boolean isReadOnly(final Object pojo) {
-        return getProxiedValue(pojo,
-                               getPropertyReadOnlyFieldNames().get(pojo.getClass()));
+        final Boolean value = getProxiedValue(pojo,
+                                              getPropertyReadOnlyFieldNames().get(pojo.getClass()));
+        return null != value ? value : false;
     }
 
     @Override
     public boolean isOptional(final Object pojo) {
-        return getProxiedValue(pojo,
-                               getPropertyOptionalFieldNames().get(pojo.getClass()));
+        final Boolean value = getProxiedValue(pojo,
+                                              getPropertyOptionalFieldNames().get(pojo.getClass()));
+        return null != value ? value : true;
     }
 
     @Override
     public Object getValue(final Object pojo) {
         return getProxiedValue(pojo,
                                getPropertyValueFieldNames().get(pojo.getClass()));
-    }
-
-    @Override
-    public Object getDefaultValue(final Object pojo) {
-        return getProxiedValue(pojo,
-                               getPropertyDefaultValueFieldNames().get(pojo.getClass()));
     }
 
     @Override
@@ -141,10 +141,7 @@ class ClientBindablePropertyAdapter extends AbstractClientBindableAdapter<Object
 
     @Override
     public boolean accepts(final Class<?> pojoClass) {
-        if (null != propertyValueFieldNames) {
-            return getPropertyValueFieldNames().containsKey(pojoClass);
-        }
-        return false;
+        return getPropertyValueFieldNames().containsKey(pojoClass);
     }
 
     private Map<Class, String> getPropertyTypeFieldNames() {
@@ -167,12 +164,12 @@ class ClientBindablePropertyAdapter extends AbstractClientBindableAdapter<Object
         return propertyOptionalFieldNames;
     }
 
-    private Map<Class, String> getPropertyValueFieldNames() {
-        return propertyValueFieldNames;
+    private Map<Class, PropertyType> getPropertyTypes() {
+        return propertyTypes;
     }
 
-    private Map<Class, String> getPropertyDefaultValueFieldNames() {
-        return propertyDefaultValueFieldNames;
+    private Map<Class, String> getPropertyValueFieldNames() {
+        return propertyValueFieldNames;
     }
 
     private Map<Class, String> getPropertyAllowedValuesFieldNames() {

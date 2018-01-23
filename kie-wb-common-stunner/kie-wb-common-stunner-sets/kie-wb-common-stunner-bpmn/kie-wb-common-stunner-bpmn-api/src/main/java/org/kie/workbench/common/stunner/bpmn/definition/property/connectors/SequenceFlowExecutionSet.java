@@ -24,11 +24,9 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ConditionalComboBoxFieldType;
-import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -40,10 +38,6 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
         startElement = "priority"
 )
 public class SequenceFlowExecutionSet implements BPMNPropertySet {
-
-    @Name
-    @FieldLabel
-    public static final transient String propertySetName = "Implementation/Execution";
 
     @Property
     @FormField
@@ -61,16 +55,16 @@ public class SequenceFlowExecutionSet implements BPMNPropertySet {
 
     @Property
     @FormField(
-        type = ConditionalComboBoxFieldType.class,
-        afterElement = "conditionExpression",
-        settings = {
-            @FieldParam(name = "relatedField", value = "executionSet.conditionExpression"),
-            @FieldParam(name = "allowCustomValue", value = "false")
-        }
+            type = ConditionalComboBoxFieldType.class,
+            afterElement = "conditionExpression",
+            settings = {
+                    @FieldParam(name = "relatedField", value = "executionSet.conditionExpression"),
+                    @FieldParam(name = "allowCustomValue", value = "false")
+            }
     )
     @SelectorDataProvider(
-        type = SelectorDataProvider.ProviderType.REMOTE,
-        className = "org.kie.workbench.common.stunner.bpmn.backend.dataproviders.ConditionLanguageFormProvider")
+            type = SelectorDataProvider.ProviderType.REMOTE,
+            className = "org.kie.workbench.common.stunner.bpmn.backend.dataproviders.ConditionLanguageFormProvider")
     @Valid
     protected ConditionExpressionLanguage conditionExpressionLanguage;
 
@@ -87,10 +81,6 @@ public class SequenceFlowExecutionSet implements BPMNPropertySet {
         this.priority = priority;
         this.conditionExpression = conditionExpression;
         this.conditionExpressionLanguage = conditionExpressionLanguage;
-    }
-
-    public String getPropertySetName() {
-        return propertySetName;
     }
 
     public Priority getPriority() {

@@ -36,6 +36,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
+import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -47,8 +48,15 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 @Dependent
 public class DefaultRouteFormProvider implements SelectorDataProvider {
 
+    private final SessionManager canvasSessionManager;
+    private final DefinitionManager definitionManager;
+
     @Inject
-    SessionManager canvasSessionManager;
+    public DefaultRouteFormProvider(final SessionManager canvasSessionManager,
+                                    final DefinitionManager definitionManager) {
+        this.canvasSessionManager = canvasSessionManager;
+        this.definitionManager = definitionManager;
+    }
 
     @Override
     public String getProviderName() {
@@ -72,7 +80,7 @@ public class DefaultRouteFormProvider implements SelectorDataProvider {
                 String targetNodeType = null;
                 BPMNDefinition bpmnDefinition = getEdgeTarget(outEdge);
                 if (bpmnDefinition != null) {
-                    targetNodeType = bpmnDefinition.getTitle();
+                    targetNodeType = getDefinitionManager().adapters().forDefinition().getTitle(bpmnDefinition);
                     if (bpmnDefinition instanceof BaseStartEvent) {
                         targetName = ((BaseStartEvent) bpmnDefinition).getGeneral().getName().getValue();
                     } else if (bpmnDefinition instanceof BaseEndEvent) {
@@ -140,5 +148,9 @@ public class DefaultRouteFormProvider implements SelectorDataProvider {
             }
         }
         return null;
+    }
+
+    DefinitionManager getDefinitionManager() {
+        return definitionManager;
     }
 }

@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.standalone.client.screens;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,8 +34,6 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.Sessio
 import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.EditorToolbar;
 import org.kie.workbench.common.stunner.client.widgets.views.session.ScreenErrorView;
 import org.kie.workbench.common.stunner.client.widgets.views.session.ScreenPanelView;
-import org.kie.workbench.common.stunner.cm.client.CaseManagementShapeSet;
-import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -94,7 +91,6 @@ public class SessionDiagramEditorScreen {
     private final ShowcaseDiagramService diagramService;
     private final SessionManager sessionManager;
     private final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory;
-    private final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> caseManagementSessionPresenterFactory;
     private final PlaceManager placeManager;
     private final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent;
     private final MenuDevCommandsBuilder menuDevCommandsBuilder;
@@ -106,15 +102,13 @@ public class SessionDiagramEditorScreen {
     private String title = "Authoring Screen";
     private Menus menu = null;
 
-
     @Inject
     public SessionDiagramEditorScreen(final DefinitionManager definitionManager,
                                       final ClientFactoryService clientFactoryServices,
                                       final ShowcaseDiagramService diagramService,
                                       final SessionManager sessionManager,
+                                      final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory,
                                       final PlaceManager placeManager,
-                                      final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory ,
-                                      final @CaseManagementEditor SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> caseManagementSessionPresenterFactory,
                                       final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent,
                                       final MenuDevCommandsBuilder menuDevCommandsBuilder,
                                       final ScreenPanelView screenPanelView,
@@ -124,7 +118,6 @@ public class SessionDiagramEditorScreen {
         this.diagramService = diagramService;
         this.sessionManager = sessionManager;
         this.sessionPresenterFactory = sessionPresenterFactory;
-        this.caseManagementSessionPresenterFactory = caseManagementSessionPresenterFactory;
         this.placeManager = placeManager;
         this.changeTitleNotificationEvent = changeTitleNotificationEvent;
         this.menuDevCommandsBuilder = menuDevCommandsBuilder;
@@ -262,13 +255,7 @@ public class SessionDiagramEditorScreen {
     private void openDiagram(Diagram diagram,
                              Command callback) {
         final AbstractClientFullSession session = newSession(diagram);
-
-        if (Objects.equals(CaseManagementShapeSet.class.getName(), diagram.getMetadata().getShapeSetId())) {
-            presenter = caseManagementSessionPresenterFactory.newPresenterEditor();
-        } else {
-            presenter = sessionPresenterFactory.newPresenterEditor();
-        }
-
+        presenter = sessionPresenterFactory.newPresenterEditor();
         screenPanelView.setWidget(presenter.getView());
         presenter
                 .withToolbar(true)

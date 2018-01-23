@@ -24,7 +24,6 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
@@ -34,7 +33,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.Prio
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeEditorFieldType;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssignmentsEditorFieldType;
-import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -46,10 +44,6 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
         startElement = "taskName"
 )
 public class UserTaskExecutionSet implements BPMNPropertySet {
-
-    @Name
-    @FieldLabel
-    public static final transient String propertySetName = "Implementation/Execution";
 
     @Property
     @FormField
@@ -211,10 +205,6 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
         this.onEntryAction = onEntryAction;
         this.onExitAction = onExitAction;
         this.scriptLanguage = scriptLanguage;
-    }
-
-    public String getPropertySetName() {
-        return propertySetName;
     }
 
     public TaskName getTaskName() {

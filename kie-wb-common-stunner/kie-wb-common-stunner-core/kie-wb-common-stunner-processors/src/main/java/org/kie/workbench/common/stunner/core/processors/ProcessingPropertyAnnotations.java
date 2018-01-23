@@ -22,8 +22,8 @@ import java.util.Map;
 public class ProcessingPropertyAnnotations {
 
     private final Map<String, String> valueFieldNames = new HashMap<>();
-    private final Map<String, String> defaultValueFieldNames = new HashMap<>();
     private final Map<String, String> typeFieldNames = new HashMap<>();
+    private final Map<String, String> types = new HashMap<>();
     private final Map<String, String> captionFieldNames = new HashMap<>();
     private final Map<String, String> descriptionFieldNames = new HashMap<>();
     private final Map<String, String> readOnlyFieldNames = new HashMap<>();
@@ -34,8 +34,8 @@ public class ProcessingPropertyAnnotations {
         return valueFieldNames;
     }
 
-    public Map<String, String> getDefaultValueFieldNames() {
-        return defaultValueFieldNames;
+    public Map<String, String> getTypes() {
+        return types;
     }
 
     public Map<String, String> getTypeFieldNames() {

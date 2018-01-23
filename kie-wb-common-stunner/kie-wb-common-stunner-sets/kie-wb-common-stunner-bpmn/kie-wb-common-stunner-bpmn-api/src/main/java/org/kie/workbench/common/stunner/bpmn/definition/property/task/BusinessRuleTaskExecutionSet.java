@@ -24,12 +24,10 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ComboBoxFieldType;
-import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -39,10 +37,6 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @PropertySet
 @FormDefinition
 public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
-
-    @Name
-    @FieldLabel
-    public static final transient String propertySetName = "Implementation/Execution";
 
     @Property
     @FormField(
@@ -118,10 +112,6 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
         this.scriptLanguage = scriptLanguage;
         this.isAsync = isAsync;
         this.adHocAutostart = adHocAutostart;
-    }
-
-    public String getPropertySetName() {
-        return propertySetName;
     }
 
     public RuleFlowGroup getRuleFlowGroup() {

@@ -513,22 +513,6 @@
 
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
-      <artifactId>kie-wb-common-stunner-basicset-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
-      <artifactId>kie-wb-common-stunner-basicset-backend</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
-      <artifactId>kie-wb-common-stunner-basicset-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-forms-api</artifactId>
     </dependency>
 
@@ -891,8 +875,6 @@
             <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-lienzo-extensions</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-svg-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-widgets</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-basicset-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-basicset-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-forms-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-forms-client</compileSourcesArtifact>
 

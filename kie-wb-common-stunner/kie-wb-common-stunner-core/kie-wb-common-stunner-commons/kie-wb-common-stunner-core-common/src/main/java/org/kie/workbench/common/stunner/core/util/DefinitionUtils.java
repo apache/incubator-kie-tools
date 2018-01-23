@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.util;
 
 import java.lang.annotation.Annotation;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -33,6 +34,11 @@ import org.kie.workbench.common.stunner.core.definition.adapter.binding.HasInher
 import org.kie.workbench.common.stunner.core.definition.clone.ClonePolicy;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
+import org.kie.workbench.common.stunner.core.definition.property.type.BooleanType;
+import org.kie.workbench.common.stunner.core.definition.property.type.DoubleType;
+import org.kie.workbench.common.stunner.core.definition.property.type.IntegerType;
+import org.kie.workbench.common.stunner.core.definition.property.type.StringType;
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
@@ -273,5 +279,20 @@ public class DefinitionUtils {
 
     public DefinitionManager getDefinitionManager() {
         return definitionManager;
+    }
+
+    private static final Map<Class<?>, Class<? extends PropertyType>> DEFAULT_PROPERTY_TYPES = new HashMap<Class<?>, Class<? extends PropertyType>>() {{
+        put(String.class,
+            StringType.class);
+        put(Double.class,
+            DoubleType.class);
+        put(Integer.class,
+            IntegerType.class);
+        put(Boolean.class,
+            BooleanType.class);
+    }};
+
+    public static Class<? extends PropertyType> getDefaultPropertyType(final Class<?> clazz) {
+        return DEFAULT_PROPERTY_TYPES.get(clazz);
     }
 }

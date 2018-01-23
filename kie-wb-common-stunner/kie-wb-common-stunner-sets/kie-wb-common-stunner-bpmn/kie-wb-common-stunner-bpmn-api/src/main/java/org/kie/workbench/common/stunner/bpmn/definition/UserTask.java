@@ -24,6 +24,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
@@ -38,7 +39,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.UserTaskExecutionSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
@@ -55,9 +55,6 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
         startElement = "general"
 )
 public class UserTask extends BaseTask implements DataIOModel {
-
-    @Title
-    public static final transient String title = "User Task";
 
     @PropertySet
     @FormField(
@@ -120,11 +117,6 @@ public class UserTask extends BaseTask implements DataIOModel {
     @Override
     public boolean isSingleOutputVar() {
         return false;
-    }
-
-    @Override
-    public String getTitle() {
-        return title;
     }
 
     public UserTaskExecutionSet getExecutionSet() {

@@ -61,11 +61,6 @@ public interface PropertyAdapter<T, V> extends PriorityAdapter {
     V getValue(final T pojo);
 
     /**
-     * Returns the property's default value for a given pojo.
-     */
-    V getDefaultValue(final T pojo);
-
-    /**
      * Returns allowed values for this property, if multiple.
      * Otherwise returns null,.
      */

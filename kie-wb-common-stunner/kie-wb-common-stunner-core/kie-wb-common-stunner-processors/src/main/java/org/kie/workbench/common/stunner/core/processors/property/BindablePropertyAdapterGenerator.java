@@ -52,9 +52,6 @@ public class BindablePropertyAdapterGenerator extends AbstractBindableAdapterGen
         addFields("valuePropNames",
                   root,
                   processingPropertyAnnotations.getValueFieldNames());
-        addFields("defaultValuePropNames",
-                  root,
-                  processingPropertyAnnotations.getDefaultValueFieldNames());
         addFields("captionPropNames",
                   root,
                   processingPropertyAnnotations.getCaptionFieldNames());
@@ -64,6 +61,9 @@ public class BindablePropertyAdapterGenerator extends AbstractBindableAdapterGen
         addFields("propTypePropNames",
                   root,
                   processingPropertyAnnotations.getTypeFieldNames());
+        addFields("propTypes",
+                  root,
+                  processingPropertyAnnotations.getTypes());
         addFields("readOnlyPropNames",
                   root,
                   processingPropertyAnnotations.getReadOnlyFieldNames());

@@ -21,18 +21,11 @@ import java.util.ArrayList;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldReadOnly;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.I18nMode;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
-import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.AllowedValues;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.Caption;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.DefaultValue;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.Optional;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.ReadOnly;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Type;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
@@ -44,25 +37,8 @@ import org.kie.workbench.common.stunner.core.definition.property.type.EnumType;
 @FieldDefinition(i18nMode = I18nMode.OVERRIDE_I18N_KEY)
 public class TaskType implements BPMNProperty {
 
-    @Caption
-    @FieldLabel
-    public static final transient String caption = "Task Type";
-
-    @Description
-    public static final transient String description = "The task type";
-
     @Type
     public static final PropertyType type = new EnumType();
-
-    @ReadOnly
-    @FieldReadOnly
-    private Boolean readOnly = false;
-
-    @Optional
-    public static final Boolean optional = false;
-
-    @DefaultValue
-    public static final TaskTypes defaultValue = TaskTypes.NONE;
 
     @AllowedValues
     public static final Iterable<TaskTypes> allowedValues = new ArrayList<TaskTypes>(4) {{
@@ -74,37 +50,18 @@ public class TaskType implements BPMNProperty {
 
     @Value
     @FieldValue
-    private TaskTypes value = defaultValue;
+    private TaskTypes value;
 
     public TaskType() {
+        this(TaskTypes.NONE);
     }
 
     public TaskType(final TaskTypes value) {
         this.value = value;
     }
 
-    public String getCaption() {
-        return caption;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public boolean isReadOnly() {
-        return readOnly;
-    }
-
-    public boolean isOptional() {
-        return optional;
-    }
-
     public PropertyType getType() {
         return type;
-    }
-
-    public TaskTypes getDefaultValue() {
-        return defaultValue;
     }
 
     public Iterable<TaskTypes> getAllowedValues() {

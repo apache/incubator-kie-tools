@@ -22,11 +22,8 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.type.CheckBoxFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.IsInterrupting;
-import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -36,10 +33,6 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @PropertySet
 @FormDefinition(startElement = "isInterrupting")
 public class InterruptingTimerEventExecutionSet implements BPMNPropertySet {
-
-    @Name
-    @FieldLabel
-    public static final transient String propertySetName = "Implementation/Execution";
 
     @Property
     @FormField
@@ -59,10 +52,6 @@ public class InterruptingTimerEventExecutionSet implements BPMNPropertySet {
                                               final @MapsTo("timerSettings") TimerSettings timerSettings) {
         this.isInterrupting = isInterrupting;
         this.timerSettings = timerSettings;
-    }
-
-    public String getPropertySetName() {
-        return propertySetName;
     }
 
     public IsInterrupting getIsInterrupting() {

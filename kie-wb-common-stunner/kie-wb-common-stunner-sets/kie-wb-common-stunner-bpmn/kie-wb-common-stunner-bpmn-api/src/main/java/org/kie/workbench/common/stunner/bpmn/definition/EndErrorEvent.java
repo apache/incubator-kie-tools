@@ -33,9 +33,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.Err
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
@@ -50,12 +48,6 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
         policy = FieldPolicy.ONLY_MARKED
 )
 public class EndErrorEvent extends BaseEndEvent {
-
-    @Title
-    public static final transient String title = "End Error Event";
-
-    @Description
-    public static final transient String description = "The process ends in an error state. As result a named error is thrown.";
 
     @PropertySet
     @FormField(afterElement = "general")
@@ -95,15 +87,6 @@ public class EndErrorEvent extends BaseEndEvent {
               dimensionsSet);
         this.executionSet = executionSet;
         this.dataIOSet = dataIOSet;
-    }
-
-    @Override
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     @Override

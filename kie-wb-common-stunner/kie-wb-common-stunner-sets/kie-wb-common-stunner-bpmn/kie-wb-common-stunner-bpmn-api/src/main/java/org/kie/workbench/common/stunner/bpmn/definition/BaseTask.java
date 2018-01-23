@@ -31,7 +31,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.TaskGen
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
-import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
@@ -46,9 +45,6 @@ public abstract class BaseTask implements BPMNViewDefinition {
 
     @Category
     public static final transient String category = Categories.ACTIVITIES;
-
-    @Description
-    public static final transient String description = "A task is a unit of work - the job to be performed";
 
     @PropertySet
     @FormField
@@ -132,10 +128,6 @@ public abstract class BaseTask implements BPMNViewDefinition {
 
     public String getCategory() {
         return category;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public Set<String> getLabels() {

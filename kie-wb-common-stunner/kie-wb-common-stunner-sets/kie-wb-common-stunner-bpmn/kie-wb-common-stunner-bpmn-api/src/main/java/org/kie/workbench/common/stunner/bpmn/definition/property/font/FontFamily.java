@@ -19,21 +19,11 @@ package org.kie.workbench.common.stunner.bpmn.definition.property.font;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldReadOnly;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.I18nMode;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
-import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.Caption;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.DefaultValue;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.Optional;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.ReadOnly;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.Type;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
-import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
-import org.kie.workbench.common.stunner.core.definition.property.type.StringType;
 
 @Portable
 @Bindable
@@ -41,59 +31,15 @@ import org.kie.workbench.common.stunner.core.definition.property.type.StringType
 @FieldDefinition(i18nMode = I18nMode.OVERRIDE_I18N_KEY)
 public class FontFamily implements BPMNProperty {
 
-    @Caption
-    @FieldLabel
-    public static final transient String caption = "Font Family";
-
-    @Description
-    public static final transient String description = "The Font Family";
-
-    @ReadOnly
-    @FieldReadOnly
-    private Boolean readOnly = false;
-
-    @Optional
-    public static final Boolean optional = false;
-
-    @Type
-    public static final PropertyType type = new StringType();
-
-    @DefaultValue
-    public static final transient String defaultValue = "Verdana";
-
     @Value
     @FieldValue
-    private String value = null;
+    private String value;
 
     public FontFamily() {
     }
 
     public FontFamily(final String value) {
         this.value = value;
-    }
-
-    public String getCaption() {
-        return caption;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public boolean isReadOnly() {
-        return readOnly;
-    }
-
-    public boolean isOptional() {
-        return optional;
-    }
-
-    public PropertyType getType() {
-        return type;
-    }
-
-    public String getDefaultValue() {
-        return defaultValue;
     }
 
     public String getValue() {

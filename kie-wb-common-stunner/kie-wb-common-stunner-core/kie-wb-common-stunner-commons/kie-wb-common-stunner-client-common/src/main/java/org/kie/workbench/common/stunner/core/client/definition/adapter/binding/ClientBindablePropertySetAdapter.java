@@ -62,10 +62,7 @@ class ClientBindablePropertySetAdapter extends AbstractClientBindableAdapter<Obj
 
     @Override
     public boolean accepts(final Class<?> pojoClass) {
-        if (null != propertyNameFieldNames) {
-            return getPropertyNameFieldNames().containsKey(pojoClass);
-        }
-        return false;
+        return getPropertiesFieldNames().containsKey(pojoClass);
     }
 
     private Map<Class, String> getPropertyNameFieldNames() {

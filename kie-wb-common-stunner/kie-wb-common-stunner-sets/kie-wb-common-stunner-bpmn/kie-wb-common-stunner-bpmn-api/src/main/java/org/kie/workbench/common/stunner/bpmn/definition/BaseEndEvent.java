@@ -79,7 +79,7 @@ public abstract class BaseEndEvent implements BPMNViewDefinition,
         labels.add("EndEventsMorph");
         labels.add("cm_nop");
     }
-    
+
     @Override
     public boolean hasInputVars() {
         return false;

@@ -65,7 +65,7 @@ public abstract class BaseThrowingIntermediateEvent
     @PropertySet
     protected CircleDimensionSet dimensionsSet;
 
-    protected void initLabels(){
+    protected void initLabels() {
         labels.add("all");
         labels.add("sequence_start");
         labels.add("sequence_end");
@@ -78,7 +78,7 @@ public abstract class BaseThrowingIntermediateEvent
         labels.add("EventOnChoreographyActivityBoundary");
         labels.add("IntermediateEventsMorph");
         labels.add("cmnop");
-    };
+    }
 
     public BaseThrowingIntermediateEvent() {
         initLabels();

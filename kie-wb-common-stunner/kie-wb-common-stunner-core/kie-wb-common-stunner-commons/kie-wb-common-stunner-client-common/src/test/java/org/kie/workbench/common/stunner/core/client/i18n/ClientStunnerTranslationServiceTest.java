@@ -26,7 +26,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.kie.workbench.common.stunner.core.i18n.AbstractTranslationService.CAPTION_SUFFIX;
 import static org.kie.workbench.common.stunner.core.i18n.AbstractTranslationService.CATEGORY_SUFFIX;
 import static org.kie.workbench.common.stunner.core.i18n.AbstractTranslationService.DESCRIPTION_SUFFIX;
-import static org.kie.workbench.common.stunner.core.i18n.AbstractTranslationService.PROPERTY_SET_NAME_SUFFIX;
 import static org.kie.workbench.common.stunner.core.i18n.AbstractTranslationService.TITLE_SUFFIX;
 import static org.mockito.Mockito.verify;
 
@@ -74,7 +73,7 @@ public class ClientStunnerTranslationServiceTest {
         stunnerTranlationService.getPropertySetName(PROPERTY_SET);
 
         verify(translationService).getTranslation(getKey(PROPERTY_SET,
-                                                         PROPERTY_SET_NAME_SUFFIX));
+                                                         CAPTION_SUFFIX));
 
         stunnerTranlationService.getPropertyCaption(PROPERTY);
 

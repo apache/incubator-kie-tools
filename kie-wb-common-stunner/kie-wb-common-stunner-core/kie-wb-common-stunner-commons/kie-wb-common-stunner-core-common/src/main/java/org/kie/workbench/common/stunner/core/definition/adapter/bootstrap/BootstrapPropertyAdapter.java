@@ -66,11 +66,6 @@ class BootstrapPropertyAdapter implements PropertyAdapter<Object, Object> {
     }
 
     @Override
-    public Object getDefaultValue(final Object pojo) {
-        return getWrapped(pojo).getDefaultValue(pojo);
-    }
-
-    @Override
     public Map<Object, String> getAllowedValues(final Object pojo) {
         return getWrapped(pojo).getAllowedValues(pojo);
     }

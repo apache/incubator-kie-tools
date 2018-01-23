@@ -18,21 +18,11 @@ package org.kie.workbench.common.stunner.bpmn.definition.property.task;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldReadOnly;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.I18nMode;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
-import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.Caption;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.DefaultValue;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.Optional;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.ReadOnly;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.Type;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
-import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
-import org.kie.workbench.common.stunner.core.definition.property.type.BooleanType;
 
 @Portable
 @Bindable
@@ -40,59 +30,16 @@ import org.kie.workbench.common.stunner.core.definition.property.type.BooleanTyp
 @FieldDefinition(i18nMode = I18nMode.OVERRIDE_I18N_KEY)
 public class IsAsync implements BPMNProperty {
 
-    @Caption
-    @FieldLabel
-    public static final transient String caption = "isAsync";
-
-    @Description
-    public static final transient String description = "is Async";
-
-    @ReadOnly
-    @FieldReadOnly
-    public Boolean readOnly = false;
-
-    @Optional
-    public static final Boolean optional = false;
-
-    @Type
-    public static final PropertyType type = new BooleanType();
-
-    @DefaultValue
-    public static final Boolean defaultValue = false;
-
     @Value
     @FieldValue
-    private Boolean value = defaultValue;
+    private Boolean value;
 
     public IsAsync() {
+        this(false);
     }
 
     public IsAsync(final Boolean value) {
         this.value = value;
-    }
-
-    public String getCaption() {
-        return caption;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public boolean isReadOnly() {
-        return readOnly;
-    }
-
-    public boolean isOptional() {
-        return optional;
-    }
-
-    public PropertyType getType() {
-        return type;
-    }
-
-    public Boolean getDefaultValue() {
-        return defaultValue;
     }
 
     public Boolean getValue() {

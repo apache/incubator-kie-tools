@@ -68,11 +68,6 @@ public abstract class PropertyAdapterWrapper<T, V, A extends PropertyAdapter<T, 
     }
 
     @Override
-    public V getDefaultValue(final T pojo) {
-        return adapter.getDefaultValue(pojo);
-    }
-
-    @Override
     public Map<V, String> getAllowedValues(final T pojo) {
         return adapter.getAllowedValues(pojo);
     }

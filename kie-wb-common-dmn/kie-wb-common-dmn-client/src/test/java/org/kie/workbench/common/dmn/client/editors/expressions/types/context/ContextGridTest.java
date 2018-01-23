@@ -170,7 +170,7 @@ public class ContextGridTest {
 
         assertEquals(1,
                      uiModel.getCell(0, 0).getValue().getValue());
-        assertEquals(Name.defaultValue,
+        assertEquals(Name.DEFAULT_NAME,
                      uiModel.getCell(0, 1).getValue().getValue());
         assertNull(uiModel.getCell(0, 2));
 

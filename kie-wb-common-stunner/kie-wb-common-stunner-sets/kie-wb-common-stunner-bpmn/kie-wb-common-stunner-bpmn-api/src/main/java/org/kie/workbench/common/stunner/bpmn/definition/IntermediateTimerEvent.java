@@ -32,9 +32,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.Can
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
@@ -49,13 +47,6 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
         policy = FieldPolicy.ONLY_MARKED
 )
 public class IntermediateTimerEvent extends BaseCatchingIntermediateEvent {
-
-    @Title
-    public static final transient String title = "Intermediate Timer Event";
-
-    @Description
-    public static final transient String description = "Process execution is delayed until a certain point in time " +
-            "is reached or a particular duration is over.";
 
     @PropertySet
     @FormField(afterElement = "general")
@@ -88,15 +79,6 @@ public class IntermediateTimerEvent extends BaseCatchingIntermediateEvent {
               fontSet,
               dimensionsSet);
         this.executionSet = executionSet;
-    }
-
-    @Override
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public CancellingTimerEventExecutionSet getExecutionSet() {

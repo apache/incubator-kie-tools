@@ -26,6 +26,8 @@ import java.util.Map;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterFactory;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindablePropertyAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindablePropertyAdapterProxy;
+import org.kie.workbench.common.stunner.core.definition.property.*;
+import org.kie.workbench.common.stunner.core.definition.property.type.*;
 
 @Generated("${generatedByClassName}")
 @ApplicationScoped
@@ -38,12 +40,6 @@ public class ${className} extends ${parentAdapterClassName}<Object, Object> {
 
     }};
 
-    private static final Map<Class, String> propDefaultValueFieldNames = new HashMap<Class, String>(${defaultValuePropNamesSize}) {{
-        <#list defaultValuePropNames as defaultValuePropName>
-            put( ${defaultValuePropName.className}.class, "${defaultValuePropName.methodName}" );
-        </#list>
-    }};
-
     private static final Map<Class, String> propAllowedValuesFieldNames = new HashMap<Class, String>(${allowedValuesPropNamesSize}) {{
         <#list allowedValuesPropNames as allowedValuesPropName>
             put( ${allowedValuesPropName.className}.class, "${allowedValuesPropName.methodName}" );
@@ -53,6 +49,12 @@ public class ${className} extends ${parentAdapterClassName}<Object, Object> {
     private static final Map<Class, String> propTypeFieldNames = new HashMap<Class, String>(${propTypePropNamesSize}) {{
         <#list propTypePropNames as propTypePropName>
               put( ${propTypePropName.className}.class, "${propTypePropName.methodName}" );
+        </#list>
+    }};
+
+    private static final Map<Class, PropertyType> propTypes = new HashMap<Class, PropertyType>(${valuePropNamesSize}) {{
+        <#list propTypes as pType>
+            put( ${pType.className}.class, new ${pType.methodName}() );
         </#list>
     }};
 
@@ -91,12 +93,12 @@ public class ${className} extends ${parentAdapterClassName}<Object, Object> {
     @Override
     protected void setBindings(final BindablePropertyAdapter<Object, Object> adapter) {
         adapter.setBindings(    propTypeFieldNames,
+                                propTypes,
                                 propCaptionFieldNames,
                                 propDescriptionFieldNames,
                                 propReadOnlyFieldNames,
                                 propOptionalFieldNames,
                                 propValueFieldNames,
-                                propDefaultValueFieldNames,
                                 propAllowedValuesFieldNames );
     }
 

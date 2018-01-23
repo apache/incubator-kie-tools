@@ -60,9 +60,7 @@ class ClientBindableDefinitionSetAdapter extends AbstractClientBindableAdapter<O
 
     @Override
     public String getDomain(final Object pojo) {
-        String n = pojo.getClass().getName();
-        return n.substring(n.lastIndexOf(".") + 1,
-                           n.length());
+        return BindableAdapterUtils.getDefinitionSetDomain(pojo.getClass());
     }
 
     @Override
@@ -93,10 +91,7 @@ class ClientBindableDefinitionSetAdapter extends AbstractClientBindableAdapter<O
 
     @Override
     public boolean accepts(final Class<?> pojoClass) {
-        if (null != propertyDescriptionFieldNames) {
-            return getPropertyDescriptionFieldNames().containsKey(pojoClass);
-        }
-        return false;
+        return getQualifiers().containsKey(pojoClass);
     }
 
     private Map<Class, String> getPropertyDescriptionFieldNames() {

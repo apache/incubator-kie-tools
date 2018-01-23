@@ -30,7 +30,6 @@
     <exclude name="org.kie.workbench.common.stunner.client.workbench.**"/>
     <exclude name="org.kie.workbench.common.stunner.shapes.client.**"/>
     <exclude name="org.kie.workbench.common.stunner.svg.client.**"/>
-    <exclude name="org.kie.workbench.common.stunner.basicset.client.**"/>
     <exclude name="org.kie.workbench.common.stunner.bpmn.client.**"/>
     <exclude name="org.kie.workbench.common.stunner.standalone.client.**"/>
     <!-- Exclude all guvnor & kie project stuff, not just client side.-->

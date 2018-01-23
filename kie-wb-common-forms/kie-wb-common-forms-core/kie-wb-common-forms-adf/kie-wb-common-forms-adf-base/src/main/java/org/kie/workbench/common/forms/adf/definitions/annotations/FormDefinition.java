@@ -40,7 +40,7 @@ public @interface FormDefinition {
     LabelPosition labelPosition() default LabelPosition.DEFAULT;
 
     /**
-     * Indicates to the ADF engine to add fields from all the superclasses of the annotatedd class
+     * Indicates to the ADF engine to add fields from all the superclasses of the annotated class
      */
     boolean allowInheritance() default true;
 

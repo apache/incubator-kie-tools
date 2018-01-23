@@ -27,7 +27,6 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
-import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
@@ -38,9 +37,6 @@ public abstract class BaseConnector implements BPMNViewDefinition {
 
     @Category
     public static final transient String category = Categories.CONNECTING_OBJECTS;
-
-    @Description
-    public static final transient String description = "A Connecting Object";
 
     @PropertySet
     @FormField
@@ -83,10 +79,6 @@ public abstract class BaseConnector implements BPMNViewDefinition {
 
     public String getCategory() {
         return category;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public Set<String> getLabels() {

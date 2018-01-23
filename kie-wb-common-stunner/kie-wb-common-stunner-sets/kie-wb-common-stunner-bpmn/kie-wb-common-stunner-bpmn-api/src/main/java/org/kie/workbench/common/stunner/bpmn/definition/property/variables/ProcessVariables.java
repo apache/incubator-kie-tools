@@ -19,18 +19,11 @@ package org.kie.workbench.common.stunner.bpmn.definition.property.variables;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldLabel;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldReadOnly;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.I18nMode;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
 import org.kie.workbench.common.stunner.bpmn.definition.property.type.VariablesType;
-import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.Caption;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.DefaultValue;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.Optional;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.ReadOnly;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Type;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
@@ -41,59 +34,23 @@ import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 @FieldDefinition(i18nMode = I18nMode.OVERRIDE_I18N_KEY)
 public class ProcessVariables implements BPMNProperty {
 
-    @Caption
-    @FieldLabel
-    public static final transient String caption = "Process Variables";
-
-    @Description
-    public static final transient String description = "Variables for the Process";
-
-    @ReadOnly
-    @FieldReadOnly
-    private Boolean readOnly = false;
-
-    @Optional
-    public static final Boolean optional = false;
-
     @Type
     public static final PropertyType type = new VariablesType();
 
-    @DefaultValue
-    public static final String defaultValue = "";
-
     @Value
     @FieldValue
-    private String value = defaultValue;
+    private String value;
 
     public ProcessVariables() {
+        this("");
     }
 
     public ProcessVariables(final String value) {
         this.value = value;
     }
 
-    public String getCaption() {
-        return caption;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public boolean isReadOnly() {
-        return readOnly;
-    }
-
-    public boolean isOptional() {
-        return optional;
-    }
-
     public PropertyType getType() {
         return type;
-    }
-
-    public String getDefaultValue() {
-        return defaultValue;
     }
 
     public String getValue() {

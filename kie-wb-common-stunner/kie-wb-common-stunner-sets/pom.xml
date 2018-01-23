@@ -31,7 +31,6 @@
   <description>Kie Workbench - Common - Stunner - Built-in Definition Sets</description>
 
   <modules>
-    <module>kie-wb-common-stunner-basicset</module>
     <module>kie-wb-common-stunner-bpmn</module>
     <module>kie-wb-common-stunner-case-mgmt</module>
   </modules>
