@@ -32,6 +32,7 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.ResourceAlreadyExistsException;
@@ -252,10 +253,10 @@ public class ElasticSearchIndexProvider implements IndexProvider {
                 .collect(Collectors.toList());
     }
 
-    private Optional<SearchResponse> findByQueryRaw(List<String> indices,
-                                                    Query query,
-                                                    Sort sort,
-                                                    int limit) {
+    protected Optional<SearchResponse> findByQueryRaw(List<String> indices,
+                                                      Query query,
+                                                      Sort sort,
+                                                      int limit) {
         try {
 
             List<String> indexes = indices;
@@ -266,10 +267,12 @@ public class ElasticSearchIndexProvider implements IndexProvider {
             SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
             searchSourceBuilder.query(queryBuilder);
             if (sort != null) {
-                Arrays.stream(sort.getSort()).forEach(sortField -> {
-                    String field = sortField.getField();
-                    searchSourceBuilder.sort(field);
-                });
+                Arrays.stream(sort.getSort())
+                        .filter(sortField -> sortField.getField() != null)
+                        .forEach(sortField -> {
+                            addSort(searchSourceBuilder,
+                                    sortField);
+                        });
             }
             if (limit > 0 && limit <= ELASTICSEARCH_MAX_SIZE) {
                 searchSourceBuilder.size(limit);
@@ -286,17 +289,33 @@ public class ElasticSearchIndexProvider implements IndexProvider {
         return Optional.empty();
     }
 
+    protected void addSort(SearchSourceBuilder searchSourceBuilder,
+                           SortField sortField) {
+        String field = sortField.getField();
+        searchSourceBuilder.sort(field);
+    }
+
     protected String escapeSpecialCharacters(String queryString) {
         List<String> splittedTokens = Arrays.asList(queryString.split(" "));
         return splittedTokens.stream().map(query -> {
             if (query.chars().filter(ch -> ch == ':').count() >= 0) {
                 int separationChar = query.indexOf(':') + 1;
                 return query.substring(0,
-                                       separationChar) + escape(query.substring(separationChar));
+                                       separationChar) + processQuery(query,
+                                                                      separationChar);
             } else {
                 return query;
             }
         }).collect(Collectors.joining(" "));
+    }
+
+    private String processQuery(String query,
+                                int separationChar) {
+        String queryString = escape(query.substring(separationChar));
+        if (queryString.contains(":")) {
+            queryString = "\"" + queryString + "\"";
+        }
+        return queryString;
     }
 
     private String escape(String s) {

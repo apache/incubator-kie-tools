@@ -113,13 +113,38 @@ public class ComplexFieldsTest extends BaseIndexTest {
                               });
         }
         waitForCountDown(5000);
-        List<KObject> result = config.getIndexProvider().findByQuery(Arrays.asList("elastic_complex_fields_test"),
-                                                                     new WildcardQuery(new Term("file",
-                                                                                                "default://master@files/kie")),
-                                                                     null,
-                                                                     0);
 
-        assertEquals(2,
-                     result.size());
+        {
+            List<KObject> result = config.getIndexProvider().findByQuery(Arrays.asList("elastic_complex_fields_test"),
+                                                                         new WildcardQuery(new Term("file",
+                                                                                                    "default://master@files/kie")),
+                                                                         null,
+                                                                         0);
+
+            assertEquals(1,
+                         result.size());
+        }
+
+        {
+            List<KObject> result = config.getIndexProvider().findByQuery(Arrays.asList("elastic_complex_fields_test"),
+                                                                         new WildcardQuery(new Term("file",
+                                                                                                    "default://master@file/kie")),
+                                                                         null,
+                                                                         0);
+
+            assertEquals(1,
+                         result.size());
+        }
+
+        {
+            List<KObject> result = config.getIndexProvider().findByQuery(Arrays.asList("elastic_complex_fields_test"),
+                                                                         new WildcardQuery(new Term("file",
+                                                                                                    "default://master@notFound")),
+                                                                         null,
+                                                                         0);
+
+            assertEquals(0,
+                         result.size());
+        }
     }
 }

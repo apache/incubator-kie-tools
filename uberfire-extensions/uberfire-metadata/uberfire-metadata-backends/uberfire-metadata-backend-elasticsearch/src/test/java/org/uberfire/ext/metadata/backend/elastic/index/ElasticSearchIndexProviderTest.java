@@ -21,6 +21,10 @@ import java.util.HashSet;
 
 import com.google.common.collect.Sets;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
+import org.apache.lucene.search.TermQuery;
 import org.elasticsearch.client.transport.TransportClient;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,8 +38,7 @@ import org.uberfire.ext.metadata.backend.elastic.provider.ElasticSearchContext;
 import org.uberfire.ext.metadata.metamodel.NullMetaModelStore;
 import org.uberfire.ext.metadata.model.schema.MetaProperty;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -64,7 +67,7 @@ public class ElasticSearchIndexProviderTest {
     @Test
     public void testEscapeSpecialCharacters() {
 
-        String expected = "(+field:value AND +field2:\\+AAA123=) OR url:git\\:\\/\\/master@path\\/to\\/file";
+        String expected = "(+field:value AND +field2:\\+AAA123=) OR url:\"git\\:\\/\\/master@path\\/to\\/file\"";
         String queryString = "(+field:value AND +field2:+AAA123=) OR url:git://master@path/to/file";
         String escapedQueryString = this.provider.escapeSpecialCharacters(queryString);
         assertEquals(expected,
@@ -126,5 +129,36 @@ public class ElasticSearchIndexProviderTest {
 
         verify(transportClient).prepareIndex(eq("system_ou_plugins"),
                                              eq("plugins"));
+    }
+
+    @Test
+    public void testAddNullSort() {
+
+        this.provider.findByQueryRaw(Arrays.asList("index"),
+                                     new TermQuery(new Term("",
+                                                            "")),
+                                     new Sort(SortField.FIELD_DOC),
+                                     0);
+
+        verify(this.provider,
+               never()).addSort(any(),
+                                any());
+    }
+
+    @Test
+    public void testWithSort() {
+
+        SortField sortField = new SortField("aField",
+                                            SortField.Type.STRING);
+
+        this.provider.findByQueryRaw(Arrays.asList("index"),
+                                     new TermQuery(new Term("",
+                                                            "")),
+                                     new Sort(sortField),
+                                     0);
+
+        verify(this.provider,
+               times(1)).addSort(any(),
+                                 eq(sortField));
     }
 }
