@@ -21,7 +21,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import org.drools.workbench.models.testscenarios.shared.CallFixtureMap;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Fixture;
@@ -39,11 +38,11 @@ public class FixtureLayout
     @Inject
     private ScenarioWidgetComponentCreator scenarioWidgetComponentCreator;
 
-    private List<Fixture>        fixtures;
+    private List<Fixture> fixtures;
     private List<ExecutionTrace> listExecutionTrace;
     private ScenarioHelper scenarioHelper = new ScenarioHelper();
-    private int            layoutRow;
-    private int            executionTraceLine;
+    private int layoutRow;
+    private int executionTraceLine;
     private ExecutionTrace previousExecutionTrace;
 
     public void reset(ScenarioEditorViewImpl scenarioEditorView,
@@ -73,14 +72,12 @@ public class FixtureLayout
                 ExecutionTrace currentExecutionTrace = (ExecutionTrace) fixture;
                 addExecutionTrace(currentExecutionTrace);
                 previousExecutionTrace = currentExecutionTrace;
-
             } else if (fixture instanceof FixturesMap) {
                 layoutRow = addGiven((FixturesMap) fixture);
             } else if (fixture instanceof CallFixtureMap) {
                 layoutRow = addCallFixture((CallFixtureMap) fixture);
             } else {
                 addFixtureList((FixtureList) fixture);
-
             }
             layoutRow++;
         }
@@ -97,12 +94,6 @@ public class FixtureLayout
         if (executionTraceLine >= listExecutionTrace.size()) {
             executionTraceLine = listExecutionTrace.size() - 1;
         }
-        setWidget(layoutRow,
-                  1,
-                  scenarioWidgetComponentCreator.createExecutionWidget(currentExecutionTrace));
-        getFlexCellFormatter().setHorizontalAlignment(layoutRow,
-                                                      2,
-                                                      HasHorizontalAlignment.ALIGN_LEFT);
     }
 
     private int addGiven(FixturesMap fixture) {
@@ -111,14 +102,14 @@ public class FixtureLayout
                   scenarioWidgetComponentCreator.createGivenLabelButton(listExecutionTrace,
                                                                         executionTraceLine,
                                                                         previousExecutionTrace)
-                 );
+        );
         layoutRow++;
         setWidget(layoutRow,
                   1,
                   scenarioWidgetComponentCreator.createGivenPanel(listExecutionTrace,
                                                                   executionTraceLine,
                                                                   fixture)
-                 );
+        );
         return layoutRow;
     }
 
@@ -128,14 +119,14 @@ public class FixtureLayout
                   scenarioWidgetComponentCreator.createCallMethodLabelButton(listExecutionTrace,
                                                                              executionTraceLine,
                                                                              previousExecutionTrace)
-                 );
+        );
         layoutRow++;
         setWidget(layoutRow,
                   1,
                   scenarioWidgetComponentCreator.createCallMethodOnGivenPanel(listExecutionTrace,
                                                                               executionTraceLine,
                                                                               fixture)
-                 );
+        );
         return layoutRow;
     }
 
@@ -148,7 +139,7 @@ public class FixtureLayout
                       scenarioWidgetComponentCreator.createVerifyFactsPanel(listExecutionTrace,
                                                                             executionTraceLine,
                                                                             fixturesList)
-                     );
+            );
         } else if (first instanceof VerifyRuleFired) {
             setWidget(layoutRow,
                       1,
@@ -161,15 +152,6 @@ public class FixtureLayout
         setWidget(layoutRow,
                   0,
                   scenarioWidgetComponentCreator.createAddExecuteButton());
-        layoutRow++;
-        setWidget(layoutRow,
-                  0,
-                  scenarioWidgetComponentCreator.createSmallLabel());
-
-        // config section
-        setWidget(layoutRow,
-                  1,
-                  scenarioWidgetComponentCreator.createConfigWidget());
 
         layoutRow++;
 
@@ -182,7 +164,7 @@ public class FixtureLayout
                   1,
                   scenarioWidgetComponentCreator.createGlobalPanel(scenarioHelper,
                                                                    previousExecutionTrace)
-                 );
+        );
     }
 
     public void showResults() {

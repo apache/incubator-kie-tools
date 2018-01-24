@@ -49,7 +49,7 @@ public interface
 
     String globals();
 
-    String configuration();
+    String Settings();
 
     String AddInputDataAndExpectationsHere();
 
@@ -126,10 +126,6 @@ public interface
     String Choose();
 
     String property0RulesFiredIn1Ms(Long numberOfRulesFired, Long executionTimeResult);
-
-    String ShowFiredRules();
-
-    String HideFiredRules();
 
     String GIVEN();
 
@@ -219,7 +215,7 @@ public interface
 
     String SummaryColon();
 
-    String AuditLogColon();
+    String AuditLog();
 
     String ShowEventsButton();
 
@@ -288,5 +284,7 @@ public interface
     String XTestsRanInYMinutesZSeconds(int runCount, String minutes, String seconds);
 
     String ErrorCannotFindADefaultKieBase();
+
+    String FiredRules();
 
 }

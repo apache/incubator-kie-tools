@@ -22,7 +22,10 @@ import java.util.Collections;
 import javax.enterprise.event.Event;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
+import org.drools.workbench.screens.testscenario.client.page.audit.AuditPage;
+import org.drools.workbench.screens.testscenario.client.page.settings.SettingsPage;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.type.TestScenarioResourceType;
 import org.drools.workbench.screens.testscenario.model.TestScenarioModelContent;
@@ -66,9 +69,9 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.notNull;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyBoolean;
-import static org.mockito.Mockito.anySet;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -130,6 +133,12 @@ public class ScenarioEditorPresenterTest {
     @Mock
     private ProjectContext workbenchContext;
 
+    @Mock
+    private SettingsPage settingsPage;
+
+    @Mock
+    private AuditPage auditPage;
+
     private ScenarioEditorPresenter editor;
     private Scenario scenario;
     private Overview overview;
@@ -146,7 +155,9 @@ public class ScenarioEditorPresenterTest {
                                                  new CallerMock<>(service),
                                                  new CallerMock<>(testService),
                                                  new TestScenarioResourceType(),
-                                                 modelOracleFactory) {
+                                                 modelOracleFactory,
+                                                 settingsPage,
+                                                 auditPage) {
             {
                 kieView = ScenarioEditorPresenterTest.this.kieView;
                 versionRecordManager = ScenarioEditorPresenterTest.this.versionRecordManager;
@@ -207,8 +218,6 @@ public class ScenarioEditorPresenterTest {
         editor.onRunScenario();
 
         // Make sure imports are updated
-        verify(view).initKSessionSelector(path,
-                                          scenarioRunResult);
         verify(importsWidget).setContent(any(AsyncPackageDataModelOracle.class),
                                          eq(scenarioRunResult.getImports()),
                                          anyBoolean());
@@ -241,6 +250,18 @@ public class ScenarioEditorPresenterTest {
     }
 
     @Test
+    public void testKiePageRefreshAfterContentLoaded() throws Exception {
+        final ObservablePath path = mock(ObservablePath.class);
+        when(versionRecordManager.getCurrentPath()).thenReturn(path);
+
+        editor.loadContent();
+
+        verify(kieView).addPage(settingsPage);
+        verify(kieView).addPage(auditPage);
+        verify(settingsPage).refresh(view, path, scenario);
+    }
+
+    @Test
     public void testRunScenario() throws Exception {
         final ObservablePath path = mock(ObservablePath.class);
         final PlaceRequest placeRequest = mock(PlaceRequest.class);
@@ -250,9 +271,6 @@ public class ScenarioEditorPresenterTest {
         editor.onStartup(path,
                          placeRequest);
 
-        verify(view).initKSessionSelector(eq(path),
-                                          any(Scenario.class));
-
         reset(view);
 
         editor.onRunScenario();
@@ -260,10 +278,12 @@ public class ScenarioEditorPresenterTest {
         InOrder inOrder = inOrder(view);
         inOrder.verify(view).showBusyIndicator(TestScenarioConstants.INSTANCE.BuildingAndRunningScenario());
         inOrder.verify(view).showResults();
-        inOrder.verify(view).showAuditView(anySet());
         inOrder.verify(view).hideBusyIndicator();
-        inOrder.verify(view).initKSessionSelector(eq(path),
-                                                  any(Scenario.class));
+
+        verify(settingsPage).refresh(view, path, scenario);
+
+        verify(auditPage).showFiredRulesAuditLog(Collections.emptySet());
+        verify(auditPage).showFiredRules(notNull(ExecutionTrace.class));
     }
 
     @Test

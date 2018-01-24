@@ -23,8 +23,11 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
+import org.drools.workbench.screens.testscenario.client.page.audit.AuditPage;
+import org.drools.workbench.screens.testscenario.client.page.settings.SettingsPage;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.type.TestScenarioResourceType;
+import org.drools.workbench.screens.testscenario.client.utils.ScenarioUtils;
 import org.drools.workbench.screens.testscenario.model.TestScenarioModelContent;
 import org.drools.workbench.screens.testscenario.model.TestScenarioResult;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
@@ -62,6 +65,8 @@ public class ScenarioEditorPresenter
     private final Caller<TestService> testService;
     private final ImportsWidgetPresenter importsWidget;
     private User user;
+    private final SettingsPage settingsPage;
+    private final AuditPage auditPage;
     private Scenario scenario;
     private AsyncPackageDataModelOracle dmo;
 
@@ -74,7 +79,9 @@ public class ScenarioEditorPresenter
                                    final Caller<ScenarioTestEditorService> service,
                                    final Caller<TestService> testService,
                                    final TestScenarioResourceType type,
-                                   final AsyncPackageDataModelOracleFactory oracleFactory) {
+                                   final AsyncPackageDataModelOracleFactory oracleFactory,
+                                   final SettingsPage settingsPage,
+                                   final AuditPage auditPage) {
         super(view);
         this.view = view;
         this.user = user;
@@ -83,6 +90,8 @@ public class ScenarioEditorPresenter
         this.testService = testService;
         this.type = type;
         this.oracleFactory = oracleFactory;
+        this.settingsPage = settingsPage;
+        this.auditPage = auditPage;
 
         view.setPresenter(this);
     }
@@ -126,6 +135,10 @@ public class ScenarioEditorPresenter
 
                 addImportsTab(importsWidget);
 
+                addPage(settingsPage);
+
+                addPage(auditPage);
+
                 redraw();
 
                 view.hideBusyIndicator();
@@ -144,7 +157,9 @@ public class ScenarioEditorPresenter
 
                              view.showResults();
 
-                             view.showAuditView(result.getLog());
+                             auditPage.showFiredRulesAuditLog(result.getLog());
+
+                             auditPage.showFiredRules(ScenarioUtils.findExecutionTrace(scenario));
 
                              view.hideBusyIndicator();
 
@@ -158,8 +173,9 @@ public class ScenarioEditorPresenter
 
     private void redraw() {
         renderFixtures();
-        view.initKSessionSelector(versionRecordManager.getCurrentPath(),
-                                  scenario);
+        settingsPage.refresh(view,
+                             versionRecordManager.getCurrentPath(),
+                             scenario);
         importsWidget.setContent(dmo,
                                  scenario.getImports(),
                                  isReadOnly);

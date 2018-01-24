@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.testscenario.client;
+package org.drools.workbench.screens.testscenario.client.page.settings;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -24,6 +25,7 @@ import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.kie.workbench.common.widgets.client.widget.KSessionSelector;
 import org.uberfire.backend.vfs.Path;
 
+@Dependent
 public class ScenarioKSessionSelector
         implements IsWidget {
 
@@ -42,7 +44,7 @@ public class ScenarioKSessionSelector
         });
     }
 
-    public void init(final Path path,
+    public void show(final Path path,
                      final Scenario scenario) {
         this.scenario = scenario;
         selector.init(path,

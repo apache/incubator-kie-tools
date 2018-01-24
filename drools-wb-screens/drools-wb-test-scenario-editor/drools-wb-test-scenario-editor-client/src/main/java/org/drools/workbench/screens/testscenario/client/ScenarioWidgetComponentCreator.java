@@ -37,7 +37,6 @@ import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 
 public class ScenarioWidgetComponentCreator {
@@ -61,10 +60,10 @@ public class ScenarioWidgetComponentCreator {
         this.ruleNamesService = ruleNamesService;
     }
 
-    protected void reset(final ScenarioParentWidget scenarioWidget,
-                         final Path path,
-                         final AsyncPackageDataModelOracle oracle,
-                         final Scenario scenario) {
+    public void reset(final ScenarioParentWidget scenarioWidget,
+                      final Path path,
+                      final AsyncPackageDataModelOracle oracle,
+                      final Scenario scenario) {
         this.scenarioWidget = scenarioWidget;
         this.oracle = oracle;
         this.scenario = scenario;
@@ -101,17 +100,8 @@ public class ScenarioWidgetComponentCreator {
 
     protected GlobalButton createGlobalButton() {
         return new GlobalButton(getScenario(),
-                               this.scenarioWidget,
-                               oracle);
-    }
-
-    protected SmallLabel createSmallLabel() {
-        return new SmallLabel(TestScenarioConstants.INSTANCE.configuration());
-    }
-
-    protected ConfigWidget createConfigWidget() {
-        return new ConfigWidget(getScenario(),
-                                this);
+                                this.scenarioWidget,
+                                oracle);
     }
 
     protected AddExecuteButton createAddExecuteButton() {
@@ -137,13 +127,13 @@ public class ScenarioWidgetComponentCreator {
     }
 
     protected CallMethodOnNewDataButton createCallMethodLabelButton(final List<ExecutionTrace> listExecutionTrace,
-                                                                final int executionTraceLine,
-                                                                final ExecutionTrace previousExecutionTrace) {
+                                                                    final int executionTraceLine,
+                                                                    final ExecutionTrace previousExecutionTrace) {
         return new CallMethodOnNewDataButton(previousExecutionTrace,
-                                         getScenario(),
-                                         listExecutionTrace.get(executionTraceLine),
-                                         this.scenarioWidget,
-                                         oracle);
+                                             getScenario(),
+                                             listExecutionTrace.get(executionTraceLine),
+                                             this.scenarioWidget,
+                                             oracle);
     }
 
     protected GivenButton createGivenLabelButton(final List<ExecutionTrace> listExecutionTrace,
@@ -154,11 +144,6 @@ public class ScenarioWidgetComponentCreator {
                                listExecutionTrace.get(executionTraceLine),
                                this.scenarioWidget,
                                oracle);
-    }
-
-    protected ExecutionWidget createExecutionWidget(final ExecutionTrace currentExecutionTrace) {
-        return new ExecutionWidget(currentExecutionTrace,
-                                   isShowResults());
     }
 
     protected ExpectPanel createExpectPanel(final ExecutionTrace currentExecutionTrace) {

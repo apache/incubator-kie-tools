@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.testscenario.client;
+package org.drools.workbench.screens.testscenario.client.page.settings;
 
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.junit.Before;
@@ -43,7 +43,7 @@ public class ScenarioKSessionSelectorTest {
 
     @Test
     public void testNoSessionSet() throws Exception {
-        selector.init( path, new Scenario() );
+        selector.show(path, new Scenario() );
 
         verify( innerSelector ).init( path,
                                       null );
@@ -53,7 +53,7 @@ public class ScenarioKSessionSelectorTest {
     public void testSetKBaseAndKSession() throws Exception {
         Scenario scenario = new Scenario();
         scenario.getKSessions().add( "ksession2" );
-        selector.init( path, scenario );
+        selector.show(path, scenario );
 
         verify( innerSelector ).init( path,
                                       "ksession2" );

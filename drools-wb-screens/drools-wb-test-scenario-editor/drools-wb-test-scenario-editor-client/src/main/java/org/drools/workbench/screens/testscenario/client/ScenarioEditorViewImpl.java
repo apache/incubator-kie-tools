@@ -16,8 +16,6 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
-import java.util.Set;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -30,15 +28,13 @@ import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
-import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 @Dependent
 public class ScenarioEditorViewImpl
         extends KieEditorViewImpl
-        implements ScenarioEditorView,
-                   ScenarioParentWidget {
+        implements ScenarioEditorView {
 
     private Presenter presenter;
 
@@ -48,31 +44,20 @@ public class ScenarioEditorViewImpl
 
     }
 
-    private static Binder uiBinder = GWT.create( Binder.class );
+    private static Binder uiBinder = GWT.create(Binder.class);
 
     private final Widget layout;
 
-    @UiField( provided = true )
-    AuditLog auditLog;
-
-    @UiField( provided = true )
-    ScenarioKSessionSelector scenarioKSessionSelector;
-
-    @UiField( provided = true )
+    @UiField(provided = true)
     FixtureLayout fixtureLayout;
 
     @Inject
-    public ScenarioEditorViewImpl(
-            final AuditLog auditLog,
-            final FixtureLayout fixtureLayout,
-            final ScenarioKSessionSelector scenarioKSessionSelector ) {
-        this.auditLog = auditLog;
+    public ScenarioEditorViewImpl(final FixtureLayout fixtureLayout) {
         this.fixtureLayout = fixtureLayout;
-        this.scenarioKSessionSelector = scenarioKSessionSelector;
 
-        layout = uiBinder.createAndBindUi( this );
-        layout.setWidth( "100%" );
-        layout.getElement().getStyle().setMargin( 5, Style.Unit.PX );
+        layout = uiBinder.createAndBindUi(this);
+        layout.setWidth("100%");
+        layout.getElement().getStyle().setMargin(5, Style.Unit.PX);
     }
 
     @Override
@@ -85,28 +70,22 @@ public class ScenarioEditorViewImpl
 
     @Override
     public MenuItem getRunScenarioMenuItem() {
-        return new SimpleMenuItem( TestScenarioConstants.INSTANCE.RunScenario(), new com.google.gwt.user.client.Command() {
+        return new SimpleMenuItem(TestScenarioConstants.INSTANCE.RunScenario(), new com.google.gwt.user.client.Command() {
             @Override
             public void execute() {
                 presenter.onRunScenario();
             }
-        } );
+        });
     }
 
     @Override
     public MenuItem getRunAllScenariosMenuItem() {
-        return new SimpleMenuItem( TestScenarioConstants.INSTANCE.RunAllScenarios(), new com.google.gwt.user.client.Command() {
+        return new SimpleMenuItem(TestScenarioConstants.INSTANCE.RunAllScenarios(), new com.google.gwt.user.client.Command() {
             @Override
             public void execute() {
                 presenter.onRunAllScenarios();
             }
-        } );
-    }
-
-    @Override
-    public void initKSessionSelector( final ObservablePath path,
-                                      final Scenario scenario ) {
-        scenarioKSessionSelector.init( path, scenario );
+        });
     }
 
     public void renderEditor() {
@@ -114,19 +93,13 @@ public class ScenarioEditorViewImpl
     }
 
     @Override
-    public void renderFixtures( Path path,
-                                AsyncPackageDataModelOracle oracle,
+    public void renderFixtures(Path path,
+                               AsyncPackageDataModelOracle oracle,
                                Scenario scenario) {
         fixtureLayout.reset(this,
                             path,
                             oracle,
                             scenario);
-    }
-
-    @Override
-    public void showAuditView(Set<String> log) {
-        auditLog.setVisible(true);
-        auditLog.fill(log);
     }
 
     @Override
@@ -138,5 +111,4 @@ public class ScenarioEditorViewImpl
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
-
 }
