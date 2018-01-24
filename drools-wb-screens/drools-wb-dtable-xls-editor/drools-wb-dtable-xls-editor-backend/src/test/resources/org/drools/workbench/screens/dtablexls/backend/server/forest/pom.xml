@@ -7,11 +7,4 @@
   <version>1.0.0</version>
   <name>Forest</name>
   <description>Forest health evaluator</description>
-  <repositories>
-    <repository>
-      <id>guvnor-m2-repo</id>
-      <name>Guvnor M2 Repo</name>
-      <url>http://localhost:8080/business-central/maven2/</url>
-    </repository>
-  </repositories>
 </project>

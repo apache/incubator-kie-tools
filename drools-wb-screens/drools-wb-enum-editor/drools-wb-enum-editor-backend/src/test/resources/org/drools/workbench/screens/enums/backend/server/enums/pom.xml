@@ -7,21 +7,4 @@
   <version>1.0</version>
   <packaging>kjar</packaging>
   <name>enums</name>
-  <dependencies>
-    <dependency>
-      <groupId>org.jboss.qa.droolsjbpm</groupId>
-      <artifactId>workitems</artifactId>
-      <version>1.0.0-FINAL</version>
-    </dependency>
-  </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-maven-plugin</artifactId>
-        <version>6.2.0.CR3-redhat-1</version>
-        <extensions>true</extensions>
-      </plugin>
-    </plugins>
-  </build>
 </project>
