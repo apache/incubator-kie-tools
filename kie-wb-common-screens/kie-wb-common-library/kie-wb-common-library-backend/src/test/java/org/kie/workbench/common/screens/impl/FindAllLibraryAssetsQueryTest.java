@@ -136,16 +136,16 @@ public class FindAllLibraryAssetsQueryTest
         //The index should be revised on next release (7.6).
         KObject k1 = new KObjectImpl("",
                                      "",
+                                     "clusterId1",
                                      "",
-                                     "",
-                                     "",
+                                     "key1",
                                      new ArrayList<>(),
                                      false);
         KObject k2 = new KObjectImpl("",
                                      "",
+                                     "clusterId2",
                                      "",
-                                     "",
-                                     "",
+                                     "key2",
                                      new ArrayList<>(),
                                      false);
         List<KObject> kObjects = service.distinct(Arrays.asList(k1,

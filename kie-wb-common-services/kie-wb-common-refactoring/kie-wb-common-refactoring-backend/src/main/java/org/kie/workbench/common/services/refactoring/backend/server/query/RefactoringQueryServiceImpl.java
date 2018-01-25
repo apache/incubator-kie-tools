@@ -21,7 +21,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.function.IntFunction;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
@@ -119,7 +122,19 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
         //for library assets list and count.
         //In cluster environment library index each file more than once.
         //The index should be revised on next release (7.6).
-        return found.stream().distinct().collect(Collectors.toList());
+        return found
+                .stream()
+                .filter(distinctByKey(RefactoringQueryServiceImpl::generateUniqueIdentifierForKObject))
+                .collect(Collectors.toList());
+    }
+
+    private static String generateUniqueIdentifierForKObject(final KObject kObject) {
+        return kObject.getClusterId() + kObject.getKey();
+    }
+
+    private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Set<Object> seen = ConcurrentHashMap.newKeySet();
+        return t -> seen.add(keyExtractor.apply(t));
     }
 
     @Override
@@ -144,15 +159,12 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
                          sort,
                          () -> (startIndex),
                          // start index of docs to get
-                         (numHits) -> (numHits - startIndex > pageSize ? pageSize : numHits - startIndex)
+                         (numHits) -> (numHits - startIndex > pageSize ? pageSize : numHits - startIndex),
+                         request.distinctResults()
                          // num docs to add to response
         );
 
         if (!kObjects.isEmpty()) {
-            if (request.distinctResults()) {
-                kObjects = distinct(kObjects);
-            }
-
             final ResponseBuilder responseBuilder = namedQuery.getResponseBuilder();
             return responseBuilder.buildResponse(pageSize,
                                                  startIndex,
@@ -183,7 +195,8 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
                          sort,
                          () -> (0),
                          // start index of docs to get
-                         (numHits) -> (numHits)
+                         (numHits) -> (numHits),
+                         false
                          // num docs to add to response
         );
 
@@ -199,9 +212,9 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
                                  final Sort sort,
                                  final Supplier<Integer> startIndexSupplier,
                                  final IntFunction<Integer> numOfHitsToReturnSupplier,
+                                 final boolean distinct,
                                  final ClusterSegment... clusterSegments) {
 
-        final List<KObject> result = new ArrayList<KObject>();
         try {
             List<String> indices = Arrays.stream(clusterSegments)
                     .map(clusterSegment -> clusterSegment.getClusterId())
@@ -211,6 +224,10 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
                                                                         query,
                                                                         sort,
                                                                         0);
+
+            if (distinct) {
+                found = distinct(found);
+            }
             final int startIndex = startIndexSupplier.get();
             final int numOfHitsToReturn = numOfHitsToReturnSupplier.apply(found.size());
 
