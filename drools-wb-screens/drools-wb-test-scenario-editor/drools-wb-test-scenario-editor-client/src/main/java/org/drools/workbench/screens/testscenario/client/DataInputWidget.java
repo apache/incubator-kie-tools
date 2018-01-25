@@ -25,6 +25,7 @@ import org.drools.workbench.models.testscenarios.shared.Fixture;
 import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
+import org.drools.workbench.screens.testscenario.client.utils.ScenarioUtils;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.ext.widgets.common.client.common.ClickableLabel;
 
@@ -112,5 +113,7 @@ public class DataInputWidget
                                     oracle,
                                     parent ) ) );
         }
+
+        ScenarioUtils.addBottomAndRightPaddingToTableCells(this);
     }
 }

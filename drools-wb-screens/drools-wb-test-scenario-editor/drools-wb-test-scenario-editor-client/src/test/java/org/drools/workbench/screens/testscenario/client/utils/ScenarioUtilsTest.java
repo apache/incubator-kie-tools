@@ -16,11 +16,21 @@
 
 package org.drools.workbench.screens.testscenario.client.utils;
 
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTMLTable;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
+@RunWith(GwtMockitoTestRunner.class)
 public class ScenarioUtilsTest {
 
     @Test
@@ -37,5 +47,24 @@ public class ScenarioUtilsTest {
         final Scenario scenario = new Scenario();
 
         Assert.assertNotNull(ScenarioUtils.findExecutionTrace(scenario));
+    }
+
+    @Test
+    public void testAddBottomAndRightPaddingToTableCells() throws Exception {
+        final Element cellOne = mock(Element.class);
+        final Element cellTwo = mock(Element.class);
+        final HTMLTable.CellFormatter cellFormatter = mock(HTMLTable.CellFormatter.class);
+        final FlexTable testedTable = mock(FlexTable.class);
+
+        doReturn(1).when(testedTable).getRowCount();
+        doReturn(2).when(testedTable).getCellCount(0);
+        doReturn(cellFormatter).when(testedTable).getCellFormatter();
+        doReturn(cellOne).when(cellFormatter).getElement(0, 0);
+        doReturn(cellTwo).when(cellFormatter).getElement(0, 1);
+
+        ScenarioUtils.addBottomAndRightPaddingToTableCells(testedTable);
+
+        verify(cellOne).setAttribute("style", ScenarioUtils.BOTTOM_RIGHT_PADDING);
+        verify(cellTwo).setAttribute("style", ScenarioUtils.BOTTOM_RIGHT_PADDING);
     }
 }

@@ -26,6 +26,7 @@ import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.RetractFact;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
+import org.drools.workbench.screens.testscenario.client.utils.ScenarioUtils;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
@@ -78,10 +79,11 @@ public class RetractWidget extends FlexTable {
                 setWidget( row,
                            1,
                            new DeleteButton( retractFact ) );
-
                 row++;
             }
         }
+
+        ScenarioUtils.addBottomAndRightPaddingToTableCells(this);
     }
 
     class DeleteButton extends Button {

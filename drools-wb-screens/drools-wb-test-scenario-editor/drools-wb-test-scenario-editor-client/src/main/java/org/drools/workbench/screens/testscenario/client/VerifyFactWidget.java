@@ -40,6 +40,7 @@ import org.drools.workbench.models.testscenarios.shared.VerifyField;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioImages;
+import org.drools.workbench.screens.testscenario.client.utils.ScenarioUtils;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
@@ -248,6 +249,7 @@ public class VerifyFactWidget extends Composite {
                 }
             }
         }
+        ScenarioUtils.addBottomAndRightPaddingToTableCells(data);
         return data;
     }
 }

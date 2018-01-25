@@ -25,6 +25,7 @@ import org.drools.workbench.models.testscenarios.shared.Fixture;
 import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
+import org.drools.workbench.screens.testscenario.client.utils.ScenarioUtils;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
@@ -93,5 +94,7 @@ public class ActivateRuleFlowWidget
 
             row++;
         }
+
+        ScenarioUtils.addBottomAndRightPaddingToTableCells(outer);
     }
 }

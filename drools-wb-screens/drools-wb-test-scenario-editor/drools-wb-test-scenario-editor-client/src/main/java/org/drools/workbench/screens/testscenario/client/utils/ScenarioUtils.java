@@ -16,15 +16,26 @@
 
 package org.drools.workbench.screens.testscenario.client.utils;
 
+import com.google.gwt.user.client.ui.FlexTable;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 
 public class ScenarioUtils {
+
+    public static final String BOTTOM_RIGHT_PADDING = "padding-right: 10px; padding-bottom: 10px";
 
     public static ExecutionTrace findExecutionTrace(final Scenario scenario) {
         return scenario.getFixtures().stream()
                 .filter(f -> f instanceof ExecutionTrace)
                 .map(f -> (ExecutionTrace) f)
                 .findFirst().orElse(new ExecutionTrace());
+    }
+
+    public static void addBottomAndRightPaddingToTableCells(final FlexTable table) {
+        for (int rowIndex = 0; rowIndex < table.getRowCount(); rowIndex++) {
+            for (int cellIndex = 0; cellIndex < table.getCellCount(rowIndex); cellIndex++) {
+                table.getCellFormatter().getElement(rowIndex, cellIndex).setAttribute("style", BOTTOM_RIGHT_PADDING);
+            }
+        }
     }
 }
