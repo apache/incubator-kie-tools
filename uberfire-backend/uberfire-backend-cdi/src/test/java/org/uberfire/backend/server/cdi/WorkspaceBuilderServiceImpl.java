@@ -46,6 +46,7 @@ public class WorkspaceBuilderServiceImpl implements
         try {
             logger.info("Building {} ...",
                         gav);
+            logger.info("Thread name: " + Thread.currentThread().getName());
             Thread.currentThread().sleep(5000l);
             logger.info("Building finished {}",
                         gav);

@@ -131,7 +131,6 @@ public class WorkspaceExecutorService implements ExecutorService {
         String workspace = getWorkspaceName();
         return () -> {
             WorkspaceContext.set(workspace);
-            Thread.currentThread().setName(workspace);
             runnable.run();
         };
     }
@@ -141,7 +140,6 @@ public class WorkspaceExecutorService implements ExecutorService {
         String workspace = getWorkspaceName();
         return () -> {
             WorkspaceContext.set(workspace);
-            Thread.currentThread().setName(workspace);
             return callable.call();
         };
     }

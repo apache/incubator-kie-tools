@@ -75,7 +75,6 @@ public class WorkspaceScopeContext implements Context {
                              bean.getBeanClass(),
                              workspace.getName());
             }
-            Thread.currentThread().setName("WorkspaceScopeContext" + "-" + workspace.getName());
             return instance;
         }
     }
