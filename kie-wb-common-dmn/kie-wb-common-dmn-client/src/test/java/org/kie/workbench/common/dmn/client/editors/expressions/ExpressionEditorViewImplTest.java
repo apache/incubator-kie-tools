@@ -24,6 +24,7 @@ import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Element;
+import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Document;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -33,6 +34,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -52,10 +54,13 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.Restri
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -63,7 +68,7 @@ import static org.mockito.Mockito.verify;
 public class ExpressionEditorViewImplTest {
 
     @Mock
-    private Div exitButton;
+    private Anchor returnToDRG;
 
     @Mock
     private Div expressionEditorControls;
@@ -104,6 +109,9 @@ public class ExpressionEditorViewImplTest {
     @Mock
     private BaseExpressionGrid editor;
 
+    @Mock
+    private HasExpression hasExpression;
+
     @Captor
     private ArgumentCaptor<Transform> transformArgumentCaptor;
 
@@ -131,7 +139,7 @@ public class ExpressionEditorViewImplTest {
         doReturn(new BaseGridData()).when(editor).getModel();
         doReturn(Optional.empty()).when(editor).getEditorControls();
 
-        this.view = spy(new ExpressionEditorViewImpl(exitButton,
+        this.view = spy(new ExpressionEditorViewImpl(returnToDRG,
                                                      expressionEditorControls,
                                                      document,
                                                      translationService,
@@ -145,6 +153,8 @@ public class ExpressionEditorViewImplTest {
             expressionContainerTuple = (GridCellTuple) spy(i.callRealMethod());
             return expressionContainerTuple;
         }).when(view).getExpressionContainerTuple();
+
+        doAnswer((i) -> i.getArguments()[1]).when(translationService).format(anyString(), anyObject());
     }
 
     @Test
@@ -195,7 +205,6 @@ public class ExpressionEditorViewImplTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testSetEditorResizesContainer() {
-        final HasExpression hasExpression = mock(HasExpression.class);
         final Optional<HasName> hasName = Optional.empty();
         final Optional<Expression> expression = Optional.empty();
 
@@ -205,5 +214,35 @@ public class ExpressionEditorViewImplTest {
                        expression);
 
         verify(expressionContainerTuple).onResize();
+    }
+
+    @Test
+    public void testSetEditorDoesUpdateReturnToDRGTextWhenHasNameIsNotEmpty() {
+        final String NAME = "NAME";
+        final Name name = new Name(NAME);
+        final HasName hasNameMock = mock(HasName.class);
+        doReturn(name).when(hasNameMock).getName();
+        final Optional<HasName> hasName = Optional.of(hasNameMock);
+        final Optional<Expression> expression = Optional.empty();
+
+        view.setEditor(editorDefinition,
+                       hasExpression,
+                       hasName,
+                       expression);
+
+        verify(returnToDRG).setTextContent(eq(NAME));
+    }
+
+    @Test
+    public void testSetEditorDoesNotUpdateReturnToDRGTextWhenHasNameIsEmpty() {
+        final Optional<HasName> hasName = Optional.empty();
+        final Optional<Expression> expression = Optional.empty();
+
+        view.setEditor(editorDefinition,
+                       hasExpression,
+                       hasName,
+                       expression);
+
+        verify(returnToDRG, never()).setTextContent(any(String.class));
     }
 }

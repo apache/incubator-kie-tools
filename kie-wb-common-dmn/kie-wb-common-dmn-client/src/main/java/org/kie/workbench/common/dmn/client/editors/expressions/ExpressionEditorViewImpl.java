@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import com.ait.lienzo.client.core.types.Transform;
 import com.google.gwt.event.dom.client.ClickEvent;
 import org.jboss.errai.common.client.api.IsElement;
+import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Document;
@@ -36,6 +37,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.BoundaryTransformMediator;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -57,8 +59,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     private ExpressionEditorView.Presenter presenter;
 
-    @DataField("exitButton")
-    private Div exitButton;
+    @DataField("returnToDRG")
+    private Anchor returnToDRG;
 
     @DataField("editorControls")
     private Div expressionEditorControls;
@@ -79,7 +81,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     }
 
     @Inject
-    public ExpressionEditorViewImpl(final Div exitButton,
+    public ExpressionEditorViewImpl(final Anchor returnToDRG,
                                     final Div expressionEditorControls,
                                     final Document document,
                                     final TranslationService translationService,
@@ -88,7 +90,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                     final @DMNEditor RestrictedMousePanMediator mousePanMediator,
                                     final SessionManager sessionManager,
                                     final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager) {
-        this.exitButton = exitButton;
+        this.returnToDRG = returnToDRG;
         this.expressionEditorControls = expressionEditorControls;
         this.document = document;
         this.translationService = translationService;
@@ -159,6 +161,9 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         gridPanel.updatePanelSize();
         gridLayer.batch();
 
+        hasName.ifPresent(name -> returnToDRG.setTextContent(translationService.format(DMNEditorConstants.ExpressionEditor_ReturnToDRG,
+                                                                                       name.getName().getValue())));
+
         onExpressionEditorSelected(oEditor);
     }
 
@@ -184,8 +189,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     }
 
     @SuppressWarnings("unused")
-    @EventHandler("exitButton")
-    void onClickExitButton(final ClickEvent event) {
+    @EventHandler("returnToDRG")
+    void onClickReturnToDRG(final ClickEvent event) {
         presenter.exit();
     }
 
