@@ -34,6 +34,12 @@ import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTyp
 @FieldDefinition(i18nMode = I18nMode.OVERRIDE_I18N_KEY)
 public class Width implements DMNProperty {
 
+    public static final double MIN = 50.0;
+
+    public static final double MAX = 200.0;
+
+    private static final double DEFAULT = 100.0;
+
     @Value
     @Min(50)
     @Max(200)
@@ -41,6 +47,7 @@ public class Width implements DMNProperty {
     private Double value;
 
     public Width() {
+        this(DEFAULT);
     }
 
     public Width(final Double value) {
