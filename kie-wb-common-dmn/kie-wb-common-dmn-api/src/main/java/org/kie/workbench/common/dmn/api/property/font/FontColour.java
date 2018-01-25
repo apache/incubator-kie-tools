@@ -33,6 +33,8 @@ import org.kie.workbench.common.stunner.core.definition.property.type.ColorType;
 @FieldDefinition(i18nMode = I18nMode.OVERRIDE_I18N_KEY)
 public class FontColour implements DMNProperty {
 
+    private static final String DEFAULT = "#000000";
+
     @Type
     public static final PropertyType type = new ColorType();
 
@@ -41,6 +43,7 @@ public class FontColour implements DMNProperty {
     private String value;
 
     public FontColour() {
+        this(DEFAULT);
     }
 
     public FontColour(final String value) {

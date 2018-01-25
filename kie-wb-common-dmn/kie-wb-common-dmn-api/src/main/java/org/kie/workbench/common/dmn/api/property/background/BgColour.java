@@ -33,6 +33,8 @@ import org.kie.workbench.common.stunner.core.definition.property.type.ColorType;
 @FieldDefinition(i18nMode = I18nMode.OVERRIDE_I18N_KEY)
 public class BgColour implements DMNProperty {
 
+    private static final String DEFAULT = "#ffffff";
+
     @Type
     public static final PropertyType type = new ColorType();
 
@@ -41,6 +43,7 @@ public class BgColour implements DMNProperty {
     private String value;
 
     public BgColour() {
+        this(DEFAULT);
     }
 
     public BgColour(final String value) {
