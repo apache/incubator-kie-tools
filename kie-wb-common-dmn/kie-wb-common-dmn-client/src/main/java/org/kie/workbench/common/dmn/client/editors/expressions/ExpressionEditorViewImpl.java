@@ -144,9 +144,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                           final HasExpression hasExpression,
                           final Optional<HasName> hasName,
                           final Optional<Expression> expression) {
-        final Optional<BaseExpressionGrid> oEditor = definition.getEditor(new GridCellTuple(0,
-                                                                                            0,
-                                                                                            expressionContainer.getModel()),
+        final GridCellTuple parent = getExpressionContainerTuple();
+        final Optional<BaseExpressionGrid> oEditor = definition.getEditor(parent,
                                                                           hasExpression,
                                                                           expression,
                                                                           hasName,
@@ -154,11 +153,20 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         expressionContainer.getModel().setCell(0,
                                                0,
                                                new ExpressionCellValue(oEditor));
+        parent.onResize();
+
         gridPanel.refreshScrollPosition();
         gridPanel.updatePanelSize();
         gridLayer.batch();
 
         onExpressionEditorSelected(oEditor);
+    }
+
+    //Instantiate in method to allow spying in Unit Tests
+    GridCellTuple getExpressionContainerTuple() {
+        return new GridCellTuple(0,
+                                 0,
+                                 expressionContainer.getModel());
     }
 
     @Override

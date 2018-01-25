@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions;
 
+import java.util.Optional;
+
 import com.ait.lienzo.client.core.mediator.Mediators;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
@@ -28,6 +30,12 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
+import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -36,14 +44,19 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -85,6 +98,12 @@ public class ExpressionEditorViewImplTest {
     @Mock
     private Mediators viewportMediators;
 
+    @Mock
+    private ExpressionEditorDefinition<Expression> editorDefinition;
+
+    @Mock
+    private BaseExpressionGrid editor;
+
     @Captor
     private ArgumentCaptor<Transform> transformArgumentCaptor;
 
@@ -94,23 +113,38 @@ public class ExpressionEditorViewImplTest {
     @Captor
     private ArgumentCaptor<TransformMediator> transformMediatorArgumentCaptor;
 
+    private GridCellTuple expressionContainerTuple;
+
     private ExpressionEditorViewImpl view;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() {
         doReturn(viewport).when(gridPanel).getViewport();
         doReturn(viewportMediators).when(viewport).getMediators();
         doReturn(gridPanelElement).when(gridPanel).getElement();
+        doReturn(Optional.of(editor)).when(editorDefinition).getEditor(any(GridCellTuple.class),
+                                                                       any(HasExpression.class),
+                                                                       any(Optional.class),
+                                                                       any(Optional.class),
+                                                                       anyBoolean());
+        doReturn(new BaseGridData()).when(editor).getModel();
+        doReturn(Optional.empty()).when(editor).getEditorControls();
 
-        this.view = new ExpressionEditorViewImpl(exitButton,
-                                                 expressionEditorControls,
-                                                 document,
-                                                 translationService,
-                                                 gridPanel,
-                                                 gridLayer,
-                                                 mousePanMediator,
-                                                 sessionManager,
-                                                 sessionCommandManager);
+        this.view = spy(new ExpressionEditorViewImpl(exitButton,
+                                                     expressionEditorControls,
+                                                     document,
+                                                     translationService,
+                                                     gridPanel,
+                                                     gridLayer,
+                                                     mousePanMediator,
+                                                     sessionManager,
+                                                     sessionCommandManager));
+
+        doAnswer((i) -> {
+            expressionContainerTuple = (GridCellTuple) spy(i.callRealMethod());
+            return expressionContainerTuple;
+        }).when(view).getExpressionContainerTuple();
     }
 
     @Test
@@ -156,5 +190,20 @@ public class ExpressionEditorViewImplTest {
         view.onResize();
 
         verify(gridPanel).onResize();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSetEditorResizesContainer() {
+        final HasExpression hasExpression = mock(HasExpression.class);
+        final Optional<HasName> hasName = Optional.empty();
+        final Optional<Expression> expression = Optional.empty();
+
+        view.setEditor(editorDefinition,
+                       hasExpression,
+                       hasName,
+                       expression);
+
+        verify(expressionContainerTuple).onResize();
     }
 }
