@@ -37,9 +37,9 @@ import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
+import org.drools.workbench.screens.testscenario.client.utils.ScenarioUtils;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ListBox;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.soup.project.datamodel.oracle.DropDownData;
 import org.kie.soup.project.datamodel.oracle.MethodInfo;
@@ -151,7 +151,9 @@ public class CallMethodWidget extends Composite {
                          inner);
         layout.setWidget(0,
                          2,
-                         new DeleteButton());
+                         new DeleteCallMethodButton());
+
+        ScenarioUtils.addBottomAndRightPaddingToTableCells(inner);
     }
 
     private Widget getSetterLabel() {
@@ -261,19 +263,12 @@ public class CallMethodWidget extends Composite {
         }
     }
 
-    class DeleteButton extends Button {
+    class DeleteCallMethodButton extends Button {
 
-        public DeleteButton() {
+        public DeleteCallMethodButton() {
             setIcon(IconType.TRASH);
-            setType(ButtonType.DANGER);
             setTitle(TestScenarioConstants.INSTANCE.RemoveCallMethod());
-
-            addClickHandler(new ClickHandler() {
-
-                public void onClick(ClickEvent event) {
-                    onDelete();
-                }
-            });
+            addClickHandler(clickEvent -> onDelete());
         }
     }
 }

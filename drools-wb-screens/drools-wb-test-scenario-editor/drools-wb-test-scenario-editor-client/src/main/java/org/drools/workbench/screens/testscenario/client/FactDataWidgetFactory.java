@@ -39,7 +39,6 @@ import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.ext.widgets.common.client.common.ClickableLabel;
@@ -231,7 +230,6 @@ public class FactDataWidgetFactory {
 
         public DeleteFactColumnButton( final FactData fact ) {
             setIcon(IconType.TRASH);
-            setType(ButtonType.DANGER);
             setTitle(TestScenarioConstants.INSTANCE.RemoveTheColumnForScenario(fact.getName()));
 
             addClickHandler( new ClickHandler() {
@@ -254,7 +252,6 @@ public class FactDataWidgetFactory {
         public DeleteFieldRowButton( final Fact fact,
                                      final String fieldName ) {
             setIcon(IconType.TRASH);
-            setType(ButtonType.DANGER);
             setTitle(TestScenarioConstants.INSTANCE.RemoveThisRow());
 
             addClickHandler( new ClickHandler() {

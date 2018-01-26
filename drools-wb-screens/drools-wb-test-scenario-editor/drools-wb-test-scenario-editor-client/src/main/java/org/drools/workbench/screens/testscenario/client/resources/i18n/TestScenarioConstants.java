@@ -233,6 +233,8 @@ public interface
 
     String Fact();
 
+    String Facts();
+
     String GuidedList();
 
     String AGuidedList();
@@ -286,5 +288,7 @@ public interface
     String ErrorCannotFindADefaultKieBase();
 
     String FiredRules();
+
+    String DeleteScenarioBlockAbove();
 
 }

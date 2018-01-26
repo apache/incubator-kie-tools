@@ -82,7 +82,6 @@ public class ListEditorRow extends Composite {
 
         initWidget( uiBinder.createAndBindUi( this ) );
         deleteItem.setIcon(IconType.TRASH);
-        deleteItem.setType(ButtonType.DANGER);
     }
 
     @UiHandler("deleteItem")

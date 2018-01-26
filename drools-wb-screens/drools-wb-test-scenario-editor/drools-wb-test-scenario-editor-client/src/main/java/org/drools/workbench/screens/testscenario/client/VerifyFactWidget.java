@@ -43,7 +43,6 @@ import org.drools.workbench.screens.testscenario.client.resources.images.TestSce
 import org.drools.workbench.screens.testscenario.client.utils.ScenarioUtils;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ListBox;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.soup.project.datamodel.oracle.MethodInfo;
 import org.kie.soup.project.datamodel.oracle.ModelField;
@@ -214,7 +213,6 @@ public class VerifyFactWidget extends Composite {
 
             Button deleteButton = new Button();
             deleteButton.setIcon(IconType.TRASH);
-            deleteButton.setType(ButtonType.DANGER);
             deleteButton.setTitle(TestScenarioConstants.INSTANCE.RemoveThisFieldExpectation());
             deleteButton.addClickHandler(clickEvent -> {
                 if (Window.confirm(TestScenarioConstants.INSTANCE.AreYouSureYouWantToRemoveThisFieldExpectation(

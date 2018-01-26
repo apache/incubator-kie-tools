@@ -20,6 +20,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FlexTable;
 import org.drools.workbench.models.testscenarios.shared.CallFixtureMap;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
@@ -29,6 +30,7 @@ import org.drools.workbench.models.testscenarios.shared.FixturesMap;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.models.testscenarios.shared.VerifyFact;
 import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
+import org.drools.workbench.screens.testscenario.client.delete.DeleteExecutionTraceButton;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 
@@ -59,10 +61,10 @@ public class FixtureLayout
         setWidth("100%");
         setStyleName("model-builder-Background");
 
-        render();
+        render(scenario, scenarioEditorView);
     }
 
-    private void render() {
+    private void render(final Scenario scenario, final ScenarioParentWidget parentWidgetToRender) {
         layoutRow = 1;
         executionTraceLine = 0;
         previousExecutionTrace = null;
@@ -73,6 +75,10 @@ public class FixtureLayout
                 addExecutionTrace(currentExecutionTrace);
                 previousExecutionTrace = currentExecutionTrace;
             } else if (fixture instanceof FixturesMap) {
+                // add delete execution trace button if scenario has more parts
+                addDeleteExecutionTraceButtonIfNotNull(scenario,
+                                                       previousExecutionTrace,
+                                                       parentWidgetToRender);
                 layoutRow = addGiven((FixturesMap) fixture);
             } else if (fixture instanceof CallFixtureMap) {
                 layoutRow = addCallFixture((CallFixtureMap) fixture);
@@ -82,7 +88,25 @@ public class FixtureLayout
             layoutRow++;
         }
 
+        // add the last delete execution trace button
+        addDeleteExecutionTraceButtonIfNotNull(scenario,
+                                               previousExecutionTrace,
+                                               parentWidgetToRender);
+
         addFooter();
+    }
+
+    void addDeleteExecutionTraceButtonIfNotNull(final Scenario scenario,
+                                                final ExecutionTrace executionTraceToDelete,
+                                                final ScenarioParentWidget parentWidgetToRender) {
+        if (executionTraceToDelete != null) {
+            final DeleteExecutionTraceButton deleteExecutionTraceButton = GWT.create(DeleteExecutionTraceButton.class);
+            deleteExecutionTraceButton.init(scenario,
+                                            executionTraceToDelete,
+                                            parentWidgetToRender);
+            setWidget(layoutRow, 0, deleteExecutionTraceButton);
+            layoutRow++;
+        }
     }
 
     private void addExecutionTrace(ExecutionTrace currentExecutionTrace) {
@@ -105,7 +129,7 @@ public class FixtureLayout
         );
         layoutRow++;
         setWidget(layoutRow,
-                  1,
+                  0,
                   scenarioWidgetComponentCreator.createGivenPanel(listExecutionTrace,
                                                                   executionTraceLine,
                                                                   fixture)
@@ -122,7 +146,7 @@ public class FixtureLayout
         );
         layoutRow++;
         setWidget(layoutRow,
-                  1,
+                  0,
                   scenarioWidgetComponentCreator.createCallMethodOnGivenPanel(listExecutionTrace,
                                                                               executionTraceLine,
                                                                               fixture)
@@ -135,14 +159,14 @@ public class FixtureLayout
 
         if (first instanceof VerifyFact) {
             setWidget(layoutRow,
-                      1,
+                      0,
                       scenarioWidgetComponentCreator.createVerifyFactsPanel(listExecutionTrace,
                                                                             executionTraceLine,
                                                                             fixturesList)
             );
         } else if (first instanceof VerifyRuleFired) {
             setWidget(layoutRow,
-                      1,
+                      0,
                       scenarioWidgetComponentCreator.createVerifyRulesFiredWidget(fixturesList));
         }
     }

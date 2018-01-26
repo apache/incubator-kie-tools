@@ -39,7 +39,6 @@ import org.drools.workbench.screens.testscenario.client.utils.ScenarioUtils;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.TextBox;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
@@ -167,7 +166,6 @@ public class VerifyRulesFiredWidget extends Composite {
 
             Button del = new Button();
             del.setIcon(IconType.TRASH);
-            del.setType(ButtonType.DANGER);
             del.setTitle( TestScenarioConstants.INSTANCE.RemoveThisRuleExpectation() );
             del.addClickHandler(clickEvent -> {
                 if (Window.confirm(TestScenarioConstants.INSTANCE.AreYouSureYouWantToRemoveThisRuleExpectation())) {

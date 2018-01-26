@@ -77,7 +77,6 @@ public class ActivateRuleFlowWidget
 
             Button deleteButton = new Button();
             deleteButton.setIcon(IconType.TRASH);
-            deleteButton.setType(ButtonType.DANGER);
             deleteButton.setTitle(TestScenarioConstants.INSTANCE.RemoveThisRuleFlowActivation());
             deleteButton.addClickHandler(clickEvent -> {
                 retList.remove(acticateRuleFlowGroup);

@@ -16,8 +16,6 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
@@ -26,7 +24,6 @@ import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 
@@ -36,49 +33,45 @@ public abstract class FactWidget extends HorizontalPanel {
     protected final Scenario scenario;
     protected final FixtureList definitionList;
 
-    public FactWidget( final String factType,
-                       final FixtureList definitionList,
-                       final Scenario scenario,
-                       final AsyncPackageDataModelOracle oracle,
-                       final ScenarioParentWidget parent,
-                       final ExecutionTrace executionTrace,
-                       final String headerText ) {
+    public FactWidget(final String factType,
+                      final FixtureList definitionList,
+                      final Scenario scenario,
+                      final AsyncPackageDataModelOracle oracle,
+                      final ScenarioParentWidget parent,
+                      final ExecutionTrace executionTrace,
+                      final String headerText) {
         this.parent = parent;
         this.scenario = scenario;
         this.definitionList = definitionList;
 
-        add( new DataInputWidget( factType,
-                                  definitionList,
-                                  scenario,
-                                  oracle,
-                                  parent,
-                                  executionTrace,
-                                  headerText ) );
-        add( new DeleteButton( definitionList ) );
+        add(new DataInputWidget(factType,
+                                definitionList,
+                                scenario,
+                                oracle,
+                                parent,
+                                executionTrace,
+                                headerText));
+        add(new DeleteFactButton(factType));
     }
 
     protected void onDelete() {
-        if ( Window.confirm( TestScenarioConstants.INSTANCE.AreYouSureYouWantToRemoveThisBlockOfData() ) ) {
-            for ( Fixture f : definitionList ) {
-                scenario.removeFixture( f );
+        if (Window.confirm(TestScenarioConstants.INSTANCE.AreYouSureYouWantToRemoveThisBlockOfData())) {
+            for (Fixture f : definitionList) {
+                scenario.removeFixture(f);
             }
             parent.renderEditor();
         }
     }
 
-    class DeleteButton extends Button {
+    public class DeleteFactButton extends Button {
 
-        public DeleteButton( final FixtureList definitionList ) {
+        public DeleteFactButton(final String factType) {
             setIcon(IconType.TRASH);
-            setType(ButtonType.DANGER);
             setTitle(TestScenarioConstants.INSTANCE.RemoveThisBlockOfData());
-
-            addClickHandler( new ClickHandler() {
-
-                public void onClick( ClickEvent event ) {
-                    onDelete();
-                }
-            } );
+            setText("'" + factType + "' " + TestScenarioConstants.INSTANCE.Facts());
+            addClickHandler(clickEvent -> {
+                onDelete();
+            });
         }
     }
 }

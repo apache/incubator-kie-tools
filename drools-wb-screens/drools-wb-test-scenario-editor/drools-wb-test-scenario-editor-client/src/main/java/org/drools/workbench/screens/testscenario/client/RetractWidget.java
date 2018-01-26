@@ -28,7 +28,6 @@ import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.utils.ScenarioUtils;
 import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 
@@ -38,9 +37,9 @@ public class RetractWidget extends FlexTable {
     protected final Scenario scenario;
     protected final ScenarioParentWidget parent;
 
-    public RetractWidget( final FixtureList retractList,
-                          final Scenario scenario,
-                          final ScenarioParentWidget parent ) {
+    public RetractWidget(final FixtureList retractList,
+                         final Scenario scenario,
+                         final ScenarioParentWidget parent) {
 
         this.retractList = retractList;
         this.scenario = scenario;
@@ -53,32 +52,32 @@ public class RetractWidget extends FlexTable {
 
         clear();
 
-        getCellFormatter().setStyleName( 0,
-                                         0,
-                                         "modeller-fact-TypeHeader" );
-        getCellFormatter().setAlignment( 0,
-                                         0,
-                                         HasHorizontalAlignment.ALIGN_CENTER,
-                                         HasVerticalAlignment.ALIGN_MIDDLE );
-        setStyleName( "modeller-fact-pattern-Widget" );
-        setWidget( 0,
-                   0,
-                   new SmallLabel( TestScenarioConstants.INSTANCE.DeleteFacts() ) );
-        getFlexCellFormatter().setColSpan( 0,
-                                           0,
-                                           2 );
+        getCellFormatter().setStyleName(0,
+                                        0,
+                                        "modeller-fact-TypeHeader");
+        getCellFormatter().setAlignment(0,
+                                        0,
+                                        HasHorizontalAlignment.ALIGN_CENTER,
+                                        HasVerticalAlignment.ALIGN_MIDDLE);
+        setStyleName("modeller-fact-pattern-Widget");
+        setWidget(0,
+                  0,
+                  new SmallLabel(TestScenarioConstants.INSTANCE.DeleteFacts()));
+        getFlexCellFormatter().setColSpan(0,
+                                          0,
+                                          2);
 
         int row = 1;
-        for ( Fixture fixture : retractList ) {
-            if ( fixture instanceof RetractFact ) {
+        for (Fixture fixture : retractList) {
+            if (fixture instanceof RetractFact) {
                 final RetractFact retractFact = (RetractFact) fixture;
-                setWidget( row,
-                           0,
-                           new SmallLabel( retractFact.getName() ) );
+                setWidget(row,
+                          0,
+                          new SmallLabel(retractFact.getName()));
 
-                setWidget( row,
-                           1,
-                           new DeleteButton( retractFact ) );
+                setWidget(row,
+                          1,
+                          new DeleteButton(retractFact));
                 row++;
             }
         }
@@ -88,18 +87,17 @@ public class RetractWidget extends FlexTable {
 
     class DeleteButton extends Button {
 
-        public DeleteButton( final RetractFact retractFact ) {
+        public DeleteButton(final RetractFact retractFact) {
             setIcon(IconType.TRASH);
-            setType(ButtonType.DANGER);
             setTitle(TestScenarioConstants.INSTANCE.RemoveThisDeleteStatement());
 
-            addClickHandler( new ClickHandler() {
-                public void onClick( ClickEvent event ) {
-                    retractList.remove( retractFact );
-                    scenario.getFixtures().remove( retractFact );
+            addClickHandler(new ClickHandler() {
+                public void onClick(ClickEvent event) {
+                    retractList.remove(retractFact);
+                    scenario.getFixtures().remove(retractFact);
                     parent.renderEditor();
                 }
-            } );
+            });
         }
     }
 }
