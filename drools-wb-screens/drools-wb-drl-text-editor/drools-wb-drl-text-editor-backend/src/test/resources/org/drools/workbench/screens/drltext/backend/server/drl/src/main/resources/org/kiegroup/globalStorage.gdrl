@@ -1,0 +1,3 @@
+package org.kiegroup;
+
+global org.kiegroup.storage.Storage storage;

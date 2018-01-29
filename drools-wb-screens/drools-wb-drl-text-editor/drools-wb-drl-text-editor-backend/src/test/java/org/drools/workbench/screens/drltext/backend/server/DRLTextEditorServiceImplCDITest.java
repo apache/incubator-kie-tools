@@ -36,7 +36,14 @@ import static org.junit.Assert.assertTrue;
 
 public class DRLTextEditorServiceImplCDITest extends CDITestSetup {
 
-    private static final String CAR_DRIVING_LICENSE = "drl/src/main/resources/org/kiegroup/applyForCarDrivingLicense.drl";
+    private static final String CAR_DRIVING_ROOT = "drl/src/main/resources/org/kiegroup/";
+    private static final String CAR_DRIVING_LICENSE = CAR_DRIVING_ROOT + "applyForCarDrivingLicense.drl";
+    private static final String CAR_DRIVING_LICENSE_BROKEN = CAR_DRIVING_ROOT + "applyForCarDrivingLicenseWrongConstructor.drl";
+    private static final String CAR_BUS_DRIVING_LICENSE = CAR_DRIVING_ROOT + "applyForCarAndBusDrivingLicense.drl";
+    private static final String CAR_DRIVING_LICENSE_GLOBAL = CAR_DRIVING_ROOT + "applyForCarDrivingLicenseAndStore.drl";
+    private static final String CAR_DRIVING_LICENSE_GLOBAL_BROKEN = CAR_DRIVING_ROOT + "applyForCarDrivingLicenseAndStoreBroken.drl";
+    private static final String CAR_DRIVING_LICENSE_IMPORT = CAR_DRIVING_ROOT + "addAdditionalStorage.drl";
+    private static final String CAR_DRIVING_LICENSE_IMPORT_BROKEN = CAR_DRIVING_ROOT + "addAdditionalStorageBroken.drl";
 
     private List<ValidationMessage> validationMessages;
     private DRLTextEditorService drlService;
@@ -78,15 +85,49 @@ public class DRLTextEditorServiceImplCDITest extends CDITestSetup {
     }
 
     @Test
+    public void testDRLFileWithGlobalVariable() throws Exception {
+        validateResource(CAR_DRIVING_LICENSE_GLOBAL);
+
+        assertEquals(0, validationMessages.size());
+    }
+
+    @Test
+    public void testDRLFileWithUnknownGlobalVariable() throws Exception {
+        validateResource(CAR_DRIVING_LICENSE_GLOBAL_BROKEN);
+
+        Assertions.assertThat(validationMessages).hasSize(2);
+        Assertions.assertThat(validationMessages)
+                .allMatch(message -> message.getText()
+                        .contains("Error: unable to resolve method using strict-mode: org.drools.core.spi.KnowledgeHelper.unknownStorageVariable()"));
+    }
+
+    @Test
+    public void testDRLFileWithExplicitImport() throws Exception {
+        validateResource(CAR_DRIVING_LICENSE_IMPORT);
+
+        Assertions.assertThat(validationMessages).hasSize(0);
+    }
+
+    @Test
+    public void testDRLFileWithExplicitNonExistingImport() throws Exception {
+        validateResource(CAR_DRIVING_LICENSE_IMPORT_BROKEN);
+
+        Assertions.assertThat(validationMessages).hasSize(2);
+        Assertions.assertThat(validationMessages)
+                .allMatch(message -> message.getText()
+                .contains("Error importing : 'org.kiegroup.storage.NonExistingCache'"));
+    }
+
+    @Test
     public void testValidDRLFileWithTwoRules() throws Exception {
-        validateResource("drl/src/main/resources/org/kiegroup/applyForCarAndBusDrivingLicense.drl");
+        validateResource(CAR_BUS_DRIVING_LICENSE);
 
         assertEquals(0, validationMessages.size());
     }
 
     @Test
     public void testDRLFileWrongConstructor() throws Exception {
-        validateResource("drl/src/main/resources/org/kiegroup/applyForCarDrivingLicenseWrongConstructor.drl");
+        validateResource(CAR_DRIVING_LICENSE_BROKEN);
 
         Assertions.assertThat(validationMessages).hasSize(2);
         Assertions.assertThat(validationMessages)
@@ -99,9 +140,11 @@ public class DRLTextEditorServiceImplCDITest extends CDITestSetup {
         final DrlModelContent content = drlService.loadContent(getPath(CAR_DRIVING_LICENSE));
 
         Assertions.assertThat(content.getDrl()).isEqualTo(drlService.load(getPath(CAR_DRIVING_LICENSE)));
-        Assertions.assertThat(content.getFullyQualifiedClassNames()).hasSize(2);
+        Assertions.assertThat(content.getFullyQualifiedClassNames()).hasSize(3);
         Assertions.assertThat(content.getFullyQualifiedClassNames())
-                .contains("org.kiegroup.Person", "org.kiegroup.DrivingLicenseApplication");
+                .contains("org.kiegroup.Person",
+                          "org.kiegroup.DrivingLicenseApplication",
+                          "org.kiegroup.storage.Storage");
     }
 
     @Test
