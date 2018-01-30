@@ -17,7 +17,6 @@
 package org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.fieldProcessors.time.converters;
 
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.fieldProcessors.time.LocalDateFieldValueProcessor;
@@ -36,6 +35,6 @@ public class OffsetDateTimeConverter implements LocalDateFieldValueProcessor.Tim
 
     @Override
     public OffsetDateTime toRawValue(Date flatValue) {
-        return flatValue.toInstant().atZone(ZoneId.systemDefault()).toOffsetDateTime();
+        return flatValue.toInstant().atOffset(OffsetDateTime.now().getOffset());
     }
 }
