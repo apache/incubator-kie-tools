@@ -18,6 +18,8 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.columns;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.ait.lienzo.client.core.shape.Text;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
@@ -28,79 +30,99 @@ import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
+import org.uberfire.ext.wires.core.grids.client.widget.dom.single.SingletonDOMElementFactory;
 
 public class ValueListUiColumn extends BaseSingletonDOMElementUiColumn<String, ListBox, ListBoxDOMElement<String, ListBox>, ListBoxSingletonDOMElementFactory<String, ListBox>> {
 
     private final Map<String, String> valueListLookup = new HashMap<String, String>();
 
-    public ValueListUiColumn( final List<HeaderMetaData> headerMetaData,
-                              final double width,
-                              final boolean isResizable,
-                              final boolean isVisible,
-                              final GuidedDecisionTablePresenter.Access access,
-                              final ListBoxSingletonDOMElementFactory<String, ListBox> factory,
-                              final Map<String, String> valueListLookup ) {
-        this( headerMetaData,
+    public ValueListUiColumn(final List<HeaderMetaData> headerMetaData,
+                             final double width,
+                             final boolean isResizable,
+                             final boolean isVisible,
+                             final GuidedDecisionTablePresenter.Access access,
+                             final ListBoxSingletonDOMElementFactory<String, ListBox> factory,
+                             final Map<String, String> valueListLookup) {
+        this(headerMetaData,
+             width,
+             isResizable,
+             isVisible,
+             access,
+             factory,
+             valueListLookup,
+             false);
+    }
+
+    public ValueListUiColumn(final List<HeaderMetaData> headerMetaData,
+                             final double width,
+                             final boolean isResizable,
+                             final boolean isVisible,
+                             final GuidedDecisionTablePresenter.Access access,
+                             final ListBoxSingletonDOMElementFactory<String, ListBox> factory,
+                             final Map<String, String> valueListLookup,
+                             final boolean isMultipleSelect) {
+        super(headerMetaData,
+              new ValueListUiColumnCellRenderer(factory,
+                                                valueListLookup,
+                                                isMultipleSelect),
               width,
               isResizable,
               isVisible,
               access,
-              factory,
-              valueListLookup,
-              false );
-    }
-
-    public ValueListUiColumn( final List<HeaderMetaData> headerMetaData,
-                              final double width,
-                              final boolean isResizable,
-                              final boolean isVisible,
-                              final GuidedDecisionTablePresenter.Access access,
-                              final ListBoxSingletonDOMElementFactory<String, ListBox> factory,
-                              final Map<String, String> valueListLookup,
-                              final boolean isMultipleSelect ) {
-        super( headerMetaData,
-               new CellRenderer<String, ListBox, ListBoxDOMElement<String, ListBox>>( factory ) {
-                   @Override
-                   protected void doRenderCellContent( final Text t,
-                                                       final String value,
-                                                       final GridBodyCellRenderContext context ) {
-                       t.setText( getLabel( value.toString() ) );
-                   }
-
-                   private String getLabel( final String value ) {
-                       if ( !isMultipleSelect ) {
-                           return valueListLookup.get( value );
-                       }
-                       final StringBuilder sb = new StringBuilder();
-                       final String[] values = value.split( "," );
-                       for ( int i = 0; i < values.length; i++ ) {
-                           if ( i == 0 ) {
-                               sb.append( valueListLookup.get( values[ i ] ) );
-                           } else {
-                               sb.append( "," ).append( valueListLookup.get( values[ i ] ) );
-                           }
-                       }
-                       return sb.toString();
-                   }
-
-               },
-               width,
-               isResizable,
-               isVisible,
-               access,
-               factory );
-        this.valueListLookup.putAll( valueListLookup );
+              factory);
+        this.valueListLookup.putAll(valueListLookup);
     }
 
     @Override
-    public void doEdit( final GridCell<String> cell,
-                        final GridBodyCellRenderContext context,
-                        final Callback<GridCellValue<String>> callback ) {
-        factory.attachDomElement( context,
-                                  CallbackFactory.makeOnCreationCallback( factory,
-                                                                          cell,
-                                                                          valueListLookup ),
-                                  CallbackFactory.makeOnDisplayListBoxCallback() );
+    public void doEdit(final GridCell<String> cell,
+                       final GridBodyCellRenderContext context,
+                       final Callback<GridCellValue<String>> callback) {
+        factory.attachDomElement(context,
+                                 CallbackFactory.makeOnCreationCallback(factory,
+                                                                        cell,
+                                                                        valueListLookup),
+                                 CallbackFactory.makeOnDisplayListBoxCallback());
+    }
+}
+
+class ValueListUiColumnCellRenderer
+        extends BaseSingletonDOMElementUiColumn.CellRenderer<String, ListBox, ListBoxDOMElement<String, ListBox>> {
+
+    private final Map<String, String> valueListLookup;
+    private boolean isMultipleSelect;
+
+    public ValueListUiColumnCellRenderer(final SingletonDOMElementFactory<ListBox, ListBoxDOMElement<String, ListBox>> factory,
+                                         final Map<String, String> valueListLookup,
+                                         final boolean isMultipleSelect) {
+        super(factory);
+        this.valueListLookup = valueListLookup;
+        this.isMultipleSelect = isMultipleSelect;
     }
 
+    @Override
+    protected void doRenderCellContent(final Text t,
+                                       final String value,
+                                       final GridBodyCellRenderContext context) {
+        t.setText(getLabel(value.toString()));
+    }
+
+    private String getLabel(final String value) {
+        if (!isMultipleSelect) {
+            return getValue(value);
+        }
+
+        final String[] values = value.split(",");
+
+        return Stream.of(values)
+                .map(s -> getValue(s))
+                .collect(Collectors.joining(","));
+    }
+
+    private String getValue(final String value) {
+        if (valueListLookup.containsKey(value)) {
+            return valueListLookup.get(value);
+        } else {
+            return value;
+        }
+    }
 }

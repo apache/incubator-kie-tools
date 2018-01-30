@@ -32,6 +32,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control.ColumnLabelWidget;
 import org.drools.workbench.services.verifier.plugin.client.builders.ColumnUtilitiesBase;
+import org.kie.soup.commons.util.ListSplitter;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
@@ -142,7 +143,7 @@ public class ColumnUtilities
     private String[] parseValueList(String fieldType,
                                     String valueList) {
 
-        final String[] values = valueList.split(",");
+        final String[] values = ListSplitter.split(valueList);
 
         return Stream.of(values).filter(value -> isValueValidForType(value,
                                                                      convertToTypeSafeType(fieldType)))

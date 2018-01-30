@@ -10,7 +10,7 @@
 	<inherits name="org.drools.workbench.services.verifier.core.VerifierCore"/>
 	<inherits name="org.jboss.errai.enterprise.Jaxrs"/>
 
-    <set-configuration-property name="user.agent.runtimeWarning" value="false"/>
+	<set-configuration-property name="user.agent.runtimeWarning" value="false"/>
 	<set-configuration-property name="document.compatMode.severity" value="IGNORE" />
 
 	<set-property name="user.agent" value="safari" />
