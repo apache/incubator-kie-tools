@@ -23,7 +23,6 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 public interface LayoutEditor {
 
     void init(String layoutName,
-              List<LayoutDragComponentGroup> layoutDragComponentGroupList,
               String emptyTitleText,
               String emptySubTitleText,
               LayoutTemplate.Style style);
@@ -44,6 +43,4 @@ public interface LayoutEditor {
     String getLayoutProperty(String key);
 
     void setPreviewEnabled(boolean enabled);
-
-    LayoutDragComponentPalette getDragComponentPalette();
 }

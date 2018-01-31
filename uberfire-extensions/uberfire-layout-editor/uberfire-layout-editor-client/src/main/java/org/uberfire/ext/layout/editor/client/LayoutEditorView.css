@@ -1,11 +1,6 @@
 .el-container{
-    margin-right: 250px;
     height: 100%;
-}
-
-.el-sidebar{
-    float: right;
-    width: 250px;
+    padding: 0px 5px 0px 0px;
 }
 
 .le-component {
@@ -89,6 +84,7 @@
 }
 
 .le-preview-container {
+    padding: 16px;
     height: 100%;
 }
 
@@ -101,7 +97,6 @@
     padding-left: 100px;
     padding-right: 100px;
     height: 100%;
-
 }
 
 .le-empty-border {

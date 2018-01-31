@@ -24,7 +24,9 @@ public interface ContentManagerConstants extends Messages {
 
     String contentExplorerNew();
 
-    String contentExplorerMenus();
+    String contentExplorerNavigation();
+
+    String navigationTreeItem();
 
     String contentExplorerTopMenu();
 
@@ -40,7 +42,7 @@ public interface ContentManagerConstants extends Messages {
 
     String contentManagerHomeNewPerspective(String resourceType);
 
-    String contentExplorer();
+    String componentPalette();
 
     String perspective();
 

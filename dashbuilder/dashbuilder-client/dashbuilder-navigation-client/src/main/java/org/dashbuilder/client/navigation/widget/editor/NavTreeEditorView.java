@@ -18,9 +18,7 @@ package org.dashbuilder.client.navigation.widget.editor;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
-import org.dashbuilder.client.navigation.resources.i18n.NavigationConstants;
 import org.jboss.errai.common.client.api.IsElement;
-import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.Button;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
@@ -36,26 +34,6 @@ public class NavTreeEditorView extends NavItemEditorView<NavTreeEditor> implemen
     @Inject
     @DataField
     Div mainDiv;
-
-    @Inject
-    @DataField
-    Span expandIcon;
-
-    @Inject
-    @DataField
-    Span titleSpan;
-
-    @Inject
-    @DataField
-    Div createDiv;
-
-    @Inject
-    @DataField
-    Span createSpan;
-
-    @Inject
-    @DataField
-    Anchor newTreeAnchor;
 
     @Inject
     @DataField
@@ -82,38 +60,18 @@ public class NavTreeEditorView extends NavItemEditorView<NavTreeEditor> implemen
     @Override
     public void init(NavTreeEditor presenter) {
         this.presenter = presenter;
-        titleSpan.setTextContent(i18n.navigationTitle());
         alertMessage.setTextContent(i18n.saveChanges());
         saveButton.setTextContent(i18n.save());
         cancelButton.setTextContent(i18n.cancel());
-        createSpan.setTextContent(i18n.newMenu());
-        newTreeAnchor.setTextContent(i18n.treeItem());
-    }
-
-    @Override
-    public String getTreeLiteralI18n() {
-        return NavigationConstants.INSTANCE.treeItem();
     }
 
     @Override
     public void setExpandEnabled(boolean enabled) {
-        if (enabled) {
-            expandIcon.getStyle().removeProperty("opacity");
-            expandIcon.getStyle().removeProperty("pointer-events");
-            expandIcon.getStyle().setProperty("cursor", "pointer");
-            titleSpan.getStyle().setProperty("cursor", "pointer");
-        } else {
-            expandIcon.getStyle().setProperty("opacity", ".5");
-            expandIcon.getStyle().setProperty("pointer-events", "none");
-            expandIcon.getStyle().removeProperty("cursor");
-            titleSpan.getStyle().removeProperty("cursor");
-        }
     }
 
     @Override
     public void setExpanded(boolean expanded) {
         childrenDiv.setHidden(!expanded);
-        expandIcon.setClassName("uf-cms-expand-icon " + (expanded ? "fa fa-angle-down" : "fa fa-angle-right"));
     }
 
     @Override
@@ -128,33 +86,12 @@ public class NavTreeEditorView extends NavItemEditorView<NavTreeEditor> implemen
     }
 
     @Override
-    public void setMaximized(boolean maximized) {
-        childrenDiv.setClassName(maximized ? "uf-cms-nav-children-maximized" : "uf-cms-nav-children-panel");
-    }
-
-
-    @Override
     public void setChangedFlag(boolean on) {
         if (on) {
             alertDiv.getStyle().removeProperty("display");
         } else {
             alertDiv.getStyle().setProperty("display", "none");
         }
-    }
-
-    @EventHandler("titleSpan")
-    public void onTitleClick(final ClickEvent event) {
-        presenter.expandOrCollapse();
-    }
-
-    @EventHandler("expandIcon")
-    public void onExpandClick(final ClickEvent event) {
-        presenter.expandOrCollapse();
-    }
-
-    @EventHandler("newTreeAnchor")
-    public void onNewTreeClicked(ClickEvent event) {
-        presenter.onNewTreeClicked();
     }
 
     @EventHandler("saveButton")

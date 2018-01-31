@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 JBoss, by Red Hat, Inc
+ * Copyright 2017 JBoss, by Red Hat, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,7 @@
  */
 package org.dashbuilder.client.cms.screen.explorer;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 import org.dashbuilder.client.cms.resources.i18n.ContentManagerI18n;
-import org.dashbuilder.client.cms.widget.PerspectivesExplorer;
 import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.client.navigation.event.NavTreeLoadedEvent;
 import org.dashbuilder.client.navigation.event.PerspectivePluginsChangedEvent;
@@ -30,57 +23,47 @@ import org.dashbuilder.client.navigation.widget.editor.NavTreeEditor;
 import org.dashbuilder.navigation.NavTree;
 import org.jboss.errai.common.client.api.IsElement;
 import org.uberfire.backend.events.AuthorizationPolicySavedEvent;
+import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.mvp.UberView;
 import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.model.menu.MenuFactory;
+import org.uberfire.workbench.model.menu.Menus;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 
 @ApplicationScoped
-@WorkbenchScreen(identifier = ContentExplorerScreen.SCREEN_ID)
-public class ContentExplorerScreen {
+@WorkbenchScreen(identifier = NavigationExplorerScreen.SCREEN_ID)
+public class NavigationExplorerScreen {
 
-    public static final String SCREEN_ID = "ContentExplorerScreen";
+    public static final String SCREEN_ID = "NavigationExplorerScreen";
 
-    public interface View extends UberView<ContentExplorerScreen> {
-
-        void show(IsElement perspectivesExplorer, IsElement navExplorer);
-    }
-
-    View view;
     NavigationManager navigationManager;
-    PerspectivesExplorer perspectiveExplorer;
     NavTreeEditor navTreeEditor;
     ContentManagerI18n i18n;
     Event<NotificationEvent> workbenchNotification;
 
-    public ContentExplorerScreen() {
+    public NavigationExplorerScreen() {
     }
 
     @Inject
-    public ContentExplorerScreen(View view,
-                                 NavigationManager navigationManager,
-                                 PerspectivesExplorer perspectiveExplorer,
+    public NavigationExplorerScreen(NavigationManager navigationManager,
                                  NavTreeEditor navTreeEditor,
                                  ContentManagerI18n i18n,
                                  Event<NotificationEvent> workbenchNotification) {
-        this.view = view;
         this.navigationManager = navigationManager;
-        this.perspectiveExplorer = perspectiveExplorer;
         this.navTreeEditor = navTreeEditor;
         this.i18n = i18n;
         this.workbenchNotification = workbenchNotification;
-        this.view.init(this);
     }
 
     @PostConstruct
     void init() {
-        perspectiveExplorer.setOnExpandCommand(this::onPerspectivesExpanded);
-        perspectiveExplorer.show();
-
-        navTreeEditor.setOnExpandCommand(this::onNavTreeExpanded);
         navTreeEditor.setOnSaveCommand(this::onNavTreeSaved);
         navTreeEditor.getSettings().setLiteralPerspective(i18n.capitalizeFirst(i18n.getPerspectiveResourceName()));
         navTreeEditor.getSettings().setGotoPerspectiveEnabled(true);
@@ -88,35 +71,32 @@ public class ContentExplorerScreen {
         if (navTreeEditor.getNavTree() == null && navigationManager.getNavTree() != null) {
             navTreeEditor.edit(navigationManager.getNavTree());
         }
-        view.show(perspectiveExplorer, navTreeEditor);
     }
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return i18n.getContentExplorer();
+        return i18n.getContentExplorerNavigation();
     }
 
     @WorkbenchPartView
-    public IsWidget getWidget() {
-        return view;
+    public IsElement getView() {
+        return navTreeEditor;
+    }
+
+    @WorkbenchMenu
+    public Menus getMenus() {
+        return MenuFactory.newTopLevelMenu(i18n.getContentExplorerNew())
+                .respondsWith(this::createNewNavigationTree)
+                .endMenu()
+                .build();
     }
 
     public NavTreeEditor getNavTreeEditor() {
         return navTreeEditor;
     }
 
-    public void createNewPerspective() {
-        perspectiveExplorer.createNewPerspective();
-    }
-
-    void onPerspectivesExpanded() {
-        perspectiveExplorer.setMaximized(perspectiveExplorer.isExpanded() && !navTreeEditor.isExpanded());
-        navTreeEditor.setMaximized(!perspectiveExplorer.isExpanded() && navTreeEditor.isExpanded());
-    }
-
-    void onNavTreeExpanded() {
-        perspectiveExplorer.setMaximized(perspectiveExplorer.isExpanded() && !navTreeEditor.isExpanded());
-        navTreeEditor.setMaximized(!perspectiveExplorer.isExpanded() && navTreeEditor.isExpanded());
+    public void createNewNavigationTree() {
+        navTreeEditor.newTree();
     }
 
     void onNavTreeLoaded(@Observes NavTreeLoadedEvent event) {
@@ -136,6 +116,5 @@ public class ContentExplorerScreen {
     void onAuthzPolicyChanged(@Observes final AuthorizationPolicySavedEvent event) {
         NavTree navTree = navigationManager.getNavTree();
         navTreeEditor.edit(navTree);
-        perspectiveExplorer.show();
     }
 }

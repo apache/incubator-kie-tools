@@ -1,12 +1,6 @@
-.uf-cms-expand-icon {
-    float: left;
-    font-size: larger;
-    cursor: pointer;
-    margin-right: 5px;
-}
-
-.uf-cms-expand-span {
-    cursor: pointer;
+.uf-cms-nav-tree-panel {
+    overflow: auto;
+    height: 100%;
 }
 
 .uf-cms-nav-alert-panel {
@@ -14,13 +8,6 @@
 }
 
 .uf-cms-nav-children-panel {
-    height: 300px;
-    overflow: auto;
     margin: 10px 0px 5px 15px;
-}
-
-.uf-cms-nav-children-maximized {
-    height: 600px;
-    overflow: auto;
-    margin: 10px 0px 5px 15px;
+    font-size: larger;
 }

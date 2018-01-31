@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -49,10 +48,11 @@ import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
 import org.uberfire.ext.layout.editor.api.PerspectiveServices;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
-import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
+import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentPalette;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditorPlugin;
 import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorComponentGroupProvider;
 import org.uberfire.ext.plugin.client.perspective.editor.components.popup.AddTag;
+import org.uberfire.ext.plugin.client.perspective.editor.events.PerspectiveEditorFocusEvent;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.PerspectiveEditorSettings;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.TargetDivList;
 import org.uberfire.ext.plugin.client.security.PluginController;
@@ -60,9 +60,7 @@ import org.uberfire.ext.plugin.client.type.PerspectiveLayoutPluginResourceType;
 import org.uberfire.ext.plugin.client.validation.PluginNameValidator;
 import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginType;
-import org.uberfire.lifecycle.OnClose;
-import org.uberfire.lifecycle.OnMayClose;
-import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.lifecycle.*;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
@@ -74,8 +72,10 @@ import static org.uberfire.ext.editor.commons.client.menu.MenuItems.RENAME;
 import static org.uberfire.ext.editor.commons.client.menu.MenuItems.SAVE;
 
 @Dependent
-@WorkbenchEditor(identifier = "Perspective Editor", supportedTypes = {PerspectiveLayoutPluginResourceType.class}, priority = Integer.MAX_VALUE)
+@WorkbenchEditor(identifier = PerspectiveEditorPresenter.ID, supportedTypes = {PerspectiveLayoutPluginResourceType.class}, priority = Integer.MAX_VALUE)
 public class PerspectiveEditorPresenter extends BaseEditor {
+
+    public static final String ID = "Perspective Editor";
 
     @Inject
     private View perspectiveEditorView;
@@ -95,6 +95,10 @@ public class PerspectiveEditorPresenter extends BaseEditor {
     private PerspectiveEditorSettings perspectiveEditorSettings;
     @Inject
     private SyncBeanManager beanManager;
+    @Inject
+    private LayoutDragComponentPalette layoutDragComponentPalette;
+    @Inject
+    Event<PerspectiveEditorFocusEvent> perspectiveEditorFocusEvent;
 
     private Plugin plugin;
 
@@ -135,17 +139,23 @@ public class PerspectiveEditorPresenter extends BaseEditor {
              false,
              menuItems);
 
+        // Init the drag component palette
+        initLayoutDragComponentGroups();
+
         // Init the layout editor
         this.layoutEditorPlugin.init(name,
-                lookupLayoutDragComponentGroups(),
                 org.uberfire.ext.plugin.client.resources.i18n.CommonConstants.INSTANCE.EmptyTitleText(),
                 org.uberfire.ext.plugin.client.resources.i18n.CommonConstants.INSTANCE.EmptySubTitleText(),
                 LayoutTemplate.Style.PAGE);
 
         // Enable the preview feature in the perspective editor
         this.layoutEditorPlugin.setPreviewEnabled(true);
-
         this.perspectiveEditorView.setupLayoutEditor(layoutEditorPlugin.asWidget());
+    }
+
+    @OnFocus
+    public void onFocus() {
+        perspectiveEditorFocusEvent.fire(new PerspectiveEditorFocusEvent());
     }
 
     @OnClose
@@ -161,11 +171,11 @@ public class PerspectiveEditorPresenter extends BaseEditor {
         }
     }
 
-    private List<LayoutDragComponentGroup> lookupLayoutDragComponentGroups() {
-        List<PerspectiveEditorComponentGroupProvider> componentGroups = scanPerspectiveDragGroups();
-        return componentGroups.stream()
+    public void initLayoutDragComponentGroups() {
+        layoutDragComponentPalette.clear();
+        scanPerspectiveDragGroups().stream()
                 .map(PerspectiveEditorComponentGroupProvider::getInstance)
-                .collect(Collectors.toList());
+                .forEach(layoutDragComponentPalette::addDraggableGroup);
     }
 
     private List<PerspectiveEditorComponentGroupProvider> scanPerspectiveDragGroups() {

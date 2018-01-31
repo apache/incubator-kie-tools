@@ -110,6 +110,14 @@ public class LayoutTemplateAnalyzerTest {
     }
 
     @Test
+    public void testNavTreeNotDefined() throws Exception {
+        when(navigationServices.loadNavTree()).thenReturn(null);
+
+        LayoutRecursionIssue info = layoutTemplateAnalyzer.analyzeRecursion(layoutA);
+        assertTrue(info.isEmpty());
+    }
+
+    @Test
     public void testOneLevelNoRecursiveIssue() throws Exception {
         when(navigationServices.loadNavTree()).thenReturn(new NavTreeBuilder()
                 .group("groupA", "", "", true)

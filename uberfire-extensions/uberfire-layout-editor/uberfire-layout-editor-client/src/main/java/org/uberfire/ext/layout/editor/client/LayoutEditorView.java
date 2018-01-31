@@ -57,14 +57,6 @@ public class LayoutEditorView
 
     @Inject
     @DataField
-    Div components;
-
-    @Inject
-    @DataField
-    Span componentsLabel;
-
-    @Inject
-    @DataField
     ListItem designTab;
 
     @Inject
@@ -92,7 +84,6 @@ public class LayoutEditorView
     @Override
     public void init(LayoutEditorPresenter presenter) {
         this.presenter = presenter;
-        componentsLabel.setTextContent(CommonConstants.INSTANCE.Components());
         designAnchor.setTextContent(CommonConstants.INSTANCE.Editor());
         previewAnchor.setTextContent(CommonConstants.INSTANCE.Preview());
     }
@@ -125,16 +116,6 @@ public class LayoutEditorView
         previewTab.setClassName("active");
         DOMUtil.removeAllChildren(this.previewDiv);
         this.previewDiv.appendChild(previewPanel);
-    }
-
-    @Override
-    public void addDraggableComponentGroup(UberElement<LayoutDragComponentGroupPresenter> group) {
-        components.appendChild(group.getElement());
-    }
-
-    @Override
-    public void removeDraggableComponentGroup(UberElement<LayoutDragComponentGroupPresenter> group) {
-        components.removeChild(group.getElement());
     }
 
     @EventHandler("designTab")

@@ -67,6 +67,7 @@ public class PerspectiveDropDown implements IsWidget {
         liveSearchDropDown.setSelectorHint(CommonConstants.INSTANCE.PerspectiveSelectHint());
         liveSearchDropDown.setSearchHint(CommonConstants.INSTANCE.PerspectiveSearchHint());
         liveSearchDropDown.setNotFoundMessage(CommonConstants.INSTANCE.PerspectiveNotFound());
+        liveSearchDropDown.setClearSelectionEnabled(false);
         liveSearchDropDown.init(searchService, selectionHandler);
     }
 

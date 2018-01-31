@@ -404,7 +404,7 @@ public class NavTreeEditorTest {
     @Test
     public void testOnNewTreeClicked() {
 
-        navTreeEditor.onNewTreeClicked();
+        navTreeEditor.newTree();
 
         verify(navTreeEditor).saveDefaultNavTree();
         verify(navTreeEditor).newGroup();

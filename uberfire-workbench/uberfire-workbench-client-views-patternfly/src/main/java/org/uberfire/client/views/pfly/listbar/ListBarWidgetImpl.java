@@ -324,6 +324,7 @@ public class ListBarWidgetImpl
             if (nextPart != null) {
                 presenter.selectPart(nextPart);
             } else {
+                panelManager.onPartHidden(currentPart.getK1());
                 clear();
             }
         }

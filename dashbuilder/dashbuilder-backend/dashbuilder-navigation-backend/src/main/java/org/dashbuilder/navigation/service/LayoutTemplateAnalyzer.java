@@ -119,30 +119,16 @@ public class LayoutTemplateAnalyzer {
                         }
                     }
                 }
-                NavGroup navGroup = (NavGroup) navTree.getItemById(navGroupId);
+                NavGroup navGroup = navTree != null ? (NavGroup) navTree.getItemById(navGroupId) : null;
+                if (navGroup != null) {
 
-                // The configured default item can cause an infinite recursion issue
-                if (navDefaultId != null) {
-                    issue.push(new LayoutNavigationRef(navGroupRefType, navGroup.getId()));
-                    issue.push(new LayoutNavigationRef(DEFAULT_ITEM_DEFINED, navDefaultId));
-                    NavItem defaultItem = navTree.getItemById(navDefaultId);
-                    NavWorkbenchCtx navCtx = NavWorkbenchCtx.get(defaultItem);
-                    perspectiveId = navCtx.getResourceId();
-                    boolean hasIssue = analyzeRecursion(perspectiveId, issue);
-                    if (hasIssue) {
-                        return true;
-                    } else {
-                        issue.pop();
-                        issue.pop();
-                    }
-                }
-                // For some components the first available item is taken when there is no default item set
-                else if (hasDefaultItem(component)) {
-                    NavItem firstItem = getFirstRuntimePerspective(navGroup.getChildren());
-                    if (firstItem != null) {
+                    // The configured default item can cause an infinite recursion issue
+                    if (navDefaultId != null) {
                         issue.push(new LayoutNavigationRef(navGroupRefType, navGroup.getId()));
-                        issue.push(new LayoutNavigationRef(DEFAULT_ITEM_FOUND, firstItem.getId()));
-                        perspectiveId = NavWorkbenchCtx.get(firstItem).getResourceId();
+                        issue.push(new LayoutNavigationRef(DEFAULT_ITEM_DEFINED, navDefaultId));
+                        NavItem defaultItem = navTree.getItemById(navDefaultId);
+                        NavWorkbenchCtx navCtx = NavWorkbenchCtx.get(defaultItem);
+                        perspectiveId = navCtx.getResourceId();
                         boolean hasIssue = analyzeRecursion(perspectiveId, issue);
                         if (hasIssue) {
                             return true;
@@ -151,17 +137,32 @@ public class LayoutTemplateAnalyzer {
                             issue.pop();
                         }
                     }
-                }
+                    // For some components the first available item is taken when there is no default item set
+                    else if (hasDefaultItem(component)) {
+                        NavItem firstItem = getFirstRuntimePerspective(navGroup.getChildren());
+                        if (firstItem != null) {
+                            issue.push(new LayoutNavigationRef(navGroupRefType, navGroup.getId()));
+                            issue.push(new LayoutNavigationRef(DEFAULT_ITEM_FOUND, firstItem.getId()));
+                            perspectiveId = NavWorkbenchCtx.get(firstItem).getResourceId();
+                            boolean hasIssue = analyzeRecursion(perspectiveId, issue);
+                            if (hasIssue) {
+                                return true;
+                            } else {
+                                issue.pop();
+                                issue.pop();
+                            }
+                        }
+                    }
 
-                // Any layout component linked to a nav group can potentially lead to an infinite recursion issue.
-                boolean showAtOnce = showEntireNavGroup(component);
-                if (navGroupId != null && showAtOnce) {
-                    boolean hasIssue = analyzeRecursion(navGroup, navGroupRefType, issue);
-                    if (hasIssue) {
-                        return true;
+                    // Any layout component linked to a nav group can potentially lead to an infinite recursion issue.
+                    boolean showAtOnce = showEntireNavGroup(component);
+                    if (navGroupId != null && showAtOnce) {
+                        boolean hasIssue = analyzeRecursion(navGroup, navGroupRefType, issue);
+                        if (hasIssue) {
+                            return true;
+                        }
                     }
                 }
-
                 issue.pop();
             }
 

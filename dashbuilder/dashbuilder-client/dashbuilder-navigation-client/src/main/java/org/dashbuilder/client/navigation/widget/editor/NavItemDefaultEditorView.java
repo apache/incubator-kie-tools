@@ -174,11 +174,11 @@ public class NavItemDefaultEditorView extends NavItemEditorView<NavItemEditor>
             itemIcon.setTitle("");
         }
         else if (type == NavItemEditor.ItemType.PERSPECTIVE) {
-            itemIcon.setClassName("pficon-screen");
+            itemIcon.setClassName("fa fa-file-text-o");
             itemIcon.setTitle(NavigationConstants.INSTANCE.perspectiveIconTitle());
         }
         else if (type == NavItemEditor.ItemType.RUNTIME_PERSPECTIVE) {
-            itemIcon.setClassName("pficon-virtual-machine");
+            itemIcon.setClassName("fa fa-file-text-o");
             itemIcon.setTitle(NavigationConstants.INSTANCE.pageIconTitle());
         }
     }

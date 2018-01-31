@@ -23,7 +23,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.dashbuilder.client.cms.resources.i18n.ContentManagerI18n;
-import org.dashbuilder.client.cms.screen.explorer.ContentExplorerScreen;
+import org.dashbuilder.client.cms.screen.explorer.NavigationExplorerScreen;
 import org.dashbuilder.client.dashboard.DashboardManager;
 import org.dashbuilder.client.dashboard.DashboardPerspectiveActivity;
 import org.dashbuilder.client.navbar.TopMenuBar;
@@ -79,7 +79,7 @@ public class ShowcaseEntryPoint {
     private PermissionTreeSetup permissionTreeSetup;
 
     @Inject
-    private ContentExplorerScreen contentExplorerScreen;
+    private NavigationExplorerScreen navigationExplorerScreen;
 
     @Inject
     private TopMenuBar navBar;
@@ -113,12 +113,12 @@ public class ShowcaseEntryPoint {
         navigationManager.setDefaultNavTree(NavTreeDefinitions.NAV_TREE_DEFAULT);
 
         // Allow links to core perspectives only under the top menu's nav group
-        contentExplorerScreen.getNavTreeEditor()
+        navigationExplorerScreen.getNavTreeEditor()
                 .setOnlyRuntimePerspectives(NavTreeDefinitions.GROUP_APP, false)
                 .applyToAllChildren();
 
         // Disable perspective context setup under the top menu nav's group
-        contentExplorerScreen.getNavTreeEditor()
+        navigationExplorerScreen.getNavTreeEditor()
                 .setPerspectiveContextEnabled(NavTreeDefinitions.GROUP_APP, false)
                 .applyToAllChildren();
 

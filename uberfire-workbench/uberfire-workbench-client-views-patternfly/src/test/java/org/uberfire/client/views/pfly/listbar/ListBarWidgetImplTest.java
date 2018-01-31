@@ -65,6 +65,9 @@ public class ListBarWidgetImplTest {
     @Mock
     User identity;
 
+    @Mock
+    PanelManager panelManager;
+
     @Spy
     @InjectMocks
     ListBarWidgetImpl listBar;
@@ -81,7 +84,7 @@ public class ListBarWidgetImplTest {
 
         doNothing().when(listBar).setupContextMenu();
 
-        listBar.panelManager = mock(PanelManager.class);
+        listBar.contextMenu = mock(ButtonGroup.class);
         listBar.titleDropDown = mock(PartListDropdown.class);
         listBar.content = mock(PanelBody.class);
         listBar.header = mock(PanelHeader.class);
@@ -107,7 +110,7 @@ public class ListBarWidgetImplTest {
 
         listBar.selectPart(selectedPart);
 
-        verify(listBar.panelManager).onPartHidden(currentPart);
+        verify(panelManager).onPartHidden(currentPart);
         verify(listBar).resizePanelBody();
     }
 
@@ -262,6 +265,17 @@ public class ListBarWidgetImplTest {
     }
 
     @Test
+    public void notifyPartHiddenOnRemoveTest() {
+        final PartDefinition part = getPartDefinition(true,
+                                                      true);
+        listBar.selectPart(part);
+        listBar.remove(part);
+
+        verify(listBar.titleDropDown).removePart(part);
+        verify(panelManager).onPartHidden(part);
+    }
+
+    @Test
     public void removeSelectablePartTest() {
         final PartDefinition part = getPartDefinition(true,
                                                       true);
@@ -276,6 +290,7 @@ public class ListBarWidgetImplTest {
                                              final boolean existent) {
         final PartDefinition part = mock(PartDefinition.class);
         doReturn(selectable).when(part).isSelectable();
+        doReturn("").when(part).asString();
 
         if (existent) {
             listBar.partContentView.put(part,

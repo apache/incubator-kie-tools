@@ -21,7 +21,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
 import org.dashbuilder.client.cms.resources.i18n.ContentManagerI18n;
-import org.dashbuilder.client.cms.screen.explorer.ContentExplorerScreen;
+import org.dashbuilder.client.cms.screen.explorer.PerspectivesExplorerScreen;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -40,14 +40,14 @@ public class ContentManagerHomeScreen {
     }
 
     View view;
-    ContentExplorerScreen contentManagerExplorerScreen;
+    PerspectivesExplorerScreen perspectivesExplorerScreen;
     PluginController pluginController;
     ContentManagerI18n i18n;
 
     @Inject
-    public ContentManagerHomeScreen(View view, ContentExplorerScreen contentManagerExplorerScreen, PluginController pluginController, ContentManagerI18n i18n) {
+    public ContentManagerHomeScreen(View view, PerspectivesExplorerScreen perspectivesExplorerScreen, PluginController pluginController, ContentManagerI18n i18n) {
         this.view = view;
-        this.contentManagerExplorerScreen = contentManagerExplorerScreen;
+        this.perspectivesExplorerScreen = perspectivesExplorerScreen;
         this.pluginController = pluginController;
         this.i18n = i18n;
     }
@@ -70,7 +70,7 @@ public class ContentManagerHomeScreen {
 
     public void createNewPerspective() {
         if (pluginController.canCreatePerspectives()) {
-            contentManagerExplorerScreen.createNewPerspective();
+            perspectivesExplorerScreen.createNewPerspective();
         }
     }
 }

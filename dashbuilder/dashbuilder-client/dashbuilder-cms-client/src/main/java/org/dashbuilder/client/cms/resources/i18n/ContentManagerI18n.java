@@ -21,7 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 public class ContentManagerI18n {
 
     String contentExplorerNew = ContentManagerConstants.INSTANCE.contentExplorerNew();
-    String contentExplorerMenus = ContentManagerConstants.INSTANCE.contentExplorerMenus();
+    String contentExplorerNavigation = ContentManagerConstants.INSTANCE.contentExplorerNavigation();
     String contentExplorerTopMenu = ContentManagerConstants.INSTANCE.contentExplorerTopMenu();
     String contentManagerHome = ContentManagerConstants.INSTANCE.contentManagerHome();
     String contentManagerHomeTitle = ContentManagerConstants.INSTANCE.contentManagerHomeTitle();
@@ -31,7 +31,6 @@ public class ContentManagerI18n {
     String perspectiveResourceName = ContentManagerConstants.INSTANCE.perspective();
     String perspectivesResourceName = ContentManagerConstants.INSTANCE.perspectives();
     String noPerspectives = ContentManagerConstants.INSTANCE.noPerspectives();
-    String contentExplorer = ContentManagerConstants.INSTANCE.contentExplorer();
 
     public String capitalizeFirst(String input) {
         return input.substring(0, 1).toUpperCase() + input.substring(1);
@@ -41,12 +40,12 @@ public class ContentManagerI18n {
         return input.substring(0, 1).toLowerCase() + input.substring(1);
     }
 
-    public String getContentExplorerMenus() {
-        return contentExplorerMenus;
+    public String getContentExplorerNavigation() {
+        return contentExplorerNavigation;
     }
 
-    public void setContentExplorerMenus(String contentExplorerMenus) {
-        this.contentExplorerMenus = contentExplorerMenus;
+    public void setContentExplorerNavigation(String contentExplorerNavigation) {
+        this.contentExplorerNavigation = contentExplorerNavigation;
     }
 
     public String getContentExplorerTopMenu() {
@@ -137,13 +136,5 @@ public class ContentManagerI18n {
 
     public void setNoPerspectives(String noPerspectives) {
         this.noPerspectives = noPerspectives;
-    }
-
-    public String getContentExplorer() {
-        return contentExplorer;
-    }
-
-    public void setContentExplorer(String contentExplorer) {
-        this.contentExplorer = contentExplorer;
     }
 }

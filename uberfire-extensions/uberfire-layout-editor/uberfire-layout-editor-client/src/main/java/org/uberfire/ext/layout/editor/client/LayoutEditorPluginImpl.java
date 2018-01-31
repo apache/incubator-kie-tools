@@ -30,7 +30,6 @@ import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.layout.editor.api.PerspectiveServices;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
-import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentPalette;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditorPlugin;
 import org.uberfire.mvp.Command;
 
@@ -52,14 +51,12 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
 
     @Override
     public void init(String layoutName,
-                     List<LayoutDragComponentGroup> layoutDragComponentGroupList,
                      String emptyTitleText,
                      String emptySubTitleText,
                      LayoutTemplate.Style style) {
         this.pluginName = layoutName;
         this.emptyTitleText = emptyTitleText;
         this.emptySubTitleText = emptySubTitleText;
-        layoutDragComponentGroupList.forEach(layoutEditorPresenter::addDraggableGroup);
         layoutEditorPresenter.setPageStyle(style);
     }
 
@@ -139,10 +136,5 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
             perspectiveServices.call(saveSuccessCallback)
                     .saveLayoutTemplate(path, layoutTemplate, commitMessage);
         });
-    }
-
-    @Override
-    public LayoutDragComponentPalette getDragComponentPalette() {
-        return layoutEditorPresenter;
     }
 }

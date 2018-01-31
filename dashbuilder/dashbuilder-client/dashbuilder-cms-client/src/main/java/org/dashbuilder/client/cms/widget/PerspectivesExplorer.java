@@ -41,18 +41,6 @@ public class PerspectivesExplorer implements IsElement {
 
         void clear();
 
-        void setExpanded(boolean expanded);
-
-        void setMaximized(boolean maximized);
-
-        void setTitle(String text);
-
-        void setNewMenuVisible(boolean visible);
-
-        void setNewMenuName(String text);
-
-        void setPerspectiveName(String text);
-
         void addPerspective(String name, Command onClicked);
 
         void showEmpty(String message);
@@ -62,22 +50,17 @@ public class PerspectivesExplorer implements IsElement {
     PerspectivePluginManager perspectivePluginManager;
     PlaceManager placeManager;
     PluginController pluginController;
-    NewPerspectivePopUp newPerspectivePopUp;
     ContentManagerI18n i18n;
-    Command onExpandCommand;
-    boolean expanded;
 
     @Inject
     public PerspectivesExplorer(View view,
                                 PerspectivePluginManager perspectivePluginManager,
                                 PluginController pluginController,
-                                NewPerspectivePopUp newPerspectivePopUp,
                                 PlaceManager placeManager,
                                 ContentManagerI18n i18n) {
         this.view = view;
         this.perspectivePluginManager = perspectivePluginManager;
         this.pluginController = pluginController;
-        this.newPerspectivePopUp = newPerspectivePopUp;
         this.placeManager = placeManager;
         this.i18n = i18n;
         this.view.init(this);
@@ -88,16 +71,8 @@ public class PerspectivesExplorer implements IsElement {
         return view.getElement();
     }
 
-    public void setOnExpandCommand(Command onExpandCommand) {
-        this.onExpandCommand = onExpandCommand;
-    }
-
     public void show() {
         view.clear();
-        view.setTitle(i18n.capitalizeFirst(i18n.getPerspectivesResourceName()));
-        view.setNewMenuName(i18n.getContentExplorerNew());
-        view.setNewMenuVisible(pluginController.canCreatePerspectives());
-        view.setPerspectiveName(i18n.capitalizeFirst(i18n.getPerspectiveResourceName()));
 
         perspectivePluginManager.getPerspectivePlugins(perspectivePlugins -> {
 
@@ -113,50 +88,11 @@ public class PerspectivesExplorer implements IsElement {
                 filteredPlugins.forEach(p -> view.addPerspective(p.getName(), () -> onPerspectiveClick(p)));
             }
         });
-
-        this.expand();
     }
 
     public void onPerspectiveClick(Plugin plugin) {
         PlaceRequest placeRequest = new PathPlaceRequest(plugin.getPath()).addParameter("name", plugin.getName());
         placeManager.goTo(placeRequest);
-    }
-
-    public boolean isExpanded() {
-        return expanded;
-    }
-
-    public void expand() {
-        if (!expanded) {
-            expanded = true;
-            view.setExpanded(true);
-        }
-    }
-
-    public void collapse() {
-        if (expanded) {
-            expanded = false;
-            view.setExpanded(false);
-        }
-    }
-
-    public void expandOrCollapse() {
-        if (expanded) {
-            collapse();
-        } else {
-            expand();
-        }
-        if (onExpandCommand != null) {
-            onExpandCommand.execute();
-        }
-    }
-
-    public void setMaximized(boolean maximized) {
-        view.setMaximized(maximized);
-    }
-
-    public void createNewPerspective() {
-        newPerspectivePopUp.show();
     }
 
     public void onPerspectivePluginsChanged(@Observes final PerspectivePluginsChangedEvent event) {

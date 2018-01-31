@@ -21,6 +21,7 @@ import java.util.List;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,6 +37,7 @@ import org.uberfire.client.workbench.docks.UberfireDocksInteractionEvent;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.toolbar.IconType;
 
 import static org.junit.Assert.*;
@@ -55,6 +57,10 @@ public class DocksBarsTest {
     private MenuBuilder menuBuilder;
     @Mock
     private EventSourceMock<UberfireDocksInteractionEvent> dockInteractionEvent;
+    @Mock
+    private AuthorizationManager authorizationManager;
+    @Mock
+    private User identity;
     private DocksBars docksBars;
     private UberfireDock dock0 = new UberfireDock(UberfireDockPosition.SOUTH,
                                                   IconType.CHEVRON_RIGHT.name(),
@@ -68,7 +74,8 @@ public class DocksBarsTest {
                                   menuBuilder,
                                   dockInteractionEvent,
                                   uberfireDocksContainer,
-                                  null);
+                                  authorizationManager,
+                                  identity);
     }
 
     @Test

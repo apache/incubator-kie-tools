@@ -17,6 +17,8 @@ package org.uberfire.ext.layout.editor.client.api;
 
 public interface LayoutDragComponentPalette {
 
+    void clear();
+
     void addDraggableGroup(LayoutDragComponentGroup group);
 
     void removeDraggableGroup(String groupId);

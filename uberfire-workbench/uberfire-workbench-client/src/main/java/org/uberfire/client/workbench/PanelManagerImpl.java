@@ -17,6 +17,7 @@
 package org.uberfire.client.workbench;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -372,7 +373,7 @@ public class PanelManagerImpl implements PanelManager {
         final PlaceRequest place = event.getPlace();
 
         // TODO (hbraun): PanelDefinition is not distinct (missing hashcode)
-        for (Map.Entry<PanelDefinition, WorkbenchPanelPresenter> e : mapPanelDefinitionToPresenter.entrySet()) {
+        for (Map.Entry<PanelDefinition, WorkbenchPanelPresenter> e : new HashSet<>(mapPanelDefinitionToPresenter.entrySet())) {
             WorkbenchPanelPresenter panelPresenter = e.getValue();
             for (PartDefinition part : ensureIterable(panelPresenter.getDefinition().getParts())) {
                 if (part.getPlace().asString().equals(place.asString())) {

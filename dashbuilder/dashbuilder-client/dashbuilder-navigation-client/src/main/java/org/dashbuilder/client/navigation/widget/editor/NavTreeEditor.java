@@ -41,10 +41,6 @@ public class NavTreeEditor extends NavItemEditor {
 
     public interface View extends NavItemEditor.View<NavTreeEditor> {
 
-        String getTreeLiteralI18n();
-
-        void setMaximized(boolean maximized);
-
         void setChangedFlag(boolean on);
     }
 
@@ -95,10 +91,6 @@ public class NavTreeEditor extends NavItemEditor {
         return "Tree";
     }
 
-    public void setMaximized(boolean maximized) {
-        view.setMaximized(maximized);
-    }
-
     public NavTree getNavTree() {
         return navTree;
     }
@@ -126,12 +118,12 @@ public class NavTreeEditor extends NavItemEditor {
         super.onItemUpdated();
     }
 
-    // View actions
-
-    void onNewTreeClicked() {
+    public void newTree() {
         saveDefaultNavTree();
         newGroup();
     }
+
+    // View actions
 
     void saveDefaultNavTree() {
 

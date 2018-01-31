@@ -16,7 +16,6 @@
 package org.uberfire.ext.plugin.client.perspective.editor;
 
 import java.util.Arrays;
-import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.common.client.api.Caller;
@@ -25,7 +24,6 @@ import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -35,10 +33,13 @@ import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.layout.editor.client.LayoutEditorPresenter;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
+import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentPalette;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditorPlugin;
 import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorComponentGroupProvider;
+import org.uberfire.ext.plugin.client.perspective.editor.events.PerspectiveEditorFocusEvent;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.PerspectiveEditorSettings;
 import org.uberfire.ext.plugin.client.security.PluginController;
+import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 
@@ -84,6 +85,12 @@ public class PerspectiveEditorPresenterTest {
     @Mock
     LayoutEditorPresenter layoutEditorPresenter;
 
+    @Mock
+    LayoutDragComponentPalette layoutDragComponentPalette;
+
+    @Mock
+    EventSourceMock<PerspectiveEditorFocusEvent> perspectiveEditorFocusEvent;
+
     @InjectMocks
     PerspectiveEditorPresenter presenter;
 
@@ -118,6 +125,7 @@ public class PerspectiveEditorPresenterTest {
 
     @Before
     public void setUp() {
+        presenter.perspectiveEditorFocusEvent = perspectiveEditorFocusEvent;
         when(pluginController.canCreatePerspectives()).thenReturn(true);
         when(pluginController.canDelete(any())).thenReturn(true);
         when(pluginController.canUpdate(any())).thenReturn(true);
@@ -138,14 +146,9 @@ public class PerspectiveEditorPresenterTest {
     public void testInitDragComponentGroups() {
         presenter.onStartup(observablePath, placeRequest);
 
-        ArgumentCaptor<List> groupListArg = ArgumentCaptor.forClass(List.class);
-        verify(layoutEditorPlugin).init(anyString(), groupListArg.capture(), anyString(), anyString(), any());
-
         // The component groups are grouped by name
-        List groupList = groupListArg.getValue();
-        assertEquals(groupList.size(), 2);
-        assertEquals(((LayoutDragComponentGroup) groupList.get(0)).getName(), COMPONENT_GROUP_A);
-        assertEquals(((LayoutDragComponentGroup) groupList.get(1)).getName(), COMPONENT_GROUP_B);
+        verify(layoutDragComponentPalette).addDraggableGroup(dragComponentGroupA);
+        verify(layoutDragComponentPalette).addDraggableGroup(dragComponentGroupB);
     }
 
     @Test

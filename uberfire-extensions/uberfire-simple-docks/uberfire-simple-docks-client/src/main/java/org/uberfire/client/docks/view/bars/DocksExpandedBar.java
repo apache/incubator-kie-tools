@@ -96,17 +96,12 @@ public class DocksExpandedBar
         }
     }
 
-    public void addMenus(Menus menus,
-                         MenuBuilder menuBuilder) {
-        for (MenuItem menuItem : menus.getItems()) {
-            final Widget result = menuBuilder.makeItem(menuItem,
-                                                       true);
-            if (result != null) {
-                final ButtonGroup bg = new ButtonGroup();
-                bg.addStyleName(CSS.CSS().dockExpandedContentButton());
-                bg.add(result);
-                titlePanel.add(bg);
-            }
+    public void addContextMenuItem(Widget menuItem) {
+        if (menuItem != null) {
+            final ButtonGroup bg = new ButtonGroup();
+            bg.addStyleName(CSS.CSS().dockExpandedContentButton());
+            bg.add(menuItem);
+            titlePanel.add(bg);
         }
     }
 

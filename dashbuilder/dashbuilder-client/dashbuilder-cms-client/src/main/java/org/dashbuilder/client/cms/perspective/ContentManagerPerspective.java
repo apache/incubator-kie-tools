@@ -15,29 +15,48 @@
  */
 package org.dashbuilder.client.cms.perspective;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.dashbuilder.client.cms.resources.i18n.ContentManagerConstants;
 import org.dashbuilder.client.cms.resources.i18n.ContentManagerI18n;
-import org.dashbuilder.client.cms.screen.explorer.ContentExplorerScreen;
+import org.dashbuilder.client.cms.screen.explorer.PerspectivesExplorerScreen;
+import org.dashbuilder.client.cms.screen.explorer.NavigationExplorerScreen;
 import org.dashbuilder.client.cms.screen.home.ContentManagerHomeScreen;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
+import org.uberfire.client.workbench.docks.UberfireDock;
+import org.uberfire.client.workbench.docks.UberfireDockPosition;
+import org.uberfire.client.workbench.docks.UberfireDocks;
+import org.uberfire.client.workbench.events.PlaceHiddenEvent;
 import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
-import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
-import org.uberfire.workbench.model.CompassPosition;
-import org.uberfire.workbench.model.PanelDefinition;
+import org.uberfire.ext.layout.editor.client.LayoutComponentPaletteScreen;
+import org.uberfire.ext.plugin.client.perspective.editor.PerspectiveEditorPresenter;
+import org.uberfire.ext.plugin.client.perspective.editor.events.PerspectiveEditorFocusEvent;
+import org.uberfire.lifecycle.*;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PerspectiveDefinition;
-import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "ContentManagerPerspective")
+@WorkbenchPerspective(identifier = ContentManagerPerspective.PERSPECTIVE_ID)
 public class ContentManagerPerspective {
+
+    public static final String PERSPECTIVE_ID = "ContentManagerPerspective";
 
     @Inject
     ContentManagerI18n i18n;
+
+    @Inject
+    UberfireDocks uberfireDocks;
+
+    UberfireDock perspectivesExplorerDock;
+    UberfireDock navigationExplorerDock;
+    UberfireDock componentPaletteDock;
+    boolean componentDockVisible = true;
 
     @Perspective
     public PerspectiveDefinition getPerspective() {
@@ -48,11 +67,62 @@ public class ContentManagerPerspective {
         PerspectiveDefinition perspective = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
         perspective.setName(ContentManagerConstants.INSTANCE.contentManagerHome());
         perspective.getRoot().addPart(ContentManagerHomeScreen.SCREEN_ID);
-        final PanelDefinition west = new PanelDefinitionImpl(StaticWorkbenchPanelPresenter.class.getName());
-        west.setWidth(330);
-        west.setMinWidth(330);
-        west.addPart(ContentExplorerScreen.SCREEN_ID);
-        perspective.getRoot().insertChild(CompassPosition.WEST, west);
         return perspective;
+    }
+
+    @PostConstruct
+    public void init() {
+        perspectivesExplorerDock = new UberfireDock(UberfireDockPosition.WEST,
+                IconType.FILE_TEXT_O.toString(),
+                new DefaultPlaceRequest(PerspectivesExplorerScreen.SCREEN_ID), PERSPECTIVE_ID).withSize(330)
+                .withLabel(i18n.capitalizeFirst(i18n.getPerspectivesResourceName()));
+
+        navigationExplorerDock = new UberfireDock(UberfireDockPosition.WEST,
+                IconType.NAVICON.toString(),
+                new DefaultPlaceRequest(NavigationExplorerScreen.SCREEN_ID), PERSPECTIVE_ID).withSize(330)
+                .withLabel(ContentManagerConstants.INSTANCE.contentExplorerNavigation());
+
+        componentPaletteDock = new UberfireDock(UberfireDockPosition.WEST,
+                IconType.CUBES.toString(),
+                new DefaultPlaceRequest(LayoutComponentPaletteScreen.SCREEN_ID), PERSPECTIVE_ID).withSize(330)
+                .withLabel(ContentManagerConstants.INSTANCE.componentPalette());
+
+        uberfireDocks.add(perspectivesExplorerDock);
+        uberfireDocks.add(navigationExplorerDock);
+        uberfireDocks.add(componentPaletteDock);
+    }
+
+    @OnOpen
+    public void onOpen() {
+        refreshDocks(false, perspectivesExplorerDock);
+    }
+
+    private void refreshDocks(boolean showComponentPalette, UberfireDock dockToOpen) {
+
+        if (showComponentPalette && !componentDockVisible) {
+            uberfireDocks.add(componentPaletteDock);
+            componentDockVisible = true;
+        }
+        if (!showComponentPalette && componentDockVisible) {
+            uberfireDocks.remove(componentPaletteDock);
+            componentDockVisible = false;
+        }
+
+        uberfireDocks.show(UberfireDockPosition.WEST, PERSPECTIVE_ID);
+
+        if (dockToOpen != null) {
+            uberfireDocks.open(dockToOpen);
+        }
+    }
+
+    public void onPerspectiveEditorFocus(@Observes PerspectiveEditorFocusEvent event) {
+        refreshDocks(true, componentPaletteDock);
+    }
+
+    public void oonPerspectiveEditorHidden(@Observes PlaceHiddenEvent event) {
+        String placeId = event.getPlace().getIdentifier();
+        if (PerspectiveEditorPresenter.ID.equals(placeId)) {
+            refreshDocks(false, null);
+        }
     }
 }

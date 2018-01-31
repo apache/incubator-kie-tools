@@ -22,12 +22,6 @@ public interface NavigationConstants extends Messages {
 
     NavigationConstants INSTANCE = GWT.create(NavigationConstants.class);
 
-    String navigationTitle();
-
-    String treeItem();
-
-    String newMenu();
-
     String newItem(String itemName);
 
     String newItemName(String itemName);

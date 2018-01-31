@@ -112,8 +112,6 @@ public class DocksBar {
     public void open(UberfireDock dock) {
         if (hasDocksItems()) {
             collapsedBar.expand(dock);
-            AbstractDockItem docksItems = collapsedBar.getDocksItems().get(0);
-            docksItems.open();
         }
     }
 

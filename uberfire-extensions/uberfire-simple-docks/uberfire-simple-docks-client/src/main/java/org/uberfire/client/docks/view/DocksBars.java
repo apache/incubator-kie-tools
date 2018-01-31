@@ -24,12 +24,13 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.docks.view.bars.DocksCollapsedBar;
 import org.uberfire.client.docks.view.bars.DocksExpandedBar;
 import org.uberfire.client.docks.view.menu.MenuBuilder;
+import org.uberfire.client.menu.AuthFilterMenuVisitor;
 import org.uberfire.client.mvp.AbstractWorkbenchScreenActivity;
 import org.uberfire.client.mvp.Activity;
-import org.uberfire.client.mvp.PlaceHistoryHandler;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
@@ -37,6 +38,12 @@ import org.uberfire.client.workbench.docks.UberfireDocksContainer;
 import org.uberfire.client.workbench.docks.UberfireDocksInteractionEvent;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.workbench.model.menu.MenuCustom;
+import org.uberfire.workbench.model.menu.MenuItemCommand;
+import org.uberfire.workbench.model.menu.MenuItemPerspective;
+import org.uberfire.workbench.model.menu.MenuItemPlain;
+import org.uberfire.workbench.model.menu.impl.BaseMenuVisitor;
 
 @Dependent
 public class DocksBars {
@@ -48,19 +55,22 @@ public class DocksBars {
     private Event<UberfireDocksInteractionEvent> dockInteractionEvent;
     private UberfireDocksContainer uberfireDocksContainer;
     private List<DocksBar> docks = new ArrayList<>();
-    private PlaceHistoryHandler placeHistoryHandler;
+    private AuthorizationManager authorizationManager;
+    private User identity;
 
     @Inject
     public DocksBars(PlaceManager placeManager,
                      MenuBuilder menuBuilder,
                      Event<UberfireDocksInteractionEvent> dockInteractionEvent,
                      UberfireDocksContainer uberfireDocksContainer,
-                     PlaceHistoryHandler placeHistoryHandler) {
+                     AuthorizationManager authorizationManager,
+                     User identity) {
         this.placeManager = placeManager;
         this.menuBuilder = menuBuilder;
         this.dockInteractionEvent = dockInteractionEvent;
         this.uberfireDocksContainer = uberfireDocksContainer;
-        this.placeHistoryHandler = placeHistoryHandler;
+        this.authorizationManager = authorizationManager;
+        this.identity = identity;
     }
 
     public void setup() {
@@ -253,8 +263,27 @@ public class DocksBars {
         if (activity instanceof AbstractWorkbenchScreenActivity) {
             AbstractWorkbenchScreenActivity screen = (AbstractWorkbenchScreenActivity) activity;
             if (screen.getMenus() != null) {
-                expandedBar.addMenus(screen.getMenus(),
-                                     menuBuilder);
+
+                screen.getMenus().accept(new AuthFilterMenuVisitor(authorizationManager,
+                        identity, new BaseMenuVisitor() {
+
+                            @Override
+                            public void visit(MenuItemPlain menuItemPlain) {
+                                expandedBar.addContextMenuItem(menuBuilder.makeItem(menuItemPlain, true));
+                            }
+                            @Override
+                            public void visit(MenuItemCommand menuItemCommand) {
+                                expandedBar.addContextMenuItem(menuBuilder.makeItem(menuItemCommand, true));
+                            }
+                            @Override
+                            public void visit(MenuItemPerspective menuItemPerspective) {
+                                expandedBar.addContextMenuItem(menuBuilder.makeItem(menuItemPerspective, true));
+                            }
+                            @Override
+                            public void visit(MenuCustom<?> menuCustom) {
+                                expandedBar.addContextMenuItem(menuBuilder.makeItem(menuCustom, true));
+                            }
+                        }));
             }
         }
     }

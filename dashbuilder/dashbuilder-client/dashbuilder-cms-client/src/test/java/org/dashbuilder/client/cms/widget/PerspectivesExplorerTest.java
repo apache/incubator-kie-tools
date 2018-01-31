@@ -54,9 +54,6 @@ public class PerspectivesExplorerTest {
     PluginController pluginControllerM;
 
     @Mock
-    NewPerspectivePopUp newPerspectivePopUpM;
-
-    @Mock
     ContentManagerI18n i18nM;
 
     PerspectivesExplorer perspectivesExplorer;
@@ -75,7 +72,7 @@ public class PerspectivesExplorerTest {
             return null;
         }).when(perspectivePluginManagerM).getPerspectivePlugins(any());
 
-        perspectivesExplorer = new PerspectivesExplorer(viewM, perspectivePluginManagerM, pluginControllerM, newPerspectivePopUpM, placeManagerM, i18nM);
+        perspectivesExplorer = new PerspectivesExplorer(viewM, perspectivePluginManagerM, pluginControllerM, placeManagerM, i18nM);
     }
 
     @Test
