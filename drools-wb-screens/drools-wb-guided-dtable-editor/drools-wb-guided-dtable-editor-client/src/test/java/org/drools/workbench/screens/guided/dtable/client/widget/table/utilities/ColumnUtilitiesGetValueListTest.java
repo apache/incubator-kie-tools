@@ -61,6 +61,7 @@ public class ColumnUtilitiesGetValueListTest {
                 {"@,#,$", DataType.TYPE_STRING, 3, new String[]{"@", "#", "$"}},
                 {",a", DataType.TYPE_STRING, 2, new String[]{"", "a"}},
                 {"a,,b", DataType.TYPE_STRING, 3, new String[]{"a", "", "b"}},
+                {"\'a, 123\',b", DataType.TYPE_STRING, 2, new String[]{"a, 123", "b"}},
                 {"a,10-10-2010,b", DataType.TYPE_DATE, 3, new String[]{"a", "10-10-2010", "b"}},
                 {DATE_CONVERSION_VALUE_LIST, DataType.TYPE_DATE, 1, new String[]{"10-10-2010"}},
                 {"1,1.0,a", DataType.TYPE_NUMERIC_BIGDECIMAL, 2, new String[]{"1", "1.0"}},
