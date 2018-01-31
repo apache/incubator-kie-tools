@@ -58,6 +58,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -79,7 +80,9 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
     public void testLoadWithContent() {
         testLoad();
 
+        reset(layoutDragComponentPaletteMock);
         FormEditorPresenter presenterSpy = spy(presenter);
+        presenterSpy.setActiveOnLoad = true;
         presenterSpy.loadContent();
 
         verify(presenterSpy).loadAvailableFields();
@@ -301,9 +304,6 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
 
         Collection<FieldDefinition> availableFieldsValues = editorHelper.getAvailableFields().values();
 
-        verify(translationService,
-               atLeastOnce())
-                .getTranslation(FormEditorConstants.FormEditorPresenterModelFields);
         verify(presenterSpy,
                count).removeAllDraggableGroupComponent(presenter.getFormDefinition().getFields());
         verify(presenterSpy,
@@ -323,7 +323,7 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
         presenter.removeAllDraggableGroupComponent(fieldList);
 
         verify(translationService,
-               times(2)).getTranslation(FormEditorConstants.FormEditorPresenterModelFields);
+               times(1)).getTranslation(FormEditorConstants.FormEditorPresenterModelFields);
 
         verify(layoutDragComponentPaletteMock,
                times(fieldList.size())).removeDraggableComponent(anyString(),

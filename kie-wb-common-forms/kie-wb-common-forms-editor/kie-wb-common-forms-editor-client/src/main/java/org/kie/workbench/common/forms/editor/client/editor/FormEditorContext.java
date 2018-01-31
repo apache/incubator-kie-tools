@@ -18,20 +18,8 @@ package org.kie.workbench.common.forms.editor.client.editor;
 
 import javax.inject.Singleton;
 
-import org.jboss.errai.ioc.client.container.IOC;
-
 @Singleton
 public class FormEditorContext {
-
-    private static FormEditorContext instance;
-
-    static {
-        instance = IOC.getBeanManager().lookupBean(FormEditorContext.class).getInstance();
-    }
-
-    public static FormEditorContext get() {
-        return instance;
-    }
 
     private FormEditorHelper activeEditorHelper;
 

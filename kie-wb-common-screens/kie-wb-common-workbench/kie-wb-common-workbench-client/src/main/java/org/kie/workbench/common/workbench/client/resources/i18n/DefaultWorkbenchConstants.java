@@ -165,4 +165,6 @@ public interface DefaultWorkbenchConstants
 
     String SessionTimeout();
 
+    String LayoutEditorComponentPalette();
+
 }

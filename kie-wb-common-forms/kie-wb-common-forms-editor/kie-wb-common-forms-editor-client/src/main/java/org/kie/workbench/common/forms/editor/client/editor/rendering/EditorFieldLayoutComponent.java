@@ -61,6 +61,8 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
 
     protected FieldManager fieldManager;
 
+    protected FormEditorContext formEditorContext;
+
     protected FormEditorHelper editorHelper;
 
     boolean showProperties = false;
@@ -77,10 +79,12 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
     public EditorFieldLayoutComponent(FieldPropertiesRenderer propertiesRenderer,
                                       LayoutDragComponentHelper layoutDragComponentHelper,
                                       FieldManager fieldManager,
+                                      FormEditorContext formEditorContext,
                                       Event<FormEditorSyncPaletteEvent> syncPaletteEvent) {
         this.propertiesRenderer = propertiesRenderer;
         this.layoutDragComponentHelper = layoutDragComponentHelper;
         this.fieldManager = fieldManager;
+        this.formEditorContext = formEditorContext;
         this.syncPaletteEvent = syncPaletteEvent;
     }
 
@@ -273,7 +277,7 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
     }
 
     protected FormEditorHelper getHelperInstance() {
-        return FormEditorContext.get().getActiveEditorHelper();
+        return formEditorContext.getActiveEditorHelper();
     }
 
     FieldPropertiesRendererHelper getPropertiesRendererHelper() {

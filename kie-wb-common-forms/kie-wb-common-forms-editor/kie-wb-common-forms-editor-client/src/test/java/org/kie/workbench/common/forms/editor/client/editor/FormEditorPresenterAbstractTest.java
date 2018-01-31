@@ -47,6 +47,7 @@ import org.kie.workbench.common.services.refactoring.service.AssetsUsageService;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
+import org.kie.workbench.common.workbench.client.events.LayoutEditorFocusEvent;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
@@ -115,6 +116,9 @@ public class FormEditorPresenterAbstractTest {
 
     @Mock
     protected LayoutDragComponentPalette layoutDragComponentPaletteMock;
+
+    @Mock
+    protected EventSourceMock<LayoutEditorFocusEvent> layoutFocusEventMock;
 
     @Mock
     protected HTMLLayoutDragComponent htmlLayoutDragComponent;
@@ -208,7 +212,6 @@ public class FormEditorPresenterAbstractTest {
                                                     editorFieldLayoutComponents));
 
         when(layoutEditorMock.getLayout()).thenReturn(new LayoutTemplate());
-        when(layoutEditorMock.getDragComponentPalette()).thenReturn(layoutDragComponentPaletteMock);
 
         when(menuBuilderMock.addSave(any(MenuItem.class))).thenReturn(menuBuilderMock);
         when(menuBuilderMock.addCopy(any(ObservablePath.class),
@@ -251,6 +254,8 @@ public class FormEditorPresenterAbstractTest {
                 busyIndicatorView = mock(BusyIndicatorView.class);
                 overviewWidget = mock(OverviewWidgetPresenter.class);
                 layoutEditor = layoutEditorMock;
+                layoutDragComponentPalette = layoutDragComponentPaletteMock;
+                layoutFocusEvent = layoutFocusEventMock;
                 htmlLayoutDragComponent = FormEditorPresenterAbstractTest.this.htmlLayoutDragComponent;
                 notification = notificationEvent;
                 fileMenuBuilder = menuBuilderMock;
@@ -258,6 +263,7 @@ public class FormEditorPresenterAbstractTest {
                 projectController = FormEditorPresenterAbstractTest.this.projectController;
                 deletePopUpPresenter = FormEditorPresenterAbstractTest.this.deletePopUpPresenter;
                 renamePopUpPresenter = FormEditorPresenterAbstractTest.this.renamePopUpPresenter;
+                formEditorContext = mock(FormEditorContext.class);
             }
 
             @Override

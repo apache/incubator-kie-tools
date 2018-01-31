@@ -20,19 +20,23 @@ import java.util.Collection;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
+import org.kie.workbench.common.workbench.client.events.LayoutEditorFocusEvent;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.client.workbench.docks.UberfireDockReadyEvent;
 import org.uberfire.client.workbench.docks.UberfireDocks;
 import org.uberfire.client.workbench.docks.UberfireDocksInteractionEvent;
+import org.uberfire.client.workbench.events.PlaceHiddenEvent;
+import org.uberfire.ext.layout.editor.client.LayoutComponentPaletteScreen;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 @ApplicationScoped
 public class AuthoringWorkbenchDocks {
@@ -45,11 +49,15 @@ public class AuthoringWorkbenchDocks {
 
     protected UberfireDock projectExplorerDock;
 
+    protected UberfireDock componentPaletteDock;
+
     protected LibraryInternalPreferences libraryInternalPreferences;
 
     protected String currentPerspectiveIdentifier = null;
 
     protected boolean projectExplorerEnabled = true;
+
+    protected boolean componentPaletteEnabled = false;
 
     protected ManagedInstance<WorkbenchDocksHandler> installedHandlers;
 
@@ -86,12 +94,16 @@ public class AuthoringWorkbenchDocks {
                       PlaceRequest projectExplorerPlaceRequest) {
         this.authoringPerspectiveIdentifier = authoringPerspectiveIdentifier;
         projectExplorerDock = new UberfireDock(UberfireDockPosition.WEST,
-                                               "ADJUST",
+                                               IconType.ADJUST.toString(),
                                                projectExplorerPlaceRequest,
                                                authoringPerspectiveIdentifier).withSize(400).withLabel(constants.DocksProjectExplorerTitle());
-        uberfireDocks.add(
-                projectExplorerDock
-        );
+
+        componentPaletteDock = new UberfireDock(UberfireDockPosition.WEST,
+                                                IconType.CUBES.toString(),
+                                                new DefaultPlaceRequest(LayoutComponentPaletteScreen.SCREEN_ID),
+                                                authoringPerspectiveIdentifier).withSize(400).withLabel(constants.LayoutEditorComponentPalette());
+
+        uberfireDocks.add(projectExplorerDock);
         uberfireDocks.hide(UberfireDockPosition.EAST,
                               authoringPerspectiveIdentifier);
     }
@@ -136,6 +148,10 @@ public class AuthoringWorkbenchDocks {
     }
 
     public void hide() {
+        if (componentPaletteEnabled) {
+            uberfireDocks.remove(componentPaletteDock);
+            componentPaletteEnabled = false;
+        }
         uberfireDocks.hide(UberfireDockPosition.WEST,
                               authoringPerspectiveIdentifier);
         projectExplorerEnabled = false;
@@ -156,7 +172,7 @@ public class AuthoringWorkbenchDocks {
     }
 
     public void expandProjectExplorer() {
-        if (projectExplorerDock != null) {
+        if (projectExplorerDock != null && !componentPaletteEnabled) {
             uberfireDocks.open(projectExplorerDock);
         }
     }
@@ -185,6 +201,35 @@ public class AuthoringWorkbenchDocks {
                                         },
                                         error -> {
                                         });
+    }
+
+    private void refreshWestDocks(boolean showComponentPalette, UberfireDock dockToOpen) {
+
+        if (showComponentPalette && !componentPaletteEnabled) {
+            uberfireDocks.add(componentPaletteDock);
+            componentPaletteEnabled = true;
+        }
+        if (!showComponentPalette && componentPaletteEnabled) {
+            uberfireDocks.remove(componentPaletteDock);
+            componentPaletteEnabled = false;
+        }
+
+        uberfireDocks.show(UberfireDockPosition.WEST, authoringPerspectiveIdentifier);
+
+        if (dockToOpen != null) {
+            uberfireDocks.open(dockToOpen);
+        }
+    }
+
+    public void onLayoutEditorFocus(@Observes LayoutEditorFocusEvent event) {
+        refreshWestDocks(true, componentPaletteDock);
+    }
+
+    public void onLayoutEditorClose(@Observes PlaceHiddenEvent event) {
+        String placeId = event.getPlace().getIdentifier();
+        if ("FormEditor".equals(placeId)) {
+            refreshWestDocks(false, null);
+        }
     }
 
     @PreDestroy

@@ -27,16 +27,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
 import org.kie.workbench.common.workbench.client.docks.test.TestWorkbenchDocksHandler;
+import org.kie.workbench.common.workbench.client.events.LayoutEditorFocusEvent;
 import org.mockito.Mock;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.client.workbench.docks.UberfireDockReadyEvent;
 import org.uberfire.client.workbench.docks.UberfireDocks;
 import org.uberfire.client.workbench.docks.UberfireDocksInteractionEvent;
+import org.uberfire.client.workbench.events.PlaceHiddenEvent;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.rpc.SessionInfo;
 
 import static org.mockito.Mockito.*;
+import static org.junit.Assert.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class AuthoringWorkbenchDocksTest {
@@ -108,6 +112,25 @@ public class AuthoringWorkbenchDocksTest {
         verify(uberfireDocks,
                times(1)).add(any(),
                              any());
+    }
+
+    @Test
+    public void testShowComponentPalette() {
+        authoringWorkbenchDocks.onLayoutEditorFocus(new LayoutEditorFocusEvent());
+        verify(uberfireDocks).add(authoringWorkbenchDocks.componentPaletteDock);
+        verify(uberfireDocks).open(authoringWorkbenchDocks.componentPaletteDock);
+        assertTrue(authoringWorkbenchDocks.componentPaletteEnabled);
+    }
+
+    @Test
+    public void testCloseComponentPalette() {
+        authoringWorkbenchDocks.onLayoutEditorFocus(new LayoutEditorFocusEvent());
+        reset(uberfireDocks);
+
+        authoringWorkbenchDocks.onLayoutEditorClose(new PlaceHiddenEvent(new DefaultPlaceRequest("FormEditor")));
+        verify(uberfireDocks).remove(authoringWorkbenchDocks.componentPaletteDock);
+        assertFalse(authoringWorkbenchDocks.componentPaletteEnabled);
+        verify(uberfireDocks, never()).open(any());
     }
 
     @Test

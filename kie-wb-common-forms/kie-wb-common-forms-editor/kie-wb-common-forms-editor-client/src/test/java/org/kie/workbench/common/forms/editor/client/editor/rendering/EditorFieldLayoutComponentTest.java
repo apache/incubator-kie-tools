@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRendererManager;
+import org.kie.workbench.common.forms.editor.client.editor.FormEditorContext;
 import org.kie.workbench.common.forms.editor.client.editor.FormEditorHelper;
 import org.kie.workbench.common.forms.editor.client.editor.events.FormEditorSyncPaletteEvent;
 import org.kie.workbench.common.forms.editor.client.editor.properties.FieldPropertiesRenderer;
@@ -83,6 +84,9 @@ public class EditorFieldLayoutComponentTest {
 
     @Mock
     private FieldPropertiesRenderer propertiesRenderer;
+
+    @Mock
+    private FormEditorContext formEditorContext;
 
     @Mock
     private LayoutDragComponentHelper layoutDragComponentHelper;
@@ -169,6 +173,7 @@ public class EditorFieldLayoutComponentTest {
         editorFieldLayoutComponent = spy(new EditorFieldLayoutComponent(propertiesRenderer,
                                                                         layoutDragComponentHelper,
                                                                         fieldManager,
+                                                                        formEditorContext,
                                                                         syncPaletteEvent) {
             {
                 fieldRendererManager = EditorFieldLayoutComponentTest.this.fieldRendererManager;
