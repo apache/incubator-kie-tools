@@ -36,6 +36,11 @@ import static org.junit.Assert.assertTrue;
 
 public class DRLTextEditorServiceImplCDITest extends CDITestSetup {
 
+    private static final String UNEMPLOY_ROOT = "DslSentencesInDrlFile/src/main/resources/org/kiegroup/";
+    private static final String UNEMPLOY = UNEMPLOY_ROOT + "unemploy.dslr";
+    private static final String UNEMPLOY_BROKEN = UNEMPLOY_ROOT + "unemploy-invalid.dslr";
+    private static final String UNEMPLOY_REPLACE = UNEMPLOY_ROOT + "unemployAndReplace.dslr";
+
     private static final String CAR_DRIVING_ROOT = "drl/src/main/resources/org/kiegroup/";
     private static final String CAR_DRIVING_LICENSE = CAR_DRIVING_ROOT + "applyForCarDrivingLicense.drl";
     private static final String CAR_DRIVING_LICENSE_BROKEN = CAR_DRIVING_ROOT + "applyForCarDrivingLicenseWrongConstructor.drl";
@@ -62,14 +67,21 @@ public class DRLTextEditorServiceImplCDITest extends CDITestSetup {
 
     @Test
     public void testValidDSRLFile() throws Exception {
-        validateResource("DslSentencesInDrlFile/src/main/resources/org/kiegroup/unemploy.dslr");
+        validateResource(UNEMPLOY);
+
+        assertEquals(0, validationMessages.size());
+    }
+
+    @Test
+    public void testDSLCompinedWithPureDRL() throws Exception {
+        validateResource(UNEMPLOY_REPLACE);
 
         assertEquals(0, validationMessages.size());
     }
 
     @Test
     public void testInvalidDSRLFile() throws Exception {
-        validateResource("DslSentencesInDrlFile/src/main/resources/org/kiegroup/unemploy-invalid.dslr");
+        validateResource(UNEMPLOY_BROKEN);
 
         assertEquals(3, validationMessages.size());
         assertTrue(validationMessages.get(0).getText().contains("Unable to expand: a"));
