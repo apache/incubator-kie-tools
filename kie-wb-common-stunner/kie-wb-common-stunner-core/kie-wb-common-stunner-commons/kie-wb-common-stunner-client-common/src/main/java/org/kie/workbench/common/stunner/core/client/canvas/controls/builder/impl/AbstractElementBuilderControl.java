@@ -262,8 +262,7 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         }
         // Execute both add element and move commands in batch, so undo will be done in batch as well.
         Command<AbstractCanvasHandler, CanvasViolation> moveCanvasElementCommand = canvasCommandFactory.updatePosition((Node<View<?>, Edge>) element,
-                                                                                                                       new Point2D(x,
-                                                                                                                                   y));
+                                                                                                                       new Point2D(x, y));
         final List<Command<AbstractCanvasHandler, CanvasViolation>> commandList = new LinkedList<Command<AbstractCanvasHandler, CanvasViolation>>();
         commandList.add(command);
         commandList.add(moveCanvasElementCommand);

@@ -32,6 +32,7 @@ import com.ait.lienzo.client.core.shape.wires.SelectionManager;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.google.gwt.event.dom.client.MouseEvent;
 import com.google.gwt.event.shared.EventHandler;
@@ -41,10 +42,12 @@ import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresConn
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresShapeView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.AbstractSelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.MapSelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.MultipleSelection;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasDrawnEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.ShapeLocationsChangedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
@@ -94,6 +97,46 @@ public final class LienzoMultipleSelectionControl<H extends AbstractCanvasHandle
                         addAll(shapesToIdentifiers(changedItems.getAddedConnectors().toList()));
                     }});
                 });
+    }
+
+    private void rebuildSelectionArea() {
+        if (null != selectionShapeProvider.getShape()) {
+            getSelectionManager().getSelectedItems().rebuildBoundingBox();
+            // TODO: Here we need to call the drawSelectionShapeForSelection() method, but it's private.
+            // Let's workaroud it - THIS CAN BE REFACTORED ONCE MOVING TO NEXT LIENZO RELEASE.
+            if (getSelectionManager().getSelectedItems().isEmpty()) {
+                return;
+            }
+
+            BoundingBox bbox = getSelectionManager().getSelectedItems().getBoundingBox();
+
+            getSelectionManager().drawSelectionShape(bbox.getX(),
+                                                     bbox.getY(),
+                                                     bbox.getWidth(),
+                                                     bbox.getHeight(),
+                                                     getWiresManager().getLayer().getLayer().getOverLayer());
+        }
+    }
+
+    protected void onShapeLocationsChanged(@Observes ShapeLocationsChangedEvent event) {
+        if (isSameCanvas(event.getCanvasHandler()) && areSelected(event.getUuids())) {
+            rebuildSelectionArea();
+        }
+    }
+
+    private boolean isSameCanvas(final CanvasHandler handler) {
+        CanvasHandler canvasHandler = getCanvasHandler();
+        return null != canvasHandler && canvasHandler.equals(handler);
+    }
+
+    private boolean areSelected(Collection<String> uuids) {
+        Collection<String> selectedItems = getSelectedItems();
+
+        if (uuids == null) {
+            return false;
+        }
+
+        return uuids.stream().anyMatch(uuid -> selectedItems.contains(uuid));
     }
 
     @Override

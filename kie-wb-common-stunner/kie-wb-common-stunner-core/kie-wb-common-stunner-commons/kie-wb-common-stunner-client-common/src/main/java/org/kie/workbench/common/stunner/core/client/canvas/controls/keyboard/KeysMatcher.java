@@ -40,4 +40,19 @@ public class KeysMatcher {
 
         return matches.size() == expectedKeys.length;
     }
+
+    public static boolean isKeyMatch(final KeyboardEvent.Key[] actualKeys,
+                                      final KeyboardEvent.Key... expectedKey) {
+        if (actualKeys == null) {
+            return expectedKey == null;
+        } else if (expectedKey == null) {
+            return false;
+        }
+
+        final Set<KeyboardEvent.Key> matches = new HashSet<>();
+        matches.addAll(Arrays.asList(actualKeys));
+        matches.retainAll(Arrays.asList(expectedKey));
+
+        return matches.size() == 1;
+    }
 }

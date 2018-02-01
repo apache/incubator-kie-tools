@@ -116,8 +116,7 @@ public class CaseManagementCanvasCommandFactoryTest {
     public void checkUpdatePositionCommandType() {
         //Checks the command is a specific sub-class for Case Management
         final CanvasCommand<AbstractCanvasHandler> command = factory.updatePosition(child,
-                                                                                    new Point2D(0.0,
-                                                                                                0.0));
+                                                                                    new Point2D(0.0, 0.0));
         assertNotNull(command);
         assertTrue(command instanceof CaseManagementUpdatePositionCommand);
     }

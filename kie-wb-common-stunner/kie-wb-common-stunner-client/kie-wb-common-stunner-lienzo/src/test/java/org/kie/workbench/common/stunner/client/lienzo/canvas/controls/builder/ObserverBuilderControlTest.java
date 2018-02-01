@@ -238,10 +238,10 @@ public class ObserverBuilderControlTest {
 
             @Override
             public void onSuccess(String uuid) {
-                assertEquals(15.0, view.getBounds().getLowerRight().getX(), 0.00001);
-                assertEquals(5.0, view.getBounds().getUpperLeft().getX(), 0.00001);
-                assertEquals(25.0, view.getBounds().getLowerRight().getY(), 0.00001);
-                assertEquals(5.0, view.getBounds().getUpperLeft().getY(), 0.00001);
+                assertEquals(10.0, view.getBounds().getLowerRight().getX(), 0.00001);
+                assertEquals(0.0, view.getBounds().getUpperLeft().getX(), 0.00001);
+                assertEquals(20.0, view.getBounds().getLowerRight().getY(), 0.00001);
+                assertEquals(0.0, view.getBounds().getUpperLeft().getY(), 0.00001);
             }
 
             @Override

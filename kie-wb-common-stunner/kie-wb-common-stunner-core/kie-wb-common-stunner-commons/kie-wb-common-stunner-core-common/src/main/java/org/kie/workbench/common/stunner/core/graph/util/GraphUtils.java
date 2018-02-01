@@ -182,22 +182,6 @@ public class GraphUtils {
         return Optional.empty();
     }
 
-    public static class HasParentPredicate implements BiPredicate<Node<?, ? extends Edge>, Element<?>> {
-
-        @Override
-        public boolean test(final Node<?, ? extends Edge> candidate,
-                            final Element<?> parent) {
-            if (null != candidate) {
-                Element<?> p = getParent(candidate);
-                while (p instanceof Node && !p.equals(parent)) {
-                    p = getParent((Node<?, ? extends Edge>) p);
-                }
-                return null != p;
-            }
-            return false;
-        }
-    }
-
     public static Point2D getPosition(final View element) {
         final Bounds.Bound ul = element.getBounds().getUpperLeft();
         final double x = ul.getX();
@@ -207,24 +191,39 @@ public class GraphUtils {
     }
 
     public static double[] getGraphSize(final DefinitionSet element) {
-        final Bounds.Bound ul = element.getBounds().getUpperLeft();
-        final Bounds.Bound lr = element.getBounds().getLowerRight();
+        return getSize(element.getBounds());
+    }
+
+    public static double[] getNodeSize(final View element) {
+        return getSize(element.getBounds());
+    }
+
+    private static double[] getSize(Bounds bounds) {
+        final Bounds.Bound ul = bounds.getUpperLeft();
+        final Bounds.Bound lr = bounds.getLowerRight();
         final double w = lr.getX() - ul.getX();
         final double h = lr.getY() - ul.getY();
         return new double[]{Math.abs(w), Math.abs(h)};
     }
 
-    public static double[] getNodeSize(final View element) {
-        final Bounds.Bound ul = element.getBounds().getUpperLeft();
-        final Bounds.Bound lr = element.getBounds().getLowerRight();
-        final double w = lr.getX() - ul.getX();
-        final double h = lr.getY() - ul.getY();
-        return new double[]{Math.abs(w), Math.abs(h)};
+    @SuppressWarnings("unchecked")
+    public static Bounds getBounds(final Graph<DefinitionSet, ? extends Node> graph) {
+        return graph.getContent().getBounds();
+    }
+
+    public static boolean isRootNode(Element<? extends View<?>> element, final Graph<DefinitionSet, Node> graph) {
+        if (element instanceof Node) {
+            Node node = (Node) element;
+
+            final Element<?> parent = GraphUtils.getParent(node);
+            return (parent == null);
+        }
+
+        return false;
     }
 
     /**
      * Checks that the given Bounds do not exceed graph limits.
-     *
      * @return if bounds exceed graph limits it returns <code>false</code>. Otherwise returns <code>true</code>.
      */
     @SuppressWarnings("unchecked")
@@ -238,11 +237,23 @@ public class GraphUtils {
         return true;
     }
 
+    public static boolean checkBoundsExceeded(final Bounds parentBounds,
+                                              final Bounds bounds) {
+        if ((bounds.getUpperLeft().getX() < parentBounds.getUpperLeft().getX())
+                || (bounds.getUpperLeft().getY() < parentBounds.getUpperLeft().getY())) {
+            return false;
+        }
+        if ((bounds.getLowerRight().getX() > parentBounds.getLowerRight().getX())
+                || (bounds.getLowerRight().getY() > parentBounds.getLowerRight().getY())) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Finds the first node in the graph structure for the given type.
-     *
      * @param graph The graph structure.
-     * @param type  The Definition type..
+     * @param type The Definition type..
      */
     @SuppressWarnings("unchecked")
     public static <C> Node<Definition<C>, ?> getFirstNode(final Graph<?, Node> graph,
@@ -301,5 +312,21 @@ public class GraphUtils {
     private static boolean instanceOf(final Object item,
                                       final Class<?> clazz) {
         return null != item && item.getClass().equals(clazz);
+    }
+
+    public static class HasParentPredicate implements BiPredicate<Node<?, ? extends Edge>, Element<?>> {
+
+        @Override
+        public boolean test(final Node<?, ? extends Edge> candidate,
+                            final Element<?> parent) {
+            if (null != candidate) {
+                Element<?> p = getParent(candidate);
+                while (p instanceof Node && !p.equals(parent)) {
+                    p = getParent((Node<?, ? extends Edge>) p);
+                }
+                return null != p;
+            }
+            return false;
+        }
     }
 }

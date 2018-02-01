@@ -48,8 +48,7 @@ public class CaseManagementUpdatePositionCommandTest extends AbstractCommandTest
                                                    50.0);
 
         this.command = new CaseManagementUpdatePositionCommand(candidate,
-                                                               new Point2D(100.0,
-                                                                           200.0));
+                                                               new Point2D(100.0, 200.0));
     }
 
     @Test

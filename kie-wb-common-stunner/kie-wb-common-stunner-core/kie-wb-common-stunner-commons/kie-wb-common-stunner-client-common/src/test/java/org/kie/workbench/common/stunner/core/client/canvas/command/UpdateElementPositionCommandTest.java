@@ -54,8 +54,7 @@ public class UpdateElementPositionCommandTest extends AbstractCanvasCommandTest 
         ));
 
         this.tested = new UpdateElementPositionCommand(candidate,
-                                                       new Point2D(100d,
-                                                                   200d));
+                                                       new Point2D(100d, 200d));
     }
 
     @Test

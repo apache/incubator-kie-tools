@@ -110,8 +110,11 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
                         LOGGER.log(Level.FINEST,
                                    "Command failed - rollback");
                         roolback = true;
-                    } else {
+                    } else if (commands != null) {
                         commands.push(command);
+                    }
+                    else {
+                        getRegistry().register(command);
                     }
                     // Notify listener, if any.
                     RequestCommandManager.this.postExecute(context,

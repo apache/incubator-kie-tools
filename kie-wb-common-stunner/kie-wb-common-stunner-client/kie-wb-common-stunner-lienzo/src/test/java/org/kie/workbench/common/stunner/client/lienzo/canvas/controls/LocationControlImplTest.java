@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPositionCommand;
+import org.kie.workbench.common.stunner.core.client.canvas.event.ShapeLocationsChangedEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
@@ -58,6 +59,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -143,17 +145,21 @@ public class LocationControlImplTest {
     @Mock
     private Object definition;
 
+    @Mock
+    private EventSourceMock<ShapeLocationsChangedEvent> shapeLocationsChangedEvent;
+
     private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
     private ShapeViewExtStub shapeView;
-
     private LocationControlImpl tested;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         this.canvasCommandFactory = new DefaultCanvasCommandFactory(null, null);
+
         this.shapeView = spy(new ShapeViewExtStub(shapeEventHandler,
                                                   hasControlPoints));
+
         when(element.getUUID()).thenReturn(ELEMENT_UUID);
         when(element.asNode()).thenReturn(element);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
@@ -177,7 +183,8 @@ public class LocationControlImplTest {
         when(shapeEventHandler.supports(any(ViewEventType.class))).thenReturn(true);
         when(wiresManager.getSelectionManager()).thenReturn(selectionManager);
         when(selectionManager.getControl()).thenReturn(wiresCompositeControl);
-        this.tested = new LocationControlImpl(canvasCommandFactory);
+
+        this.tested = new LocationControlImpl(canvasCommandFactory, shapeLocationsChangedEvent);
         tested.setCommandManagerProvider(() -> commandManager);
     }
 
@@ -226,6 +233,11 @@ public class LocationControlImplTest {
         ArgumentCaptor<CanvasCommand> commandArgumentCaptor = ArgumentCaptor.forClass(CanvasCommand.class);
         verify(commandManager, times(1)).execute(eq(canvasHandler),
                                                  commandArgumentCaptor.capture());
+
+        ArgumentCaptor<ShapeLocationsChangedEvent> shapeLocationsChangedEventCaptor = ArgumentCaptor.forClass(ShapeLocationsChangedEvent.class);
+        verify(shapeLocationsChangedEvent, times(1)).fire(shapeLocationsChangedEventCaptor.capture());
+        assertTrue(shapeLocationsChangedEventCaptor.getValue() instanceof ShapeLocationsChangedEvent);
+
         final UpdateElementPositionCommand command = (UpdateElementPositionCommand) commandArgumentCaptor.getValue();
         assertEquals(element, command.getElement());
         assertEquals(location, command.getLocation());

@@ -16,10 +16,18 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.wires.ILocationAcceptor;
@@ -33,6 +41,9 @@ import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.LocationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher;
+import org.kie.workbench.common.stunner.core.client.canvas.event.ShapeLocationsChangedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
@@ -60,25 +71,37 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class LocationControlImpl
         extends AbstractCanvasHandlerRegistrationControl<AbstractCanvasHandler>
         implements LocationControl<AbstractCanvasHandler, Element> {
 
+    private final static double LARGE_DISTANCE = 25d;
+    private final static double NORMAL_DISTANCE = 5d;
+    private final static double SHORT_DISTANCE = 1d;
+
     private static Logger LOGGER = Logger.getLogger(LocationControlImpl.class.getName());
 
     private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+    private final Event<ShapeLocationsChangedEvent> shapeLocationsChangedEvent;
     private CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
     private double[] boundsConstraint;
+    private final Collection<String> selectedIDs = new LinkedList<>();
 
     protected LocationControlImpl() {
-        this(null);
+        this(null,
+             null);
     }
 
     @Inject
-    public LocationControlImpl(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory) {
+    public LocationControlImpl(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+                               final Event<ShapeLocationsChangedEvent> shapeLocationsChangedEvent) {
         this.canvasCommandFactory = canvasCommandFactory;
+        this.shapeLocationsChangedEvent = shapeLocationsChangedEvent;
     }
 
     @Override
@@ -92,6 +115,59 @@ public class LocationControlImpl
                                     KeyboardEvent.Key.ESC)) {
             getWiresManager().resetContext();
         }
+
+        handleArrowKeys(keys);
+    }
+
+    private void handleArrowKeys(final KeyboardEvent.Key... keys) {
+
+        final int selectedIDsCount = selectedIDs.size();
+
+        if (selectedIDsCount == 0) {
+            return;
+        }
+
+        double movementDistance = NORMAL_DISTANCE;
+
+        if (KeysMatcher.isKeyMatch(keys, KeyboardEvent.Key.CONTROL)) {
+            movementDistance = LARGE_DISTANCE;
+        } else if (KeysMatcher.isKeyMatch(keys, KeyboardEvent.Key.SHIFT)) {
+            movementDistance = SHORT_DISTANCE;
+        }
+
+        double horizontalDistance = 0d;
+        double verticalDistance = 0d;
+
+        if (KeysMatcher.isKeyMatch(keys, KeyboardEvent.Key.ARROW_LEFT)) {
+            horizontalDistance = -movementDistance;
+        } else if (KeysMatcher.isKeyMatch(keys, KeyboardEvent.Key.ARROW_RIGHT)) {
+            horizontalDistance = movementDistance;
+        }
+
+        if (KeysMatcher.isKeyMatch(keys, KeyboardEvent.Key.ARROW_UP)) {
+            verticalDistance = -movementDistance;
+        } else if (KeysMatcher.isKeyMatch(keys, KeyboardEvent.Key.ARROW_DOWN)) {
+            verticalDistance = movementDistance;
+        }
+
+        if (verticalDistance == 0 && horizontalDistance == 0) {
+            return;
+        }
+
+        List<Element> moveNodes = new ArrayList<>();
+        List<Point2D> movePositions = new ArrayList<>();
+
+        for (String uuid : selectedIDs) {
+            final Node<View<?>, Edge> node = canvasHandler.getGraphIndex().getNode(uuid);
+            if (node != null) {
+                final Point2D nodePosition = GraphUtils.getPosition(node.getContent());
+                final Point2D movePosition = new Point2D(nodePosition.getX() + horizontalDistance, nodePosition.getY() + verticalDistance);
+                moveNodes.add(node);
+                movePositions.add(movePosition);
+            }
+        }
+
+        move(moveNodes.toArray(new Element[]{}), movePositions.toArray(new Point2D[]{}));
     }
 
     @Override
@@ -180,8 +256,18 @@ public class LocationControlImpl
             }
             command = builder.build();
         }
-        return getCommandManager().execute(canvasHandler,
-                                           command);
+
+        CommandResult<CanvasViolation> result = getCommandManager().allow(canvasHandler, command);
+        if (!CommandUtils.isError(result)) {
+            result = getCommandManager().execute(canvasHandler, command);
+
+            if (!CommandUtils.isError(result)) {
+                List<String> uuids = Arrays.stream(elements).map(Element::getUUID).collect(Collectors.toList());
+                shapeLocationsChangedEvent.fire(new ShapeLocationsChangedEvent(uuids, canvasHandler));
+            }
+        }
+
+        return result;
     }
 
     @Override
@@ -286,5 +372,23 @@ public class LocationControlImpl
     private WiresManager getWiresManager() {
         final WiresCanvas canvas = (WiresCanvas) canvasHandler.getCanvas();
         return canvas.getWiresManager();
+    }
+
+    void onCanvasSelectionEvent(final @Observes CanvasSelectionEvent event) {
+        checkNotNull("event",
+                     event);
+
+        if (checkEventContext(event)) {
+            selectedIDs.clear();
+            selectedIDs.addAll(event.getIdentifiers());
+        }
+    }
+
+    void onCanvasClearSelectionEvent(final @Observes CanvasClearSelectionEvent event) {
+        checkNotNull("event",
+                     event);
+        if (checkEventContext(event)) {
+            selectedIDs.clear();
+        }
     }
 }

@@ -109,16 +109,20 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
     private CommandResult<RuleViolation> checkBounds(final GraphCommandExecutionContext context) {
         final Element<? extends View<?>> element = getNodeNotNull(context);
         final Graph<DefinitionSet, Node> graph = (Graph<DefinitionSet, Node>) getGraph(context);
+
         final BoundsImpl newBounds = getTargetBounds(element);
+
         final GraphCommandResultBuilder result = new GraphCommandResultBuilder();
-        if (checkBoundsExceeded(graph,
-                                newBounds)) {
+
+        final Bounds parentBounds = getParentBounds(element, graph);
+
+        if (GraphUtils.checkBoundsExceeded(parentBounds, newBounds)) {
             ((View) element.getContent()).setBounds(newBounds);
         } else {
-            final Bounds graphBounds = graph.getContent().getBounds();
-            result.addViolation(new BoundsExceededViolation(graphBounds)
+            result.addViolation(new BoundsExceededViolation(parentBounds)
                                         .setUUID(element.getUUID()));
         }
+
         return result.build();
     }
 
@@ -134,10 +138,15 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
     }
 
     @SuppressWarnings("unchecked")
-    private boolean checkBoundsExceeded(final Graph<DefinitionSet, Node> graph,
-                                        final Bounds bounds) {
-        return GraphUtils.checkBoundsExceeded(graph,
-                                              bounds);
+    private Bounds getParentBounds(Element element, final Graph<DefinitionSet, Node> graph) {
+        final Element<? extends View<?>> parent = (Element<? extends View<?>>) GraphUtils.getParent((Node) element);
+
+        if (parent != null && !GraphUtils.isRootNode(parent, graph)) {
+            final double[] size = GraphUtils.getNodeSize(parent.getContent());
+            return new BoundsImpl(new BoundImpl(0d, 0d), new BoundImpl(size[0], size[1]));
+        } else {
+            return GraphUtils.getBounds(graph);
+        }
     }
 
     @Override
