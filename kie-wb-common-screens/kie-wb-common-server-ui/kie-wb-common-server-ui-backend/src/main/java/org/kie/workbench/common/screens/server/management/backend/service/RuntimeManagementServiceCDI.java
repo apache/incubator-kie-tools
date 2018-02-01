@@ -20,67 +20,57 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.server.controller.api.model.runtime.Container;
+import org.kie.server.controller.api.model.runtime.ServerInstanceKeyList;
 import org.kie.server.controller.api.model.spec.ContainerSpec;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
-import org.kie.server.controller.api.storage.KieServerTemplateStorage;
-import org.kie.server.controller.impl.KieServerInstanceManager;
-import org.kie.server.controller.impl.service.RuntimeManagementServiceImpl;
 import org.kie.workbench.common.screens.server.management.model.ContainerSpecData;
 import org.kie.workbench.common.screens.server.management.service.RuntimeManagementService;
-import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
 
 @Service
 @ApplicationScoped
-public class RuntimeManagementServiceCDI extends RuntimeManagementServiceImpl
-        implements RuntimeManagementService {
+public class RuntimeManagementServiceCDI implements RuntimeManagementService {
 
-    @Inject
-    private SpecManagementService specManagementService;
+    @Inject @Any
+    private org.kie.server.controller.api.service.SpecManagementService specManagementService;
 
-    @Inject
-    @Override
-    public void setKieServerInstanceManager(KieServerInstanceManager kieServerInstanceManager) {
-        super.setKieServerInstanceManager(kieServerInstanceManager);
-    }
-
-    @Inject
-    @Override
-    public void setTemplateStorage(KieServerTemplateStorage templateStorage) {
-        super.setTemplateStorage(templateStorage);
-    }
+    @Inject @Any
+    private org.kie.server.controller.api.service.RuntimeManagementService service;
 
     @Override
     public Collection<Container> getContainersByServerInstance(final String serverTemplateId, final String serverInstanceId) {
-        final ServerTemplate serverTemplate = loadServerTemplate(serverTemplateId);
+        final ServerTemplate serverTemplate = specManagementService.getServerTemplate(serverTemplateId);
         return serverTemplate.getServerInstanceKeys().stream()
                 .filter(serverInstanceKey -> serverInstanceKey.getServerInstanceId().equalsIgnoreCase(serverInstanceId))
                 .findFirst()
-                .map(serverInstanceKey -> Arrays.asList(getContainers(serverInstanceKey).getContainers()))
+                .map(serverInstanceKey -> Arrays.asList(service.getContainers(serverInstanceKey).getContainers()))
                 .orElse(Collections.emptyList());
     }
 
     @Override
     public ContainerSpecData getContainersByContainerSpec(final String serverTemplateId, final String containerSpecId) {
-        final ServerTemplate serverTemplate = loadServerTemplate(serverTemplateId);
+        final ServerTemplate serverTemplate = specManagementService.getServerTemplate(serverTemplateId);
 
         final ContainerSpec containerSpec = serverTemplate.getContainerSpec(containerSpecId);
 
-        final List<Container> containers = getKieServerInstanceManager().getContainers(serverTemplate, containerSpec);
+        final ServerInstanceKeyList instances = service.getServerInstances(serverTemplateId);
+        if(instances.getServerInstanceKeys() == null){
+            return null;
+        }
+
+        final List<Container> containers =  Arrays.stream(instances.getServerInstanceKeys())
+                    .flatMap(serverInstanceKey -> Arrays.asList(service.getContainers(serverInstanceKey).getContainers()).stream())
+                    .filter(container -> containerSpecId.equals(container.getContainerSpecId()))
+                    .collect(Collectors.toList());
 
         return new ContainerSpecData(containerSpec, containers);
     }
 
-    private ServerTemplate loadServerTemplate(String serverTemplateId) {
-        final ServerTemplate template = getTemplateStorage().load(serverTemplateId);
-        if (template == null) {
-            throw new RuntimeException("No server template found for id " + serverTemplateId);
-        }
-        return template;
-    }
 }

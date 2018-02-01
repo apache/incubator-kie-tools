@@ -17,35 +17,43 @@
 package org.kie.workbench.common.screens.server.management.backend.service;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.server.controller.api.service.NotificationService;
-import org.kie.server.controller.api.storage.KieServerTemplateStorage;
-import org.kie.server.controller.impl.KieServerInstanceManager;
-import org.kie.server.controller.impl.service.RuleCapabilitiesServiceImpl;
+import org.kie.server.api.model.ReleaseId;
+import org.kie.server.controller.api.model.spec.ContainerSpecKey;
 import org.kie.workbench.common.screens.server.management.service.RuleCapabilitiesService;
 
 @Service
 @ApplicationScoped
-public class RuleCapabilitiesServiceCDI extends RuleCapabilitiesServiceImpl
-        implements RuleCapabilitiesService {
+public class RuleCapabilitiesServiceCDI implements RuleCapabilitiesService {
 
-    @Inject
+    @Inject @Any
+    org.kie.server.controller.api.service.RuleCapabilitiesService service;
+
     @Override
-    public void setNotificationService( NotificationService notificationService ) {
-        super.setNotificationService( notificationService );
+    public void scanNow(final ContainerSpecKey containerSpecKey) {
+        service.scanNow(containerSpecKey);
     }
 
-    @Inject
     @Override
-    public void setKieServerInstanceManager( KieServerInstanceManager kieServerInstanceManager ) {
-        super.setKieServerInstanceManager( kieServerInstanceManager );
+    public void startScanner(final ContainerSpecKey containerSpecKey,
+                             final Long interval) {
+        service.startScanner(containerSpecKey,
+                             interval);
     }
 
-    @Inject
     @Override
-    public void setTemplateStorage( KieServerTemplateStorage templateStorage ) {
-        super.setTemplateStorage( templateStorage );
+    public void stopScanner(final ContainerSpecKey containerSpecKey) {
+        service.stopScanner(containerSpecKey);
     }
+
+    @Override
+    public void upgradeContainer(final ContainerSpecKey containerSpecKey,
+                                 final ReleaseId releaseId) {
+        service.upgradeContainer(containerSpecKey,
+                                 releaseId);
+    }
+
 }

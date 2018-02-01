@@ -39,7 +39,11 @@ import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.server.controller.api.model.spec.ServerTemplateKey;
 import org.kie.server.controller.api.storage.KieServerTemplateStorage;
 import org.kie.server.controller.impl.KieServerInstanceManager;
+import org.kie.server.controller.impl.service.RuntimeManagementServiceImpl;
+import org.kie.server.controller.impl.service.SpecManagementServiceImpl;
 import org.kie.workbench.common.screens.server.management.model.ContainerSpecData;
+import org.mockito.InjectMocks;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -48,6 +52,15 @@ public class RuntimeManagementServiceCDITest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
+    @Spy
+    SpecManagementServiceImpl specManagementService = new SpecManagementServiceImpl();
+
+    @Spy
+    RuntimeManagementServiceImpl runtimeManagementService = new RuntimeManagementServiceImpl();
+
+    @InjectMocks
+    RuntimeManagementServiceCDI runtimeManagementServiceCDI;
+
     @Test
     public void getContainersByServerInstance_throwsRuntimeException_whenServerTemplateNotFound() {
         final String templateId = "this_template_does_NOT_exist";
@@ -55,27 +68,25 @@ public class RuntimeManagementServiceCDITest {
         expectedException.expect(RuntimeException.class);
         expectedException.expectMessage(containsString("No server template found for id " + templateId));
 
-        RuntimeManagementServiceCDI testedService = new RuntimeManagementServiceCDI();
         //Tested method
-        testedService.getContainersByServerInstance(templateId, "dummy_container_spec_id");
+        runtimeManagementServiceCDI.getContainersByServerInstance(templateId, "dummy_container_spec_id");
     }
 
     @Test
     public void getContainersByServerInstance_returnsEmptyList_whenInstanceWithIdDoesntExistInTemplate() {
-        final String
-                templateId = "templateId",
-                serverInstanceId = "serverInstanceId";
+        final String templateId = "templateId";
+        final String serverInstanceId = "serverInstanceId";
 
         KieServerTemplateStorage templateStorageMock = mock(KieServerTemplateStorage.class);
         when(templateStorageMock.load(eq(templateId)))
                 .thenReturn(new ServerTemplate(null, null, Collections.emptyList(), Collections.emptyMap(), Collections.emptyList(), Collections.emptyList()));
 
         // Setup tested service
-        RuntimeManagementServiceCDI testedService = new RuntimeManagementServiceCDI();
-        testedService.setTemplateStorage(templateStorageMock);
+        runtimeManagementService.setTemplateStorage(templateStorageMock);
+        specManagementService.setTemplateStorage(templateStorageMock);
 
         // Tested method
-        Collection<Container> containers = testedService.getContainersByServerInstance(templateId, serverInstanceId);
+        Collection<Container> containers = runtimeManagementServiceCDI.getContainersByServerInstance(templateId, serverInstanceId);
         assertThat(containers)
                 .as("List of containers should be empty, when Server template doesn't contain server instance id")
                 .isEmpty();
@@ -83,10 +94,9 @@ public class RuntimeManagementServiceCDITest {
 
     @Test
     public void getContainersByServerInstance_returnsListOfContainers_whenInstanceWithIdExists() {
-        final String
-                templateId = "templateId",
-                templateName = "templateName",
-                serverInstanceId = "serverInstanceId";
+        final String templateId = "templateId";
+        final String templateName = "templateName";
+        final String serverInstanceId = "serverInstanceId";
         ServerInstanceKey serverInstanceKey = new ServerInstanceKey(templateId, templateName, serverInstanceId, "dummyUrl");
         ServerTemplate serverTemplate = new ServerTemplate(
                 templateId,
@@ -105,11 +115,12 @@ public class RuntimeManagementServiceCDITest {
         when(instanceMangerMock.getContainers(eq(serverInstanceKey)))
                 .thenReturn(containersInServerInstance);
 
-        RuntimeManagementServiceCDI testedService = new RuntimeManagementServiceCDI();
-        testedService.setTemplateStorage(templateStorageMock);
-        testedService.setKieServerInstanceManager(instanceMangerMock);
+        runtimeManagementService.setTemplateStorage(templateStorageMock);
+        runtimeManagementService.setKieServerInstanceManager(instanceMangerMock);
+        specManagementService.setTemplateStorage(templateStorageMock);
+        specManagementService.setKieServerInstanceManager(instanceMangerMock);
 
-        Collection<Container> containers = testedService.getContainersByServerInstance(templateId, serverInstanceId);
+        Collection<Container> containers = runtimeManagementServiceCDI.getContainersByServerInstance(templateId, serverInstanceId);
 
         assertThat(containers)
                 .as("Should return list of containers from server instance id")
@@ -123,8 +134,7 @@ public class RuntimeManagementServiceCDITest {
         expectedException.expect(RuntimeException.class);
         expectedException.expectMessage(containsString("No server template found for id " + templateId));
 
-        RuntimeManagementServiceCDI testedService = new RuntimeManagementServiceCDI();
-        testedService.getContainersByContainerSpec(templateId, "dummy_container_spec_id");
+        runtimeManagementServiceCDI.getContainersByContainerSpec(templateId, "dummy_container_spec_id");
     }
 
     @Test
@@ -159,7 +169,8 @@ public class RuntimeManagementServiceCDITest {
                 templateName,
                 Collections.emptyList(),
                 Collections.emptyMap(),
-                Collections.singletonList(containerSpec)
+                Collections.singletonList(containerSpec),
+                Collections.singletonList(serverInstanceKey)
         );
 
         final List<Container> containersInServerInstance = Collections.singletonList(container);
@@ -168,16 +179,17 @@ public class RuntimeManagementServiceCDITest {
         KieServerTemplateStorage templateStorageMock = createMockStorageWithOneTemplate(serverTemplate);
 
         KieServerInstanceManager instanceMangerMock = mock(KieServerInstanceManager.class);
-        when(instanceMangerMock.getContainers(eq(serverTemplate), eq(containerSpec)))
+        when(instanceMangerMock.getContainers(serverInstanceKey))
                 .thenReturn(containersInServerInstance);
 
         // Setup tested object
-        RuntimeManagementServiceCDI testedService = new RuntimeManagementServiceCDI();
-        testedService.setTemplateStorage(templateStorageMock);
-        testedService.setKieServerInstanceManager(instanceMangerMock);
+        runtimeManagementService.setTemplateStorage(templateStorageMock);
+        runtimeManagementService.setKieServerInstanceManager(instanceMangerMock);
+        specManagementService.setTemplateStorage(templateStorageMock);
+        specManagementService.setKieServerInstanceManager(instanceMangerMock);
 
         //Tested method
-        ContainerSpecData containerSpecData = testedService.getContainersByContainerSpec(templateId, containerSpecId);
+        ContainerSpecData containerSpecData = runtimeManagementServiceCDI.getContainersByContainerSpec(templateId, containerSpecId);
 
         assertThat(containerSpecData.getContainers()).contains(container);
         assertThat(containerSpecData.getContainerSpec()).isEqualTo(containerSpec);

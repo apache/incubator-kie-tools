@@ -35,6 +35,7 @@ import org.kie.server.controller.api.model.spec.ContainerSpec;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.server.controller.api.service.NotificationService;
 import org.kie.server.controller.impl.KieServerInstanceManager;
+import org.kie.workbench.common.screens.server.management.backend.utils.EmbeddedController;
 import org.kie.workbench.common.screens.server.management.model.ContainerRuntimeOperation;
 import org.kie.workbench.common.screens.server.management.model.ContainerRuntimeState;
 import org.kie.workbench.common.screens.server.management.model.ContainerUpdateEvent;
@@ -48,6 +49,7 @@ import static org.kie.workbench.common.screens.server.management.model.Container
 import static org.kie.workbench.common.screens.server.management.model.ContainerRuntimeOperation.UPGRADE_CONTAINER;
 
 @ApplicationScoped
+@EmbeddedController
 public class AsyncKieServerInstanceManager extends KieServerInstanceManager {
 
     private ExecutorService executor;
@@ -58,13 +60,10 @@ public class AsyncKieServerInstanceManager extends KieServerInstanceManager {
         this.executor = executor;
     }
 
-    public AsyncKieServerInstanceManager() {
-    }
-
     @Inject
-    public AsyncKieServerInstanceManager(NotificationService notificationService,
-                                         Event<ContainerUpdateEvent> containerUpdateEvent,
-                                         @Managed ExecutorService executorService) {
+    public AsyncKieServerInstanceManager(final @EmbeddedController NotificationService notificationService,
+                                         final Event<ContainerUpdateEvent> containerUpdateEvent,
+                                         final @Managed ExecutorService executorService) {
         this.notificationService = notificationService;
         this.containerUpdateEvent = containerUpdateEvent;
         this.executor = executorService;

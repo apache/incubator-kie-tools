@@ -31,10 +31,12 @@ import org.kie.server.controller.api.model.runtime.Container;
 import org.kie.server.controller.api.model.spec.ContainerSpec;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.server.controller.api.service.NotificationService;
+import org.kie.workbench.common.screens.server.management.backend.utils.EmbeddedController;
 import org.kie.workbench.common.screens.server.management.model.ContainerSpecData;
 
 @ApplicationScoped
-public class NotificationServiceCDI implements NotificationService {
+@EmbeddedController
+public class EmbeddedNotificationService implements NotificationService {
 
     @Inject
     private Event<ServerTemplateUpdated> serverTemplateUpdatedEvent;
@@ -69,7 +71,6 @@ public class NotificationServiceCDI implements NotificationService {
 
     @Override
     public void notify( final ServerTemplateUpdated serverTemplateUpdated ) {
-
         serverTemplateUpdatedEvent.fire( serverTemplateUpdated );
     }
 

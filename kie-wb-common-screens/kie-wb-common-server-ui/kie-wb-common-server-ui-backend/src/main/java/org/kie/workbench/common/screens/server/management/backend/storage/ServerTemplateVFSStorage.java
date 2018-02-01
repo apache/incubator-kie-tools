@@ -32,6 +32,7 @@ import org.kie.server.controller.api.model.spec.ServerTemplateKey;
 import org.kie.server.controller.api.storage.KieServerTemplateStorage;
 import org.kie.soup.commons.xstream.XStreamUtils;
 import org.kie.workbench.common.screens.server.management.backend.storage.migration.ServerTemplateMigration;
+import org.kie.workbench.common.screens.server.management.backend.utils.EmbeddedController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.io.IOService;
@@ -40,6 +41,7 @@ import org.uberfire.java.nio.file.NotDirectoryException;
 import org.uberfire.java.nio.file.Path;
 
 @ApplicationScoped
+@EmbeddedController
 public class ServerTemplateVFSStorage implements KieServerTemplateStorage {
 
     private static final Logger logger = LoggerFactory.getLogger(ServerTemplateVFSStorage.class);
