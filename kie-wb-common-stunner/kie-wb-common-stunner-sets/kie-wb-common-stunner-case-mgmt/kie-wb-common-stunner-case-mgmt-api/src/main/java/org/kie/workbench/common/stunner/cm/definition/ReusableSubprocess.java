@@ -107,19 +107,10 @@ public class ReusableSubprocess extends BaseSubprocess implements DataIOModel {
     }
 
     @Override
-    protected Set<String> makeLabels() {
-        return new HashSet<String>() {{
-            add("all");
-            add("sequence_start");
-            add("sequence_end");
-            add("messageflow_start");
-            add("messageflow_end");
-            add("to_task_event");
-            add("from_task_event");
-            add("fromtoall");
-            add("ActivitiesMorph");
-            add("cm_activity");
-        }};
+    protected void initLabels() {
+        super.initLabels();
+        labels.add("cm_activity");
+        labels.remove("cm_stage");
     }
 
     @Override

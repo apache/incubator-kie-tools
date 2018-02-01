@@ -165,6 +165,10 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
     @DataResource.MimeType("image/svg+xml")
     DataResource subProcessAdHoc();
 
+    @ClientBundle.Source("images/icons/subprocess/subprocess-event.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource subProcessEvent();
+
     // ******* Connectors *******
 
     @ClientBundle.Source("images/icons/connectors/sequence.svg")

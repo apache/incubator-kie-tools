@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.definition;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.validation.Valid;
@@ -189,19 +190,21 @@ public abstract class BaseTask implements BPMNViewDefinition {
                                          backgroundSet.hashCode(),
                                          fontSet.hashCode(),
                                          simulationSet.hashCode(),
-                                         dimensionsSet.hashCode());
+                                         dimensionsSet.hashCode(),
+                                         labels.hashCode());
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof BaseTask) {
             BaseTask other = (BaseTask) o;
-            return general.equals(other.general) &&
-                    taskType.equals(other.taskType) &&
-                    backgroundSet.equals(other.backgroundSet) &&
-                    fontSet.equals(other.fontSet) &&
-                    simulationSet.equals(other.simulationSet) &&
-                    dimensionsSet.equals(other.dimensionsSet);
+            return  Objects.equals(general, other.general) &&
+                    Objects.equals(taskType, other.taskType) &&
+                    Objects.equals(backgroundSet, other.backgroundSet) &&
+                    Objects.equals(fontSet, other.fontSet) &&
+                    Objects.equals(simulationSet, other.simulationSet) &&
+                    Objects.equals(dimensionsSet, other.dimensionsSet) &&
+                    Objects.equals(labels, other.labels);
         }
         return false;
     }

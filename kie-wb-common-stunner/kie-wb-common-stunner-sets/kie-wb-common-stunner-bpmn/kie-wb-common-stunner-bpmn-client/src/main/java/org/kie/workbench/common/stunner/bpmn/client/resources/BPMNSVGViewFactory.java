@@ -35,6 +35,7 @@ public interface BPMNSVGViewFactory {
     String PATH_LANE = "images/shapes/lane.svg";
     String PATH_SUBPROCESS = "images/shapes/subprocess.svg";
     String PATH_SUBPROCESS_ADHOC = "images/shapes/subprocess-adhoc.svg";
+    String PATH_SUBPROCESS_EVENT = "images/shapes/subprocess-event.svg";
     String PATH_RECTANGLE = "images/shapes/rectangle.svg";
 
     @SVGSource(PATH_TASK)
@@ -117,6 +118,9 @@ public interface BPMNSVGViewFactory {
 
     @SVGSource(PATH_SUBPROCESS_ADHOC)
     SVGShapeViewResource embeddedSubProcess();
+
+    @SVGSource(PATH_SUBPROCESS_EVENT)
+    SVGShapeViewResource eventSubProcess();
 
     @SVGSource(PATH_RECTANGLE)
     SVGShapeViewResource rectangle();

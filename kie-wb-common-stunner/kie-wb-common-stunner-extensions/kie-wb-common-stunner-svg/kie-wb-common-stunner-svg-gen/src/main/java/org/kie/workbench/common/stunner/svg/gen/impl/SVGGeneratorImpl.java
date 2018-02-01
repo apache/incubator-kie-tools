@@ -58,6 +58,7 @@ public class SVGGeneratorImpl implements SVGGenerator {
 
     @Override
     public StringBuffer generate(final SVGGeneratorRequest request) throws GeneratorException {
+
         final String name = request.getName();
         final String pkg = request.getPkg();
         final String typeOf = request.getImplementedType();
@@ -73,11 +74,10 @@ public class SVGGeneratorImpl implements SVGGenerator {
             final InputStream cssStream = loadResource(cssPath);
             if (null != cssStream) {
                 try {
-                    styleSheetDefinition[0] = SVGStyleTranslatorHelper.parseStyleSheetDefinition(cssPath,
-                                                                                                 cssStream);
+                    styleSheetDefinition[0] = SVGStyleTranslatorHelper.parseStyleSheetDefinition(cssPath, cssStream);
                     viewFactory.setStyleSheetDefinition(styleSheetDefinition[0]);
                 } catch (Exception e) {
-                    throw new RuntimeException("Error while processing the glocal CSS file [" + cssPath + "]",
+                    throw new RuntimeException("Error while processing the glocal CSS file [" + cssPath + "] ",
                                                e);
                 }
             }

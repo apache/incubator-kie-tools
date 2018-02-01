@@ -127,6 +127,19 @@
       }
     },
     {
+      "id": "eventSubProcess",
+      "name": "Subprocess - Event",
+      "shape": {
+        "path": "shapes/",
+        "file": "subprocess-event.svg"
+      },
+      "icon": {
+        "path": "icons/subprocess/",
+        "file": "subprocess-event.svg",
+        "refs": "subProcessEvent"
+      }
+    },
+    {
       "id": "startNoneEvent",
       "name": "Start Event",
       "shape": {

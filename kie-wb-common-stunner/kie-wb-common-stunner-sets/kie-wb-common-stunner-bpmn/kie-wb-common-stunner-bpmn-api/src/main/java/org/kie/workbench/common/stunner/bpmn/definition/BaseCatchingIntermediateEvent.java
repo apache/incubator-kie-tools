@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.definition;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.validation.Valid;
@@ -154,17 +155,19 @@ public abstract class BaseCatchingIntermediateEvent
         return HashUtil.combineHashCodes(general.hashCode(),
                                          backgroundSet.hashCode(),
                                          fontSet.hashCode(),
-                                         dimensionsSet.hashCode());
+                                         dimensionsSet.hashCode(),
+                                         labels.hashCode());
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof BaseCatchingIntermediateEvent) {
             BaseCatchingIntermediateEvent other = (BaseCatchingIntermediateEvent) o;
-            return general.equals(other.general) &&
-                    backgroundSet.equals(other.backgroundSet) &&
-                    fontSet.equals(other.fontSet) &&
-                    dimensionsSet.equals(other.dimensionsSet);
+            return  Objects.equals(general, other.general) &&
+                    Objects.equals(backgroundSet, other.backgroundSet) &&
+                    Objects.equals(fontSet, other.fontSet) &&
+                    Objects.equals(dimensionsSet, other.dimensionsSet) &&
+                    Objects.equals(labels, other.labels);
         }
         return false;
     }

@@ -88,8 +88,8 @@ public class CancellingMessageEventExecutionSet implements BPMNPropertySet {
     public boolean equals(Object o) {
         if (o instanceof CancellingMessageEventExecutionSet) {
             CancellingMessageEventExecutionSet other = (CancellingMessageEventExecutionSet) o;
-            return cancelActivity.equals(other.cancelActivity) &&
-                    messageRef.equals(other.messageRef);
+            return (other.cancelActivity == null ? cancelActivity == null : other.cancelActivity.equals(cancelActivity)) &&
+                    (other.messageRef == null ? messageRef == null : other.messageRef.equals(messageRef));
         }
         return false;
     }

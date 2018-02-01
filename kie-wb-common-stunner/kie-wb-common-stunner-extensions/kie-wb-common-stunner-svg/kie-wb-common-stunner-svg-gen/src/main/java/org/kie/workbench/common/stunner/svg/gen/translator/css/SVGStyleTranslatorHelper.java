@@ -42,11 +42,6 @@ import org.w3c.dom.css.CSSStyleDeclaration;
 
 public class SVGStyleTranslatorHelper {
 
-    private static final String PATTERN_CLASSNAME_SEPARATOR = "\\s+";
-    private static final String TRANSFORM_SCALE = "scale";
-    private static final String TRANSFORM_TRANSLATE = "translate";
-    private static final Pattern TRANSFORM_PATTERN = Pattern.compile("(.*)\\((.*),(.*)\\)");
-
     public static final String ID = "id";
     public static final String OPACITY = "opacity";
     public static final String FILL = "fill";
@@ -55,15 +50,19 @@ public class SVGStyleTranslatorHelper {
     public static final String STROKE_OPACITY = "stroke-opacity";
     public static final String STROKE_WIDTH = "stroke-width";
     public static final String FONT_FAMILY = "font-family";
+    public static final String STROKE_DASHARRAY = "stroke-dasharray";
     public static final String FONT_SIZE = "font-size";
     public static final String STYLE = "style";
     public static final String CSS_CLASS = "class";
     public static final String TRANSFORM = "transform";
     public static final String ATTR_VALUE_NONE = "none";
-
     public static final String[] ATTR_NAMES = new String[]{
-            OPACITY, FILL, FILL_OPACITY, STROKE, STROKE_OPACITY, STROKE_WIDTH, FONT_FAMILY, FONT_SIZE
+            OPACITY, FILL, FILL_OPACITY, STROKE, STROKE_OPACITY, STROKE_WIDTH, STROKE_DASHARRAY, FONT_FAMILY, FONT_SIZE
     };
+    private static final String PATTERN_CLASSNAME_SEPARATOR = "\\s+";
+    private static final String TRANSFORM_SCALE = "scale";
+    private static final String TRANSFORM_TRANSLATE = "translate";
+    private static final Pattern TRANSFORM_PATTERN = Pattern.compile("(.*)\\((.*),(.*)\\)");
 
     public static TransformDefinition parseTransformDefinition(final Element element) throws TranslatorException {
         final String transformRaw = element.getAttribute(TRANSFORM);
@@ -243,6 +242,9 @@ public class SVGStyleTranslatorHelper {
                     break;
                 case STROKE_WIDTH:
                     builder.setStrokeWidth(SVGAttributeParserUtils.toPixelValue(value));
+                    break;
+                case STROKE_DASHARRAY:
+                    builder.setStrokeDashArray(value);
                     break;
                 case FONT_FAMILY:
                     builder.setFontFamily(value.trim());

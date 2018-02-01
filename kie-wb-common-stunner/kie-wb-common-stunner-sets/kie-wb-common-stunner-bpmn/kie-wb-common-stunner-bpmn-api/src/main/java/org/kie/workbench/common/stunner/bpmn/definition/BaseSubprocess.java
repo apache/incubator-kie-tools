@@ -16,6 +16,7 @@
 package org.kie.workbench.common.stunner.bpmn.definition;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.validation.Valid;
@@ -58,10 +59,10 @@ public abstract class BaseSubprocess implements BPMNViewDefinition {
     protected RectangleDimensionsSet dimensionsSet;
 
     @Labels
-    protected final Set<String> labels = new HashSet<>();
+    protected final Set<String> labels = new HashSet<String>();
 
     protected BaseSubprocess() {
-        this.labels.addAll(makeLabels());
+        initLabels();
     }
 
     public BaseSubprocess(final @MapsTo("general") BPMNGeneralSet general,
@@ -74,22 +75,20 @@ public abstract class BaseSubprocess implements BPMNViewDefinition {
         this.fontSet = fontSet;
         this.dimensionsSet = dimensionsSet;
         this.simulationSet = simulationSet;
-        this.labels.addAll(makeLabels());
+        this.initLabels();
     }
 
-    protected Set<String> makeLabels() {
-        return new HashSet<String>() {{
-            add("all");
-            add("sequence_start");
-            add("sequence_end");
-            add("messageflow_start");
-            add("messageflow_end");
-            add("to_task_event");
-            add("from_task_event");
-            add("fromtoall");
-            add("ActivitiesMorph");
-            add("cm_stage");
-        }};
+    protected void initLabels() {
+        labels.add("all");
+        labels.add("sequence_start");
+        labels.add("sequence_end");
+        labels.add("messageflow_start");
+        labels.add("messageflow_end");
+        labels.add("to_task_event");
+        labels.add("from_task_event");
+        labels.add("fromtoall");
+        labels.add("ActivitiesMorph");
+        labels.add("cm_stage");
     }
 
     public String getCategory() {
@@ -146,18 +145,20 @@ public abstract class BaseSubprocess implements BPMNViewDefinition {
                                          backgroundSet.hashCode(),
                                          fontSet.hashCode(),
                                          simulationSet.hashCode(),
-                                         dimensionsSet.hashCode());
+                                         dimensionsSet.hashCode(),
+                                         labels.hashCode());
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof BaseSubprocess) {
             BaseSubprocess other = (BaseSubprocess) o;
-            return general.equals(other.general) &&
-                    backgroundSet.equals(other.backgroundSet) &&
-                    fontSet.equals(other.fontSet) &&
-                    simulationSet.equals(other.simulationSet) &&
-                    dimensionsSet.equals(other.dimensionsSet);
+            return  Objects.equals(general, other.general) &&
+                    Objects.equals(backgroundSet, other.backgroundSet) &&
+                    Objects.equals(fontSet, other.fontSet) &&
+                    Objects.equals(simulationSet, other.simulationSet) &&
+                    Objects.equals(dimensionsSet, other.dimensionsSet) &&
+                    Objects.equals(labels, other.labels);
         }
         return false;
     }

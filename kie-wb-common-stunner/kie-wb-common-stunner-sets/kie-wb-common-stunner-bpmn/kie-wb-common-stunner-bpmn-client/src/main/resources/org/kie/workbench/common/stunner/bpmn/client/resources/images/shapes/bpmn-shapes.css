@@ -459,6 +459,10 @@
     opacity: 0;
 }
 
+.subProcess_group_event {
+    opacity: 0;
+}
+
 .subProcess_reusable_icon {
     stroke: #000000;
     fill: #000000;
@@ -468,6 +472,22 @@
     fill:none;
     stroke: black;
     stroke-width: 10px;
+}
+
+.subProcess_event {
+    stroke-dasharray: 5, 5;
+    opacity: 1;
+    fill: #f2f2f2;
+    stroke: #000000;
+}
+
+.subProcess_event_icon {
+    display: none;
+}
+
+.subProcess_reusable_icon {
+    stroke: #000000;
+    fill: #000000;
 }
 
 .subProcess_group_adHoc {
@@ -493,6 +513,14 @@
 
 #adHocSubProcess .subProcess_group_adHoc {
     opacity: 1;
+}
+
+#eventSubProcess .subProcess_group_event {
+    opacity: 1;
+}
+
+#eventSubProcess .subProcess {
+    fill: #f2f2f2;
 }
 
 #embeddedSubProcess .subProcess {

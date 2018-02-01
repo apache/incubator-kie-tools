@@ -69,7 +69,7 @@ public class MessageEventExecutionSet implements BPMNPropertySet {
     public boolean equals(Object o) {
         if (o instanceof MessageEventExecutionSet) {
             MessageEventExecutionSet other = (MessageEventExecutionSet) o;
-            return messageRef.equals(other.messageRef);
+            return (other.messageRef == null ? messageRef == null : other.messageRef.equals(messageRef));
         }
         return false;
     }

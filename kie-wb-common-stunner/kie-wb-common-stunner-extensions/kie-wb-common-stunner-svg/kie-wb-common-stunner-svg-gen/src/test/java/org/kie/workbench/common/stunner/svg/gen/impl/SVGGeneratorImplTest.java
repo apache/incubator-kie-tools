@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.svg.gen.impl;
 
+import javax.annotation.processing.Messager;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,6 +37,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -88,7 +91,8 @@ public class SVGGeneratorImplTest {
         final SVGGeneratorRequest request = new SVGGeneratorRequest(SVG_NAME,
                                                                     SVG_PKG,
                                                                     SVG_FQCN,
-                                                                    "");
+                                                                    "",
+                                                                    mock(Messager.class));
         request.getViewSources().put(SVG_CANCEL_NAME,
                                      SVG_CANCEL_PATH);
         tested.generate(request);

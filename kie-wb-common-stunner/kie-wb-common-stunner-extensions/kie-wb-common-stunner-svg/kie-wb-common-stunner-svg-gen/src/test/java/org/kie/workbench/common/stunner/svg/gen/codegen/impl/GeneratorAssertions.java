@@ -80,6 +80,11 @@ public class GeneratorAssertions {
         assertTrue(raw.contains("setListening(" + formatBoolean(listening) + ")"));
     }
 
+    public static void assertStrokeDashArray(final String raw,
+                                             final String value) {
+        assertTrue(raw.contains("setDashArray(" + value + ")"));
+    }
+
     public static String formatDouble(final double value) {
         return SVGGeneratorFormatUtils.format(value);
     }

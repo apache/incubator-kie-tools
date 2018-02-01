@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
+import java.util.Objects;
+
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -112,7 +114,9 @@ public class IntermediateMessageEventThrowing extends BaseThrowingIntermediateEv
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
-                                         executionSet.hashCode());
+                                         executionSet.hashCode(),
+                                         dataIOSet.hashCode(),
+                                         labels.hashCode());
     }
 
     @Override
@@ -120,7 +124,9 @@ public class IntermediateMessageEventThrowing extends BaseThrowingIntermediateEv
         if (o instanceof IntermediateMessageEventThrowing) {
             IntermediateMessageEventThrowing other = (IntermediateMessageEventThrowing) o;
             return super.equals(other) &&
-                    executionSet.equals(other.executionSet);
+                    Objects.equals(executionSet, other.executionSet) &&
+                    Objects.equals(dataIOSet, other.dataIOSet) &&
+                    Objects.equals(labels, other.labels);
         }
         return false;
     }

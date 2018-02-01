@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.EndMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
@@ -360,6 +361,12 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
                 embeddedSubprocessPropertiesMap);
             embeddedSubprocessPropertiesMap.put(ProcessVariables.class,
                                                 "vardefs");
+
+            Map<Class<?>, String> eventSubprocessPropertiesMap = new HashMap<Class<?>, String>();
+            put(EventSubprocess.class,
+                eventSubprocessPropertiesMap);
+            eventSubprocessPropertiesMap.put(ProcessVariables.class,
+                                             "vardefs");
 
             Map<Class<?>, String> exclusiveDatabasedGatewayPropertiesMap = new HashMap<Class<?>, String>();
             put(ExclusiveDatabasedGateway.class,

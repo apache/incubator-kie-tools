@@ -89,8 +89,8 @@ public class InterruptingMessageEventExecutionSet implements BPMNPropertySet {
     public boolean equals(Object o) {
         if (o instanceof InterruptingMessageEventExecutionSet) {
             InterruptingMessageEventExecutionSet other = (InterruptingMessageEventExecutionSet) o;
-            return isInterrupting.equals(other.isInterrupting) &&
-                    messageRef.equals(other.messageRef);
+            return (other.isInterrupting == null ? isInterrupting == null : other.isInterrupting.equals(isInterrupting)) &&
+                    (other.messageRef == null ? messageRef == null : other.messageRef.equals(messageRef));
         }
         return false;
     }

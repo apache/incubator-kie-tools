@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.svg.gen.model.impl;
 
+import java.util.stream.Stream;
+
 import org.kie.workbench.common.stunner.svg.gen.model.StyleDefinition;
 
 public class StyleDefinitionImpl implements StyleDefinition {
@@ -26,6 +28,7 @@ public class StyleDefinitionImpl implements StyleDefinition {
     private String strokeColor;
     private Double strokeAlpha;
     private Double strokeWidth;
+    private Double strokeDashArray[];
     private String fontFamily;
     private Double fontSize;
 
@@ -35,6 +38,7 @@ public class StyleDefinitionImpl implements StyleDefinition {
                                 final String strokeColor,
                                 final Double strokeAlpha,
                                 final Double strokeWidth,
+                                final Double strokeDashArray[],
                                 final String fontFamily,
                                 final Double fontSize) {
         this.alpha = alpha;
@@ -43,6 +47,7 @@ public class StyleDefinitionImpl implements StyleDefinition {
         this.strokeColor = strokeColor;
         this.strokeAlpha = strokeAlpha;
         this.strokeWidth = strokeWidth;
+        this.strokeDashArray = strokeDashArray;
         this.fontFamily = fontFamily;
         this.fontSize = fontSize;
     }
@@ -78,6 +83,11 @@ public class StyleDefinitionImpl implements StyleDefinition {
     }
 
     @Override
+    public Double[] getStrokeDashArray() {
+        return strokeDashArray;
+    }
+
+    @Override
     public String getFontFamily() {
         return fontFamily;
     }
@@ -107,6 +117,9 @@ public class StyleDefinitionImpl implements StyleDefinition {
         if (null != other.getStrokeColor()) {
             strokeColor = other.getStrokeColor();
         }
+        if (null != other.getStrokeDashArray()) {
+            strokeDashArray = other.getStrokeDashArray();
+        }
         if (null != other.getFontFamily()) {
             fontFamily = other.getFontFamily();
         }
@@ -124,6 +137,7 @@ public class StyleDefinitionImpl implements StyleDefinition {
                                        strokeColor,
                                        strokeAlpha,
                                        strokeWidth,
+                                       strokeDashArray,
                                        fontFamily,
                                        fontSize);
     }
@@ -136,6 +150,7 @@ public class StyleDefinitionImpl implements StyleDefinition {
         private String strokeColor;
         private Double strokeAlpha;
         private Double strokeWidth;
+        private Double[] strokeDashArray;
         private String fontFamily;
         private Double fontSize;
 
@@ -179,6 +194,12 @@ public class StyleDefinitionImpl implements StyleDefinition {
             return this;
         }
 
+        public Builder setStrokeDashArray(final String strokeDashArray) {
+            String[] tempStrokeDashArray = strokeDashArray.split(",");
+            this.strokeDashArray = Stream.of(tempStrokeDashArray).map(Double::valueOf).toArray(Double[]::new);
+            return this;
+        }
+
         public StyleDefinitionImpl build() {
             return new StyleDefinitionImpl(alpha,
                                            fillColor,
@@ -186,8 +207,10 @@ public class StyleDefinitionImpl implements StyleDefinition {
                                            strokeColor,
                                            strokeAlpha,
                                            strokeWidth,
+                                           strokeDashArray,
                                            fontFamily,
-                                           fontSize);
+                                           fontSize
+            );
         }
     }
 }

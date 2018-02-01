@@ -19,6 +19,8 @@ package org.kie.workbench.common.stunner.svg.gen;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.annotation.processing.Messager;
+
 public class SVGGeneratorRequest {
 
     private final String name;
@@ -26,15 +28,18 @@ public class SVGGeneratorRequest {
     private final String typeOf;
     private final String cssPath;
     private final Map<String, String> viewSources = new LinkedHashMap<>();
+    private final Messager messager;
 
     public SVGGeneratorRequest(final String name,
                                final String pkg,
                                final String typeOf,
-                               final String cssPath) {
+                               final String cssPath,
+                               final Messager messager) {
         this.name = name;
         this.pkg = pkg;
         this.typeOf = typeOf;
         this.cssPath = cssPath;
+        this.messager = messager;
     }
 
     public String getName() {
@@ -61,5 +66,9 @@ public class SVGGeneratorRequest {
 
     public Map<String, String> getViewSources() {
         return viewSources;
+    }
+
+    public Messager getMessager() {
+        return messager;
     }
 }

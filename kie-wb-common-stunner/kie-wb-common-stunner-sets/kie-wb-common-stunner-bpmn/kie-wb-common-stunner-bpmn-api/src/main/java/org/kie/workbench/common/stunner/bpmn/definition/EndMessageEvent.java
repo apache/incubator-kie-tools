@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
+import java.util.Objects;
+
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -111,7 +113,8 @@ public class EndMessageEvent extends BaseEndEvent {
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
                                          executionSet.hashCode(),
-                                         dataIOSet.hashCode());
+                                         dataIOSet.hashCode(),
+                                         labels.hashCode());
     }
 
     @Override
@@ -119,8 +122,9 @@ public class EndMessageEvent extends BaseEndEvent {
         if (o instanceof EndMessageEvent) {
             EndMessageEvent other = (EndMessageEvent) o;
             return super.equals(other) &&
-                    executionSet.equals(other.executionSet) &&
-                    dataIOSet.equals(other.dataIOSet);
+                    Objects.equals(executionSet, other.executionSet) &&
+                    Objects.equals(dataIOSet, other.dataIOSet) &&
+                    Objects.equals(labels, other.labels);
         }
         return false;
     }

@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGGlyphFactor
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
@@ -34,18 +35,28 @@ import org.kie.workbench.common.stunner.svg.client.shape.factory.SVGShapeViewRes
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
 public class SubprocessShapeDef extends BaseDimensionedShapeDef
-        implements BPMNSvgShapeDef<BaseSubprocess>{
+        implements BPMNSvgShapeDef<BaseSubprocess> {
 
     public static final SVGShapeViewResources<BaseSubprocess, BPMNSVGViewFactory> VIEW_RESOURCES =
             new SVGShapeViewResources<BaseSubprocess, BPMNSVGViewFactory>()
                     .put(ReusableSubprocess.class, BPMNSVGViewFactory::reusableSubProcess)
-                    .put(EmbeddedSubprocess.class, BPMNSVGViewFactory::embeddedSubProcess);
+                    .put(EmbeddedSubprocess.class, BPMNSVGViewFactory::embeddedSubProcess)
+                    .put(EventSubprocess.class, BPMNSVGViewFactory::eventSubProcess);
 
     public static final Map<Class<? extends BaseSubprocess>, SvgDataUriGlyph> GLYPHS =
             new HashMap<Class<? extends BaseSubprocess>, SvgDataUriGlyph>() {{
                 put(ReusableSubprocess.class, BPMNSVGGlyphFactory.REUSABLE_SUBPROCESS_GLYPH);
                 put(EmbeddedSubprocess.class, BPMNSVGGlyphFactory.ADHOC_SUBPROCESS_GLYPH);
+                put(EventSubprocess.class, BPMNSVGGlyphFactory.EVENT_SUBPROCESS_GLYPH);
             }};
+
+    private static HasTitle.Position getSubprocessTextPosition(final BaseSubprocess bean) {
+        if ((bean instanceof EmbeddedSubprocess) || (bean instanceof EventSubprocess)) {
+            return HasTitle.Position.BOTTOM;
+        } else {
+            return HasTitle.Position.CENTER;
+        }
+    }
 
     @Override
     public FontHandler<BaseSubprocess, SVGShapeView> newFontHandler() {
@@ -77,9 +88,5 @@ public class SubprocessShapeDef extends BaseDimensionedShapeDef
     @Override
     public Glyph getGlyph(final Class<? extends BaseSubprocess> type) {
         return GLYPHS.get(type);
-    }
-
-    private static HasTitle.Position getSubprocessTextPosition(final BaseSubprocess bean) {
-        return bean instanceof EmbeddedSubprocess ? HasTitle.Position.BOTTOM : HasTitle.Position.CENTER;
     }
 }

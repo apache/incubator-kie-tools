@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.definition;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.validation.Valid;
@@ -166,18 +167,20 @@ public abstract class BaseStartEvent implements BPMNViewDefinition,
                                          backgroundSet.hashCode(),
                                          fontSet.hashCode(),
                                          dimensionsSet.hashCode(),
-                                         simulationSet.hashCode());
+                                         simulationSet.hashCode(),
+                                         labels.hashCode());
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof BaseStartEvent) {
             BaseStartEvent other = (BaseStartEvent) o;
-            return general.equals(other.general) &&
-                    backgroundSet.equals(other.backgroundSet) &&
-                    fontSet.equals(other.fontSet) &&
-                    dimensionsSet.equals(other.dimensionsSet) &&
-                    simulationSet.equals(other.simulationSet);
+            return  Objects.equals(general, other.general) &&
+                    Objects.equals(backgroundSet, other.backgroundSet) &&
+                    Objects.equals(fontSet, other.fontSet) &&
+                    Objects.equals(dimensionsSet, other.dimensionsSet) &&
+                    Objects.equals(simulationSet, other.simulationSet) &&
+                    Objects.equals(labels, other.labels);
         }
         return false;
     }

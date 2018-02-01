@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
+import java.util.Objects;
+
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -41,7 +43,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class, builder = IntermediateMessageEventCatching.IntermediateSignalEventCatchingBuilder.class)
+@Definition(graphFactory = NodeFactory.class, builder = IntermediateMessageEventCatching.IntermediateMessageEventCatchingBuilder.class)
 @Morph(base = BaseCatchingIntermediateEvent.class)
 @FormDefinition(
         startElement = "general",
@@ -112,7 +114,8 @@ public class IntermediateMessageEventCatching extends BaseCatchingIntermediateEv
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
                                          executionSet.hashCode(),
-                                         dataIOSet.hashCode());
+                                         dataIOSet.hashCode(),
+                                         labels.hashCode());
     }
 
     @Override
@@ -120,14 +123,15 @@ public class IntermediateMessageEventCatching extends BaseCatchingIntermediateEv
         if (o instanceof IntermediateMessageEventCatching) {
             IntermediateMessageEventCatching other = (IntermediateMessageEventCatching) o;
             return super.equals(other) &&
-                    executionSet.equals(other.executionSet) &&
-                    dataIOSet.equals(other.dataIOSet);
+                    Objects.equals(executionSet, other.executionSet) &&
+                    Objects.equals(dataIOSet, other.dataIOSet) &&
+                    Objects.equals(labels, other.labels);
         }
         return false;
     }
 
     @NonPortable
-    public static class IntermediateSignalEventCatchingBuilder implements Builder<IntermediateMessageEventCatching> {
+    public static class IntermediateMessageEventCatchingBuilder implements Builder<IntermediateMessageEventCatching> {
 
         @Override
         public IntermediateMessageEventCatching build() {

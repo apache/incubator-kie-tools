@@ -170,4 +170,10 @@ public interface BPMNSVGGlyphFactory {
                     .addUri("subProcessAdHoc",
                             BPMNImageResources.INSTANCE.subProcessAdHoc().getSafeUri())
                     .build("subProcessAdHoc");
+
+    SvgDataUriGlyph EVENT_SUBPROCESS_GLYPH =
+            SvgDataUriGlyph.Builder
+                    .create()
+                    .setUri(BPMNImageResources.INSTANCE.subProcessEvent().getSafeUri())
+                    .build("subProcessEvent");
 }

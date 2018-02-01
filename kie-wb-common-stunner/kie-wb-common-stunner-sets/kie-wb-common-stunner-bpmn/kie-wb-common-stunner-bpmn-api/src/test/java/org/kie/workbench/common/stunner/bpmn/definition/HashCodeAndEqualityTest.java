@@ -17,9 +17,21 @@
 package org.kie.workbench.common.stunner.bpmn.definition;
 
 import org.junit.Test;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.CancelActivity;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.IsInterrupting;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.CancellingMessageEventExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.InterruptingMessageEventExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageEventExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageRef;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.ScopedSignalEventExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.SignalRef;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.SignalScope;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 public class HashCodeAndEqualityTest {
@@ -42,7 +54,7 @@ public class HashCodeAndEqualityTest {
         AdHocSubprocess a = builder.build();
         builder = new AdHocSubprocess.AdHocSubprocessBuilder();
         AdHocSubprocess b = builder.build();
-        assertTrue(a.hashCode() == b.hashCode());
+        assertEquals(a.hashCode(), b.hashCode());
     }
 
     @Test
@@ -63,7 +75,7 @@ public class HashCodeAndEqualityTest {
         BPMNDiagramImpl a = builder.build();
         builder = new BPMNDiagramImpl.BPMNDiagramBuilder();
         BPMNDiagramImpl b = builder.build();
-        assertTrue(a.hashCode() == b.hashCode());
+        assertEquals(a.hashCode(), b.hashCode());
     }
 
     @Test
@@ -84,7 +96,7 @@ public class HashCodeAndEqualityTest {
         BusinessRuleTask a = builder.build();
         builder = new BusinessRuleTask.BusinessRuleTaskBuilder();
         BusinessRuleTask b = builder.build();
-        assertTrue(a.hashCode() == b.hashCode());
+        assertEquals(a.hashCode(), b.hashCode());
     }
 
     @Test
@@ -105,7 +117,7 @@ public class HashCodeAndEqualityTest {
         EndNoneEvent a = builder.build();
         builder = new EndNoneEvent.EndNoneEventBuilder();
         EndNoneEvent b = builder.build();
-        assertTrue(a.hashCode() == b.hashCode());
+        assertEquals(a.hashCode(), b.hashCode());
     }
 
     @Test
@@ -126,7 +138,146 @@ public class HashCodeAndEqualityTest {
         EndTerminateEvent a = builder.build();
         builder = new EndTerminateEvent.EndTerminateEventBuilder();
         EndTerminateEvent b = builder.build();
-        assertTrue(a.hashCode() == b.hashCode());
+        assertEquals(a.hashCode(), b.hashCode());
+    }
+
+
+    @Test
+    public void testEndSignalEventEquals() {
+        final String SIGNAL_REF = "signal ref";
+        final String SIGNAL_SCOPE = "signal scope";
+        final ScopedSignalEventExecutionSet A_EXECUTION_SET = new ScopedSignalEventExecutionSet(new SignalRef(SIGNAL_REF),new SignalScope(SIGNAL_SCOPE));
+        final ScopedSignalEventExecutionSet B_EXECUTION_SET = new ScopedSignalEventExecutionSet(new SignalRef(SIGNAL_REF),new SignalScope(SIGNAL_SCOPE));
+        final ScopedSignalEventExecutionSet C_EXECUTION_SET = new ScopedSignalEventExecutionSet(new SignalRef("Other value"),new SignalScope(SIGNAL_SCOPE));
+        final ScopedSignalEventExecutionSet D_EXECUTION_SET = new ScopedSignalEventExecutionSet(new SignalRef(SIGNAL_REF),new SignalScope(SIGNAL_SCOPE));
+
+        final String ASSIGNMENT_INFO = "some value";
+        final DataIOSet A_DATA_SET = new DataIOSet(new AssignmentsInfo(ASSIGNMENT_INFO));
+        final DataIOSet B_DATA_SET = new DataIOSet(new AssignmentsInfo(ASSIGNMENT_INFO));
+        final DataIOSet C_DATA_SET = new DataIOSet(new AssignmentsInfo(ASSIGNMENT_INFO));
+        final DataIOSet D_DATA_SET = new DataIOSet(new AssignmentsInfo("Other value"));
+
+        EndSignalEvent.EndSignalEventBuilder builder = new EndSignalEvent.EndSignalEventBuilder();
+        EndSignalEvent a = builder.build();
+        a.setExecutionSet(A_EXECUTION_SET);
+        a.setDataIOSet(A_DATA_SET);
+
+        builder = new EndSignalEvent.EndSignalEventBuilder();
+        EndSignalEvent b = builder.build();
+        b.setExecutionSet(B_EXECUTION_SET);
+        b.setDataIOSet(B_DATA_SET);
+
+        builder = new EndSignalEvent.EndSignalEventBuilder();
+        EndSignalEvent c = builder.build();
+        c.setExecutionSet(C_EXECUTION_SET);
+        c.setDataIOSet(C_DATA_SET);
+
+        builder = new EndSignalEvent.EndSignalEventBuilder();
+        EndSignalEvent d = builder.build();
+        d.setExecutionSet(D_EXECUTION_SET);
+        d.setDataIOSet(D_DATA_SET);
+
+        assertEquals(a, a);
+        assertEquals(a, b);
+        assertNotEquals(a, c);
+        assertNotEquals(a, d);
+        assertNotEquals(a, 19);
+        assertNotEquals(a,null);
+
+        a.setExecutionSet(null);
+        assertNotEquals(a, b);
+        assertNotEquals(b, a);
+
+        a.setExecutionSet(A_EXECUTION_SET);
+        assertEquals(a, b);
+
+        a.setDataIOSet(null);
+        assertNotEquals(a, b);
+        assertNotEquals(b, a);
+
+        EndMessageEvent.EndMessageEventBuilder builderMessage = new EndMessageEvent.EndMessageEventBuilder();
+        EndMessageEvent e = builderMessage.build();
+        assertNotEquals(a, e);
+    }
+
+
+    @Test
+    public void testEndSignalEventHashCode() {
+        EndSignalEvent.EndSignalEventBuilder builder = new EndSignalEvent.EndSignalEventBuilder();
+        EndSignalEvent a = builder.build();
+        builder = new EndSignalEvent.EndSignalEventBuilder();
+        EndSignalEvent b = builder.build();
+        assertEquals(a.hashCode(), b.hashCode());
+    }
+
+    @Test
+    public void testEndMessageEventEquals() {
+        final String MESSAGE_REF = "message ref";
+        final MessageEventExecutionSet A_EXECUTION_SET = new MessageEventExecutionSet(new MessageRef(MESSAGE_REF));
+        final MessageEventExecutionSet B_EXECUTION_SET = new MessageEventExecutionSet(new MessageRef(MESSAGE_REF));
+        final MessageEventExecutionSet C_EXECUTION_SET = new MessageEventExecutionSet(new MessageRef("Other value"));
+        final MessageEventExecutionSet D_EXECUTION_SET = new MessageEventExecutionSet(new MessageRef(MESSAGE_REF));
+
+        final String ASSIGNMENT_INFO = "some value";
+        final DataIOSet A_DATA_SET = new DataIOSet(new AssignmentsInfo(ASSIGNMENT_INFO));
+        final DataIOSet B_DATA_SET = new DataIOSet(new AssignmentsInfo(ASSIGNMENT_INFO));
+        final DataIOSet C_DATA_SET = new DataIOSet(new AssignmentsInfo(ASSIGNMENT_INFO));
+        final DataIOSet D_DATA_SET = new DataIOSet(new AssignmentsInfo("Other value"));
+
+        EndMessageEvent.EndMessageEventBuilder builder = new EndMessageEvent.EndMessageEventBuilder();
+        EndMessageEvent a = builder.build();
+        a.setExecutionSet(A_EXECUTION_SET);
+        a.setDataIOSet(A_DATA_SET);
+
+        builder = new EndMessageEvent.EndMessageEventBuilder();
+        EndMessageEvent b = builder.build();
+        b.setExecutionSet(B_EXECUTION_SET);
+        b.setDataIOSet(B_DATA_SET);
+
+        builder = new EndMessageEvent.EndMessageEventBuilder();
+        EndMessageEvent c = builder.build();
+        c.setExecutionSet(C_EXECUTION_SET);
+        c.setDataIOSet(C_DATA_SET);
+
+        builder = new EndMessageEvent.EndMessageEventBuilder();
+        EndMessageEvent d = builder.build();
+        d.setExecutionSet(D_EXECUTION_SET);
+        d.setDataIOSet(D_DATA_SET);
+
+        assertEquals(a, a);
+        assertEquals(a, b);
+        assertNotEquals(a,c);
+        assertNotEquals(a,d);
+        assertNotEquals(a,19);
+        assertNotEquals(a,null);
+
+        a.setExecutionSet(null);
+        assertNotEquals(a, b);
+        assertNotEquals(b, a);
+
+        a.setExecutionSet(A_EXECUTION_SET);
+        assertEquals(a, b);
+        assertNotEquals(a, c);
+        assertNotEquals(a, d);
+
+        a.setDataIOSet(null);
+        assertNotEquals(a, b);
+        assertNotEquals(b, a);
+        assertNotEquals(a, c);
+        assertNotEquals(a, d);
+
+        EndSignalEvent.EndSignalEventBuilder builderSignal = new EndSignalEvent.EndSignalEventBuilder();
+        EndSignalEvent e = builderSignal.build();
+        assertNotEquals(a, e);
+    }
+
+    @Test
+    public void testEndMessageEventHashCode() {
+        EndMessageEvent.EndMessageEventBuilder builder = new EndMessageEvent.EndMessageEventBuilder();
+        EndMessageEvent a = builder.build();
+        builder = new EndMessageEvent.EndMessageEventBuilder();
+        EndMessageEvent b = builder.build();
+        assertEquals(a.hashCode(), b.hashCode());
     }
 
     @Test
@@ -147,7 +298,7 @@ public class HashCodeAndEqualityTest {
         ExclusiveDatabasedGateway a = builder.build();
         builder = new ExclusiveDatabasedGateway.ExclusiveDatabasedGatewayBuilder();
         ExclusiveDatabasedGateway b = builder.build();
-        assertTrue(a.hashCode() == b.hashCode());
+        assertEquals(a.hashCode(), b.hashCode());
     }
 
     @Test
@@ -163,12 +314,157 @@ public class HashCodeAndEqualityTest {
     }
 
     @Test
+    public void IntermediateMessageEventThrowingHashCode() {
+        IntermediateMessageEventThrowing.IntermediateMessageEventThrowingBuilder builder = new IntermediateMessageEventThrowing.IntermediateMessageEventThrowingBuilder();
+        IntermediateMessageEventThrowing a = builder.build();
+        builder = new IntermediateMessageEventThrowing.IntermediateMessageEventThrowingBuilder();
+        IntermediateMessageEventThrowing b = builder.build();
+        assertEquals(a.hashCode(), b.hashCode());
+    }
+
+    @Test
+    public void IntermediateMessageEventThrowingEquals() {
+        final String MESSAGE_REF = "message ref";
+        final MessageEventExecutionSet A_EXECUTION_SET = new MessageEventExecutionSet(new MessageRef(MESSAGE_REF));
+        final MessageEventExecutionSet B_EXECUTION_SET = new MessageEventExecutionSet(new MessageRef(MESSAGE_REF));
+        final MessageEventExecutionSet C_EXECUTION_SET = new MessageEventExecutionSet(new MessageRef("Other value"));
+        final MessageEventExecutionSet D_EXECUTION_SET = new MessageEventExecutionSet(new MessageRef(MESSAGE_REF));
+
+        final String ASSIGNMENT_INFO = "some value";
+        final DataIOSet A_DATA_SET = new DataIOSet(new AssignmentsInfo(ASSIGNMENT_INFO));
+        final DataIOSet B_DATA_SET = new DataIOSet(new AssignmentsInfo(ASSIGNMENT_INFO));
+        final DataIOSet C_DATA_SET = new DataIOSet(new AssignmentsInfo(ASSIGNMENT_INFO));
+        final DataIOSet D_DATA_SET = new DataIOSet(new AssignmentsInfo("Other value"));
+
+        IntermediateMessageEventThrowing.IntermediateMessageEventThrowingBuilder builder = new IntermediateMessageEventThrowing.IntermediateMessageEventThrowingBuilder();
+        IntermediateMessageEventThrowing a = builder.build();
+        a.setExecutionSet(A_EXECUTION_SET);
+        a.setDataIOSet(A_DATA_SET);
+
+        builder = new IntermediateMessageEventThrowing.IntermediateMessageEventThrowingBuilder();
+        IntermediateMessageEventThrowing b = builder.build();
+        b.setExecutionSet(B_EXECUTION_SET);
+        b.setDataIOSet(B_DATA_SET);
+
+        builder = new IntermediateMessageEventThrowing.IntermediateMessageEventThrowingBuilder();
+        IntermediateMessageEventThrowing c = builder.build();
+        c.setExecutionSet(C_EXECUTION_SET);
+        c.setDataIOSet(C_DATA_SET);
+
+        builder = new IntermediateMessageEventThrowing.IntermediateMessageEventThrowingBuilder();
+        IntermediateMessageEventThrowing d = builder.build();
+        d.setExecutionSet(D_EXECUTION_SET);
+        d.setDataIOSet(D_DATA_SET);
+
+        assertEquals(a, a);
+        assertEquals(a, b);
+        assertNotEquals(a, c);
+        assertNotEquals(a, d);
+        assertNotEquals(a, 19);
+        assertNotEquals(a, null);
+
+        a.setExecutionSet(null);
+        assertNotEquals(a, b);
+        assertNotEquals(b, a);
+        assertNotEquals(a, c);
+        assertNotEquals(a, d);
+
+        a.setExecutionSet(A_EXECUTION_SET);
+        assertEquals(a, b);
+        assertNotEquals(a, c);
+        assertNotEquals(a, d);
+
+        a.setDataIOSet(null);
+        assertNotEquals(a, b);
+        assertNotEquals(b, a);
+        assertNotEquals(a, c);
+        assertNotEquals(a, d);
+
+        EndSignalEvent.EndSignalEventBuilder builderSignal = new EndSignalEvent.EndSignalEventBuilder();
+        EndSignalEvent e = builderSignal.build();
+        assertNotEquals(a, e);
+    }
+
+
+    @Test
+    public void IntermediateMessageEventCatchingHashCode() {
+        IntermediateMessageEventCatching.IntermediateMessageEventCatchingBuilder builder = new  IntermediateMessageEventCatching.IntermediateMessageEventCatchingBuilder();
+        IntermediateMessageEventCatching a = builder.build();
+        builder = new IntermediateMessageEventCatching.IntermediateMessageEventCatchingBuilder();
+        IntermediateMessageEventCatching b = builder.build();
+        assertEquals(a.hashCode(), b.hashCode());
+    }
+
+    @Test
+    public void IntermediateMessageEventCatchingEquals() {
+        final String MESSAGE_REF = "message ref";
+        final CancellingMessageEventExecutionSet A_EXECUTION_SET = new CancellingMessageEventExecutionSet(new CancelActivity(true), new MessageRef(MESSAGE_REF));
+        final CancellingMessageEventExecutionSet B_EXECUTION_SET = new CancellingMessageEventExecutionSet(new CancelActivity(true),new MessageRef(MESSAGE_REF));
+        final CancellingMessageEventExecutionSet C_EXECUTION_SET = new CancellingMessageEventExecutionSet(new CancelActivity(true),new MessageRef("Other value"));
+        final CancellingMessageEventExecutionSet D_EXECUTION_SET = new CancellingMessageEventExecutionSet(new CancelActivity(true),new MessageRef(MESSAGE_REF));
+
+        final String ASSIGNMENT_INFO = "some value";
+        final DataIOSet A_DATA_SET = new DataIOSet(new AssignmentsInfo(ASSIGNMENT_INFO));
+        final DataIOSet B_DATA_SET = new DataIOSet(new AssignmentsInfo(ASSIGNMENT_INFO));
+        final DataIOSet C_DATA_SET = new DataIOSet(new AssignmentsInfo(ASSIGNMENT_INFO));
+        final DataIOSet D_DATA_SET = new DataIOSet(new AssignmentsInfo("Other value"));
+
+        IntermediateMessageEventCatching.IntermediateMessageEventCatchingBuilder builder = new IntermediateMessageEventCatching.IntermediateMessageEventCatchingBuilder();
+        IntermediateMessageEventCatching a = builder.build();
+        a.setExecutionSet(A_EXECUTION_SET);
+        a.setDataIOSet(A_DATA_SET);
+
+        builder = new IntermediateMessageEventCatching.IntermediateMessageEventCatchingBuilder();
+        IntermediateMessageEventCatching b = builder.build();
+        b.setExecutionSet(B_EXECUTION_SET);
+        b.setDataIOSet(B_DATA_SET);
+
+        builder = new IntermediateMessageEventCatching.IntermediateMessageEventCatchingBuilder();
+        IntermediateMessageEventCatching c = builder.build();
+        c.setExecutionSet(C_EXECUTION_SET);
+        c.setDataIOSet(C_DATA_SET);
+
+        builder = new IntermediateMessageEventCatching.IntermediateMessageEventCatchingBuilder();
+        IntermediateMessageEventCatching d = builder.build();
+        d.setExecutionSet(D_EXECUTION_SET);
+        d.setDataIOSet(D_DATA_SET);
+
+        assertEquals(a, a);
+        assertEquals(a, b);
+        assertNotEquals(a, c);
+        assertNotEquals(a, d);
+        assertNotEquals(a, 19);
+        assertNotEquals(a, null);
+
+        a.setExecutionSet(null);
+        assertNotEquals(a, b);
+        assertNotEquals(b, a);
+        assertNotEquals(a, c);
+        assertNotEquals(a, d);
+
+        a.setExecutionSet(A_EXECUTION_SET);
+        assertEquals(a, b);
+        assertNotEquals(a, c);
+        assertNotEquals(a, d);
+
+        a.setDataIOSet(null);
+        assertNotEquals(a, b);
+        assertNotEquals(b, a);
+        assertNotEquals(a, c);
+        assertNotEquals(a, d);
+
+        EndSignalEvent.EndSignalEventBuilder builderSignal = new EndSignalEvent.EndSignalEventBuilder();
+        EndSignalEvent e = builderSignal.build();
+        assertNotEquals(a, e);
+    }
+
+    @Test
     public void testIntermediateTimerEventHashCode() {
         IntermediateTimerEvent.IntermediateTimerEventBuilder builder = new IntermediateTimerEvent.IntermediateTimerEventBuilder();
         IntermediateTimerEvent a = builder.build();
         builder = new IntermediateTimerEvent.IntermediateTimerEventBuilder();
         IntermediateTimerEvent b = builder.build();
-        assertTrue(a.hashCode() == b.hashCode());
+        assertEquals(a.hashCode(), b.hashCode());
     }
 
     @Test
@@ -189,7 +485,7 @@ public class HashCodeAndEqualityTest {
         Lane a = builder.build();
         builder = new Lane.LaneBuilder();
         Lane b = builder.build();
-        assertTrue(a.hashCode() == b.hashCode());
+        assertEquals(a.hashCode(), b.hashCode());
     }
 
     @Test
@@ -210,7 +506,7 @@ public class HashCodeAndEqualityTest {
         NoneTask a = builder.build();
         builder = new NoneTask.NoneTaskBuilder();
         NoneTask b = builder.build();
-        assertTrue(a.hashCode() == b.hashCode());
+        assertEquals(a.hashCode(), b.hashCode());
     }
 
     @Test
@@ -231,7 +527,7 @@ public class HashCodeAndEqualityTest {
         ParallelGateway a = builder.build();
         builder = new ParallelGateway.ParallelGatewayBuilder();
         ParallelGateway b = builder.build();
-        assertTrue(a.hashCode() == b.hashCode());
+        assertEquals(a.hashCode(), b.hashCode());
     }
 
     @Test
@@ -252,8 +548,32 @@ public class HashCodeAndEqualityTest {
         ReusableSubprocess a = builder.build();
         builder = new ReusableSubprocess.ReusableSubprocessBuilder();
         ReusableSubprocess b = builder.build();
-        assertTrue(a.hashCode() == b.hashCode());
+        assertEquals(a.hashCode(), b.hashCode());
     }
+
+
+    @Test
+    public void testEventSubprocessEquals() {
+        EventSubprocess.EventSubprocessBuilder builder = new EventSubprocess.EventSubprocessBuilder();
+        EventSubprocess a = builder.build();
+        builder = new EventSubprocess.EventSubprocessBuilder();
+        EventSubprocess b = builder.build();
+        assertEquals(a,
+                     b);
+        assertFalse(a.equals(19));
+        assertFalse(a.equals(null));
+    }
+
+    @Test
+    public void testEventSubprocessHashCode() {
+        EventSubprocess.EventSubprocessBuilder builder = new EventSubprocess.EventSubprocessBuilder();
+        EventSubprocess a = builder.build();
+        builder = new EventSubprocess.EventSubprocessBuilder();
+        EventSubprocess b = builder.build();
+        assertEquals(a.hashCode(), b.hashCode());
+    }
+
+
 
     @Test
     public void testScriptTaskEquals() {
@@ -273,7 +593,7 @@ public class HashCodeAndEqualityTest {
         ScriptTask a = builder.build();
         builder = new ScriptTask.ScriptTaskBuilder();
         ScriptTask b = builder.build();
-        assertTrue(a.hashCode() == b.hashCode());
+        assertEquals(a.hashCode(), b.hashCode());
     }
 
     @Test
@@ -294,7 +614,7 @@ public class HashCodeAndEqualityTest {
         SequenceFlow a = builder.build();
         builder = new SequenceFlow.SequenceFlowBuilder();
         SequenceFlow b = builder.build();
-        assertTrue(a.hashCode() == b.hashCode());
+        assertEquals(a.hashCode(), b.hashCode());
     }
 
     @Test
@@ -315,7 +635,7 @@ public class HashCodeAndEqualityTest {
         StartNoneEvent a = builder.build();
         builder = new StartNoneEvent.StartNoneEventBuilder();
         StartNoneEvent b = builder.build();
-        assertTrue(a.hashCode() == b.hashCode());
+        assertEquals(a.hashCode(), b.hashCode());
     }
 
     @Test
@@ -336,7 +656,81 @@ public class HashCodeAndEqualityTest {
         StartSignalEvent a = builder.build();
         builder = new StartSignalEvent.StartSignalEventBuilder();
         StartSignalEvent b = builder.build();
-        assertTrue(a.hashCode() == b.hashCode());
+        assertEquals(a.hashCode(), b.hashCode());
+    }
+
+    @Test
+    public void testStartMessageEventEquals() {
+        final String MESSAGE_REF = "message ref";
+        final InterruptingMessageEventExecutionSet A_EXECUTION_SET = new InterruptingMessageEventExecutionSet(new IsInterrupting(true),new MessageRef(MESSAGE_REF));
+        final InterruptingMessageEventExecutionSet B_EXECUTION_SET = new InterruptingMessageEventExecutionSet(new IsInterrupting(true),new MessageRef(MESSAGE_REF));
+        final InterruptingMessageEventExecutionSet C_EXECUTION_SET = new InterruptingMessageEventExecutionSet(new IsInterrupting(true),new MessageRef("Other value"));
+        final InterruptingMessageEventExecutionSet D_EXECUTION_SET = new InterruptingMessageEventExecutionSet(new IsInterrupting(true),new MessageRef(MESSAGE_REF));
+
+        final String ASSIGNMENT_INFO = "some value";
+        final DataIOSet A_DATA_SET = new DataIOSet(new AssignmentsInfo(ASSIGNMENT_INFO));
+        final DataIOSet B_DATA_SET = new DataIOSet(new AssignmentsInfo(ASSIGNMENT_INFO));
+        final DataIOSet C_DATA_SET = new DataIOSet(new AssignmentsInfo(ASSIGNMENT_INFO));
+        final DataIOSet D_DATA_SET = new DataIOSet(new AssignmentsInfo("Other value"));
+
+        StartMessageEvent.StartMessageEventBuilder builder = new StartMessageEvent.StartMessageEventBuilder();
+        StartMessageEvent a = builder.build();
+        a.setExecutionSet(A_EXECUTION_SET);
+        a.setDataIOSet(A_DATA_SET);
+
+        builder = new StartMessageEvent.StartMessageEventBuilder();
+        StartMessageEvent b = builder.build();
+        b.setExecutionSet(B_EXECUTION_SET);
+        b.setDataIOSet(B_DATA_SET);
+
+        builder = new StartMessageEvent.StartMessageEventBuilder();
+        StartMessageEvent c = builder.build();
+        c.setExecutionSet(C_EXECUTION_SET);
+        c.setDataIOSet(C_DATA_SET);
+
+        builder = new StartMessageEvent.StartMessageEventBuilder();
+        StartMessageEvent d = builder.build();
+        d.setExecutionSet(D_EXECUTION_SET);
+        d.setDataIOSet(D_DATA_SET);
+
+        assertEquals(a, a);
+        assertEquals(a, b);
+        assertNotEquals(a, c);
+        assertNotEquals(a, d);
+        assertNotEquals(a, 19);
+        assertNotEquals(a, null);
+
+        a.setExecutionSet(null);
+        assertNotEquals(a, b);
+        assertNotEquals(b, a);
+        assertNotEquals(a, c);
+        assertNotEquals(a, d);
+
+        a.setExecutionSet(A_EXECUTION_SET);
+        assertEquals(a, b);
+        assertNotEquals(a, c);
+        assertNotEquals(a, d);
+
+        a.setDataIOSet(null);
+        assertNotEquals(a, b);
+        assertNotEquals(b, a);
+        assertNotEquals(a, c);
+        assertNotEquals(a, d);
+
+        EndSignalEvent.EndSignalEventBuilder builderSignal = new EndSignalEvent.EndSignalEventBuilder();
+        EndSignalEvent e = builderSignal.build();
+        assertNotEquals(a, e);
+    }
+
+
+
+    @Test
+    public void testStartMessageEventHashCode() {
+        StartMessageEvent.StartMessageEventBuilder builder = new StartMessageEvent.StartMessageEventBuilder();
+        StartMessageEvent a = builder.build();
+        builder = new StartMessageEvent.StartMessageEventBuilder();
+        StartMessageEvent b = builder.build();
+        assertEquals(a.hashCode(), b.hashCode());
     }
 
     @Test
@@ -357,7 +751,7 @@ public class HashCodeAndEqualityTest {
         StartTimerEvent a = builder.build();
         builder = new StartTimerEvent.StartTimerEventBuilder();
         StartTimerEvent b = builder.build();
-        assertTrue(a.hashCode() == b.hashCode());
+        assertEquals(a.hashCode(), b.hashCode());
     }
 
     @Test
@@ -378,7 +772,7 @@ public class HashCodeAndEqualityTest {
         UserTask a = builder.build();
         builder = new UserTask.UserTaskBuilder();
         UserTask b = builder.build();
-        assertTrue(a.hashCode() == b.hashCode());
+        assertEquals(a.hashCode(), b.hashCode());
     }
 
     @Test
@@ -399,7 +793,7 @@ public class HashCodeAndEqualityTest {
         EmbeddedSubprocess a = builder.build();
         builder = new EmbeddedSubprocess.EmbeddedSubprocessBuilder();
         EmbeddedSubprocess b = builder.build();
-        assertTrue(a.hashCode() == b.hashCode());
+        assertEquals(a.hashCode(), b.hashCode());
     }
 
 

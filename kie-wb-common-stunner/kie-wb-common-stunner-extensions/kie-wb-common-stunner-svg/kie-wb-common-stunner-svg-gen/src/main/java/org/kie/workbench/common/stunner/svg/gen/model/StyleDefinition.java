@@ -34,6 +34,8 @@ public interface StyleDefinition {
 
     Double getFontSize();
 
+    Double[] getStrokeDashArray();
+
     StyleDefinition add(StyleDefinition other);
 
     StyleDefinition copy();

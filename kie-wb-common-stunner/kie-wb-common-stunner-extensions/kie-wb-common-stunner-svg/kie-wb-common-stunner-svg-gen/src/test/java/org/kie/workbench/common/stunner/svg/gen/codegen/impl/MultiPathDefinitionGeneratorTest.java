@@ -41,6 +41,7 @@ public class MultiPathDefinitionGeneratorTest {
     private static final String STROKE_COLOR = "#654321";
     private static final double STROKE_ALPHA = 0.12d;
     private static final double STROKE_WIDTH = 5.6d;
+    private static final String STROKE_DASHARRAY = "5.00,5.00";
     private static final boolean LISTENING = false;
     private static final double VBOX_MIN_X = 12.6;
     private static final double VBOX_MIN_Y = 23.4;
@@ -76,6 +77,7 @@ public class MultiPathDefinitionGeneratorTest {
                                               .setStrokeColor(STROKE_COLOR)
                                               .setStrokeAlpha(STROKE_ALPHA)
                                               .setStrokeWidth(STROKE_WIDTH)
+                                              .setStrokeDashArray(STROKE_DASHARRAY)
                                               .build());
         definition.setTransformDefinition(new TransformDefinitionImpl(VBOX_WIDTH,
                                                                       VBOX_HEIGHT,
@@ -105,6 +107,8 @@ public class MultiPathDefinitionGeneratorTest {
                                               STROKE_ALPHA);
         GeneratorAssertions.assertStrokeWidth(generated,
                                               STROKE_WIDTH);
+        GeneratorAssertions.assertStrokeDashArray(generated,
+                                                  STROKE_DASHARRAY);
         GeneratorAssertions.assertListening(generated,
                                             LISTENING);
     }

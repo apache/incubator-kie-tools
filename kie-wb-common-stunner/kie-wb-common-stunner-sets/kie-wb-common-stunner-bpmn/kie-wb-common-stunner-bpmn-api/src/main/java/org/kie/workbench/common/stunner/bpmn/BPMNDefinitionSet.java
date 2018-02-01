@@ -28,6 +28,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.EndMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
@@ -86,6 +87,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
                 ExclusiveDatabasedGateway.class,
                 ReusableSubprocess.class,
                 EmbeddedSubprocess.class,
+                EventSubprocess.class,
                 SequenceFlow.class
         },
         builder = BPMNDefinitionSet.BPMNDefinitionSetBuilder.class

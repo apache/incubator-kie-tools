@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.svg.gen.codegen.impl;
 
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.kie.workbench.common.stunner.svg.gen.codegen.ShapeDefinitionGenerator;
 import org.kie.workbench.common.stunner.svg.gen.exception.GeneratorException;
 import org.kie.workbench.common.stunner.svg.gen.model.ShapeDefinition;
@@ -30,6 +33,7 @@ public abstract class AbstractShapeDefinitionGenerator<I extends ShapeDefinition
     private final static String STROKE_COLOR = ".setStrokeColor(\"%1s\")";
     private final static String STROKE_ALPHA = ".setStrokeAlpha(%1s)";
     private final static String STROKE_WIDTH = ".setStrokeWidth(%1s)";
+    private final static String STROKE_DASHARRAY = ".setDashArray(%1s)";
 
     @Override
     public StringBuffer generate(final I input) throws GeneratorException {
@@ -45,7 +49,6 @@ public abstract class AbstractShapeDefinitionGenerator<I extends ShapeDefinition
                 shapeRaw.append(formatDouble(FILL_ALPHA,
                                              styleDefinition.getFillAlpha()));
             }
-
             if (null != styleDefinition.getStrokeColor()) {
                 shapeRaw.append(formatString(STROKE_COLOR,
                                              styleDefinition.getStrokeColor()));
@@ -54,12 +57,15 @@ public abstract class AbstractShapeDefinitionGenerator<I extends ShapeDefinition
                 shapeRaw.append(formatDouble(STROKE_ALPHA,
                                              styleDefinition.getStrokeAlpha()));
             }
-
             if (null != styleDefinition.getStrokeWidth()) {
                 shapeRaw.append(formatDouble(STROKE_WIDTH,
                                              styleDefinition.getStrokeWidth()));
             }
-
+            if (null != styleDefinition.getStrokeDashArray()) {
+                String commaSeparatedValues = Stream.of(styleDefinition.getStrokeDashArray()).map(AbstractGenerator::formatDouble).collect(Collectors.joining(","));
+                shapeRaw.append(formatString(STROKE_DASHARRAY,
+                                             commaSeparatedValues));
+            }
             return shapeRaw;
         }
         return new StringBuffer();

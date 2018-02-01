@@ -94,7 +94,8 @@ public class SVGShapeProcessor extends AbstractErrorAbsorbingProcessor {
             final SVGGeneratorRequest request = new SVGGeneratorRequest(name + GENERATED_TYPE_SUFFIX,
                                                                         packageName,
                                                                         fqcn,
-                                                                        absPkgPath + "/" + svgViewFactoryAnn.value());
+                                                                        absPkgPath + "/" + svgViewFactoryAnn.value(),
+                                                                        processingEnv.getMessager());
             context.setGeneratorRequest(request);
             // Find and process method annotation as @SVGSource.
             List<ExecutableElement> methodElements = ElementFilter.methodsIn(classElement.getEnclosedElements());

@@ -92,8 +92,8 @@ public class ScopedSignalEventExecutionSet implements BPMNPropertySet {
     public boolean equals(Object o) {
         if (o instanceof ScopedSignalEventExecutionSet) {
             ScopedSignalEventExecutionSet other = (ScopedSignalEventExecutionSet) o;
-            return signalRef.equals(other.signalRef) &&
-                    signalScope.equals(other.signalScope);
+            return  (other.signalRef == null ? signalRef == null : other.signalRef.equals(signalRef))&&
+                    (other.signalScope == null ? signalScope == null : other.signalScope.equals(signalScope));
         }
         return false;
     }
