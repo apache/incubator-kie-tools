@@ -21,7 +21,6 @@
     <module>guvnor-m2repo-editor</module>
     <module>guvnor-message-console</module>
     <module>guvnor-organizationalunit-manager</module>
-    <module>guvnor-asset-mgmt</module>
     <module>guvnor-webapp</module>
   </modules>
   <dependencies>

@@ -15,6 +15,12 @@
  */
 package org.guvnor.organizationalunit.manager.client.editor;
 
+import static org.guvnor.structure.client.security.OrganizationalUnitController.ORG_UNIT_CREATE;
+import static org.guvnor.structure.client.security.OrganizationalUnitController.ORG_UNIT_DELETE;
+import static org.guvnor.structure.client.security.OrganizationalUnitController.ORG_UNIT_READ;
+import static org.guvnor.structure.client.security.OrganizationalUnitController.ORG_UNIT_TYPE;
+import static org.guvnor.structure.client.security.OrganizationalUnitController.ORG_UNIT_UPDATE;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -25,6 +31,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.Command;
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.organizationalunit.manager.client.editor.popups.AddOrganizationalUnitPopup;
 import org.guvnor.organizationalunit.manager.client.editor.popups.EditOrganizationalUnitPopup;
 import org.guvnor.organizationalunit.manager.client.resources.i18n.OrganizationalUnitManagerConstants;
@@ -49,12 +56,7 @@ import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultE
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.security.annotations.ResourceCheck;
-
-import static org.guvnor.structure.client.security.OrganizationalUnitController.ORG_UNIT_CREATE;
-import static org.guvnor.structure.client.security.OrganizationalUnitController.ORG_UNIT_DELETE;
-import static org.guvnor.structure.client.security.OrganizationalUnitController.ORG_UNIT_READ;
-import static org.guvnor.structure.client.security.OrganizationalUnitController.ORG_UNIT_TYPE;
-import static org.guvnor.structure.client.security.OrganizationalUnitController.ORG_UNIT_UPDATE;
+import org.uberfire.spaces.Space;
 
 @ApplicationScoped
 //The identifier has been preserved from kie-wb-common so existing .niogit System repositories are not broken
@@ -81,6 +83,8 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
 
     private OrganizationalUnitController controller;
 
+    private WorkspaceProjectContext context;
+
     public OrganizationalUnitManagerPresenterImpl() {
         //For CDI proxying
     }
@@ -93,7 +97,9 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
                                                   final AddOrganizationalUnitPopup addOrganizationalUnitPopup,
                                                   final EditOrganizationalUnitPopup editOrganizationalUnitPopup,
                                                   final Event<AfterCreateOrganizationalUnitEvent> createOUEvent,
-                                                  final Event<AfterDeleteOrganizationalUnitEvent> deleteOUEvent) {
+                                                  final Event<AfterDeleteOrganizationalUnitEvent> deleteOUEvent,
+                                                  final WorkspaceProjectContext context) {
+        this.context = context;
         this.view = PortablePreconditions.checkNotNull("view",
                                                        view);
         this.organizationalUnitService = PortablePreconditions.checkNotNull("organizationalUnitService",
@@ -126,6 +132,11 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
         view.setEditOrganizationalUnitEnabled(false);
         view.setDeleteOrganizationalUnitEnabled(false);
 
+        Space space = context.getActiveOrganizationalUnit()
+                             .map(ou -> ou.getName())
+                             .map(spaceName -> new Space(spaceName))
+                             .orElseThrow(() -> new IllegalStateException("Cannot load repositories without active organziational unit."));
+
         repositoryService.call(new RemoteCallback<Collection<Repository>>() {
                                    @Override
                                    public void callback(final Collection<Repository> repositories) {
@@ -133,7 +144,7 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
                                        loadOrganizationalUnits();
                                    }
                                },
-                               new HasBusyIndicatorDefaultErrorCallback(view)).getRepositories();
+                               new HasBusyIndicatorDefaultErrorCallback(view)).getRepositories(space);
     }
 
     @OnOpen
@@ -163,13 +174,11 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
 
     @Override
     public void loadOrganizationalUnits() {
-        view.showBusyIndicator(OrganizationalUnitManagerConstants.INSTANCE.Wait());
         organizationalUnitService.call(new RemoteCallback<Collection<OrganizationalUnit>>() {
                                            @Override
                                            public void callback(final Collection<OrganizationalUnit> organizationalUnits) {
                                                OrganizationalUnitManagerPresenterImpl.this.allOrganizationalUnits = organizationalUnits;
                                                view.setOrganizationalUnits(organizationalUnits);
-                                               view.hideBusyIndicator();
                                            }
                                        },
                                        new HasBusyIndicatorDefaultErrorCallback(view)).getOrganizationalUnits();
@@ -195,7 +204,7 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
     }
 
     private Collection<Repository> getAvailableRepositories() {
-        final Collection<Repository> availableRepositories = new ArrayList<Repository>();
+        final Collection<Repository> availableRepositories = new ArrayList<>();
         availableRepositories.addAll(allRepositories);
         for (OrganizationalUnit ou : allOrganizationalUnits) {
             availableRepositories.removeAll(ou.getRepositories());
@@ -232,7 +241,7 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
     public void createNewOrganizationalUnit(final String organizationalUnitName,
                                             final String organizationalUnitOwner,
                                             final String defaultGroupId) {
-        final Collection<Repository> repositories = new ArrayList<Repository>();
+        final Collection<Repository> repositories = new ArrayList<>();
         view.showBusyIndicator(OrganizationalUnitManagerConstants.INSTANCE.Wait());
         organizationalUnitService.call(new RemoteCallback<OrganizationalUnit>() {
 

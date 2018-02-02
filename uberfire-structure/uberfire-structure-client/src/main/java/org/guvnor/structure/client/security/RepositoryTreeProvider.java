@@ -24,7 +24,8 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.guvnor.structure.client.resources.i18n.CommonConstants;
+import org.guvnor.common.services.project.client.resources.ProjectResources;
+import org.guvnor.common.services.project.client.resources.i18n.ProjectConstants;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositorySearchService;
 import org.jboss.errai.common.client.api.Caller;
@@ -39,6 +40,7 @@ import org.uberfire.security.client.authz.tree.PermissionTreeProvider;
 import org.uberfire.security.client.authz.tree.impl.PermissionLeafNode;
 import org.uberfire.security.client.authz.tree.impl.PermissionResourceNode;
 
+import static org.guvnor.structure.security.RepositoryAction.BUILD;
 import static org.guvnor.structure.security.RepositoryAction.CREATE;
 import static org.guvnor.structure.security.RepositoryAction.DELETE;
 import static org.guvnor.structure.security.RepositoryAction.READ;
@@ -53,7 +55,7 @@ public class RepositoryTreeProvider implements PermissionTreeProvider {
     private PermissionManager permissionManager;
     private Caller<RepositorySearchService> searchService;
     private int rootNodePosition = 0;
-    private CommonConstants i18n = CommonConstants.INSTANCE;
+    private ProjectConstants i18n = ProjectResources.CONSTANTS;
 
     public RepositoryTreeProvider() {
     }
@@ -75,29 +77,33 @@ public class RepositoryTreeProvider implements PermissionTreeProvider {
 
     @Override
     public PermissionNode buildRootNode() {
-        PermissionResourceNode rootNode = new PermissionResourceNode(i18n.RepositoryResource(),
+        PermissionResourceNode rootNode = new PermissionResourceNode(i18n.ProjectResource(),
                                                                      this);
-        rootNode.setNodeName(i18n.RepositoriesNode());
-        rootNode.setNodeFullName(i18n.RepositoriesHelp());
+        rootNode.setNodeName(i18n.ProjectsNode());
+        rootNode.setNodeFullName(i18n.ProjectsHelp());
         rootNode.setPositionInTree(rootNodePosition);
 
         Permission readPermission = newPermission(READ);
         Permission updatePermission = newPermission(UPDATE);
         Permission deletePermission = newPermission(DELETE);
         Permission createPermission = newPermission(CREATE);
+        Permission buildPermission = newPermission(BUILD);
 
         rootNode.addPermission(readPermission,
-                               i18n.RepositoryActionRead());
+                               i18n.ProjectActionRead());
         rootNode.addPermission(updatePermission,
-                               i18n.RepositoryActionUpdate());
+                               i18n.ProjectActionUpdate());
         rootNode.addPermission(deletePermission,
-                               i18n.RepositoryActionDelete());
+                               i18n.ProjectActionDelete());
         rootNode.addPermission(createPermission,
-                               i18n.RepositoryActionCreate());
+                               i18n.ProjectActionCreate());
+        rootNode.addPermission(buildPermission,
+                               i18n.ProjectActionBuild());
 
         rootNode.addDependencies(readPermission,
                                  updatePermission,
                                  deletePermission,
+                                 buildPermission,
                                  createPermission);
         return rootNode;
     }
@@ -160,17 +166,22 @@ public class RepositoryTreeProvider implements PermissionTreeProvider {
                                                     UPDATE);
         Permission deletePermission = newPermission(r,
                                                     DELETE);
+        Permission buildPermission = newPermission(r,
+                                                   BUILD);
 
         node.addPermission(readPermission,
-                           i18n.RepositoryActionRead());
+                           i18n.ProjectActionRead());
         node.addPermission(updatePermission,
-                           i18n.RepositoryActionUpdate());
+                           i18n.ProjectActionUpdate());
         node.addPermission(deletePermission,
-                           i18n.RepositoryActionDelete());
+                           i18n.ProjectActionDelete());
+        node.addPermission(buildPermission,
+                           i18n.ProjectActionBuild());
 
         node.addDependencies(readPermission,
                              updatePermission,
-                             deletePermission);
+                             deletePermission,
+                             buildPermission);
         return node;
     }
 }

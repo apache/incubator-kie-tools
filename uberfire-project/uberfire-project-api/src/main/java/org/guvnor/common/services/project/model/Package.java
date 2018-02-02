@@ -21,12 +21,12 @@ import org.uberfire.backend.vfs.Path;
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
- * An item representing a Package within a Project
+ * An item representing a Package within a Module
  */
 @Portable
 public class Package {
 
-    private Path projectRootPath;
+    private Path moduleRootPath;
     private Path packageMainSrcPath;
     private Path packageTestSrcPath;
     private Path packageMainResourcesPath;
@@ -39,7 +39,7 @@ public class Package {
         //For Errai-marshalling
     }
 
-    public Package(final Path projectRootPath,
+    public Package(final Path moduleRootPath,
                    final Path packageMainSrcPath,
                    final Path packageTestSrcPath,
                    final Path packageMainResourcesPath,
@@ -47,8 +47,8 @@ public class Package {
                    final String packageName,
                    final String caption,
                    final String relativeCaption) {
-        this.projectRootPath = checkNotNull("projectRootPath",
-                                            projectRootPath);
+        this.moduleRootPath = checkNotNull("moduleRootPath",
+                                           moduleRootPath);
         this.packageMainSrcPath = packageMainSrcPath;
         this.packageTestSrcPath = packageTestSrcPath;
         this.packageMainResourcesPath = packageMainResourcesPath;
@@ -61,8 +61,8 @@ public class Package {
                                             relativeCaption);
     }
 
-    public Path getProjectRootPath() {
-        return this.projectRootPath;
+    public Path getModuleRootPath() {
+        return this.moduleRootPath;
     }
 
     public Path getPackageMainSrcPath() {
@@ -110,7 +110,7 @@ public class Package {
         if (!packageName.equals(aPackage.packageName)) {
             return false;
         }
-        if (!projectRootPath.equals(aPackage.projectRootPath)) {
+        if (!moduleRootPath.equals(aPackage.moduleRootPath)) {
             return false;
         }
         if (packageMainSrcPath != null ? !packageMainSrcPath.equals(aPackage.packageMainSrcPath) : aPackage.packageMainSrcPath != null) {
@@ -131,7 +131,7 @@ public class Package {
 
     @Override
     public int hashCode() {
-        int result = projectRootPath.hashCode();
+        int result = moduleRootPath.hashCode();
         result = ~~result;
         result = 31 * result + (packageMainSrcPath != null ? packageMainSrcPath.hashCode() : 0);
         result = ~~result;

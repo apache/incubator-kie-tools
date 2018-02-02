@@ -23,8 +23,8 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.backend.server.utils.POMContentHandler;
+import org.guvnor.common.services.project.model.MavenRepository;
 import org.guvnor.common.services.project.model.POM;
-import org.guvnor.common.services.project.model.Repository;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
@@ -89,12 +89,12 @@ public class POMServiceImpl
         }
     }
 
-    private Repository getRepository(final String baseURL) {
-        final Repository repository = new Repository();
-        repository.setId("guvnor-m2-repo");
-        repository.setName("Guvnor M2 Repo");
-        repository.setUrl(m2RepoService.getRepositoryURL(baseURL));
-        return repository;
+    private MavenRepository getRepository(final String baseURL) {
+        final MavenRepository mavenRepository = new MavenRepository();
+        mavenRepository.setId("guvnor-m2-repo");
+        mavenRepository.setName("Guvnor M2 Repo");
+        mavenRepository.setUrl(m2RepoService.getRepositoryURL(baseURL));
+        return mavenRepository;
     }
 
     @Override

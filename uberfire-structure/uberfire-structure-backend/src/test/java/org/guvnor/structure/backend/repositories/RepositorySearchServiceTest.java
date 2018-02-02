@@ -16,9 +16,14 @@
 
 package org.guvnor.structure.backend.repositories;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
+import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.junit.Before;
@@ -26,9 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import org.uberfire.spaces.Space;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RepositorySearchServiceTest {
@@ -42,17 +45,24 @@ public class RepositorySearchServiceTest {
     @Mock
     Repository itemB;
 
+    @Mock
+    OrganizationalUnitService orgUnitService;
+
+    Space space;
+
     private RepositorySearchServiceImpl searchService;
 
     @Before
     public void setUp() throws Exception {
+        space = new Space("test-realm");
+        when(orgUnitService.getAllUserSpaces()).thenReturn(Collections.singletonList(space));
         when(itemA.getIdentifier()).thenReturn("itemA");
         when(itemB.getIdentifier()).thenReturn("itemB");
         when(itemA.getAlias()).thenReturn("Item A");
         when(itemB.getAlias()).thenReturn("Item B");
-        when(resourceService.getAllRepositories()).thenReturn(Arrays.asList(itemA,
+        when(resourceService.getAllRepositories(space)).thenReturn(Arrays.asList(itemA,
                                                                             itemB));
-        searchService = new RepositorySearchServiceImpl(resourceService);
+        searchService = new RepositorySearchServiceImpl(resourceService, orgUnitService);
     }
 
     @Test

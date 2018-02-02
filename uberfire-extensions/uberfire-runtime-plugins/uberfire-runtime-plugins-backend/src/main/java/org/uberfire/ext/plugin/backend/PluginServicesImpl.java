@@ -18,7 +18,6 @@ package org.uberfire.ext.plugin.backend;
 
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -69,7 +68,6 @@ import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.FileVisitResult;
 import org.uberfire.java.nio.file.NotDirectoryException;
 import org.uberfire.java.nio.file.Path;
@@ -92,47 +90,55 @@ public class PluginServicesImpl implements PluginServices {
 
     private static final String MENU_ITEM_DELIMITER = " / ";
     protected Gson gson;
-    @Inject
-    @Named("ioStrategy")
     private IOService ioService;
-    @Inject
-    @Named("MediaServletURI")
     private Instance<MediaServletURI> mediaServletURI;
-    @Inject
     private transient SessionInfo sessionInfo;
-    @Inject
     private Event<PluginAdded> pluginAddedEvent;
-    @Inject
     private Event<PluginDeleted> pluginDeletedEvent;
-    @Inject
     private Event<PluginSaved> pluginSavedEvent;
-    @Inject
     private Event<PluginRenamed> pluginRenamedEvent;
-    @Inject
     private Event<MediaDeleted> mediaDeletedEvent;
-    @Inject
     private DefaultFileNameValidator defaultFileNameValidator;
-    @Inject
     private User identity;
     private FileSystem fileSystem;
     private Path root;
 
+    public PluginServicesImpl() {
+    }
+
+    @Inject
+    public PluginServicesImpl(@Named("ioStrategy") IOService ioService,
+                              @Named("MediaServletURI") Instance<MediaServletURI> mediaServletURI,
+                              SessionInfo sessionInfo,
+                              Event<PluginAdded> pluginAddedEvent,
+                              Event<PluginDeleted> pluginDeletedEvent,
+                              Event<PluginSaved> pluginSavedEvent,
+                              Event<PluginRenamed> pluginRenamedEvent,
+                              Event<MediaDeleted> mediaDeletedEvent,
+                              DefaultFileNameValidator defaultFileNameValidator,
+                              User identity,
+                              @Named("pluginsFS") FileSystem fileSystem) {
+        this.ioService = ioService;
+        this.mediaServletURI = mediaServletURI;
+        this.sessionInfo = sessionInfo;
+        this.pluginAddedEvent = pluginAddedEvent;
+        this.pluginDeletedEvent = pluginDeletedEvent;
+        this.pluginSavedEvent = pluginSavedEvent;
+        this.pluginRenamedEvent = pluginRenamedEvent;
+        this.mediaDeletedEvent = mediaDeletedEvent;
+        this.defaultFileNameValidator = defaultFileNameValidator;
+        this.identity = identity;
+        this.fileSystem = fileSystem;
+    }
+
     @PostConstruct
     public void init() {
         this.gson = new GsonBuilder().setPrettyPrinting().create();
-        try {
-            fileSystem = getIoService().newFileSystem(URI.create("default://system_ou/plugins"),
-                                                      new HashMap<String, Object>() {{
-                                                          put("init",
-                                                              Boolean.TRUE);
-                                                          put("internal",
-                                                              Boolean.TRUE);
-                                                      }});
-        } catch (FileSystemAlreadyExistsException e) {
-            fileSystem = getIoService().getFileSystem(URI.create("default://system_ou/plugins"));
-        }
+        this.root = resolveRoot();
+    }
 
-        this.root = fileSystem.getRootDirectories().iterator().next();
+    Path resolveRoot() {
+        return fileSystem.getRootDirectories().iterator().next();
     }
 
     @Override
@@ -543,8 +549,10 @@ public class PluginServicesImpl implements PluginServices {
                                               final String newName,
                                               final String comment) {
 
-
-        return copy(path, newName, null, comment);
+        return copy(path,
+                    newName,
+                    null,
+                    comment);
     }
 
     @Override
@@ -560,9 +568,9 @@ public class PluginServicesImpl implements PluginServices {
 
         try {
             getIoService().startBatch(fileSystem,
-                    commentedOption(comment));
+                                      commentedOption(comment));
             getIoService().copy(convert(path).getParent(),
-                    newPath);
+                                newPath);
         } finally {
             getIoService().endBatch();
         }
@@ -573,7 +581,7 @@ public class PluginServicesImpl implements PluginServices {
         String registry = createRegistry(pluginContent);
 
         pluginAddedEvent.fire(new PluginAdded(pluginContent,
-                sessionInfo));
+                                              sessionInfo));
 
         return result;
     }
@@ -691,8 +699,9 @@ public class PluginServicesImpl implements PluginServices {
                                          fileContent);
         }
         return new LayoutEditorModel(pluginName,
-                PluginType.PERSPECTIVE_LAYOUT,
-                path, null).emptyLayout();
+                                     PluginType.PERSPECTIVE_LAYOUT,
+                                     path,
+                                     null).emptyLayout();
     }
 
     @Override

@@ -26,8 +26,8 @@ import org.ext.uberfire.social.activities.model.SocialEventType;
 import org.ext.uberfire.social.activities.repository.SocialUserRepository;
 import org.ext.uberfire.social.activities.service.SocialAdapter;
 import org.ext.uberfire.social.activities.service.SocialCommandTypeFilter;
-import org.guvnor.common.services.project.events.NewProjectEvent;
-import org.guvnor.common.services.project.social.ProjectEventType;
+import org.guvnor.common.services.project.events.NewModuleEvent;
+import org.guvnor.common.services.project.social.ModuleEventType;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.slf4j.Logger;
@@ -36,7 +36,7 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
 @ApplicationScoped
-public class NewProjectEventAdapter implements SocialAdapter<NewProjectEvent> {
+public class NewProjectEventAdapter implements SocialAdapter<NewModuleEvent> {
 
     private static final Logger logger = LoggerFactory.getLogger(NewProjectEventAdapter.class);
 
@@ -47,13 +47,13 @@ public class NewProjectEventAdapter implements SocialAdapter<NewProjectEvent> {
     private RepositoryService repositoryService;
 
     @Override
-    public Class<NewProjectEvent> eventToIntercept() {
-        return NewProjectEvent.class;
+    public Class<NewModuleEvent> eventToIntercept() {
+        return NewModuleEvent.class;
     }
 
     @Override
     public SocialEventType socialEventType() {
-        return ProjectEventType.NEW_PROJECT;
+        return ModuleEventType.NEW_MODULE;
     }
 
     @Override
@@ -65,9 +65,9 @@ public class NewProjectEventAdapter implements SocialAdapter<NewProjectEvent> {
     public SocialActivitiesEvent toSocial(Object object) {
 
         SocialActivitiesEvent socialActivitiesEvent;
-        NewProjectEvent event = (NewProjectEvent) object;
+        NewModuleEvent event = (NewModuleEvent) object;
 
-        Path repositoryRootPath = event.getProject().getRootPath();
+        Path repositoryRootPath = event.getModule().getRootPath();
         Repository repository = null;
         String repositoryAlias = null;
 
@@ -76,8 +76,7 @@ public class NewProjectEventAdapter implements SocialAdapter<NewProjectEvent> {
             repository = repositoryService.getRepository(repositoryRootPath);
             repositoryAlias = repository.getAlias();
         } catch (Exception e) {
-            logger.error("It was not possible to establish the repository for project root path: " + event.getProject().getRootPath(),
-                         e);
+            logger.error("It was not possible to establish the repository for project root path: " + event.getModule().getRootPath(), e);
             logger.error("Social event won't be fired for this project.");
         }
 
@@ -86,16 +85,12 @@ public class NewProjectEventAdapter implements SocialAdapter<NewProjectEvent> {
                 socialEventType().name(),
                 new Date()
         )
-                .withDescription(event.getProject().getProjectName());
+                .withDescription(event.getModule().getModuleName());
 
         if (repositoryAlias != null) {
-            socialActivitiesEvent.withLink(event.getProject().getProjectName(),
-                                           event.getProject().getRootPath().toURI(),
-                                           SocialActivitiesEvent.LINK_TYPE.CUSTOM)
-                    .withParam("repositoryAlias",
-                               repository.getAlias())
-                    .withParam("currentBranch",
-                               "get the branch form the link");
+            socialActivitiesEvent.withLink(event.getModule().getModuleName(), event.getModule().getRootPath().toURI(), SocialActivitiesEvent.LINK_TYPE.CUSTOM)
+                    .withParam("repositoryAlias", repository.getAlias())
+                    .withParam("currentBranch", "get the branch form the link");
         }
         socialActivitiesEvent.withAdicionalInfo(getAdditionalInfo(event));
 
@@ -112,7 +107,7 @@ public class NewProjectEventAdapter implements SocialAdapter<NewProjectEvent> {
         return new ArrayList<String>();
     }
 
-    private String getAdditionalInfo(NewProjectEvent event) {
+    private String getAdditionalInfo(NewModuleEvent event) {
         return "added";
     }
 }

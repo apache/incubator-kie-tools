@@ -25,20 +25,17 @@ import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
 import org.junit.Before;
 import org.junit.Test;
+import org.uberfire.backend.server.spaces.SpacesAPIImpl;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.spaces.SpacesAPI;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyMap;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class GitRepositoryFactoryHelperNoIndexTest {
 
@@ -47,12 +44,16 @@ public class GitRepositoryFactoryHelperNoIndexTest {
     private GitRepositoryFactoryHelper helper;
     private FileSystem fileSystem;
     private ArrayList<Path> rootDirectories;
+    private SpacesAPI spacesAPI;
 
     @Before
     public void setUp() throws Exception {
         indexed = mock(IOService.class);
         notIndexed = mock(IOService.class);
-        helper = new GitRepositoryFactoryHelper(indexed, notIndexed);
+        spacesAPI = new SpacesAPIImpl();
+        helper = new GitRepositoryFactoryHelper(indexed,
+                                                notIndexed,
+                                                spacesAPI);
 
         fileSystem = mock(FileSystem.class);
         when(
@@ -150,7 +151,7 @@ public class GitRepositoryFactoryHelperNoIndexTest {
 
         assertEquals(3,
                      repository.getBranches().size());
-        assertTrue(repository.getRoot().toURI().contains("master"));
+        assertTrue(repository.getDefaultBranch().get().getPath().toURI().contains("master"));
     }
 
     private Path createPath(String uri) {
@@ -165,6 +166,12 @@ public class GitRepositoryFactoryHelperNoIndexTest {
         {
             ConfigItem configItem = new ConfigItem();
             configItem.setName(EnvironmentParameters.SCHEME);
+            repoConfig.addConfigItem(configItem);
+        }
+        {
+            ConfigItem configItem = new ConfigItem();
+            configItem.setName(EnvironmentParameters.SPACE);
+            configItem.setValue("space");
             repoConfig.addConfigItem(configItem);
         }
         {

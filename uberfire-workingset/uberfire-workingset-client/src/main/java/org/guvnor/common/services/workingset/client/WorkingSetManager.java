@@ -27,8 +27,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.project.model.Module;
+import org.guvnor.common.services.project.service.ModuleService;
 import org.guvnor.common.services.workingset.client.events.OnWorkingSetApplied;
 import org.guvnor.common.services.workingset.client.events.OnWorkingSetDisabled;
 import org.guvnor.common.services.workingset.client.factconstraints.ConstraintConfiguration;
@@ -47,7 +47,7 @@ public class WorkingSetManager {
     private Map<Path, WorkingSetSettings> projectSettings = new HashMap<Path, WorkingSetSettings>();
 
     @Inject
-    private Caller<ProjectService<? super Project>> projectService;
+    private Caller<ModuleService<? super Module>> moduleServiceCaller;
 
     /**
      * This attribute should be sever side. Maybe in some FactConstraintConfig
@@ -58,7 +58,7 @@ public class WorkingSetManager {
     public void onWorkingSetApplied(@Observes final OnWorkingSetApplied event) {
 //        final Pair<Path, WorkingSetSettings> projectReference = getProjectConfig( event.getResource() );
 //        if ( projectReference != null && projectReference.getK2() == null ) {
-//            projectService.call( new RemoteCallback<WorkingSetSettings>() {
+//            moduleService.call( new RemoteCallback<WorkingSetSettings>() {
 //                @Override
 //                public void callback( final WorkingSetSettings response ) {
 //                    projectSettings.put( projectReference.getK1(), response );

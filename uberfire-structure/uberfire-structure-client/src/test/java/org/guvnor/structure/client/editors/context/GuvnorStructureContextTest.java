@@ -16,10 +16,26 @@
 
 package org.guvnor.structure.client.editors.context;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
+import static org.guvnor.structure.client.editors.TestUtil.makeRepository;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyCollection;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.NewRepositoryEvent;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
@@ -29,18 +45,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.mocks.CallerMock;
-
-import static org.guvnor.structure.client.editors.TestUtil.makeRepository;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import org.uberfire.spaces.Space;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GuvnorStructureContextTest {
 
     @Mock
     private RepositoryService repositoryService;
+
+    @Mock
+    private WorkspaceProjectContext projContext;
 
     private GuvnorStructureContext context;
     private ArrayList<Repository> repositories;
@@ -65,9 +82,13 @@ public class GuvnorStructureContextTest {
                                         "master",
                                         "release"));
 
-        when(repositoryService.getRepositories()).thenReturn(repositories);
+        OrganizationalUnit ou = mock(OrganizationalUnit.class);
+        when(ou.getName()).thenReturn("space");
+        when(projContext.getActiveOrganizationalUnit()).thenReturn(Optional.of(ou));
 
-        context = new GuvnorStructureContext(new CallerMock<>(repositoryService));
+        when(repositoryService.getRepositories(eq(new Space("space")))).thenReturn(repositories);
+
+        context = new GuvnorStructureContext(new CallerMock<>(repositoryService), projContext);
 
         getRepositories();
     }
@@ -144,8 +165,12 @@ public class GuvnorStructureContextTest {
     public void testReLoadPicksUpRemovedBranch() throws Exception {
 
         // This deletes master branch
-        when(repositories.get(0).getBranches()).thenReturn(Arrays.asList("dev"));
-        when(repositories.get(0).getDefaultBranch()).thenReturn("dev");
+        final List<Branch> branchList = new ArrayList<>();
+        final Branch devBranch = new Branch("dev",
+                                            mock(Path.class));
+        branchList.add(devBranch);
+        when(repositories.get(0).getBranches()).thenReturn(branchList);
+        when(repositories.get(0).getDefaultBranch()).thenReturn(Optional.of(devBranch));
 
         context.getRepositories(callback);
 

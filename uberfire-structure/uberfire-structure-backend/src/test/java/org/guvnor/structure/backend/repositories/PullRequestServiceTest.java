@@ -30,6 +30,7 @@ import org.guvnor.structure.repositories.PullRequestAlreadyExistsException;
 import org.guvnor.structure.repositories.PullRequestService;
 import org.guvnor.structure.repositories.PullRequestStatus;
 import org.guvnor.structure.repositories.RepositoryNotFoundException;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.impl.GitMetadataImpl;
 import org.guvnor.structure.repositories.impl.PullRequestImpl;
 import org.junit.Before;
@@ -38,9 +39,11 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.server.io.object.ObjectStorage;
+import org.uberfire.backend.server.spaces.SpacesAPIImpl;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.MergeCopyOption;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.spaces.SpacesAPI;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -56,20 +59,22 @@ public class PullRequestServiceTest {
     private IOService ioService;
 
     @Mock
-    private ObjectStorage storage;
-    private Map<String, GitMetadataImpl> metadatas;
+    private SpacesAPI spaces;
 
     @Mock
-    private ConfiguredRepositories configuredRepositories;
+    private ObjectStorage storage;
+    private Map<String, GitMetadataImpl> metadatas;
 
     @Before
     public void setUp() throws Exception {
         metadatas = new HashMap<>();
-        metadataStore = new GitMetadataStoreImpl(storage);
+        metadataStore = new GitMetadataStoreImpl(storage,
+                                                 new SpacesAPIImpl());
 
         this.service = new PullRequestServiceImpl(metadataStore,
                                                   ioService,
-                                                  configuredRepositories);
+                                                  mock(RepositoryService.class),
+                                                  spaces);
 
         doAnswer(invocationOnMock -> {
             String key = invocationOnMock.getArgumentAt(0,
@@ -101,16 +106,20 @@ public class PullRequestServiceTest {
 
     @Test(expected = RepositoryNotFoundException.class)
     public void testCreatePullRequestToUnexistentRepository() {
-        PullRequest pullRequest = service.createPullRequest("child/a",
+        PullRequest pullRequest = service.createPullRequest("test-realm",
+                                                            "child/a",
                                                             "develop",
+                                                            "test-realm",
                                                             "doesNotExist/a",
                                                             "master");
     }
 
     @Test
     public void testCreatePullRequest() {
-        PullRequest pullRequest = service.createPullRequest("child/a",
+        PullRequest pullRequest = service.createPullRequest("test-realm",
+                                                            "child/a",
                                                             "develop",
+                                                            "test-realm",
                                                             "parent/a",
                                                             "master");
         List<PullRequest> pullRequests = service.getPullRequestsByBranch(0,
@@ -127,20 +136,28 @@ public class PullRequestServiceTest {
     public void testCreateSeveralPullRequest() {
         final String repository = "parent/a";
         final String branch = "master";
-        service.createPullRequest("child/a",
+        service.createPullRequest("test-realm",
+                                  "child/a",
                                   "develop",
+                                  "test-realm",
                                   repository,
                                   branch);
-        service.createPullRequest("child/b",
+        service.createPullRequest("test-realm",
+                                  "child/b",
                                   "develop",
+                                  "test-realm",
                                   repository,
                                   "otherBranch");
-        service.createPullRequest("child/c",
+        service.createPullRequest("test-realm",
+                                  "child/c",
                                   "develop",
+                                  "test-realm",
                                   repository,
                                   branch);
-        service.createPullRequest("child/d",
+        service.createPullRequest("test-realm",
+                                  "child/d",
                                   "develop",
+                                  "test-realm",
                                   repository,
                                   branch);
         List<PullRequest> pullRequests = service.getPullRequestsByRepository(0,
@@ -153,8 +170,10 @@ public class PullRequestServiceTest {
 
     @Test
     public void testAcceptPullRequest() {
-        PullRequest pullRequest = service.createPullRequest("child/a",
+        PullRequest pullRequest = service.createPullRequest("test-realm",
+                                                            "child/a",
                                                             "develop",
+                                                            "test-realm",
                                                             "parent/a",
                                                             "master");
 
@@ -178,8 +197,10 @@ public class PullRequestServiceTest {
         when(ioService.copy(any(Path.class),
                             any(Path.class),
                             any())).thenThrow(new RuntimeException("Mock exception"));
-        PullRequest pullRequest = service.createPullRequest("child/a",
+        PullRequest pullRequest = service.createPullRequest("test-realm",
+                                                            "child/a",
                                                             "develop",
+                                                            "test-realm",
                                                             "parent/a",
                                                             "master");
         try {
@@ -197,15 +218,19 @@ public class PullRequestServiceTest {
 
     @Test
     public void testFailToCreatePullRequest() {
-        PullRequest pullRequest = new PullRequestImpl("child/a",
+        PullRequest pullRequest = new PullRequestImpl("test-realm",
+                                                      "child/a",
                                                       "develop",
+                                                      "test-realm",
                                                       "parent/a",
                                                       "master");
         doThrow(new RuntimeException("Mocked exception")).when(this.storage).write(any(String.class),
                                                                                    any(GitMetadata.class));
         try {
-            pullRequest = service.createPullRequest("child/a",
+            pullRequest = service.createPullRequest("test-realm",
+                                                    "child/a",
                                                     "develop",
+                                                    "test-realm",
                                                     "parent/a",
                                                     "master");
             fail("Should throw exception before this point");
@@ -221,8 +246,10 @@ public class PullRequestServiceTest {
 
     @Test
     public void testRejectPullRequest() {
-        PullRequest pullRequest = service.createPullRequest("child/a",
+        PullRequest pullRequest = service.createPullRequest("test-realm",
+                                                            "child/a",
                                                             "develop",
+                                                            "test-realm",
                                                             "parent/a",
                                                             "master");
         service.rejectPullRequest(pullRequest);
@@ -237,8 +264,10 @@ public class PullRequestServiceTest {
 
     @Test
     public void testClosePullRequest() {
-        PullRequest pullRequest = service.createPullRequest("child/a",
+        PullRequest pullRequest = service.createPullRequest("test-realm",
+                                                            "child/a",
                                                             "develop",
+                                                            "test-realm",
                                                             "parent/a",
                                                             "master");
         service.closePullRequest(pullRequest);
@@ -253,8 +282,10 @@ public class PullRequestServiceTest {
 
     @Test
     public void testChangeStatusToMergedPullRequest() {
-        PullRequest pullRequest = service.createPullRequest("child/a",
+        PullRequest pullRequest = service.createPullRequest("test-realm",
+                                                            "child/a",
                                                             "develop",
+                                                            "test-realm",
                                                             "parent/a",
                                                             "master");
         ((PullRequestServiceImpl) service).changePullRequestStatus(pullRequest.getTargetRepository(),
@@ -270,8 +301,10 @@ public class PullRequestServiceTest {
 
     @Test
     public void testChangeStatusToClosedPullRequest() {
-        PullRequest pullRequest = service.createPullRequest("child/a",
+        PullRequest pullRequest = service.createPullRequest("test-realm",
+                                                            "child/a",
                                                             "develop",
+                                                            "test-realm",
                                                             "parent/a",
                                                             "master");
         ((PullRequestServiceImpl) service).changePullRequestStatus(pullRequest.getTargetRepository(),
@@ -287,8 +320,10 @@ public class PullRequestServiceTest {
 
     @Test
     public void testDeletePullRequest() {
-        PullRequest pullRequest = service.createPullRequest("child/a",
+        PullRequest pullRequest = service.createPullRequest("test-realm",
+                                                            "child/a",
                                                             "develop",
+                                                            "test-realm",
                                                             "parent/a",
                                                             "master");
         service.deletePullRequest(pullRequest);
@@ -302,16 +337,22 @@ public class PullRequestServiceTest {
 
     @Test
     public void testGetAllPullRequests() {
-        service.createPullRequest("child/a",
+        service.createPullRequest("test-realm",
+                                  "child/a",
                                   "develop",
+                                  "test-realm",
                                   "parent/a",
                                   "master");
-        service.createPullRequest("child/b",
+        service.createPullRequest("test-realm",
+                                  "child/b",
                                   "develop",
+                                  "test-realm",
                                   "parent/a",
                                   "develop");
-        service.createPullRequest("child/c",
+        service.createPullRequest("test-realm",
+                                  "child/c",
                                   "develop",
+                                  "test-realm",
                                   "parent/a",
                                   "master");
 
@@ -337,20 +378,28 @@ public class PullRequestServiceTest {
 
     @Test
     public void testGetAllPullRequestsWithDifferentStatus() {
-        PullRequest pullRequestA = service.createPullRequest("child/a",
+        PullRequest pullRequestA = service.createPullRequest("test-realm",
+                                                             "child/a",
                                                              "develop",
+                                                             "test-realm",
                                                              "parent/a",
                                                              "master");
-        PullRequest pullRequestB = service.createPullRequest("child/b",
+        PullRequest pullRequestB = service.createPullRequest("test-realm",
+                                                             "child/b",
                                                              "develop",
+                                                             "test-realm",
                                                              "parent/a",
                                                              "develop");
-        PullRequest pullRequestC = service.createPullRequest("child/c",
+        PullRequest pullRequestC = service.createPullRequest("test-realm",
+                                                             "child/c",
                                                              "develop",
+                                                             "test-realm",
                                                              "parent/a",
                                                              "master");
-        PullRequest pullRequestD = service.createPullRequest("child/d",
+        PullRequest pullRequestD = service.createPullRequest("test-realm",
+                                                             "child/d",
                                                              "develop",
+                                                             "test-realm",
                                                              "parent/a",
                                                              "master");
 
@@ -387,20 +436,28 @@ public class PullRequestServiceTest {
 
     @Test
     public void testGeneratePullRequestId() {
-        PullRequest pullRequestOne = service.createPullRequest("child/a",
+        PullRequest pullRequestOne = service.createPullRequest("test-realm",
+                                                               "child/a",
                                                                "develop",
+                                                               "test-realm",
                                                                "parent/a",
                                                                "master");
-        PullRequest pullRequestTwo = service.createPullRequest("child/a",
+        PullRequest pullRequestTwo = service.createPullRequest("test-realm",
+                                                               "child/a",
                                                                "fix",
+                                                               "test-realm",
                                                                "parent/a",
                                                                "master");
-        PullRequest pullRequestThree = service.createPullRequest("child/a",
+        PullRequest pullRequestThree = service.createPullRequest("test-realm",
+                                                                 "child/a",
                                                                  "fix",
+                                                                 "test-realm",
                                                                  "parent/a",
                                                                  "develop");
-        PullRequest pullRequestFour = service.createPullRequest("child/b",
+        PullRequest pullRequestFour = service.createPullRequest("test-realm",
+                                                                "child/b",
                                                                 "fix",
+                                                                "test-realm",
                                                                 "parent/a",
                                                                 "master");
         assertEquals(1,
@@ -415,25 +472,33 @@ public class PullRequestServiceTest {
 
     @Test(expected = PullRequestAlreadyExistsException.class)
     public void testCannotCreateSamePullRequest() {
-        service.createPullRequest("child/a",
+        service.createPullRequest("test-realm",
+                                  "child/a",
                                   "fix",
+                                  "test-realm",
                                   "parent/a",
                                   "master");
-        service.createPullRequest("child/a",
+        service.createPullRequest("test-realm",
+                                  "child/a",
                                   "fix",
+                                  "test-realm",
                                   "parent/a",
                                   "master");
     }
 
     @Test
     public void testCreateANewPullRequestWhenItISClosed() {
-        final PullRequest pr1 = service.createPullRequest("child/a",
+        final PullRequest pr1 = service.createPullRequest("test-realm",
+                                                          "child/a",
                                                           "fix",
+                                                          "test-realm",
                                                           "parent/a",
                                                           "master");
         service.acceptPullRequest(pr1);
-        final PullRequest pr2 = service.createPullRequest("child/a",
+        final PullRequest pr2 = service.createPullRequest("test-realm",
+                                                          "child/a",
                                                           "fix",
+                                                          "test-realm",
                                                           "parent/a",
                                                           "master");
         service.acceptPullRequest(pr2);
@@ -443,20 +508,26 @@ public class PullRequestServiceTest {
 
     @Test
     public void testGeneratedNumbersWhenPRAlreadyExists() {
-        final PullRequest pr1 = service.createPullRequest("child/a",
+        final PullRequest pr1 = service.createPullRequest("test-realm",
+                                                          "child/a",
                                                           "fix",
+                                                          "test-realm",
                                                           "parent/a",
                                                           "master");
         try {
-            final PullRequest pr2 = service.createPullRequest("child/a",
+            final PullRequest pr2 = service.createPullRequest("test-realm",
+                                                              "child/a",
                                                               "fix",
+                                                              "test-realm",
                                                               "parent/a",
                                                               "master");
         } catch (PullRequestAlreadyExistsException e) {
 
         }
-        final PullRequest pr2 = service.createPullRequest("child/b",
+        final PullRequest pr2 = service.createPullRequest("test-realm",
+                                                          "child/b",
                                                           "fix",
+                                                          "test-realm",
                                                           "parent/a",
                                                           "master");
         assertEquals(2,
@@ -467,8 +538,10 @@ public class PullRequestServiceTest {
     public void testBuildHiddenPath() {
 
         ((PullRequestServiceImpl) service).buildHiddenPath(new PullRequestImpl(1,
+                                                                               "test-realm",
                                                                                "source/a",
                                                                                "develop",
+                                                                               "test-realm",
                                                                                "target/a",
                                                                                "master",
                                                                                PullRequestStatus.OPEN));
@@ -490,8 +563,10 @@ public class PullRequestServiceTest {
     @Test
     public void testPagination() {
         final PullRequestImpl pr = new PullRequestImpl(1,
+                                                       "test-realm",
                                                        "source/a",
                                                        "develop",
+                                                       "test-realm",
                                                        "target/a",
                                                        "master",
                                                        PullRequestStatus.OPEN);

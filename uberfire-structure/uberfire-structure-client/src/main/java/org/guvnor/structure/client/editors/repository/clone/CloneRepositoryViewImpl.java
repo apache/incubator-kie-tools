@@ -34,7 +34,6 @@ import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.structure.client.resources.i18n.CommonConstants;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.HelpBlock;
@@ -106,12 +105,6 @@ public class CloneRepositoryViewImpl extends BaseModal implements CloneRepositor
 
     @UiField
     BaseModal popup;
-
-    @UiField
-    FormGroup managedReposiotryGroup;
-
-    @UiField
-    CheckBox managedRepository;
 
     @UiHandler("clone")
     public void onCloneClick(final ClickEvent e) {
@@ -367,18 +360,6 @@ public class CloneRepositoryViewImpl extends BaseModal implements CloneRepositor
 
         usernameTextBox.setText("");
         passwordTextBox.setText("");
-
-        managedRepository.setValue(Boolean.FALSE);
-    }
-
-    @Override
-    public boolean isManagedRepository() {
-        return managedRepository.getValue();
-    }
-
-    @Override
-    public void enableManagedRepoCreation(boolean enabled) {
-        managedReposiotryGroup.setVisible(enabled);
     }
 
     @Override

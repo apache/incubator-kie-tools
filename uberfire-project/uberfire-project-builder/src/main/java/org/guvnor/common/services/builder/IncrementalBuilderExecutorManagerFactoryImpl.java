@@ -24,8 +24,8 @@ import javax.naming.InitialContext;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.project.model.Module;
+import org.guvnor.common.services.project.service.ModuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.concurrent.Managed;
@@ -38,7 +38,7 @@ public class IncrementalBuilderExecutorManagerFactoryImpl implements Incremental
     private final boolean USE_EXECUTOR_SAFE_MODE = Boolean.parseBoolean(System.getProperty("org.uberfire.async.executor.safemode",
                                                                                            "false"));
 
-    private ProjectService<? extends Project> projectService;
+    private ModuleService<? extends Module> moduleService;
 
     private BuildService buildService;
 
@@ -51,12 +51,12 @@ public class IncrementalBuilderExecutorManagerFactoryImpl implements Incremental
     private IncrementalBuilderExecutorManager executorManager = null;
 
     @Inject
-    public IncrementalBuilderExecutorManagerFactoryImpl(ProjectService<? extends Project> projectService,
+    public IncrementalBuilderExecutorManagerFactoryImpl(ModuleService<? extends Module> moduleService,
                                                         BuildService buildService,
                                                         Event<BuildResults> buildResultsEvent,
                                                         Event<IncrementalBuildResults> incrementalBuildResultsEvent,
                                                         @Managed ExecutorService executorService) {
-        this.projectService = projectService;
+        this.moduleService = moduleService;
         this.buildService = buildService;
         this.buildResultsEvent = buildResultsEvent;
         this.incrementalBuildResultsEvent = incrementalBuildResultsEvent;
@@ -85,7 +85,7 @@ public class IncrementalBuilderExecutorManagerFactoryImpl implements Incremental
 
             if (_executorManager == null) {
                 executorManager = new IncrementalBuilderExecutorManager();
-                executorManager.setServices(projectService,
+                executorManager.setServices(moduleService,
                                             buildService,
                                             buildResultsEvent,
                                             incrementalBuildResultsEvent);

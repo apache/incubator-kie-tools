@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -16,9 +16,11 @@
 package org.guvnor.structure.organizationalunit;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.uberfire.spaces.Space;
 
 @Remote
 public interface OrganizationalUnitService {
@@ -29,6 +31,8 @@ public interface OrganizationalUnitService {
      * Get all the OUs. Security checks are omitted.
      */
     Collection<OrganizationalUnit> getAllOrganizationalUnits();
+
+    Collection<Space> getAllUserSpaces();
 
     /**
      * Get only those OUs available within the current security context.
@@ -74,6 +78,8 @@ public interface OrganizationalUnitService {
     void removeOrganizationalUnit(final String name);
 
     OrganizationalUnit getParentOrganizationalUnit(final Repository repository);
+
+    List<OrganizationalUnit> getOrganizationalUnits(final Repository repository);
 
     String getSanitizedDefaultGroupId(final String proposedGroupId);
 

@@ -15,50 +15,31 @@
 
 package org.guvnor.structure.repositories;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.backend.vfs.Path;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Portable
 public class NewBranchEvent {
 
-    private String repositoryAlias;
+    private final Repository repository;
+    private final String newBranchName;
 
-    private String branchName;
-    private Path branchPath;
-    private Long timestamp;
+    public NewBranchEvent(@MapsTo("repository") final Repository repository,
+                          @MapsTo("newBranchName") final String newBranchName) {
 
-    public NewBranchEvent() {
+        this.repository = checkNotNull("repository",
+                                       repository);
+        this.newBranchName = checkNotNull("newBranchName",
+                                          newBranchName);
     }
 
-    public NewBranchEvent(final String repositoryAlias,
-                          final String branchName,
-                          final Path branchPath,
-                          final Long timestamp) {
-        this.repositoryAlias = checkNotNull("repositoryAlias",
-                                            repositoryAlias);
-        this.branchName = checkNotNull("branchName",
-                                       branchName);
-        this.branchPath = checkNotNull("branchPath",
-                                       branchPath);
-        this.timestamp = checkNotNull("timestamp",
-                                      timestamp);
+    public Repository getRepository() {
+        return repository;
     }
 
-    public String getBranchName() {
-        return branchName;
-    }
-
-    public String getRepositoryAlias() {
-        return repositoryAlias;
-    }
-
-    public Path getBranchPath() {
-        return branchPath;
-    }
-
-    public Long getTimestamp() {
-        return timestamp;
+    public String getNewBranchName() {
+        return newBranchName;
     }
 }

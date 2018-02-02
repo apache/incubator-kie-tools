@@ -18,6 +18,7 @@ package org.guvnor.structure.server.config;
 public enum ConfigType {
 
     GLOBAL(".global"),
+    SPACE(".space"),
     REPOSITORY(".repository"),
     ORGANIZATIONAL_UNIT(".organizationalunit"),
     PROJECT(".project"),

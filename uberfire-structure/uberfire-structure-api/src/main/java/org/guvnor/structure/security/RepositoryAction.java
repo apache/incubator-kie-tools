@@ -23,4 +23,5 @@ public interface RepositoryAction extends ResourceAction {
     RepositoryAction CREATE = () -> "create";
     RepositoryAction UPDATE = () -> "update";
     RepositoryAction DELETE = () -> "delete";
+    RepositoryAction BUILD = () -> "build";
 }

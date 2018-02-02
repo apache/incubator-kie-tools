@@ -22,7 +22,7 @@ import org.guvnor.rest.backend.JobResultManager;
 import org.guvnor.rest.client.JobRequest;
 import org.guvnor.rest.client.JobResult;
 import org.guvnor.rest.client.JobStatus;
-import org.guvnor.rest.client.RemoveOrganizationalUnitRequest;
+import org.guvnor.rest.client.RemoveSpaceRequest;
 
 public class RemoveOrgUnitCmd extends AbstractJobCommand {
 
@@ -37,16 +37,16 @@ public class RemoveOrgUnitCmd extends AbstractJobCommand {
     @Override
     public JobResult internalExecute(JobRequest request) throws Exception {
         JobRequestHelper helper = getHelper();
-        RemoveOrganizationalUnitRequest jobRequest = (RemoveOrganizationalUnitRequest) request;
+        RemoveSpaceRequest jobRequest = (RemoveSpaceRequest) request;
 
         JobResult result = null;
         try {
             result = helper.removeOrganizationalUnit(jobRequest.getJobId(),
-                                                     jobRequest.getOrganizationalUnitName());
+                                                     jobRequest.getSpaceName());
         } finally {
             JobStatus status = result != null ? result.getStatus() : JobStatus.SERVER_ERROR;
             logger.debug("-----removeOrganizationalUnit--- , OrganizationalUnit name: {}",
-                         jobRequest.getOrganizationalUnitName(),
+                         jobRequest.getSpaceName(),
                          status);
         }
         return result;

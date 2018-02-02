@@ -19,9 +19,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
 
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.project.ProjectFactory;
-import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.project.model.Module;
+import org.guvnor.common.services.project.project.ModuleFactory;
+import org.guvnor.common.services.project.service.ModuleService;
 
 import static org.mockito.Mockito.*;
 
@@ -30,13 +30,13 @@ public class TestProjectService {
 
     @Produces
     @Alternative
-    public ProjectService<Project> projectService() {
-        return mock(ProjectService.class);
+    public ModuleService<MockModule> moduleService() {
+        return new ModuleServiceMock();
     }
 
     @Produces
     @Alternative
-    public ProjectFactory<Project> projectProjectFactory() {
-        return mock(ProjectFactory.class);
+    public ModuleFactory<Module> projectProjectFactory() {
+        return mock(ModuleFactory.class);
     }
 }

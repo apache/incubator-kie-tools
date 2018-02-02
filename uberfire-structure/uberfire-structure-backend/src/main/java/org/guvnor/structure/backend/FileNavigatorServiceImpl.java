@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -36,6 +36,7 @@ import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.spaces.Space;
 
 import static java.util.Collections.reverse;
 import static java.util.Collections.sort;
@@ -55,8 +56,8 @@ public class FileNavigatorServiceImpl implements FileNavigatorService {
 
     @Override
     public NavigatorContent listContent(final org.uberfire.backend.vfs.Path _path) {
-        final ArrayList<DataContent> result = new ArrayList<DataContent>();
-        final ArrayList<org.uberfire.backend.vfs.Path> breadcrumbs = new ArrayList<org.uberfire.backend.vfs.Path>();
+        final ArrayList<DataContent> result = new ArrayList<>();
+        final ArrayList<org.uberfire.backend.vfs.Path> breadcrumbs = new ArrayList<>();
 
         Path path = Paths.convert(_path);
         final DirectoryStream<Path> stream = ioService.newDirectoryStream(path);
@@ -119,7 +120,7 @@ public class FileNavigatorServiceImpl implements FileNavigatorService {
     }
 
     @Override
-    public List<Repository> listRepositories() {
-        return new ArrayList<Repository>(repositoryService.getRepositories());
+    public List<Repository> listRepositories(final Space space) {
+        return new ArrayList<>(repositoryService.getRepositories(space));
     }
 }

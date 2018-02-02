@@ -18,6 +18,7 @@ package org.guvnor.structure.repositories;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.jboss.errai.common.client.api.Caller;
@@ -25,6 +26,7 @@ import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.base.version.VersionRecord;
+import org.uberfire.spaces.Space;
 
 /**
  * Utility class for client side testing.
@@ -69,26 +71,30 @@ public class RepositoryServiceCallerMock
         }
 
         @Override
-        public RepositoryInfo getRepositoryInfo(String alias) {
-            RepositoryInfo result = repositoryService.getRepositoryInfo(alias);
+        public RepositoryInfo getRepositoryInfo(Space space, String alias) {
+            RepositoryInfo result = repositoryService.getRepositoryInfo(space, alias);
             remoteCallback.callback(result);
             return result;
         }
 
         @Override
-        public List<VersionRecord> getRepositoryHistory(String alias,
+        public List<VersionRecord> getRepositoryHistory(Space space,
+                                                        String alias,
                                                         int startIndex) {
-            List<VersionRecord> result = repositoryService.getRepositoryHistory(alias,
+            List<VersionRecord> result = repositoryService.getRepositoryHistory(space,
+                                                                                alias,
                                                                                 startIndex);
             remoteCallback.callback(result);
             return result;
         }
 
         @Override
-        public List<VersionRecord> getRepositoryHistory(String alias,
+        public List<VersionRecord> getRepositoryHistory(Space space,
+                                                        String alias,
                                                         int startIndex,
                                                         int endIndex) {
-            List<VersionRecord> result = repositoryService.getRepositoryHistory(alias,
+            List<VersionRecord> result = repositoryService.getRepositoryHistory(space,
+                                                                                alias,
                                                                                 startIndex,
                                                                                 endIndex);
             remoteCallback.callback(result);
@@ -96,15 +102,17 @@ public class RepositoryServiceCallerMock
         }
 
         @Override
-        public List<VersionRecord> getRepositoryHistoryAll(String alias) {
-            List<VersionRecord> result = repositoryService.getRepositoryHistoryAll(alias);
+        public List<VersionRecord> getRepositoryHistoryAll(Space space, String alias) {
+            List<VersionRecord> result = repositoryService.getRepositoryHistoryAll(space, alias);
             remoteCallback.callback(result);
             return result;
         }
 
         @Override
-        public Repository getRepository(String alias) {
-            Repository result = repositoryService.getRepository(alias);
+        public Repository getRepositoryFromSpace(Space currentSpace,
+                                                 String alias) {
+            Repository result = repositoryService.getRepositoryFromSpace(currentSpace,
+                                                                         alias);
             remoteCallback.callback(result);
             return result;
         }
@@ -117,15 +125,29 @@ public class RepositoryServiceCallerMock
         }
 
         @Override
-        public Collection<Repository> getAllRepositories() {
-            Collection<Repository> result = repositoryService.getAllRepositories();
+        public Repository getRepository(Space space, Path root) {
+            Repository result = repositoryService.getRepository(space, root);
             remoteCallback.callback(result);
             return result;
         }
 
         @Override
-        public Collection<Repository> getRepositories() {
-            Collection<Repository> result = repositoryService.getRepositories();
+        public Collection<Repository> getAllRepositories(Space space) {
+            Collection<Repository> result = repositoryService.getAllRepositories(space);
+            remoteCallback.callback(result);
+            return result;
+        }
+
+        @Override
+        public Collection<Repository> getAllRepositoriesFromAllUserSpaces() {
+            Collection<Repository> result = repositoryService.getAllRepositoriesFromAllUserSpaces();
+            remoteCallback.callback(result);
+            return result;
+        }
+
+        @Override
+        public Collection<Repository> getRepositories(Space space) {
+            Collection<Repository> result = repositoryService.getRepositories(space);
             remoteCallback.callback(result);
             return result;
         }
@@ -137,17 +159,6 @@ public class RepositoryServiceCallerMock
                                            final RepositoryEnvironmentConfigurations configuration) throws RepositoryAlreadyExistsException {
             Repository result = repositoryService.createRepository(organizationalUnit,
                                                                    scheme,
-                                                                   alias,
-                                                                   configuration);
-            remoteCallback.callback(result);
-            return result;
-        }
-
-        @Override
-        public Repository createRepository(final String scheme,
-                                           final String alias,
-                                           final RepositoryEnvironmentConfigurations configuration) throws RepositoryAlreadyExistsException {
-            Repository result = repositoryService.createRepository(scheme,
                                                                    alias,
                                                                    configuration);
             remoteCallback.callback(result);
@@ -183,17 +194,13 @@ public class RepositoryServiceCallerMock
         }
 
         @Override
-        public void removeRepository(String alias) {
-            repositoryService.removeRepository(alias);
+        public void removeRepository(Space space, String alias) {
+            repositoryService.removeRepository(space, alias);
         }
 
         @Override
-        public Repository updateRepositoryConfiguration(final Repository repository,
-                                                        final RepositoryEnvironmentConfigurations config) {
-            Repository result = repositoryService.updateRepositoryConfiguration(repository,
-                                                                                config);
-            remoteCallback.callback(result);
-            return result;
+        public void removeRepositories(Space space, Set<String> aliases) {
+            repositoryService.removeRepositories(space, aliases);
         }
     }
 }

@@ -44,6 +44,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Resource;
 import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.spaces.SpacesAPI;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -53,6 +54,9 @@ public class OrganizationalUnitServiceTest {
 
     @Mock
     private RepositoryService repositoryService;
+
+    @Mock
+    private SpacesAPI spacesAPI;
 
     @Mock
     private ConfigurationService configurationService;
@@ -86,16 +90,21 @@ public class OrganizationalUnitServiceTest {
     @Mock
     private SessionInfo sessionInfo;
 
+    @Mock
+    private RepositoryService repoService;
+
     private OrganizationalUnitServiceImpl organizationalUnitService;
 
     @Before
     public void setUp() throws Exception {
         backward = new BackwardCompatibleUtil(configurationFactory);
         organizationalUnitFactory = spy(new OrganizationalUnitFactoryImpl(repositoryService,
-                                                                          backward));
+                                                                          backward,
+                                                                          spacesAPI));
         organizationalUnitService = new OrganizationalUnitServiceImpl(configurationService,
                                                                       configurationFactory,
                                                                       organizationalUnitFactory,
+                                                                      repoService,
                                                                       backward,
                                                                       newOrganizationalUnitEvent,
                                                                       removeOrganizationalUnitEvent,
@@ -103,6 +112,7 @@ public class OrganizationalUnitServiceTest {
                                                                       repoRemovedFromOrgUnitEvent,
                                                                       updatedOrganizationalUnitEvent,
                                                                       authorizationManager,
+                                                                      spacesAPI,
                                                                       sessionInfo);
 
         organizationalUnitService.registeredOrganizationalUnits.put("A",

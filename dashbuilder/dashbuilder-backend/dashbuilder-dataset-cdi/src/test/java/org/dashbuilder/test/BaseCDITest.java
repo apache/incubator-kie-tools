@@ -35,7 +35,8 @@ public class BaseCDITest {
 
     @Deployment
     public static Archive<?> createTestArchive()  {
-        return ShrinkWrapHelper.createJavaArchive()
+        return ShrinkWrapHelper.createJavaArchive().addPackages(true,
+                                                             "org.uberfire.backend.server.spaces")
                 .addAsManifestResource(EmptyAsset.INSTANCE, "org.dashbuilder.pojo.Bean.config")
                 .addAsManifestResource(EmptyAsset.INSTANCE, "org.dashbuilder.pojo.BeanExt.config")
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.config")

@@ -830,7 +830,6 @@
     <module>uberfire-packaging</module>
     <module>uberfire-preferences</module>
     <module>uberfire-extensions</module>
-    <module>uberfire-asset-mgmt</module>
     <module>uberfire-m2repo-editor</module>
     <module>uberfire-message-console</module>
     <module>uberfire-organizationalunit-manager</module>

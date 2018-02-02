@@ -62,9 +62,6 @@ public class RepositoryItemViewImpl
     @UiField
     public Button btnChangeBranch;
 
-    @UiField
-    public Button btnRemoveRepository;
-
     private RepositoryItemPresenter presenter;
 
     @Inject
@@ -152,23 +149,8 @@ public class RepositoryItemViewImpl
     }
 
     @Override
-    public void setUpdateEnabled(boolean enabled) {
-        btnChangeBranch.setEnabled(enabled);
-    }
-
-    @Override
-    public void setDeleteEnabled(boolean enabled) {
-        btnRemoveRepository.setEnabled(enabled);
-    }
-
-    @Override
     public void refresh() {
         branchesDropdown.refresh();
-    }
-
-    @UiHandler("btnRemoveRepository")
-    public void onRemoveRepository(final ClickEvent event) {
-        presenter.onClickButtonRemoveRepository();
     }
 
     @UiHandler("btnChangeBranch")

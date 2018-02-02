@@ -29,9 +29,9 @@ import javax.inject.Inject;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.project.service.ModuleService;
 import org.guvnor.common.services.shared.config.AppConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,22 +45,19 @@ import org.uberfire.workbench.events.ResourceChange;
 @ApplicationScoped
 public class ResourceChangeIncrementalBuilder {
 
+    protected static final Logger logger = LoggerFactory.getLogger(ResourceChangeIncrementalBuilder.class);
     private static final String INCREMENTAL_BUILD_PROPERTY_NAME = "build.enable-incremental";
 
-    protected static final Logger logger = LoggerFactory.getLogger(ResourceChangeIncrementalBuilder.class);
-
     @Inject
-    protected ProjectService<? extends Project> projectService;
+    protected ModuleService<? extends Module> moduleService;
+    protected boolean isIncrementalEnabled = false;
 
     @Inject
     private AppConfigService appConfigService;
 
     @Inject
     private IncrementalBuilderExecutorManagerFactory executorManagerProducer;
-
     private IncrementalBuilderExecutorManager executorManager = null;
-
-    protected boolean isIncrementalEnabled = false;
 
     @PostConstruct
     private void setup() {
@@ -110,7 +107,7 @@ public class ResourceChangeIncrementalBuilder {
         logger.info("Incremental build request received for: " + resource.toURI() + " (added).");
 
         //If resource is not within a Package it cannot be used for an incremental build
-        final Package pkg = projectService.resolvePackage(resource);
+        final Package pkg = moduleService.resolvePackage(resource);
         if (pkg == null) {
             return;
         }
@@ -119,20 +116,20 @@ public class ResourceChangeIncrementalBuilder {
         getExecutor().execute(new AsyncIncrementalBuilder() {
 
             @Override
-            public void execute(final ProjectService projectService,
+            public void execute(final ModuleService projectService,
                                 final BuildService buildService,
                                 final Event<IncrementalBuildResults> incrementalBuildResultsEvent,
                                 final Event<BuildResults> buildResultsEvent) {
                 try {
                     logger.info("Incremental build request being processed: " + resource.toURI() + " (added).");
-                    final Project project = projectService.resolveProject(resource);
+                    final Module module = projectService.resolveModule(resource);
 
                     //Fall back to a Full Build in lieu of an Incremental Build if the Project has not been previously built
-                    if (buildService.isBuilt(project)) {
+                    if (buildService.isBuilt(module)) {
                         final IncrementalBuildResults results = buildService.addPackageResource(resource);
                         incrementalBuildResultsEvent.fire(results);
                     } else {
-                        final BuildResults results = buildService.build(project);
+                        final BuildResults results = buildService.build(module);
                         buildResultsEvent.fire(results);
                     }
                 } catch (Exception e) {
@@ -157,7 +154,7 @@ public class ResourceChangeIncrementalBuilder {
         logger.info("Incremental build request received for: " + resource.toURI() + " (deleted).");
 
         //If resource is not within a Package it cannot be used for an incremental build
-        final Package pkg = projectService.resolvePackage(resource);
+        final Package pkg = moduleService.resolvePackage(resource);
         if (pkg == null) {
             return;
         }
@@ -166,20 +163,20 @@ public class ResourceChangeIncrementalBuilder {
         getExecutor().execute(new AsyncIncrementalBuilder() {
 
             @Override
-            public void execute(final ProjectService projectService,
+            public void execute(final ModuleService projectService,
                                 final BuildService buildService,
                                 final Event<IncrementalBuildResults> incrementalBuildResultsEvent,
                                 final Event<BuildResults> buildResultsEvent) {
                 try {
                     logger.info("Incremental build request being processed: " + resource.toURI() + " (deleted).");
-                    final Project project = projectService.resolveProject(resource);
+                    final Module module = projectService.resolveModule(resource);
 
                     //Fall back to a Full Build in lieu of an Incremental Build if the Project has not been previously built
-                    if (buildService.isBuilt(project)) {
+                    if (buildService.isBuilt(module)) {
                         final IncrementalBuildResults results = buildService.deletePackageResource(resource);
                         incrementalBuildResultsEvent.fire(results);
                     } else {
-                        final BuildResults results = buildService.build(project);
+                        final BuildResults results = buildService.build(module);
                         buildResultsEvent.fire(results);
                     }
                 } catch (Exception e) {
@@ -208,7 +205,7 @@ public class ResourceChangeIncrementalBuilder {
             scheduleProjectResourceUpdate(resource);
         } else {
             //If resource is not within a Package it cannot be used for an incremental build
-            final Package pkg = projectService.resolvePackage(resource);
+            final Package pkg = moduleService.resolvePackage(resource);
             if (pkg == null) {
                 return;
             }
@@ -217,22 +214,22 @@ public class ResourceChangeIncrementalBuilder {
     }
 
     protected boolean isProjectResourceUpdateNeeded(Path resource) {
-        return projectService.isPom(resource);
+        return moduleService.isPom(resource);
     }
 
     //Schedule a re-build of a Project (changes to pom.xml or kmodule.xml require a full build)
     protected void scheduleProjectResourceUpdate(final Path resource) {
-        final Project project = projectService.resolveProject(resource);
+        final Module module = moduleService.resolveModule(resource);
         getExecutor().execute(new AsyncIncrementalBuilder() {
 
             @Override
-            public void execute(final ProjectService projectService,
+            public void execute(final ModuleService projectService,
                                 final BuildService buildService,
                                 final Event<IncrementalBuildResults> incrementalBuildResultsEvent,
                                 final Event<BuildResults> buildResultsEvent) {
                 try {
-                    logger.info("Incremental build request being processed: " + project.getRootPath() + " (updated).");
-                    final BuildResults results = buildService.build(project);
+                    logger.info("Incremental build request being processed: " + module.getRootPath() + " (updated).");
+                    final BuildResults results = buildService.build(module);
                     buildResultsEvent.fire(results);
                 } catch (Exception e) {
                     logger.error(e.getMessage(),
@@ -252,20 +249,20 @@ public class ResourceChangeIncrementalBuilder {
         getExecutor().execute(new AsyncIncrementalBuilder() {
 
             @Override
-            public void execute(final ProjectService projectService,
+            public void execute(final ModuleService projectService,
                                 final BuildService buildService,
                                 final Event<IncrementalBuildResults> incrementalBuildResultsEvent,
                                 final Event<BuildResults> buildResultsEvent) {
                 try {
                     logger.info("Incremental build request being processed: " + resource.toURI() + " (updated).");
-                    final Project project = projectService.resolveProject(resource);
+                    final Module module = projectService.resolveModule(resource);
 
                     //Fall back to a Full Build in lieu of an Incremental Build if the Project has not been previously built
-                    if (buildService.isBuilt(project)) {
+                    if (buildService.isBuilt(module)) {
                         final IncrementalBuildResults results = buildService.updatePackageResource(resource);
                         incrementalBuildResultsEvent.fire(results);
                     } else {
-                        final BuildResults results = buildService.build(project);
+                        final BuildResults results = buildService.build(module);
                         buildResultsEvent.fire(results);
                     }
                 } catch (Exception e) {
@@ -290,21 +287,21 @@ public class ResourceChangeIncrementalBuilder {
         logger.info("Batch incremental build request received.");
 
         //Block changes together with their respective project as Builder operates at the Project level
-        final Map<Project, Map<Path, Collection<ResourceChange>>> projectBatchChanges = new HashMap<Project, Map<Path, Collection<ResourceChange>>>();
+        final Map<Module, Map<Path, Collection<ResourceChange>>> projectBatchChanges = new HashMap<Module, Map<Path, Collection<ResourceChange>>>();
 
         for (Map.Entry<Path, Collection<ResourceChange>> pathCollectionEntry : batch.entrySet()) {
             for (final ResourceChange change : pathCollectionEntry.getValue()) {
                 final Path resource = pathCollectionEntry.getKey();
 
                 //If resource is not within a Package it cannot be used for an incremental build
-                final Project project = projectService.resolveProject(resource);
-                final Package pkg = projectService.resolvePackage(resource);
-                if (project != null && pkg != null) {
-                    if (!projectBatchChanges.containsKey(project)) {
-                        projectBatchChanges.put(project,
+                final Module module = moduleService.resolveModule(resource);
+                final Package pkg = moduleService.resolvePackage(resource);
+                if (module != null && pkg != null) {
+                    if (!projectBatchChanges.containsKey(module)) {
+                        projectBatchChanges.put(module,
                                                 new HashMap<Path, Collection<ResourceChange>>());
                     }
-                    final Map<Path, Collection<ResourceChange>> projectChanges = projectBatchChanges.get(project);
+                    final Map<Path, Collection<ResourceChange>> projectChanges = projectBatchChanges.get(module);
                     if (!projectChanges.containsKey(pathCollectionEntry.getKey())) {
                         projectChanges.put(pathCollectionEntry.getKey(),
                                            new ArrayList<ResourceChange>());
@@ -316,26 +313,26 @@ public class ResourceChangeIncrementalBuilder {
         }
 
         //Schedule an incremental build for each Project
-        for (final Map.Entry<Project, Map<Path, Collection<ResourceChange>>> e : projectBatchChanges.entrySet()) {
+        for (final Map.Entry<Module, Map<Path, Collection<ResourceChange>>> e : projectBatchChanges.entrySet()) {
             getExecutor().execute(new AsyncIncrementalBuilder() {
 
                 @Override
-                public void execute(final ProjectService projectService,
+                public void execute(final ModuleService projectService,
                                     final BuildService buildService,
                                     final Event<IncrementalBuildResults> incrementalBuildResultsEvent,
                                     final Event<BuildResults> buildResultsEvent) {
                     try {
                         logger.info("Batch incremental build request being processed.");
-                        final Project project = e.getKey();
+                        final Module module = e.getKey();
                         final Map<Path, Collection<ResourceChange>> changes = e.getValue();
 
                         //Fall back to a Full Build in lieu of an Incremental Build if the Project has not been previously built
-                        if (buildService.isBuilt(project)) {
-                            final IncrementalBuildResults results = buildService.applyBatchResourceChanges(project,
+                        if (buildService.isBuilt(module)) {
+                            final IncrementalBuildResults results = buildService.applyBatchResourceChanges(module,
                                                                                                            changes);
                             incrementalBuildResultsEvent.fire(results);
                         } else {
-                            final BuildResults results = buildService.build(project);
+                            final BuildResults results = buildService.build(module);
                             buildResultsEvent.fire(results);
                         }
                     } catch (Exception e) {
@@ -346,7 +343,7 @@ public class ResourceChangeIncrementalBuilder {
 
                 @Override
                 public String getDescription() {
-                    return "Batch incremental build [" + e.getKey().getProjectName() + "]";
+                    return "Batch incremental build [" + e.getKey().getModuleName() + "]";
                 }
             });
         }

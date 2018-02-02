@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.server.io.object.ObjectStorage;
+import org.uberfire.backend.server.spaces.SpacesAPIImpl;
 
 import static org.jgroups.util.Util.assertEquals;
 import static org.jgroups.util.Util.assertFalse;
@@ -41,10 +42,12 @@ public class GitMetadataImplStoreTest {
     @Mock
     private ObjectStorage storage;
     private Map<String, GitMetadataImpl> metadatas;
+    private SpacesAPIImpl spaces = new SpacesAPIImpl();
 
     @Before
     public void setUp() throws Exception {
-        metadataStore = new GitMetadataStoreImpl(storage);
+        metadataStore = new GitMetadataStoreImpl(storage,
+                                                 spaces);
 
         metadatas = new HashMap<>();
         doAnswer(invocationOnMock -> {
@@ -74,7 +77,7 @@ public class GitMetadataImplStoreTest {
     @Test
     public void testStorageInitialization() {
         metadataStore.init();
-        verify(storage).init(eq("default://system_ou/metadata"));
+        verify(storage).init(eq(metadataStore.getMetadataFS()));
     }
 
     @Test

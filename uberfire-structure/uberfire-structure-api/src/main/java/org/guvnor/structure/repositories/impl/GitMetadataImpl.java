@@ -124,8 +124,10 @@ public class GitMetadataImpl implements GitMetadata {
         final PullRequest pr = prs.get(0);
 
         return new PullRequestImpl(pr.getId(),
+                                   pr.getSourceSpace(),
                                    pr.getSourceRepository(),
                                    pr.getSourceBranch(),
+                                   pr.getTargetSpace(),
                                    pr.getTargetRepository(),
                                    pr.getTargetBranch(),
                                    pr.getStatus());

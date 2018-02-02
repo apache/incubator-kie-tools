@@ -15,13 +15,15 @@
  */
 package org.guvnor.common.services.backend.migration;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import javax.enterprise.inject.Instance;
+import java.util.Optional;
 
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.project.model.Module;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.security.shared.api.GroupImpl;
@@ -34,6 +36,7 @@ import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.authz.AuthorizationPolicyStorage;
 import org.uberfire.backend.events.AuthorizationPolicyDeployedEvent;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.security.authz.AuthorizationPolicy;
 import org.uberfire.security.authz.AuthorizationResult;
 import org.uberfire.security.authz.Permission;
@@ -57,16 +60,16 @@ public class ACLMigrationToolTest {
     RepositoryService repositoryService;
 
     @Mock
-    ProjectService projectService;
-
-    @Mock
     OrganizationalUnit orgUnit1;
 
     @Mock
     Repository repo1;
 
     @Mock
-    Project project1;
+    Module module1;
+
+    @Mock
+    WorkspaceProject workspaceProject1;
 
     @Spy
     @InjectMocks
@@ -81,27 +84,29 @@ public class ACLMigrationToolTest {
         authorizationPolicy = permissionManager.newAuthorizationPolicy().build();
         migrationTool = spy(new ACLMigrationTool(organizationalUnitService,
                                                  repositoryService,
-                                                 mock(Instance.class),
                                                  permissionManager,
                                                  policyStorage));
 
-        when(migrationTool.getProjectService()).thenReturn(projectService);
+        final Path repo1root = mock(Path.class);
+
         when(organizationalUnitService.getAllOrganizationalUnits()).thenReturn(Collections.singleton(orgUnit1));
-        when(repositoryService.getAllRepositories()).thenReturn(Collections.singleton(repo1));
-        when(projectService.getAllProjects(repo1,
-                                           "master")).thenReturn(Collections.singleton(project1));
+        when(repositoryService.getAllRepositoriesFromAllUserSpaces()).thenReturn(Collections.singleton(repo1));
 
         when(orgUnit1.getIdentifier()).thenReturn("orgUnit1");
         when(orgUnit1.getResourceType()).thenReturn(OrganizationalUnit.RESOURCE_TYPE);
         when(orgUnit1.getGroups()).thenReturn(Collections.singleton("group1"));
 
         when(repo1.getIdentifier()).thenReturn("repo1");
-        when(repo1.getResourceType()).thenReturn(Repository.RESOURCE_TYPE);
-        when(repo1.getGroups()).thenReturn(Collections.singleton("group1"));
+        final Branch master = new Branch("master",
+                                   repo1root);
+        when(repo1.getBranch("master")).thenReturn(Optional.of(master));
+        when(repo1.getDefaultBranch()).thenReturn(Optional.of(master));
 
-        when(project1.getIdentifier()).thenReturn("project1");
-        when(project1.getResourceType()).thenReturn(Project.RESOURCE_TYPE);
-        when(project1.getGroups()).thenReturn(Collections.singleton("group2"));
+        when(repo1.getResourceType()).thenReturn(Repository.RESOURCE_TYPE);
+        final ArrayList<String> groupList = new ArrayList<>();
+        groupList.add("group1");
+        groupList.add("group2");
+        when(repo1.getGroups()).thenReturn(groupList);
     }
 
     @Test
@@ -136,10 +141,5 @@ public class ACLMigrationToolTest {
         assertNotNull(pc2);
         assertEquals(pc2.collection().size(),
                      1);
-
-        Permission p3 = pc2.get("project.read.project1");
-        assertNotNull(p3);
-        assertEquals(p3.getResult(),
-                     AuthorizationResult.ACCESS_GRANTED);
     }
 }

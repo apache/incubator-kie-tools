@@ -16,6 +16,8 @@
 
 package org.uberfire.backend.server.io.object;
 
+import java.net.URI;
+
 import org.uberfire.java.nio.file.Path;
 
 /**
@@ -25,9 +27,9 @@ public interface ObjectStorage {
 
     /**
      * Initialize the object storage.
-     * @param rootPath The root path where is going to create the file system
+     * @param rootURI The root URI where is going to create the file system
      */
-    void init(String rootPath);
+    void init(URI rootURI);
 
     /**
      * Checks if a path exists into the object storage.

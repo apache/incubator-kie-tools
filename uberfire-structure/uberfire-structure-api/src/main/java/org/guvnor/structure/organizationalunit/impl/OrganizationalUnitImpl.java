@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -22,6 +22,7 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.security.ResourceType;
+import org.uberfire.spaces.Space;
 
 @Portable
 public class OrganizationalUnitImpl implements OrganizationalUnit {
@@ -49,6 +50,11 @@ public class OrganizationalUnitImpl implements OrganizationalUnit {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public Space getSpace() {
+        return new Space(name);
     }
 
     @Override
@@ -127,10 +133,12 @@ public class OrganizationalUnitImpl implements OrganizationalUnit {
         return requiresRefresh;
     }
 
+    @Override
     public Collection<String> getGroups() {
         return groups;
     }
 
+    @Override
     public Collection<String> getContributors() {
         return contributors;
     }

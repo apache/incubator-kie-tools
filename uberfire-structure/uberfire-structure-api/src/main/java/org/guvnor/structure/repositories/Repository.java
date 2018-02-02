@@ -18,8 +18,11 @@ package org.guvnor.structure.repositories;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.guvnor.structure.security.RepositoryResourceType;
+import org.uberfire.spaces.Space;
+import org.uberfire.spaces.SpacesAPI;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.data.Cacheable;
 import org.uberfire.security.authz.RuntimeContentResource;
@@ -37,7 +40,9 @@ public interface Repository
      */
     String getAlias();
 
-    String getScheme();
+    SpacesAPI.Scheme getScheme();
+
+    Space getSpace();
 
     Map<String, Object> getEnvironment();
 
@@ -50,11 +55,9 @@ public interface Repository
 
     List<PublicURI> getPublicURIs();
 
-    Path getRoot();
+    Optional<Branch> getBranch(final String branch);
 
-    Path getBranchRoot(final String branch);
-
-    void setRoot(final Path root);
+    Optional<Branch> getBranch(final Path branchRoot);
 
     Collection<String> getGroups();
 
@@ -62,11 +65,11 @@ public interface Repository
      * Returns "read-only" view of all branches available in this repository.
      * @return
      */
-    Collection<String> getBranches();
+    Collection<Branch> getBranches();
 
     /**
      * In the case of Git repository this would be master.
-     * @return null if there are no branches.
+     * @return empty if there are no branches.
      */
-    String getDefaultBranch();
+    Optional<Branch> getDefaultBranch();
 }

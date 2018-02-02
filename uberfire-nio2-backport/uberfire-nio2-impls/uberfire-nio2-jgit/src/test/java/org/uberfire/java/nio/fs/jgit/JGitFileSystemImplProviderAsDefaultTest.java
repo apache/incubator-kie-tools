@@ -77,4 +77,21 @@ public class JGitFileSystemImplProviderAsDefaultTest extends AbstractTestInfra {
 
         fs.close();
     }
+
+    @Test
+    public void testGetComplexPathFileSystemNameIncludedInPath() {
+        final URI newRepo = URI.create("default://default-new-complex-get-repo-name");
+
+        FileSystem fs = provider.newFileSystem(newRepo,
+                                               EMPTY_ENV);
+
+        final Path path = provider.getPath(URI.create("default://origin/master@default-new-complex-get-repo-name/home/default-new-complex-get-repo-name/somefolder"));
+
+        assertThat(path).isNotNull();
+        assertThat(path.getRoot().toString()).isEqualTo("/");
+        assertThat(path.toString()).isEqualTo("/home/default-new-complex-get-repo-name/somefolder");
+        assertThat(path.toUri().getScheme()).isEqualTo("default");
+
+        fs.close();
+    }
 }

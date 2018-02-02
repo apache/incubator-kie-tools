@@ -18,7 +18,6 @@ package org.uberfire.backend.server.cdi;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.net.URI;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -48,6 +47,7 @@ import javax.inject.Singleton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.backend.server.spaces.SpacesAPIImpl;
 import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
 import org.uberfire.commons.services.cdi.Startable;
 import org.uberfire.commons.services.cdi.Startup;
@@ -68,6 +68,7 @@ import org.uberfire.java.nio.file.PatternSyntaxException;
 import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.java.nio.file.attribute.UserPrincipalLookupService;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
+import org.uberfire.spaces.SpacesAPI;
 
 public class SystemConfigProducer implements Extension {
 
@@ -78,14 +79,21 @@ public class SystemConfigProducer implements Extension {
     private static final String START_METHOD = System.getProperty("org.uberfire.start.method",
                                                                   "cdi");
 
-    private final List<OrderedBean> startupEagerBeans = new LinkedList<OrderedBean>();
-    private final List<OrderedBean> startupBootstrapBeans = new LinkedList<OrderedBean>();
+    private final List<OrderedBean> startupEagerBeans = new LinkedList<>();
+    private final List<OrderedBean> startupBootstrapBeans = new LinkedList<>();
     private final Comparator<OrderedBean> priorityComparator = (o1, o2) -> o1.priority - o2.priority;
     private boolean systemFSNotExists = true;
+    private boolean pluginsFSNotExists = true;
     private boolean ioStrategyBeanNotFound = true;
 
     public void processSystemFSProducer(@Observes ProcessProducer<?, FileSystem> pp) {
         if (pp.getAnnotatedMember().getJavaMember().getName().equals("systemFS")) {
+            ioStrategyBeanNotFound = false;
+        }
+    }
+
+    public void processPluginsFSProducer(@Observes ProcessProducer<?, FileSystem> pp) {
+        if (pp.getAnnotatedMember().getJavaMember().getName().equals("pluginsFS")) {
             ioStrategyBeanNotFound = false;
         }
     }
@@ -99,6 +107,8 @@ public class SystemConfigProducer implements Extension {
     public <X> void processBean(@Observes final ProcessBean<X> event) {
         if (event.getBean().getName() != null && event.getBean().getName().equals("systemFS")) {
             systemFSNotExists = false;
+        } else if (event.getBean().getName() != null && event.getBean().getName().equals("pluginsFS")) {
+            pluginsFSNotExists = false;
         } else if (event.getBean().getName() != null && event.getBean().getName().equals("ioStrategy")) {
             ioStrategyBeanNotFound = false;
         }
@@ -169,6 +179,11 @@ public class SystemConfigProducer implements Extension {
                           bm);
         }
 
+        if (pluginsFSNotExists) {
+            buildPluginsFS(abd,
+                           bm);
+        }
+
         if (ioStrategyBeanNotFound) {
             buildIOStrategy(abd,
                             bm);
@@ -180,16 +195,30 @@ public class SystemConfigProducer implements Extension {
         }
     }
 
+    private void buildPluginsFS(final AfterBeanDiscovery abd,
+                                final BeanManager bm) {
+        final InjectionTarget<DummyFileSystem> it = bm.createInjectionTarget(bm.createAnnotatedType(DummyFileSystem.class));
+
+        abd.addBean(createFileSystemBean(bm,
+                                         it,
+                                         "pluginsFS",
+                                         "plugins"));
+    }
+
     private void buildSystemFS(final AfterBeanDiscovery abd,
                                final BeanManager bm) {
         final InjectionTarget<DummyFileSystem> it = bm.createInjectionTarget(bm.createAnnotatedType(DummyFileSystem.class));
 
         abd.addBean(createFileSystemBean(bm,
-                                         it));
+                                         it,
+                                         "systemFS",
+                                         "system"));
     }
 
     Bean<FileSystem> createFileSystemBean(final BeanManager bm,
-                                          final InjectionTarget<DummyFileSystem> it) {
+                                          final InjectionTarget<DummyFileSystem> it,
+                                          String beanName,
+                                          String fsName) {
         return new Bean<FileSystem>() {
 
             @Override
@@ -204,7 +233,7 @@ public class SystemConfigProducer implements Extension {
 
             @Override
             public String getName() {
-                return "systemFS";
+                return beanName;
             }
 
             @Override
@@ -215,7 +244,7 @@ public class SystemConfigProducer implements Extension {
                     });
                     add(new AnnotationLiteral<Any>() {
                     });
-                    add(new NamedLiteral("systemFS"));
+                    add(new NamedLiteral(beanName));
                 }};
             }
 
@@ -256,23 +285,28 @@ public class SystemConfigProducer implements Extension {
                                                                         IOService.class,
                                                                         _ctx);
 
-                FileSystem systemFS;
+                final SpacesAPI spaces = getSpaces(bm);
+                FileSystem fs;
                 try {
-                    systemFS = ioService.newFileSystem(URI.create("git://system"),
-                                                       new HashMap<String, Object>() {{
-                                                           put("init",
-                                                               Boolean.TRUE);
-                                                           put("internal",
-                                                               Boolean.TRUE);
-                                                       }});
+                    fs = ioService.newFileSystem(spaces.resolveFileSystemURI(SpacesAPI.Scheme.GIT,
+                                                                             SpacesAPI.DEFAULT_SPACE,
+                                                                             fsName),
+                                                 new HashMap<String, Object>() {{
+                                                     put("init",
+                                                         Boolean.TRUE);
+                                                     put("internal",
+                                                         Boolean.TRUE);
+                                                 }});
                 } catch (FileSystemAlreadyExistsException e) {
-                    systemFS = ioService.getFileSystem(URI.create("git://system"));
+                    fs = ioService.getFileSystem(spaces.resolveFileSystemURI(SpacesAPI.Scheme.GIT,
+                                                                             SpacesAPI.DEFAULT_SPACE,
+                                                                             fsName));
                 }
 
-                PriorityDisposableRegistry.register("systemFS",
-                                                    systemFS);
+                PriorityDisposableRegistry.register(beanName,
+                                                    fs);
 
-                return systemFS;
+                return fs;
             }
 
             @Override
@@ -280,7 +314,7 @@ public class SystemConfigProducer implements Extension {
                                 final CreationalContext<FileSystem> ctx) {
                 try {
                     instance.dispose();
-                    PriorityDisposableRegistry.unregister("systemFS");
+                    PriorityDisposableRegistry.unregister(beanName);
                 } catch (final Exception ex) {
                     logger.warn(ex.getMessage(),
                                 ex);
@@ -288,6 +322,14 @@ public class SystemConfigProducer implements Extension {
                 ctx.release();
             }
         };
+    }
+
+    SpacesAPI getSpaces(BeanManager bm) {
+        final Bean<SpacesAPI> spacesBean = (Bean<SpacesAPI>) bm.getBeans(SpacesAPI.class).iterator().next();
+        final CreationalContext<SpacesAPI> spacesCtx = bm.createCreationalContext(spacesBean);
+        return (SpacesAPI) bm.getReference(spacesBean,
+                                           SpacesAPI.class,
+                                           spacesCtx);
     }
 
     private void buildIOStrategy(final AfterBeanDiscovery abd,

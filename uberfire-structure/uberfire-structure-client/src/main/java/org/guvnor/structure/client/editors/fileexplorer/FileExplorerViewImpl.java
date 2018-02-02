@@ -114,7 +114,7 @@ public class FileExplorerViewImpl
 
     @Override
     public void addNewRepository(final Repository repository,
-                                 final String branch) {
+                                 final String branchName) {
         final FSTreeItem repositoryRootItem = rootTreeItem.addItem(FSTreeItem.FSType.FOLDER,
                                                                    repository.getAlias());
         repositoryRootItem.setUserObject(repository);
@@ -125,8 +125,8 @@ public class FileExplorerViewImpl
         repositoryToTreeItemMap.put(repository,
                                     repositoryRootItem);
 
-        presenter.loadDirectoryContent(new FileExplorerItem(repositoryRootItem),
-                                       repository.getBranchRoot(branch));
+        repository.getBranch(branchName).ifPresent(branch -> presenter.loadDirectoryContent(new FileExplorerItem(repositoryRootItem),
+                                                                                            branch.getPath()));
     }
 
     boolean needsLoading(final FSTreeItem item) {

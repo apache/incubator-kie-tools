@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -42,12 +42,11 @@ public class TestProjectCmd extends AbstractJobCommand {
         JobResult result = null;
         try {
             result = helper.testProject(jobRequest.getJobId(),
-                                        jobRequest.getRepositoryName(),
+                                        jobRequest.getSpaceName(),
                                         jobRequest.getProjectName());
         } finally {
             JobStatus status = result != null ? result.getStatus() : JobStatus.SERVER_ERROR;
-            logger.debug("-----testProject--- , repositoryName: {}, project name: {} [{}]",
-                         jobRequest.getRepositoryName(),
+            logger.debug("-----testProject--- , project name: {} [{}]",
                          jobRequest.getProjectName(),
                          status);
         }

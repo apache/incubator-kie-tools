@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
@@ -32,49 +32,49 @@ public interface BuildService {
 
     /**
      * Full build without deployment
-     * @param project
+     * @param module
      */
-    BuildResults build(final Project project);
+    BuildResults build(final Module module);
 
     /**
      * Full build with deployment
-     * @param project
+     * @param module
      */
-    BuildResults buildAndDeploy(final Project project);
+    BuildResults buildAndDeploy(final Module module);
 
     /**
      * Full build with forced deployment to Maven. Pre-existing artifacts with the same GAV will be overwritten.
-     * @param project Project to be built
+     * @param module Module to be built
      * @param mode The deployment mode
      */
-    BuildResults buildAndDeploy(final Project project,
+    BuildResults buildAndDeploy(final Module module,
                                 final DeploymentMode mode);
 
     /**
      * Full build with deployment with ability to suppress any post operations handlers to ensure
      * that only build and deploy was invoked
-     * @param project
+     * @param module
      */
-    BuildResults buildAndDeploy(final Project project,
+    BuildResults buildAndDeploy(final Module module,
                                 final boolean suppressHandlers);
 
     /**
      * Full build with forced deployment to Maven. Pre-existing artifacts with the same GAV will be overwritten. This
      * method has the ability to suppress any post operations handlers to ensure * that only build and deploy is invoked
-     * @param project Project to be built
+     * @param module Module to be built
      * @param suppressHandlers true to ignore post-processing
      * @param mode The deployment mode
      */
-    BuildResults buildAndDeploy(final Project project,
+    BuildResults buildAndDeploy(final Module module,
                                 final boolean suppressHandlers,
                                 final DeploymentMode mode);
 
     /**
-     * Check whether a Project has been built
-     * @param project
+     * Check whether a Module has been built
+     * @param module
      * @return
      */
-    boolean isBuilt(final Project project);
+    boolean isBuilt(final Module module);
 
     /**
      * Add a Package resource to the build.
@@ -95,10 +95,10 @@ public interface BuildService {
     IncrementalBuildResults updatePackageResource(final Path resource);
 
     /**
-     * Process a batch of changes to a Project's resources.
-     * @param project
+     * Process a batch of changes to a Module's resources.
+     * @param module
      * @param changes
      */
-    IncrementalBuildResults applyBatchResourceChanges(final Project project,
+    IncrementalBuildResults applyBatchResourceChanges(final Module module,
                                                       final Map<Path, Collection<ResourceChange>> changes);
 }

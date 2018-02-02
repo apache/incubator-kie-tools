@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.guvnor.structure.backend.repositories.git;
 
@@ -26,6 +26,7 @@ import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.config.PasswordService;
 import org.guvnor.structure.server.repositories.RepositoryFactoryHelper;
 import org.uberfire.io.IOService;
+import org.uberfire.spaces.SpacesAPI;
 
 import static org.guvnor.structure.repositories.impl.git.GitRepository.SCHEME;
 import static org.kie.soup.commons.validation.Preconditions.checkNotNull;
@@ -37,6 +38,8 @@ public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
 
     private IOService notIndexedIOService;
 
+    private SpacesAPI spacesAPI;
+
     @Inject
     private PasswordService secureService;
 
@@ -45,9 +48,11 @@ public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
 
     @Inject
     public GitRepositoryFactoryHelper(@Named("ioStrategy") IOService indexedIOService,
-                                      @Named("configIO") IOService notIndexedIOService) {
+                                      @Named("configIO") IOService notIndexedIOService,
+                                      SpacesAPI spacesAPI) {
         this.indexedIOService = indexedIOService;
         this.notIndexedIOService = notIndexedIOService;
+        this.spacesAPI = spacesAPI;
     }
 
     @Override
@@ -57,7 +62,7 @@ public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
         final ConfigItem<String> schemeConfigItem = repoConfig.getConfigItem(EnvironmentParameters.SCHEME);
         checkNotNull("schemeConfigItem",
                      schemeConfigItem);
-        return SCHEME.equals(schemeConfigItem.getValue());
+        return SCHEME.toString().equals(schemeConfigItem.getValue());
     }
 
     @Override
@@ -69,11 +74,13 @@ public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
 
         if (sValue != null && Boolean.valueOf(sValue.getValue())) {
             return new GitRepositoryBuilder(notIndexedIOService,
-                                            secureService).build(repoConfig);
+                                            secureService,
+                                            spacesAPI).build(repoConfig);
         }
 
         return new GitRepositoryBuilder(indexedIOService,
-                                        secureService).build(repoConfig);
+                                        secureService,
+                                        spacesAPI).build(repoConfig);
     }
 
     private void validate(ConfigGroup repoConfig) {

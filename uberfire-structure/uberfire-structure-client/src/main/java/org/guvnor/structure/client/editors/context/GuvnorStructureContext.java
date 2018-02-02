@@ -19,10 +19,13 @@ package org.guvnor.structure.client.editors.context;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
+import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.NewBranchEvent;
 import org.guvnor.structure.repositories.NewRepositoryEvent;
 import org.guvnor.structure.repositories.Repository;
@@ -31,6 +34,7 @@ import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.client.callbacks.Callback;
+import org.uberfire.spaces.Space;
 
 /**
  * Context that keeps track of repositories and branches. Used in Guvnor Administration perspective,
@@ -44,16 +48,21 @@ public class GuvnorStructureContext {
     private final HashMap<String, String> aliasBranch = new HashMap<>();
 
     private Caller<RepositoryService> repositoryService;
+    private WorkspaceProjectContext context;
 
     public GuvnorStructureContext() {
     }
 
     @Inject
-    public GuvnorStructureContext(final Caller<RepositoryService> repositoryService) {
+    public GuvnorStructureContext(final Caller<RepositoryService> repositoryService, final WorkspaceProjectContext context) {
         this.repositoryService = repositoryService;
+        this.context = context;
     }
 
     public void getRepositories(final Callback<Collection<Repository>> callback) {
+        String ouName = context.getActiveOrganizationalUnit()
+                               .map(ou -> ou.getName())
+                               .orElseThrow(() -> new IllegalStateException("Cannot lookup repositories without active organizational unit."));
         repositoryService.call(new RemoteCallback<Collection<Repository>>() {
             @Override
             public void callback(final Collection<Repository> response) {
@@ -64,7 +73,7 @@ public class GuvnorStructureContext {
 
                 callback.callback(response);
             }
-        }).getRepositories();
+        }).getRepositories(new Space(ouName));
     }
 
     private Collection<String> updateRepositories(final Collection<Repository> response) {
@@ -81,21 +90,28 @@ public class GuvnorStructureContext {
     }
 
     private void updateRepository(final Repository repository) {
+        if (!repository.getDefaultBranch().isPresent()) {
+            return;
+        }
+
         if (isNewRepository(repository)) {
             aliasBranch.put(repository.getAlias(),
-                            repository.getDefaultBranch());
+                            repository.getDefaultBranch().get().getName());
         } else {
             updateBranch(repository);
         }
     }
 
     private void updateBranch(final Repository repository) {
-        final String branch = aliasBranch.get(repository.getAlias());
+        if (!repository.getDefaultBranch().isPresent()) {
+            return;
+        }
+        final String branchName = aliasBranch.get(repository.getAlias());
 
-        if (branch == null || hasBranchBeenRemoved(repository,
-                                                   branch)) {
+        if (branchName == null || hasBranchBeenRemoved(repository,
+                                                       branchName)) {
             aliasBranch.put(repository.getAlias(),
-                            repository.getDefaultBranch());
+                            repository.getDefaultBranch().get().getName());
         }
     }
 
@@ -104,8 +120,11 @@ public class GuvnorStructureContext {
     }
 
     private boolean hasBranchBeenRemoved(final Repository repository,
-                                         final String branch) {
-        return !repository.getBranches().contains(branch);
+                                         final String branchName) {
+        return !repository
+                .getBranches()
+                .stream()
+                .anyMatch(branch -> branch.getName().equals(branchName));
     }
 
     private void removeMissingAliases(final Collection<String> foundAliases) {
@@ -159,9 +178,10 @@ public class GuvnorStructureContext {
     public void onNewRepository(final @Observes NewRepositoryEvent event) {
 
         final Repository newRepository = event.getNewRepository();
-
-        aliasBranch.put(newRepository.getAlias(),
-                        newRepository.getDefaultBranch());
+        if (newRepository.getDefaultBranch().isPresent()) {
+            aliasBranch.put(newRepository.getAlias(),
+                            newRepository.getDefaultBranch().get().getName());
+        }
 
         for (final GuvnorStructureContextChangeHandler handler : handlers.values()) {
             handler.onNewRepositoryAdded(newRepository);
@@ -170,9 +190,12 @@ public class GuvnorStructureContext {
 
     public void onNewBranch(final @Observes NewBranchEvent event) {
         for (final GuvnorStructureContextChangeHandler handler : handlers.values()) {
-            handler.onNewBranchAdded(event.getRepositoryAlias(),
-                                     event.getBranchName(),
-                                     event.getBranchPath());
+            final Optional<Branch> branchOptional = event.getRepository().getBranch(event.getNewBranchName());
+            if (branchOptional.isPresent()) {
+                handler.onNewBranchAdded(event.getRepository().getAlias(),
+                                         event.getNewBranchName(),
+                                         branchOptional.get().getPath());
+            }
         }
     }
 

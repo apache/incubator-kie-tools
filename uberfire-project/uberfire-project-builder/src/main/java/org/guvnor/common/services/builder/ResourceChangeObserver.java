@@ -18,7 +18,6 @@ package org.guvnor.common.services.builder;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -26,9 +25,9 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.project.builder.events.InvalidateDMOModuleCacheEvent;
+import org.guvnor.common.services.project.model.Module;
+import org.guvnor.common.services.project.service.ModuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.vfs.Path;
@@ -44,8 +43,8 @@ import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 /**
  * Server side component that observes for the different resource add/delete/update events related to
- * a given project and that causes the ProjectDataModelOracle to be invalidated. Typically .java, .class and pom.xml
- * files. When such a resource is modified an InvalidateDMOProjectCacheEvent event is fired.
+ * a given project and that causes the ModuleDataModelOracle to be invalidated. Typically .java, .class and pom.xml
+ * files. When such a resource is modified an InvalidateDMOModuleCacheEvent event is fired.
  */
 @ApplicationScoped
 public class ResourceChangeObserver {
@@ -53,13 +52,13 @@ public class ResourceChangeObserver {
     private static final Logger logger = LoggerFactory.getLogger(ResourceChangeObserver.class);
 
     @Inject
-    private ProjectService<? extends Project> projectService;
+    private ModuleService<? extends Module> projectService;
 
     @Inject
     private ResourceChangeIncrementalBuilder incrementalBuilder;
 
     @Inject
-    private Event<InvalidateDMOProjectCacheEvent> invalidateDMOProjectCacheEvent;
+    private Event<InvalidateDMOModuleCacheEvent> invalidateDMOProjectCacheEvent;
 
     @Inject
     @Any
@@ -120,52 +119,52 @@ public class ResourceChangeObserver {
                                        final Path path,
                                        final ResourceChangeType changeType) {
         //Only process Project resources
-        final Project project = projectService.resolveProject(path);
-        if (project == null) {
+        final Module module = projectService.resolveModule(path);
+        if (module == null) {
             return;
         }
 
         if (logger.isDebugEnabled()) {
             logger.debug("Processing resource change for sessionInfo: " + sessionInfo
-                                 + ", project: " + project
+                                 + ", project: " + module
                                  + ", path: " + path
                                  + ", changeType: " + changeType);
         }
 
         if (isObservableResource(path)) {
-            invalidateDMOProjectCacheEvent.fire(new InvalidateDMOProjectCacheEvent(sessionInfo,
-                                                                                   project,
-                                                                                   path));
+            invalidateDMOProjectCacheEvent.fire(new InvalidateDMOModuleCacheEvent(sessionInfo,
+                                                                                  module,
+                                                                                  path));
         }
     }
 
     private void processBatchResourceChanges(final SessionInfo sessionInfo,
                                              final Map<Path, Collection<ResourceChange>> resourceChanges) {
 
-        Project project;
-        final Map<Project, Path> pendingNotifications = new HashMap<Project, Path>();
+        Module module;
+        final Map<Module, Path> pendingNotifications = new HashMap<Module, Path>();
         for (final Map.Entry<Path, Collection<ResourceChange>> pathCollectionEntry : resourceChanges.entrySet()) {
 
             //Only process Project resources
-            project = projectService.resolveProject(pathCollectionEntry.getKey());
-            if (project == null) {
+            module = projectService.resolveModule(pathCollectionEntry.getKey());
+            if (module == null) {
                 continue;
             }
 
-            if (!pendingNotifications.containsKey(project) && isObservableResource(pathCollectionEntry.getKey())) {
-                pendingNotifications.put(project,
+            if (!pendingNotifications.containsKey(module) && isObservableResource(pathCollectionEntry.getKey())) {
+                pendingNotifications.put(module,
                                          pathCollectionEntry.getKey());
             } else if (isPomFile(pathCollectionEntry.getKey())) {
                 //if the pom.xml comes in the batch events set then use the pom.xml path for the cache invalidation event
-                pendingNotifications.put(project,
+                pendingNotifications.put(module,
                                          pathCollectionEntry.getKey());
             }
         }
 
-        for (final Map.Entry<Project, Path> pendingNotification : pendingNotifications.entrySet()) {
-            invalidateDMOProjectCacheEvent.fire(new InvalidateDMOProjectCacheEvent(sessionInfo,
-                                                                                   pendingNotification.getKey(),
-                                                                                   pendingNotification.getValue()));
+        for (final Map.Entry<Module, Path> pendingNotification : pendingNotifications.entrySet()) {
+            invalidateDMOProjectCacheEvent.fire(new InvalidateDMOModuleCacheEvent(sessionInfo,
+                                                                                  pendingNotification.getKey(),
+                                                                                  pendingNotification.getValue()));
         }
     }
 

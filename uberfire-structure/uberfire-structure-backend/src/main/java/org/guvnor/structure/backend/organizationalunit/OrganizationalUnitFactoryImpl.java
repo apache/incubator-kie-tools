@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.guvnor.structure.backend.organizationalunit;
 
@@ -26,6 +26,8 @@ import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.organizationalunit.OrganizationalUnitFactory;
+import org.uberfire.spaces.Space;
+import org.uberfire.spaces.SpacesAPI;
 
 public class OrganizationalUnitFactoryImpl implements OrganizationalUnitFactory {
 
@@ -33,11 +35,15 @@ public class OrganizationalUnitFactoryImpl implements OrganizationalUnitFactory 
 
     private BackwardCompatibleUtil backward;
 
+    private SpacesAPI spacesAPI;
+
     @Inject
     public OrganizationalUnitFactoryImpl(final RepositoryService repositoryService,
-                                         final BackwardCompatibleUtil backward) {
+                                         final BackwardCompatibleUtil backward,
+                                         final SpacesAPI spacesAPI) {
         this.repositoryService = repositoryService;
         this.backward = backward;
+        this.spacesAPI = spacesAPI;
     }
 
     @Override
@@ -46,11 +52,13 @@ public class OrganizationalUnitFactoryImpl implements OrganizationalUnitFactory 
         OrganizationalUnitImpl organizationalUnit = new OrganizationalUnitImpl(groupConfig.getName(),
                                                                                groupConfig.getConfigItemValue("owner"),
                                                                                groupConfig.getConfigItemValue("defaultGroupId"));
+
         ConfigItem<List<String>> repositories = groupConfig.getConfigItem("repositories");
         if (repositories != null) {
             for (String alias : repositories.getValue()) {
-
-                final Repository repo = repositoryService.getRepository(alias);
+                Space space = spacesAPI.getSpace(organizationalUnit.getName());
+                final Repository repo = repositoryService.getRepositoryFromSpace(space,
+                                                                                 alias);
                 if (repo != null) {
                     organizationalUnit.getRepositories().add(repo);
                 }

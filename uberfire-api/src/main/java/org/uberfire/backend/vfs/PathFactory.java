@@ -88,7 +88,7 @@ public final class PathFactory {
                      path);
 
         final String systemUri = path.toURI().replaceFirst("(/|\\\\)([^/&^\\\\]*)@([^/&^\\\\]*)",
-                                                           "$1locks@system$1$3$1$2");
+                                                           "$1locks@system/system$1$3$1$2");
 
         return PathFactory.newPath("/",
                                    systemUri);

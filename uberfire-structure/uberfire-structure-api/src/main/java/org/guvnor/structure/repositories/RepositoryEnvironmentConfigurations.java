@@ -27,6 +27,7 @@ import static org.guvnor.structure.repositories.EnvironmentParameters.INIT;
 import static org.guvnor.structure.repositories.EnvironmentParameters.MANAGED;
 import static org.guvnor.structure.repositories.EnvironmentParameters.ORIGIN;
 import static org.guvnor.structure.repositories.EnvironmentParameters.PASSWORD;
+import static org.guvnor.structure.repositories.EnvironmentParameters.SPACE;
 import static org.guvnor.structure.repositories.EnvironmentParameters.USER_NAME;
 
 @Portable
@@ -54,6 +55,11 @@ public class RepositoryEnvironmentConfigurations {
         return configurationMap.containsKey(configurationName);
     }
 
+    public void setSpace(final String space) {
+        configurationMap.put(SPACE,
+                             space);
+    }
+
     public void setManaged(final boolean managed) {
         configurationMap.put(MANAGED,
                              managed);
@@ -77,10 +83,6 @@ public class RepositoryEnvironmentConfigurations {
     public void setInit(final boolean init) {
         configurationMap.put(INIT,
                              init);
-    }
-
-    public Boolean isManaged() {
-        return (Boolean) configurationMap.get(MANAGED);
     }
 
     public Object getUserName() {

@@ -25,8 +25,6 @@ public interface RepositoriesView
     RepositoryItemPresenter addRepository(final Repository repository,
                                           final String branch);
 
-    boolean confirmDeleteRepository(final Repository repository);
-
     void removeIfExists(final RepositoryItemPresenter repositoryItem);
 
     void clear();

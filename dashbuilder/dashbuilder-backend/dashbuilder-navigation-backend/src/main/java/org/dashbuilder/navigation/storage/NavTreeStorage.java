@@ -36,30 +36,23 @@ public class NavTreeStorage {
 
     private IOService ioService;
     private NavTreeJSONMarshaller jsonMarshaller;
-    private FileSystem fileSystem;
     private Path root;
     private Logger log = LoggerFactory.getLogger(NavTreeStorage.class);
+    private FileSystem fileSystem;
 
     public NavTreeStorage() {
     }
 
     @Inject
-    public NavTreeStorage(@Named("ioStrategy") IOService ioService) {
+    public NavTreeStorage(@Named("ioStrategy") IOService ioService,
+                          @Named("pluginsFS") FileSystem fileSystem) {
         this.ioService = ioService;
+        this.fileSystem = fileSystem;
         this.jsonMarshaller = NavTreeJSONMarshaller.get();
     }
 
     @PostConstruct
     public void init() {
-        try {
-            this.fileSystem = ioService.newFileSystem(URI.create("default://plugins"),
-                    new HashMap<String, Object>() {{
-                        put("init", Boolean.TRUE);
-                        put("internal", Boolean.TRUE);
-                    }});
-        } catch (FileSystemAlreadyExistsException e) {
-            this.fileSystem = ioService.getFileSystem(URI.create( "default://plugins"));
-        }
         this.root = fileSystem.getRootDirectories().iterator().next();
     }
 
@@ -79,9 +72,9 @@ public class NavTreeStorage {
         try {
             String json = ioService.readAllString(path);
             return jsonMarshaller.fromJson(json);
-        }
-        catch (Exception e) {
-            log.error("Error parsing json definition: " + path.getFileName(), e);
+        } catch (Exception e) {
+            log.error("Error parsing json definition: " + path.getFileName(),
+                      e);
             return null;
         }
     }
@@ -91,12 +84,12 @@ public class NavTreeStorage {
         try {
             String json = jsonMarshaller.toJson(navTree).toString();
             Path path = getNavTreePath();
-            ioService.write(path, json);
-        }
-        catch (Exception e) {
-            log.error("Can't save the navigation tree.", e);
-        }
-        finally {
+            ioService.write(path,
+                            json);
+        } catch (Exception e) {
+            log.error("Can't save the navigation tree.",
+                      e);
+        } finally {
             ioService.endBatch();
         }
     }

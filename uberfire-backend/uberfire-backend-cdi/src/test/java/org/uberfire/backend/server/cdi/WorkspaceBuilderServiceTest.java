@@ -57,6 +57,8 @@ public class WorkspaceBuilderServiceTest {
                 .addPackages(true,
                              "org.uberfire.preferences")
                 .addPackages(true,
+                             "org.uberfire.backend.server.spaces")
+                .addPackages(true,
                              "org.uberfire.mvp")
                 .addPackages(true,
                              "org.uberfire.commons")

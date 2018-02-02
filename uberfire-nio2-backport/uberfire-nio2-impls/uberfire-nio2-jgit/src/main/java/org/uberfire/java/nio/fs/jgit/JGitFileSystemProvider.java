@@ -795,7 +795,6 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                                     branch);
 
         String pathStr = buildPathFrom(uri,
-                                       fileSystem,
                                        host);
         path = JGitPathImpl.create(fileSystem,
                                    pathStr,
@@ -806,16 +805,13 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
     }
 
     private String buildPathFrom(URI uri,
-                                 JGitFileSystem fileSystem,
                                  String host) {
         String pathStr = uri.toString();
         pathStr = pathStr.replace(host,
                                   "");
-        pathStr = pathStr.replace(fileSystem.getName(),
-                                  "");
         pathStr = pathStr.replace("git://",
-                                             "").replace("default://",
-                                                         "");
+                                  "").replace("default://",
+                                              "");
         pathStr = EncodingUtil.decode(pathStr);
         if (pathStr.startsWith("/:")) {
             pathStr = pathStr.substring(2);
@@ -828,8 +824,8 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         String host = branch + fileSystem.getName();
 
         host = host.replace("git://",
-                                       "").replace("default://",
-                                                   "");
+                            "").replace("default://",
+                                        "");
         return host;
     }
 

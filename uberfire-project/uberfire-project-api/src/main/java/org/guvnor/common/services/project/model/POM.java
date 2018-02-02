@@ -36,7 +36,7 @@ public class POM {
     private Build build;
 
     private List<Dependency> dependencies = new ArrayList<Dependency>();
-    private List<Repository> repositories = new ArrayList<Repository>();
+    private List<MavenRepository> repositories = new ArrayList<MavenRepository>();
     private List<String> modules = new ArrayList<String>();
 
     public POM() {
@@ -84,11 +84,11 @@ public class POM {
         this.dependencies = dependencies;
     }
 
-    public void addRepository(Repository repository) {
-        repositories.add(repository);
+    public void addRepository(MavenRepository mavenRepository) {
+        repositories.add(mavenRepository);
     }
 
-    public List<Repository> getRepositories() {
+    public List<MavenRepository> getRepositories() {
         return repositories;
     }
 

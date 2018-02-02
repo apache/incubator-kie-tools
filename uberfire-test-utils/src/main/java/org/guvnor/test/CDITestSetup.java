@@ -42,7 +42,7 @@ public class CDITestSetup {
         paths = getReference(Paths.class);
 
         // Ensure URLs use the default:// scheme
-        fileSystemProvider.forceAsDefault();
+//        fileSystemProvider.forceAsDefault();
     }
 
     public void cleanup() {

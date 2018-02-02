@@ -46,8 +46,6 @@ public interface CoreConstants
 
     String RepositoryViewRootLabel();
 
-    String ConfirmDeleteRepository0(String repositoryAlias);
-
     String Downloading();
 
     String SelectFileToUpload();

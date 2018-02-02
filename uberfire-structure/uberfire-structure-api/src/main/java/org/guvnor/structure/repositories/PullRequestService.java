@@ -30,14 +30,18 @@ public interface PullRequestService {
 
     /**
      * Creates a pull request and stores it into the tracking system.
+     * @param sourceSpace the space containing the origin repository
      * @param sourceRepository the origin repository
      * @param sourceBranch the branch on the origin repository you want to get pulled
+     * @param targetSpace the space containing the upstream repository
      * @param targetRepository the upstream repository
      * @param targetBranch the branch where you want impact your changes
      * @return The object that represents the pull request.
      */
-    PullRequest createPullRequest(String sourceRepository,
+    PullRequest createPullRequest(String sourceSpace,
+                                  String sourceRepository,
                                   String sourceBranch,
+                                  String targetSpace,
                                   String targetRepository,
                                   String targetBranch);
 

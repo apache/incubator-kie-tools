@@ -20,12 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.security.ProjectAction;
-import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
@@ -43,7 +40,7 @@ import org.uberfire.security.authz.PermissionManager;
 
 /**
  * In previous versions (before the 7 release), the only way to grant access to resources like
- * {@link OrganizationalUnit}, {@link Repository} and {@link Project} was to indicate which groups were able to
+ * {@link OrganizationalUnit}, {@link Repository} and {@link Module} was to indicate which groups were able to
  * access a given instance. Those groups were stored as part of the instance persistent status.
  * <p>
  * <p>As of 7 version, the authorization policy is based on permissions. That means is no longer required
@@ -61,20 +58,17 @@ public class ACLMigrationTool {
 
     private OrganizationalUnitService organizationalUnitService;
     private RepositoryService repositoryService;
-    private Instance<ProjectService<?>> projectServices;
     private PermissionManager permissionManager;
     private AuthorizationPolicyStorage authorizationPolicyStorage;
     private Map<String, Group> groupMap = new HashMap<>();
 
     @Inject
-    public ACLMigrationTool(OrganizationalUnitService organizationalUnitService,
-                            RepositoryService repositoryService,
-                            Instance<ProjectService<?>> projectServices,
-                            PermissionManager permissionManager,
-                            AuthorizationPolicyStorage authorizationPolicyStorage) {
+    public ACLMigrationTool(final OrganizationalUnitService organizationalUnitService,
+                            final RepositoryService repositoryService,
+                            final PermissionManager permissionManager,
+                            final AuthorizationPolicyStorage authorizationPolicyStorage) {
         this.organizationalUnitService = organizationalUnitService;
         this.repositoryService = repositoryService;
-        this.projectServices = projectServices;
         this.permissionManager = permissionManager;
         this.authorizationPolicyStorage = authorizationPolicyStorage;
     }
@@ -96,56 +90,35 @@ public class ACLMigrationTool {
         return group;
     }
 
-    public void migrateOrgUnits(AuthorizationPolicy policy) {
-        Collection<OrganizationalUnit> itemList = organizationalUnitService.getAllOrganizationalUnits();
-        for (OrganizationalUnit item : itemList) {
-            Permission p = permissionManager.createPermission(item,
-                                                              OrganizationalUnitAction.READ,
-                                                              true);
-            for (String groupName : item.getGroups()) {
-                Group group = getGroup(groupName);
-                PermissionCollection pc = policy.getPermissions(group);
-                pc.add(p);
+    public void migrateOrgUnits(final AuthorizationPolicy policy) {
+
+        final Collection<OrganizationalUnit> itemList = organizationalUnitService.getAllOrganizationalUnits();
+
+        for (OrganizationalUnit organizationalUnit : itemList) {
+            final Permission permission = permissionManager.createPermission(organizationalUnit,
+                                                                             OrganizationalUnitAction.READ,
+                                                                             true);
+            for (final String groupName : organizationalUnit.getGroups()) {
+                final Group group = getGroup(groupName);
+                final PermissionCollection permissionCollection = policy.getPermissions(group);
+                permissionCollection.add(permission);
             }
         }
     }
 
-    public void migrateRepositories(AuthorizationPolicy policy) {
-        Collection<Repository> itemList = repositoryService.getAllRepositories();
-        for (Repository item : itemList) {
-            Permission p = permissionManager.createPermission(item,
-                                                              RepositoryAction.READ,
-                                                              true);
-            for (String groupName : item.getGroups()) {
-                Group group = getGroup(groupName);
-                PermissionCollection pc = policy.getPermissions(group);
-                pc.add(p);
-            }
-            migrateProjects(policy,
-                            item);
-        }
-    }
+    public void migrateRepositories(final AuthorizationPolicy policy) {
 
-    public void migrateProjects(AuthorizationPolicy policy,
-                                Repository repository) {
-        ProjectService projectService = getProjectService();
-        if (projectService != null) {
-            Collection<Project> itemList = projectService.getAllProjects(repository,
-                                                                         "master");
-            for (Project item : itemList) {
-                Permission p = permissionManager.createPermission(item,
-                                                                  ProjectAction.READ,
-                                                                  true);
-                for (String groupName : item.getGroups()) {
-                    Group group = getGroup(groupName);
-                    PermissionCollection pc = policy.getPermissions(group);
-                    pc.add(p);
-                }
+        final Collection<Repository> itemList = repositoryService.getAllRepositoriesFromAllUserSpaces();
+
+        for (final Repository repository : itemList) {
+            final Permission permission = permissionManager.createPermission(repository,
+                                                                             RepositoryAction.READ,
+                                                                             true);
+            for (final String groupName : repository.getGroups()) {
+                final Group group = getGroup(groupName);
+                final PermissionCollection permissionCollection = policy.getPermissions(group);
+                permissionCollection.add(permission);
             }
         }
-    }
-
-    public ProjectService getProjectService() {
-        return projectServices.get();
     }
 }

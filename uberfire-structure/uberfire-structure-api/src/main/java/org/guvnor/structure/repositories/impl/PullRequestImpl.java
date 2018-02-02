@@ -30,34 +30,46 @@ public class PullRequestImpl implements PullRequest {
     private long id;
     private String targetBranch;
     private String targetRepository;
+    private String targetSpace;
     private String sourceBranch;
     private String sourceRepository;
+    private String sourceSpace;
     private PullRequestStatus status;
 
     public PullRequestImpl() {
 
     }
 
-    public PullRequestImpl(final String sourceRepository,
+    public PullRequestImpl(final String sourceSpace,
+                           final String sourceRepository,
                            final String sourceBranch,
+                           final String targetSpace,
                            final String targetRepository,
                            final String targetBranch) {
         this(0l,
+             sourceSpace,
              sourceRepository,
              sourceBranch,
+             targetSpace,
              targetRepository,
              targetBranch,
              PullRequestStatus.OPEN);
     }
 
     public PullRequestImpl(@MapsTo("id") final long id,
+                           @MapsTo("sourceSpace") final String sourceSpace,
                            @MapsTo("sourceRepository") final String sourceRepository,
                            @MapsTo("sourceBranch") final String sourceBranch,
+                           @MapsTo("targetSpace") final String targetSpace,
                            @MapsTo("targetRepository") final String targetRepository,
                            @MapsTo("targetBranch") final String targetBranch,
                            @MapsTo("status") final PullRequestStatus status) {
 
         this.id = id;
+        this.targetSpace = checkNotEmpty("targetSpace",
+                                         targetSpace);;
+        this.sourceSpace = checkNotEmpty("sourceSpace",
+                                         sourceSpace);
         this.sourceRepository = checkNotEmpty("sourceRepository",
                                               sourceRepository);
         this.sourceBranch = checkNotEmpty("sourceBranch",
@@ -76,6 +88,11 @@ public class PullRequestImpl implements PullRequest {
     }
 
     @Override
+    public String getTargetSpace() {
+        return targetSpace;
+    }
+
+    @Override
     public String getTargetRepository() {
         return this.targetRepository;
     }
@@ -83,6 +100,11 @@ public class PullRequestImpl implements PullRequest {
     @Override
     public String getTargetBranch() {
         return this.targetBranch;
+    }
+
+    @Override
+    public String getSourceSpace() {
+        return sourceSpace;
     }
 
     @Override

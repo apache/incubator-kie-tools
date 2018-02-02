@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,52 +11,68 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.guvnor.structure.repositories;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.base.version.VersionRecord;
+import org.uberfire.spaces.Space;
 
 @Remote
+/**
+ * This RepositoryService is dependent on the WorkspaceProjectContext.
+ * It uses WorkspaceProjectContext in order to lookup for the current space.
+ *
+ * The only exception is getRepositoryFromSpace(space, alias) and
+ * getAllRepositoriesFromAllSpaces methods.
+ *
+ */
 public interface RepositoryService {
 
-    RepositoryInfo getRepositoryInfo(final String alias);
+    RepositoryInfo getRepositoryInfo(final Space space, final String alias);
 
-    List<VersionRecord> getRepositoryHistory(final String alias,
+    List<VersionRecord> getRepositoryHistory(final Space space,
+                                             final String alias,
                                              final int startIndex);
 
-    List<VersionRecord> getRepositoryHistory(final String alias,
+    List<VersionRecord> getRepositoryHistory(final Space space,
+                                             final String alias,
                                              final int startIndex,
                                              final int endIndex);
 
-    List<VersionRecord> getRepositoryHistoryAll(final String alias);
+    List<VersionRecord> getRepositoryHistoryAll(final Space space, final String alias);
 
-    Repository getRepository(final String alias);
+    Repository getRepositoryFromSpace(final Space currentSpace,
+                                      final String alias);
 
     Repository getRepository(final Path root);
+
+    Repository getRepository(final Space space, final Path root);
 
     /**
      * Get all the repositories. Security checks are omitted.
      */
-    Collection<Repository> getAllRepositories();
+    Collection<Repository> getAllRepositories(final Space space);
+
+    /**
+     * Get all the repositories from all user spaces. Security checks are omitted.
+     */
+    Collection<Repository> getAllRepositoriesFromAllUserSpaces();
 
     /**
      * Get only those repositories available within the current security context.
      */
-    Collection<Repository> getRepositories();
+    Collection<Repository> getRepositories(final Space space);
 
     Repository createRepository(final OrganizationalUnit organizationalUnit,
                                 final String scheme,
-                                final String alias,
-                                final RepositoryEnvironmentConfigurations configurations) throws RepositoryAlreadyExistsException;
-
-    Repository createRepository(final String scheme,
                                 final String alias,
                                 final RepositoryEnvironmentConfigurations configurations) throws RepositoryAlreadyExistsException;
 
@@ -70,8 +86,7 @@ public interface RepositoryService {
     void removeGroup(final Repository repository,
                      final String group);
 
-    void removeRepository(final String alias);
+    void removeRepository(final Space space, final String alias);
 
-    Repository updateRepositoryConfiguration(final Repository repository,
-                                             final RepositoryEnvironmentConfigurations repositoryConfigurationonfig);
+    void removeRepositories(final Space space, final Set<String> aliases);
 }

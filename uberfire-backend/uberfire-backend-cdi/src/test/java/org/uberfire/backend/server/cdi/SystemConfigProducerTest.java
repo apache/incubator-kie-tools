@@ -16,10 +16,18 @@
 
 package org.uberfire.backend.server.cdi;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -29,14 +37,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.backend.server.spaces.SpacesAPIImpl;
 import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
-
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import org.uberfire.spaces.SpacesAPI;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SystemConfigProducerTest {
@@ -44,13 +49,18 @@ public class SystemConfigProducerTest {
     SystemConfigProducer producer;
     BeanManager bm;
     Bean<IOService> ioServiceBean;
-    Set<Bean<?>> configIOBeans = new HashSet<Bean<?>>();
+    Set<Bean<?>> configIOBeans = new HashSet<>();
     IOService ioServiceMock;
     FileSystem fs;
 
     @Before
     public void setUp() throws Exception {
-        producer = new SystemConfigProducer();
+        producer = new SystemConfigProducer() {
+            @Override
+            SpacesAPI getSpaces(BeanManager bm) {
+                return new SpacesAPIImpl();
+            }
+        };
         bm = mock(BeanManager.class);
         ioServiceBean = mock(Bean.class);
         configIOBeans.add(ioServiceBean);
@@ -59,19 +69,22 @@ public class SystemConfigProducerTest {
     }
 
     @Test
-    public void createAndDestroyFSShouldRegisterUnregisterOnPriorityDisposableRegistry() throws Exception {
+    public void createAndDestroyFSShouldRegisterUnregisterOnPriorityDisposableRegistry() {
 
         when(bm.getBeans("configIO")).thenReturn(configIOBeans);
         when(bm.getReference(eq(ioServiceBean),
                              eq(IOService.class),
                              any(CreationalContext.class)))
                 .thenReturn(ioServiceMock);
+
         when(ioServiceMock.newFileSystem(any(URI.class),
                                          any(Map.class)))
                 .thenReturn(fs);
 
         final Bean fileSystemBean = producer.createFileSystemBean(bm,
-                                                                  mock(InjectionTarget.class));
+                                                                  mock(InjectionTarget.class),
+                                                                  "systemFS",
+                                                                  "system");
 
         assertNull(PriorityDisposableRegistry.get("systemFS"));
 

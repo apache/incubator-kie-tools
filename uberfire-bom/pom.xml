@@ -1195,17 +1195,6 @@
       <!-- From Guvnor -->
       <dependency>
         <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-asset-mgmt-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-asset-mgmt-api</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
         <artifactId>uberfire-m2repo-editor-api</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -1341,22 +1330,6 @@
       <dependency>
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-workingset-api</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-asset-mgmt-backend</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-asset-mgmt-client</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-asset-mgmt-client</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>

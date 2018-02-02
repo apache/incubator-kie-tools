@@ -16,6 +16,8 @@
 
 package org.uberfire.io.lock;
 
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.uberfire.java.nio.file.FileSystem;
@@ -27,23 +29,24 @@ public class BatchLockControl {
     private FileSystem fileSystemOnBatch;
 
     public void lock(final FileSystem fs) {
+        checkNotNull("fs", fs);
         lock.lock();
         try{
             makeSureThatIsOnlyOneFSOnCurrentBatch(fs);
+
+            if (!isAlreadyOnBatch(fs)) {
+                if (isLockable(fs)) {
+                    fileSystemOnBatch = fs;
+                    ((LockableFileSystem) fs).lock();
+                } else {
+                    throw new BatchRuntimeException("Not a LockableFileSystem : "
+                            + fs.toString());
+                }
+            }
         }
         catch (BatchRuntimeException e){
             lock.unlock();
             throw e;
-        }
-
-        if (!isAlreadyOnBatch(fs)) {
-            if (isLockable(fs)) {
-                fileSystemOnBatch = fs;
-                ((LockableFileSystem) fs).lock();
-            } else {
-                throw new BatchRuntimeException("Not a LockableFileSystem : "
-                                                        + fileSystemOnBatch.toString());
-            }
         }
     }
 

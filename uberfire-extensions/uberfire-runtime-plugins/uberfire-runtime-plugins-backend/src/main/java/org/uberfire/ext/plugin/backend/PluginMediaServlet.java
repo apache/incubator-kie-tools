@@ -19,8 +19,6 @@ package org.uberfire.ext.plugin.backend;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URI;
-import java.util.HashMap;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -37,7 +35,6 @@ import org.uberfire.ext.plugin.model.Media;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.EncodingUtil;
 import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.server.BaseUploadServlet;
 import org.uberfire.server.MimeType;
@@ -58,6 +55,8 @@ public class PluginMediaServlet
     @Named("MediaServletURI")
     private MediaServletURI mediaServletURI;
 
+    @Inject
+    @Named("pluginsFS")
     private FileSystem fileSystem;
 
     private Path root;
@@ -76,17 +75,6 @@ public class PluginMediaServlet
             } else {
                 mediaServletURI.setURI(this.pattern);
             }
-        }
-        try {
-            fileSystem = ioService.newFileSystem(URI.create("default://system_ou/plugins"),
-                                                 new HashMap<String, Object>() {{
-                                                     put("init",
-                                                         Boolean.TRUE);
-                                                     put("internal",
-                                                         Boolean.TRUE);
-                                                 }});
-        } catch (final FileSystemAlreadyExistsException e) {
-            fileSystem = ioService.getFileSystem(URI.create("default://system_ou/plugins"));
         }
         this.root = fileSystem.getRootDirectories().iterator().next();
     }

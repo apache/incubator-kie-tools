@@ -40,9 +40,9 @@ public class ObjectStorageImpl implements ObjectStorage {
     }
 
     @Override
-    public void init(String rootPath) {
+    public void init(URI rootURI) {
         initializeMarshaller();
-        initializeFileSystem(rootPath);
+        initializeFileSystem(rootURI);
     }
 
     @Override
@@ -103,9 +103,9 @@ public class ObjectStorageImpl implements ObjectStorage {
         MappingContextSingleton.get();
     }
 
-    private void initializeFileSystem(final String rootPath) {
+    private void initializeFileSystem(final URI rootURI) {
         try {
-            fileSystem = ioService.newFileSystem(URI.create(rootPath),
+            fileSystem = ioService.newFileSystem(rootURI,
                                                  new HashMap<String, Object>() {{
                                                      put("init",
                                                          Boolean.TRUE);
@@ -113,7 +113,7 @@ public class ObjectStorageImpl implements ObjectStorage {
                                                          Boolean.TRUE);
                                                  }});
         } catch (FileSystemAlreadyExistsException e) {
-            fileSystem = ioService.getFileSystem(URI.create(rootPath));
+            fileSystem = ioService.getFileSystem(rootURI);
         }
     }
 }

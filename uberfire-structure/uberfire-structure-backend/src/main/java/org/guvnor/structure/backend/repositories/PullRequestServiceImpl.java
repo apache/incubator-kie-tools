@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -35,6 +34,7 @@ import org.guvnor.structure.repositories.PullRequestService;
 import org.guvnor.structure.repositories.PullRequestStatus;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryNotFoundException;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.impl.GitMetadataImpl;
 import org.guvnor.structure.repositories.impl.PullRequestImpl;
 import org.slf4j.Logger;
@@ -43,33 +43,39 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.FileDiff;
 import org.uberfire.java.nio.base.options.MergeCopyOption;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.spaces.SpacesAPI;
 
 import static java.lang.Integer.min;
 import static java.util.stream.Collectors.toMap;
-import static org.uberfire.backend.server.util.Paths.convert;
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.backend.server.util.Paths.convert;
 
 public class PullRequestServiceImpl implements PullRequestService {
 
     private final GitMetadataStore metadataStore;
     private final IOService ioService;
-    private final ConfiguredRepositories configuredRepositories;
+    private final RepositoryService repositoryService;
+    private final SpacesAPI spaces;
 
     private Logger logger = LoggerFactory.getLogger(PullRequestServiceImpl.class);
 
     @Inject
-    public PullRequestServiceImpl(GitMetadataStore metadataStore,
-                                  @Named("ioStrategy") IOService ioService,
-                                  ConfiguredRepositories configuredRepositories) {
+    public PullRequestServiceImpl(final GitMetadataStore metadataStore,
+                                  final @Named("ioStrategy") IOService ioService,
+                                  final RepositoryService repositoryService,
+                                  final SpacesAPI spaces) {
         this.metadataStore = metadataStore;
         this.ioService = ioService;
-        this.configuredRepositories = configuredRepositories;
+        this.repositoryService = repositoryService;
+        this.spaces = spaces;
     }
 
     @Override
-    public PullRequest createPullRequest(String sourceRepository,
+    public PullRequest createPullRequest(String sourceSpace,
+                                         String sourceRepository,
                                          String sourceBranch,
+                                         String targetSpace,
                                          String targetRepository,
                                          String targetBranch) {
 
@@ -98,8 +104,10 @@ public class PullRequestServiceImpl implements PullRequestService {
             }
 
             storablePullRequest = new PullRequestImpl(generatedId,
+                                                      sourceSpace,
                                                       sourceRepository,
                                                       sourceBranch,
+                                                      targetSpace,
                                                       targetRepository,
                                                       targetBranch,
                                                       PullRequestStatus.OPEN);
@@ -191,6 +199,7 @@ public class PullRequestServiceImpl implements PullRequestService {
         return this.getRepositoryMetadata(repository).getPullRequest(id);
     }
 
+    @Override
     public List<PullRequest> getPullRequestsByBranch(Integer page,
                                                      Integer pageSize,
                                                      final String repository,
@@ -214,6 +223,7 @@ public class PullRequestServiceImpl implements PullRequestService {
                              pullRequests);
     }
 
+    @Override
     public List<PullRequest> getPullRequestsByStatus(Integer page,
                                                      Integer pageSize,
                                                      final String repository,
@@ -283,12 +293,12 @@ public class PullRequestServiceImpl implements PullRequestService {
     @Override
     public List<FileDiff> diff(final PullRequest pullRequest) {
 
-        final Repository repository = configuredRepositories.getRepositoryByRepositoryAlias(pullRequest.getTargetRepository());
+        final Repository repository = repositoryService.getRepositoryFromSpace(spaces.getSpace(pullRequest.getTargetSpace()), pullRequest.getTargetRepository());
         this.createHiddenBranch(pullRequest);
         String diff = String.format("diff:%s,%s",
                                     pullRequest.getTargetBranch(),
                                     this.buildHiddenBranchName(pullRequest));
-        final List<FileDiff> diffs = (List<FileDiff>) this.ioService.readAttributes(convert(repository.getRoot()),
+        final List<FileDiff> diffs = (List<FileDiff>) this.ioService.readAttributes(convert(repository.getBranch(pullRequest.getSourceBranch()).get().getPath()),
                                                                                     diff);
         this.deleteHiddenBranch(pullRequest);
         return diffs;
@@ -306,8 +316,10 @@ public class PullRequestServiceImpl implements PullRequestService {
         GitMetadata metadata = getRepositoryMetadata(repository);
         PullRequest pullRequest = metadata.getPullRequest(id);
         PullRequestImpl finalPullRequest = new PullRequestImpl(pullRequest.getId(),
+                                                               pullRequest.getSourceSpace(),
                                                                pullRequest.getSourceRepository(),
                                                                pullRequest.getSourceBranch(),
+                                                               pullRequest.getTargetSpace(),
                                                                pullRequest.getTargetRepository(),
                                                                pullRequest.getTargetBranch(),
                                                                status);

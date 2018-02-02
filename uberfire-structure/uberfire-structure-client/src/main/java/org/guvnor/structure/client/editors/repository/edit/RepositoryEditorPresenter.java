@@ -17,13 +17,17 @@
 package org.guvnor.structure.client.editors.repository.edit;
 
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
+import org.guvnor.common.services.project.client.security.ProjectController;
+import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.structure.client.resources.i18n.CommonConstants;
-import org.guvnor.structure.client.security.RepositoryController;
 import org.guvnor.structure.repositories.PublicURI;
 import org.guvnor.structure.repositories.RepositoryInfo;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
@@ -41,6 +45,7 @@ import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.spaces.Space;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
@@ -49,14 +54,16 @@ public class RepositoryEditorPresenter {
 
     private View view;
     private Caller<RepositoryService> repositoryService;
+    private Caller<WorkspaceProjectService> projectService;
     private Caller<RepositoryServiceEditor> repositoryServiceEditor;
     private Event<NotificationEvent> notification;
     private PlaceManager placeManager;
-    private RepositoryController repositoryController;
+    private ProjectController projectController;
 
     private String alias = null;
     private Path root = null;
     private PlaceRequest place;
+    private WorkspaceProjectContext context;
 
     public interface View
             extends UberView<RepositoryEditorPresenter> {
@@ -79,35 +86,51 @@ public class RepositoryEditorPresenter {
     @Inject
     public RepositoryEditorPresenter(final View view,
                                      final Caller<RepositoryService> repositoryService,
+                                     final Caller<WorkspaceProjectService> projectService,
                                      final Caller<RepositoryServiceEditor> repositoryServiceEditor,
                                      final Event<NotificationEvent> notification,
                                      final PlaceManager placeManager,
-                                     final RepositoryController repositoryController) {
+                                     final ProjectController projectController,
+                                     final WorkspaceProjectContext context) {
         this.view = view;
         this.repositoryService = repositoryService;
+        this.projectService = projectService;
         this.repositoryServiceEditor = repositoryServiceEditor;
         this.notification = notification;
         this.placeManager = placeManager;
-        this.repositoryController = repositoryController;
+        this.projectController = projectController;
+        this.context = context;
     }
 
     @OnStartup
     public void onStartup(final PlaceRequest place) {
         this.place = place;
         this.alias = place.getParameters().get("alias");
+        String ouName = context.getActiveOrganizationalUnit()
+                               .map(ou -> ou.getName())
+                               .orElseThrow(() -> new IllegalStateException("Cannot lookup repository [" + alias + "] without active organizational unit."));
 
         repositoryService.call(new RemoteCallback<RepositoryInfo>() {
             @Override
             public void callback(final RepositoryInfo repo) {
-                root = repo.getRoot();
-                view.setRepositoryInfo(repo.getAlias(),
-                                       repo.getOwner(),
-                                       !repositoryController.canUpdateRepository(repo.getId()),
-                                       repo.getPublicURIs(),
-                                       CoreConstants.INSTANCE.Empty(),
-                                       repo.getInitialVersionList());
+
+                projectService.call(
+                        new RemoteCallback<WorkspaceProject>() {
+                            @Override
+                            public void callback(final WorkspaceProject workspaceProject) {
+                                root = repo.getRoot();
+                                view.setRepositoryInfo(repo.getAlias(),
+                                                       repo.getOwner(),
+                                                       !projectController.canUpdateProject(workspaceProject),
+                                                       repo.getPublicURIs(),
+                                                       CoreConstants.INSTANCE.Empty(),
+                                                       repo.getInitialVersionList());
+                            }
+                        }
+
+                ).resolveProjectByRepositoryAlias(new Space(repo.getOwner()), repo.getAlias());
             }
-        }).getRepositoryInfo(alias);
+        }).getRepositoryInfo(new Space(ouName), alias);
     }
 
     @WorkbenchPartTitle
@@ -121,12 +144,16 @@ public class RepositoryEditorPresenter {
     }
 
     void onLoadMoreHistory(final int lastIndex) {
+        String ouName = context.getActiveOrganizationalUnit()
+                                .map(ou -> ou.getName())
+                                .orElseThrow(() -> new IllegalStateException("Cannot lookup repository [" + alias + "] without active organizational unit."));
         repositoryService.call(new RemoteCallback<List<VersionRecord>>() {
             @Override
             public void callback(final List<VersionRecord> versionList) {
                 view.addHistory(versionList);
             }
-        }).getRepositoryHistory(alias,
+        }).getRepositoryHistory(new Space(ouName),
+                                alias,
                                 lastIndex);
     }
 

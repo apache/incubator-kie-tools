@@ -102,8 +102,4 @@ public interface CloneRepositoryView {
     void errorLoadOrganizationalUnitsFail(Throwable cause);
 
     void reset();
-
-    boolean isManagedRepository();
-
-    void enableManagedRepoCreation(boolean assetsManagementIsGranted);
 }

@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.structure.client.editors.context.GuvnorStructureContext;
 import org.guvnor.structure.client.resources.i18n.CommonConstants;
-import org.guvnor.structure.client.security.RepositoryController;
+import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.PublicURI;
 import org.guvnor.structure.repositories.Repository;
 import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
@@ -38,8 +38,6 @@ public class RepositoryItemPresenter
 
     private RepositoryItemView view;
     private GuvnorStructureContext guvnorStructureContext;
-    private HasRemoveRepositoryHandlers removeRepositoryHandler;
-    private RepositoryController repositoryController;
     private Event<NotificationEvent> notification;
 
     public RepositoryItemPresenter() {
@@ -48,11 +46,9 @@ public class RepositoryItemPresenter
     @Inject
     public RepositoryItemPresenter(final RepositoryItemView repositoryItemView,
                                    final GuvnorStructureContext guvnorStructureContext,
-                                   final RepositoryController repositoryController,
                                    final Event<NotificationEvent> notification) {
         this.view = repositoryItemView;
         this.guvnorStructureContext = guvnorStructureContext;
-        this.repositoryController = repositoryController;
         this.notification = notification;
     }
 
@@ -76,11 +72,6 @@ public class RepositoryItemPresenter
 
         populateBranches(branch);
 
-        boolean canUpdate = repositoryController.canUpdateRepository(repository);
-        boolean canDelete = repositoryController.canDeleteRepository(repository);
-        view.setUpdateEnabled(canUpdate);
-        view.setDeleteEnabled(canDelete);
-
         view.refresh();
     }
 
@@ -103,13 +94,13 @@ public class RepositoryItemPresenter
     }
 
     private void populateBranches(final String currentBranch) {
-        final ArrayList<String> branches = new ArrayList<String>(repository.getBranches());
+        final ArrayList<Branch> branches = new ArrayList<>(repository.getBranches());
 
         Collections.reverse(branches);
 
         view.clearBranches();
-        for (String branch : branches) {
-            view.addBranch(branch);
+        for (Branch branch : branches) {
+            view.addBranch(branch.getName());
         }
         view.setSelectedBranch(currentBranch);
     }
@@ -127,12 +118,6 @@ public class RepositoryItemPresenter
         return publicURI.getProtocol() == null ? "default" : publicURI.getProtocol();
     }
 
-    public void onClickButtonRemoveRepository() {
-        if (removeRepositoryHandler != null) {
-            removeRepositoryHandler.removeRepository(repository);
-        }
-    }
-
     public void onUpdateRepository(final String branch) {
         guvnorStructureContext.changeBranch(repository.getAlias(),
                                             branch);
@@ -141,10 +126,6 @@ public class RepositoryItemPresenter
     @Override
     public Widget asWidget() {
         return view.asWidget();
-    }
-
-    public void addRemoveRepositoryCommand(final HasRemoveRepositoryHandlers removeRepositoryHandlers) {
-        this.removeRepositoryHandler = removeRepositoryHandlers;
     }
 
     void onGitUrlCopied(final String uri) {

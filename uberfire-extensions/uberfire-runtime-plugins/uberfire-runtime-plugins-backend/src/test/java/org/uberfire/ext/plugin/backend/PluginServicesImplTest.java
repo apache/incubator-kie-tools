@@ -29,7 +29,6 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
@@ -50,6 +49,7 @@ import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginSimpleContent;
 import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.plugin.model.RuntimePlugin;
+import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystem;
@@ -84,6 +84,9 @@ public class PluginServicesImplTest {
     @Mock
     private Event<MediaDeleted> mediaDeletedEvent;
 
+    @Mock(name = "pluginsFS")
+    private FileSystem fileSystem;
+
     @Spy
     private DefaultFileNameValidator defaultFileNameValidator;
 
@@ -92,8 +95,6 @@ public class PluginServicesImplTest {
 
     private IOServiceDotFileImpl ioService;
 
-    @Spy
-    @InjectMocks
     private PluginServicesImpl pluginServices;
 
     @After
@@ -108,11 +109,30 @@ public class PluginServicesImplTest {
         MockitoAnnotations.initMocks(this);
         ioService = spy((IOServiceDotFileImpl) fileSystemTestingUtils.getIoService());
         doReturn(fileSystemTestingUtils.getFileSystem()).when(ioService).getFileSystem(any(URI.class));
+        doReturn(fileSystemTestingUtils.getFileSystem().getRootDirectories()).when(fileSystem).getRootDirectories();
         doNothing().when(ioService).startBatch(any(FileSystem.class));
         doNothing().when(ioService).endBatch();
-        doReturn("script").when(pluginServices).getFrameworkScript(any(Framework.class));
+        pluginServices = new PluginServicesImpl(ioService,
+                                                mediaServletURI,
+                                                sessionInfo,
+                                                pluginAddedEvent,
+                                                pluginDeletedEvent,
+                                                pluginSavedEvent,
+                                                pluginRenamedEvent,
+                                                mediaDeletedEvent,
+                                                defaultFileNameValidator,
+                                                identity,
+                                                fileSystemTestingUtils.getFileSystem()) {
+            @Override
+            String getFrameworkScript(Framework framework) throws IOException {
+                return "script";
+            }
 
-        doReturn(ioService).when(pluginServices).getIoService();
+            @Override
+            IOService getIoService() {
+                return ioService;
+            }
+        };
 
         pluginServices.init();
     }
@@ -200,42 +220,43 @@ public class PluginServicesImplTest {
     @Test
     public void testCopyPluginToAnotherDirectory() {
         Path pluginPath = createPlugin("emptyScreen",
-                PluginType.SCREEN,
-                null);
+                                       PluginType.SCREEN,
+                                       null);
 
         Plugin targetPlugin = buildPlugin("newEmptyScreen",
-                PluginType.SCREEN,
-                null);
+                                          PluginType.SCREEN,
+                                          null);
 
         Path targetDir = Paths.convert(Paths.convert(targetPlugin.getPath()).getParent());
         Path resultPath = pluginServices.copy(pluginPath,
-                "newEmptyScreen",
-                targetDir,
-                "");
+                                              "newEmptyScreen",
+                                              targetDir,
+                                              "");
 
-        assertEquals(Paths.convert(resultPath), Paths.convert(targetPlugin.getPath()));
+        assertEquals(Paths.convert(resultPath),
+                     Paths.convert(targetPlugin.getPath()));
         verify(pluginAddedEvent,
-                times(1)).fire(any(PluginAdded.class));
+               times(1)).fire(any(PluginAdded.class));
 
         Collection<RuntimePlugin> runtimePlugins = pluginServices.listRuntimePlugins();
         assertEquals(2,
-                runtimePlugins.size());
+                     runtimePlugins.size());
         assertTrue(contains(runtimePlugins,
-                "emptyScreen"));
+                            "emptyScreen"));
         assertTrue(contains(runtimePlugins,
-                "newEmptyScreen"));
+                            "newEmptyScreen"));
     }
 
     @Test(expected = FileAlreadyExistsException.class)
     public void testCopyPluginAlreadyExists() {
         Path pluginPath = createPlugin("emptyScreen",
-                PluginType.SCREEN,
-                null);
+                                       PluginType.SCREEN,
+                                       null);
 
         pluginServices.copy(pluginPath,
-                "emptyScreen",
-                pluginPath,
-                "");
+                            "emptyScreen",
+                            pluginPath,
+                            "");
     }
 
     @Test
@@ -276,12 +297,15 @@ public class PluginServicesImplTest {
     @Test
     public void testLoadEmptyLayout() {
         Path pluginPath = createPlugin("emptyLayout",
-                PluginType.PERSPECTIVE_LAYOUT,
-                null);
+                                       PluginType.PERSPECTIVE_LAYOUT,
+                                       null);
 
-        LayoutEditorModel layoutEditorModel = pluginServices.getLayoutEditor(pluginPath, PluginType.PERSPECTIVE_LAYOUT);
-        assertEquals(layoutEditorModel.getName(), "emptyLayout");
-        assertEquals(layoutEditorModel.getPath(), pluginPath);
+        LayoutEditorModel layoutEditorModel = pluginServices.getLayoutEditor(pluginPath,
+                                                                             PluginType.PERSPECTIVE_LAYOUT);
+        assertEquals(layoutEditorModel.getName(),
+                     "emptyLayout");
+        assertEquals(layoutEditorModel.getPath(),
+                     pluginPath);
         assertTrue(layoutEditorModel.isEmptyLayout());
     }
 

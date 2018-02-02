@@ -22,32 +22,30 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.guvnor.rest.backend.cmd.AbstractJobCommand;
-import org.guvnor.rest.backend.cmd.AddRepositoryToOrgUnitCmd;
+import org.guvnor.rest.backend.cmd.AddProjectToOrgUnitCmd;
+import org.guvnor.rest.backend.cmd.CloneRepositoryCmd;
 import org.guvnor.rest.backend.cmd.CompileProjectCmd;
-import org.guvnor.rest.backend.cmd.CreateOrCloneRepositoryCmd;
 import org.guvnor.rest.backend.cmd.CreateOrgUnitCmd;
 import org.guvnor.rest.backend.cmd.CreateProjectCmd;
 import org.guvnor.rest.backend.cmd.DeleteProjectCmd;
 import org.guvnor.rest.backend.cmd.DeployProjectCmd;
 import org.guvnor.rest.backend.cmd.InstallProjectCmd;
 import org.guvnor.rest.backend.cmd.RemoveOrgUnitCmd;
-import org.guvnor.rest.backend.cmd.RemoveRepositoryCmd;
-import org.guvnor.rest.backend.cmd.RemoveRepositoryFromOrgUnitCmd;
+import org.guvnor.rest.backend.cmd.RemoveProjectFromOrgUnitCmd;
 import org.guvnor.rest.backend.cmd.TestProjectCmd;
 import org.guvnor.rest.backend.cmd.UpdateOrgUnitCmd;
-import org.guvnor.rest.client.AddRepositoryToOrganizationalUnitRequest;
+import org.guvnor.rest.client.AddProjectToSpaceRequest;
+import org.guvnor.rest.client.CloneProjectJobRequest;
 import org.guvnor.rest.client.CompileProjectRequest;
-import org.guvnor.rest.client.CreateOrCloneRepositoryRequest;
-import org.guvnor.rest.client.CreateOrganizationalUnitRequest;
+import org.guvnor.rest.client.SpaceRequest;
 import org.guvnor.rest.client.CreateProjectRequest;
 import org.guvnor.rest.client.DeleteProjectRequest;
 import org.guvnor.rest.client.DeployProjectRequest;
 import org.guvnor.rest.client.InstallProjectRequest;
 import org.guvnor.rest.client.JobRequest;
 import org.guvnor.rest.client.JobStatus;
-import org.guvnor.rest.client.RemoveOrganizationalUnitRequest;
-import org.guvnor.rest.client.RemoveRepositoryFromOrganizationalUnitRequest;
-import org.guvnor.rest.client.RemoveRepositoryRequest;
+import org.guvnor.rest.client.RemoveSpaceRequest;
+import org.guvnor.rest.client.RemoveProjectFromOrganizationalUnitRequest;
 import org.guvnor.rest.client.TestProjectRequest;
 import org.guvnor.rest.client.UpdateOrganizationalUnitRequest;
 import org.slf4j.Logger;
@@ -83,36 +81,23 @@ public class JobRequestScheduler {
         this.jobRequestHelper = jobRequestHelper;
     }
 
-    public void createOrCloneRepositoryRequest(final CreateOrCloneRepositoryRequest jobRequest) {
+    public void cloneProjectRequest(final CloneProjectJobRequest jobRequest) {
         final Map<String, Object> params = getContext(jobRequest);
         params.put("Repository",
-                   jobRequest.getRepository().getName());
+                   jobRequest.getCloneProjectRequest().getName());
         params.put("Operation",
-                   "createOrCloneRepository");
+                   "cloneProject");
 
         scheduleJob(jobRequest,
-                    new CreateOrCloneRepositoryCmd(jobRequestHelper,
-                                                   jobResultManager,
-                                                   params));
-    }
-
-    public void removeRepositoryRequest(final RemoveRepositoryRequest jobRequest) {
-        final Map<String, Object> params = getContext(jobRequest);
-        params.put("Repository",
-                   jobRequest.getRepositoryName());
-        params.put("Operation",
-                   "removeRepository");
-
-        scheduleJob(jobRequest,
-                    new RemoveRepositoryCmd(jobRequestHelper,
-                                            jobResultManager,
-                                            params));
+                    new CloneRepositoryCmd(jobRequestHelper,
+                                           jobResultManager,
+                                           params));
     }
 
     public void createProjectRequest(final CreateProjectRequest jobRequest) {
         final Map<String, Object> params = getContext(jobRequest);
         params.put("Repository",
-                   jobRequest.getRepositoryName());
+                   jobRequest.getOrganizationalUnitName());
         params.put("Project",
                    jobRequest.getProjectName());
         params.put("Operation",
@@ -126,8 +111,6 @@ public class JobRequestScheduler {
 
     public void deleteProjectRequest(final DeleteProjectRequest jobRequest) {
         final Map<String, Object> params = getContext(jobRequest);
-        params.put("Repository",
-                   jobRequest.getRepositoryName());
         params.put("Project",
                    jobRequest.getProjectName());
         params.put("Operation",
@@ -141,8 +124,6 @@ public class JobRequestScheduler {
 
     public void compileProjectRequest(final CompileProjectRequest jobRequest) {
         final Map<String, Object> params = getContext(jobRequest);
-        params.put("Repository",
-                   jobRequest.getRepositoryName());
         params.put("Project",
                    jobRequest.getProjectName());
         params.put("Operation",
@@ -156,8 +137,6 @@ public class JobRequestScheduler {
 
     public void installProjectRequest(final InstallProjectRequest jobRequest) {
         final Map<String, Object> params = getContext(jobRequest);
-        params.put("Repository",
-                   jobRequest.getRepositoryName());
         params.put("Project",
                    jobRequest.getProjectName());
         params.put("Operation",
@@ -171,8 +150,6 @@ public class JobRequestScheduler {
 
     public void testProjectRequest(final TestProjectRequest jobRequest) {
         final Map<String, Object> params = getContext(jobRequest);
-        params.put("Repository",
-                   jobRequest.getRepositoryName());
         params.put("Project",
                    jobRequest.getProjectName());
         params.put("Operation",
@@ -186,8 +163,6 @@ public class JobRequestScheduler {
 
     public void deployProjectRequest(final DeployProjectRequest jobRequest) {
         final Map<String, Object> params = getContext(jobRequest);
-        params.put("Repository",
-                   jobRequest.getRepositoryName());
         params.put("Project",
                    jobRequest.getProjectName());
         params.put("Operation",
@@ -199,7 +174,7 @@ public class JobRequestScheduler {
                                          params));
     }
 
-    public void createOrganizationalUnitRequest(final CreateOrganizationalUnitRequest jobRequest) {
+    public void createOrganizationalUnitRequest(final SpaceRequest jobRequest) {
         final Map<String, Object> params = getContext(jobRequest);
         params.put("Operation",
                    "createOrgUnit");
@@ -221,33 +196,33 @@ public class JobRequestScheduler {
                                          params));
     }
 
-    public void addRepositoryToOrganizationalUnitRequest(final AddRepositoryToOrganizationalUnitRequest jobRequest) {
+    public void addProjectToSpace(final AddProjectToSpaceRequest jobRequest) {
         final Map<String, Object> params = getContext(jobRequest);
-        params.put("Repository",
-                   jobRequest.getRepositoryName());
+        params.put("Project",
+                   jobRequest.getProjectName());
         params.put("Operation",
                    "addRepositoryToOrgUnit");
 
         scheduleJob(jobRequest,
-                    new AddRepositoryToOrgUnitCmd(jobRequestHelper,
-                                                  jobResultManager,
-                                                  params));
+                    new AddProjectToOrgUnitCmd(jobRequestHelper,
+                                               jobResultManager,
+                                               params));
     }
 
-    public void removeRepositoryFromOrganizationalUnitRequest(final RemoveRepositoryFromOrganizationalUnitRequest jobRequest) {
+    public void removeProjectFromOrganizationalUnitRequest(final RemoveProjectFromOrganizationalUnitRequest jobRequest) {
         final Map<String, Object> params = getContext(jobRequest);
-        params.put("Repository",
-                   jobRequest.getRepositoryName());
+        params.put("Project",
+                   jobRequest.getProjectName());
         params.put("Operation",
                    "removeRepositoryFromOrgUnit");
 
         scheduleJob(jobRequest,
-                    new RemoveRepositoryFromOrgUnitCmd(jobRequestHelper,
-                                                       jobResultManager,
-                                                       params));
+                    new RemoveProjectFromOrgUnitCmd(jobRequestHelper,
+                                                    jobResultManager,
+                                                    params));
     }
 
-    public void removeOrganizationalUnitRequest(final RemoveOrganizationalUnitRequest jobRequest) {
+    public void removeSpaceRequest(final RemoveSpaceRequest jobRequest) {
         final Map<String, Object> params = getContext(jobRequest);
         params.put("Operation",
                    "removeOrgUnit");

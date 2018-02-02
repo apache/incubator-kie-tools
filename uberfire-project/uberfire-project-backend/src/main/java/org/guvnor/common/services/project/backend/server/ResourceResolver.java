@@ -16,7 +16,6 @@
 package org.guvnor.common.services.project.backend.server;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -31,17 +30,12 @@ import org.guvnor.common.services.backend.file.LinkedMetaInfFolderFilter;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.backend.server.utils.IdentifierUtils;
 import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.service.ModuleResourceResolver;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.PackageAlreadyExistsException;
-import org.guvnor.common.services.project.service.ProjectResourceResolver;
-import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
-import org.guvnor.structure.server.config.ConfigGroup;
-import org.guvnor.structure.server.config.ConfigItem;
-import org.guvnor.structure.server.config.ConfigType;
-import org.guvnor.structure.server.config.ConfigurationService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -49,41 +43,35 @@ import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Files;
 
-import static org.guvnor.common.services.project.utils.ProjectResourcePaths.MAIN_RESOURCES_PATH;
-import static org.guvnor.common.services.project.utils.ProjectResourcePaths.MAIN_SRC_PATH;
-import static org.guvnor.common.services.project.utils.ProjectResourcePaths.POM_PATH;
-import static org.guvnor.common.services.project.utils.ProjectResourcePaths.SOURCE_PATHS;
-import static org.guvnor.common.services.project.utils.ProjectResourcePaths.TEST_RESOURCES_PATH;
-import static org.guvnor.common.services.project.utils.ProjectResourcePaths.TEST_SRC_PATH;
+import static org.guvnor.common.services.project.utils.ModuleResourcePaths.MAIN_RESOURCES_PATH;
+import static org.guvnor.common.services.project.utils.ModuleResourcePaths.MAIN_SRC_PATH;
+import static org.guvnor.common.services.project.utils.ModuleResourcePaths.POM_PATH;
+import static org.guvnor.common.services.project.utils.ModuleResourcePaths.SOURCE_PATHS;
+import static org.guvnor.common.services.project.utils.ModuleResourcePaths.TEST_RESOURCES_PATH;
+import static org.guvnor.common.services.project.utils.ModuleResourcePaths.TEST_SRC_PATH;
 
-public abstract class ResourceResolver<T extends Project>
-        implements ProjectResourceResolver<T> {
+public abstract class ResourceResolver<T extends Module>
+        implements ModuleResourceResolver<T> {
 
     protected IOService ioService;
     protected POMService pomService;
-    protected ConfigurationService configurationService;
     protected CommentedOptionFactory commentedOptionFactory;
-    protected BackwardCompatibleUtil backward;
-    protected List<ProjectResourcePathResolver> resourcePathResolvers = new ArrayList<>();
+    protected List<ModuleResourcePathResolver> resourcePathResolvers = new ArrayList<>();
 
     public ResourceResolver() {
     }
 
     public ResourceResolver(final IOService ioService,
                             final POMService pomService,
-                            final ConfigurationService configurationService,
                             final CommentedOptionFactory commentedOptionFactory,
-                            final BackwardCompatibleUtil backward,
-                            final Instance<ProjectResourcePathResolver> resourcePathResolversInstance) {
+                            final Instance<ModuleResourcePathResolver> resourcePathResolversInstance) {
         this.ioService = ioService;
         this.pomService = pomService;
-        this.configurationService = configurationService;
         this.commentedOptionFactory = commentedOptionFactory;
-        this.backward = backward;
         initResourcePathResolvers(resourcePathResolversInstance);
     }
 
-    private void initResourcePathResolvers(final Instance<ProjectResourcePathResolver> resourcePathResolversInstance) {
+    private void initResourcePathResolvers(final Instance<ModuleResourcePathResolver> resourcePathResolversInstance) {
         Optional.ofNullable(resourcePathResolversInstance.iterator())
                 .ifPresent(iterator -> iterator.forEachRemaining(resolver -> resourcePathResolvers.add(resolver)));
     }
@@ -148,12 +136,12 @@ public abstract class ResourceResolver<T extends Project>
         }
     }
 
-    private String getPackagePathSuffix(final org.uberfire.java.nio.file.Path nioProjectRootPath,
+    private String getPackagePathSuffix(final org.uberfire.java.nio.file.Path nioModuleRootPath,
                                         final org.uberfire.java.nio.file.Path nioPackagePath) {
-        final org.uberfire.java.nio.file.Path nioMainSrcPath = nioProjectRootPath.resolve(MAIN_SRC_PATH);
-        final org.uberfire.java.nio.file.Path nioTestSrcPath = nioProjectRootPath.resolve(TEST_SRC_PATH);
-        final org.uberfire.java.nio.file.Path nioMainResourcesPath = nioProjectRootPath.resolve(MAIN_RESOURCES_PATH);
-        final org.uberfire.java.nio.file.Path nioTestResourcesPath = nioProjectRootPath.resolve(TEST_RESOURCES_PATH);
+        final org.uberfire.java.nio.file.Path nioMainSrcPath = nioModuleRootPath.resolve(MAIN_SRC_PATH);
+        final org.uberfire.java.nio.file.Path nioTestSrcPath = nioModuleRootPath.resolve(TEST_SRC_PATH);
+        final org.uberfire.java.nio.file.Path nioMainResourcesPath = nioModuleRootPath.resolve(MAIN_RESOURCES_PATH);
+        final org.uberfire.java.nio.file.Path nioTestResourcesPath = nioModuleRootPath.resolve(TEST_RESOURCES_PATH);
 
         String packageName = null;
         org.uberfire.java.nio.file.Path packagePath = null;
@@ -175,23 +163,26 @@ public abstract class ResourceResolver<T extends Project>
     }
 
     @Override
-    public abstract T resolveProject(final Path resource);
+    public abstract T resolveModule(final Path resource);
 
     @Override
-    public Project resolveParentProject(final Path resource) {
+    public Module resolveParentModule(final Path resource) {
         try {
-            //Null resource paths cannot resolve to a Project
+            //Null resource paths cannot resolve to a Module
             if (resource == null) {
                 return null;
             }
-            //Check if resource is the project root
-            org.uberfire.java.nio.file.Path path = Paths.convert(resource).normalize();
+            //Check if resource is the module root
+            final org.uberfire.java.nio.file.Path path = Paths.convert(resource).normalize();
 
             if (hasPom(path)) {
-                final Path projectRootPath = Paths.convert(path);
-                return new Project(projectRootPath,
-                                   Paths.convert(path.resolve(POM_PATH)),
-                                   projectRootPath.getFileName());
+                final Path moduleRootPath = Paths.convert(path);
+                final Path pomXMLPath = Paths.convert(path.resolve(POM_PATH));
+                final POM pom = pomService.load(pomXMLPath);
+
+                return new Module(moduleRootPath,
+                                  pomXMLPath,
+                                  pom);
             } else {
                 return null;
             }
@@ -201,13 +192,13 @@ public abstract class ResourceResolver<T extends Project>
     }
 
     @Override
-    public Project resolveToParentProject(final Path resource) {
+    public Module resolveToParentModule(final Path resource) {
         try {
-            //Null resource paths cannot resolve to a Project
+            //Null resource paths cannot resolve to a Module
             if (resource == null) {
                 return null;
             }
-            //Check if resource is the project root
+            //Check if resource is the module root
             org.uberfire.java.nio.file.Path path = Paths.convert(resource).normalize();
 
             org.uberfire.java.nio.file.Path parentPomPath = path.resolve(POM_PATH);
@@ -215,12 +206,12 @@ public abstract class ResourceResolver<T extends Project>
             if (hasPom(path)) {
                 POM parent = pomService.load(Paths.convert(parentPomPath));
 
-                final Path projectRootPath = Paths.convert(path);
-                Project project = new Project(projectRootPath,
-                                              Paths.convert(parentPomPath),
-                                              projectRootPath.getFileName(),
-                                              parent.getModules());
-                return project;
+                final Path moduleRootPath = Paths.convert(path);
+                Module module = new Module(moduleRootPath,
+                                           Paths.convert(parentPomPath),
+                                           parent,
+                                           parent.getModules());
+                return module;
             } else {
                 return null;
             }
@@ -230,19 +221,19 @@ public abstract class ResourceResolver<T extends Project>
     }
 
     @Override
-    public Set<Package> resolvePackages(final Project project) {
+    public Set<Package> resolvePackages(final Module module) {
         final Set<Package> packages = new HashSet<Package>();
         final Set<String> packageNames = new HashSet<String>();
-        if (project == null) {
+        if (module == null) {
             return packages;
         }
         //Build a set of all package names across /src/main/java, /src/main/resources, /src/test/java and /src/test/resources paths
-        //It is possible (if the project was not created within the workbench that some packages only exist in certain paths)
-        final Path projectRoot = project.getRootPath();
-        final org.uberfire.java.nio.file.Path nioProjectRootPath = Paths.convert(projectRoot);
+        //It is possible (if the module was not created within the workbench that some packages only exist in certain paths)
+        final Path moduleRoot = module.getRootPath();
+        final org.uberfire.java.nio.file.Path nioModuleRootPath = Paths.convert(moduleRoot);
         for (String src : SOURCE_PATHS) {
-            final org.uberfire.java.nio.file.Path nioPackageRootSrcPath = nioProjectRootPath.resolve(src);
-            packageNames.addAll(getPackageNames(nioProjectRootPath,
+            final org.uberfire.java.nio.file.Path nioPackageRootSrcPath = nioModuleRootPath.resolve(src);
+            packageNames.addAll(getPackageNames(nioModuleRootPath,
                                                 nioPackageRootSrcPath,
                                                 true,
                                                 true,
@@ -253,7 +244,7 @@ public abstract class ResourceResolver<T extends Project>
         final java.util.Set<String> resolvedPackages = new java.util.HashSet<String>();
         for (String packagePathSuffix : packageNames) {
             for (String src : SOURCE_PATHS) {
-                final org.uberfire.java.nio.file.Path nioPackagePath = nioProjectRootPath.resolve(src).resolve(packagePathSuffix);
+                final org.uberfire.java.nio.file.Path nioPackagePath = nioModuleRootPath.resolve(src).resolve(packagePathSuffix);
                 if (Files.exists(nioPackagePath) && !resolvedPackages.contains(packagePathSuffix)) {
                     packages.add(resolvePackage(Paths.convert(nioPackagePath)));
                     resolvedPackages.add(packagePathSuffix);
@@ -273,14 +264,14 @@ public abstract class ResourceResolver<T extends Project>
         }
 
         //Build a set of all package names across /src/main/java, /src/main/resources, /src/test/java and /src/test/resources paths
-        //It is possible (if the project was not created within the workbench that some packages only exist in certain paths)
+        //It is possible (if the module was not created within the workbench that some packages only exist in certain paths)
 
-        final Path projectRoot = pkg.getProjectRootPath();
-        final org.uberfire.java.nio.file.Path nioProjectRootPath = Paths.convert(projectRoot);
+        final Path moduleRoot = pkg.getModuleRootPath();
+        final org.uberfire.java.nio.file.Path nioModuleRootPath = Paths.convert(moduleRoot);
 
         for (String src : SOURCE_PATHS) {
-            final org.uberfire.java.nio.file.Path nioPackageRootSrcPath = nioProjectRootPath.resolve(src).resolve(resolvePkgName(pkg.getCaption()));
-            packageNames.addAll(getPackageNames(nioProjectRootPath,
+            final org.uberfire.java.nio.file.Path nioPackageRootSrcPath = nioModuleRootPath.resolve(src).resolve(resolvePkgName(pkg.getCaption()));
+            packageNames.addAll(getPackageNames(nioModuleRootPath,
                                                 nioPackageRootSrcPath,
                                                 false,
                                                 true,
@@ -291,7 +282,7 @@ public abstract class ResourceResolver<T extends Project>
         final java.util.Set<String> resolvedPackages = new java.util.HashSet<String>();
         for (String packagePathSuffix : packageNames) {
             for (String src : SOURCE_PATHS) {
-                final org.uberfire.java.nio.file.Path nioPackagePath = nioProjectRootPath.resolve(src).resolve(packagePathSuffix);
+                final org.uberfire.java.nio.file.Path nioPackagePath = nioModuleRootPath.resolve(src).resolve(packagePathSuffix);
                 if (Files.exists(nioPackagePath) && !resolvedPackages.contains(packagePathSuffix)) {
                     packages.add(resolvePackage(Paths.convert(nioPackagePath)));
                     resolvedPackages.add(packagePathSuffix);
@@ -303,18 +294,18 @@ public abstract class ResourceResolver<T extends Project>
     }
 
     @Override
-    public org.guvnor.common.services.project.model.Package resolveDefaultPackage(final Project project) {
+    public org.guvnor.common.services.project.model.Package resolveDefaultPackage(final Module module) {
         final Set<String> packageNames = new HashSet<String>();
-        if (project == null) {
+        if (module == null) {
             return null;
         }
         //Build a set of all package names across /src/main/java, /src/main/resources, /src/test/java and /src/test/resources paths
-        //It is possible (if the project was not created within the workbench that some packages only exist in certain paths)
-        final Path projectRoot = project.getRootPath();
-        final org.uberfire.java.nio.file.Path nioProjectRootPath = Paths.convert(projectRoot);
+        //It is possible (if the module was not created within the workbench that some packages only exist in certain paths)
+        final Path moduleRoot = module.getRootPath();
+        final org.uberfire.java.nio.file.Path nioModuleRootPath = Paths.convert(moduleRoot);
         for (String src : SOURCE_PATHS) {
-            final org.uberfire.java.nio.file.Path nioPackageRootSrcPath = nioProjectRootPath.resolve(src);
-            packageNames.addAll(getPackageNames(nioProjectRootPath,
+            final org.uberfire.java.nio.file.Path nioPackageRootSrcPath = nioModuleRootPath.resolve(src);
+            packageNames.addAll(getPackageNames(nioModuleRootPath,
                                                 nioPackageRootSrcPath,
                                                 true,
                                                 true,
@@ -325,7 +316,7 @@ public abstract class ResourceResolver<T extends Project>
         final java.util.Set<String> resolvedPackages = new java.util.HashSet<String>();
         for (String packagePathSuffix : packageNames) {
             for (String src : SOURCE_PATHS) {
-                final org.uberfire.java.nio.file.Path nioPackagePath = nioProjectRootPath.resolve(src).resolve(packagePathSuffix);
+                final org.uberfire.java.nio.file.Path nioPackagePath = nioModuleRootPath.resolve(src).resolve(packagePathSuffix);
                 if (Files.exists(nioPackagePath) && !resolvedPackages.contains(packagePathSuffix)) {
                     return resolvePackage(Paths.convert(nioPackagePath));
                 }
@@ -336,12 +327,12 @@ public abstract class ResourceResolver<T extends Project>
     }
 
     @Override
-    public Package resolveDefaultWorkspacePackage(final Project project) {
-        final Path projectRootPath = project.getRootPath();
-        final GAV gav = project.getPom().getGav();
+    public Package resolveDefaultWorkspacePackage(final Module module) {
+        final Path moduleRootPath = module.getRootPath();
+        final GAV gav = module.getPom().getGav();
         final String defaultWorkspacePackagePath = getDefaultWorkspacePath(gav);
 
-        final org.uberfire.java.nio.file.Path defaultWorkspacePath = Paths.convert(projectRootPath).resolve(MAIN_RESOURCES_PATH + "/" + defaultWorkspacePackagePath);
+        final org.uberfire.java.nio.file.Path defaultWorkspacePath = Paths.convert(moduleRootPath).resolve(MAIN_RESOURCES_PATH + "/" + defaultWorkspacePackagePath);
 
         return resolvePackage(Paths.convert(defaultWorkspacePath));
     }
@@ -351,23 +342,23 @@ public abstract class ResourceResolver<T extends Project>
         final Set<String> packageNames = new HashSet<String>();
 
         //Build a set of all package names across /src/main/java, /src/main/resources, /src/test/java and /src/test/resources paths
-        final org.uberfire.java.nio.file.Path nioProjectRootPath = Paths.convert(pkg.getProjectRootPath());
-        packageNames.addAll(getPackageNames(nioProjectRootPath,
+        final org.uberfire.java.nio.file.Path nioModuleRootPath = Paths.convert(pkg.getModuleRootPath());
+        packageNames.addAll(getPackageNames(nioModuleRootPath,
                                             Paths.convert(pkg.getPackageMainSrcPath()).getParent(),
                                             true,
                                             false,
                                             false));
-        packageNames.addAll(getPackageNames(nioProjectRootPath,
+        packageNames.addAll(getPackageNames(nioModuleRootPath,
                                             Paths.convert(pkg.getPackageMainResourcesPath()).getParent(),
                                             true,
                                             false,
                                             false));
-        packageNames.addAll(getPackageNames(nioProjectRootPath,
+        packageNames.addAll(getPackageNames(nioModuleRootPath,
                                             Paths.convert(pkg.getPackageTestSrcPath()).getParent(),
                                             true,
                                             false,
                                             false));
-        packageNames.addAll(getPackageNames(nioProjectRootPath,
+        packageNames.addAll(getPackageNames(nioModuleRootPath,
                                             Paths.convert(pkg.getPackageTestResourcesPath()).getParent(),
                                             true,
                                             false,
@@ -379,7 +370,7 @@ public abstract class ResourceResolver<T extends Project>
                 if (packagePathSuffix == null) {
                     return null;
                 }
-                final org.uberfire.java.nio.file.Path nioPackagePath = nioProjectRootPath.resolve(src).resolve(packagePathSuffix);
+                final org.uberfire.java.nio.file.Path nioPackagePath = nioModuleRootPath.resolve(src).resolve(packagePathSuffix);
                 if (Files.exists(nioPackagePath)) {
                     return resolvePackage(Paths.convert(nioPackagePath));
                 }
@@ -392,7 +383,7 @@ public abstract class ResourceResolver<T extends Project>
     @Override
     public Path resolveDefaultPath(final Package pkg,
                                    final String resourceType) {
-        final ProjectResourcePathResolver[] currentResolver = new ProjectResourcePathResolver[1];
+        final ModuleResourcePathResolver[] currentResolver = new ModuleResourcePathResolver[1];
         resourcePathResolvers.forEach(resolver -> {
             if (resolver.accept(resourceType)) {
                 if (currentResolver[0] == null || currentResolver[0].getPriority() < resolver.getPriority()) {
@@ -401,8 +392,8 @@ public abstract class ResourceResolver<T extends Project>
             }
         });
         if (currentResolver[0] == null) {
-            //uncommon case, by construction the DefaultProjectResourcePathResolver is exists.
-            throw new RuntimeException("No ProjectResourcePathResolver has been defined for resourceType: " + resourceType);
+            //uncommon case, by construction the DefaultModuleResourcePathResolver is exists.
+            throw new RuntimeException("No ModuleResourcePathResolver has been defined for resourceType: " + resourceType);
         } else {
             return currentResolver[0].resolveDefaultPath(pkg);
         }
@@ -411,23 +402,23 @@ public abstract class ResourceResolver<T extends Project>
     @Override
     public boolean isPom(final Path resource) {
         try {
-            //Null resource paths cannot resolve to a Project
+            //Null resource paths cannot resolve to a Module
             if (resource == null) {
                 return false;
             }
 
             //Check if path equals pom.xml
-            final Project project = resolveProject(resource);
+            final Module module = resolveModule(resource);
 
-            //It's possible that the Incremental Build attempts to act on a Project file before the project has been fully created.
-            //This should be a short-term issue that will be resolved when saving a project batches pom.xml, kmodule.xml and project.imports
+            //It's possible that the Incremental Build attempts to act on a Module file before the module has been fully created.
+            //This should be a short-term issue that will be resolved when saving a module batches pom.xml, kmodule.xml and project.imports
             //etc into a single git-batch. At present they are saved individually leading to multiple Incremental Build requests.
-            if (project == null) {
+            if (module == null) {
                 return false;
             }
 
             final org.uberfire.java.nio.file.Path path = Paths.convert(resource).normalize();
-            final org.uberfire.java.nio.file.Path pomFilePath = Paths.convert(project.getPomXMLPath());
+            final org.uberfire.java.nio.file.Path pomFilePath = Paths.convert(module.getPomXMLPath());
             return path.startsWith(pomFilePath);
         } catch (Exception e) {
             throw ExceptionUtilities.handleException(e);
@@ -437,14 +428,14 @@ public abstract class ResourceResolver<T extends Project>
     @Override
     public org.guvnor.common.services.project.model.Package resolvePackage(final Path resource) {
         try {
-            //Null resource paths cannot resolve to a Project
+            //Null resource paths cannot resolve to a Module
             if (resource == null) {
                 return null;
             }
 
-            //If Path is not within a Project we cannot resolve a package
-            final Project project = resolveProject(resource);
-            if (project == null) {
+            //If Path is not within a Module we cannot resolve a package
+            final Module module = resolveModule(resource);
+            if (module == null) {
                 return null;
             }
 
@@ -453,7 +444,7 @@ public abstract class ResourceResolver<T extends Project>
                 return null;
             }
 
-            return makePackage(project,
+            return makePackage(module,
                                resource);
         } catch (Exception e) {
             throw ExceptionUtilities.handleException(e);
@@ -476,49 +467,25 @@ public abstract class ResourceResolver<T extends Project>
         return Files.exists(pomPath);
     }
 
-    protected T makeProject(final org.uberfire.java.nio.file.Path nioProjectRootPath) {
-        final T project = simpleProjectInstance(nioProjectRootPath);
-
-        addSecurityGroups(project);
-
-        return project;
+    protected T makeModule(final org.uberfire.java.nio.file.Path nioModuleRootPath) {
+        return simpleModuleInstance(nioModuleRootPath);
     }
 
-    public abstract T simpleProjectInstance(final org.uberfire.java.nio.file.Path nioProjectRootPath);
+    /**
+     * This does not contain the POM. So it is simple.
+     * @param nioModuleRootPath Module root path
+     * @return
+     */
+    public abstract T simpleModuleInstance(final org.uberfire.java.nio.file.Path nioModuleRootPath);
 
-    protected void addSecurityGroups(final T project) {
-        //Copy in Security Roles required to access this resource
-        final ConfigGroup projectConfiguration = findProjectConfig(project.getRootPath());
-        if (projectConfiguration != null) {
-            ConfigItem<List<String>> groups = backward.compat(projectConfiguration).getConfigItem("security:groups");
-            if (groups != null) {
-                for (String group : groups.getValue()) {
-                    project.getGroups().add(group);
-                }
-            }
-        }
-    }
-
-    protected ConfigGroup findProjectConfig(final Path projectRoot) {
-        final Collection<ConfigGroup> groups = configurationService.getConfiguration(ConfigType.PROJECT);
-        if (groups != null) {
-            for (ConfigGroup groupConfig : groups) {
-                if (groupConfig.getName().equals(projectRoot.toURI())) {
-                    return groupConfig;
-                }
-            }
-        }
-        return null;
-    }
-
-    protected Package makePackage(final Project project,
+    protected Package makePackage(final Module module,
                                   final Path resource) {
-        final Path projectRoot = project.getRootPath();
-        final org.uberfire.java.nio.file.Path nioProjectRoot = Paths.convert(projectRoot);
-        final org.uberfire.java.nio.file.Path nioMainSrcPath = nioProjectRoot.resolve(MAIN_SRC_PATH);
-        final org.uberfire.java.nio.file.Path nioTestSrcPath = nioProjectRoot.resolve(TEST_SRC_PATH);
-        final org.uberfire.java.nio.file.Path nioMainResourcesPath = nioProjectRoot.resolve(MAIN_RESOURCES_PATH);
-        final org.uberfire.java.nio.file.Path nioTestResourcesPath = nioProjectRoot.resolve(TEST_RESOURCES_PATH);
+        final Path moduleRoot = module.getRootPath();
+        final org.uberfire.java.nio.file.Path nioModuleRoot = Paths.convert(moduleRoot);
+        final org.uberfire.java.nio.file.Path nioMainSrcPath = nioModuleRoot.resolve(MAIN_SRC_PATH);
+        final org.uberfire.java.nio.file.Path nioTestSrcPath = nioModuleRoot.resolve(TEST_SRC_PATH);
+        final org.uberfire.java.nio.file.Path nioMainResourcesPath = nioModuleRoot.resolve(MAIN_RESOURCES_PATH);
+        final org.uberfire.java.nio.file.Path nioTestResourcesPath = nioModuleRoot.resolve(TEST_RESOURCES_PATH);
 
         org.uberfire.java.nio.file.Path nioResource = Paths.convert(resource);
 
@@ -558,7 +525,7 @@ public abstract class ResourceResolver<T extends Project>
 
         final String displayName = getPackageDisplayName(packageName);
 
-        final Package pkg = new Package(project.getRootPath(),
+        final Package pkg = new Package(module.getRootPath(),
                                         mainSrcPath,
                                         testSrcPath,
                                         mainResourcesPath,
@@ -570,7 +537,7 @@ public abstract class ResourceResolver<T extends Project>
         return pkg;
     }
 
-    private Set<String> getPackageNames(final org.uberfire.java.nio.file.Path nioProjectRootPath,
+    private Set<String> getPackageNames(final org.uberfire.java.nio.file.Path nioModuleRootPath,
                                         final org.uberfire.java.nio.file.Path nioPackageSrcPath,
                                         final boolean includeDefault,
                                         final boolean includeChild,
@@ -580,7 +547,7 @@ public abstract class ResourceResolver<T extends Project>
             return packageNames;
         }
         if (includeDefault || recursive) {
-            packageNames.add(getPackagePathSuffix(nioProjectRootPath,
+            packageNames.add(getPackagePathSuffix(nioModuleRootPath,
                                                   nioPackageSrcPath));
         }
 
@@ -597,13 +564,13 @@ public abstract class ResourceResolver<T extends Project>
                                                                                                                       directoryFilter);
         for (org.uberfire.java.nio.file.Path nioChildPackageSrcPath : nioChildPackageSrcPaths) {
             if (recursive) {
-                packageNames.addAll(getPackageNames(nioProjectRootPath,
+                packageNames.addAll(getPackageNames(nioModuleRootPath,
                                                     nioChildPackageSrcPath,
                                                     includeDefault,
                                                     includeChild,
                                                     recursive));
             } else {
-                packageNames.add(getPackagePathSuffix(nioProjectRootPath,
+                packageNames.add(getPackagePathSuffix(nioModuleRootPath,
                                                       nioChildPackageSrcPath));
             }
         }

@@ -25,10 +25,12 @@ import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
 import org.junit.Before;
 import org.junit.Test;
+import org.uberfire.backend.server.spaces.SpacesAPIImpl;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.spaces.SpacesAPI;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -42,12 +44,16 @@ public class GitRepositoryFactoryHelperTest {
     private GitRepositoryFactoryHelper helper;
     private FileSystem fileSystem;
     private ArrayList<Path> rootDirectories;
+    private SpacesAPI spacesAPI;
 
     @Before
     public void setUp() throws Exception {
         ioService = mock(IOService.class);
         notIndexed = mock(IOService.class);
-        helper = new GitRepositoryFactoryHelper(ioService, notIndexed);
+        spacesAPI = new SpacesAPIImpl();
+        helper = new GitRepositoryFactoryHelper(ioService,
+                                                notIndexed,
+                                                spacesAPI);
 
         fileSystem = mock(FileSystem.class);
         when(
@@ -59,7 +65,7 @@ public class GitRepositoryFactoryHelperTest {
 
         when(
                 notIndexed.newFileSystem(any(URI.class),
-                                        anyMap())
+                                         anyMap())
         ).thenThrow(new RuntimeException());
 
         rootDirectories = new ArrayList<Path>();
@@ -89,6 +95,7 @@ public class GitRepositoryFactoryHelperTest {
         configItem.setValue(false);
         configGroup.setConfigItem(configItem);
 
+
         when(ioService.newFileSystem(any(URI.class),
                                      anyMap()))
                 .thenThrow(FileSystemAlreadyExistsException.class);
@@ -115,6 +122,11 @@ public class GitRepositoryFactoryHelperTest {
         configItem.setName("replaceIfExists");
         configItem.setValue(true);
         configGroup.setConfigItem(configItem);
+
+        configItem = new ConfigItem();
+        configItem.setName(EnvironmentParameters.SPACE);
+        configItem.setValue("space");
+        configGroup.addConfigItem(configItem);
 
         when(ioService.newFileSystem(any(URI.class),
                                      anyMap()))
@@ -145,7 +157,7 @@ public class GitRepositoryFactoryHelperTest {
 
         assertEquals(3,
                      repository.getBranches().size());
-        assertTrue(repository.getRoot().toURI().contains("master"));
+        assertTrue(repository.getDefaultBranch().get().getPath().toURI().contains("master"));
     }
 
     private Path createPath(String uri) {
@@ -157,9 +169,18 @@ public class GitRepositoryFactoryHelperTest {
 
     private ConfigGroup getConfigGroup() {
         ConfigGroup repoConfig = new ConfigGroup();
-        ConfigItem configItem = new ConfigItem();
-        configItem.setName(EnvironmentParameters.SCHEME);
-        repoConfig.addConfigItem(configItem);
+        {
+            ConfigItem configItem = new ConfigItem();
+            configItem.setName(EnvironmentParameters.SCHEME);
+            repoConfig.addConfigItem(configItem);
+        }
+        {
+            ConfigItem configItem = new ConfigItem();
+            configItem.setName(EnvironmentParameters.SPACE);
+            configItem.setValue("space");
+            repoConfig.addConfigItem(configItem);
+        }
+
         return repoConfig;
     }
 }

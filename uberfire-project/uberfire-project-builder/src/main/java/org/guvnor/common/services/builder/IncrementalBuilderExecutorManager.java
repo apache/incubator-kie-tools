@@ -28,8 +28,8 @@ import javax.inject.Inject;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.project.model.Module;
+import org.guvnor.common.services.project.service.ModuleService;
 import org.uberfire.commons.async.DescriptiveRunnable;
 import org.uberfire.commons.concurrent.Managed;
 
@@ -40,7 +40,8 @@ import static javax.ejb.TransactionAttributeType.NOT_SUPPORTED;
 @TransactionAttribute(NOT_SUPPORTED)
 public class IncrementalBuilderExecutorManager {
 
-    private ProjectService<? extends Project> projectService;
+    @Inject
+    private ModuleService<? extends Module> moduleService;
 
     private BuildService buildService;
 
@@ -54,12 +55,12 @@ public class IncrementalBuilderExecutorManager {
     }
 
     @Inject
-    public IncrementalBuilderExecutorManager(ProjectService<? extends Project> projectService,
+    public IncrementalBuilderExecutorManager(ModuleService<? extends Module> moduleService,
                                              BuildService buildService,
                                              Event<BuildResults> buildResultsEvent,
                                              Event<IncrementalBuildResults> incrementalBuildResultsEvent,
                                              @Managed ExecutorService executorService) {
-        this.projectService = projectService;
+        this.moduleService = moduleService;
         this.buildService = buildService;
         this.buildResultsEvent = buildResultsEvent;
         this.incrementalBuildResultsEvent = incrementalBuildResultsEvent;
@@ -74,7 +75,7 @@ public class IncrementalBuilderExecutorManager {
             getExecutorService().execute(new DescriptiveRunnable() {
                 @Override
                 public void run() {
-                    incrementalBuilder.execute(projectService,
+                    incrementalBuilder.execute(moduleService,
                                                buildService,
                                                incrementalBuildResultsEvent,
                                                buildResultsEvent);
@@ -86,7 +87,7 @@ public class IncrementalBuilderExecutorManager {
                 }
             });
         } else {
-            incrementalBuilder.execute(projectService,
+            incrementalBuilder.execute(moduleService,
                                        buildService,
                                        incrementalBuildResultsEvent,
                                        buildResultsEvent);
@@ -103,11 +104,11 @@ public class IncrementalBuilderExecutorManager {
         return executorService;
     }
 
-    public void setServices(final ProjectService projectService,
+    public void setServices(final ModuleService moduleService,
                             final BuildService buildService,
                             final Event<BuildResults> buildResultsEvent,
                             final Event<IncrementalBuildResults> incrementalBuildResultsEvent) {
-        this.projectService = projectService;
+        this.moduleService = moduleService;
         this.buildService = buildService;
         this.buildResultsEvent = buildResultsEvent;
         this.incrementalBuildResultsEvent = incrementalBuildResultsEvent;

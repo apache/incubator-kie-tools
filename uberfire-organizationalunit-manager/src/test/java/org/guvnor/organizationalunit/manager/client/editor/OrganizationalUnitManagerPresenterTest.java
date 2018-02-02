@@ -18,9 +18,11 @@ package org.guvnor.organizationalunit.manager.client.editor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.organizationalunit.manager.client.editor.popups.AddOrganizationalUnitPopup;
 import org.guvnor.organizationalunit.manager.client.editor.popups.EditOrganizationalUnitPopup;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
@@ -63,14 +65,17 @@ public class OrganizationalUnitManagerPresenterTest {
     private OrganizationalUnitManagerView view = mock(OrganizationalUnitManagerView.class);
     private OrganizationalUnitService mockOUService = mock(OrganizationalUnitService.class);
 
-    private Caller<OrganizationalUnitService> organizationalUnitService = new CallerMock<OrganizationalUnitService>(mockOUService);
+    private Caller<OrganizationalUnitService> organizationalUnitService = new CallerMock<>(mockOUService);
     private RepositoryService mockRepositoryService = mock(RepositoryService.class);
 
-    private Caller<RepositoryService> repositoryService = new CallerMock<RepositoryService>(mockRepositoryService);
+    private Caller<RepositoryService> repositoryService = new CallerMock<>(mockRepositoryService);
 
     private OrganizationalUnitManagerPresenterImpl presenter;
 
     private OrganizationalUnit mockOU = mock(OrganizationalUnit.class);
+
+    @Mock
+    private WorkspaceProjectContext projContext;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -82,7 +87,8 @@ public class OrganizationalUnitManagerPresenterTest {
                                                                addOrganizationalUnitPopup,
                                                                editOrganizationalUnitPopup,
                                                                createOUEvent,
-                                                               deleteOUEvent);
+                                                               deleteOUEvent,
+                                                               projContext);
 
         when(mockOU.getName()).thenReturn("mock");
         when(mockOU.getOwner()).thenReturn("mock");
@@ -100,6 +106,8 @@ public class OrganizationalUnitManagerPresenterTest {
         when(organizationalUnitController.canUpdateOrgUnit(organizationalUnitA)).thenReturn(true);
         when(organizationalUnitController.canDeleteOrgUnit(organizationalUnitA)).thenReturn(true);
         when(organizationalUnitA.getRepositories()).thenReturn(Collections.EMPTY_LIST);
+
+        when(projContext.getActiveOrganizationalUnit()).thenReturn(Optional.of(mockOU));
 
         presenter.loadOrganizationalUnits();
     }

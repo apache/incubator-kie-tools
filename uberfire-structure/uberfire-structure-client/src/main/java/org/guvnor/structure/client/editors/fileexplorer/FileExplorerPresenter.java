@@ -193,7 +193,7 @@ public class FileExplorerPresenter
             view.removeRepository(repository);
         }
         view.addNewRepository(repository,
-                              repository.getDefaultBranch());
+                              repository.getDefaultBranch().get().getName());
         repositories.put(repository.getAlias(),
                          repository);
     }
@@ -264,11 +264,13 @@ public class FileExplorerPresenter
 
     private void refreshView(final Path path) {
         final String pathUri = path.toURI();
-        for (Repository repository : repositories.values()) {
-            final String repositoryUri = repository.getRoot().toURI();
-            if (pathUri.startsWith(repositoryUri)) {
-                reset();
-                break;
+        for (final Repository repository : repositories.values()) {
+            if (repository.getDefaultBranch().isPresent()) {
+                final String repositoryUri = repository.getDefaultBranch().get().getPath().toURI();
+                if (pathUri.startsWith(repositoryUri)) {
+                    reset();
+                    break;
+                }
             }
         }
     }

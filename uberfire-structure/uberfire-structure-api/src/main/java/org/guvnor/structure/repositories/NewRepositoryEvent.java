@@ -15,50 +15,19 @@
 
 package org.guvnor.structure.repositories;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class NewRepositoryEvent {
 
-    private Repository newRepository;
+    private final Repository newRepository;
 
-    private String groupId;
-    private String artifactId;
-    private String version;
-
-    public NewRepositoryEvent() {
-    }
-
-    public NewRepositoryEvent(final Repository newRepository) {
+    public NewRepositoryEvent(@MapsTo("newRepository") final Repository newRepository) {
         this.newRepository = newRepository;
-    }
-
-    /*
-     * For Managed Repositories
-    */
-    public NewRepositoryEvent(final Repository newRepository,
-                              final String groupId,
-                              final String artifactId,
-                              final String version) {
-        this.newRepository = newRepository;
-        this.groupId = groupId;
-        this.artifactId = artifactId;
-        this.version = version;
     }
 
     public Repository getNewRepository() {
         return newRepository;
-    }
-
-    public String getGroupId() {
-        return groupId;
-    }
-
-    public String getArtifactId() {
-        return artifactId;
-    }
-
-    public String getVersion() {
-        return version;
     }
 }

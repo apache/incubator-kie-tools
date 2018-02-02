@@ -29,6 +29,11 @@ public interface PullRequest {
     long getId();
 
     /**
+     * @return the name of the target space.
+     */
+    String getTargetSpace();
+
+    /**
      * Returns the target repository
      * @return the name of target repository
      */
@@ -39,6 +44,11 @@ public interface PullRequest {
      * @return the name of the target branch
      */
     String getTargetBranch();
+
+    /**
+     * @return the name of the source space.
+     */
+    String getSourceSpace();
 
     /**
      * Returns the source repository.

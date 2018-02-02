@@ -33,6 +33,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.uberfire.backend.server.spaces.SpacesAPIImpl;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.StandardDeleteOption;
 
@@ -78,6 +79,7 @@ public class DataSetDefRegistryCDITest extends BaseCDITest {
                 mockIOService(),
                 dataSetProviderRegistry,
                 scheduler,
+                new SpacesAPIImpl(),
                 exceptionManager,
                 dataSetDefModifiedEvent,
                 dataSetDefRegisteredEvent,

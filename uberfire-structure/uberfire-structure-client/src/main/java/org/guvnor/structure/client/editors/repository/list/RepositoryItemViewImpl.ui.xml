@@ -22,54 +22,53 @@
              xmlns:select="urn:import:org.gwtbootstrap3.extras.select.client.ui"
              xmlns:common="urn:import:org.guvnor.structure.client.editors.repository.common">
 
-    <ui:with field="i18n" type="org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants"/>
+  <ui:with field="i18n" type="org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants"/>
 
-    <ui:style>
-        .panel-body {
-            padding: 15px !important;
-        }
+  <ui:style>
+    .panel-body {
+      padding: 15px !important;
+    }
 
-        .row-spacing {
-            padding-top: 15px;
-        }
+    .row-spacing {
+      padding-top: 15px;
+    }
 
-        .btn-spacing {
-            margin-left: 5px;
-        }
-    </ui:style>
+    .btn-spacing {
+      margin-left: 5px;
+    }
+  </ui:style>
 
-    <b:Panel>
-        <b:PanelHeader>
-            <b:Heading size="H4" ui:field="repoName">
-                <b:Icon type="BOOK" size="LARGE" pull="LEFT"/>
-            </b:Heading>
-        </b:PanelHeader>
-        <b:PanelBody addStyleNames="{style.panel-body}">
-            <html:Div addStyleNames="row">
-                <g:FlowPanel addStyleNames="col-md-12">
-                    <html:Paragraph ui:field="repoDesc" />
-                    <html:Hr/>
-                </g:FlowPanel>
-            </html:Div>
-            <html:Div addStyleNames="row">
-                <g:FlowPanel addStyleNames="col-md-6">
-                    <b:InputGroup>
-                        <b:TextBox ui:field="gitDaemonURI" enabled="false"/>
-                        <common:CopyRepositoryUrlBtn ui:field="myGitCopyButton" icon="COPY"/>
-                    </b:InputGroup>
-                </g:FlowPanel>
-                <html:Paragraph ui:field="linksPanel" addStyleNames="col-md-6"/>
-            </html:Div>
-            <html:Div addStyleNames="row {style.row-spacing}">
-                <html:Div addStyleNames="col-md-6">
-                    <select:Select b:id="branches" ui:field="branchesDropdown"/>
-                </html:Div>
-                <html:Div addStyleNames="col-md-6">
-                    <b:Button ui:field="btnChangeBranch" icon="REFRESH" type="PRIMARY" text="{i18n.Update}"/>
-                    <b:Button ui:field="btnRemoveRepository" icon="TRASH" type="DANGER" text="{i18n.Delete}" addStyleNames="{style.btn-spacing}"/>
-                </html:Div>
-            </html:Div>
-        </b:PanelBody>
-    </b:Panel>
+  <b:Panel>
+    <b:PanelHeader>
+      <b:Heading size="H4" ui:field="repoName">
+        <b:Icon type="BOOK" size="LARGE" pull="LEFT"/>
+      </b:Heading>
+    </b:PanelHeader>
+    <b:PanelBody addStyleNames="{style.panel-body}">
+      <html:Div addStyleNames="row">
+        <g:FlowPanel addStyleNames="col-md-12">
+          <html:Paragraph ui:field="repoDesc"/>
+          <html:Hr/>
+        </g:FlowPanel>
+      </html:Div>
+      <html:Div addStyleNames="row">
+        <g:FlowPanel addStyleNames="col-md-6">
+          <b:InputGroup>
+            <b:TextBox ui:field="gitDaemonURI" enabled="false"/>
+            <common:CopyRepositoryUrlBtn ui:field="myGitCopyButton" icon="COPY"/>
+          </b:InputGroup>
+        </g:FlowPanel>
+        <html:Paragraph ui:field="linksPanel" addStyleNames="col-md-6"/>
+      </html:Div>
+      <html:Div addStyleNames="row {style.row-spacing}">
+        <html:Div addStyleNames="col-md-6">
+          <select:Select b:id="branches" ui:field="branchesDropdown"/>
+        </html:Div>
+        <html:Div addStyleNames="col-md-6">
+          <b:Button ui:field="btnChangeBranch" icon="REFRESH" type="PRIMARY" text="{i18n.Update}"/>
+        </html:Div>
+      </html:Div>
+    </b:PanelBody>
+  </b:Panel>
 
 </ui:UiBinder>

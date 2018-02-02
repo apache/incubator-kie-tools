@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.guvnor.structure.backend.repositories;
 
@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.guvnor.structure.repositories.impl.git.GitRepository;
+import org.uberfire.spaces.Space;
+import org.uberfire.spaces.SpacesAPI;
 
 import static java.util.Collections.unmodifiableCollection;
 
@@ -35,12 +37,15 @@ public class SystemRepository extends GitRepository {
         add("admin");
     }};
 
-    public static final SystemRepository SYSTEM_REPO = new SystemRepository(ALIAS);
+    public static final SystemRepository SYSTEM_REPO = new SystemRepository(ALIAS,
+                                                                            SpacesAPI.DEFAULT_SPACE);
 
     private final Map<String, Object> environment = new HashMap<String, Object>();
 
-    private SystemRepository(final String alias) {
-        super(alias);
+    private SystemRepository(final String alias,
+                             Space space) {
+        super(alias,
+              space);
         environment.put("init",
                         Boolean.TRUE);
     }
@@ -58,7 +63,10 @@ public class SystemRepository extends GitRepository {
 
     @Override
     public String getUri() {
-        return getScheme() + "://" + getAlias();
+        String alias = SpacesAPI.sanitizeFileSystemName(getAlias());
+        return SpacesAPI.resolveFileSystemPath(getScheme(),
+                                               getSpace(),
+                                               alias).toString();
     }
 
     @Override

@@ -38,10 +38,6 @@ public interface RepositoryItemView
 
     void clearBranches();
 
-    void setUpdateEnabled(boolean enabled);
-
-    void setDeleteEnabled(boolean enabled);
-
     void refresh();
 
     void setSelectedBranch(final String currentBranch);

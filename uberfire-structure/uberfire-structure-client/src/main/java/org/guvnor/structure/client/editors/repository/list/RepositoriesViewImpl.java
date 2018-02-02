@@ -21,14 +21,12 @@ import javax.enterprise.context.Dependent;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 
 @Dependent
 public class RepositoriesViewImpl
@@ -57,11 +55,6 @@ public class RepositoriesViewImpl
         panel.add(item);
 
         return item;
-    }
-
-    @Override
-    public boolean confirmDeleteRepository(final Repository repository) {
-        return Window.confirm(CoreConstants.INSTANCE.ConfirmDeleteRepository0(repository.getAlias()));
     }
 
     @Override

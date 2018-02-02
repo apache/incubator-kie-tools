@@ -21,8 +21,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.shared.preferences.WorkbenchPreferenceScopeResolutionStrategies;
 import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 
@@ -31,7 +31,7 @@ public class ProjectScopedResolutionStrategySupplier implements Supplier<Prefere
 
     private WorkbenchPreferenceScopeResolutionStrategies scopeResolutionStrategies;
 
-    private Project project;
+    private Module module;
 
     public ProjectScopedResolutionStrategySupplier() {
     }
@@ -41,19 +41,17 @@ public class ProjectScopedResolutionStrategySupplier implements Supplier<Prefere
         this.scopeResolutionStrategies = scopeResolutionStrategies;
     }
 
-    public void selectedProjectChanged(@Observes final ProjectContextChangeEvent event) {
-        this.project = event.getProject();
+    public void selectedProjectChanged(@Observes final WorkspaceProjectContextChangeEvent event) {
+        this.module = event.getModule();
     }
 
     @Override
     public PreferenceScopeResolutionStrategyInfo get() {
-        if (project == null) {
-            return scopeResolutionStrategies.getUserInfoFor(null,
-                                                            null);
+        if (module == null) {
+            return scopeResolutionStrategies.getUserInfoFor(null, null);
         }
 
-        final String projectIdentifier = project.getEncodedIdentifier();
-        return scopeResolutionStrategies.getUserInfoFor("project",
-                                                        projectIdentifier);
+        final String projectIdentifier = module.getEncodedIdentifier();
+        return scopeResolutionStrategies.getUserInfoFor("project", projectIdentifier);
     }
 }

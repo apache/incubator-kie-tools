@@ -139,8 +139,6 @@ public class ConfigurationServiceImpl implements ConfigurationService,
             throw new RuntimeException("Could not resolve 'systemFS' main root directory.");
         }
 
-        systemRepository.setRoot(convert(defaultRoot));
-
         // enable monitor by default
         if (System.getProperty(MONITOR_DISABLED) == null) {
             watchService = fs.newWatchService();

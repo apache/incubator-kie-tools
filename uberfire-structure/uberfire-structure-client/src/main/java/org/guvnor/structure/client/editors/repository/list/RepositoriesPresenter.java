@@ -26,12 +26,10 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.structure.client.editors.context.GuvnorStructureContext;
 import org.guvnor.structure.client.editors.context.GuvnorStructureContextChangeHandler;
-import org.guvnor.structure.client.security.RepositoryController;
 import org.guvnor.structure.config.SystemRepositoryChangedEvent;
+import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
-import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -40,18 +38,12 @@ import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.lifecycle.OnShutdown;
 import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.security.annotations.ResourceCheck;
-
-import static org.guvnor.structure.client.security.RepositoryController.REPOSITORY_DELETE;
 
 @Dependent
 @WorkbenchScreen(identifier = "RepositoriesEditor")
 public class RepositoriesPresenter
-        implements GuvnorStructureContextChangeHandler,
-                   HasRemoveRepositoryHandlers {
+        implements GuvnorStructureContextChangeHandler {
 
-    private Caller<RepositoryService> repositoryService;
-    private RepositoryController repositoryController;
     private GuvnorStructureContext guvnorStructureContext;
 
     private Map<Repository, RepositoryItemPresenter> repositoryToWidgetMap = new HashMap<Repository, RepositoryItemPresenter>();
@@ -63,13 +55,9 @@ public class RepositoriesPresenter
 
     @Inject
     public RepositoriesPresenter(final RepositoriesView view,
-                                 final GuvnorStructureContext guvnorStructureContext,
-                                 final Caller<RepositoryService> repositoryService,
-                                 final RepositoryController repositoryController) {
+                                 final GuvnorStructureContext guvnorStructureContext) {
         this.view = view;
         this.guvnorStructureContext = guvnorStructureContext;
-        this.repositoryService = repositoryService;
-        this.repositoryController = repositoryController;
 
         changeHandlerRegistration = guvnorStructureContext.addGuvnorStructureContextChangeHandler(this);
 
@@ -112,17 +100,10 @@ public class RepositoriesPresenter
         return view.asWidget();
     }
 
-    @ResourceCheck(action = REPOSITORY_DELETE)
-    public void removeRepository(final Repository repository) {
-        if (view.confirmDeleteRepository(repository)) {
-            repositoryService.call().removeRepository(repository.getAlias());
-        }
-    }
-
     @Override
     public void onNewRepositoryAdded(final Repository repository) {
         addRepositoryItem(repository,
-                          repository.getDefaultBranch());
+                          repository.getDefaultBranch().get().getName());
     }
 
     @Override
@@ -134,8 +115,8 @@ public class RepositoriesPresenter
             //only git repositories exists
             RepositoryItemPresenter itemPresenter = repositoryToWidgetMap.remove(repository);
             if (itemPresenter != null) {
-                ((GitRepository) repository).addBranch(branchName,
-                                                       branchPath);
+                ((GitRepository) repository).addBranch(new Branch(branchName,
+                                                                  branchPath));
                 repositoryToWidgetMap.put(repository,
                                           itemPresenter);
                 itemPresenter.refreshBranches();
@@ -153,7 +134,6 @@ public class RepositoriesPresenter
                                                       final String branch) {
         final RepositoryItemPresenter repositoryItemPresenter = view.addRepository(newRepository,
                                                                                    branch);
-        repositoryItemPresenter.addRemoveRepositoryCommand(this);
         repositoryToWidgetMap.put(newRepository,
                                   repositoryItemPresenter);
 

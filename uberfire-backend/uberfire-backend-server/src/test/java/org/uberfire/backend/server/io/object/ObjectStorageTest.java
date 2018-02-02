@@ -58,7 +58,7 @@ public class ObjectStorageTest {
         fileSystem = mockFileSystem();
         ioService = mockIoService(fileSystem);
         objectStorage = new ObjectStorageImpl(ioService);
-        objectStorage.init("default://object/store");
+        objectStorage.init(URI.create("default://object/store"));
     }
 
     @After

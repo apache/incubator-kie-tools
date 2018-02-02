@@ -29,6 +29,7 @@
   <source path='paging'/>
   <source path='plugin'/>
   <source path='rpc'/>
+  <source path='spaces'/>
   <source path='security'/>
   <source path='workbench'/>
 

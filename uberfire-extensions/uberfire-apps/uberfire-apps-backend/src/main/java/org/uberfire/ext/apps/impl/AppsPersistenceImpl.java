@@ -16,7 +16,6 @@
 
 package org.uberfire.ext.apps.impl;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -36,7 +35,6 @@ import org.uberfire.ext.plugin.type.TagsConverterUtil;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.StandardDeleteOption;
@@ -51,23 +49,15 @@ public class AppsPersistenceImpl implements AppsPersistenceAPI {
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
+
+    @Inject
+    @Named("pluginsFS")
     private FileSystem fileSystem;
 
     private Path root;
 
     @PostConstruct
     public void setup() {
-        try {
-            fileSystem = ioService.newFileSystem(URI.create("default://system_ou/plugins"),
-                                                 new HashMap<String, Object>() {{
-                                                     put("init",
-                                                         Boolean.TRUE);
-                                                     put("internal",
-                                                         Boolean.TRUE);
-                                                 }});
-        } catch (final FileSystemAlreadyExistsException e) {
-            fileSystem = ioService.getFileSystem(URI.create("default://system_ou/plugins"));
-        }
         this.root = fileSystem.getRootDirectories().iterator().next();
     }
 
