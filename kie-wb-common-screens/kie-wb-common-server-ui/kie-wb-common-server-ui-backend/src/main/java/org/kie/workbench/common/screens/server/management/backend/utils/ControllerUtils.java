@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.screens.server.management.backend.utils;
 
+import static org.kie.server.common.KeyStoreHelperUtil.loadControllerPassword;
+
 public final class ControllerUtils {
 
     /**
@@ -41,10 +43,11 @@ public final class ControllerUtils {
     }
 
     public static String getControllerPassword(){
-        return System.getProperty(CFG_KIE_CONTROLLER_PASSWORD, "kieserver1!");
+        return loadControllerPassword(System.getProperty(CFG_KIE_CONTROLLER_PASSWORD, "kieserver1!"));
     }
 
     public static String getControllerToken(){
         return System.getProperty(CFG_KIE_CONTROLLER_TOKEN);
     }
+
 }
