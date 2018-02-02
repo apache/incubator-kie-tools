@@ -24,6 +24,7 @@ import org.assertj.core.api.Assertions;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.test.CDITestSetup;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -40,6 +41,11 @@ public class GuidedDecisionTableEditorServiceImplCDITest extends CDITestSetup {
         super.setUp();
 
         testedService = getReference(GuidedDecisionTableEditorService.class);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        super.cleanup();
     }
 
     @Test

@@ -24,6 +24,7 @@ import org.assertj.core.api.Assertions;
 import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.test.CDITestSetup;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.backend.server.util.Paths;
@@ -40,6 +41,11 @@ public class GuidedRuleEditorServiceImplCDITest extends CDITestSetup {
         super.setUp();
 
         guidedRuleService = getReference(GuidedRuleEditorService.class);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        super.cleanup();
     }
 
     @Test

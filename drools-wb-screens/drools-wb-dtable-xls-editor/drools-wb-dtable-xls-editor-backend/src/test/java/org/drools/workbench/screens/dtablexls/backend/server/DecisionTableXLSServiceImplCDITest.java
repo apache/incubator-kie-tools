@@ -28,7 +28,9 @@ import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.test.CDITestSetup;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
@@ -39,26 +41,33 @@ public class DecisionTableXLSServiceImplCDITest extends CDITestSetup {
 
     private DecisionTableXLSService xlsService;
 
-    private String droolsDateFormat;
+    private static String droolsDateFormat;
+
+    @BeforeClass
+    public static void setUpDateTimeFormat() {
+        droolsDateFormat = System.getProperty(ApplicationPreferences.DATE_FORMAT);
+        System.setProperty(ApplicationPreferences.DATE_FORMAT, "dd-MM-yyyy");
+    }
+
+    @AfterClass
+    public static void clearDateTimeFormat() {
+        if (droolsDateFormat != null) {
+            System.setProperty(ApplicationPreferences.DATE_FORMAT, droolsDateFormat);
+        } else {
+            System.clearProperty(ApplicationPreferences.DATE_FORMAT);
+        }
+    }
 
     @Before
     public void setUp() throws Exception {
         super.setUp();
 
         xlsService = getReference(DecisionTableXLSService.class);
-
-        droolsDateFormat = System.getProperty(ApplicationPreferences.DATE_FORMAT);
-        System.setProperty(ApplicationPreferences.DATE_FORMAT, "dd-MM-yyyy");
     }
 
     @After
     public void tearDown() throws Exception {
         super.cleanup();
-        if (droolsDateFormat != null) {
-            System.setProperty(ApplicationPreferences.DATE_FORMAT, droolsDateFormat);
-        } else {
-            System.clearProperty(ApplicationPreferences.DATE_FORMAT);
-        }
     }
 
     /**

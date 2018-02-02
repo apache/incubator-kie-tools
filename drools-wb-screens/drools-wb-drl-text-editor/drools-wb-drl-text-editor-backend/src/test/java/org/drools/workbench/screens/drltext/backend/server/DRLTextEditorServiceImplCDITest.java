@@ -127,7 +127,7 @@ public class DRLTextEditorServiceImplCDITest extends CDITestSetup {
         Assertions.assertThat(validationMessages).hasSize(2);
         Assertions.assertThat(validationMessages)
                 .allMatch(message -> message.getText()
-                .contains("Error importing : 'org.kiegroup.storage.NonExistingCache'"));
+                        .contains("Error importing : 'org.kiegroup.storage.NonExistingCache'"));
     }
 
     @Test

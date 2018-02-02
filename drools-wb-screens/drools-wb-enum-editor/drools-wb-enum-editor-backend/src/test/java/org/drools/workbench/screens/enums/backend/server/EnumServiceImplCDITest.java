@@ -24,6 +24,7 @@ import org.assertj.core.api.Assertions;
 import org.drools.workbench.screens.enums.service.EnumService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.test.CDITestSetup;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.backend.server.util.Paths;
@@ -38,6 +39,11 @@ public class EnumServiceImplCDITest extends CDITestSetup {
         super.setUp();
 
         enumService = getReference(EnumService.class);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        super.cleanup();
     }
 
     @Test
