@@ -23,39 +23,36 @@ import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.type.GuidedRuleTemplateResourceTypeDefinition;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.AbstractFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.java.nio.file.Path;
 
 @ApplicationScoped
 public class GuidedRuleTemplateFileIndexer extends AbstractFileIndexer {
 
-    private static final Logger logger = LoggerFactory.getLogger( GuidedRuleTemplateFileIndexer.class );
-
     @Inject
     protected GuidedRuleTemplateResourceTypeDefinition type;
 
     @Override
-    public boolean supportsPath( final Path path ) {
-        return type.accept( Paths.convert( path ) );
+    public boolean supportsPath(final Path path) {
+        return type.accept(Paths.convert(path));
     }
 
     @Override
-    public DefaultIndexBuilder fillIndexBuilder( final Path path ) throws Exception {
-        final String content = ioService.readAllString( path );
-        final TemplateModel model = RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal( content );
+    public DefaultIndexBuilder fillIndexBuilder(final Path path) throws Exception {
+        final String content = ioService.readAllString(path);
+        final TemplateModel model = RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal(content);
 
         final DefaultIndexBuilder builder = getIndexBuilder(path);
-        if( builder == null ) {
+        if (builder == null) {
             return null;
         }
 
-        final GuidedRuleTemplateIndexVisitor visitor = new GuidedRuleTemplateIndexVisitor( builder, model );
+        final GuidedRuleTemplateIndexVisitor visitor = new GuidedRuleTemplateIndexVisitor(builder,
+                                                                                          model);
         visitor.visit();
-        addReferencedResourcesToIndexBuilder(builder, visitor);
+        addReferencedResourcesToIndexBuilder(builder,
+                                             visitor);
 
         return builder;
     }
-
 }

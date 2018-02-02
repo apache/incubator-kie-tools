@@ -20,14 +20,14 @@ import java.util.HashMap;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.drools.workbench.screens.enums.type.EnumResourceTypeDefinition;
-import org.kie.soup.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
+import org.kie.soup.project.datamodel.commons.oracle.ModuleDataModelOracleImpl;
 import org.kie.soup.project.datamodel.commons.util.RawMVELEvaluator;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
 import org.kie.soup.project.datamodel.oracle.ModelField;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 
@@ -47,8 +47,8 @@ public class TestEnumFileIndexer extends EnumFileIndexer implements TestIndexer<
     }
 
     @Override
-    public void setProjectService(final KieProjectService projectService) {
-        this.projectService = projectService;
+    public void setModuleService(final KieModuleService moduleService) {
+        this.moduleService = moduleService;
     }
 
     @Override
@@ -57,9 +57,9 @@ public class TestEnumFileIndexer extends EnumFileIndexer implements TestIndexer<
     }
 
     @Override
-    protected ProjectDataModelOracle getProjectDataModelOracle(final Path path) {
-        final ProjectDataModelOracle dmo = new ProjectDataModelOracleImpl();
-        dmo.addProjectModelFields(new HashMap<String, ModelField[]>() {{
+    protected ModuleDataModelOracle getModuleDataModelOracle(final Path path) {
+        final ModuleDataModelOracle dmo = new ModuleDataModelOracleImpl();
+        dmo.addModuleModelFields(new HashMap<String, ModelField[]>() {{
             put("org.drools.workbench.screens.enums.backend.server.indexing.classes.Applicant",
                 new ModelField[]{
                         new ModelField("age",

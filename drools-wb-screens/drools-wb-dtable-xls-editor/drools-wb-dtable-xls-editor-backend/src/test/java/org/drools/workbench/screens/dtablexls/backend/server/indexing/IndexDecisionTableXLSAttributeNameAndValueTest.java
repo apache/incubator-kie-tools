@@ -42,12 +42,12 @@ public class IndexDecisionTableXLSAttributeNameAndValueTest extends BaseIndexing
     @Test
     public void testIndexDecisionTableXLSAttributeNameAndValue() throws IOException, InterruptedException {
         //Add test files
-        final Path path1 = loadXLSFile( basePath,
-                                        "dtable1.xls" );
-        final Path path2 = loadXLSFile( basePath,
-                                        "dtable2.xls" );
+        final Path path1 = loadXLSFile(basePath,
+                                       "dtable1.xls");
+        final Path path2 = loadXLSFile(basePath,
+                                       "dtable2.xls");
 
-        Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+        Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
         List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath.getFileSystem()).getClusterId());
 
@@ -55,7 +55,7 @@ public class IndexDecisionTableXLSAttributeNameAndValueTest extends BaseIndexing
         {
             final BooleanQuery.Builder query = new BooleanQuery.Builder();
             ValueIndexTerm valTerm = new ValueSharedPartIndexTerm("myruleflowgroup", PartType.RULEFLOW_GROUP);
-            query.add( new TermQuery( new Term( valTerm.getTerm(), valTerm.getValue())), BooleanClause.Occur.MUST );
+            query.add(new TermQuery(new Term(valTerm.getTerm(), valTerm.getValue())), BooleanClause.Occur.MUST);
             searchFor(index, query.build(), 1, path1);
         }
     }
@@ -75,16 +75,15 @@ public class IndexDecisionTableXLSAttributeNameAndValueTest extends BaseIndexing
         return this.getClass().getSimpleName();
     }
 
-    private Path loadXLSFile( final Path basePath,
-                              final String fileName ) throws IOException {
-        final Path path = basePath.resolve( fileName );
-        final InputStream is = this.getClass().getResourceAsStream( fileName );
-        final OutputStream os = ioService().newOutputStream( path );
-        IOUtils.copy( is,
-                      os );
+    private Path loadXLSFile(final Path basePath,
+                             final String fileName) throws IOException {
+        final Path path = basePath.resolve(fileName);
+        final InputStream is = this.getClass().getResourceAsStream(fileName);
+        final OutputStream os = ioService().newOutputStream(path);
+        IOUtils.copy(is,
+                     os);
         os.flush();
         os.close();
         return path;
     }
-
 }

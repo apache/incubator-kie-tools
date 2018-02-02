@@ -105,7 +105,7 @@ public class GuidedRuleTemplateEditorServiceImpl
                        final TemplateModel content,
                        final String comment) {
         try {
-            final Package pkg = projectService.resolvePackage(context);
+            final Package pkg = moduleService.resolvePackage(context);
             final String packageName = (pkg == null ? null : pkg.getPackageName());
             content.setPackageName(packageName);
 
@@ -158,7 +158,7 @@ public class GuidedRuleTemplateEditorServiceImpl
 
         //Get FQCN's of collections defined in project settings
         //they can be used in From Collect expressions
-        consumedFQCNs.addAll(oracle.getProjectCollectionTypes()
+        consumedFQCNs.addAll(oracle.getModuleCollectionTypes()
                                      .entrySet()
                                      .stream()
                                      .filter(entry -> entry.getValue())
@@ -184,7 +184,7 @@ public class GuidedRuleTemplateEditorServiceImpl
                      final Metadata metadata,
                      final String comment) {
         try {
-            final Package pkg = projectService.resolvePackage(resource);
+            final Package pkg = moduleService.resolvePackage(resource);
             final String packageName = (pkg == null ? null : pkg.getPackageName());
             model.setPackageName(packageName);
 

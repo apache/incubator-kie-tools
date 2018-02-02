@@ -43,8 +43,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.workbench.common.services.backend.session.SessionService;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
@@ -94,14 +94,14 @@ public class ScenarioRunnerServiceTest {
     @Before
     public void setUp() throws Exception {
         final ConfigurationService configurationService = mock(ConfigurationService.class);
-        final KieProjectService projectService = mock(KieProjectService.class);
+        final KieModuleService moduleService = mock(KieModuleService.class);
 
         defaultTestResultMessageEvent = spy(new TestResultMessageEventMock());
 
         service = new ScenarioRunnerService(configurationService,
                                             defaultTestResultMessageEvent,
                                             sessionService,
-                                            projectService,
+                                            moduleService,
                                             scenarioLoader);
     }
 
@@ -121,7 +121,7 @@ public class ScenarioRunnerServiceTest {
         initKieSession();
         TestScenarioResult result = service.run("userName",
                                                 makeScenario("test.scenario"),
-                                                new KieProject());
+                                                new KieModule());
 
         assertNotNull(result);
 
@@ -232,7 +232,7 @@ public class ScenarioRunnerServiceTest {
     }
 
     private void testScenario(String scenarioName, boolean isExpectedSuccess) throws Exception {
-        final KieProject project = mock(KieProject.class);
+        final KieModule module = mock(KieModule.class);
 
         final URL scenarioResource = getClass().getResource(scenarioName);
         final Path scenarioPath = PathFactory.newPath(scenarioResource.getFile(),
@@ -241,7 +241,7 @@ public class ScenarioRunnerServiceTest {
         final Scenario scenario = testEditorService.load(scenarioPath);
         assertFalse(scenario.wasSuccessful());
 
-        final TestScenarioResult result = service.run("userName", scenario, project);
+        final TestScenarioResult result = service.run("userName", scenario, module);
 
         assertEquals(isExpectedSuccess, scenario.wasSuccessful());
         assertEquals(isExpectedSuccess, result.getScenario().wasSuccessful());
@@ -284,7 +284,7 @@ public class ScenarioRunnerServiceTest {
 
         kieContainer = kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId());
         kieSession = kieContainer.newKieSession();
-        doReturn(kieSession).when(sessionService).newDefaultKieSessionWithPseudoClock(any(KieProject.class));
+        doReturn(kieSession).when(sessionService).newDefaultKieSessionWithPseudoClock(any(KieModule.class));
     }
 
     class TestResultMessageEventMock

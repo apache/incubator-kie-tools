@@ -50,7 +50,7 @@ import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
@@ -77,7 +77,7 @@ public class GuidedDecisionTableEditorServiceImpl
     private RenameService renameService;
     private DataModelService dataModelService;
     private WorkItemsEditorService workItemsService;
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
     private VersionRecordService versionRecordService;
     private GuidedDecisionTableGraphEditorService dtableGraphService;
     private GuidedDTableGraphResourceTypeDefinition dtableGraphType;
@@ -97,7 +97,7 @@ public class GuidedDecisionTableEditorServiceImpl
                                                 final RenameService renameService,
                                                 final DataModelService dataModelService,
                                                 final WorkItemsEditorService workItemsService,
-                                                final KieProjectService projectService,
+                                                final KieModuleService moduleService,
                                                 final VersionRecordService versionRecordService,
                                                 final GuidedDecisionTableGraphEditorService dtableGraphService,
                                                 final GuidedDTableGraphResourceTypeDefinition dtableGraphType,
@@ -111,7 +111,7 @@ public class GuidedDecisionTableEditorServiceImpl
         this.renameService = renameService;
         this.dataModelService = dataModelService;
         this.workItemsService = workItemsService;
-        this.projectService = projectService;
+        this.moduleService = moduleService;
         this.versionRecordService = versionRecordService;
         this.dtableGraphService = dtableGraphService;
         this.dtableGraphType = dtableGraphType;
@@ -127,7 +127,7 @@ public class GuidedDecisionTableEditorServiceImpl
                        final GuidedDecisionTable52 content,
                        final String comment) {
         try {
-            final Package pkg = projectService.resolvePackage(context);
+            final Package pkg = moduleService.resolvePackage(context);
             final String packageName = (pkg == null ? null : pkg.getPackageName());
             content.setPackageName(packageName);
 
@@ -168,6 +168,7 @@ public class GuidedDecisionTableEditorServiceImpl
     protected GuidedDecisionTableEditorContent constructContent(Path path,
                                                                 Overview overview) {
         final GuidedDecisionTable52 model = load(path);
+
         final PackageDataModelOracle oracle = dataModelService.getDataModel(path);
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
 
@@ -180,7 +181,7 @@ public class GuidedDecisionTableEditorServiceImpl
 
         //Get FQCN's of collections defined in project settings
         //they can be used in From Collect expressions
-        consumedFQCNs.addAll(oracle.getProjectCollectionTypes()
+        consumedFQCNs.addAll(oracle.getModuleCollectionTypes()
                                      .entrySet()
                                      .stream()
                                      .filter(entry -> entry.getValue())
@@ -225,7 +226,7 @@ public class GuidedDecisionTableEditorServiceImpl
                      final Metadata metadata,
                      final String comment) {
         try {
-            final Package pkg = projectService.resolvePackage(resource);
+            final Package pkg = moduleService.resolvePackage(resource);
             final String packageName = (pkg == null ? null : pkg.getPackageName());
             model.setPackageName(packageName);
 

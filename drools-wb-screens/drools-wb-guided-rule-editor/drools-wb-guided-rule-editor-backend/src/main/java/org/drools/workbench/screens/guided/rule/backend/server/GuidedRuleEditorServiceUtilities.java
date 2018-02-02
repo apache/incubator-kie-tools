@@ -27,7 +27,7 @@ import org.guvnor.common.services.backend.file.FileDiscoveryService;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.services.backend.file.DSLFileFilter;
 import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -57,25 +57,25 @@ public class GuidedRuleEditorServiceUtilities {
     private FileDiscoveryService fileDiscoveryService;
 
     @Inject
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     /**
      * Load DSL definitions held in the Package relating to the provide Path
      * @param path
      * @return
      */
-    public String[] loadDslsForPackage( final Path path ) {
+    public String[] loadDslsForPackage(final Path path) {
         final List<String> dsls = new ArrayList<String>();
-        final Path packagePath = projectService.resolvePackage( path ).getPackageMainResourcesPath();
-        final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert( packagePath );
-        final Collection<org.uberfire.java.nio.file.Path> dslPaths = fileDiscoveryService.discoverFiles( nioPackagePath,
-                                                                                                         FILTER_DSLS );
-        for ( final org.uberfire.java.nio.file.Path dslPath : dslPaths ) {
-            final String dslDefinition = ioService.readAllString( dslPath );
-            dsls.add( dslDefinition );
+        final Path packagePath = moduleService.resolvePackage(path).getPackageMainResourcesPath();
+        final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert(packagePath);
+        final Collection<org.uberfire.java.nio.file.Path> dslPaths = fileDiscoveryService.discoverFiles(nioPackagePath,
+                                                                                                        FILTER_DSLS);
+        for (final org.uberfire.java.nio.file.Path dslPath : dslPaths) {
+            final String dslDefinition = ioService.readAllString(dslPath);
+            dsls.add(dslDefinition);
         }
-        final String[] result = new String[ dsls.size() ];
-        return dsls.toArray( result );
+        final String[] result = new String[dsls.size()];
+        return dsls.toArray(result);
     }
 
     /**
@@ -83,15 +83,15 @@ public class GuidedRuleEditorServiceUtilities {
      * @param path
      * @return
      */
-    public List<String> loadGlobalsForPackage( final Path path ) {
+    public List<String> loadGlobalsForPackage(final Path path) {
         final List<String> globals = new ArrayList<String>();
-        final Path packagePath = projectService.resolvePackage( path ).getPackageMainResourcesPath();
-        final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert( packagePath );
-        final Collection<org.uberfire.java.nio.file.Path> globalPaths = fileDiscoveryService.discoverFiles( nioPackagePath,
-                                                                                                            FILTER_GLOBALS );
-        for ( final org.uberfire.java.nio.file.Path globalPath : globalPaths ) {
-            final String globalDefinition = ioService.readAllString( globalPath );
-            globals.add( globalDefinition );
+        final Path packagePath = moduleService.resolvePackage(path).getPackageMainResourcesPath();
+        final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert(packagePath);
+        final Collection<org.uberfire.java.nio.file.Path> globalPaths = fileDiscoveryService.discoverFiles(nioPackagePath,
+                                                                                                           FILTER_GLOBALS);
+        for (final org.uberfire.java.nio.file.Path globalPath : globalPaths) {
+            final String globalDefinition = ioService.readAllString(globalPath);
+            globals.add(globalDefinition);
         }
         return globals;
     }

@@ -37,7 +37,7 @@ import org.drools.workbench.screens.guided.rule.type.GuidedRuleDSLRResourceTypeD
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
 import org.kie.workbench.common.services.backend.file.DSLFileFilter;
 import org.kie.workbench.common.services.backend.source.BaseSourceService;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.services.shared.source.SourceGenerationFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +67,7 @@ public class GuidedRuleDSLRSourceService
     private FileDiscoveryService fileDiscoveryService;
 
     @Inject
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     @Override
     public String getPattern() {
@@ -108,7 +108,7 @@ public class GuidedRuleDSLRSourceService
     private List<DSLMappingFile> getDSLMappingFiles(final Path path) {
         final List<DSLMappingFile> dsls = new ArrayList<DSLMappingFile>();
         final org.uberfire.backend.vfs.Path vfsPath = Paths.convert(path);
-        final org.uberfire.backend.vfs.Path packagePath = projectService.resolvePackage(vfsPath).getPackageMainResourcesPath();
+        final org.uberfire.backend.vfs.Path packagePath = moduleService.resolvePackage(vfsPath).getPackageMainResourcesPath();
         final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert(packagePath);
         final Collection<Path> dslPaths = fileDiscoveryService.discoverFiles(nioPackagePath,
                                                                              FILTER_DSLS);

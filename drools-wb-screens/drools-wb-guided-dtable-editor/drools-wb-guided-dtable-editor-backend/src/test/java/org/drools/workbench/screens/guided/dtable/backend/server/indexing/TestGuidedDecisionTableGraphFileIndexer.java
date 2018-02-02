@@ -19,7 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableGraphResourceTypeDefinition;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.io.IOService;
 
 /**
@@ -34,8 +34,8 @@ public class TestGuidedDecisionTableGraphFileIndexer extends GuidedDecisionTable
     }
 
     @Override
-    public void setProjectService(final KieProjectService projectService) {
-        this.projectService = projectService;
+    public void setModuleService(final KieModuleService moduleService) {
+        this.moduleService = moduleService;
     }
 
     @Override

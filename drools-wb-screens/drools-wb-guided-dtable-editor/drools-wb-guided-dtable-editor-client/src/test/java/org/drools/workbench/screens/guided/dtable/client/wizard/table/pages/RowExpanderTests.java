@@ -20,8 +20,6 @@ import java.util.List;
 
 import javax.enterprise.inject.Instance;
 
-import org.drools.workbench.models.datamodel.oracle.DSLActionSentence;
-import org.drools.workbench.models.datamodel.oracle.DSLConditionSentence;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
@@ -42,10 +40,10 @@ import org.kie.soup.project.datamodel.imports.HasImports;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
 import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
-import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
+import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ModuleDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
@@ -55,6 +53,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mocks.CallerMock;
 
+import static org.drools.workbench.screens.guided.dtable.TestUtil.populate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -86,7 +85,7 @@ public class RowExpanderTests {
     public void testExpansionNoExpansion() {
         GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Driver")
                 .addField(new ModelField("age",
                                          Integer.class.getName(),
@@ -118,7 +117,7 @@ public class RowExpanderTests {
         //Emulate server-to-client conversions
         final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields(projectLoader.getProjectModelFields());
+        dataModel.setModelFields(projectLoader.getModuleModelFields());
         populateDataModelOracle(mock(Path.class),
                                 model,
                                 oracle,
@@ -211,7 +210,7 @@ public class RowExpanderTests {
     public void testExpansionWithValuesList() {
         GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Driver")
                 .addField(new ModelField("age",
                                          Integer.class.getName(),
@@ -243,7 +242,7 @@ public class RowExpanderTests {
         //Emulate server-to-client conversions
         final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields(projectLoader.getProjectModelFields());
+        dataModel.setModelFields(projectLoader.getModuleModelFields());
         populateDataModelOracle(mock(Path.class),
                                 model,
                                 oracle,
@@ -366,7 +365,7 @@ public class RowExpanderTests {
     public void testExpansionWithGuvnorEnums() {
         GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Driver")
                 .addField(new ModelField("age",
                                          Integer.class.getName(),
@@ -396,7 +395,7 @@ public class RowExpanderTests {
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator())
-                .setProjectOracle(projectLoader)
+                .setModuleOracle(projectLoader)
                 .addEnum("'Driver.name' : ['f1a', 'f1b'], 'Driver.age' : ['f2a', 'f2b'], 'Driver.dateOfBirth' : ['f3a', 'f3b'], 'Driver.approved' : ['f4a', 'f4b']",
                          Thread.currentThread().getContextClassLoader())
                 .build();
@@ -404,7 +403,7 @@ public class RowExpanderTests {
         //Emulate server-to-client conversions
         final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields(projectLoader.getProjectModelFields());
+        dataModel.setModelFields(projectLoader.getModuleModelFields());
         dataModel.setWorkbenchEnumDefinitions(packageLoader.getPackageWorkbenchDefinitions());
         populateDataModelOracle(mock(Path.class),
                                 model,
@@ -527,7 +526,7 @@ public class RowExpanderTests {
                 + "'Fact.field2[field1=f1b]' : ['f1bf2a', 'f1bf2b', 'f1bf2c'], "
                 + "'Fact.field2[field1=f1c]' : ['f1cf2a', 'f1cf2b', 'f1cf2c']";
 
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Fact")
                 .addField(new ModelField("field1",
                                          String.class.getName(),
@@ -545,7 +544,7 @@ public class RowExpanderTests {
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator())
-                .setProjectOracle(projectLoader)
+                .setModuleOracle(projectLoader)
                 .addEnum(enumDefinitions,
                          Thread.currentThread().getContextClassLoader())
                 .build();
@@ -553,7 +552,7 @@ public class RowExpanderTests {
         //Emulate server-to-client conversions
         final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields(projectLoader.getProjectModelFields());
+        dataModel.setModelFields(projectLoader.getModuleModelFields());
         dataModel.setWorkbenchEnumDefinitions(packageLoader.getPackageWorkbenchDefinitions());
         populateDataModelOracle(mock(Path.class),
                                 model,
@@ -718,7 +717,7 @@ public class RowExpanderTests {
                 + "'Fact.field2[field1=f1a]' : ['f1af2a', 'f1af2b'], "
                 + "'Fact.field2[field1=f1b]' : ['f1bf2a', 'f1bf2b']";
 
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Fact")
                 .addField(new ModelField("field1",
                                          String.class.getName(),
@@ -736,7 +735,7 @@ public class RowExpanderTests {
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator())
-                .setProjectOracle(projectLoader)
+                .setModuleOracle(projectLoader)
                 .addEnum(enumDefinitions,
                          Thread.currentThread().getContextClassLoader())
                 .build();
@@ -744,7 +743,7 @@ public class RowExpanderTests {
         //Emulate server-to-client conversions
         final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields(projectLoader.getProjectModelFields());
+        dataModel.setModelFields(projectLoader.getModuleModelFields());
         dataModel.setWorkbenchEnumDefinitions(packageLoader.getPackageWorkbenchDefinitions());
         populateDataModelOracle(mock(Path.class),
                                 model,
@@ -865,7 +864,7 @@ public class RowExpanderTests {
                 + "'Fact.field2[field1=f1a]' : ['f1af2a', 'f1af2b'], "
                 + "'Fact.field2[field1=f1b]' : ['f1bf2a', 'f1bf2b']";
 
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Fact")
                 .addField(new ModelField("field1",
                                          String.class.getName(),
@@ -883,7 +882,7 @@ public class RowExpanderTests {
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator())
-                .setProjectOracle(projectLoader)
+                .setModuleOracle(projectLoader)
                 .addEnum(enumDefinitions,
                          Thread.currentThread().getContextClassLoader())
                 .build();
@@ -891,7 +890,7 @@ public class RowExpanderTests {
         //Emulate server-to-client conversions
         final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields(projectLoader.getProjectModelFields());
+        dataModel.setModelFields(projectLoader.getModuleModelFields());
         dataModel.setWorkbenchEnumDefinitions(packageLoader.getPackageWorkbenchDefinitions());
         populateDataModelOracle(mock(Path.class),
                                 model,
@@ -990,7 +989,7 @@ public class RowExpanderTests {
                 + "'Fact.field2[field1=f1a]' : ['f1af2a', 'f1af2b'], "
                 + "'Fact.field2[field1=f1b]' : ['f1bf2a', 'f1bf2b']";
 
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Fact")
                 .addField(new ModelField("field1",
                                          String.class.getName(),
@@ -1008,7 +1007,7 @@ public class RowExpanderTests {
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator())
-                .setProjectOracle(projectLoader)
+                .setModuleOracle(projectLoader)
                 .addEnum(enumDefinitions,
                          Thread.currentThread().getContextClassLoader())
                 .build();
@@ -1016,7 +1015,7 @@ public class RowExpanderTests {
         //Emulate server-to-client conversions
         final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields(projectLoader.getProjectModelFields());
+        dataModel.setModelFields(projectLoader.getModuleModelFields());
         dataModel.setWorkbenchEnumDefinitions(packageLoader.getPackageWorkbenchDefinitions());
         populateDataModelOracle(mock(Path.class),
                                 model,
@@ -1109,7 +1108,7 @@ public class RowExpanderTests {
                 + "'Fact.field3[field2=f1bf2a]' : ['f1bf2af3a', 'f1bf2af3b'], "
                 + "'Fact.field3[field2=f1bf2b]' : ['f1bf2bf3a', 'f1bf2bf3b']";
 
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Fact")
                 .addField(new ModelField("field1",
                                          String.class.getName(),
@@ -1133,7 +1132,7 @@ public class RowExpanderTests {
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator())
-                .setProjectOracle(projectLoader)
+                .setModuleOracle(projectLoader)
                 .addEnum(enumDefinitions,
                          Thread.currentThread().getContextClassLoader())
                 .build();
@@ -1141,7 +1140,7 @@ public class RowExpanderTests {
         //Emulate server-to-client conversions
         final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields(projectLoader.getProjectModelFields());
+        dataModel.setModelFields(projectLoader.getModuleModelFields());
         dataModel.setWorkbenchEnumDefinitions(packageLoader.getPackageWorkbenchDefinitions());
         populateDataModelOracle(mock(Path.class),
                                 model,
@@ -1316,7 +1315,7 @@ public class RowExpanderTests {
     public void testColumnValues() {
         GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Driver")
                 .addField(new ModelField("name",
                                          String.class.getName(),
@@ -1328,13 +1327,13 @@ public class RowExpanderTests {
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator())
-                .setProjectOracle(projectLoader)
+                .setModuleOracle(projectLoader)
                 .build();
 
         //Emulate server-to-client conversions
         final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields(projectLoader.getProjectModelFields());
+        dataModel.setModelFields(projectLoader.getModuleModelFields());
         dataModel.setWorkbenchEnumDefinitions(packageLoader.getPackageWorkbenchDefinitions());
         populateDataModelOracle(mock(Path.class),
                                 model,
@@ -1382,7 +1381,7 @@ public class RowExpanderTests {
     public void testRowExpansionWithValuesList1() {
         GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Driver")
                 .addField(new ModelField("name",
                                          String.class.getName(),
@@ -1394,13 +1393,13 @@ public class RowExpanderTests {
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator())
-                .setProjectOracle(projectLoader)
+                .setModuleOracle(projectLoader)
                 .build();
 
         //Emulate server-to-client conversions
         final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields(projectLoader.getProjectModelFields());
+        dataModel.setModelFields(projectLoader.getModuleModelFields());
         dataModel.setWorkbenchEnumDefinitions(packageLoader.getPackageWorkbenchDefinitions());
         populateDataModelOracle(mock(Path.class),
                                 model,
@@ -1426,7 +1425,7 @@ public class RowExpanderTests {
                      re.getColumns().size());
 
         RowExpander.RowIterator i = re.iterator();
-        List<List<DTCellValue52>> rows = new ArrayList<>();
+        List<List<DTCellValue52>> rows = new ArrayList<List<DTCellValue52>>();
         while (i.hasNext()) {
             List<DTCellValue52> row = i.next();
             rows.add(row);
@@ -1454,7 +1453,7 @@ public class RowExpanderTests {
     public void testRowExpansionWithValuesList2() {
         GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Driver")
                 .addField(new ModelField("age",
                                          Integer.class.getName(),
@@ -1474,7 +1473,7 @@ public class RowExpanderTests {
         //Emulate server-to-client conversions
         final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields(projectLoader.getProjectModelFields());
+        dataModel.setModelFields(projectLoader.getModuleModelFields());
         populateDataModelOracle(mock(Path.class),
                                 model,
                                 oracle,
@@ -1511,7 +1510,7 @@ public class RowExpanderTests {
                      re.getColumns().size());
 
         RowExpander.RowIterator i = re.iterator();
-        List<List<DTCellValue52>> rows = new ArrayList<>();
+        List<List<DTCellValue52>> rows = new ArrayList<List<DTCellValue52>>();
         while (i.hasNext()) {
             List<DTCellValue52> row = i.next();
             rows.add(row);
@@ -1559,7 +1558,7 @@ public class RowExpanderTests {
     public void testRowExpansionWithValuesList3() {
         GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Driver")
                 .addField(new ModelField("age",
                                          Integer.class.getName(),
@@ -1585,7 +1584,7 @@ public class RowExpanderTests {
         //Emulate server-to-client conversions
         final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields(projectLoader.getProjectModelFields());
+        dataModel.setModelFields(projectLoader.getModuleModelFields());
         populateDataModelOracle(mock(Path.class),
                                 model,
                                 oracle,
@@ -1633,7 +1632,7 @@ public class RowExpanderTests {
                      re.getColumns().size());
 
         RowExpander.RowIterator i = re.iterator();
-        List<List<DTCellValue52>> rows = new ArrayList<>();
+        List<List<DTCellValue52>> rows = new ArrayList<List<DTCellValue52>>();
         while (i.hasNext()) {
             List<DTCellValue52> row = i.next();
             rows.add(row);
@@ -1688,7 +1687,7 @@ public class RowExpanderTests {
     public void testRowExpansionWithValuesListAndDefaultValues() {
         GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Driver")
                 .addField(new ModelField("age",
                                          Integer.class.getName(),
@@ -1714,7 +1713,7 @@ public class RowExpanderTests {
         //Emulate server-to-client conversions
         final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields(projectLoader.getProjectModelFields());
+        dataModel.setModelFields(projectLoader.getModuleModelFields());
         populateDataModelOracle(mock(Path.class),
                                 model,
                                 oracle,
@@ -1765,7 +1764,7 @@ public class RowExpanderTests {
                      re.getColumns().size());
 
         RowExpander.RowIterator i = re.iterator();
-        List<List<DTCellValue52>> rows = new ArrayList<>();
+        List<List<DTCellValue52>> rows = new ArrayList<List<DTCellValue52>>();
         while (i.hasNext()) {
             List<DTCellValue52> row = i.next();
             rows.add(row);
@@ -1824,7 +1823,7 @@ public class RowExpanderTests {
     public void testRowExpansionWithValuesListAndColumnExpansionDisabled1() {
         GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Driver")
                 .addField(new ModelField("age",
                                          Integer.class.getName(),
@@ -1850,7 +1849,7 @@ public class RowExpanderTests {
         //Emulate server-to-client conversions
         final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields(projectLoader.getProjectModelFields());
+        dataModel.setModelFields(projectLoader.getModuleModelFields());
         populateDataModelOracle(mock(Path.class),
                                 model,
                                 oracle,
@@ -1913,7 +1912,7 @@ public class RowExpanderTests {
     public void testRowExpansionWithValuesListAndColumnExpansionDisabled2() {
         GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Driver")
                 .addField(new ModelField("age",
                                          Integer.class.getName(),
@@ -1939,7 +1938,7 @@ public class RowExpanderTests {
         //Emulate server-to-client conversions
         final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields(projectLoader.getProjectModelFields());
+        dataModel.setModelFields(projectLoader.getModuleModelFields());
         populateDataModelOracle(mock(Path.class),
                                 model,
                                 oracle,
@@ -1992,7 +1991,7 @@ public class RowExpanderTests {
                      re.getColumns().size());
 
         RowExpander.RowIterator i = re.iterator();
-        List<List<DTCellValue52>> rows = new ArrayList<>();
+        List<List<DTCellValue52>> rows = new ArrayList<List<DTCellValue52>>();
         while (i.hasNext()) {
             List<DTCellValue52> row = i.next();
             rows.add(row);
@@ -2025,7 +2024,7 @@ public class RowExpanderTests {
     public void testRowExpansionWithValuesListAndColumnExpansionDisabled3() {
         GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Driver")
                 .addField(new ModelField("age",
                                          Integer.class.getName(),
@@ -2051,7 +2050,7 @@ public class RowExpanderTests {
         //Emulate server-to-client conversions
         final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields(projectLoader.getProjectModelFields());
+        dataModel.setModelFields(projectLoader.getModuleModelFields());
         populateDataModelOracle(mock(Path.class),
                                 model,
                                 oracle,
@@ -2102,7 +2101,7 @@ public class RowExpanderTests {
                      re.getColumns().size());
 
         RowExpander.RowIterator i = re.iterator();
-        List<List<DTCellValue52>> rows = new ArrayList<>();
+        List<List<DTCellValue52>> rows = new ArrayList<List<DTCellValue52>>();
         while (i.hasNext()) {
             List<DTCellValue52> row = i.next();
             rows.add(row);
@@ -2157,7 +2156,7 @@ public class RowExpanderTests {
     public void testRowExpansionWithValuesListAndColumnExpansionDisabledAndDefaultValues() {
         GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Driver")
                 .addField(new ModelField("age",
                                          Integer.class.getName(),
@@ -2183,7 +2182,7 @@ public class RowExpanderTests {
         //Emulate server-to-client conversions
         final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields(projectLoader.getProjectModelFields());
+        dataModel.setModelFields(projectLoader.getModuleModelFields());
         populateDataModelOracle(mock(Path.class),
                                 model,
                                 oracle,
@@ -2235,7 +2234,7 @@ public class RowExpanderTests {
                      re.getColumns().size());
 
         RowExpander.RowIterator i = re.iterator();
-        List<List<DTCellValue52>> rows = new ArrayList<>();
+        List<List<DTCellValue52>> rows = new ArrayList<List<DTCellValue52>>();
         while (i.hasNext()) {
             List<DTCellValue52> row = i.next();
             rows.add(row);
@@ -2295,7 +2294,7 @@ public class RowExpanderTests {
         GuidedDecisionTable52 model = new GuidedDecisionTable52();
         model.setTableFormat(GuidedDecisionTable52.TableFormat.LIMITED_ENTRY);
 
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Driver")
                 .addField(new ModelField("age",
                                          Integer.class.getName(),
@@ -2327,7 +2326,7 @@ public class RowExpanderTests {
         //Emulate server-to-client conversions
         final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields(projectLoader.getProjectModelFields());
+        dataModel.setModelFields(projectLoader.getModuleModelFields());
         populateDataModelOracle(mock(Path.class),
                                 model,
                                 oracle,
@@ -2407,7 +2406,7 @@ public class RowExpanderTests {
                      columns.get(5).values.get(0).getBooleanValue());
 
         RowExpander.RowIterator i = re.iterator();
-        List<List<DTCellValue52>> rows = new ArrayList<>();
+        List<List<DTCellValue52>> rows = new ArrayList<List<DTCellValue52>>();
         while (i.hasNext()) {
             List<DTCellValue52> row = i.next();
             rows.add(row);
@@ -2474,7 +2473,7 @@ public class RowExpanderTests {
     public void testExpansionObjectUniqueness() {
         GuidedDecisionTable52 model = new GuidedDecisionTable52();
 
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Driver")
                 .addField(new ModelField("gender",
                                          String.class.getName(),
@@ -2486,7 +2485,7 @@ public class RowExpanderTests {
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator())
-                .setProjectOracle(projectLoader)
+                .setModuleOracle(projectLoader)
                 .addEnum("'Driver.gender' : ['M', 'F']",
                          Thread.currentThread().getContextClassLoader())
                 .build();
@@ -2494,7 +2493,7 @@ public class RowExpanderTests {
         //Emulate server-to-client conversions
         final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields(projectLoader.getProjectModelFields());
+        dataModel.setModelFields(projectLoader.getModuleModelFields());
         dataModel.setWorkbenchEnumDefinitions(packageLoader.getPackageWorkbenchDefinitions());
         populateDataModelOracle(mock(Path.class),
                                 model,
@@ -2528,7 +2527,7 @@ public class RowExpanderTests {
         RowExpander.RowIterator ri = re.iterator();
         assertTrue(ri.hasNext());
 
-        List<List<DTCellValue52>> rows = new ArrayList<>();
+        List<List<DTCellValue52>> rows = new ArrayList<List<DTCellValue52>>();
         while (ri.hasNext()) {
             List<DTCellValue52> row = ri.next();
             rows.add(row);
@@ -2563,27 +2562,5 @@ public class RowExpanderTests {
                  payload);
         oracle.init(resourcePath);
         oracle.filter(hasImports.getImports());
-    }
-
-    private static void populate(final AsyncPackageDataModelOracle oracle,
-                                 final PackageDataModelOracleBaselinePayload payload) {
-        oracle.setProjectName(payload.getProjectName());
-        oracle.addModelFields(payload.getModelFields());
-        oracle.addFieldParametersType(payload.getFieldParametersType());
-        oracle.addEventTypes(payload.getEventTypes());
-        oracle.addTypeSources(payload.getTypeSources());
-        oracle.addSuperTypes(payload.getSuperTypes());
-        oracle.addTypeAnnotations(payload.getTypeAnnotations());
-        oracle.addTypeFieldsAnnotations(payload.getTypeFieldsAnnotations());
-        oracle.addJavaEnumDefinitions(payload.getJavaEnumDefinitions());
-        oracle.addMethodInformation(payload.getMethodInformation());
-        oracle.addCollectionTypes(payload.getCollectionTypes());
-        oracle.addPackageNames(payload.getPackageNames());
-
-        oracle.setPackageName(payload.getPackageName());
-        oracle.addWorkbenchEnumDefinitions(payload.getWorkbenchEnumDefinitions());
-        oracle.addDslConditionSentences(payload.getPackageElements(DSLConditionSentence.INSTANCE));
-        oracle.addDslActionSentences(payload.getPackageElements(DSLActionSentence.INSTANCE));
-        oracle.addGlobals(payload.getGlobals());
     }
 }

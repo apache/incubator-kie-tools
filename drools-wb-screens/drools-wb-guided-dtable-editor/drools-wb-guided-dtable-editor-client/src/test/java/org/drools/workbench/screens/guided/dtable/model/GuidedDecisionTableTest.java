@@ -22,8 +22,6 @@ import java.util.Map;
 
 import javax.enterprise.inject.Instance;
 
-import org.drools.workbench.models.datamodel.oracle.DSLActionSentence;
-import org.drools.workbench.models.datamodel.oracle.DSLConditionSentence;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
@@ -45,10 +43,10 @@ import org.kie.soup.project.datamodel.imports.HasImports;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
 import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
-import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
+import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ModuleDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
@@ -58,6 +56,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mocks.CallerMock;
 
+import static org.drools.workbench.screens.guided.dtable.TestUtil.populate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -98,7 +97,7 @@ public class GuidedDecisionTableTest {
         //Emulate server-to-client conversions
         final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields(loader.getProjectModelFields());
+        dataModel.setModelFields(loader.getModuleModelFields());
         dataModel.setWorkbenchEnumDefinitions(loader.getPackageWorkbenchDefinitions());
         populateDataModelOracle(mock(Path.class),
                                 model,
@@ -317,7 +316,7 @@ public class GuidedDecisionTableTest {
     @SuppressWarnings("serial")
     public void testNumeric() {
         final GuidedDecisionTable52 model = new GuidedDecisionTable52();
-        final ProjectDataModelOracle loader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle loader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Driver")
                 .addField(new ModelField("age",
                                          Integer.class.getName(),
@@ -337,7 +336,7 @@ public class GuidedDecisionTableTest {
         //Emulate server-to-client conversions
         final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields(loader.getProjectModelFields());
+        dataModel.setModelFields(loader.getModuleModelFields());
         populateDataModelOracle(mock(Path.class),
                                 model,
                                 oracle,
@@ -430,7 +429,7 @@ public class GuidedDecisionTableTest {
     @SuppressWarnings("serial")
     public void testGetType() {
         final GuidedDecisionTable52 model = new GuidedDecisionTable52();
-        final ProjectDataModelOracle loader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle loader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Driver")
                 .addField(new ModelField("age",
                                          Integer.class.getName(),
@@ -462,7 +461,7 @@ public class GuidedDecisionTableTest {
         //Emulate server-to-client conversions
         final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields(loader.getProjectModelFields());
+        dataModel.setModelFields(loader.getModuleModelFields());
         populateDataModelOracle(mock(Path.class),
                                 model,
                                 oracle,
@@ -571,7 +570,7 @@ public class GuidedDecisionTableTest {
         //Emulate server-to-client conversions
         final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields(loader.getProjectModelFields());
+        dataModel.setModelFields(loader.getModuleModelFields());
         populateDataModelOracle(mock(Path.class),
                                 model,
                                 oracle,
@@ -607,7 +606,7 @@ public class GuidedDecisionTableTest {
     @Test
     public void testNoConstraints() {
         final GuidedDecisionTable52 model = new GuidedDecisionTable52();
-        final ProjectDataModelOracle loader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle loader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Driver")
                 .addField(new ModelField("age",
                                          Integer.class.getName(),
@@ -627,7 +626,7 @@ public class GuidedDecisionTableTest {
         //Emulate server-to-client conversions
         final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields(loader.getProjectModelFields());
+        dataModel.setModelFields(loader.getModuleModelFields());
         populateDataModelOracle(mock(Path.class),
                                 model,
                                 oracle,
@@ -725,7 +724,7 @@ public class GuidedDecisionTableTest {
     @Test
     public void testConditionPredicateChoices() {
         final GuidedDecisionTable52 model = new GuidedDecisionTable52();
-        final ProjectDataModelOracle loader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle loader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Driver")
                 .addField(new ModelField("age",
                                          Integer.class.getName(),
@@ -745,7 +744,7 @@ public class GuidedDecisionTableTest {
         //Emulate server-to-client conversions
         final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields(loader.getProjectModelFields());
+        dataModel.setModelFields(loader.getModuleModelFields());
         populateDataModelOracle(mock(Path.class),
                                 model,
                                 oracle,
@@ -777,7 +776,7 @@ public class GuidedDecisionTableTest {
     @Test
     public void testConditionFormulaChoices() {
         final GuidedDecisionTable52 model = new GuidedDecisionTable52();
-        final ProjectDataModelOracle loader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle loader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Driver")
                 .addField(new ModelField("age",
                                          Integer.class.getName(),
@@ -797,7 +796,7 @@ public class GuidedDecisionTableTest {
         //Emulate server-to-client conversions
         final AsyncPackageDataModelOracle oracle = getOracle();
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields(loader.getProjectModelFields());
+        dataModel.setModelFields(loader.getModuleModelFields());
         populateDataModelOracle(mock(Path.class),
                                 model,
                                 oracle,
@@ -833,27 +832,5 @@ public class GuidedDecisionTableTest {
                  payload);
         oracle.init(resourcePath);
         oracle.filter(hasImports.getImports());
-    }
-
-    private static void populate(final AsyncPackageDataModelOracle oracle,
-                                 final PackageDataModelOracleBaselinePayload payload) {
-        oracle.setProjectName(payload.getProjectName());
-        oracle.addModelFields(payload.getModelFields());
-        oracle.addFieldParametersType(payload.getFieldParametersType());
-        oracle.addEventTypes(payload.getEventTypes());
-        oracle.addTypeSources(payload.getTypeSources());
-        oracle.addSuperTypes(payload.getSuperTypes());
-        oracle.addTypeAnnotations(payload.getTypeAnnotations());
-        oracle.addTypeFieldsAnnotations(payload.getTypeFieldsAnnotations());
-        oracle.addJavaEnumDefinitions(payload.getJavaEnumDefinitions());
-        oracle.addMethodInformation(payload.getMethodInformation());
-        oracle.addCollectionTypes(payload.getCollectionTypes());
-        oracle.addPackageNames(payload.getPackageNames());
-
-        oracle.setPackageName(payload.getPackageName());
-        oracle.addWorkbenchEnumDefinitions(payload.getWorkbenchEnumDefinitions());
-        oracle.addDslConditionSentences(payload.getPackageElements(DSLConditionSentence.INSTANCE));
-        oracle.addDslActionSentences(payload.getPackageElements(DSLActionSentence.INSTANCE));
-        oracle.addGlobals(payload.getGlobals());
     }
 }

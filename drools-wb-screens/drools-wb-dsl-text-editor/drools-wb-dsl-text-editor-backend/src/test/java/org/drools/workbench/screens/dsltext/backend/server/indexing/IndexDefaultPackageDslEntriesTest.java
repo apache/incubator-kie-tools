@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.query.builder.SingleTermQueryBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.ModuleRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm.TermSearchType;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueReferenceIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueResourceIndexTerm;
@@ -82,7 +82,7 @@ public class IndexDefaultPackageDslEntriesTest extends BaseIndexingTest<DSLResou
     public Map<String, Analyzer> getAnalyzers() {
         return new HashMap<String, Analyzer>() {
             {
-                put(ProjectRootPathIndexTerm.TERM,
+                put(ModuleRootPathIndexTerm.TERM,
                     new FilenameAnalyzer());
             }
         };

@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.editor;
 
 import java.lang.reflect.Field;
 import java.util.Collections;
+import java.util.Optional;
 
 import javax.enterprise.event.Event;
 
@@ -34,8 +35,8 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDeci
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
-import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.Caller;
@@ -179,7 +180,7 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
     protected EventSourceMock<ChangeTitleWidgetEvent> changeTitleEvent;
 
     @Mock
-    protected ProjectContext workbenchContext;
+    protected WorkspaceProjectContext workbenchContext;
 
     @Mock
     protected VersionRecordManager versionRecordManager;
@@ -273,6 +274,9 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
         when(radarMenuBuilder.build()).thenReturn(radarMenuItem);
         when(registeredDocumentsMenuBuilder.build()).thenReturn(registeredDocumentsMenuItem);
         when(presenter.getKieEditorWrapperMultiPage()).thenReturn(multiPageEditor);
+
+        when(workbenchContext.getActiveOrganizationalUnit()).thenReturn(Optional.empty());
+        when(workbenchContext.getActiveWorkspaceProject()).thenReturn(Optional.empty());
 
         presenter.init();
         presenter.setupMenuBar();

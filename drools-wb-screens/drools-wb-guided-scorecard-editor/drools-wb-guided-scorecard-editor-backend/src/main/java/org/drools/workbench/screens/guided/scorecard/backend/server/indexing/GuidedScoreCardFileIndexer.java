@@ -21,7 +21,7 @@ import javax.inject.Inject;
 import org.drools.workbench.models.guided.scorecard.backend.GuidedScoreCardXMLPersistence;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.type.GuidedScoreCardResourceTypeDefinition;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.AbstractFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
@@ -47,7 +47,7 @@ public class GuidedScoreCardFileIndexer extends AbstractFileIndexer {
         final String content = ioService.readAllString(path);
         final ScoreCardModel model = GuidedScoreCardXMLPersistence.getInstance().unmarshall(content);
 
-        final ProjectDataModelOracle dmo = getProjectDataModelOracle(path);
+        final ModuleDataModelOracle dmo = getModuleDataModelOracle(path);
 
         final DefaultIndexBuilder builder = getIndexBuilder(path);
         if (builder == null) {
@@ -62,7 +62,7 @@ public class GuidedScoreCardFileIndexer extends AbstractFileIndexer {
     }
 
     //Delegate resolution of DMO to method to assist testing
-    protected ProjectDataModelOracle getProjectDataModelOracle(final Path path) {
-        return dataModelService.getProjectDataModel(Paths.convert(path));
+    protected ModuleDataModelOracle getModuleDataModelOracle(final Path path) {
+        return dataModelService.getModuleDataModel(Paths.convert(path));
     }
 }

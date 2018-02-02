@@ -19,7 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.drools.workbench.screens.guided.template.type.GuidedRuleTemplateResourceTypeDefinition;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.io.IOService;
 
 /**
@@ -29,18 +29,17 @@ import org.uberfire.io.IOService;
 public class TestGuidedRuleTemplateFileIndexer extends GuidedRuleTemplateFileIndexer implements TestIndexer<GuidedRuleTemplateResourceTypeDefinition> {
 
     @Override
-    public void setIOService( final IOService ioService ) {
+    public void setIOService(final IOService ioService) {
         this.ioService = ioService;
     }
 
     @Override
-    public void setProjectService( final KieProjectService projectService ) {
-        this.projectService = projectService;
+    public void setModuleService(final KieModuleService moduleService) {
+        this.moduleService = moduleService;
     }
 
     @Override
-    public void setResourceTypeDefinition( final GuidedRuleTemplateResourceTypeDefinition type ) {
+    public void setResourceTypeDefinition(final GuidedRuleTemplateResourceTypeDefinition type) {
         this.type = type;
     }
-
 }

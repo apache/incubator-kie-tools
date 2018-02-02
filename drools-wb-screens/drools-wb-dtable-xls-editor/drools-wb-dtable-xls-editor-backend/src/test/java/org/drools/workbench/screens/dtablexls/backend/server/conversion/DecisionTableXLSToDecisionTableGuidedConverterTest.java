@@ -45,8 +45,8 @@ import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -80,7 +80,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
     private GlobalsEditorService globalsService;
 
     @Mock
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     @Mock
     private ProjectImportsService importsService;
@@ -105,7 +105,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
     private Map<String, ModelField[]> packageModelFields = new HashMap<String, ModelField[]>();
 
     @Mock
-    private KieProject project;
+    private KieModule module;
 
     @Mock
     private Path expectedProjectImportsPath;
@@ -147,7 +147,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
                                                                        drlService,
                                                                        guidedDecisionTableService,
                                                                        globalsService,
-                                                                       projectService,
+                                                                       moduleService,
                                                                        importsService,
                                                                        metadataService,
                                                                        modellerService,
@@ -158,16 +158,16 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
                                                                        guidedDTableType,
                                                                        drlType,
                                                                        globalsType);
-        when(path.toURI()).thenReturn("default://project0/src/main/resources/p0/source.xls");
+        when(path.toURI()).thenReturn("default://src/main/resources/p0/source.xls");
         when(path.getFileName()).thenReturn("source.xls");
         when(dataModelService.getDataModel(eq(path))).thenReturn(dmo);
 
         when(dmo.getPackageName()).thenReturn("org.test");
-        when(dmo.getProjectModelFields()).thenReturn(packageModelFields);
+        when(dmo.getModuleModelFields()).thenReturn(packageModelFields);
 
-        when(projectService.resolveProject(any(Path.class))).thenReturn(project);
-        when(project.getImportsPath()).thenReturn(expectedProjectImportsPath);
-        when(expectedProjectImportsPath.toURI()).thenReturn("default://project0/project.imports");
+        when(moduleService.resolveModule(any(Path.class))).thenReturn(module);
+        when(module.getImportsPath()).thenReturn(expectedProjectImportsPath);
+        when(expectedProjectImportsPath.toURI()).thenReturn("default://project.imports");
     }
 
     @Test
@@ -209,6 +209,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
     @Test
     //https://issues.jboss.org/browse/GUVNOR-2478
     public void testImportGeneration() {
+
         final InputStream is = this.getClass().getResourceAsStream("GUVNOR-2478.xls");
         when(ioService.newInputStream(any(org.uberfire.java.nio.file.Path.class))).thenReturn(is);
         final ConversionResult result = converter.convert(path);

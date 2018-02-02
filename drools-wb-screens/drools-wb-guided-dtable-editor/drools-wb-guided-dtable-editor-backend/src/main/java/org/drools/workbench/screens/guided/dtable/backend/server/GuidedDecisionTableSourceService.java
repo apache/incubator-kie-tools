@@ -37,7 +37,7 @@ import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeD
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
 import org.kie.workbench.common.services.backend.file.DSLFileFilter;
 import org.kie.workbench.common.services.backend.source.BaseSourceService;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.services.shared.source.SourceGenerationFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,19 +61,20 @@ public class GuidedDecisionTableSourceService
 
     private FileDiscoveryService fileDiscoveryService;
 
-    private KieProjectService projectService;
+    @Inject
+    private KieModuleService moduleService;
 
     @Inject
     public GuidedDecisionTableSourceService(final GuidedDTableResourceTypeDefinition resourceType,
                                             final GuidedDecisionTableEditorService guidedDecisionTableEditorService,
                                             final @Named("ioStrategy") IOService ioService,
                                             final FileDiscoveryService fileDiscoveryService,
-                                            final KieProjectService projectService) {
+                                            final KieModuleService moduleService) {
         this.resourceType = resourceType;
         this.guidedDecisionTableEditorService = guidedDecisionTableEditorService;
         this.ioService = ioService;
         this.fileDiscoveryService = fileDiscoveryService;
-        this.projectService = projectService;
+        this.moduleService = moduleService;
     }
 
     @Override
@@ -116,7 +117,7 @@ public class GuidedDecisionTableSourceService
     private List<DSLMappingFile> getDSLMappingFiles(final Path path) {
         final List<DSLMappingFile> dsls = new ArrayList<DSLMappingFile>();
         final org.uberfire.backend.vfs.Path vfsPath = Paths.convert(path);
-        final org.uberfire.backend.vfs.Path packagePath = projectService.resolvePackage(vfsPath).getPackageMainResourcesPath();
+        final org.uberfire.backend.vfs.Path packagePath = moduleService.resolvePackage(vfsPath).getPackageMainResourcesPath();
         final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert(packagePath);
         final Collection<Path> dslPaths = fileDiscoveryService.discoverFiles(nioPackagePath,
                                                                              FILTER_DSLS);

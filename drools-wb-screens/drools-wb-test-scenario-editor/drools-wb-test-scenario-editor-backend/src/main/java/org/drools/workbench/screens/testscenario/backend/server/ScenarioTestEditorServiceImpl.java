@@ -139,7 +139,7 @@ public class ScenarioTestEditorServiceImpl
             logger.error("Unable to unmarshal content. Returning an empty Test Scenario.",
                          e);
 
-            final Package resolvedPackage = projectService.resolvePackage(path);
+            final Package resolvedPackage = moduleService.resolvePackage(path);
             final Scenario scenario = new Scenario();
             if (resolvedPackage != null) {
                 scenario.setPackageName(resolvedPackage.getPackageName());
@@ -234,7 +234,7 @@ public class ScenarioTestEditorServiceImpl
     protected TestScenarioModelContent constructContent(Path path,
                                                         Overview overview) {
         final Scenario scenario = load(path);
-        final String packageName = projectService.resolvePackage(path).getPackageName();
+        final String packageName = moduleService.resolvePackage(path).getPackageName();
         final PackageDataModelOracle dataModelOracle = getDataModel(path);
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         final Set<String> usedFullyQualifiedClassNames = getUsedFullyQualifiedClassNames(scenario,
@@ -265,7 +265,7 @@ public class ScenarioTestEditorServiceImpl
                                           path);
             final TestScenarioResult result = scenarioRunner.run(userName,
                                                                  scenario,
-                                                                 projectService.resolveProject(path));
+                                                                 moduleService.resolveModule(path));
             return result;
         } catch (final Exception e) {
             throw ExceptionUtilities.handleException(e);
@@ -307,7 +307,7 @@ public class ScenarioTestEditorServiceImpl
                                                                final PackageDataModelOracle dataModelOracle) {
         final Set<String> fullyQualifiedClassNames = new HashSet<>();
         for (String fullyQualifiedClassName : getFullyQualifiedClassNameFromScenario(scenario)) {
-            final ModelField[] modelFields = dataModelOracle.getProjectModelFields().get(fullyQualifiedClassName);
+            final ModelField[] modelFields = dataModelOracle.getModuleModelFields().get(fullyQualifiedClassName);
             if (modelFields != null) {
                 for (ModelField modelField : modelFields) {
                     fullyQualifiedClassNames.add(modelField.getClassName());

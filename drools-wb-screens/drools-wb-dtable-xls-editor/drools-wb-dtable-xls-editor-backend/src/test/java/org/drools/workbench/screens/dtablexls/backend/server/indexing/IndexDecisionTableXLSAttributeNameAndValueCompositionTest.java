@@ -32,7 +32,7 @@ import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.query.builder.SingleTermQueryBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.ModuleRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueSharedPartIndexTerm;
 import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
@@ -44,24 +44,24 @@ public class IndexDecisionTableXLSAttributeNameAndValueCompositionTest extends B
     @Test
     public void testIndexDecisionTableXLSAttributeNameAndValueComposition() throws IOException, InterruptedException {
         //Add test files
-        final Path path1 = loadXLSFile( basePath,
-                                        "dtable3.xls" );
+        final Path path1 = loadXLSFile(basePath,
+                                       "dtable3.xls");
 
-        Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+        Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
         List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath.getFileSystem()).getClusterId());
 
         //Decision Table defining a RuleFlow-Group named myRuleFlowGroup. This should match dtable3.xls
         //This checks whether there is a Rule Attribute "ruleflow-group" and its Value is "myRuleflowGroup"
         {
-            final Query query = new SingleTermQueryBuilder( new ValueSharedPartIndexTerm( "myRuleFlowGroup", PartType.RULEFLOW_GROUP ) )
+            final Query query = new SingleTermQueryBuilder(new ValueSharedPartIndexTerm("myRuleFlowGroup", PartType.RULEFLOW_GROUP))
                     .build();
             searchFor(index, query, 1, path1);
         }
 
         //Decision Table defining a RuleFlow-Group named myAgendaGroup. This should *NOT* match dtable3.xls
         {
-            final Query query = new SingleTermQueryBuilder( new ValueSharedPartIndexTerm( "myAgendaGroup", PartType.RULEFLOW_GROUP ) )
+            final Query query = new SingleTermQueryBuilder(new ValueSharedPartIndexTerm("myAgendaGroup", PartType.RULEFLOW_GROUP))
                     .build();
             searchFor(index, query, 0);
         }
@@ -75,8 +75,8 @@ public class IndexDecisionTableXLSAttributeNameAndValueCompositionTest extends B
     @Override
     public Map<String, Analyzer> getAnalyzers() {
         return new HashMap<String, Analyzer>() {{
-            put( ProjectRootPathIndexTerm.TERM,
-                 new FilenameAnalyzer( ) );
+            put(ModuleRootPathIndexTerm.TERM,
+                new FilenameAnalyzer());
         }};
     }
 
@@ -90,16 +90,15 @@ public class IndexDecisionTableXLSAttributeNameAndValueCompositionTest extends B
         return this.getClass().getSimpleName();
     }
 
-    private Path loadXLSFile( final Path basePath,
-                              final String fileName ) throws IOException {
-        final Path path = basePath.resolve( fileName );
-        final InputStream is = this.getClass().getResourceAsStream( fileName );
-        final OutputStream os = ioService().newOutputStream( path );
-        IOUtils.copy( is,
-                      os );
+    private Path loadXLSFile(final Path basePath,
+                             final String fileName) throws IOException {
+        final Path path = basePath.resolve(fileName);
+        final InputStream is = this.getClass().getResourceAsStream(fileName);
+        final OutputStream os = ioService().newOutputStream(path);
+        IOUtils.copy(is,
+                     os);
         os.flush();
         os.close();
         return path;
     }
-
 }

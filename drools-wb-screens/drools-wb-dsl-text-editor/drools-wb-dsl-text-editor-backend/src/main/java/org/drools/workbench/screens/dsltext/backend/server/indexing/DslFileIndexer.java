@@ -27,9 +27,9 @@ import org.drools.compiler.lang.dsl.DSLMapping;
 import org.drools.compiler.lang.dsl.DSLMappingEntry;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.workbench.screens.dsltext.type.DSLResourceTypeDefinition;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.refactoring.IndexElementsGenerator;
 import org.kie.workbench.common.services.refactoring.Resource;
@@ -49,13 +49,12 @@ import org.uberfire.java.nio.file.Path;
 @ApplicationScoped
 public class DslFileIndexer extends AbstractDrlFileIndexer {
 
+    public static final String MOCK_RULE_NAME = DslFileIndexer.class.getSimpleName() + "_parsing_dummy_rule";
     private static final Logger logger = LoggerFactory.getLogger(AbstractDrlFileIndexer.class);
-
-    @Inject
-    private DataModelService dataModelService;
-
     @Inject
     protected DSLResourceTypeDefinition dslType;
+    @Inject
+    private DataModelService dataModelService;
 
     @Override
     public boolean supportsPath(final Path path) {
@@ -99,20 +98,22 @@ public class DslFileIndexer extends AbstractDrlFileIndexer {
 
     @Override
     protected DefaultIndexBuilder getIndexBuilder(Path path) {
-        final Project project = projectService.resolveProject(Paths.convert(path));
-        if (project == null) {
-            logger.error("Unable to index " + path.toUri().toString() + ": project could not be resolved.");
+        final Module module = moduleService.resolveModule(Paths.convert(path));
+        if (module == null) {
+            logger.error("Unable to index " + path.toUri().toString() + ": module could not be resolved.");
             return null;
         }
 
-        final Package pkg = projectService.resolvePackage(Paths.convert(path));
+        final Package pkg = moduleService.resolvePackage(Paths.convert(path));
         if (pkg == null) {
             logger.error("Unable to index " + path.toUri().toString() + ": package could not be resolved.");
             return null;
         }
 
-        // responsible for basic index info: project name, branch, etc
-        return new DefaultIndexBuilder(Paths.convert(path).getFileName(), project, pkg) {
+        // responsible for basic index info: module name, branch, etc
+        return new DefaultIndexBuilder(Paths.convert(path).getFileName(),
+                                       module,
+                                       pkg) {
             @Override
             public DefaultIndexBuilder addGenerator(final IndexElementsGenerator generator) {
                 // Don't include the rule created to parse DSL
@@ -126,14 +127,12 @@ public class DslFileIndexer extends AbstractDrlFileIndexer {
 
     /*
      * (non-Javadoc)
-     * @see org.kie.workbench.common.services.refactoring.backend.server.indexing.drools.AbstractDrlFileIndexer#getProjectDataModelOracle(org.uberfire.java.nio.file.Path)
+     * @see org.kie.workbench.common.services.refactoring.backend.server.indexing.drools.AbstractDrlFileIndexer#getModuleDataModelOracle(org.uberfire.java.nio.file.Path)
      */
     @Override
-    protected ProjectDataModelOracle getProjectDataModelOracle(final Path path) {
-        return dataModelService.getProjectDataModel(Paths.convert(path));
+    protected ModuleDataModelOracle getModuleDataModelOracle(final Path path) {
+        return dataModelService.getModuleDataModel(Paths.convert(path));
     }
-
-    public static final String MOCK_RULE_NAME = DslFileIndexer.class.getSimpleName() + "_parsing_dummy_rule";
 
     private String makeDrl(final Path path,
                            final List<String> lhs,

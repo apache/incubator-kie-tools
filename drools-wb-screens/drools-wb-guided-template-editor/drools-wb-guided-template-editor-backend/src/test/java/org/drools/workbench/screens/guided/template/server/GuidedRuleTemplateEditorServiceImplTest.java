@@ -96,7 +96,7 @@ public class GuidedRuleTemplateEditorServiceImplTest {
             put("collection",
                 "java.util.Collection");
         }});
-        when(oracle.getProjectCollectionTypes()).thenReturn(new HashMap<String, Boolean>() {{
+        when(oracle.getModuleCollectionTypes()).thenReturn(new HashMap<String, Boolean>() {{
             put("java.util.List",
                 true);
             put("java.util.Set",

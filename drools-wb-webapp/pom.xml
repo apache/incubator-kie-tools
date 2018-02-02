@@ -335,20 +335,6 @@
     <!-- Guvnor -->
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-asset-mgmt-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-asset-mgmt-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-asset-mgmt-backend</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-structure-api</artifactId>
     </dependency>
     <dependency>
@@ -1093,8 +1079,6 @@
             <compileSourcesArtifact>org.kie.soup:kie-soup-project-datamodel-commons</compileSourcesArtifact>
 
             <!-- Guvnor -->
-            <compileSourcesArtifact>org.uberfire:uberfire-asset-mgmt-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-asset-mgmt-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-structure-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-structure-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-m2repo-editor-api</compileSourcesArtifact>

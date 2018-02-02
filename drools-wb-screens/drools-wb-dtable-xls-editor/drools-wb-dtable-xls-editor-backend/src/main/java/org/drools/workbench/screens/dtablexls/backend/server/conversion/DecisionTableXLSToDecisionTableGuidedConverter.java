@@ -69,8 +69,8 @@ import org.kie.workbench.common.services.datamodeller.core.impl.DataModelImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -88,7 +88,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
     private DRLTextEditorService drlService;
     private GuidedDecisionTableEditorService guidedDecisionTableService;
     private GlobalsEditorService globalsService;
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
     private ProjectImportsService importsService;
     private MetadataService metadataService;
     private DataModelerService modellerService;
@@ -111,7 +111,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
                                                           final DRLTextEditorService drlService,
                                                           final GuidedDecisionTableEditorService guidedDecisionTableService,
                                                           final GlobalsEditorService globalsService,
-                                                          final KieProjectService projectService,
+                                                          final KieModuleService moduleService,
                                                           final ProjectImportsService importsService,
                                                           final MetadataService metadataService,
                                                           final DataModelerService modellerService,
@@ -126,7 +126,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
         this.drlService = drlService;
         this.guidedDecisionTableService = guidedDecisionTableService;
         this.globalsService = globalsService;
-        this.projectService = projectService;
+        this.moduleService = moduleService;
         this.importsService = importsService;
         this.metadataService = metadataService;
         this.modellerService = modellerService;
@@ -286,7 +286,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
             return;
         }
 
-        final KieProject project = projectService.resolveProject(context);
+        final KieModule module = moduleService.resolveModule(context);
 
         for (String declaredType : declaredTypes) {
             final FactModels factModels = FactModelPersistence.unmarshal(declaredType);
@@ -323,7 +323,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
             }
 
             modellerService.saveModel(dataModel,
-                                      project);
+                                      module);
         }
     }
 
@@ -353,15 +353,18 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
 
             if ("Role".equals(name)) {
                 annotation = new AnnotationImpl(annotationDefinitions.get(DroolsDomainAnnotations.ROLE_ANNOTATION));
-                annotation.setValue(key, value);
+                annotation.setValue(key,
+                                    value);
                 dataObject.addAnnotation(annotation);
             } else if ("Position".equals(name)) {
                 annotation = new AnnotationImpl(annotationDefinitions.get(DroolsDomainAnnotations.POSITION_ANNOTATION));
-                annotation.setValue(key, value);
+                annotation.setValue(key,
+                                    value);
                 dataObject.addAnnotation(annotation);
             } else if ("Equals".equals(name)) {
                 annotation = new AnnotationImpl(annotationDefinitions.get(DroolsDomainAnnotations.KEY_ANNOTATION));
-                annotation.setValue(key, value);
+                annotation.setValue(key,
+                                    value);
                 dataObject.addAnnotation(annotation);
             }
         }
@@ -442,9 +445,9 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
             return;
         }
 
-        //Get Project's project.imports path
-        final KieProject project = projectService.resolveProject(context);
-        final Path externalImportsPath = project.getImportsPath();
+        //Get Module's project.imports path
+        final KieModule module = moduleService.resolveModule(context);
+        final Path externalImportsPath = module.getImportsPath();
         final org.uberfire.java.nio.file.Path nioExternalImportsPath = Paths.convert(externalImportsPath);
 
         //Load existing PackageImports

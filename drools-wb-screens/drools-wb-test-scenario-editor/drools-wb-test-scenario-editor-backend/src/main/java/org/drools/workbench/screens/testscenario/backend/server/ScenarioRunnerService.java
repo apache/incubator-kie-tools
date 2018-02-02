@@ -45,8 +45,8 @@ import org.junit.runner.notification.RunListener;
 import org.junit.runners.model.InitializationError;
 import org.kie.api.runtime.KieSession;
 import org.kie.workbench.common.services.backend.session.SessionService;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.vfs.Path;
 
 import static org.drools.workbench.screens.testscenario.backend.server.ScenarioUtil.failureToFailure;
@@ -58,7 +58,7 @@ import static org.drools.workbench.screens.testscenario.backend.server.ScenarioU
 public class ScenarioRunnerService
         implements TestService {
 
-    protected KieProjectService projectService;
+    protected KieModuleService moduleService;
     private ScenarioLoader scenarioLoader;
     private SessionService sessionService;
     private Event<TestResultMessage> defaultTestResultMessageEvent;
@@ -71,24 +71,24 @@ public class ScenarioRunnerService
     public ScenarioRunnerService(final ConfigurationService configurationService,
                                  final Event<TestResultMessage> defaultTestResultMessageEvent,
                                  final SessionService sessionService,
-                                 final KieProjectService projectService,
+                                 final KieModuleService moduleService,
                                  final ScenarioLoader scenarioLoader) {
         this.configurationService = configurationService;
         this.defaultTestResultMessageEvent = defaultTestResultMessageEvent;
         this.sessionService = sessionService;
-        this.projectService = projectService;
+        this.moduleService = moduleService;
         this.scenarioLoader = scenarioLoader;
     }
 
     public TestScenarioResult run(final String identifier,
                                   final Scenario scenario,
-                                  final KieProject project) {
+                                  final KieModule module) {
         try {
 
             final HashMap<String, KieSession> ksessions = new HashMap<String, KieSession>();
             final String ksessionName = getKSessionName(scenario.getKSessions());
             ksessions.put(ksessionName,
-                          loadKSession(project,
+                          loadKSession(module,
                                        ksessionName));
 
             final AuditLogger auditLogger = new AuditLogger(ksessions);
@@ -185,20 +185,20 @@ public class ScenarioRunnerService
         for (Scenario scenario : scenarios) {
             String ksessionName = getKSessionName(scenario.getKSessions());
             ksessions.put(ksessionName,
-                          loadKSession(projectService.resolveProject(path),
+                          loadKSession(moduleService.resolveModule(path),
                                        ksessionName));
         }
         return ksessions;
     }
 
-    private KieSession loadKSession(KieProject project,
+    private KieSession loadKSession(KieModule module,
                                     String ksessionName) {
         KieSession ksession = null;
         try {
             if (ksessionName == null || ksessionName.equals("defaultKieSession")) {
-                ksession = sessionService.newDefaultKieSessionWithPseudoClock(project);
+                ksession = sessionService.newDefaultKieSessionWithPseudoClock(module);
             } else {
-                ksession = sessionService.newKieSession(project,
+                ksession = sessionService.newKieSession(module,
                                                         ksessionName);
             }
         } catch (Exception e) {

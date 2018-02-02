@@ -24,7 +24,7 @@ import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -51,9 +51,6 @@ public class DRLTextEditorServiceImplTest {
     private IOService ioService;
 
     @Mock
-    private KieProjectService projectService;
-
-    @Mock
     private CommentedOptionFactory commentedOptionFactory;
 
     @Mock
@@ -61,6 +58,9 @@ public class DRLTextEditorServiceImplTest {
 
     @Mock
     private MetadataServerSideService metadataService;
+
+    @Mock
+    private KieModuleService moduleService;
 
     @InjectMocks
     private DRLTextEditorServiceImpl drlService = new DRLTextEditorServiceImpl();

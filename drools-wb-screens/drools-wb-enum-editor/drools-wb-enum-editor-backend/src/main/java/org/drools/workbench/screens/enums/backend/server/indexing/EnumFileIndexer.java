@@ -20,7 +20,7 @@ import javax.inject.Inject;
 
 import org.drools.workbench.screens.enums.type.EnumResourceTypeDefinition;
 import org.kie.soup.project.datamodel.commons.util.MVELEvaluator;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.DataEnumLoader;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.AbstractFileIndexer;
@@ -34,12 +34,10 @@ import org.uberfire.java.nio.file.Path;
 public class EnumFileIndexer extends AbstractFileIndexer {
 
     private static final Logger logger = LoggerFactory.getLogger(EnumFileIndexer.class);
-
-    @Inject
-    private DataModelService dataModelService;
-
     @Inject
     protected EnumResourceTypeDefinition type;
+    @Inject
+    private DataModelService dataModelService;
 
     private MVELEvaluator mvelEvaluator;
 
@@ -56,7 +54,8 @@ public class EnumFileIndexer extends AbstractFileIndexer {
     @Override
     public DefaultIndexBuilder fillIndexBuilder(final Path path) throws Exception {
         final String enumDefinition = ioService.readAllString(path);
-        final DataEnumLoader enumLoader = new DataEnumLoader(enumDefinition, mvelEvaluator);
+        final DataEnumLoader enumLoader = new DataEnumLoader(enumDefinition,
+                                                             mvelEvaluator);
         if (enumLoader.hasErrors()) {
             logger.info("Unable to index '" + path.toUri().toString() + "'. Related errors follow:");
             for (String e : enumLoader.getErrors()) {
@@ -64,22 +63,25 @@ public class EnumFileIndexer extends AbstractFileIndexer {
             }
         }
 
-        final ProjectDataModelOracle dmo = getProjectDataModelOracle(path);
+        final ModuleDataModelOracle dmo = getModuleDataModelOracle(path);
 
         final DefaultIndexBuilder builder = getIndexBuilder(path);
         if (builder == null) {
             return null;
         }
 
-        final EnumIndexVisitor visitor = new EnumIndexVisitor(dmo, path, enumLoader);
+        final EnumIndexVisitor visitor = new EnumIndexVisitor(dmo,
+                                                              path,
+                                                              enumLoader);
         visitor.visit();
-        addReferencedResourcesToIndexBuilder(builder, visitor);
+        addReferencedResourcesToIndexBuilder(builder,
+                                             visitor);
 
         return builder;
     }
 
     //Delegate resolution of DMO to method to assist testing
-    protected ProjectDataModelOracle getProjectDataModelOracle(final Path path) {
-        return dataModelService.getProjectDataModel(Paths.convert(path));
+    protected ModuleDataModelOracle getModuleDataModelOracle(final Path path) {
+        return dataModelService.getModuleDataModel(Paths.convert(path));
     }
 }

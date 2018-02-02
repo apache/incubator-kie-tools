@@ -20,7 +20,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.drools.workbench.screens.drltext.type.DRLResourceTypeDefinition;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.drools.AbstractDrlFileIndexer;
@@ -49,7 +49,7 @@ public class DrlFileIndexer extends AbstractDrlFileIndexer {
     }
 
     @Override
-    protected ProjectDataModelOracle getProjectDataModelOracle(Path path) {
-        return dataModelService.getProjectDataModel(Paths.convert(path));
+    protected ModuleDataModelOracle getModuleDataModelOracle(Path path) {
+        return dataModelService.getModuleDataModel(Paths.convert(path));
     }
 }

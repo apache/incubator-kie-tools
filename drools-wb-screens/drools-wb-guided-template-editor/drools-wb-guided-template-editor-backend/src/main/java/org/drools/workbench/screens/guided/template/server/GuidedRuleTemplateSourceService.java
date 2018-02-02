@@ -37,7 +37,7 @@ import org.drools.workbench.screens.guided.template.type.GuidedRuleTemplateResou
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
 import org.kie.workbench.common.services.backend.file.DSLFileFilter;
 import org.kie.workbench.common.services.backend.source.BaseSourceService;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.services.shared.source.SourceGenerationFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +49,7 @@ import org.uberfire.java.nio.file.Path;
 public class GuidedRuleTemplateSourceService
         extends BaseSourceService<TemplateModel> {
 
-    private static final Logger logger = LoggerFactory.getLogger( GuidedRuleTemplateSourceService.class );
+    private static final Logger logger = LoggerFactory.getLogger(GuidedRuleTemplateSourceService.class);
 
     private static final DSLFileFilter FILTER_DSLS = new DSLFileFilter();
 
@@ -67,7 +67,7 @@ public class GuidedRuleTemplateSourceService
     private FileDiscoveryService fileDiscoveryService;
 
     @Inject
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     @Override
     public String getPattern() {
@@ -94,42 +94,41 @@ public class GuidedRuleTemplateSourceService
     @Override
     public String getSource(final Path path) throws SourceGenerationFailedException {
         return getSource(path,
-                guidedRuleTemplateEditorService.load(Paths.convert(path)));
+                         guidedRuleTemplateEditorService.load(Paths.convert(path)));
     }
 
     /**
      * Returns an expander for DSLs (only if there is a DSL configured for this package).
      */
-    private Expander getDSLExpander( final Path path ) {
+    private Expander getDSLExpander(final Path path) {
         final Expander expander = new DefaultExpander();
-        final List<DSLMappingFile> dsls = getDSLMappingFiles( path );
-        for ( DSLMappingFile dsl : dsls ) {
-            expander.addDSLMapping( dsl.getMapping() );
+        final List<DSLMappingFile> dsls = getDSLMappingFiles(path);
+        for (DSLMappingFile dsl : dsls) {
+            expander.addDSLMapping(dsl.getMapping());
         }
         return expander;
     }
 
-    private List<DSLMappingFile> getDSLMappingFiles( final Path path ) {
+    private List<DSLMappingFile> getDSLMappingFiles(final Path path) {
         final List<DSLMappingFile> dsls = new ArrayList<DSLMappingFile>();
-        final org.uberfire.backend.vfs.Path vfsPath = Paths.convert( path );
-        final org.uberfire.backend.vfs.Path packagePath = projectService.resolvePackage( vfsPath ).getPackageMainResourcesPath();
-        final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert( packagePath );
-        final Collection<Path> dslPaths = fileDiscoveryService.discoverFiles( nioPackagePath,
-                                                                              FILTER_DSLS );
-        for ( final org.uberfire.java.nio.file.Path dslPath : dslPaths ) {
-            final String dslDefinition = ioService.readAllString( dslPath );
+        final org.uberfire.backend.vfs.Path vfsPath = Paths.convert(path);
+        final org.uberfire.backend.vfs.Path packagePath = moduleService.resolvePackage(vfsPath).getPackageMainResourcesPath();
+        final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert(packagePath);
+        final Collection<Path> dslPaths = fileDiscoveryService.discoverFiles(nioPackagePath,
+                                                                             FILTER_DSLS);
+        for (final org.uberfire.java.nio.file.Path dslPath : dslPaths) {
+            final String dslDefinition = ioService.readAllString(dslPath);
             final DSLTokenizedMappingFile dslFile = new DSLTokenizedMappingFile();
             try {
-                if ( dslFile.parseAndLoad( new StringReader( dslDefinition ) ) ) {
-                    dsls.add( dslFile );
+                if (dslFile.parseAndLoad(new StringReader(dslDefinition))) {
+                    dsls.add(dslFile);
                 } else {
-                    logger.error( "Unable to parse DSL definition: " + dslDefinition );
+                    logger.error("Unable to parse DSL definition: " + dslDefinition);
                 }
-            } catch ( IOException ioe ) {
-                logger.error( ioe.getMessage() );
+            } catch (IOException ioe) {
+                logger.error(ioe.getMessage());
             }
         }
         return dsls;
     }
-
 }

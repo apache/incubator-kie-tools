@@ -111,7 +111,7 @@ public class GuidedDecisionTableGeneratorListenerTest {
     public void setupMocks() throws Exception {
         dmo = mock(PackageDataModelOracle.class);
         when(dmo.getPackageName()).thenReturn("org.test");
-        when(dmo.getProjectModelFields()).thenReturn(packageModelFields);
+        when(dmo.getModuleModelFields()).thenReturn(packageModelFields);
     }
 
     @After

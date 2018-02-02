@@ -40,8 +40,8 @@ import org.kie.soup.project.datamodel.imports.Imports;
 import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -95,7 +95,7 @@ public class ScenarioTestEditorServiceImplTest {
     ScenarioRunnerService scenarioRunner;
 
     @Mock
-    KieProjectService projectService;
+    KieModuleService moduleService;
 
     @Mock
     CommentedOptionFactory commentedOptionFactory;
@@ -347,7 +347,7 @@ public class ScenarioTestEditorServiceImplTest {
 
         when(scenario.getFixtures()).thenReturn(fixtures);
         when(dataModelService.getDataModel(path)).thenReturn(modelOracle);
-        when(modelOracle.getProjectModelFields()).thenReturn(modelFields);
+        when(modelOracle.getModuleModelFields()).thenReturn(modelFields);
         when(scenario.getImports()).thenReturn(new Imports());
 
         testEditorService.addDependentImportsToScenario(scenario,
@@ -371,7 +371,7 @@ public class ScenarioTestEditorServiceImplTest {
 
         when(scenario.getFixtures()).thenReturn(fixtures);
         when(dataModelService.getDataModel(path)).thenReturn(modelOracle);
-        when(modelOracle.getProjectModelFields()).thenReturn(modelFields);
+        when(modelOracle.getModuleModelFields()).thenReturn(modelFields);
         when(scenario.getImports()).thenReturn(imports);
 
         testEditorService.addDependentImportsToScenario(scenario,
@@ -395,7 +395,7 @@ public class ScenarioTestEditorServiceImplTest {
 
         when(scenario.getFixtures()).thenReturn(fixtures);
         when(dataModelService.getDataModel(path)).thenReturn(modelOracle);
-        when(modelOracle.getProjectModelFields()).thenReturn(modelFields);
+        when(modelOracle.getModuleModelFields()).thenReturn(modelFields);
         when(scenario.getImports()).thenCallRealMethod();
         doCallRealMethod().when(scenario).setImports(any(Imports.class));
 
@@ -422,7 +422,7 @@ public class ScenarioTestEditorServiceImplTest {
 
         when(scenario.getFixtures()).thenReturn(fixtures);
         when(dataModelService.getDataModel(path)).thenReturn(modelOracle);
-        when(modelOracle.getProjectModelFields()).thenReturn(modelFields);
+        when(modelOracle.getModuleModelFields()).thenReturn(modelFields);
         when(scenario.getImports()).thenCallRealMethod();
         doCallRealMethod().when(scenario).setImports(any(Imports.class));
 
@@ -479,7 +479,7 @@ public class ScenarioTestEditorServiceImplTest {
             Exception {
         final Package pgk = mock(Package.class);
         when(pgk.getPackageName()).thenReturn("org.test");
-        when(projectService.resolvePackage(path)).thenReturn(pgk);
+        when(moduleService.resolvePackage(path)).thenReturn(pgk);
 
         final Scenario load = testEditorService.load(path);
 
@@ -492,7 +492,7 @@ public class ScenarioTestEditorServiceImplTest {
     @Test
     public void loadBrokenScenarioNullPackage() throws
             Exception {
-        when(projectService.resolvePackage(path)).thenReturn(null);
+        when(moduleService.resolvePackage(path)).thenReturn(null);
 
         final Scenario load = testEditorService.load(path);
 
@@ -517,8 +517,8 @@ public class ScenarioTestEditorServiceImplTest {
                                       path,
                                       scenario);
 
-        KieProject project = mock(KieProject.class);
-        when(projectService.resolveProject(path)).thenReturn(project);
+        KieModule module = mock(KieModule.class);
+        when(moduleService.resolveModule(path)).thenReturn(module);
 
         testEditorService.runScenario("userName",
                                       path,
@@ -526,7 +526,7 @@ public class ScenarioTestEditorServiceImplTest {
 
         verify(scenarioRunner).run("userName",
                                    scenario,
-                                   project);
+                                   module);
     }
 
     private FactData factData(final String type) {

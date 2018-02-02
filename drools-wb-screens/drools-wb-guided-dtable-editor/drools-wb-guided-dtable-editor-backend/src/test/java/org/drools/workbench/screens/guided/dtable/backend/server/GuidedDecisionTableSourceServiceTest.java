@@ -39,7 +39,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.soup.project.datamodel.imports.Import;
 import org.kie.soup.project.datamodel.imports.Imports;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.io.IOService;
@@ -63,7 +63,7 @@ public class GuidedDecisionTableSourceServiceTest {
     FileSystem fileSystem;
 
     @Mock
-    KieProjectService projectService;
+    KieModuleService moduleService;
 
     @Mock
     FileDiscoveryService discoveryService;
@@ -96,10 +96,10 @@ public class GuidedDecisionTableSourceServiceTest {
                                                        guidedDecisionTableEditorService,
                                                        ioService,
                                                        fileDiscoveryService,
-                                                       projectService);
+                                                       moduleService);
 
         // Simulates that no DSL files are present
-        when(projectService.resolvePackage(any())).thenReturn(packageMock);
+        when(moduleService.resolvePackage(any())).thenReturn(packageMock);
         when(discoveryService.discoverFiles(any(),
                                             any())).thenReturn(new ArrayList<Path>());
         when(fileSystem.supportedFileAttributeViews()).thenReturn(new HashSet<String>());

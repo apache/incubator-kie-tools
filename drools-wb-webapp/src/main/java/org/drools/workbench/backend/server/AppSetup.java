@@ -26,14 +26,13 @@ import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorServi
 import org.drools.workbench.screens.workitems.backend.server.WorkbenchConfigurationHelper;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
-import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.screens.workbench.backend.BaseAppSetup;
 import org.uberfire.commons.services.cdi.ApplicationStarted;
 import org.uberfire.commons.services.cdi.Startup;
@@ -61,20 +60,20 @@ public class AppSetup extends BaseAppSetup {
     }
 
     @Inject
-    public AppSetup( @Named("ioStrategy") final IOService ioService,
-                     final RepositoryService repositoryService,
-                     final OrganizationalUnitService organizationalUnitService,
-                     final KieProjectService projectService,
-                     final ConfigurationService configurationService,
-                     final ConfigurationFactory configurationFactory,
-                     final WorkbenchConfigurationHelper workbenchConfigurationHelper,
-                     final Event<ApplicationStarted> applicationStartedEvent ) {
-        super( ioService,
-               repositoryService,
-               organizationalUnitService,
-               projectService,
-               configurationService,
-               configurationFactory );
+    public AppSetup(@Named("ioStrategy") final IOService ioService,
+                    final RepositoryService repositoryService,
+                    final OrganizationalUnitService organizationalUnitService,
+                    final KieModuleService moduleService,
+                    final ConfigurationService configurationService,
+                    final ConfigurationFactory configurationFactory,
+                    final WorkbenchConfigurationHelper workbenchConfigurationHelper,
+                    final Event<ApplicationStarted> applicationStartedEvent) {
+        super(ioService,
+              repositoryService,
+              organizationalUnitService,
+              moduleService,
+              configurationService,
+              configurationFactory);
         this.workbenchConfigurationHelper = workbenchConfigurationHelper;
         this.applicationStartedEvent = applicationStartedEvent;
     }
@@ -83,56 +82,32 @@ public class AppSetup extends BaseAppSetup {
     public void assertPlayground() {
         try {
             configurationService.startBatch();
-            final String exampleRepositoriesRoot = System.getProperty( "org.kie.example.repositories" );
-            if ( !( exampleRepositoriesRoot == null || "".equalsIgnoreCase( exampleRepositoriesRoot ) ) ) {
-                loadExampleRepositories( exampleRepositoriesRoot,
-                                         DROOLS_WB_ORGANIZATIONAL_UNIT1,
-                                         DROOLS_WB_ORGANIZATIONAL_UNIT1_OWNER,
-                                         GIT_SCHEME );
-
-            } else if ( "true".equalsIgnoreCase( System.getProperty( "org.kie.example" ) ) ) {
-
-                Repository exampleRepo = createRepository( "repository1",
-                                                           GIT_SCHEME,
-                                                           null,
-                                                           "",
-                                                           "" );
-                createOU( exampleRepo,
-                          "example",
-                          "" );
-
-                createProject( exampleRepo,
-                               "org.kie.example",
-                               "project1",
-                               "1.0.0-SNAPSHOT" );
-            }
 
             // Setup mandatory properties for Drools-Workbench
             final ConfigItem<String> supportRuntimeDeployConfigItem = new ConfigItem<>();
-            supportRuntimeDeployConfigItem.setName( "support.runtime.deploy" );
-            supportRuntimeDeployConfigItem.setValue( "false" );
-            setupConfigurationGroup( ConfigType.GLOBAL,
-                                     GLOBAL_SETTINGS,
-                                     getGlobalConfiguration(),
-                                     supportRuntimeDeployConfigItem );
+            supportRuntimeDeployConfigItem.setName("support.runtime.deploy");
+            supportRuntimeDeployConfigItem.setValue("false");
+            setupConfigurationGroup(ConfigType.GLOBAL,
+                                    GLOBAL_SETTINGS,
+                                    getGlobalConfiguration(),
+                                    supportRuntimeDeployConfigItem);
 
             // Setup properties required by the Work Items Editor
-            setupConfigurationGroup( ConfigType.EDITOR,
-                                     WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS,
-                                     workbenchConfigurationHelper.getWorkItemElementDefinitions() );
+            setupConfigurationGroup(ConfigType.EDITOR,
+                                    WorkItemsEditorService.WORK_ITEMS_EDITOR_SETTINGS,
+                                    workbenchConfigurationHelper.getWorkItemElementDefinitions());
 
             // Setup test scenario properties
             // TODO : get TEST SCENARIO ELEMENT DEFINITIONS
-            setupConfigurationGroup( ConfigType.EDITOR,
-                                     ScenarioTestEditorService.TEST_SCENARIO_EDITOR_SETTINGS,
-                                     getTestScenarioElementDefinitions() );
+            setupConfigurationGroup(ConfigType.EDITOR,
+                                    ScenarioTestEditorService.TEST_SCENARIO_EDITOR_SETTINGS,
+                                    getTestScenarioElementDefinitions());
 
             // notify components that bootstrap is completed to start post setups
-            applicationStartedEvent.fire( new ApplicationStarted() );
-
-        } catch ( final Exception e ) {
-            logger.error( "Error during update config", e );
-            throw new RuntimeException( e );
+            applicationStartedEvent.fire(new ApplicationStarted());
+        } catch (final Exception e) {
+            logger.error("Error during update config", e);
+            throw new RuntimeException(e);
         } finally {
             configurationService.endBatch();
         }
@@ -140,35 +115,34 @@ public class AppSetup extends BaseAppSetup {
 
     private ConfigGroup getGlobalConfiguration() {
         //Global Configurations used by many of Drools Workbench editors
-        final ConfigGroup group = configurationFactory.newConfigGroup( ConfigType.GLOBAL,
-                                                                       GLOBAL_SETTINGS,
-                                                                       "" );
-        group.addConfigItem( configurationFactory.newConfigItem( "drools.dateformat",
-                                                                 "dd-MMM-yyyy" ) );
-        group.addConfigItem( configurationFactory.newConfigItem( "drools.datetimeformat",
-                                                                 "dd-MMM-yyyy hh:mm:ss" ) );
-        group.addConfigItem( configurationFactory.newConfigItem( "drools.defaultlanguage",
-                                                                 "en" ) );
-        group.addConfigItem( configurationFactory.newConfigItem( "drools.defaultcountry",
-                                                                 "US" ) );
-        group.addConfigItem( configurationFactory.newConfigItem( "build.enable-incremental",
-                                                                 "true" ) );
-        group.addConfigItem( configurationFactory.newConfigItem( "rule-modeller-onlyShowDSLStatements",
-                                                                 "false" ) );
+        final ConfigGroup group = configurationFactory.newConfigGroup(ConfigType.GLOBAL,
+                                                                      GLOBAL_SETTINGS,
+                                                                      "");
+        group.addConfigItem(configurationFactory.newConfigItem("drools.dateformat",
+                                                               "dd-MMM-yyyy"));
+        group.addConfigItem(configurationFactory.newConfigItem("drools.datetimeformat",
+                                                               "dd-MMM-yyyy hh:mm:ss"));
+        group.addConfigItem(configurationFactory.newConfigItem("drools.defaultlanguage",
+                                                               "en"));
+        group.addConfigItem(configurationFactory.newConfigItem("drools.defaultcountry",
+                                                               "US"));
+        group.addConfigItem(configurationFactory.newConfigItem("build.enable-incremental",
+                                                               "true"));
+        group.addConfigItem(configurationFactory.newConfigItem("rule-modeller-onlyShowDSLStatements",
+                                                               "false"));
         return group;
     }
 
     private ConfigGroup getTestScenarioElementDefinitions() {
-        final ConfigGroup group = configurationFactory.newConfigGroup( ConfigType.EDITOR,
-                                                                       ScenarioTestEditorService.TEST_SCENARIO_EDITOR_SETTINGS,
-                                                                       "" );
+        final ConfigGroup group = configurationFactory.newConfigGroup(ConfigType.EDITOR,
+                                                                      ScenarioTestEditorService.TEST_SCENARIO_EDITOR_SETTINGS,
+                                                                      "");
 
         ConfigItem<Integer> configItem = new ConfigItem<Integer>();
-        configItem.setName( ScenarioTestEditorService.TEST_SCENARIO_EDITOR_MAX_RULE_FIRINGS );
-        configItem.setValue( 10000 );
-        group.addConfigItem( configItem );
+        configItem.setName(ScenarioTestEditorService.TEST_SCENARIO_EDITOR_MAX_RULE_FIRINGS);
+        configItem.setValue(10000);
+        group.addConfigItem(configItem);
 
         return group;
     }
-
 }

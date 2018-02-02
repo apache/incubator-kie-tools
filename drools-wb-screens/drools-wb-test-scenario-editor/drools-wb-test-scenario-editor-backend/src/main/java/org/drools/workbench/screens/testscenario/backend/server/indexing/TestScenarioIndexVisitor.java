@@ -32,7 +32,7 @@ import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.soup.project.datamodel.imports.Import;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.ModelField;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.workbench.common.services.refactoring.ResourceReference;
 import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
@@ -45,12 +45,12 @@ import org.uberfire.ext.metadata.model.KProperty;
  */
 public class TestScenarioIndexVisitor extends ResourceReferenceCollector {
 
-    private final ProjectDataModelOracle dmo;
+    private final ModuleDataModelOracle dmo;
     private final DefaultIndexBuilder builder;
     private final Scenario model;
     private final Map<String, String> factDataToFullyQualifiedClassNameMap = new HashMap<String, String>();
 
-    public TestScenarioIndexVisitor(final ProjectDataModelOracle dmo,
+    public TestScenarioIndexVisitor(final ModuleDataModelOracle dmo,
                                     final DefaultIndexBuilder builder,
                                     final Scenario model) {
         this.dmo = PortablePreconditions.checkNotNull("dmo",
@@ -153,7 +153,7 @@ public class TestScenarioIndexVisitor extends ResourceReferenceCollector {
 
     private String getFieldFullyQualifiedClassName(final String fullyQualifiedClassName,
                                                    final String fieldName) {
-        final ModelField[] mfs = dmo.getProjectModelFields().get(fullyQualifiedClassName);
+        final ModelField[] mfs = dmo.getModuleModelFields().get(fullyQualifiedClassName);
         for (ModelField mf : mfs) {
             if (mf.getName().equals(fieldName)) {
                 return mf.getClassName();

@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.query.builder.SingleTermQueryBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.ModuleRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm.TermSearchType;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueSharedPartIndexTerm;
 import org.kie.workbench.common.services.refactoring.service.PartType;
@@ -42,17 +42,17 @@ public class IndexRuleAttributeNameTest extends BaseIndexingTest<DRLResourceType
     @Test
     public void testIndexDrlRuleAttributeNames() throws IOException, InterruptedException {
         //Add test files
-        final Path path = basePath.resolve( "drl1.drl" );
-        final String drl = loadText( "drl1.drl" );
-        ioService().write( path,
-                           drl );
+        final Path path = basePath.resolve("drl1.drl");
+        final String drl = loadText("drl1.drl");
+        ioService().write(path,
+                          drl);
 
-        Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+        Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
         List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath.getFileSystem()).getClusterId());
 
         {
-            final Query query = new SingleTermQueryBuilder( new ValueSharedPartIndexTerm( "*", PartType.RULEFLOW_GROUP, TermSearchType.WILDCARD ) )
+            final Query query = new SingleTermQueryBuilder(new ValueSharedPartIndexTerm("*", PartType.RULEFLOW_GROUP, TermSearchType.WILDCARD))
                     .build();
             searchFor(index, query, 1);
         }
@@ -67,7 +67,7 @@ public class IndexRuleAttributeNameTest extends BaseIndexingTest<DRLResourceType
     public Map<String, Analyzer> getAnalyzers() {
         return new HashMap<String, Analyzer>() {
             {
-                put( ProjectRootPathIndexTerm.TERM, new FilenameAnalyzer() );
+                put(ModuleRootPathIndexTerm.TERM, new FilenameAnalyzer());
             }
         };
     }
@@ -81,5 +81,4 @@ public class IndexRuleAttributeNameTest extends BaseIndexingTest<DRLResourceType
     protected String getRepositoryName() {
         return this.getClass().getSimpleName();
     }
-
 }

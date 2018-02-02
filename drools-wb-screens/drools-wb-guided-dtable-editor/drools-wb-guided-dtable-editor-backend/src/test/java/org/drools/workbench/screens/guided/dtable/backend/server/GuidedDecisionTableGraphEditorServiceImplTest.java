@@ -42,7 +42,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
@@ -90,7 +90,7 @@ public class GuidedDecisionTableGraphEditorServiceImplTest {
     private WorkItemsEditorService workItemsService;
 
     @Mock
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     @Mock
     private VersionRecordService versionRecordService;
@@ -133,7 +133,7 @@ public class GuidedDecisionTableGraphEditorServiceImplTest {
                                                                 copyService,
                                                                 deleteService,
                                                                 renameService,
-                                                                projectService,
+                                                                moduleService,
                                                                 versionRecordService,
                                                                 dtableService,
                                                                 dtableLinkManager,
@@ -147,7 +147,7 @@ public class GuidedDecisionTableGraphEditorServiceImplTest {
             }
         };
 
-        when(projectService.resolvePackage(any(Path.class))).thenReturn(pkg);
+        when(moduleService.resolvePackage(any(Path.class))).thenReturn(pkg);
         when(pkg.getPackageMainResourcesPath()).thenReturn(PathFactory.newPath("project",
                                                                                "default://project/src/main/resources"));
 

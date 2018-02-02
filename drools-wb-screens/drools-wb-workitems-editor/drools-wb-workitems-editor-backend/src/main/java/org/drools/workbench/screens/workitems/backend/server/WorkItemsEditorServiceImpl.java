@@ -83,10 +83,10 @@ public class WorkItemsEditorServiceImpl
         extends KieService<WorkItemsModelContent>
         implements WorkItemsEditorService {
 
-    private static final Logger log = LoggerFactory.getLogger( WorkItemsEditorServiceImpl.class );
+    private static final Logger log = LoggerFactory.getLogger(WorkItemsEditorServiceImpl.class);
 
     @Inject
-    @Named( "ioStrategy" )
+    @Named("ioStrategy")
     private IOService ioService;
 
     @Inject
@@ -120,34 +120,32 @@ public class WorkItemsEditorServiceImpl
     private CommentedOptionFactory commentedOptionFactory;
 
     private WorkItemDefinitionElements workItemDefinitionElements;
-    private FileExtensionsFilter       imageFilter = new FileExtensionsFilter( new String[]{"png", "gif", "jpg"} );
+    private FileExtensionsFilter imageFilter = new FileExtensionsFilter(new String[]{"png", "gif", "jpg"});
     private SafeSessionInfo safeSessionInfo;
-
 
     public WorkItemsEditorServiceImpl() {
     }
 
     @Inject
-    public WorkItemsEditorServiceImpl( final SessionInfo sessionInfo ) {
-        safeSessionInfo = new SafeSessionInfo( sessionInfo );
+    public WorkItemsEditorServiceImpl(final SessionInfo sessionInfo) {
+        safeSessionInfo = new SafeSessionInfo(sessionInfo);
     }
-
 
     @PostConstruct
     public void setupWorkItemDefinitionElements() {
-        workItemDefinitionElements = new WorkItemDefinitionElements( loadWorkItemDefinitionElements() );
+        workItemDefinitionElements = new WorkItemDefinitionElements(loadWorkItemDefinitionElements());
     }
 
     private Map<String, String> loadWorkItemDefinitionElements() {
         final Map<String, String> workItemDefinitionElements = new HashMap<String, String>();
-        final List<ConfigGroup> editorConfigGroups = configurationService.getConfiguration( ConfigType.EDITOR );
-        for ( ConfigGroup editorConfigGroup : editorConfigGroups ) {
-            if ( WORK_ITEMS_EDITOR_SETTINGS.equals( editorConfigGroup.getName() ) ) {
-                for ( ConfigItem item : editorConfigGroup.getItems() ) {
+        final List<ConfigGroup> editorConfigGroups = configurationService.getConfiguration(ConfigType.EDITOR);
+        for (ConfigGroup editorConfigGroup : editorConfigGroups) {
+            if (WORK_ITEMS_EDITOR_SETTINGS.equals(editorConfigGroup.getName())) {
+                for (ConfigItem item : editorConfigGroup.getItems()) {
                     final String itemName = item.getName();
-                    final String itemValue = editorConfigGroup.getConfigItemValue( itemName );
-                    workItemDefinitionElements.put( itemName,
-                                                    itemValue );
+                    final String itemValue = editorConfigGroup.getConfigItemValue(itemName);
+                    workItemDefinitionElements.put(itemName,
+                                                   itemValue);
                 }
             }
         }
@@ -155,82 +153,79 @@ public class WorkItemsEditorServiceImpl
     }
 
     @Override
-    public Path create( final Path context,
-                        final String fileName,
-                        final String content,
-                        final String comment ) {
+    public Path create(final Path context,
+                       final String fileName,
+                       final String content,
+                       final String comment) {
         try {
             //Get the template for new Work Item Definitions, stored as a configuration item
-            String defaultDefinition = workItemDefinitionElements.getDefinitionElements().get( WORK_ITEMS_EDITOR_SETTINGS_DEFINITION );
-            if ( defaultDefinition == null ) {
+            String defaultDefinition = workItemDefinitionElements.getDefinitionElements().get(WORK_ITEMS_EDITOR_SETTINGS_DEFINITION);
+            if (defaultDefinition == null) {
                 defaultDefinition = "";
             }
-            defaultDefinition = defaultDefinition.replaceAll( "\\|",
-                                                              "" );
+            defaultDefinition = defaultDefinition.replaceAll("\\|",
+                                                             "");
 
             //Write file to VFS
-            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
-            final Path newPath = Paths.convert( nioPath );
+            final org.uberfire.java.nio.file.Path nioPath = Paths.convert(context).resolve(fileName);
+            final Path newPath = Paths.convert(nioPath);
 
-            if ( ioService.exists( nioPath ) ) {
-                throw new FileAlreadyExistsException( nioPath.toString() );
+            if (ioService.exists(nioPath)) {
+                throw new FileAlreadyExistsException(nioPath.toString());
             }
 
-            ioService.write( nioPath,
-                             defaultDefinition,
-                             commentedOptionFactory.makeCommentedOption( comment ) );
+            ioService.write(nioPath,
+                            defaultDefinition,
+                            commentedOptionFactory.makeCommentedOption(comment));
 
             return newPath;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public String load( final Path path ) {
+    public String load(final Path path) {
         try {
-            final String content = ioService.readAllString( Paths.convert( path ) );
+            final String content = ioService.readAllString(Paths.convert(path));
 
             return content;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public WorkItemsModelContent loadContent( final Path path ) {
-        return super.loadContent( path );
+    public WorkItemsModelContent loadContent(final Path path) {
+        return super.loadContent(path);
     }
 
     @Override
-    protected WorkItemsModelContent constructContent( Path path, Overview overview ) {
-        final String definition = load( path );
-        final List<String> workItemImages = loadWorkItemImages( path );
+    protected WorkItemsModelContent constructContent(Path path, Overview overview) {
+        final String definition = load(path);
+        final List<String> workItemImages = loadWorkItemImages(path);
 
         //Signal opening to interested parties
-        resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                           safeSessionInfo ) );
+        resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
+                                                         safeSessionInfo));
 
-        return new WorkItemsModelContent( definition,
-                                          overview,
-                                          workItemImages );
-
+        return new WorkItemsModelContent(definition,
+                                         overview,
+                                         workItemImages);
     }
 
-    private List<String> loadWorkItemImages( final Path resourcePath ) {
-        final Path projectRoot = projectService.resolveProject( resourcePath ).getRootPath();
-        final org.uberfire.java.nio.file.Path nioProjectPath = Paths.convert( projectRoot );
-        final org.uberfire.java.nio.file.Path nioResourceParent = Paths.convert( resourcePath ).getParent();
+    private List<String> loadWorkItemImages(final Path resourcePath) {
+        final Path projectRoot = moduleService.resolveModule(resourcePath).getRootPath();
+        final org.uberfire.java.nio.file.Path nioProjectPath = Paths.convert(projectRoot);
+        final org.uberfire.java.nio.file.Path nioResourceParent = Paths.convert(resourcePath).getParent();
 
-        final Collection<org.uberfire.java.nio.file.Path> imagePaths = fileDiscoveryService.discoverFiles( nioProjectPath,
-                                                                                                           imageFilter,
-                                                                                                           true );
+        final Collection<org.uberfire.java.nio.file.Path> imagePaths = fileDiscoveryService.discoverFiles(nioProjectPath,
+                                                                                                          imageFilter,
+                                                                                                          true);
         final List<String> images = new ArrayList<String>();
-        for ( org.uberfire.java.nio.file.Path imagePath : imagePaths ) {
-            final org.uberfire.java.nio.file.Path relativePath = nioResourceParent.relativize( imagePath );
-            images.add( relativePath.toString() );
+        for (org.uberfire.java.nio.file.Path imagePath : imagePaths) {
+            final org.uberfire.java.nio.file.Path relativePath = nioResourceParent.relativize(imagePath);
+            images.add(relativePath.toString());
         }
         return images;
     }
@@ -241,179 +236,170 @@ public class WorkItemsEditorServiceImpl
     }
 
     @Override
-    public Path save( final Path resource,
-                      final String content,
-                      final Metadata metadata,
-                      final String comment ) {
+    public Path save(final Path resource,
+                     final String content,
+                     final Metadata metadata,
+                     final String comment) {
         try {
-            Metadata currentMetadata = metadataService.getMetadata( resource );
-            ioService.write( Paths.convert( resource ),
-                             content,
-                             metadataService.setUpAttributes( resource,
-                                                              metadata ),
-                             commentedOptionFactory.makeCommentedOption( comment ) );
+            Metadata currentMetadata = metadataService.getMetadata(resource);
+            ioService.write(Paths.convert(resource),
+                            content,
+                            metadataService.setUpAttributes(resource,
+                                                            metadata),
+                            commentedOptionFactory.makeCommentedOption(comment));
 
-            fireMetadataSocialEvents( resource, currentMetadata, metadata );
+            fireMetadataSocialEvents(resource, currentMetadata, metadata);
             return resource;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public void delete( final Path path,
-                        final String comment ) {
+    public void delete(final Path path,
+                       final String comment) {
         try {
-            deleteService.delete( path,
-                                  comment );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            deleteService.delete(path,
+                                 comment);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Path rename( final Path path,
-                        final String newName,
-                        final String comment ) {
+    public Path rename(final Path path,
+                       final String newName,
+                       final String comment) {
         try {
-            return renameService.rename( path,
-                                         newName,
-                                         comment );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return renameService.rename(path,
+                                        newName,
+                                        comment);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Path copy( final Path path,
-                      final String newName,
-                      final String comment ) {
+    public Path copy(final Path path,
+                     final String newName,
+                     final String comment) {
         try {
-            return copyService.copy( path,
-                                     newName,
-                                     comment );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return copyService.copy(path,
+                                    newName,
+                                    comment);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Path copy( final Path path,
-                      final String newName,
-                      final Path targetDirectory,
-                      final String comment ) {
+    public Path copy(final Path path,
+                     final String newName,
+                     final Path targetDirectory,
+                     final String comment) {
         try {
-            return copyService.copy( path,
-                                     newName,
-                                     targetDirectory,
-                                     comment );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return copyService.copy(path,
+                                    newName,
+                                    targetDirectory,
+                                    comment);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public boolean accepts( final Path path ) {
-        return resourceTypeDefinition.accept( path );
+    public boolean accepts(final Path path) {
+        return resourceTypeDefinition.accept(path);
     }
 
     @Override
-    public List<ValidationMessage> validate( final Path path ) {
+    public List<ValidationMessage> validate(final Path path) {
         try {
-            final String content = ioService.readAllString( Paths.convert( path ) );
-            return validate( path,
-                             content );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            final String content = ioService.readAllString(Paths.convert(path));
+            return validate(path,
+                            content);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public List<ValidationMessage> validate( final Path path,
-                                             final String content ) {
-        return doValidation( path,
-                             content );
+    public List<ValidationMessage> validate(final Path path,
+                                            final String content) {
+        return doValidation(path,
+                            content);
     }
 
-    private List<ValidationMessage> doValidation( final Path path,
-                                                  final String content ) {
+    private List<ValidationMessage> doValidation(final Path path,
+                                                 final String content) {
         final List<ValidationMessage> validationMessages = new ArrayList<ValidationMessage>();
         final List<String> workItemDefinitions = new ArrayList<String>();
-        workItemDefinitions.add( content );
+        workItemDefinitions.add(content);
         try {
-            WorkDefinitionsParser.parse( workItemDefinitions );
-
-        } catch ( Exception e ) {
+            WorkDefinitionsParser.parse(workItemDefinitions);
+        } catch (Exception e) {
             final ValidationMessage msg = new ValidationMessage();
-            msg.setPath( path );
-            msg.setLevel( Level.ERROR );
-            msg.setText( e.getMessage() );
-            validationMessages.add( msg );
+            msg.setPath(path);
+            msg.setLevel(Level.ERROR);
+            msg.setText(e.getMessage());
+            validationMessages.add(msg);
         }
         return validationMessages;
     }
 
     @Override
-    public Set<PortableWorkDefinition> loadWorkItemDefinitions( final Path path ) {
+    public Set<PortableWorkDefinition> loadWorkItemDefinitions(final Path path) {
         final Map<String, WorkDefinition> workDefinitions = new HashMap<String, WorkDefinition>();
 
         try {
             //Load WorkItemDefinitions from VFS
-            final Path projectRoot = projectService.resolveProject( path ).getRootPath();
-            workDefinitions.putAll( resourceWorkDefinitionsLoader.loadWorkDefinitions( projectRoot ) );
+            final Path projectRoot = moduleService.resolveModule(path).getRootPath();
+            workDefinitions.putAll(resourceWorkDefinitionsLoader.loadWorkDefinitions(projectRoot));
 
             //Load WorkItemDefinitions from ConfigurationService
-            workDefinitions.putAll( configWorkDefinitionsLoader.loadWorkDefinitions() );
+            workDefinitions.putAll(configWorkDefinitionsLoader.loadWorkDefinitions());
 
             //Copy the Work Items into Structures suitable for GWT
             final Set<PortableWorkDefinition> workItems = new HashSet<PortableWorkDefinition>();
-            for ( Map.Entry<String, WorkDefinition> entry : workDefinitions.entrySet() ) {
+            for (Map.Entry<String, WorkDefinition> entry : workDefinitions.entrySet()) {
                 final PortableWorkDefinition wid = new PortableWorkDefinition();
                 final WorkDefinitionImpl wd = (WorkDefinitionImpl) entry.getValue();
-                wid.setName( wd.getName() );
-                wid.setDisplayName( wd.getDisplayName() );
-                wid.setParameters( convertWorkItemParameters( entry.getValue().getParameters() ) );
-                wid.setResults( convertWorkItemParameters( entry.getValue().getResults() ) );
-                workItems.add( wid );
+                wid.setName(wd.getName());
+                wid.setDisplayName(wd.getDisplayName());
+                wid.setParameters(convertWorkItemParameters(entry.getValue().getParameters()));
+                wid.setResults(convertWorkItemParameters(entry.getValue().getResults()));
+                workItems.add(wid);
             }
             return workItems;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
-    private Set<PortableParameterDefinition> convertWorkItemParameters( final Set<ParameterDefinition> parameters ) {
+    private Set<PortableParameterDefinition> convertWorkItemParameters(final Set<ParameterDefinition> parameters) {
         final Set<PortableParameterDefinition> pps = new HashSet<PortableParameterDefinition>();
-        for ( ParameterDefinition pd : parameters ) {
+        for (ParameterDefinition pd : parameters) {
             final DataType pdt = pd.getType();
             PortableParameterDefinition ppd = null;
-            if ( pdt instanceof BooleanDataType ) {
+            if (pdt instanceof BooleanDataType) {
                 ppd = new PortableBooleanParameterDefinition();
-            } else if ( pdt instanceof FloatDataType ) {
+            } else if (pdt instanceof FloatDataType) {
                 ppd = new PortableFloatParameterDefinition();
-            } else if ( pdt instanceof IntegerDataType ) {
+            } else if (pdt instanceof IntegerDataType) {
                 ppd = new PortableIntegerParameterDefinition();
-            } else if ( pdt instanceof ObjectDataType ) {
+            } else if (pdt instanceof ObjectDataType) {
                 ppd = new PortableObjectParameterDefinition();
                 final PortableObjectParameterDefinition oppd = (PortableObjectParameterDefinition) ppd;
                 final ObjectDataType odt = (ObjectDataType) pdt;
-                oppd.setClassName( odt.getClassName() );
-            } else if ( pd.getType() instanceof StringDataType ) {
+                oppd.setClassName(odt.getClassName());
+            } else if (pd.getType() instanceof StringDataType) {
                 ppd = new PortableStringParameterDefinition();
             }
-            if ( ppd != null ) {
-                ppd.setName( pd.getName() );
-                pps.add( ppd );
+            if (ppd != null) {
+                ppd.setName(pd.getName());
+                pps.add(ppd);
             }
         }
         return pps;
     }
-
 }

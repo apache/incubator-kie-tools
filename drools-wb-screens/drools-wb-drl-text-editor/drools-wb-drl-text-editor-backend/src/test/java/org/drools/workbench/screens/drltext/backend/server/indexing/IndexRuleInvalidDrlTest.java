@@ -25,7 +25,6 @@ import java.util.Map;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.search.Query;
 import org.drools.workbench.screens.drltext.type.DRLResourceTypeDefinition;
@@ -33,7 +32,7 @@ import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.query.builder.SingleTermQueryBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.ModuleRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueReferenceIndexTerm;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.mockito.ArgumentMatcher;
@@ -52,36 +51,35 @@ public class IndexRuleInvalidDrlTest extends BaseIndexingTest<DRLResourceTypeDef
     @Test
     public void testIndexRuleInvalidDrl() throws IOException, InterruptedException {
         //Setup logging
-        final Logger root = (Logger) LoggerFactory.getLogger( Logger.ROOT_LOGGER_NAME );
-        final Appender<ILoggingEvent> mockAppender = mock( Appender.class );
-        when( mockAppender.getName() ).thenReturn( "MOCK" );
-        root.addAppender( mockAppender );
+        final Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+        final Appender<ILoggingEvent> mockAppender = mock(Appender.class);
+        when(mockAppender.getName()).thenReturn("MOCK");
+        root.addAppender(mockAppender);
 
         //Add test files
-        final Path path = basePath.resolve( "bz1269366.drl" );
-        final String drl = loadText( "bz1269366.drl" );
-        ioService().write( path,
-                           drl );
+        final Path path = basePath.resolve("bz1269366.drl");
+        final String drl = loadText("bz1269366.drl");
+        ioService().write(path,
+                          drl);
 
-        Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+        Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
         List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath.getFileSystem()).getClusterId());
 
         {
-            final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "org.drools.workbench.screens.drltext.backend.server.indexing.classes.Applicant", ResourceType.JAVA ) )
+            final Query query = new SingleTermQueryBuilder(new ValueReferenceIndexTerm("org.drools.workbench.screens.drltext.backend.server.indexing.classes.Applicant", ResourceType.JAVA))
                     .build();
 
             // should be 1, but parsing fails (see verify line below) so that 0 is returned..
             searchFor(index, query, 0);
 
-            verify( mockAppender ).doAppend( argThat( new ArgumentMatcher<ILoggingEvent>() {
+            verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
 
                 @Override
-                public boolean matches( final Object argument ) {
-                    return ( (ILoggingEvent) argument ).getMessage().startsWith( "Unable to parse DRL" );
+                public boolean matches(final Object argument) {
+                    return ((ILoggingEvent) argument).getMessage().startsWith("Unable to parse DRL");
                 }
-
-            } ) );
+            }));
         }
     }
 
@@ -94,7 +92,7 @@ public class IndexRuleInvalidDrlTest extends BaseIndexingTest<DRLResourceTypeDef
     public Map<String, Analyzer> getAnalyzers() {
         return new HashMap<String, Analyzer>() {
             {
-                put( ProjectRootPathIndexTerm.TERM, new FilenameAnalyzer() );
+                put(ModuleRootPathIndexTerm.TERM, new FilenameAnalyzer());
             }
         };
     }
@@ -108,5 +106,4 @@ public class IndexRuleInvalidDrlTest extends BaseIndexingTest<DRLResourceTypeDef
     protected String getRepositoryName() {
         return this.getClass().getSimpleName();
     }
-
 }

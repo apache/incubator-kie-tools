@@ -28,7 +28,7 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -52,7 +52,7 @@ import static org.mockito.Mockito.when;
 public class GlobalsEditorServiceTest {
 
     @Mock
-    private KieProjectService kieProjectService;
+    private KieModuleService kieModuleService;
 
     @Mock
     private IOService ioService;
@@ -69,7 +69,7 @@ public class GlobalsEditorServiceTest {
     public void setUp() {
         globalsEditorService = new GlobalsEditorServiceImpl() {
             {
-                projectService = GlobalsEditorServiceTest.this.kieProjectService;
+                moduleService = GlobalsEditorServiceTest.this.kieModuleService;
                 ioService = GlobalsEditorServiceTest.this.ioService;
                 commentedOptionFactory = GlobalsEditorServiceTest.this.commentedOptionFactory;
                 metadataService = GlobalsEditorServiceTest.this.metadataService;
@@ -79,60 +79,60 @@ public class GlobalsEditorServiceTest {
 
     @Test
     public void save() {
-        Path path = PathFactory.newPath( "test",
-                                         "file:///test" );
-        GlobalsModel globalsModel = mock( GlobalsModel.class );
+        Path path = PathFactory.newPath("test",
+                                        "file:///test");
+        GlobalsModel globalsModel = mock(GlobalsModel.class);
 
-        when( ioService.exists( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( false );
+        when(ioService.exists(any(org.uberfire.java.nio.file.Path.class))).thenReturn(false);
 
-        globalsEditorService.create( path,
-                                     "test",
-                                     globalsModel,
-                                     "comment" );
+        globalsEditorService.create(path,
+                                    "test",
+                                    globalsModel,
+                                    "comment");
 
-        verify( ioService,
-                times( 1 ) ).write( any( org.uberfire.java.nio.file.Path.class ),
-                                    anyString(),
-                                    any( CommentedOption.class ) );
+        verify(ioService,
+               times(1)).write(any(org.uberfire.java.nio.file.Path.class),
+                               anyString(),
+                               any(CommentedOption.class));
     }
 
     @Test
     public void generate() {
-        Path path = PathFactory.newPath( "test",
-                                         "file:///test" );
-        GlobalsModel globalsModel = mock( GlobalsModel.class );
+        Path path = PathFactory.newPath("test",
+                                        "file:///test");
+        GlobalsModel globalsModel = mock(GlobalsModel.class);
 
-        when( ioService.exists( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( false );
+        when(ioService.exists(any(org.uberfire.java.nio.file.Path.class))).thenReturn(false);
 
         Map<String, Object> metadataMap = new HashMap<String, Object>() {
             {
-                put( GeneratedAttributesView.GENERATED_ATTRIBUTE_NAME,
-                     true );
+                put(GeneratedAttributesView.GENERATED_ATTRIBUTE_NAME,
+                    true);
             }
         };
-        when( metadataService.configAttrs( anyMapOf( String.class,
-                                                     Object.class ),
-                                           any( Metadata.class ) ) ).thenReturn( metadataMap );
+        when(metadataService.configAttrs(anyMapOf(String.class,
+                                                  Object.class),
+                                         any(Metadata.class))).thenReturn(metadataMap);
 
-        globalsEditorService.generate( path,
-                                       "test",
-                                       globalsModel,
-                                       "comment" );
+        globalsEditorService.generate(path,
+                                      "test",
+                                      globalsModel,
+                                      "comment");
 
-        ArgumentCaptor<Map> mapArgumentCaptor = ArgumentCaptor.forClass( Map.class );
+        ArgumentCaptor<Map> mapArgumentCaptor = ArgumentCaptor.forClass(Map.class);
 
-        verify( ioService,
-                times( 1 ) ).write( any( org.uberfire.java.nio.file.Path.class ),
-                                    anyString(),
-                                    mapArgumentCaptor.capture(),
-                                    any( CommentedOption.class ) );
+        verify(ioService,
+               times(1)).write(any(org.uberfire.java.nio.file.Path.class),
+                               anyString(),
+                               mapArgumentCaptor.capture(),
+                               any(CommentedOption.class));
 
         Map capturedMap = mapArgumentCaptor.getValue();
-        assertEquals( metadataMap,
-                      capturedMap );
+        assertEquals(metadataMap,
+                     capturedMap);
 
-        Object generatedAttribute = capturedMap.get( GeneratedAttributesView.GENERATED_ATTRIBUTE_NAME );
-        assertNotNull( generatedAttribute );
-        assertTrue( Boolean.parseBoolean( generatedAttribute.toString() ) );
+        Object generatedAttribute = capturedMap.get(GeneratedAttributesView.GENERATED_ATTRIBUTE_NAME);
+        assertNotNull(generatedAttribute);
+        assertTrue(Boolean.parseBoolean(generatedAttribute.toString()));
     }
 }

@@ -43,7 +43,7 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.backend.service.KieService;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
@@ -69,7 +69,7 @@ public class GuidedDecisionTableGraphEditorServiceImpl
     private CopyService copyService;
     private DeleteService deleteService;
     private RenameService renameService;
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
     private VersionRecordService versionRecordService;
     private GuidedDecisionTableEditorService dtableService;
     private GuidedDecisionTableLinkManager dtableLinkManager;
@@ -88,7 +88,7 @@ public class GuidedDecisionTableGraphEditorServiceImpl
                                                      final CopyService copyService,
                                                      final DeleteService deleteService,
                                                      final RenameService renameService,
-                                                     final KieProjectService projectService,
+                                                     final KieModuleService moduleService,
                                                      final VersionRecordService versionRecordService,
                                                      final GuidedDecisionTableEditorService dtableService,
                                                      final GuidedDecisionTableLinkManager dtableLinkManager,
@@ -101,7 +101,7 @@ public class GuidedDecisionTableGraphEditorServiceImpl
         this.copyService = copyService;
         this.deleteService = deleteService;
         this.renameService = renameService;
-        this.projectService = projectService;
+        this.moduleService = moduleService;
         this.versionRecordService = versionRecordService;
         this.dtableService = dtableService;
         this.dtableLinkManager = dtableLinkManager;
@@ -262,7 +262,7 @@ public class GuidedDecisionTableGraphEditorServiceImpl
     @Override
     public List<Path> listDecisionTablesInPackage(final Path path) {
         try {
-            final Package pkg = projectService.resolvePackage(path);
+            final Package pkg = moduleService.resolvePackage(path);
             if (pkg == null) {
                 return Collections.emptyList();
             }

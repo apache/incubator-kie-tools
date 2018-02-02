@@ -20,7 +20,6 @@ import java.util.ArrayList;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.client.resources.i18n.AppConstants;
-import org.guvnor.common.services.project.preferences.scope.GlobalPreferenceScope;
 import org.guvnor.common.services.shared.config.AppConfigService;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,6 +36,7 @@ import org.uberfire.client.workbench.widgets.menu.megamenu.WorkbenchMegaMenuPres
 import org.uberfire.ext.preferences.client.admin.page.AdminPage;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.ConstantsAnswerMock;
+import org.uberfire.preferences.shared.PreferenceScopeFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -72,7 +72,7 @@ public class DroolsWorkbenchEntryPointTest {
     protected DefaultAdminPageHelper adminPageHelper;
 
     @Mock
-    protected GlobalPreferenceScope globalPreferenceScope;
+    protected PreferenceScopeFactory scopeFactory;
 
     @Mock
     protected WorkbenchConfigurationPresenter workbenchConfigurationPresenter;
@@ -93,7 +93,7 @@ public class DroolsWorkbenchEntryPointTest {
                                                                       menuBar,
                                                                       adminPage,
                                                                       adminPageHelper,
-                                                                      globalPreferenceScope,
+                                                                      scopeFactory,
                                                                       workbenchConfigurationPresenter,
                                                                       languageConfigurationHandler));
         mockMenuHelper();

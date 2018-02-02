@@ -22,7 +22,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.drools.workbench.client.resources.i18n.AppConstants;
-import org.guvnor.asset.management.client.editors.repository.wizard.CreateRepositoryWizard;
 import org.guvnor.structure.client.editors.repository.clone.CloneRepositoryPresenter;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
@@ -30,7 +29,6 @@ import org.kie.workbench.common.workbench.client.PerspectiveIds;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
@@ -67,18 +65,18 @@ public class AdministrationPerspective {
 
     @Perspective
     public PerspectiveDefinition buildPerspective() {
-        final PerspectiveDefinition perspective = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
-        perspective.setName( AppConstants.INSTANCE.AdministrationPerspectiveName() );
+        final PerspectiveDefinition perspective = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        perspective.setName(AppConstants.INSTANCE.AdministrationPerspectiveName());
 
-        perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "RepositoriesEditor" ) ) );
+        perspective.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest("RepositoriesEditor")));
 
-        final PanelDefinition west = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
-        west.setWidth( 300 );
-        west.setMinWidth( 200 );
-        west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "FileExplorer" ) ) );
+        final PanelDefinition west = new PanelDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
+        west.setWidth(300);
+        west.setMinWidth(200);
+        west.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("FileExplorer")));
 
-        perspective.getRoot().insertChild( CompassPosition.WEST,
-                                           west );
+        perspective.getRoot().insertChild(CompassPosition.WEST,
+                                          west);
 
         return perspective;
     }
@@ -86,54 +84,38 @@ public class AdministrationPerspective {
     @WorkbenchMenu
     public Menus buildMenuBar() {
         return MenuFactory
-                .newTopLevelMenu( AppConstants.INSTANCE.MenuExplore() )
-                .withItems( getExploreMenuItems() )
+                .newTopLevelMenu(AppConstants.INSTANCE.MenuExplore())
+                .withItems(getExploreMenuItems())
                 .endMenu()
-                .newTopLevelMenu( AppConstants.INSTANCE.MenuOrganizationalUnits() )
-                .withItems( getOrganizationalUnitsMenuItem() )
+                .newTopLevelMenu(AppConstants.INSTANCE.MenuOrganizationalUnits())
+                .withItems(getOrganizationalUnitsMenuItem())
                 .endMenu()
-                .newTopLevelMenu( AppConstants.INSTANCE.MenuRepositories() )
-                .withItems( getRepositoriesMenuItems() )
+                .newTopLevelMenu(AppConstants.INSTANCE.MenuRepositories())
+                .withItems(getRepositoriesMenuItems())
                 .endMenu()
-                .newTopLevelMenu( "Editor Properties" )
-                .withItems( getEditorsMenuItem() )
+                .newTopLevelMenu("Editor Properties")
+                .withItems(getEditorsMenuItem())
                 .endMenu()
                 .build();
     }
 
     private List<? extends MenuItem> getRepositoriesMenuItems() {
         ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
-        menuItems.add( MenuFactory.newSimpleItem( AppConstants.INSTANCE.MenuListRepositories() ).respondsWith(
+        menuItems.add(MenuFactory.newSimpleItem(AppConstants.INSTANCE.MenuListRepositories()).respondsWith(
                 new Command() {
                     @Override
                     public void execute() {
-                        placeManager.goTo( "RepositoriesEditor" );
+                        placeManager.goTo("RepositoriesEditor");
                     }
-                } ).endMenu().build().getItems().get( 0 ) );
-        menuItems.add( MenuFactory.newSimpleItem( AppConstants.INSTANCE.MenuCloneRepository() ).respondsWith(
+                }).endMenu().build().getItems().get(0));
+        menuItems.add(MenuFactory.newSimpleItem(AppConstants.INSTANCE.MenuCloneRepository()).respondsWith(
                 new Command() {
 
                     @Override
                     public void execute() {
                         cloneRepositoryPresenter.showForm();
                     }
-
-                } ).endMenu().build().getItems().get( 0 ) );
-        menuItems.add( MenuFactory.newSimpleItem( AppConstants.INSTANCE.MenuNewRepository() ).respondsWith(
-                new Command() {
-                    @Override
-                    public void execute() {
-                        final CreateRepositoryWizard newRepositoryWizard = iocManager.lookupBean( CreateRepositoryWizard.class ).getInstance();
-                        //When pop-up is closed destroy bean to avoid memory leak
-                        newRepositoryWizard.onCloseCallback( new Callback<Void>() {
-                            @Override
-                            public void callback( Void result ) {
-                                iocManager.destroyBean( newRepositoryWizard );
-                            }
-                        } );
-                        newRepositoryWizard.start();
-                    }
-                } ).endMenu().build().getItems().get( 0 ) );
+                }).endMenu().build().getItems().get(0));
 
         return menuItems;
     }
@@ -141,39 +123,38 @@ public class AdministrationPerspective {
     private List<? extends MenuItem> getEditorsMenuItem() {
         ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
 
-        menuItems.add( MenuFactory.newSimpleItem( "Test Scenario Editor" ).respondsWith(
+        menuItems.add(MenuFactory.newSimpleItem("Test Scenario Editor").respondsWith(
                 new Command() {
                     @Override
                     public void execute() {
-                        placeManager.goTo( "WiresPropertiesScreen" );
+                        placeManager.goTo("WiresPropertiesScreen");
                     }
-                } ).endMenu().build().getItems().get( 0 ) );
+                }).endMenu().build().getItems().get(0));
 
         return menuItems;
     }
 
     private List<? extends MenuItem> getOrganizationalUnitsMenuItem() {
         ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
-        menuItems.add( MenuFactory.newSimpleItem( AppConstants.INSTANCE.MenuManageOrganizationalUnits() ).respondsWith(
+        menuItems.add(MenuFactory.newSimpleItem(AppConstants.INSTANCE.MenuManageOrganizationalUnits()).respondsWith(
                 new Command() {
                     @Override
                     public void execute() {
-                        placeManager.goTo( "org.kie.workbench.common.screens.organizationalunit.manager.OrganizationalUnitManager" );
+                        placeManager.goTo("org.kie.workbench.common.screens.organizationalunit.manager.OrganizationalUnitManager");
                     }
-                } ).endMenu().build().getItems().get( 0 ) );
+                }).endMenu().build().getItems().get(0));
         return menuItems;
     }
 
     private List<? extends MenuItem> getExploreMenuItems() {
         ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
-        menuItems.add( MenuFactory.newSimpleItem( AppConstants.INSTANCE.MenuExploreFiles() ).respondsWith(
+        menuItems.add(MenuFactory.newSimpleItem(AppConstants.INSTANCE.MenuExploreFiles()).respondsWith(
                 new Command() {
                     @Override
                     public void execute() {
-                        placeManager.goTo( "FileExplorer" );
+                        placeManager.goTo("FileExplorer");
                     }
-                } ).endMenu().build().getItems().get( 0 ) );
+                }).endMenu().build().getItems().get(0));
         return menuItems;
     }
-
 }

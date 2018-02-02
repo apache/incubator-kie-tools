@@ -56,7 +56,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.soup.project.datamodel.imports.Imports;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
@@ -105,7 +105,7 @@ import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopu
 public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionTableEditorPresenter {
 
     private final Caller<GuidedDecisionTableGraphEditorService> graphService;
-    private final Caller<KieProjectService> projectService;
+    private final Caller<KieModuleService> moduleService;
     private final Event<SaveInProgressEvent> saveInProgressEvent;
     private final LockManager lockManager;
     protected ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
@@ -120,7 +120,7 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
     public GuidedDecisionTableGraphEditorPresenter(final View view,
                                                    final Caller<GuidedDecisionTableEditorService> service,
                                                    final Caller<GuidedDecisionTableGraphEditorService> graphService,
-                                                   final Caller<KieProjectService> projectService,
+                                                   final Caller<KieModuleService> moduleService,
                                                    final Event<NotificationEvent> notification,
                                                    final Event<SaveInProgressEvent> saveInProgressEvent,
                                                    final Event<DecisionTableSelectedEvent> decisionTableSelectedEvent,
@@ -151,7 +151,7 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
               placeManager,
               columnsPage);
         this.graphService = graphService;
-        this.projectService = projectService;
+        this.moduleService = moduleService;
         this.saveInProgressEvent = saveInProgressEvent;
         this.helper = helper;
         this.lockManager = lockManager;
@@ -179,7 +179,7 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
     }
 
     void onNewDocument() {
-        projectService.call((org.guvnor.common.services.project.model.Package pkg) -> {
+        moduleService.call((org.guvnor.common.services.project.model.Package pkg) -> {
             helper.createNewGuidedDecisionTable(pkg.getPackageMainResourcesPath(),
                                                 "",
                                                 GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY,

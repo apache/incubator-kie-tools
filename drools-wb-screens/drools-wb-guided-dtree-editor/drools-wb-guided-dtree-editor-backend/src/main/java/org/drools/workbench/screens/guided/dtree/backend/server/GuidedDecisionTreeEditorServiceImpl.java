@@ -106,7 +106,7 @@ public class GuidedDecisionTreeEditorServiceImpl
                        final GuidedDecisionTree content,
                        final String comment) {
         try {
-            final Package pkg = projectService.resolvePackage(context);
+            final Package pkg = moduleService.resolvePackage(context);
             final String packageName = (pkg == null ? null : pkg.getPackageName());
             content.setPackageName(packageName);
 
@@ -198,7 +198,7 @@ public class GuidedDecisionTreeEditorServiceImpl
                      final Metadata metadata,
                      final String comment) {
         try {
-            final Package pkg = projectService.resolvePackage(resource);
+            final Package pkg = moduleService.resolvePackage(resource);
             final String packageName = (pkg == null ? null : pkg.getPackageName());
             model.setPackageName(packageName);
 

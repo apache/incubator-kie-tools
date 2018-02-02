@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.query.builder.SingleTermQueryBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.ModuleRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueReferenceIndexTerm;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
@@ -41,31 +41,30 @@ public class IndexRuleMultipleTypesTest extends BaseIndexingTest<DRLResourceType
     @Test
     public void testIndexDrlRuleMultipleTypes() throws IOException, InterruptedException {
         //Add test files
-        final Path path1 = basePath.resolve( "drl3.drl" );
-        final String drl1 = loadText( "drl3.drl" );
-        ioService().write( path1,
-                           drl1 );
-        final Path path2 = basePath.resolve( "drl4.drl" );
-        final String drl2 = loadText( "drl4.drl" );
-        ioService().write( path2,
-                           drl2 );
+        final Path path1 = basePath.resolve("drl3.drl");
+        final String drl1 = loadText("drl3.drl");
+        ioService().write(path1,
+                          drl1);
+        final Path path2 = basePath.resolve("drl4.drl");
+        final String drl2 = loadText("drl4.drl");
+        ioService().write(path2,
+                          drl2);
 
-        Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+        Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
         List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath.getFileSystem()).getClusterId());
 
         {
-            final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "org.drools.workbench.screens.drltext.backend.server.indexing.classes.Applicant", ResourceType.JAVA ) )
+            final Query query = new SingleTermQueryBuilder(new ValueReferenceIndexTerm("org.drools.workbench.screens.drltext.backend.server.indexing.classes.Applicant", ResourceType.JAVA))
                     .build();
             searchFor(index, query, 2, path1, path2);
         }
 
         {
-            final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "org.drools.workbench.screens.drltext.backend.server.indexing.classes.Mortgage", ResourceType.JAVA ) )
+            final Query query = new SingleTermQueryBuilder(new ValueReferenceIndexTerm("org.drools.workbench.screens.drltext.backend.server.indexing.classes.Mortgage", ResourceType.JAVA))
                     .build();
             searchFor(index, query, 1, path2);
         }
-
     }
 
     @Override
@@ -77,7 +76,7 @@ public class IndexRuleMultipleTypesTest extends BaseIndexingTest<DRLResourceType
     public Map<String, Analyzer> getAnalyzers() {
         return new HashMap<String, Analyzer>() {
             {
-                put( ProjectRootPathIndexTerm.TERM, new FilenameAnalyzer() );
+                put(ModuleRootPathIndexTerm.TERM, new FilenameAnalyzer());
             }
         };
     }
@@ -91,5 +90,4 @@ public class IndexRuleMultipleTypesTest extends BaseIndexingTest<DRLResourceType
     protected String getRepositoryName() {
         return this.getClass().getSimpleName();
     }
-
 }

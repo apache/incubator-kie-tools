@@ -38,13 +38,12 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.api.builder.KieModule;
 import org.kie.scanner.KieModuleMetaData;
 import org.kie.soup.project.datamodel.commons.util.MVELEvaluator;
 import org.kie.workbench.common.services.backend.builder.service.BuildInfoService;
 import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.DataEnumLoader;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieModule;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.CopyService;
@@ -145,7 +144,8 @@ public class EnumServiceImpl
     }
 
     @Override
-    protected EnumModelContent constructContent(Path path, Overview overview) {
+    protected EnumModelContent constructContent(Path path,
+                                                Overview overview) {
         //Signal opening to interested parties
         resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
                                                          safeSessionInfo));
@@ -170,7 +170,9 @@ public class EnumServiceImpl
             //Invalidate Package-level DMO cache as Enums have changed.
             invalidateDMOPackageCache.fire(new InvalidateDMOPackageCacheEvent(resource));
 
-            fireMetadataSocialEvents(resource, currentMetadata, metadata);
+            fireMetadataSocialEvents(resource,
+                                     currentMetadata,
+                                     metadata);
             return resource;
         } catch (Exception e) {
             throw ExceptionUtilities.handleException(e);
@@ -249,17 +251,15 @@ public class EnumServiceImpl
     public List<ValidationMessage> validate(final Path path,
                                             final String content) {
         return doValidation(path,
-                            content,
-                            evaluator);
+                            content);
     }
 
     private List<ValidationMessage> doValidation(final Path path,
-                                                 final String content,
-                                                 final MVELEvaluator evaluator) {
+                                                 final String content) {
         try {
-            final KieProject project = projectService.resolveProject(path);
-            final KieModule module = buildInfoService.getBuildInfo(project).getKieModuleIgnoringErrors();
-            final ClassLoader classLoader = KieModuleMetaData.Factory.newKieModuleMetaData(module).getClassLoader();
+            final KieModule module = moduleService.resolveModule(path);
+            final org.kie.api.builder.KieModule kieModule = buildInfoService.getBuildInfo(module).getKieModuleIgnoringErrors();
+            final ClassLoader classLoader = KieModuleMetaData.Factory.newKieModuleMetaData(kieModule).getClassLoader();
             final DataEnumLoader loader = new DataEnumLoader(content,
                                                              classLoader,
                                                              evaluator);

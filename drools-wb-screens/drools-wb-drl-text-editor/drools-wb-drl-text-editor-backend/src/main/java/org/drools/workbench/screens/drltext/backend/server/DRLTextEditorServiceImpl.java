@@ -272,7 +272,7 @@ public class DRLTextEditorServiceImpl
                 return drl;
             }
 
-            final Package pkg = projectService.resolvePackage(resource);
+            final Package pkg = moduleService.resolvePackage(resource);
             final String requiredPackageName = (pkg == null ? null : pkg.getPackageName());
             final HasPackageName mockHasPackageName = new HasPackageName() {
 

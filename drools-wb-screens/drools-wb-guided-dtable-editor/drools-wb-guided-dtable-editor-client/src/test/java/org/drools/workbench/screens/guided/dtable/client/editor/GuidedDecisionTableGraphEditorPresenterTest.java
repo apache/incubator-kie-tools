@@ -41,7 +41,7 @@ import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEdito
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel.GuidedDecisionTableGraphEntry;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableGraphEditorService;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.Caller;
@@ -50,7 +50,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.soup.project.datamodel.imports.Imports;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.source.ViewDRLSourceWidget;
 import org.kie.workbench.common.widgets.metadata.client.KieDocument;
@@ -115,8 +115,8 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
     private Caller<GuidedDecisionTableGraphEditorService> dtGraphServiceCaller;
 
     @Mock
-    private KieProjectService projectService;
-    private Caller<KieProjectService> projectServiceCaller;
+    private KieModuleService moduleService;
+    private Caller<KieModuleService> moduleServiceCaller;
 
     @Mock
     private NewGuidedDecisionTableWizardHelper helper;
@@ -172,13 +172,14 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
 
     private GuidedDTableGraphResourceType dtGraphResourceType = new GuidedDTableGraphResourceType();
 
+    @Override
     @Before
     public void setup() {
         this.dtGraphServiceCaller = new CallerMock<>(dtGraphService);
-        this.projectServiceCaller = new CallerMock<>(projectService);
+        this.moduleServiceCaller = new CallerMock<>(moduleService);
 
         when(view.asWidget()).thenReturn(mock(Widget.class));
-        when(projectService.resolvePackage(any(Path.class))).thenReturn(activePackage);
+        when(moduleService.resolvePackage(any(Path.class))).thenReturn(activePackage);
         when(activePackage.getPackageMainResourcesPath()).thenReturn(activePackageResourcesPath);
 
         super.setup();
@@ -189,7 +190,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
         return new GuidedDecisionTableGraphEditorPresenter(view,
                                                            dtServiceCaller,
                                                            dtGraphServiceCaller,
-                                                           projectServiceCaller,
+                                                           moduleServiceCaller,
                                                            notification,
                                                            saveInProgressEvent,
                                                            decisionTableSelectedEvent,
@@ -352,7 +353,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
     @Test
     public void testMakeMenuBarWithoutUpdateProjectPermission() {
         reset(fileMenuBuilder);
-        doReturn(mock(Project.class)).when(workbenchContext).getActiveProject();
+        doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
         doReturn(false).when(projectController).canUpdateProject(any());
 
         presenter.makeMenuBar();

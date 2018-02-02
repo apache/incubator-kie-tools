@@ -19,7 +19,7 @@ import java.util.Map;
 
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.soup.project.datamodel.oracle.ModelField;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.DataEnumLoader;
 import org.kie.workbench.common.services.refactoring.ResourceReference;
 import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
@@ -36,11 +36,11 @@ public class EnumIndexVisitor extends ResourceReferenceCollector {
 
     private static final Logger logger = LoggerFactory.getLogger(EnumIndexVisitor.class);
 
-    private final ProjectDataModelOracle dmo;
+    private final ModuleDataModelOracle dmo;
     private final Path resourcePath;
     private final DataEnumLoader enumLoader;
 
-    public EnumIndexVisitor(final ProjectDataModelOracle dmo,
+    public EnumIndexVisitor(final ModuleDataModelOracle dmo,
                             final Path resourcePath,
                             final DataEnumLoader enumLoader) {
         this.dmo = PortablePreconditions.checkNotNull("dmo",
@@ -100,7 +100,7 @@ public class EnumIndexVisitor extends ResourceReferenceCollector {
             return typeName;
         }
         //Look-up FQCN in DMO, if not found return null and log a warning
-        for (Map.Entry<String, ModelField[]> e : dmo.getProjectModelFields().entrySet()) {
+        for (Map.Entry<String, ModelField[]> e : dmo.getModuleModelFields().entrySet()) {
             String fqcn = e.getKey();
             if (e.getKey().contains(".")) {
                 fqcn = fqcn.substring(fqcn.lastIndexOf(".") + 1);
@@ -115,7 +115,7 @@ public class EnumIndexVisitor extends ResourceReferenceCollector {
     private String getFieldFullyQualifiedClassName(final String fullyQualifiedClassName,
                                                    final String fieldName) {
         //Look-up FQCN in DMO, if not found return null and log a warning
-        final ModelField[] mfs = dmo.getProjectModelFields().get(fullyQualifiedClassName);
+        final ModelField[] mfs = dmo.getModuleModelFields().get(fullyQualifiedClassName);
         if (mfs != null) {
             for (ModelField mf : mfs) {
                 if (mf.getName().equals(fieldName)) {

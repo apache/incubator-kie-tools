@@ -18,11 +18,11 @@ package org.drools.workbench.screens.guided.scorecard.backend.server.indexing;
 import org.drools.workbench.models.guided.scorecard.shared.Characteristic;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.kie.soup.commons.validation.PortablePreconditions;
-import org.kie.soup.project.datamodel.commons.oracle.ProjectDataModelOracleUtils;
+import org.kie.soup.project.datamodel.commons.oracle.ModuleDataModelOracleUtils;
 import org.kie.soup.project.datamodel.imports.Import;
 import org.kie.soup.project.datamodel.imports.Imports;
 import org.kie.soup.project.datamodel.oracle.DataType;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.workbench.common.services.refactoring.ResourceReference;
 import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.kie.workbench.common.services.refactoring.service.PartType;
@@ -37,10 +37,10 @@ public class GuidedScoreCardIndexVisitor extends ResourceReferenceCollector {
 
     private static final Logger logger = LoggerFactory.getLogger(GuidedScoreCardIndexVisitor.class);
 
-    private final ProjectDataModelOracle dmo;
+    private final ModuleDataModelOracle dmo;
     private final ScoreCardModel model;
 
-    public GuidedScoreCardIndexVisitor(final ProjectDataModelOracle dmo,
+    public GuidedScoreCardIndexVisitor(final ModuleDataModelOracle dmo,
                                        final ScoreCardModel model) {
         this.dmo = PortablePreconditions.checkNotNull("dmo",
                                                       dmo);
@@ -138,9 +138,7 @@ public class GuidedScoreCardIndexVisitor extends ResourceReferenceCollector {
 
     private String getFieldFullyQualifiedClassName(final String fullyQualifiedClassName,
                                                    final String fieldName) {
-        String className = ProjectDataModelOracleUtils.getFieldFullyQualifiedClassName(dmo,
-                                                                                       fullyQualifiedClassName,
-                                                                                       fieldName);
+        String className = ModuleDataModelOracleUtils.getFieldFullyQualifiedClassName(dmo, fullyQualifiedClassName, fieldName);
         if (className == null) {
             className = DataType.TYPE_OBJECT;
         }

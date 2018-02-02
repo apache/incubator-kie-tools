@@ -18,8 +18,8 @@ package org.drools.workbench.client;
 import javax.inject.Inject;
 
 import org.drools.workbench.client.resources.i18n.AppConstants;
-import org.guvnor.common.services.project.preferences.scope.GlobalPreferenceScope;
 import org.guvnor.common.services.shared.config.AppConfigService;
+import org.guvnor.common.services.shared.preferences.GuvnorPreferenceScopes;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.kie.workbench.common.widgets.client.handlers.workbench.configuration.LanguageConfigurationHandler;
@@ -31,6 +31,7 @@ import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.menu.megamenu.WorkbenchMegaMenuPresenter;
 import org.uberfire.ext.preferences.client.admin.page.AdminPage;
+import org.uberfire.preferences.shared.PreferenceScopeFactory;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -49,7 +50,7 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
 
     protected DefaultAdminPageHelper adminPageHelper;
 
-    protected GlobalPreferenceScope globalPreferenceScope;
+    protected PreferenceScopeFactory scopeFactory;
 
     protected WorkbenchConfigurationPresenter workbenchConfigurationPresenter;
 
@@ -63,7 +64,7 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
                                      final WorkbenchMegaMenuPresenter menuBar,
                                      final AdminPage adminPage,
                                      final DefaultAdminPageHelper adminPageHelper,
-                                     final GlobalPreferenceScope globalPreferenceScope,
+                                     final PreferenceScopeFactory scopeFactory,
                                      final WorkbenchConfigurationPresenter workbenchConfigurationPresenter,
                                      final LanguageConfigurationHandler languageConfigurationHandler) {
         super(appConfigService,
@@ -73,7 +74,7 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
         this.menuBar = menuBar;
         this.adminPage = adminPage;
         this.adminPageHelper = adminPageHelper;
-        this.globalPreferenceScope = globalPreferenceScope;
+        this.scopeFactory = scopeFactory;
         this.workbenchConfigurationPresenter = workbenchConfigurationPresenter;
         this.languageConfigurationHandler = languageConfigurationHandler;
     }
@@ -93,6 +94,7 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
         menuBar.addMenus(menus);
     }
 
+    @Override
     public void setupAdminPage() {
         adminPage.addScreen("root",
                             AppConstants.INSTANCE.Settings());
@@ -103,14 +105,14 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
                                 AppConstants.INSTANCE.Library(),
                                 "fa-cubes",
                                 "preferences",
-                                globalPreferenceScope.resolve());
+                                scopeFactory.createScope(GuvnorPreferenceScopes.GLOBAL));
 
         adminPage.addPreference("root",
                                 "ArtifactRepositoryPreference",
                                 AppConstants.INSTANCE.ArtifactRepository(),
                                 "fa-archive",
                                 "preferences",
-                                globalPreferenceScope.resolve());
+                                scopeFactory.createScope(GuvnorPreferenceScopes.GLOBAL));
 
         adminPage.addTool("root",
                           "Languages",

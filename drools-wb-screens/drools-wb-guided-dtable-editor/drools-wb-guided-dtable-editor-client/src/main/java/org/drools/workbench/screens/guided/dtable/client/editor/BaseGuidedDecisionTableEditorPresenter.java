@@ -37,7 +37,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDeci
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
-import org.guvnor.common.services.project.context.ProjectContext;
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.common.client.api.Caller;
@@ -175,7 +175,7 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
 
     @Override
     //Delegated to expose package-protected setter for Unit Tests
-    protected void setWorkbenchContext(final ProjectContext workbenchContext) {
+    protected void setWorkbenchContext(final WorkspaceProjectContext workbenchContext) {
         super.setWorkbenchContext(workbenchContext);
     }
 

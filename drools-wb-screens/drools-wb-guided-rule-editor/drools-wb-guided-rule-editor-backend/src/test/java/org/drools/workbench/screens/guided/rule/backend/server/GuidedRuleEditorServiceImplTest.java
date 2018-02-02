@@ -33,10 +33,10 @@ import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.soup.project.datamodel.commons.util.RawMVELEvaluator;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
-import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
+import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ModuleDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -84,14 +84,14 @@ public class GuidedRuleEditorServiceImplTest {
     public void checkConstructContentPopulateProjectCollectionTypesAndDSLSentences() throws Exception {
         final Path path = mock(Path.class);
         final Overview overview = mock(Overview.class);
-        final ProjectDataModelOracle projectDataModelOracle = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectDataModelOracle = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addClass(List.class)
                 .addClass(Set.class)
                 .addClass(Collection.class)
                 .addClass(Integer.class)
                 .build();
         final PackageDataModelOracle oracle = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator())
-                .setProjectOracle(projectDataModelOracle)
+                .setModuleOracle(projectDataModelOracle)
                 .addExtension(DSLActionSentence.INSTANCE, Collections.singletonList(dslSentence))
                 .addExtension(DSLConditionSentence.INSTANCE, Collections.singletonList(dslSentence))
                 .build();

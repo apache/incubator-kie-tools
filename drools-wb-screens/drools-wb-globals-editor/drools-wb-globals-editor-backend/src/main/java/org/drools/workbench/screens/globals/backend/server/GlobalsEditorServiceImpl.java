@@ -39,7 +39,7 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
@@ -121,7 +121,7 @@ public class GlobalsEditorServiceImpl
                                 final String comment,
                                 final boolean generate) {
         try {
-            final Package pkg = projectService.resolvePackage(context);
+            final Package pkg = moduleService.resolvePackage(context);
             final String packageName = (pkg == null ? null : pkg.getPackageName());
             content.setPackageName(packageName);
 
@@ -172,9 +172,9 @@ public class GlobalsEditorServiceImpl
                                                     Overview overview) {
         //De-serialize model
         final GlobalsModel model = load(path);
-        final ProjectDataModelOracle oracle = dataModelService.getProjectDataModel(path);
-        final String[] fullyQualifiedClassNames = new String[oracle.getProjectModelFields().size()];
-        oracle.getProjectModelFields().keySet().toArray(fullyQualifiedClassNames);
+        final ModuleDataModelOracle oracle = dataModelService.getModuleDataModel(path);
+        final String[] fullyQualifiedClassNames = new String[oracle.getModuleModelFields().size()];
+        oracle.getModuleModelFields().keySet().toArray(fullyQualifiedClassNames);
 
         //Signal opening to interested parties
         resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
@@ -191,7 +191,7 @@ public class GlobalsEditorServiceImpl
                      final Metadata metadata,
                      final String comment) {
         try {
-            final Package pkg = projectService.resolvePackage(resource);
+            final Package pkg = moduleService.resolvePackage(resource);
             final String packageName = (pkg == null ? null : pkg.getPackageName());
             content.setPackageName(packageName);
 

@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.query.builder.SingleTermQueryBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.ModuleRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm.TermSearchType;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueReferenceIndexTerm;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
@@ -42,31 +42,30 @@ public class IndexRuleTypeTest extends BaseIndexingTest<DRLResourceTypeDefinitio
     @Test
     public void testIndexRuleTypes() throws IOException, InterruptedException {
         //Add test files
-        final Path path1 = basePath.resolve( "drl1.drl" );
-        final String drl1 = loadText( "drl1.drl" );
-        ioService().write( path1,
-                           drl1 );
-        final Path path2 = basePath.resolve( "drl2.drl" );
-        final String drl2 = loadText( "drl2.drl" );
-        ioService().write( path2,
-                           drl2 );
+        final Path path1 = basePath.resolve("drl1.drl");
+        final String drl1 = loadText("drl1.drl");
+        ioService().write(path1,
+                          drl1);
+        final Path path2 = basePath.resolve("drl2.drl");
+        final String drl2 = loadText("drl2.drl");
+        ioService().write(path2,
+                          drl2);
 
-        Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+        Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
         List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath.getFileSystem()).getClusterId());
 
         {
-            final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "org.drools.workbench.screens.drltext.backend.server.indexing.classes.Applicant", ResourceType.JAVA ) )
+            final Query query = new SingleTermQueryBuilder(new ValueReferenceIndexTerm("org.drools.workbench.screens.drltext.backend.server.indexing.classes.Applicant", ResourceType.JAVA))
                     .build();
             searchFor(index, query, 2);
         }
 
         {
-            final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "*.Applicant", ResourceType.JAVA, TermSearchType.WILDCARD ) )
+            final Query query = new SingleTermQueryBuilder(new ValueReferenceIndexTerm("*.Applicant", ResourceType.JAVA, TermSearchType.WILDCARD))
                     .build();
             searchFor(index, query, 2);
         }
-
     }
 
     @Override
@@ -74,12 +73,11 @@ public class IndexRuleTypeTest extends BaseIndexingTest<DRLResourceTypeDefinitio
         return new TestDrlFileIndexer();
     }
 
-
     @Override
     public Map<String, Analyzer> getAnalyzers() {
         return new HashMap<String, Analyzer>() {
             {
-                put( ProjectRootPathIndexTerm.TERM, new FilenameAnalyzer() );
+                put(ModuleRootPathIndexTerm.TERM, new FilenameAnalyzer());
             }
         };
     }
@@ -93,5 +91,4 @@ public class IndexRuleTypeTest extends BaseIndexingTest<DRLResourceTypeDefinitio
     protected String getRepositoryName() {
         return this.getClass().getSimpleName();
     }
-
 }

@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.dtablexls.client.editor;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -29,9 +30,9 @@ import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSResour
 import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSXResourceType;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSContent;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSService;
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
-import org.guvnor.common.services.project.context.ProjectContext;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.common.client.api.Caller;
@@ -60,7 +61,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.any;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -122,7 +123,7 @@ public class DecisionTableXLSEditorPresenterTest {
     ProjectController projectController;
 
     @Mock
-    ProjectContext workbenchContext;
+    WorkspaceProjectContext workbenchContext;
 
     DecisionTableXLSEditorPresenter presenter;
 
@@ -155,12 +156,15 @@ public class DecisionTableXLSEditorPresenterTest {
                 versionRecordManager = DecisionTableXLSEditorPresenterTest.this.versionRecordManager;
             }
 
+            @Override
             protected void addSourcePage() {
 
             }
         });
 
         doReturn(mock(MenuItem.class)).when(presenter).getConvertMenu();
+        when(workbenchContext.getActiveOrganizationalUnit()).thenReturn(Optional.empty());
+        when(workbenchContext.getActiveWorkspaceProject()).thenReturn(Optional.empty());
     }
 
     @Test
@@ -232,7 +236,7 @@ public class DecisionTableXLSEditorPresenterTest {
 
     @Test
     public void testMakeMenuBar() {
-        doReturn(mock(Project.class)).when(workbenchContext).getActiveProject();
+        doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
         doReturn(true).when(projectController).canUpdateProject(any());
 
         presenter.makeMenuBar();
@@ -247,7 +251,7 @@ public class DecisionTableXLSEditorPresenterTest {
 
     @Test
     public void testMakeMenuBarWithoutUpdateProjectPermission() {
-        doReturn(mock(Project.class)).when(workbenchContext).getActiveProject();
+        doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
         doReturn(false).when(projectController).canUpdateProject(any());
 
         presenter.makeMenuBar();

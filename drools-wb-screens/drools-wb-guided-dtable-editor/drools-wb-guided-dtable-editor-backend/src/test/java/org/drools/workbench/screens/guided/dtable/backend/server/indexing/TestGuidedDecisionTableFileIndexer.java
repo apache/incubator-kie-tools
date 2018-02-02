@@ -22,13 +22,13 @@ import javax.enterprise.context.ApplicationScoped;
 import org.drools.workbench.screens.guided.dtable.backend.server.indexing.classes.Applicant;
 import org.drools.workbench.screens.guided.dtable.backend.server.indexing.classes.Mortgage;
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
-import org.kie.soup.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
+import org.kie.soup.project.datamodel.commons.oracle.ModuleDataModelOracleImpl;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
 import org.kie.soup.project.datamodel.oracle.ModelField;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 
@@ -44,8 +44,8 @@ public class TestGuidedDecisionTableFileIndexer extends GuidedDecisionTableFileI
     }
 
     @Override
-    public void setProjectService(final KieProjectService projectService) {
-        this.projectService = projectService;
+    public void setModuleService(final KieModuleService moduleService) {
+        this.moduleService = moduleService;
     }
 
     @Override
@@ -54,9 +54,9 @@ public class TestGuidedDecisionTableFileIndexer extends GuidedDecisionTableFileI
     }
 
     @Override
-    protected ProjectDataModelOracle getProjectDataModelOracle(final Path path) {
-        final ProjectDataModelOracle dmo = new ProjectDataModelOracleImpl();
-        dmo.addProjectModelFields(new HashMap<String, ModelField[]>() {{
+    protected ModuleDataModelOracle getModuleDataModelOracle(final Path path) {
+        final ModuleDataModelOracle dmo = new ModuleDataModelOracleImpl();
+        dmo.addModuleModelFields(new HashMap<String, ModelField[]>() {{
             put(Applicant.class.getCanonicalName(),
                 new ModelField[]{
                         new ModelField("age",

@@ -20,7 +20,6 @@
 
 
   <!-- Guvnor dependencies -->
-  <inherits name='org.guvnor.asset.management.GuvnorAssetMgmtClient'/>
   <inherits name='org.guvnor.structure.GuvnorStructureClient'/>
   <inherits name="org.guvnor.m2repo.GuvnorM2RepoEditorAPI"/>
   <inherits name="org.guvnor.m2repo.GuvnorM2RepoEditorClient"/>

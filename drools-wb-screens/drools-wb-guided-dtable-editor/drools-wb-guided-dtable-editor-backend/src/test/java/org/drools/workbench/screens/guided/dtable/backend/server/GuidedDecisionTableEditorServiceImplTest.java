@@ -48,7 +48,7 @@ import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.backend.source.SourceService;
 import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
@@ -100,7 +100,7 @@ public class GuidedDecisionTableEditorServiceImplTest {
     private WorkItemsEditorService workItemsService;
 
     @Mock
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     @Mock
     private VersionRecordService versionRecordService;
@@ -151,7 +151,7 @@ public class GuidedDecisionTableEditorServiceImplTest {
                                                            renameService,
                                                            dataModelService,
                                                            workItemsService,
-                                                           projectService,
+                                                           moduleService,
                                                            versionRecordService,
                                                            dtableGraphService,
                                                            dtGraphType,
@@ -165,7 +165,7 @@ public class GuidedDecisionTableEditorServiceImplTest {
             }
         };
 
-        when(projectService.resolvePackage(any(Path.class))).thenReturn(pkg);
+        when(moduleService.resolvePackage(any(Path.class))).thenReturn(pkg);
         when(pkg.getPackageName()).thenReturn("mypackage");
         when(pkg.getPackageMainResourcesPath()).thenReturn(PathFactory.newPath("mypackage",
                                                                                "default://project/src/main/resources"));
@@ -219,7 +219,7 @@ public class GuidedDecisionTableEditorServiceImplTest {
         final Path path = mock(Path.class);
         final Overview overview = mock(Overview.class);
         final PackageDataModelOracle oracle = mock(PackageDataModelOracle.class);
-        when(oracle.getProjectCollectionTypes()).thenReturn(new HashMap<String, Boolean>() {{
+        when(oracle.getModuleCollectionTypes()).thenReturn(new HashMap<String, Boolean>() {{
             put("java.util.List",
                 true);
             put("java.util.Set",

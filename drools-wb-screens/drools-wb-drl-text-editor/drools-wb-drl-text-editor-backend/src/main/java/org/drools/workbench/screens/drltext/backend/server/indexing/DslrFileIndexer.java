@@ -31,7 +31,7 @@ import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.compiler.lang.dsl.DefaultExpander;
 import org.drools.workbench.screens.drltext.type.DSLRResourceTypeDefinition;
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.workbench.common.services.backend.file.DSLFileFilter;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
@@ -73,12 +73,12 @@ public class DslrFileIndexer extends AbstractDrlFileIndexer {
 
     /*
      * (non-Javadoc)
-     * @see org.kie.workbench.common.services.refactoring.backend.server.indexing.drools.AbstractDrlFileIndexer#getProjectDataModelOracle(org.uberfire.java.nio.file.Path)
+     * @see org.kie.workbench.common.services.refactoring.backend.server.indexing.drools.AbstractDrlFileIndexer#getModuleDataModelOracle(org.uberfire.java.nio.file.Path)
      */
     @Override
     //Delegate resolution of DMO to method to assist testing
-    protected ProjectDataModelOracle getProjectDataModelOracle(final Path path) {
-        return dataModelService.getProjectDataModel(Paths.convert(path));
+    protected ModuleDataModelOracle getModuleDataModelOracle(final Path path) {
+        return dataModelService.getModuleDataModel(Paths.convert(path));
     }
 
     /**
@@ -96,7 +96,7 @@ public class DslrFileIndexer extends AbstractDrlFileIndexer {
     private List<DSLMappingFile> getDSLMappingFiles(final Path path) {
         final List<DSLMappingFile> dsls = new ArrayList<DSLMappingFile>();
         final org.uberfire.backend.vfs.Path vfsPath = Paths.convert(path);
-        final org.uberfire.backend.vfs.Path packagePath = projectService.resolvePackage(vfsPath).getPackageMainResourcesPath();
+        final org.uberfire.backend.vfs.Path packagePath = moduleService.resolvePackage(vfsPath).getPackageMainResourcesPath();
         final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert(packagePath);
         final Collection<Path> dslPaths = fileDiscoveryService.discoverFiles(nioPackagePath,
                                                                              FILTER_DSLS);
