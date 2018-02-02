@@ -616,7 +616,7 @@ public class ConstraintValueEditor
             form.addAttribute(templateKeyLabel + ":",
                               widgets(templateKeyButton,
                                       new InfoPopup(templateKeyLabel,
-                                                    GuidedRuleEditorResources.CONSTANTS.LiteralValTip())));
+                                                    GuidedRuleEditorResources.CONSTANTS.TemplateKeyTip())));
         }
 
         //Divider, if we have any advanced options

@@ -278,6 +278,8 @@ public interface Constants
 
     String TemplateKey();
 
+    String TemplateKeyTip();
+
     String TemplateData();
 
     String LoadTemplateData();

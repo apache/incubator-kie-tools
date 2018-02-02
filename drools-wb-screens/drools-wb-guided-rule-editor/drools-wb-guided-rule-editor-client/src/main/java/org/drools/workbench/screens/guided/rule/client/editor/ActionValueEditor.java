@@ -430,8 +430,8 @@ public class ActionValueEditor
             });
             form.addAttribute(GuidedRuleEditorResources.CONSTANTS.TemplateKey() + ":",
                               widgets(templateButton,
-                                      new InfoPopup(GuidedRuleEditorResources.CONSTANTS.Literal(),
-                                                    GuidedRuleEditorResources.CONSTANTS.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation())));
+                                      new InfoPopup(GuidedRuleEditorResources.CONSTANTS.TemplateKey(),
+                                                    GuidedRuleEditorResources.CONSTANTS.TemplateKeyTip())));
         }
 
         form.addRow(new HTML("<hr/>"));
