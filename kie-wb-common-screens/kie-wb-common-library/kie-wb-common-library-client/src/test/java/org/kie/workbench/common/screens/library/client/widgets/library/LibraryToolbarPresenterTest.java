@@ -16,31 +16,28 @@
 package org.kie.workbench.common.screens.library.client.widgets.library;
 
 import java.util.ArrayList;
-import java.util.List;
-import javax.enterprise.event.Event;
+import java.util.Optional;
 
-import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
+import org.guvnor.common.services.project.model.Module;
+import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
-import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.library.api.LibraryService;
-import org.kie.workbench.common.screens.library.api.OrganizationalUnitRepositoryInfo;
-import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
-import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
-import org.mockito.Matchers;
+import org.kie.workbench.common.services.shared.project.KieModule;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
-import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.spaces.Space;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -50,140 +47,65 @@ public class LibraryToolbarPresenterTest {
     private LibraryToolbarPresenter.View view;
 
     @Mock
-    private LibraryService libraryService;
-    private Caller<LibraryService> libraryServiceCaller;
-
-    @Mock
-    private LibraryPreferences libraryPreferences;
-
-    @Mock
-    private LibraryInternalPreferences libraryInternalPreferences;
-
-    @Mock
     private PlaceManager placeManager;
 
     @Mock
+    private WorkspaceProjectContext projectContext;
+
+    @Mock
+    private WorkspaceProjectService projectService;
+
+    @Mock
     private LibraryPlaces libraryPlaces;
-
-    @Mock
-    private Event<ProjectContextChangeEvent> projectContextChangeEvent;
-
-    @Mock
-    private Event<NotificationEvent> notificationEvent;
 
     private LibraryToolbarPresenter presenter;
 
     private OrganizationalUnit selectedOrganizationalUnit;
 
-    private OrganizationalUnit organizationalUnit2;
-
     private Repository selectedRepository;
 
     private Command callback;
 
-    private ArrayList<String> selectedRepositoryBranches;
+    private ArrayList<Branch> selectedRepositoryBranches;
 
     @Before
     public void setup() {
-        libraryServiceCaller = new CallerMock<>(libraryService);
-        presenter = new LibraryToolbarPresenter(view,
-                                                libraryServiceCaller,
-                                                libraryPreferences,
-                                                libraryInternalPreferences,
-                                                placeManager,
+        presenter = new LibraryToolbarPresenter(projectContext,
+                                                new CallerMock<>(projectService),
                                                 libraryPlaces,
-                                                projectContextChangeEvent,
-                                                notificationEvent);
+                                                view,
+                                                placeManager);
 
         selectedOrganizationalUnit = mock(OrganizationalUnit.class);
-        doReturn("organizationalUnit1").when(selectedOrganizationalUnit).getIdentifier();
-        organizationalUnit2 = mock(OrganizationalUnit.class);
-        doReturn("organizationalUnit2").when(organizationalUnit2).getIdentifier();
-        List<OrganizationalUnit> organizationalUnits = new ArrayList<>();
-        organizationalUnits.add(selectedOrganizationalUnit);
-        organizationalUnits.add(organizationalUnit2);
+
+        final Branch masterBranch = new Branch("master",
+                                               mock(Path.class));
 
         selectedRepository = mock(Repository.class);
         selectedRepositoryBranches = new ArrayList<>();
-        selectedRepositoryBranches.add("master");
-        when(selectedRepository.getDefaultBranch()).thenReturn("master");
+        selectedRepositoryBranches.add(masterBranch);
+        when(selectedRepository.getDefaultBranch()).thenReturn(Optional.of(masterBranch));
         when(selectedRepository.getBranches()).thenReturn(selectedRepositoryBranches);
         doReturn("repository1").when(selectedRepository).getAlias();
-        Repository repository2 = mock(Repository.class);
-        doReturn("repository2").when(repository2).getAlias();
-        doReturn("defaultBranch").when(repository2).getDefaultBranch();
-        List<Repository> repositories = new ArrayList<>();
-        repositories.add(selectedRepository);
-        repositories.add(repository2);
-
-        final OrganizationalUnitRepositoryInfo organizationalUnitRepositoryInfo
-                = new OrganizationalUnitRepositoryInfo(organizationalUnits,
-                                                       selectedOrganizationalUnit,
-                                                       repositories,
-                                                       selectedRepository);
-
-        final OrganizationalUnitRepositoryInfo organizationalUnit2RepositoryInfo
-                = new OrganizationalUnitRepositoryInfo(organizationalUnits,
-                                                       organizationalUnit2,
-                                                       repositories,
-                                                       selectedRepository);
-
-        doReturn(organizationalUnitRepositoryInfo)
-                .when(libraryService).getDefaultOrganizationalUnitRepositoryInfo();
-        doReturn(organizationalUnit2RepositoryInfo)
-                .when(libraryService).getOrganizationalUnitRepositoryInfo(organizationalUnit2);
 
         callback = mock(Command.class);
 
-        doAnswer(invocationOnMock -> {
-            ((ParameterizedCommand) invocationOnMock.getArguments()[0]).execute(libraryInternalPreferences);
-            return null;
-        }).when(libraryInternalPreferences).load(Matchers.<ParameterizedCommand<LibraryInternalPreferences>>any(),
-                                                 any());
+        doReturn(Optional.of(selectedOrganizationalUnit)).when(projectContext).getActiveOrganizationalUnit();
+        doReturn(Optional.of(new WorkspaceProject(selectedOrganizationalUnit,
+                                      selectedRepository,
+                                      masterBranch,
+                                      mock(Module.class)))).when(projectContext).getActiveWorkspaceProject();
+        when(projectContext.getActiveModule()).thenReturn(Optional.empty());
+        when(projectContext.getActiveRepositoryRoot()).thenReturn(Optional.empty());
+        when(projectContext.getActivePackage()).thenReturn(Optional.empty());
     }
 
     @Test
     public void initTest() {
         presenter.init(callback);
 
-        assertEquals(selectedRepository,
-                     presenter.getSelectedRepository());
-        assertEquals("master",
-                     presenter.getSelectedBranch());
-
         verify(view).init(presenter);
-
-        verify(view).clearRepositories();
-        verify(view).addRepository("repository1");
-        verify(view).addRepository("repository2");
-        verify(view).setSelectedRepository("repository1");
-
         verify(callback).execute();
-    }
-
-    @Test
-    public void initWithoutDefaultOrganizationalUnitTest() {
-        doReturn(null).when(libraryService).getDefaultOrganizationalUnitRepositoryInfo();
-
-        presenter.init(callback);
-
-        verify(view).setRepositorySelectorVisibility(false);
-        verify(view).setBranchSelectorVisibility(false);
-
-        verify(view,
-               never()).init(presenter);
-
-        verify(view,
-               never()).clearRepositories();
-        verify(view,
-               never()).addRepository("repository1");
-        verify(view,
-               never()).addRepository("repository2");
-        verify(view,
-               never()).setSelectedRepository("repository1");
-
-        verify(callback,
-               never()).execute();
     }
 
     @Test
@@ -194,103 +116,100 @@ public class LibraryToolbarPresenterTest {
     }
 
     @Test
-    public void hideBranchSelectorOnInit() throws Exception {
-        selectedRepositoryBranches.add("dev");
-
-        presenter.init(callback);
-
-        verify(view).setBranchSelectorVisibility(true);
-    }
-
-    @Test
-    public void updateSelectedRepositoryFailedTest() {
-        presenter.init(callback);
-        reset(view);
-
-        doReturn(false).when(placeManager).closeAllPlacesOrNothing();
-        doReturn("repository2").when(view).getSelectedRepository();
-
-        presenter.onUpdateSelectedRepository();
-
-        assertEquals("repository1",
-                     presenter.getSelectedRepository().getAlias());
-    }
-
-    @Test
-    public void updateSelectedRepositorySucceededTest() {
-        presenter.init(callback);
-        reset(view);
-
-        doReturn(true).when(placeManager).closeAllPlacesOrNothing();
-        doReturn("repository2").when(view).getSelectedRepository();
-
-        presenter.onUpdateSelectedRepository();
-
-        assertEquals("repository2",
-                     presenter.getSelectedRepository().getAlias());
-        assertEquals("defaultBranch",
-                     presenter.getSelectedBranch());
-
-        verify(libraryPlaces).goToLibrary(any());
-
-        verify(view,
-               never()).clearRepositories();
-        verify(view,
-               never()).addRepository(anyString());
-        verify(view,
-               never()).setSelectedRepository(anyString());
-        verify(view).setSelectedBranch("defaultBranch");
-
-        verify(libraryInternalPreferences).setLastOpenedRepository("repository2");
-        verify(libraryInternalPreferences).save();
-    }
-
-    @Test
     public void updateSelectedBranch() throws Exception {
-        selectedRepositoryBranches.add("dev");
+
+        final Branch devBranch = new Branch("dev",
+                                            mock(Path.class));
+
+        final WorkspaceProject devBranchProject = new WorkspaceProject(selectedOrganizationalUnit,
+                                                                       selectedRepository,
+                                                                       devBranch,
+                                                                       mock(Module.class));
+        Space space = new Space("test-realm");
+        doReturn(space).when(selectedRepository).getSpace();
+        doReturn(devBranchProject).when(projectService).resolveProject(space, devBranch);
+
+        selectedRepositoryBranches.add(devBranch);
+        doReturn(Optional.of(devBranch)).when(selectedRepository).getBranch("dev");
 
         presenter.init(callback);
         reset(view);
 
         doReturn(true).when(placeManager).closeAllPlacesOrNothing();
-        doReturn("repository1").when(view).getSelectedRepository();
         doReturn("dev").when(view).getSelectedBranch();
 
         presenter.onUpdateSelectedBranch();
 
-        verify(libraryPlaces).goToLibrary(any());
-
-        verify(view,
-               never()).clearRepositories();
-        verify(view,
-               never()).addRepository(anyString());
-        verify(view,
-               never()).setSelectedRepository(anyString());
-        verify(view,
-               never()).setSelectedBranch("dev");
+        verify(libraryPlaces).goToProject(devBranchProject);
     }
 
     @Test
-    public void setSelectedInfoTest() {
-        presenter.init(callback);
-        reset(view);
+    public void noActiveProject() throws Exception {
+        presenter.setUpBranches();
 
-        doReturn(true).when(placeManager).closeAllPlacesOrNothing();
-        doReturn("repository2").when(view).getSelectedRepository();
+        verify(view).clearBranches();
+        verify(view).setBranchSelectorVisibility(false);
+    }
 
-        final Command callback = mock(Command.class);
-        presenter.setSelectedInfo(organizationalUnit2,
-                                  selectedRepository,
-                                  callback);
+    @Test
+    public void activeProjectHasOnlyOneBranch() throws Exception {
 
-        assertEquals("repository2",
-                     presenter.getSelectedRepository().getAlias());
+        final Repository repository = mock(Repository.class);
+        final ArrayList<Branch> branches = new ArrayList<>();
+        branches.add(new Branch());
+        doReturn(branches).when(repository).getBranches();
+        doReturn(Optional.of(new WorkspaceProject(mock(OrganizationalUnit.class),
+                                      repository,
+                                      mock(Branch.class),
+                                      mock(KieModule.class)))).when(projectContext).getActiveWorkspaceProject();
 
-        verify(libraryPlaces).goToLibrary(callback);
+        presenter.setUpBranches();
 
-        verify(view).clearRepositories();
-        verify(view).addRepository("repository1");
-        verify(view).addRepository("repository2");
-        verify(view).setSelectedRepository("repository1");
+        verify(view).clearBranches();
+        verify(view).setBranchSelectorVisibility(false);
+    }
+
+    @Test
+    public void selectorVisibleWhenMoreThanOneBranch() throws Exception {
+
+        final Repository repository = mock(Repository.class);
+        final ArrayList<Branch> branches = new ArrayList<>();
+        branches.add(new Branch());
+        branches.add(new Branch());
+        doReturn(branches).when(repository).getBranches();
+        doReturn(Optional.of(new WorkspaceProject(mock(OrganizationalUnit.class),
+                                      repository,
+                                      mock(Branch.class),
+                                      mock(KieModule.class)))).when(projectContext).getActiveWorkspaceProject();
+
+        presenter.setUpBranches();
+
+        verify(view).clearBranches();
+        verify(view).setBranchSelectorVisibility(true);
+    }
+
+    @Test
+    public void listBranches() throws Exception {
+
+        final Repository repository = mock(Repository.class);
+        final ArrayList<Branch> branches = new ArrayList<>();
+        branches.add(new Branch("one", mock(Path.class)));
+        branches.add(new Branch("two", mock(Path.class)));
+        doReturn(branches).when(repository).getBranches();
+
+        // Normally this is in the branch list, but I want to verify it gets set from the branch in the project
+        final Branch selectedBranch = new Branch("selectedBranch", mock(Path.class));
+
+        doReturn(Optional.of(new WorkspaceProject(mock(OrganizationalUnit.class),
+                                      repository,
+                                      selectedBranch,
+                                      mock(KieModule.class)))).when(projectContext).getActiveWorkspaceProject();
+
+        presenter.setUpBranches();
+
+        verify(view).addBranch("one");
+        verify(view).addBranch("two");
+
+        view.setSelectedBranch("selectedBranch");
     }
 }

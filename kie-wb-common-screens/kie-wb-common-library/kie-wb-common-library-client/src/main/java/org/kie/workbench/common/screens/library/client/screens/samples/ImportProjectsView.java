@@ -33,10 +33,10 @@ import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryCon
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 
 @Templated
-public class ImportProjectsView implements ImportProjectsScreen.View,
+public class ImportProjectsView implements ImportWorkspaceProjectsScreen.View,
                                            IsElement {
 
-    private ImportProjectsScreen presenter;
+    private ImportWorkspaceProjectsScreen presenter;
 
     @Inject
     private TranslationService ts;
@@ -62,7 +62,7 @@ public class ImportProjectsView implements ImportProjectsScreen.View,
     Button ok;
 
     @Override
-    public void init(final ImportProjectsScreen presenter) {
+    public void init(final ImportWorkspaceProjectsScreen presenter) {
         this.presenter = presenter;
         filterText.setAttribute("placeholder",
                                 ts.getTranslation(LibraryConstants.Search));

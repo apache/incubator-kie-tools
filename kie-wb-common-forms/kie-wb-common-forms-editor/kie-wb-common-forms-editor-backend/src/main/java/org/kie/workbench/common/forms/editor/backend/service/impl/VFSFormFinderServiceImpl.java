@@ -24,7 +24,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.forms.editor.service.shared.VFSFormFinderService;
 import org.kie.workbench.common.forms.editor.type.FormResourceTypeDefinition;
@@ -32,7 +32,7 @@ import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.JavaFormModel;
 import org.kie.workbench.common.forms.serialization.FormDefinitionSerializer;
 import org.kie.workbench.common.services.datamodeller.util.FileUtils;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -47,16 +47,16 @@ public class VFSFormFinderServiceImpl implements VFSFormFinderService {
 
     private IOService ioService;
 
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     private FormDefinitionSerializer serializer;
 
     @Inject
     public VFSFormFinderServiceImpl(@Named("ioStrategy") IOService ioService,
-                                    KieProjectService projectService,
+                                    KieModuleService moduleService,
                                     FormDefinitionSerializer serializer) {
         this.ioService = ioService;
-        this.projectService = projectService;
+        this.moduleService = moduleService;
         this.serializer = serializer;
     }
 
@@ -100,18 +100,18 @@ public class VFSFormFinderServiceImpl implements VFSFormFinderService {
         return null;
     }
 
-    private List<FormDefinition> findForms(Path path,
-                                           FormSearchConstraint constraint) {
+    private List<FormDefinition> findForms(final Path path,
+                                           final FormSearchConstraint constraint) {
 
         List<FormDefinition> result = new ArrayList<>();
 
-        Project project = projectService.resolveProject(path);
+        Module module = moduleService.resolveModule(path);
 
         FileUtils utils = FileUtils.getInstance();
 
         List<org.uberfire.java.nio.file.Path> nioPaths = new ArrayList<>();
 
-        nioPaths.add(Paths.convert(project.getRootPath()));
+        nioPaths.add(Paths.convert(module.getRootPath()));
 
         Collection<FileUtils.ScanResult> forms = utils.scan(ioService,
                                                             nioPaths,

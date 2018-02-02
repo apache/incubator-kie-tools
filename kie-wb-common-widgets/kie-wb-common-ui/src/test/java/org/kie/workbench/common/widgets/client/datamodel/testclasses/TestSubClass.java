@@ -16,7 +16,7 @@
 package org.kie.workbench.common.widgets.client.datamodel.testclasses;
 
 /**
- * Test class to check data-types are extracted correctly by ProjectDataModelOracleBuilder for subclasses and delegated classes
+ * Test class to check data-types are extracted correctly by ModuleDataModelOracleBuilder for subclasses and delegated classes
  */
 public class TestSubClass extends TestSuperClass {
 
@@ -26,8 +26,7 @@ public class TestSubClass extends TestSuperClass {
         return field2;
     }
 
-    public void setField2( final String field2 ) {
+    public void setField2(final String field2) {
         this.field2 = field2;
     }
-
 }

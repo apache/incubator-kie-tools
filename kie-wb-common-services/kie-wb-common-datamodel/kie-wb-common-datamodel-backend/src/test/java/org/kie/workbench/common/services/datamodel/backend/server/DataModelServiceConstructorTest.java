@@ -14,12 +14,6 @@
 */
 package org.kie.workbench.common.services.datamodel.backend.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.kie.workbench.common.services.datamodel.backend.server.ProjectDataModelOracleTestUtils.assertContains;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -27,7 +21,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.function.Predicate;
-
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 
@@ -40,35 +33,27 @@ import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
 import org.guvnor.common.services.backend.metadata.MetadataServiceImpl;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.backend.util.CommentedOptionFactoryImpl;
+import org.guvnor.common.services.project.backend.server.ModuleFinder;
+import org.guvnor.common.services.project.backend.server.ModuleRepositoriesContentHandler;
+import org.guvnor.common.services.project.backend.server.ModuleRepositoryResolverImpl;
+import org.guvnor.common.services.project.backend.server.ModuleResourcePathResolver;
 import org.guvnor.common.services.project.backend.server.POMServiceImpl;
 import org.guvnor.common.services.project.backend.server.ProjectConfigurationContentHandler;
-import org.guvnor.common.services.project.backend.server.ProjectRepositoriesContentHandler;
-import org.guvnor.common.services.project.backend.server.ProjectRepositoryResolverImpl;
-import org.guvnor.common.services.project.backend.server.ProjectResourcePathResolver;
 import org.guvnor.common.services.project.backend.server.utils.POMContentHandler;
-import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
+import org.guvnor.common.services.project.builder.events.InvalidateDMOModuleCacheEvent;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
 import org.guvnor.common.services.project.builder.service.PostBuildHandler;
+import org.guvnor.common.services.project.events.NewModuleEvent;
 import org.guvnor.common.services.project.events.NewPackageEvent;
-import org.guvnor.common.services.project.events.NewProjectEvent;
-import org.guvnor.common.services.project.events.RenameProjectEvent;
+import org.guvnor.common.services.project.events.RenameModuleEvent;
+import org.guvnor.common.services.project.service.ModuleRepositoriesService;
+import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.project.service.POMService;
-import org.guvnor.common.services.project.service.ProjectRepositoriesService;
-import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.m2repo.backend.server.M2RepoServiceImpl;
-import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
-import org.guvnor.structure.backend.config.ConfigGroupMarshaller;
-import org.guvnor.structure.backend.config.ConfigurationFactoryImpl;
-import org.guvnor.structure.backend.config.ConfigurationServiceImpl;
-import org.guvnor.structure.backend.config.DefaultPasswordServiceImpl;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.guvnor.structure.security.RepositoryAction;
-import org.guvnor.structure.server.config.ConfigurationFactory;
-import org.guvnor.structure.server.config.ConfigurationService;
-import org.guvnor.structure.server.config.PasswordService;
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -77,42 +62,41 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.soup.project.datamodel.commons.util.RawMVELEvaluator;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.soup.project.datamodel.oracle.TypeSource;
 import org.kie.workbench.common.services.backend.builder.ala.BuildPipelineInitializer;
 import org.kie.workbench.common.services.backend.builder.ala.BuildPipelineInvoker;
 import org.kie.workbench.common.services.backend.builder.ala.LocalBuildConfigExecutor;
 import org.kie.workbench.common.services.backend.builder.ala.LocalBuildExecConfigExecutor;
-import org.kie.workbench.common.services.backend.builder.ala.LocalProjectConfigExecutor;
+import org.kie.workbench.common.services.backend.builder.ala.LocalModuleConfigExecutor;
 import org.kie.workbench.common.services.backend.builder.ala.LocalSourceConfigExecutor;
 import org.kie.workbench.common.services.backend.builder.core.BuildHelper;
 import org.kie.workbench.common.services.backend.builder.core.DeploymentVerifier;
 import org.kie.workbench.common.services.backend.builder.core.LRUBuilderCache;
+import org.kie.workbench.common.services.backend.builder.core.LRUModuleDependenciesClassLoaderCache;
 import org.kie.workbench.common.services.backend.builder.core.LRUPomModelCache;
-import org.kie.workbench.common.services.backend.builder.core.LRUProjectDependenciesClassLoaderCache;
 import org.kie.workbench.common.services.backend.builder.service.BuildInfoService;
 import org.kie.workbench.common.services.backend.builder.service.BuildServiceHelper;
 import org.kie.workbench.common.services.backend.builder.service.BuildServiceImpl;
 import org.kie.workbench.common.services.backend.dependencies.DependencyServiceImpl;
 import org.kie.workbench.common.services.backend.kmodule.KModuleContentHandler;
 import org.kie.workbench.common.services.backend.kmodule.KModuleServiceImpl;
-import org.kie.workbench.common.services.backend.project.KieProjectRepositoriesServiceImpl;
-import org.kie.workbench.common.services.backend.project.KieProjectServiceImpl;
+import org.kie.workbench.common.services.backend.project.KieModuleRepositoriesServiceImpl;
+import org.kie.workbench.common.services.backend.project.KieModuleServiceImpl;
 import org.kie.workbench.common.services.backend.project.KieResourceResolver;
+import org.kie.workbench.common.services.backend.project.ModuleSaver;
 import org.kie.workbench.common.services.backend.project.ProjectImportsServiceImpl;
-import org.kie.workbench.common.services.backend.project.ProjectSaver;
 import org.kie.workbench.common.services.backend.whitelist.PackageNameSearchProvider;
 import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListLoader;
 import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListSaver;
 import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListServiceImpl;
 import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUDataModelOracleCache;
-import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUProjectDataModelOracleCache;
-import org.kie.workbench.common.services.datamodel.backend.server.cache.ProjectDataModelOracleBuilderProvider;
+import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUModuleDataModelOracleCache;
+import org.kie.workbench.common.services.datamodel.backend.server.cache.ModuleDataModelOracleBuilderProvider;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodel.spi.DataModelExtension;
 import org.kie.workbench.common.services.shared.dependencies.DependencyService;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
 import org.mockito.Mock;
@@ -128,13 +112,13 @@ import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.rpc.impl.SessionInfoImpl;
 import org.uberfire.security.ResourceType;
-import org.uberfire.security.authz.AuthorizationManager;
-import org.uberfire.security.authz.PermissionManager;
 import org.uberfire.security.authz.PermissionTypeRegistry;
-import org.uberfire.security.impl.authz.DefaultAuthorizationManager;
-import org.uberfire.security.impl.authz.DefaultPermissionManager;
 import org.uberfire.security.impl.authz.DefaultPermissionTypeRegistry;
 import org.uberfire.security.impl.authz.DotNamedPermissionType;
+
+import static org.junit.Assert.*;
+import static org.kie.workbench.common.services.datamodel.backend.server.ModuleDataModelOracleTestUtils.assertContains;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DataModelServiceConstructorTest {
@@ -144,77 +128,10 @@ public class DataModelServiceConstructorTest {
     private ResourceType REPOSITORY_TYPE = Repository.RESOURCE_TYPE;
 
     @Mock
-    private Instance<ProjectResourcePathResolver> resourcePathResolversInstance;
+    private Instance<ModuleResourcePathResolver> resourcePathResolversInstance;
 
     @Mock
     private Instance<DataModelExtension> dataModelExtensionProvider;
-
-    private class HackedKModuleServiceImpl extends KModuleServiceImpl {
-
-        public HackedKModuleServiceImpl(IOService ioService,
-                                        KieProjectServiceImpl projectService,
-                                        MetadataService metadataService,
-                                        KModuleContentHandler moduleContentHandler) {
-            super(ioService,
-                  projectService,
-                  metadataService,
-                  moduleContentHandler);
-        }
-
-        @Override
-        public void setProjectService(KieProjectService projectService) {
-            super.setProjectService(projectService);
-        }
-    }
-
-    private class HackedLRUProjectDependenciesClassLoaderCache extends LRUProjectDependenciesClassLoaderCache {
-
-        @Override
-        public void setBuildInfoService(BuildInfoService buildInfoService) {
-            super.setBuildInfoService(buildInfoService);
-        }
-    }
-
-    private class HackedKieProjectServiceImpl extends KieProjectServiceImpl {
-
-        public HackedKieProjectServiceImpl(IOService ioService,
-                                           ProjectSaver projectSaver,
-                                           POMService pomService,
-                                           ConfigurationService configurationService,
-                                           ConfigurationFactory configurationFactory,
-                                           Event<NewProjectEvent> newProjectEvent,
-                                           Event<NewPackageEvent> newPackageEvent,
-                                           Event<RenameProjectEvent> renameProjectEvent,
-                                           Event<InvalidateDMOProjectCacheEvent> invalidateDMOCache,
-                                           SessionInfo sessionInfo,
-                                           AuthorizationManager authorizationManager,
-                                           BackwardCompatibleUtil backward,
-                                           CommentedOptionFactory commentedOptionFactory,
-                                           KieResourceResolver resourceResolver,
-                                           ProjectRepositoryResolver repositoryResolver) {
-            super(ioService,
-                  projectSaver,
-                  pomService,
-                  configurationService,
-                  configurationFactory,
-                  newProjectEvent,
-                  newPackageEvent,
-                  renameProjectEvent,
-                  invalidateDMOCache,
-                  sessionInfo,
-                  authorizationManager,
-                  backward,
-                  commentedOptionFactory,
-                  resourceResolver,
-                  repositoryResolver
-            );
-        }
-
-        @Override
-        public void setProjectSaver(ProjectSaver projectSaver) {
-            super.setProjectSaver(projectSaver);
-        }
-    }
 
     @Before
     public void setup() {
@@ -252,30 +169,16 @@ public class DataModelServiceConstructorTest {
                                                    m2RepoService,
                                                    metadataService);
         KModuleContentHandler moduleContentHandler = new KModuleContentHandler();
-        PasswordService secureService = new DefaultPasswordServiceImpl();
-        ConfigurationFactory configurationFactory = new ConfigurationFactoryImpl(secureService);
-
-        org.guvnor.structure.repositories.Repository systemRepository = new GitRepository("system");
-        ConfigGroupMarshaller marshaller = new ConfigGroupMarshaller();
-        ConfigurationService configurationService = new ConfigurationServiceImpl(systemRepository,
-                                                                                 marshaller,
-                                                                                 user,
-                                                                                 ioService,
-                                                                                 new EventSourceMock<>(),
-                                                                                 new EventSourceMock<>(),
-                                                                                 new EventSourceMock<>(),
-                                                                                 fs.getFileSystem(packageUrl.toURI()));
 
         CommentedOptionFactory commentedOptionFactory = new CommentedOptionFactoryImpl(sessionInfo);
-        BackwardCompatibleUtil backward = new BackwardCompatibleUtil(configurationFactory);
-        ProjectConfigurationContentHandler projectConfigurationContentHandler = new ProjectConfigurationContentHandler();
-        ProjectImportsService projectImportsService = new ProjectImportsServiceImpl(ioService,
-                                                                                    projectConfigurationContentHandler);
+        ProjectConfigurationContentHandler moduleConfigurationContentHandler = new ProjectConfigurationContentHandler();
+        ProjectImportsService moduleImportsService = new ProjectImportsServiceImpl(ioService,
+                                                                                   moduleConfigurationContentHandler);
 
-        Event<NewProjectEvent> newProjectEvent = new EventSourceMock<>();
+        Event<NewModuleEvent> newModuleEvent = new EventSourceMock<>();
         Event<NewPackageEvent> newPackageEvent = new EventSourceMock<>();
-        Event<RenameProjectEvent> renameProjectEvent = new EventSourceMock<>();
-        Event<InvalidateDMOProjectCacheEvent> invalidateDMOCache = new EventSourceMock<>();
+        Event<RenameModuleEvent> renameModuleEvent = new EventSourceMock<>();
+        Event<InvalidateDMOModuleCacheEvent> invalidateDMOCache = new EventSourceMock<>();
 
         PermissionTypeRegistry permissionTypeRegistry = new DefaultPermissionTypeRegistry();
         DotNamedPermissionType permissionType = new DotNamedPermissionType(REPOSITORY_TYPE.getName());
@@ -292,56 +195,43 @@ public class DataModelServiceConstructorTest {
                                         RepositoryAction.DELETE,
                                         true);
         permissionTypeRegistry.register(permissionType);
-        PermissionManager permissionManager = new DefaultPermissionManager();
 
-        AuthorizationManager authorizationManager = new DefaultAuthorizationManager(permissionManager);
-
-        ProjectRepositoryResolver repositoryResolver = new ProjectRepositoryResolverImpl(ioService,
-                                                                                         null,
-                                                                                         null);
+        ModuleRepositoryResolver repositoryResolver = new ModuleRepositoryResolverImpl(ioService,
+                                                                                       null,
+                                                                                       null);
 
         FileDiscoveryService fileDiscoveryService = new FileDiscoveryServiceImpl();
 
-        HackedKieProjectServiceImpl projectService = null;
+        HackedKieModuleServiceImpl moduleService = null;
         HackedKModuleServiceImpl kModuleService = new HackedKModuleServiceImpl(ioService,
-                                                                               projectService,
+                                                                               moduleService,
                                                                                metadataService,
                                                                                moduleContentHandler);
         KieResourceResolver resourceResolver = new KieResourceResolver(ioService,
                                                                        pomService,
-                                                                       configurationService,
                                                                        commentedOptionFactory,
-                                                                       backward,
                                                                        kModuleService,
-                                                                       resourcePathResolversInstance) {
-            @Override
-            protected void addSecurityGroups(final KieProject project) {
-                //Do nothing. This test demonstrating DMO usage without WELD does not use permissions.
-            }
-        };
-        ProjectSaver projectSaver = null;
-        projectService = new HackedKieProjectServiceImpl(ioService,
-                                                         projectSaver,
-                                                         pomService,
-                                                         configurationService,
-                                                         configurationFactory,
-                                                         newProjectEvent,
-                                                         newPackageEvent,
-                                                         renameProjectEvent,
-                                                         invalidateDMOCache,
-                                                         sessionInfo,
-                                                         authorizationManager,
-                                                         backward,
-                                                         commentedOptionFactory,
-                                                         resourceResolver,
-                                                         repositoryResolver);
+                                                                       resourcePathResolversInstance);
+        ModuleSaver moduleSaver = null;
+        moduleService = new HackedKieModuleServiceImpl(ioService,
+                                                       moduleSaver,
+                                                       pomService,
+                                                       newModuleEvent,
+                                                       newPackageEvent,
+                                                       renameModuleEvent,
+                                                       invalidateDMOCache,
+                                                       sessionInfo,
+                                                       commentedOptionFactory,
+                                                       mock(ModuleFinder.class),
+                                                       resourceResolver,
+                                                       repositoryResolver);
 
-        ProjectRepositoriesContentHandler contentHandler = new ProjectRepositoriesContentHandler();
-        ProjectRepositoriesService projectRepositoriesService = new KieProjectRepositoriesServiceImpl(ioService,
-                                                                                                      repositoryResolver,
-                                                                                                      resourceResolver,
-                                                                                                      contentHandler,
-                                                                                                      commentedOptionFactory);
+        ModuleRepositoriesContentHandler contentHandler = new ModuleRepositoriesContentHandler();
+        ModuleRepositoriesService moduleRepositoriesService = new KieModuleRepositoriesServiceImpl(ioService,
+                                                                                                   repositoryResolver,
+                                                                                                   resourceResolver,
+                                                                                                   contentHandler,
+                                                                                                   commentedOptionFactory);
 
         DependencyService dependencyService = new DependencyServiceImpl();
         PackageNameSearchProvider packageNameSearchProvider = new PackageNameSearchProvider(dependencyService);
@@ -354,32 +244,32 @@ public class DataModelServiceConstructorTest {
                                                                         serverSideMetdataService,
                                                                         commentedOptionFactory);
         PackageNameWhiteListService packageNameWhiteListService = new PackageNameWhiteListServiceImpl(ioService,
-                                                                                                      projectService,
+                                                                                                      moduleService,
                                                                                                       loader,
                                                                                                       saver);
 
-        projectSaver = new ProjectSaver(ioService,
-                                        pomService,
-                                        kModuleService,
-                                        newProjectEvent,
-                                        newPackageEvent,
-                                        resourceResolver,
-                                        projectImportsService,
-                                        projectRepositoriesService,
-                                        packageNameWhiteListService,
-                                        commentedOptionFactory,
-                                        sessionInfo);
-        projectService.setProjectSaver(projectSaver);
-        kModuleService.setProjectService(projectService);
+        moduleSaver = new ModuleSaver(ioService,
+                                      pomService,
+                                      kModuleService,
+                                      newModuleEvent,
+                                      newPackageEvent,
+                                      resourceResolver,
+                                      moduleImportsService,
+                                      moduleRepositoriesService,
+                                      packageNameWhiteListService,
+                                      commentedOptionFactory,
+                                      sessionInfo);
+        moduleService.setModuleSaver(moduleSaver);
+        kModuleService.setModuleService(moduleService);
 
         ProjectImportsService importsService = new ProjectImportsServiceImpl(ioService,
-                                                                             projectConfigurationContentHandler);
+                                                                             moduleConfigurationContentHandler);
         Instance<BuildValidationHelper> buildValidationHelperBeans = null;
         Instance<Predicate<String>> classFilterBeans = null;
-        HackedLRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache = new HackedLRUProjectDependenciesClassLoaderCache();
+        HackedLRUModuleDependenciesClassLoaderCache dependenciesClassLoaderCache = new HackedLRUModuleDependenciesClassLoaderCache();
         LRUPomModelCache pomModelCache = new LRUPomModelCache();
         LRUBuilderCache builderCache = new LRUBuilderCache(ioService,
-                                                           projectService,
+                                                           moduleService,
                                                            importsService,
                                                            buildValidationHelperBeans,
                                                            dependenciesClassLoaderCache,
@@ -393,76 +283,144 @@ public class DataModelServiceConstructorTest {
         when(handlerInstance.iterator()).thenReturn(mockIterator);
         when(mockIterator.hasNext()).thenReturn(false);
 
-        DeploymentVerifier deploymentVerifier = new DeploymentVerifier(repositoryResolver, projectRepositoriesService);
+        DeploymentVerifier deploymentVerifier = new DeploymentVerifier(repositoryResolver,
+                                                                       moduleRepositoriesService);
         BuildHelper buildHelper = new BuildHelper(pomService,
                                                   m2RepoService,
-                                                  projectService,
+                                                  moduleService,
                                                   deploymentVerifier,
                                                   builderCache,
                                                   handlerInstance,
                                                   userInstance);
         PipelineRegistry pipelineRegistry = new InMemoryPipelineRegistry();
         BuildPipelineInitializer pipelineInitializer = new BuildPipelineInitializer(pipelineRegistry,
-                                                                                    getConfigExecutors(projectService, buildHelper));
-        BuildPipelineInvoker pipelineInvoker = new BuildPipelineInvoker(pipelineInitializer.getExecutor(), pipelineRegistry);
+                                                                                    getConfigExecutors(moduleService,
+                                                                                                       buildHelper));
+        BuildPipelineInvoker pipelineInvoker = new BuildPipelineInvoker(pipelineInitializer.getExecutor(),
+                                                                        pipelineRegistry);
 
-        BuildServiceHelper buildServiceHelper = new BuildServiceHelper(pipelineInvoker, deploymentVerifier);
-        BuildService buildService = new BuildServiceImpl(projectService, buildServiceHelper, builderCache);
-        BuildInfoService buildInfoService = new BuildInfoService(buildService, builderCache);
+        BuildServiceHelper buildServiceHelper = new BuildServiceHelper(pipelineInvoker,
+                                                                       deploymentVerifier);
+        BuildService buildService = new BuildServiceImpl(moduleService,
+                                                         buildServiceHelper,
+                                                         builderCache);
+        BuildInfoService buildInfoService = new BuildInfoService(buildService,
+                                                                 builderCache);
 
-        ProjectDataModelOracleBuilderProvider builderProvider = new ProjectDataModelOracleBuilderProvider(packageNameWhiteListService,
-                                                                                                          importsService);
+        ModuleDataModelOracleBuilderProvider builderProvider = new ModuleDataModelOracleBuilderProvider(packageNameWhiteListService,
+                                                                                                        importsService);
 
-        LRUProjectDataModelOracleCache cacheProjects = new LRUProjectDataModelOracleCache(builderProvider,
-                                                                                          projectService,
-                                                                                          buildInfoService);
+        LRUModuleDataModelOracleCache cacheModules = new LRUModuleDataModelOracleCache(builderProvider,
+                                                                                       moduleService,
+                                                                                       buildInfoService);
 
         dependenciesClassLoaderCache.setBuildInfoService(buildInfoService);
         LRUDataModelOracleCache cachePackages = new LRUDataModelOracleCache(ioService,
                                                                             fileDiscoveryService,
-                                                                            cacheProjects,
-                                                                            projectService,
+                                                                            cacheModules,
+                                                                            moduleService,
                                                                             buildInfoService,
                                                                             dataModelExtensionProvider,
                                                                             new RawMVELEvaluator());
         DataModelService dataModelService = new DataModelServiceImpl(cachePackages,
-                                                                     cacheProjects,
-                                                                     projectService);
+                                                                     cacheModules,
+                                                                     moduleService);
 
         final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath(packageUrl.toURI());
         final Path packagePath = Paths.convert(nioPackagePath);
 
-        final ProjectDataModelOracle oracle = dataModelService.getProjectDataModel(packagePath);
+        final ModuleDataModelOracle oracle = dataModelService.getModuleDataModel(packagePath);
 
         assertNotNull(oracle);
 
         assertEquals(4,
-                     oracle.getProjectModelFields().size());
+                     oracle.getModuleModelFields().size());
         assertContains("t1p1.Bean1",
-                       oracle.getProjectModelFields().keySet());
+                       oracle.getModuleModelFields().keySet());
         assertContains("t1p1.DRLBean",
-                       oracle.getProjectModelFields().keySet());
+                       oracle.getModuleModelFields().keySet());
         assertContains("t1p2.Bean2",
-                       oracle.getProjectModelFields().keySet());
+                       oracle.getModuleModelFields().keySet());
         assertContains("java.lang.String",
-                       oracle.getProjectModelFields().keySet());
+                       oracle.getModuleModelFields().keySet());
 
         assertEquals(TypeSource.JAVA_PROJECT,
-                     oracle.getProjectTypeSources().get("t1p1.Bean1"));
+                     oracle.getModuleTypeSources().get("t1p1.Bean1"));
         assertEquals(TypeSource.DECLARED,
-                     oracle.getProjectTypeSources().get("t1p1.DRLBean"));
+                     oracle.getModuleTypeSources().get("t1p1.DRLBean"));
         assertEquals(TypeSource.JAVA_PROJECT,
-                     oracle.getProjectTypeSources().get("t1p2.Bean2"));
+                     oracle.getModuleTypeSources().get("t1p2.Bean2"));
         assertEquals(TypeSource.JAVA_PROJECT,
-                     oracle.getProjectTypeSources().get("java.lang.String"));
+                     oracle.getModuleTypeSources().get("java.lang.String"));
     }
 
-    private Collection<ConfigExecutor> getConfigExecutors(KieProjectService projectService, BuildHelper buildHelper) {
+    private Collection<ConfigExecutor> getConfigExecutors(KieModuleService moduleService,
+                                                          BuildHelper buildHelper) {
         Collection<ConfigExecutor> configs = new ArrayList<>();
         configs.add(new LocalSourceConfigExecutor());
-        configs.add(new LocalProjectConfigExecutor(projectService));
+        configs.add(new LocalModuleConfigExecutor(moduleService));
         configs.add(new LocalBuildConfigExecutor());
         configs.add(new LocalBuildExecConfigExecutor(buildHelper));
         return configs;
+    }
+
+    private class HackedKModuleServiceImpl extends KModuleServiceImpl {
+
+        public HackedKModuleServiceImpl(IOService ioService,
+                                        KieModuleServiceImpl moduleService,
+                                        MetadataService metadataService,
+                                        KModuleContentHandler moduleContentHandler) {
+            super(ioService,
+                  moduleService,
+                  metadataService,
+                  moduleContentHandler);
+        }
+
+        public void setModuleService(KieModuleService moduleService) {
+            super.setModuleService(moduleService);
+        }
+    }
+
+    private class HackedLRUModuleDependenciesClassLoaderCache extends LRUModuleDependenciesClassLoaderCache {
+
+        @Override
+        public void setBuildInfoService(BuildInfoService buildInfoService) {
+            super.setBuildInfoService(buildInfoService);
+        }
+    }
+
+    private class HackedKieModuleServiceImpl extends KieModuleServiceImpl {
+
+        public HackedKieModuleServiceImpl(IOService ioService,
+                                          ModuleSaver moduleSaver,
+                                          POMService pomService,
+                                          Event<NewModuleEvent> newModuleEvent,
+                                          Event<NewPackageEvent> newPackageEvent,
+                                          Event<RenameModuleEvent> renameModuleEvent,
+                                          Event<InvalidateDMOModuleCacheEvent> invalidateDMOCache,
+                                          SessionInfo sessionInfo,
+                                          CommentedOptionFactory commentedOptionFactory,
+                                          ModuleFinder moduleFinder,
+                                          KieResourceResolver resourceResolver,
+                                          ModuleRepositoryResolver repositoryResolver) {
+            super(ioService,
+                  moduleSaver,
+                  pomService,
+                  newModuleEvent,
+                  newPackageEvent,
+                  renameModuleEvent,
+                  invalidateDMOCache,
+                  sessionInfo,
+                  commentedOptionFactory,
+                  moduleFinder,
+                  resourceResolver,
+                  repositoryResolver
+            );
+        }
+
+        @Override
+        public void setModuleSaver(ModuleSaver moduleSaver) {
+            super.setModuleSaver(moduleSaver);
+        }
     }
 }

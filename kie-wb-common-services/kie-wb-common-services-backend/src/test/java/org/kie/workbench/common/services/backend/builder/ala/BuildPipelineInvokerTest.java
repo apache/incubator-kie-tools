@@ -24,7 +24,7 @@ import org.guvnor.ala.pipeline.Input;
 import org.guvnor.ala.pipeline.Pipeline;
 import org.guvnor.ala.pipeline.execution.PipelineExecutor;
 import org.guvnor.ala.registry.PipelineRegistry;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,7 +40,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class BuildPipelineInvokerTest
         extends BuildPipelineTestBase {
 
@@ -62,7 +62,7 @@ public class BuildPipelineInvokerTest
     private BuildPipelineInvoker.LocalBuildRequest buildRequest;
 
     @Mock
-    private Project project;
+    private Module module;
 
     @Mock
     private Path rootPath;
@@ -76,111 +76,132 @@ public class BuildPipelineInvokerTest
     private Input input;
 
     @Before
-    public void setUp( ) {
-        pipelineInvoker = new BuildPipelineInvoker( pipelineExecutor, pipelineRegistry );
-        when( pipelineRegistry.getPipelineByName( BuildPipelineInitializer.LOCAL_BUILD_PIPELINE ) ).thenReturn( pipeline );
+    public void setUp() {
+        pipelineInvoker = new BuildPipelineInvoker(pipelineExecutor,
+                                                   pipelineRegistry);
+        when(pipelineRegistry.getPipelineByName(BuildPipelineInitializer.LOCAL_BUILD_PIPELINE)).thenReturn(pipeline);
 
-        when( buildRequest.getProject( ) ).thenReturn( project );
-        when( project.getRootPath( ) ).thenReturn( rootPath );
-        when( rootPath.toURI( ) ).thenReturn( ROOT_PATH_URI );
-        when( resource.toURI( ) ).thenReturn( RESOURCE_URI_1 );
+        when(buildRequest.getModule()).thenReturn(module);
+        when(module.getRootPath()).thenReturn(rootPath);
+        when(rootPath.toURI()).thenReturn(ROOT_PATH_URI);
+        when(resource.toURI()).thenReturn(RESOURCE_URI_1);
     }
 
     @Test
-    public void testFullBuildRequest( ) {
-        when( buildRequest.getBuildType( ) ).thenReturn( LocalBuildConfig.BuildType.FULL_BUILD );
+    public void testFullBuildRequest() {
+        when(buildRequest.getBuildType()).thenReturn(LocalBuildConfig.BuildType.FULL_BUILD);
 
         // the pipeline should be invoked with this input.
-        input = createFullBuildInput( ROOT_PATH_URI );
+        input = createFullBuildInput(ROOT_PATH_URI);
 
-        preparePipeline( input );
+        preparePipeline(input);
 
-        LocalBinaryConfig result = pipelineInvoker.invokeLocalBuildPipeLine( buildRequest );
-        verifyPipelineInvocation( localBinaryConfig, result );
+        LocalBinaryConfig result = pipelineInvoker.invokeLocalBuildPipeLine(buildRequest);
+        verifyPipelineInvocation(localBinaryConfig,
+                                 result);
     }
 
     @Test
-    public void testFullBuildAndDeployValidatedRequest( ) {
-        testFullBuildAndDeployRequest( LocalBuildConfig.DeploymentType.VALIDATED );
+    public void testFullBuildAndDeployValidatedRequest() {
+        testFullBuildAndDeployRequest(LocalBuildConfig.DeploymentType.VALIDATED);
     }
 
     @Test
-    public void testFullBuildAndDeployForcedRequest( ) {
-        testFullBuildAndDeployRequest( LocalBuildConfig.DeploymentType.FORCED );
+    public void testFullBuildAndDeployForcedRequest() {
+        testFullBuildAndDeployRequest(LocalBuildConfig.DeploymentType.FORCED);
     }
 
-    private void testFullBuildAndDeployRequest( LocalBuildConfig.DeploymentType deploymentType ) {
-        when( buildRequest.getBuildType( ) ).thenReturn( LocalBuildConfig.BuildType.FULL_BUILD_AND_DEPLOY );
-        when( buildRequest.getDeploymentType( ) ).thenReturn( deploymentType );
-        when( buildRequest.isSuppressHandlers( ) ).thenReturn( false );
+    private void testFullBuildAndDeployRequest(LocalBuildConfig.DeploymentType deploymentType) {
+        when(buildRequest.getBuildType()).thenReturn(LocalBuildConfig.BuildType.FULL_BUILD_AND_DEPLOY);
+        when(buildRequest.getDeploymentType()).thenReturn(deploymentType);
+        when(buildRequest.isSuppressHandlers()).thenReturn(false);
 
         // the pipeline should be invoked with this input.
-        input = createFullBuildAndDeployInput( ROOT_PATH_URI, deploymentType.name( ), false );
+        input = createFullBuildAndDeployInput(ROOT_PATH_URI,
+                                              deploymentType.name(),
+                                              false);
 
-        preparePipeline( input );
+        preparePipeline(input);
 
-        LocalBinaryConfig result = pipelineInvoker.invokeLocalBuildPipeLine( buildRequest );
-        verifyPipelineInvocation( localBinaryConfig, result );
+        LocalBinaryConfig result = pipelineInvoker.invokeLocalBuildPipeLine(buildRequest);
+        verifyPipelineInvocation(localBinaryConfig,
+                                 result);
     }
 
     @Test
-    public void testIncrementalBuildAddResource( ) {
-        testIncrementalBuildResourceRequest( LocalBuildConfig.BuildType.INCREMENTAL_ADD_RESOURCE, resource );
+    public void testIncrementalBuildAddResource() {
+        testIncrementalBuildResourceRequest(LocalBuildConfig.BuildType.INCREMENTAL_ADD_RESOURCE,
+                                            resource);
     }
 
     @Test
-    public void testIncrementalBuildDeleteResource( ) {
-        testIncrementalBuildResourceRequest( LocalBuildConfig.BuildType.INCREMENTAL_DELETE_RESOURCE, resource );
+    public void testIncrementalBuildDeleteResource() {
+        testIncrementalBuildResourceRequest(LocalBuildConfig.BuildType.INCREMENTAL_DELETE_RESOURCE,
+                                            resource);
     }
 
     @Test
-    public void testIncrementalBuildUpdateResource( ) {
-        testIncrementalBuildResourceRequest( LocalBuildConfig.BuildType.INCREMENTAL_UPDATE_RESOURCE, resource );
+    public void testIncrementalBuildUpdateResource() {
+        testIncrementalBuildResourceRequest(LocalBuildConfig.BuildType.INCREMENTAL_UPDATE_RESOURCE,
+                                            resource);
     }
 
     @Test
-    public void testIncrementalBuildResourceChanges( ) {
-        Map< Path, Collection< ResourceChange > > resourceChanges = createResourceChanges( changes );
-        when( buildRequest.getBuildType( ) ).thenReturn( LocalBuildConfig.BuildType.INCREMENTAL_BATCH_CHANGES );
-        when( buildRequest.isSingleResource( ) ).thenReturn( false );
-        when( buildRequest.getResourceChanges( ) ).thenReturn( resourceChanges );
+    public void testIncrementalBuildResourceChanges() {
+        Map<Path, Collection<ResourceChange>> resourceChanges = createResourceChanges(changes);
+        when(buildRequest.getBuildType()).thenReturn(LocalBuildConfig.BuildType.INCREMENTAL_BATCH_CHANGES);
+        when(buildRequest.isSingleResource()).thenReturn(false);
+        when(buildRequest.getResourceChanges()).thenReturn(resourceChanges);
 
         // the pipeline should be invoked with this input.
-        input = createBatchChangesInput( ROOT_PATH_URI, LocalBuildConfig.BuildType.INCREMENTAL_BATCH_CHANGES.name( ), changes );
+        input = createBatchChangesInput(ROOT_PATH_URI,
+                                        LocalBuildConfig.BuildType.INCREMENTAL_BATCH_CHANGES.name(),
+                                        changes);
 
-        preparePipeline( input );
+        preparePipeline(input);
 
-        LocalBinaryConfig result = pipelineInvoker.invokeLocalBuildPipeLine( buildRequest );
-        verifyPipelineInvocation( localBinaryConfig, result );
+        LocalBinaryConfig result = pipelineInvoker.invokeLocalBuildPipeLine(buildRequest);
+        verifyPipelineInvocation(localBinaryConfig,
+                                 result);
     }
 
-    private void testIncrementalBuildResourceRequest( LocalBuildConfig.BuildType buildType, Path resource ) {
-        when( buildRequest.getBuildType( ) ).thenReturn( buildType );
-        when( buildRequest.getResource( ) ).thenReturn( resource );
-        when( buildRequest.isSingleResource( ) ).thenReturn( true );
+    private void testIncrementalBuildResourceRequest(LocalBuildConfig.BuildType buildType,
+                                                     Path resource) {
+        when(buildRequest.getBuildType()).thenReturn(buildType);
+        when(buildRequest.getResource()).thenReturn(resource);
+        when(buildRequest.isSingleResource()).thenReturn(true);
 
         // the pipeline should be invoked with this input.
-        input = createIncrementalBuildInput( ROOT_PATH_URI, RESOURCE_URI_1, buildType.name( ) );
+        input = createIncrementalBuildInput(ROOT_PATH_URI,
+                                            RESOURCE_URI_1,
+                                            buildType.name());
 
-        preparePipeline( input );
+        preparePipeline(input);
 
-        LocalBinaryConfig result = pipelineInvoker.invokeLocalBuildPipeLine( buildRequest );
-        verifyPipelineInvocation( localBinaryConfig, result );
+        LocalBinaryConfig result = pipelineInvoker.invokeLocalBuildPipeLine(buildRequest);
+        verifyPipelineInvocation(localBinaryConfig,
+                                 result);
     }
 
-    private void preparePipeline( Input input ) {
-        doAnswer( new Answer< Void >( ) {
-            public Void answer( InvocationOnMock invocation ) {
-                Consumer consumer = ( Consumer ) invocation.getArguments( )[ 2 ];
-                consumer.accept( localBinaryConfig );
+    private void preparePipeline(Input input) {
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Consumer consumer = (Consumer) invocation.getArguments()[2];
+                consumer.accept(localBinaryConfig);
                 return null;
             }
-        } ).when( pipelineExecutor ).execute( eq( input ), eq( pipeline ), any( Consumer.class ) );
+        }).when(pipelineExecutor).execute(eq(input),
+                                          eq(pipeline),
+                                          any(Consumer.class));
     }
 
-    private void verifyPipelineInvocation( LocalBinaryConfig expectedResult, LocalBinaryConfig result ) {
-        assertEquals( expectedResult, result );
-        verify( pipelineExecutor, times( 1 ) ).execute( eq( input ), eq( pipeline ), any( Consumer.class ) );
+    private void verifyPipelineInvocation(LocalBinaryConfig expectedResult,
+                                          LocalBinaryConfig result) {
+        assertEquals(expectedResult,
+                     result);
+        verify(pipelineExecutor,
+               times(1)).execute(eq(input),
+                                 eq(pipeline),
+                                 any(Consumer.class));
     }
-
 }

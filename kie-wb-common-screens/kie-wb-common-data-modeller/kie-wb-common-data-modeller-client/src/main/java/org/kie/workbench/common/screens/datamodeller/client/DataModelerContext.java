@@ -1,12 +1,12 @@
 /**
  * Copyright 2012 Red Hat, Inc. and/or its affiliates.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,7 +31,7 @@ import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.PropertyType;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieModule;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -41,13 +41,13 @@ public class DataModelerContext {
 
     private DataModelHelper helper;
 
-    private Map<String, AnnotationDefinition> annotationDefinitions = new HashMap<String, AnnotationDefinition>( );
+    private Map<String, AnnotationDefinition> annotationDefinitions = new HashMap<String, AnnotationDefinition>();
 
-    private List<PropertyType> baseTypes = new ArrayList<PropertyType>( );
+    private List<PropertyType> baseTypes = new ArrayList<PropertyType>();
 
     private boolean readonly = false;
 
-    private Set<String> currentProjectPackages = new HashSet<String>(  );
+    private Set<String> currentProjectPackages = new HashSet<String>();
 
     private EditorModelContent editorModelContent;
 
@@ -129,9 +129,9 @@ public class DataModelerContext {
     public DataModelerContext() {
     }
 
-    public DataModelerContext( String contextId ) {
+    public DataModelerContext(String contextId) {
         this.contextId = contextId;
-        helper = new DataModelHelper( contextId );
+        helper = new DataModelHelper(contextId);
     }
 
     public void init(List<PropertyType> baseTypes) {
@@ -155,8 +155,8 @@ public class DataModelerContext {
         this.annotationDefinitions = annotationDefinitions;
     }
 
-    public AnnotationDefinition getAnnotationDefinition( String className ) {
-        return getAnnotationDefinitions().get( className );
+    public AnnotationDefinition getAnnotationDefinition(String className) {
+        return getAnnotationDefinitions().get(className);
     }
 
     public List<PropertyType> getBaseTypes() {
@@ -167,7 +167,7 @@ public class DataModelerContext {
         return parseStatus;
     }
 
-    public void setParseStatus( ParseStatus parseStatus ) {
+    public void setParseStatus(ParseStatus parseStatus) {
         this.parseStatus = parseStatus;
     }
 
@@ -187,7 +187,7 @@ public class DataModelerContext {
         return readonly;
     }
 
-    public void setReadonly( boolean readonly ) {
+    public void setReadonly(boolean readonly) {
         this.readonly = readonly;
     }
 
@@ -216,7 +216,9 @@ public class DataModelerContext {
             String subPackage = null;
             for (int i = 0; subPackages != null && i < subPackages.length; i++) {
                 subPackage = subPackages[i];
-                if (!currentProjectPackages.contains(subPackage)) currentProjectPackages.add(subPackage);
+                if (!currentProjectPackages.contains(subPackage)) {
+                    currentProjectPackages.add(subPackage);
+                }
             }
         }
     }
@@ -226,22 +228,24 @@ public class DataModelerContext {
     }
 
     public void cleanPackages() {
-        if (currentProjectPackages != null) currentProjectPackages.clear();
+        if (currentProjectPackages != null) {
+            currentProjectPackages.clear();
+        }
     }
 
     public boolean isDataObjectLoaded() {
         return getDataObject() != null;
     }
 
-    public KieProject getCurrentProject() {
-        if ( editorModelContent != null ) {
-            return editorModelContent.getCurrentProject();
+    public KieModule getCurrentProject() {
+        if (editorModelContent != null) {
+            return editorModelContent.getCurrentModule();
         }
         return null;
     }
 
     public DataObject getDataObject() {
-        if ( editorModelContent != null ) {
+        if (editorModelContent != null) {
             return editorModelContent.getDataObject();
         }
         return null;
@@ -249,7 +253,7 @@ public class DataModelerContext {
 
     public void setDataObject(DataObject dataObject) {
         if (editorModelContent != null) {
-            editorModelContent.setDataObject( dataObject );
+            editorModelContent.setDataObject(dataObject);
         }
     }
 
@@ -257,19 +261,19 @@ public class DataModelerContext {
         return objectProperty;
     }
 
-    public void setObjectProperty( ObjectProperty objectProperty ) {
+    public void setObjectProperty(ObjectProperty objectProperty) {
         this.objectProperty = objectProperty;
     }
 
-    public Path getDataObjectPath( String className ) {
-        return ( editorModelContent != null && editorModelContent.getDataObjectPaths() != null ) ? editorModelContent.getDataObjectPaths().get( className ) : null;
+    public Path getDataObjectPath(String className) {
+        return (editorModelContent != null && editorModelContent.getDataObjectPaths() != null) ? editorModelContent.getDataObjectPaths().get(className) : null;
     }
 
     public EditionStatus getEditionStatus() {
         return editionStatus;
     }
 
-    public void setEditionStatus( EditionStatus editionStatus ) {
+    public void setEditionStatus(EditionStatus editionStatus) {
         this.editionStatus = editionStatus;
     }
 
@@ -277,7 +281,7 @@ public class DataModelerContext {
         return editionMode;
     }
 
-    public void setEditionMode( EditionMode editionMode ) {
+    public void setEditionMode(EditionMode editionMode) {
         this.editionMode = editionMode;
     }
 
@@ -287,27 +291,29 @@ public class DataModelerContext {
 
     public void setEditorModelContent(EditorModelContent editorModelContent) {
         this.editorModelContent = editorModelContent;
-        if ( editorModelContent.getDataModel() != null) {
+        if (editorModelContent.getDataModel() != null) {
             //TODO, likely this helper is no longer needed.
-            helper.setDataModel( editorModelContent.getDataModel());
+            helper.setDataModel(editorModelContent.getDataModel());
         }
         cleanPackages();
-        appendPackages( editorModelContent.getCurrentProjectPackages() );
+        appendPackages(editorModelContent.getCurrentModulePackages());
     }
 
     public String getContextId() {
         return contextId;
     }
 
-    public void setContextId( String contextId ) {
+    public void setContextId(String contextId) {
         this.contextId = contextId;
     }
 
     public void clear() {
         annotationDefinitions = null;
         baseTypes = null;
-        if (getDataModel() != null && getDataModel().getDataObjects() != null) getDataModel().getDataObjects().clear();
+        if (getDataModel() != null && getDataModel().getDataObjects() != null) {
+            getDataModel().getDataObjects().clear();
+        }
         cleanPackages();
-        helper = new DataModelHelper( contextId );
+        helper = new DataModelHelper(contextId);
     }
 }

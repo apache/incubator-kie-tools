@@ -39,40 +39,40 @@ public class DataSourceDefDeployerImpl
         extends AbstractDefDeployer<DataSourceDefInfo>
         implements DataSourceDefDeployer {
 
-    private static final Logger logger = LoggerFactory.getLogger( DataSourceDefDeployerImpl.class );
+    private static final Logger logger = LoggerFactory.getLogger(DataSourceDefDeployerImpl.class);
 
     public DataSourceDefDeployerImpl() {
     }
 
     @Inject
-    public DataSourceDefDeployerImpl( @Named("ioStrategy") IOService ioService,
-                                      DataSourceDefQueryService queryService,
-                                      DataSourceRuntimeManager runtimeManager,
-                                      DefRegistry defRegistry ) {
-        super( ioService, queryService, runtimeManager, defRegistry );
+    public DataSourceDefDeployerImpl(@Named("ioStrategy") IOService ioService,
+                                     DataSourceDefQueryService queryService,
+                                     DataSourceRuntimeManager runtimeManager,
+                                     DefRegistry defRegistry) {
+        super(ioService, queryService, runtimeManager, defRegistry);
     }
 
     @Override
     protected Collection<DataSourceDefInfo> findGlobalDefs() {
-        return queryService.findGlobalDataSources( false );
+        return queryService.findGlobalDataSources(false);
     }
 
     @Override
-    protected Collection<DataSourceDefInfo> findProjectDefs( Path path ) {
-        return queryService.findProjectDataSources( path );
+    protected Collection<DataSourceDefInfo> findProjectDefs(Path path) {
+        return queryService.findModuleDataSources(path);
     }
 
     @Override
-    protected void deployDef( DataSourceDefInfo defInfo ) {
+    protected void deployDef(DataSourceDefInfo defInfo) {
         try {
-            logger.debug( "Deploying data source def: " + defInfo );
-            String source = ioService.readAllString( Paths.convert( defInfo.getPath() ) );
-            DataSourceDef dataSourceDef = DataSourceDefSerializer.deserialize( source );
-            runtimeManager.deployDataSource( dataSourceDef, DeploymentOptions.createOrResync() );
-            defRegistry.setEntry( defInfo.getPath(), dataSourceDef );
-            logger.debug( "Data source was successfully deployed" );
-        } catch ( Exception e ) {
-            logger.error( "Data source deployment failed, defInfo: " + defInfo, e );
+            logger.debug("Deploying data source def: " + defInfo);
+            String source = ioService.readAllString(Paths.convert(defInfo.getPath()));
+            DataSourceDef dataSourceDef = DataSourceDefSerializer.deserialize(source);
+            runtimeManager.deployDataSource(dataSourceDef, DeploymentOptions.createOrResync());
+            defRegistry.setEntry(defInfo.getPath(), dataSourceDef);
+            logger.debug("Data source was successfully deployed");
+        } catch (Exception e) {
+            logger.error("Data source deployment failed, defInfo: " + defInfo, e);
         }
     }
 }

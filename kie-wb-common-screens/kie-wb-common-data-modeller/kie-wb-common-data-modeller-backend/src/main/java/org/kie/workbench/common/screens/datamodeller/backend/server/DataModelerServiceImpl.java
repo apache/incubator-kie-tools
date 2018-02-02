@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
@@ -33,9 +32,9 @@ import javax.persistence.Entity;
 
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.validation.GenericValidator;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.utils.ProjectResourcePaths;
+import org.guvnor.common.services.project.utils.ModuleResourcePaths;
 import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
@@ -49,7 +48,7 @@ import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.source.AnnotationSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.workbench.common.screens.datamodeller.backend.server.file.DataModelerCopyHelper;
 import org.kie.workbench.common.screens.datamodeller.backend.server.file.DataModelerRenameHelper;
 import org.kie.workbench.common.screens.datamodeller.backend.server.handler.DomainHandler;
@@ -64,7 +63,7 @@ import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
 import org.kie.workbench.common.screens.datamodeller.model.TypeInfoResult;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.datamodeller.service.ServiceException;
-import org.kie.workbench.common.services.backend.project.ProjectClassLoaderHelper;
+import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
 import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationContext;
@@ -81,7 +80,7 @@ import org.kie.workbench.common.services.datamodeller.driver.FilterHolder;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriver;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverException;
 import org.kie.workbench.common.services.datamodeller.driver.impl.JavaRoasterModelDriver;
-import org.kie.workbench.common.services.datamodeller.driver.impl.ProjectDataModelOracleUtils;
+import org.kie.workbench.common.services.datamodeller.driver.impl.ModuleDataModelOracleUtils;
 import org.kie.workbench.common.services.datamodeller.driver.impl.UpdateInfo;
 import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationDefinitionRequest;
 import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationDefinitionResponse;
@@ -94,7 +93,7 @@ import org.kie.workbench.common.services.datamodeller.driver.model.ModelDriverRe
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
 import org.kie.workbench.common.services.refactoring.service.RefactoringQueryService;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -114,70 +113,50 @@ public class DataModelerServiceImpl
         implements DataModelerService {
 
     private static final Logger logger = LoggerFactory.getLogger(DataModelerServiceImpl.class);
-
+    private static final String DEFAULT_COMMIT_MESSAGE = "Data modeller generated action.";
     @Inject
     @Named("ioStrategy")
     IOService ioService;
-
     @Inject
     private User identity;
-
     @Inject
     private DataModelService dataModelService;
-
     @Inject
     private DataModelerServiceHelper serviceHelper;
-
     @Inject
-    private ProjectClassLoaderHelper classLoaderHelper;
+    private ModuleClassLoaderHelper classLoaderHelper;
 
     @Inject
     private Event<DataObjectCreatedEvent> dataObjectCreatedEvent;
-
     @Inject
     private Event<DataObjectDeletedEvent> dataObjectDeletedEvent;
-
     @Inject
     private Event<DataObjectRenamedEvent> dataObjectRenamedEvent;
-
     @Inject
     private RefactoringQueryService queryService;
-
     @Inject
     private Event<PublishBatchMessagesEvent> publishBatchMessagesEvent;
-
     @Inject
     private DeleteService deleteService;
-
     @Inject
     private CopyService copyService;
-
     @Inject
     private RenameService renameService;
-
     @Inject
     private DataModelerCopyHelper copyHelper;
-
     @Inject
     private DataModelerRenameHelper renameHelper;
-
     @Inject
     private Instance<DataModelerSaveHelper> saveHelperInstance;
-
     @Inject
     private Instance<DataModelerRenameWorkaroundHelper> renameHelperInstance;
-
     @Inject
     private GenericValidator genericValidator;
-
     @Inject
     @Any
     private Instance<DomainHandler> domainHandlers;
-
     @Inject
     private FilterHolder filterHolder;
-
-    private static final String DEFAULT_COMMIT_MESSAGE = "Data modeller generated action.";
 
     public DataModelerServiceImpl() {
     }
@@ -200,8 +179,8 @@ public class DataModelerServiceImpl
     }
 
     @Override
-    public DataModel loadModel(final KieProject project) {
-        Pair<DataModel, ModelDriverResult> resultPair = loadModel(project,
+    public DataModel loadModel(final KieModule module) {
+        Pair<DataModel, ModelDriverResult> resultPair = loadModel(module,
                                                                   true);
         return resultPair != null ? resultPair.getK1() : null;
     }
@@ -231,12 +210,12 @@ public class DataModelerServiceImpl
 
         try {
 
-            final Package currentPackage = projectService.resolvePackage(context);
+            final Package currentPackage = moduleService.resolvePackage(context);
             String packageName = currentPackage.getPackageName();
             String className = fileName.substring(0,
                                                   fileName.indexOf(".java"));
 
-            final KieProject currentProject = projectService.resolveProject(context);
+            final KieModule currentModule = moduleService.resolveModule(context);
 
             DataObject dataObject = new DataObjectImpl(packageName,
                                                        className);
@@ -253,7 +232,7 @@ public class DataModelerServiceImpl
                             source,
                             serviceHelper.makeCommentedOption(comment));
 
-            dataObjectCreatedEvent.fire(new DataObjectCreatedEvent(currentProject,
+            dataObjectCreatedEvent.fire(new DataObjectCreatedEvent(currentModule,
                                                                    dataObject));
 
             return newPath;
@@ -277,20 +256,20 @@ public class DataModelerServiceImpl
         EditorModelContent editorModelContent = new EditorModelContent();
 
         try {
-            KieProject project = projectService.resolveProject(path);
-            if (project == null) {
-                logger.warn("File : " + path.toURI() + " do not belong to a valid project");
+            KieModule module = moduleService.resolveModule(path);
+            if (module == null) {
+                logger.warn("File : " + path.toURI() + " do not belong to a valid module");
                 return editorModelContent;
             }
 
-            Pair<DataModel, ModelDriverResult> resultPair = loadModel(project,
+            Pair<DataModel, ModelDriverResult> resultPair = loadModel(module,
                                                                       false);
-            String className = calculateClassName(project,
+            String className = calculateClassName(module,
                                                   path);
 
-            editorModelContent.setCurrentProject(project);
+            editorModelContent.setCurrentModule(module);
             editorModelContent.setPath(path);
-            editorModelContent.setCurrentProjectPackages(serviceHelper.resolvePackages(project));
+            editorModelContent.setCurrentModulePackages(serviceHelper.resolvePackages(module));
             editorModelContent.setDataModel(resultPair.getK1());
             editorModelContent.setDataObject(resultPair.getK1().getDataObject(className));
             editorModelContent.setDataObjectPaths(resultPair.getK2().getClassPaths());
@@ -324,27 +303,27 @@ public class DataModelerServiceImpl
         }
     }
 
-    private Pair<DataModel, ModelDriverResult> loadModel(final KieProject project,
+    private Pair<DataModel, ModelDriverResult> loadModel(final KieModule module,
                                                          boolean processErrors) {
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Loading data model from path: " + project.getRootPath());
+            logger.debug("Loading data model from path: " + module.getRootPath());
         }
 
         Long startTime = System.currentTimeMillis();
 
         DataModel dataModel = null;
-        Path projectPath = null;
+        Path modulePath = null;
         Package defaultPackage = null;
 
         try {
-            projectPath = project.getRootPath();
-            defaultPackage = projectService.resolveDefaultPackage(project);
+            modulePath = module.getRootPath();
+            defaultPackage = moduleService.resolveDefaultPackage(module);
             if (logger.isDebugEnabled()) {
-                logger.debug("Current project path is: " + projectPath);
+                logger.debug("Current module path is: " + modulePath);
             }
 
-            ClassLoader classLoader = classLoaderHelper.getProjectClassLoader(project);
+            ClassLoader classLoader = classLoaderHelper.getModuleClassLoader(module);
 
             ModelDriver modelDriver = new JavaRoasterModelDriver(ioService,
                                                                  Paths.convert(defaultPackage.getPackageMainSrcPath()),
@@ -354,27 +333,27 @@ public class DataModelerServiceImpl
             dataModel = result.getDataModel();
 
             if (processErrors && result.hasErrors()) {
-                processErrors(project,
+                processErrors(module,
                               result);
             }
 
-            //by now we still use the DMO to calculate project external dependencies.
-            ProjectDataModelOracle projectDataModelOracle = dataModelService.getProjectDataModel(projectPath);
-            ProjectDataModelOracleUtils.loadExternalDependencies(dataModel,
-                                                                 projectDataModelOracle,
-                                                                 classLoader);
+            //by now we still use the DMO to calculate module external dependencies.
+            ModuleDataModelOracle moduleDataModelOracle = dataModelService.getModuleDataModel(modulePath);
+            ModuleDataModelOracleUtils.loadExternalDependencies(dataModel,
+                                                                moduleDataModelOracle,
+                                                                classLoader);
 
             Long endTime = System.currentTimeMillis();
             if (logger.isDebugEnabled()) {
-                logger.debug("Time elapsed when loading " + projectPath.getFileName() + ": " + (endTime - startTime) + " ms");
+                logger.debug("Time elapsed when loading " + modulePath.getFileName() + ": " + (endTime - startTime) + " ms");
             }
 
             return new Pair<DataModel, ModelDriverResult>(dataModel,
                                                           result);
         } catch (Exception e) {
-            logger.error("Data model couldn't be loaded, path: " + projectPath + ", projectPath: " + projectPath + ".",
+            logger.error("Data model couldn't be loaded, path: " + modulePath + ", modulePath: " + modulePath + ".",
                          e);
-            throw new ServiceException("Data model couldn't be loaded, path: " + projectPath + ", projectPath: " + projectPath + ".",
+            throw new ServiceException("Data model couldn't be loaded, path: " + modulePath + ", modulePath: " + modulePath + ".",
                                        e);
         }
     }
@@ -398,27 +377,27 @@ public class DataModelerServiceImpl
         }
     }
 
-    public GenerationResult loadDataObject(final Path projectPath,
+    public GenerationResult loadDataObject(final Path modulePath,
                                            final String source,
                                            final Path sourcePath) {
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Loading data object from projectPath: " + projectPath.toURI());
+            logger.debug("Loading data object from modulePath: " + modulePath.toURI());
         }
 
-        KieProject project;
+        KieModule module;
         DataObject dataObject = null;
 
         try {
 
-            project = projectService.resolveProject(projectPath);
-            if (project == null) {
+            module = moduleService.resolveModule(modulePath);
+            if (module == null) {
                 return new GenerationResult(null,
                                             null,
                                             new ArrayList<DataModelerError>());
             }
 
-            ClassLoader classLoader = classLoaderHelper.getProjectClassLoader(project);
+            ClassLoader classLoader = classLoaderHelper.getModuleClassLoader(module);
             JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver(ioService,
                                                                             null,
                                                                             classLoader,
@@ -439,9 +418,9 @@ public class DataModelerServiceImpl
                                             serviceHelper.toDataModelerError(driverResult.getErrors()));
             }
         } catch (Exception e) {
-            logger.error("Data object couldn't be loaded, path: " + projectPath + ", projectPath: " + projectPath + ".",
+            logger.error("Data object couldn't be loaded, path: " + modulePath + ", modulePath: " + modulePath + ".",
                          e);
-            throw new ServiceException("Data object couldn't be loaded, path: " + projectPath + ", projectPath: " + projectPath + ".",
+            throw new ServiceException("Data object couldn't be loaded, path: " + modulePath + ", modulePath: " + modulePath + ".",
                                        e);
         }
     }
@@ -460,18 +439,18 @@ public class DataModelerServiceImpl
                                          final DataObject dataObject) {
 
         GenerationResult result = new GenerationResult();
-        KieProject project;
+        KieModule module;
 
         try {
 
-            project = projectService.resolveProject(path);
-            if (project == null) {
-                logger.warn("File : " + path.toURI() + " do not belong to a valid project");
+            module = moduleService.resolveModule(path);
+            if (module == null) {
+                logger.warn("File : " + path.toURI() + " do not belong to a valid module");
                 result.setSource(source);
                 return result;
             }
 
-            ClassLoader classLoader = classLoaderHelper.getProjectClassLoader(project);
+            ClassLoader classLoader = classLoaderHelper.getModuleClassLoader(module);
             Pair<String, List<DataModelerError>> updateResult = updateJavaSource(source,
                                                                                  dataObject,
                                                                                  new HashMap<String, String>(),
@@ -505,18 +484,18 @@ public class DataModelerServiceImpl
         //Resolve the dataobject update in memory
 
         GenerationResult result = new GenerationResult();
-        KieProject project;
+        KieModule module;
 
         try {
             result.setSource(source);
-            project = projectService.resolveProject(path);
-            if (project == null) {
-                logger.warn("File : " + path.toURI() + " do not belong to a valid project");
+            module = moduleService.resolveModule(path);
+            if (module == null) {
+                logger.warn("File : " + path.toURI() + " do not belong to a valid module");
                 result.setSource(source);
                 return result;
             }
 
-            ClassLoader classLoader = classLoaderHelper.getProjectClassLoader(project);
+            ClassLoader classLoader = classLoaderHelper.getModuleClassLoader(module);
             JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver(ioService,
                                                                             Paths.convert(path),
                                                                             classLoader,
@@ -573,7 +552,7 @@ public class DataModelerServiceImpl
                                                         path,
                                                         dataObject);
 
-            Package currentPackage = projectService.resolvePackage(path);
+            Package currentPackage = moduleService.resolvePackage(path);
             Package targetPackage = currentPackage;
             String targetName = path.getFileName();
             org.uberfire.java.nio.file.Path targetPath = Paths.convert(path);
@@ -583,7 +562,7 @@ public class DataModelerServiceImpl
 
             if (newPackageName != null && (currentPackage == null || !newPackageName.equals(currentPackage.getPackageName()))) {
                 //make sure destination package exists.
-                targetPackage = serviceHelper.ensurePackageStructure(projectService.resolveProject(path),
+                targetPackage = serviceHelper.ensurePackageStructure(moduleService.resolveModule(path),
                                                                      newPackageName);
                 packageChanged = true;
             }
@@ -657,14 +636,14 @@ public class DataModelerServiceImpl
                                                final Path path,
                                                final DataObject dataObject) {
         GenerationResult result = new GenerationResult();
-        KieProject project;
+        KieModule module;
         String updatedSource;
 
         try {
 
-            project = projectService.resolveProject(path);
-            if (project == null) {
-                logger.warn("File : " + path.toURI() + " do not belong to a valid project");
+            module = moduleService.resolveModule(path);
+            if (module == null) {
+                logger.warn("File : " + path.toURI() + " do not belong to a valid module");
                 result.setSource(source);
                 return result;
             }
@@ -682,7 +661,7 @@ public class DataModelerServiceImpl
             }
 
             if (dataObject == null) {
-                ClassLoader classLoader = classLoaderHelper.getProjectClassLoader(project);
+                ClassLoader classLoader = classLoaderHelper.getModuleClassLoader(module);
                 JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver(ioService,
                                                                                 Paths.convert(path),
                                                                                 classLoader,
@@ -739,9 +718,9 @@ public class DataModelerServiceImpl
                     copyHelper.addRefactoredPath(targetPath,
                                                  refactoringResult.getSource(),
                                                  comment);
-                    KieProject project = projectService.resolveProject(targetPath);
-                    if (project != null) {
-                        dataObjectCreatedEvent.fire(new DataObjectCreatedEvent(project,
+                    KieModule module = moduleService.resolveModule(targetPath);
+                    if (module != null) {
+                        dataObjectCreatedEvent.fire(new DataObjectCreatedEvent(module,
                                                                                refactoringResult.getDataObject()));
                     }
                 }
@@ -894,7 +873,7 @@ public class DataModelerServiceImpl
         return ioService.readAllString(convertedPath);
     }
 
-    private void processErrors(KieProject project,
+    private void processErrors(KieModule module,
                                ModelDriverResult result) {
         PublishBatchMessagesEvent publishEvent = new PublishBatchMessagesEvent();
         publishEvent.setCleanExisting(true);
@@ -919,7 +898,7 @@ public class DataModelerServiceImpl
 
     @Override
     public GenerationResult saveModel(final DataModel dataModel,
-                                      final KieProject project,
+                                      final KieModule module,
                                       final boolean overwrite,
                                       final String commitMessage) {
 
@@ -931,11 +910,11 @@ public class DataModelerServiceImpl
             //Start IOService bath processing. IOService batch processing causes a blocking operation on the file system
             //to it must be treated carefully.
             CommentedOption option = serviceHelper.makeCommentedOption(commitMessage);
-            ioService.startBatch(Paths.convert(project.getRootPath()).getFileSystem());
+            ioService.startBatch(Paths.convert(module.getRootPath()).getFileSystem());
             onBatch = true;
 
             generateModel(dataModel,
-                          project,
+                          module,
                           option);
 
             onBatch = false;
@@ -943,14 +922,14 @@ public class DataModelerServiceImpl
 
             Long endTime = System.currentTimeMillis();
             if (logger.isDebugEnabled()) {
-                logger.debug("Time elapsed when saving " + project.getProjectName() + ": " + (endTime - startTime) + " ms");
+                logger.debug("Time elapsed when saving " + module.getModuleName() + ": " + (endTime - startTime) + " ms");
             }
 
             GenerationResult result = new GenerationResult();
             result.setGenerationTime(endTime - startTime);
             return result;
         } catch (Exception e) {
-            logger.error("An error was produced during data model adf, dataModel: " + dataModel + ", path: " + project.getRootPath(),
+            logger.error("An error was produced during data model adf, dataModel: " + dataModel + ", path: " + module.getRootPath(),
                          e);
             if (onBatch) {
                 try {
@@ -968,10 +947,10 @@ public class DataModelerServiceImpl
 
     @Override
     public GenerationResult saveModel(DataModel dataModel,
-                                      final KieProject project) {
+                                      final KieModule module) {
 
         return saveModel(dataModel,
-                         project,
+                         module,
                          false,
                          DEFAULT_COMMIT_MESSAGE);
     }
@@ -980,19 +959,19 @@ public class DataModelerServiceImpl
     public void delete(final Path path,
                        final String comment) {
         try {
-            KieProject project = projectService.resolveProject(path);
-            if (project == null) {
-                logger.warn("File : " + path.toURI() + " do not belong to a valid project");
+            KieModule module = moduleService.resolveModule(path);
+            if (module == null) {
+                logger.warn("File : " + path.toURI() + " do not belong to a valid module");
                 return;
             }
             deleteService.delete(path,
                                  comment);
-            String className = calculateClassName(project,
+            String className = calculateClassName(module,
                                                   path);
             DataObject dataObject = new DataObjectImpl(
                     NamingUtils.extractPackageName(className),
                     NamingUtils.extractClassName(className));
-            dataObjectDeletedEvent.fire(new DataObjectDeletedEvent(project,
+            dataObjectDeletedEvent.fire(new DataObjectDeletedEvent(module,
                                                                    dataObject));
         } catch (final Exception e) {
             logger.error("File: " + path.toURI() + " couldn't be deleted due to the following error. ",
@@ -1048,12 +1027,12 @@ public class DataModelerServiceImpl
             String validationSource = null;
             List<ValidationMessage> validations = new ArrayList<ValidationMessage>();
 
-            KieProject project = projectService.resolveProject(path);
-            if (project == null) {
-                logger.warn("File : " + path.toURI() + " do not belong to a valid project");
+            KieModule module = moduleService.resolveModule(path);
+            if (module == null) {
+                logger.warn("File : " + path.toURI() + " do not belong to a valid module");
                 ValidationMessage validationMessage = new ValidationMessage();
                 validationMessage.setPath(path);
-                validationMessage.setText("File do no belong to a valid project");
+                validationMessage.setText("File do no belong to a valid module");
                 validationMessage.setLevel(Level.ERROR);
                 validations.add(new ValidationMessage());
                 return validations;
@@ -1086,7 +1065,7 @@ public class DataModelerServiceImpl
     }
 
     private void generateModel(DataModel dataModel,
-                               KieProject project,
+                               KieModule module,
                                CommentedOption option) throws Exception {
 
         org.uberfire.java.nio.file.Path targetFile;
@@ -1094,8 +1073,8 @@ public class DataModelerServiceImpl
         String newSource;
 
         //ensure java sources directory exists.
-        Path projectPath = project.getRootPath();
-        javaRootPath = ensureProjectJavaPath(Paths.convert(projectPath));
+        Path modulePath = module.getRootPath();
+        javaRootPath = ensureModuleJavaPath(Paths.convert(modulePath));
 
         for (DataObject dataObject : dataModel.getDataObjects()) {
             targetFile = calculateFilePath(dataObject.getClassName(),
@@ -1213,9 +1192,9 @@ public class DataModelerServiceImpl
     @Override
     public List<String> findPersistableClasses(final Path path) {
         List<String> classes = new ArrayList<String>();
-        KieProject project = projectService.resolveProject(path);
-        if (project != null) {
-            DataModel dataModel = loadModel(project);
+        KieModule module = moduleService.resolveModule(path);
+        if (module != null) {
+            DataModel dataModel = loadModel(module);
             if (dataModel != null) {
                 for (DataObject dataObject : dataModel.getDataObjects()) {
                     if (dataObject.getAnnotation(Entity.class.getName()) != null) {
@@ -1230,10 +1209,10 @@ public class DataModelerServiceImpl
     @Override
     public Boolean isPersistableClass(String className,
                                       Path path) {
-        //check the project class path to see if the class is defined likely in a project dependency or in curren project.
-        KieProject project = projectService.resolveProject(path);
-        if (project != null) {
-            ClassLoader classLoader = classLoaderHelper.getProjectClassLoader(project);
+        //check the module class path to see if the class is defined likely in a module dependency or in curren module.
+        KieModule module = moduleService.resolveModule(path);
+        if (module != null) {
+            ClassLoader classLoader = classLoaderHelper.getModuleClassLoader(module);
             try {
                 classLoader.loadClass(className);
                 return true;
@@ -1320,14 +1299,14 @@ public class DataModelerServiceImpl
 
     @Override
     public AnnotationParseResponse resolveParseRequest(AnnotationParseRequest parseRequest,
-                                                       KieProject kieProject) {
+                                                       KieModule kieModule) {
         JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver();
         Pair<Annotation, List<DriverError>> driverResult = modelDriver.parseAnnotationWithValuePair(
                 parseRequest.getAnnotationClassName(),
                 parseRequest.getTarget(),
                 parseRequest.getValuePairName(),
                 parseRequest.getValuePairLiteralValue(),
-                classLoaderHelper.getProjectClassLoader(kieProject));
+                classLoaderHelper.getModuleClassLoader(kieModule));
 
         AnnotationParseResponse response = new AnnotationParseResponse(driverResult.getK1());
         response.withErrors(driverResult.getK2());
@@ -1336,10 +1315,10 @@ public class DataModelerServiceImpl
 
     @Override
     public AnnotationDefinitionResponse resolveDefinitionRequest(AnnotationDefinitionRequest definitionRequest,
-                                                                 KieProject kieProject) {
+                                                                 KieModule kieModule) {
 
         JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver();
-        ClassLoader classLoader = classLoaderHelper.getProjectClassLoader(kieProject);
+        ClassLoader classLoader = classLoaderHelper.getModuleClassLoader(kieModule);
         ClassTypeResolver classTypeResolver = DriverUtils.createClassTypeResolver(classLoader);
         AnnotationDefinitionResponse definitionResponse = new AnnotationDefinitionResponse();
 
@@ -1354,8 +1333,8 @@ public class DataModelerServiceImpl
         return definitionResponse;
     }
 
-    private org.uberfire.java.nio.file.Path ensureProjectJavaPath(org.uberfire.java.nio.file.Path projectPath) {
-        org.uberfire.java.nio.file.Path javaPath = projectPath.resolve("src");
+    private org.uberfire.java.nio.file.Path ensureModuleJavaPath(org.uberfire.java.nio.file.Path modulePath) {
+        org.uberfire.java.nio.file.Path javaPath = modulePath.resolve("src");
         if (!ioService.exists(javaPath)) {
             javaPath = ioService.createDirectory(javaPath);
         }
@@ -1372,12 +1351,12 @@ public class DataModelerServiceImpl
     }
 
     /**
-     * Given a path within a project calculates the expected class name for the given class.
+     * Given a path within a module calculates the expected class name for the given class.
      */
-    private String calculateClassName(Project project,
-                                      Path path) {
+    private String calculateClassName(final Module module,
+                                      final Path path) {
 
-        String rootPathURI = project.getRootPath().toURI();
+        String rootPathURI = module.getRootPath().toURI();
         String pathURI = path.toURI();
         String strPath = null;
 
@@ -1385,14 +1364,20 @@ public class DataModelerServiceImpl
             return null;
         }
 
-        pathURI = pathURI.substring(rootPathURI.length() + 1,
-                                    pathURI.length());
-
-        if (pathURI.startsWith(ProjectResourcePaths.MAIN_SRC_PATH)) {
-            strPath = pathURI.substring(ProjectResourcePaths.MAIN_SRC_PATH.length() + 1,
+        if (pathURI.startsWith(rootPathURI + ModuleResourcePaths.MAIN_SRC_PATH)
+                || pathURI.startsWith(rootPathURI + ModuleResourcePaths.TEST_SRC_PATH)) {
+            pathURI = pathURI.substring(rootPathURI.length(),
                                         pathURI.length());
-        } else if (pathURI.startsWith(ProjectResourcePaths.TEST_SRC_PATH)) {
-            strPath = pathURI.substring(ProjectResourcePaths.TEST_SRC_PATH.length() + 1,
+        } else {
+            pathURI = pathURI.substring(rootPathURI.length() + 1,
+                                        pathURI.length());
+        }
+
+        if (pathURI.startsWith(ModuleResourcePaths.MAIN_SRC_PATH)) {
+            strPath = pathURI.substring(ModuleResourcePaths.MAIN_SRC_PATH.length() + 1,
+                                        pathURI.length());
+        } else if (pathURI.startsWith(ModuleResourcePaths.TEST_SRC_PATH)) {
+            strPath = pathURI.substring(ModuleResourcePaths.TEST_SRC_PATH.length() + 1,
                                         pathURI.length());
         }
 

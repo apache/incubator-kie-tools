@@ -23,9 +23,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMProcessModel;
-import org.kie.workbench.common.services.backend.project.ProjectClassLoaderHelper;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
@@ -69,13 +69,13 @@ public class BPMFinderServiceImplTest {
     private IOService ioService;
 
     @Mock
-    private KieProject project;
+    private KieModule module;
 
     @Mock
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     @Mock
-    private ProjectClassLoaderHelper projectClassLoaderHelper;
+    private ModuleClassLoaderHelper moduleClassLoaderHelper;
 
     @Mock
     private ClassLoader classLoader;
@@ -100,18 +100,18 @@ public class BPMFinderServiceImplTest {
 
         rootPath = simpleFileSystemProvider.getPath(this.getClass().getResource(RESOURCES_PATH).toURI());
 
-        when(projectService.resolveProject(any())).thenReturn(project);
-        when(project.getRootPath()).thenReturn(Paths.convert(rootPath));
+        when(moduleService.resolveModule(any())).thenReturn(module);
+        when(module.getRootPath()).thenReturn(Paths.convert(rootPath));
 
         when(classLoader.loadClass(any())).thenAnswer((Answer<Class>) invocation -> String.class);
 
-        when(projectClassLoaderHelper.getProjectClassLoader(any())).thenReturn(classLoader);
+        when(moduleClassLoaderHelper.getModuleClassLoader(any())).thenReturn(classLoader);
 
-        bpmnFormModelGenerator = new BPMNFormModelGeneratorImpl(projectService,
-                                                                projectClassLoaderHelper);
+        bpmnFormModelGenerator = new BPMNFormModelGeneratorImpl(moduleService,
+                                                                moduleClassLoaderHelper);
 
         finderService = new BPMFinderServiceImpl(ioService,
-                                                 projectService,
+                                                 moduleService,
                                                  bpmnFormModelGenerator);
 
         finderService.init();

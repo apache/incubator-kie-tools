@@ -18,21 +18,23 @@ package org.guvnor.ala.ui.backend.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.guvnor.ala.ui.service.SourceService;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.project.model.Module;
+import org.guvnor.common.services.project.service.ModuleService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.spaces.Space;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -45,7 +47,7 @@ public class SourceServiceImpl
 
     private RepositoryService repositoryService;
 
-    private ProjectService<? extends Project> projectService;
+    private ModuleService<? extends Module> moduleService;
 
     private AuthorizationManager authorizationManager;
 
@@ -58,12 +60,12 @@ public class SourceServiceImpl
     @Inject
     public SourceServiceImpl(OrganizationalUnitService organizationalUnitService,
                              RepositoryService repositoryService,
-                             ProjectService<? extends Project> projectService,
+                             ModuleService<? extends Module> moduleService,
                              AuthorizationManager authorizationManager,
                              User identity) {
         this.organizationalUnitService = organizationalUnitService;
         this.repositoryService = repositoryService;
-        this.projectService = projectService;
+        this.moduleService = moduleService;
         this.authorizationManager = authorizationManager;
         this.identity = identity;
     }
@@ -94,26 +96,41 @@ public class SourceServiceImpl
     }
 
     @Override
-    public Collection<String> getBranches(final String repository) {
-        checkNotNull("repository",
-                     repository);
-        final Repository repo = repositoryService.getRepository(repository);
-        return repo != null ? repo.getBranches() : new ArrayList<>();
+    public Collection<String> getBranches(final Space space, final String repositoryName) {
+        checkNotNull("repositoryName",
+                     repositoryName);
+        final Repository repository = repositoryService.getRepositoryFromSpace(space, repositoryName);
+        return repository != null ? toBranchNames(repository.getBranches()) : new ArrayList<>();
     }
 
     @Override
-    public Collection<Project> getProjects(final String repositoryAlias,
-                                           final String branch) {
+    public Collection<Module> getModules(final Space space,
+                                         final String repositoryAlias,
+                                         final String branchName) {
         checkNotNull("repositoryAlias",
                      repositoryAlias);
-        checkNotNull("branch",
-                     branch);
-        final Repository repo = repositoryService.getRepository(repositoryAlias);
-        if (repo == null) {
+        checkNotNull("branchName",
+                     branchName);
+        final Repository repository = repositoryService.getRepositoryFromSpace(space, repositoryAlias);
+        if (repository == null) {
             return new ArrayList<>();
         } else {
-            return projectService.getProjects(repo,
-                                              branch);
+            final Optional<Branch> branch = repository.getBranch(branchName);
+            if (branch.isPresent()) {
+                return moduleService.getAllModules(branch.get());
+            } else {
+                return new ArrayList<>();
+            }
         }
+    }
+
+    private Collection<String> toBranchNames(final Collection<Branch> branches) {
+        final ArrayList<String> result = new ArrayList<>();
+
+        for (final Branch branch : branches) {
+            result.add(branch.getName());
+        }
+
+        return result;
     }
 }

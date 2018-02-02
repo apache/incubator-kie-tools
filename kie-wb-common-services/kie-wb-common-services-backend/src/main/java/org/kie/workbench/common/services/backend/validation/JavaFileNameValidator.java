@@ -20,7 +20,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.Package;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.backend.validation.FileNameValidator;
 import org.uberfire.ext.editor.commons.backend.validation.ValidationUtils;
@@ -32,7 +32,7 @@ import org.uberfire.ext.editor.commons.backend.validation.ValidationUtils;
 public class JavaFileNameValidator implements FileNameValidator {
 
     @Inject
-    KieProjectService projectService;
+    KieModuleService moduleService;
 
     @Override
     public int getPriority() {
@@ -40,21 +40,22 @@ public class JavaFileNameValidator implements FileNameValidator {
     }
 
     @Override
-    public boolean accept( String fileName ) {
-        return fileName != null && fileName.endsWith( ".java" );
+    public boolean accept(String fileName) {
+        return fileName != null && fileName.endsWith(".java");
     }
 
     @Override
-    public boolean accept( Path path ) {
-        if ( !accept( path.getFileName() ) ) {
+    public boolean accept(Path path) {
+        if (!accept(path.getFileName())) {
             return false;
         }
-        Package currentPackage = projectService.resolvePackage( path );
-        return currentPackage != null && !"".equals( currentPackage.getPackageName() );
+        Package currentPackage = moduleService.resolvePackage(path);
+        return currentPackage != null && !"".equals(currentPackage.getPackageName());
     }
 
     @Override
-    public boolean isValid( String value ) {
-        return value.endsWith( ".java" ) && ValidationUtils.isJavaIdentifier( value.substring( 0, value.indexOf( ".java" ) ) ) && ValidationUtils.isFileName( value );
+    public boolean isValid(String value) {
+        return value.endsWith(".java") && ValidationUtils.isJavaIdentifier(value.substring(0,
+                                                                                           value.indexOf(".java"))) && ValidationUtils.isFileName(value);
     }
 }

@@ -21,21 +21,22 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
+import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.kie.workbench.common.screens.datasource.management.service.DataSourceDefQueryService;
 import org.kie.workbench.common.screens.datasource.management.service.DefExplorerQuery;
 import org.kie.workbench.common.screens.datasource.management.service.DefExplorerQueryResult;
-import org.kie.workbench.common.screens.datasource.management.service.DataSourceDefQueryService;
 import org.kie.workbench.common.screens.datasource.management.service.DefExplorerQueryService;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.security.authz.AuthorizationManager;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
@@ -46,17 +47,15 @@ public class DefExplorerQueryServiceImpl
         implements DefExplorerQueryService {
 
     @Inject
-    private DataSourceDefQueryService queryService;
-
+    private WorkspaceProjectService projectService;
     @Inject
-    private KieProjectService projectService;
-
+    private DataSourceDefQueryService queryService;
+    @Inject
+    private KieModuleService moduleService;
     @Inject
     private OrganizationalUnitService organizationalUnitService;
-
     @Inject
     private AuthorizationManager authorizationManager;
-
     @Inject
     private User identity;
 
@@ -75,10 +74,10 @@ public class DefExplorerQueryServiceImpl
 
     private DefExplorerQueryResult resolveQuery(final DefExplorerQuery query) {
 
-        DefExplorerQueryResult result = new DefExplorerQueryResult();
+        final DefExplorerQueryResult result = new DefExplorerQueryResult();
 
         //load the organizational units.
-        Collection<OrganizationalUnit> organizationalUnits = resolveOrganizationalUnits();
+        final Collection<OrganizationalUnit> organizationalUnits = resolveOrganizationalUnits();
         //piggyback the organizational units.
         result.getOrganizationalUnits().addAll(organizationalUnits);
         if (query.getOrganizationalUnit() == null ||
@@ -89,7 +88,7 @@ public class DefExplorerQueryServiceImpl
         }
 
         //set the repositories for current OU.
-        Map<String, Repository> repositories = resolveRepositories(query.getOrganizationalUnit());
+        final Map<String, Repository> repositories = resolveRepositories(query.getOrganizationalUnit());
         //piggyback the repositories.
         result.getRepositories().addAll(repositories.values());
         if (query.getRepository() == null ||
@@ -99,19 +98,19 @@ public class DefExplorerQueryServiceImpl
             return result;
         }
 
-        //load the projects for current OU/Repository and the selected branch.
-        Map<String, Project> projects = resolveProjects(query.getRepository(),
-                                                        query.getBranch());
-        result.getProjects().addAll(projects.values());
-        if (query.getProject() == null || !projects.containsKey(query.getProject().getProjectName())) {
-            //if no Project was set for filtering or the selected Project has been removed or has
+        //load the modules for current OU/Repository and the selected branch.
+        final Map<String, Module> modules = resolveModules(repositories,
+                                                           query.getBranchName());
+        result.getModules().addAll(modules.values());
+        if (query.getModule() == null || !modules.containsKey(query.getModule().getModuleName())) {
+            //if no Module was set for filtering or the selected Module has been removed or has
             // changed in backend.
             return result;
         }
 
-        //get the data sources and drivers for the selected project.
-        result.setDataSourceDefs(queryService.findProjectDataSources(query.getProject()));
-        result.setDriverDefs(queryService.findProjectDrivers(query.getProject()));
+        //get the data sources and drivers for the selected module.
+        result.setDataSourceDefs(queryService.findModuleDataSources(query.getModule()));
+        result.setDriverDefs(queryService.findModuleDrivers(query.getModule()));
         return result;
     }
 
@@ -161,27 +160,32 @@ public class DefExplorerQueryServiceImpl
     }
 
     /**
-     * Given a repository and a branch resolves all the projects accessible by current user in the given repository.
+     * Resolves all the modules accessible by current user in the given branch name.
      */
-    private Map<String, Project> resolveProjects(final Repository repository,
-                                                 final String branch) {
-        final Map<String, Project> authorizedProjects = new HashMap<>();
+    private Map<String, Module> resolveModules(final Map<String, Repository> repositories,
+                                               final String branchName) {
+        final Map<String, Module> authorizedModules = new HashMap<>();
 
-        if (repository == null) {
-            return authorizedProjects;
-        } else {
-            Set<Project> allProjects = projectService.getProjects(repository,
-                                                                  branch);
-
-            for (Project project : allProjects) {
-                if (authorizationManager.authorize(project,
-                                                   identity)) {
-                    authorizedProjects.put(project.getProjectName(),
-                                           project);
-                }
+        for (final Repository repository : repositories.values()) {
+            if (containsBranch(repository.getBranches(),
+                               branchName)) {
+                final Module module = projectService.resolveProject(repository).getMainModule();
+                authorizedModules.put(module.getModuleName(),
+                                      module);
             }
-
-            return authorizedProjects;
         }
+
+        return authorizedModules;
+    }
+
+    private boolean containsBranch(final Collection<Branch> branches,
+                                   final String branchName) {
+        for (final Branch branch : branches) {
+            if (branchName.equals(branch.getName())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

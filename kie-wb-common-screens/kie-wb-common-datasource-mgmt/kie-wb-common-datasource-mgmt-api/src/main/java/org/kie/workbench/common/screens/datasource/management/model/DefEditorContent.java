@@ -16,46 +16,45 @@
 
 package org.kie.workbench.common.screens.datasource.management.model;
 
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 
 public abstract class DefEditorContent<C extends Def> {
 
     protected C def;
 
-    protected Project project;
+    protected Module module;
+
+    public DefEditorContent() {
+    }
 
     public C getDef() {
         return def;
     }
 
-    public void setDef( C def ) {
+    public void setDef(final C def) {
         this.def = def;
     }
 
-    public Project getProject() {
-        return project;
+    public Module getModule() {
+        return module;
     }
 
-    public void setProject( Project project ) {
-        this.project = project;
-    }
-
-    public DefEditorContent() {
+    public void setModule(final Module module) {
+        this.module = module;
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null || getClass() != o.getClass() ) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
-        DefEditorContent<?> that = ( DefEditorContent<?> ) o;
+        DefEditorContent<?> that = (DefEditorContent<?>) o;
 
-        return def != null ? def.equals( that.def ) : that.def == null;
-
+        return def != null ? def.equals(that.def) : that.def == null;
     }
 
     @Override

@@ -22,10 +22,10 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.guvnor.common.services.project.context.ProjectContext;
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
@@ -34,8 +34,6 @@ import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mvp.Command;
-import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
@@ -47,10 +45,10 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
     protected final List<Pair<String, ? extends IsWidget>> extensions = new LinkedList<Pair<String, ? extends IsWidget>>();
 
     @Inject
-    protected ProjectContext context;
+    protected WorkspaceProjectContext context;
 
     @Inject
-    protected Caller<KieProjectService> projectService;
+    protected Caller<KieModuleService> moduleService;
 
     @Inject
     protected Caller<ValidationService> validationService;
@@ -70,14 +68,14 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
     //Package-protected constructor for tests. In an ideal world we'd move to Constructor injection
     //however that would require every sub-class of this abstract class to also have Constructor
     //injection.. and that's a lot of refactoring just to be able to test.
-    DefaultNewResourceHandler( final ProjectContext context,
-                               final Caller<KieProjectService> projectService,
-                               final Caller<ValidationService> validationService,
-                               final PlaceManager placeManager,
-                               final Event<NotificationEvent> notificationEvent,
-                               final BusyIndicatorView busyIndicatorView ) {
+    DefaultNewResourceHandler(final WorkspaceProjectContext context,
+                              final Caller<KieModuleService> moduleService,
+                              final Caller<ValidationService> validationService,
+                              final PlaceManager placeManager,
+                              final Event<NotificationEvent> notificationEvent,
+                              final BusyIndicatorView busyIndicatorView) {
         this.context = context;
-        this.projectService = projectService;
+        this.moduleService = moduleService;
         this.validationService = validationService;
         this.placeManager = placeManager;
         this.notificationEvent = notificationEvent;
@@ -94,75 +92,66 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
     }
 
     @Override
-    public void validate( final String baseFileName,
-                          final ValidatorWithReasonCallback callback ) {
+    public void validate(final String baseFileName,
+                         final ValidatorWithReasonCallback callback) {
 
-        final String fileName = buildFileName( baseFileName,
-                                               getResourceType() );
+        final String fileName = buildFileName(baseFileName,
+                                              getResourceType());
 
-        validationService.call( new RemoteCallback<Boolean>() {
+        validationService.call(new RemoteCallback<Boolean>() {
             @Override
-            public void callback( final Boolean response ) {
-                if ( Boolean.TRUE.equals( response ) ) {
+            public void callback(final Boolean response) {
+                if (Boolean.TRUE.equals(response)) {
                     callback.onSuccess();
                 } else {
-                    callback.onFailure( CommonConstants.INSTANCE.InvalidFileName0( baseFileName ) );
+                    callback.onFailure(CommonConstants.INSTANCE.InvalidFileName0(baseFileName));
                 }
             }
-        } ).isFileNameValid( fileName );
+        }).isFileNameValid(fileName);
     }
 
     @Override
-    public ProjectContext getProjectContext() {
-        return context;
+    public void acceptContext(final Callback<Boolean, Void> callback) {
+        callback.onSuccess(context != null && context.getActiveModule().isPresent());
     }
 
     @Override
-    public void acceptContext( final Callback<Boolean, Void> callback ) {
-        if ( context == null ) {
-            callback.onSuccess( false );
-        } else {
-            callback.onSuccess( context.getActiveProject() != null );
-        }
-    }
-
-    @Override
-    public Command getCommand( final NewResourcePresenter newResourcePresenter ) {
+    public Command getCommand(final NewResourcePresenter newResourcePresenter) {
         return new Command() {
             @Override
             public void execute() {
-                newResourcePresenter.show( DefaultNewResourceHandler.this );
+                newResourcePresenter.show(DefaultNewResourceHandler.this);
             }
         };
     }
 
-    protected String buildFileName( final String baseFileName,
-                                    final ResourceTypeDefinition resourceType ) {
+    protected String buildFileName(final String baseFileName,
+                                   final ResourceTypeDefinition resourceType) {
         final String suffix = resourceType.getSuffix();
         final String prefix = resourceType.getPrefix();
-        final String extension = !( suffix == null || "".equals( suffix ) ) ? "." + resourceType.getSuffix() : "";
-        if ( baseFileName.endsWith( extension ) ) {
+        final String extension = !(suffix == null || "".equals(suffix)) ? "." + resourceType.getSuffix() : "";
+        if (baseFileName.endsWith(extension)) {
             return prefix + baseFileName;
         }
         return prefix + baseFileName + extension;
     }
 
     protected void notifySuccess() {
-        notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully(), NotificationEvent.NotificationType.SUCCESS ) );
+        notificationEvent.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemCreatedSuccessfully(),
+                                                     NotificationEvent.NotificationType.SUCCESS));
     }
 
-    protected RemoteCallback<Path> getSuccessCallback( final NewResourcePresenter presenter ) {
+    protected RemoteCallback<Path> getSuccessCallback(final NewResourcePresenter presenter) {
         return new RemoteCallback<Path>() {
 
             @Override
-            public void callback( final Path path ) {
+            public void callback(final Path path) {
                 busyIndicatorView.hideBusyIndicator();
                 presenter.complete();
                 notifySuccess();
-                newResourceSuccessEvent.fire( new NewResourceSuccessEvent( path ) );
-                placeManager.goTo( path );
+                newResourceSuccessEvent.fire(new NewResourceSuccessEvent(path));
+                placeManager.goTo(path);
             }
-
         };
     }
 

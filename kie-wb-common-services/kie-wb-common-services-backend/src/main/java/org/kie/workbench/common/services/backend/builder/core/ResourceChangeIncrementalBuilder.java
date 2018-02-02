@@ -34,7 +34,7 @@ public class ResourceChangeIncrementalBuilder
     private KModuleService kModuleService;
 
     @Override
-    protected boolean isProjectResourceUpdateNeeded( Path resource ) {
-        return projectService.isPom( resource ) || kModuleService.isKModule( resource );
+    protected boolean isProjectResourceUpdateNeeded(Path resource) {
+        return moduleService.isPom(resource) || kModuleService.isKModule(resource);
     }
 }

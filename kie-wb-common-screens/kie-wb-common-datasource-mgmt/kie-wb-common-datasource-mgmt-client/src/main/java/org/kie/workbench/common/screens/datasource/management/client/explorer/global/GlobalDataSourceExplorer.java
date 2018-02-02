@@ -25,7 +25,7 @@ import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.screens.datasource.management.client.explorer.common.DefExplorerBase;
 import org.kie.workbench.common.screens.datasource.management.client.explorer.common.DefExplorerContent;
-import org.kie.workbench.common.screens.datasource.management.client.explorer.project.ProjectDataSourceExplorerView;
+import org.kie.workbench.common.screens.datasource.management.client.explorer.project.ModuleDataSourceExplorerView;
 import org.kie.workbench.common.screens.datasource.management.client.wizard.datasource.NewDataSourceDefWizard;
 import org.kie.workbench.common.screens.datasource.management.client.wizard.driver.NewDriverDefWizard;
 import org.kie.workbench.common.screens.datasource.management.events.BaseDataSourceEvent;
@@ -37,7 +37,7 @@ import org.kie.workbench.common.screens.datasource.management.service.DefExplore
 @Dependent
 public class GlobalDataSourceExplorer
         extends DefExplorerBase
-        implements ProjectDataSourceExplorerView.Presenter,
+        implements ModuleDataSourceExplorerView.Presenter,
                    IsElement {
 
     private GlobalDataSourceExplorerView view;

@@ -22,13 +22,13 @@ import javax.enterprise.context.ApplicationScoped;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.lang.descr.PackageDescr;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
-import org.kie.soup.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
+import org.kie.soup.project.datamodel.commons.oracle.ModuleDataModelOracleImpl;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
 import org.kie.soup.project.datamodel.oracle.ModelField;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.ErrorMessageUtilities;
@@ -36,7 +36,7 @@ import org.kie.workbench.common.services.refactoring.backend.server.indexing.Pac
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.drools.AbstractDrlFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.util.KObjectUtil;
 import org.kie.workbench.common.services.refactoring.model.index.terms.IndexTerm;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -61,8 +61,8 @@ public class TestPackageNameDrlFileIndexer
     }
 
     @Override
-    public void setProjectService(final KieProjectService projectService) {
-        this.projectService = projectService;
+    public void setModuleService(final KieModuleService moduleService) {
+        this.moduleService = moduleService;
     }
 
     @Override
@@ -96,15 +96,15 @@ public class TestPackageNameDrlFileIndexer
                 return index;
             }
 
-            final ProjectDataModelOracle dmo = getProjectDataModelOracle(path);
-            final Project project = projectService.resolveProject(Paths.convert(path));
+            final ModuleDataModelOracle dmo = getModuleDataModelOracle(path);
+            final Module module = moduleService.resolveModule(Paths.convert(path));
 
             // This is the reason we're overriding toKObject and not using fillDrlIndextBuilder(..)
             final Package pkg = mock(Package.class);
             when(pkg.getPackageName()).thenReturn(packageDescr.getName());
 
             final DefaultIndexBuilder builder = new DefaultIndexBuilder(Paths.convert(path).getFileName(),
-                                                                        project,
+                                                                        module,
                                                                         pkg);
             final PackageDescrIndexVisitor visitor = new PackageDescrIndexVisitor(dmo,
                                                                                   builder,
@@ -126,9 +126,9 @@ public class TestPackageNameDrlFileIndexer
     }
 
     @Override
-    protected ProjectDataModelOracle getProjectDataModelOracle(Path path) {
-        final ProjectDataModelOracle dmo = new ProjectDataModelOracleImpl();
-        dmo.addProjectModelFields(new HashMap<String, ModelField[]>() {{
+    protected ModuleDataModelOracle getModuleDataModelOracle(Path path) {
+        final ModuleDataModelOracle dmo = new ModuleDataModelOracleImpl();
+        dmo.addModuleModelFields(new HashMap<String, ModelField[]>() {{
             put("org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Applicant",
                 new ModelField[]{new ModelField("age",
                                                 "java.lang.Integer",

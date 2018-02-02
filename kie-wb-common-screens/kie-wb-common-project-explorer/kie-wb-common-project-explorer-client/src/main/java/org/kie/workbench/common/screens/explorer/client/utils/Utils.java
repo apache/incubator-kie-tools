@@ -15,10 +15,10 @@
  */
 package org.kie.workbench.common.screens.explorer.client.utils;
 
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.guvnor.structure.repositories.Repository;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.uberfire.backend.vfs.Path;
@@ -34,66 +34,66 @@ public class Utils {
      * @param activeOrganizationalUnit
      * @return
      */
-    public static boolean hasOrganizationalUnitChanged( final OrganizationalUnit organizationalUnit,
-                                                        final OrganizationalUnit activeOrganizationalUnit ) {
-        if ( organizationalUnit == null && activeOrganizationalUnit != null ) {
+    public static boolean hasOrganizationalUnitChanged(final OrganizationalUnit organizationalUnit,
+                                                       final OrganizationalUnit activeOrganizationalUnit) {
+        if (organizationalUnit == null && activeOrganizationalUnit != null) {
             return true;
         }
-        if ( organizationalUnit != null && activeOrganizationalUnit == null ) {
+        if (organizationalUnit != null && activeOrganizationalUnit == null) {
             return true;
         }
-        if ( organizationalUnit == null && activeOrganizationalUnit == null ) {
+        if (organizationalUnit == null && activeOrganizationalUnit == null) {
             return false;
         }
-        return !organizationalUnit.equals( activeOrganizationalUnit );
+        return !organizationalUnit.equals(activeOrganizationalUnit);
     }
 
     /**
-     * A convenience method to compare two Repositories avoiding cluttering code with null checks.
-     * @param repository
-     * @param activeRepository
-     * @return
-     */
-    public static boolean hasRepositoryChanged( final Repository repository,
-                                                final Repository activeRepository ) {
-        if ( repository == null && activeRepository != null ) {
-            return true;
-        }
-        if ( repository != null && activeRepository == null ) {
-            return true;
-        }
-        if ( repository == null && activeRepository == null ) {
-            return false;
-        }
-        return !repository.equals( activeRepository );
-    }
-
-    public static boolean hasBranchChanged( final String branch,
-                                            final String activeBranch ) {
-        if ( branch == null || activeBranch == null ) {
-            return true;
-        }
-        return !branch.equals( activeBranch );
-    }
-
-    /**
-     * A convenience method to compare two Projects avoiding cluttering code with null checks.
+     * A convenience method to compare two WorkspaceProjects avoiding cluttering code with null checks.
      * @param project
      * @param activeProject
      * @return
      */
-    public static boolean hasProjectChanged( final Project project,
-                                             final Project activeProject ) {
-        if ( project == null && activeProject != null ) {
+    public static boolean hasProjectChanged(final WorkspaceProject project,
+                                            final WorkspaceProject activeProject) {
+        if (project == null && activeProject != null) {
             return true;
         }
-        if ( project != null && activeProject == null ) {
+        if (project != null && activeProject == null) {
             return true;
         }
-        if ( project == null && activeProject == null ) {
+        if (project == null && activeProject == null) {
             return false;
         }
-        return !project.equals( activeProject );
+        return !project.equals(activeProject);
+    }
+
+    public static boolean hasBranchChanged(final String branch,
+                                           final String activeBranch) {
+        if (branch == null || activeBranch == null) {
+            return true;
+        }
+        return !branch.equals(activeBranch);
+    }
+
+    /**
+     * A convenience method to compare two Modules avoiding cluttering code with null checks.
+     * @param module
+     * @param activeModule
+     * @return
+     */
+    public static boolean hasModuleChanged(final Module module,
+                                           final Module activeModule) {
+        if (module == null && activeModule != null) {
+            return true;
+        }
+        if (module != null && activeModule == null) {
+            return true;
+        }
+        if (module == null && activeModule == null) {
+            return false;
+        }
+        return !module.equals(activeModule);
     }
 
     /**
@@ -102,32 +102,32 @@ public class Utils {
      * @param activePackage
      * @return
      */
-    public static boolean hasPackageChanged( final Package pkg,
-                                             final Package activePackage ) {
-        if ( pkg == null && activePackage != null ) {
+    public static boolean hasPackageChanged(final Package pkg,
+                                            final Package activePackage) {
+        if (pkg == null && activePackage != null) {
             return true;
         }
-        if ( pkg != null && activePackage == null ) {
+        if (pkg != null && activePackage == null) {
             return true;
         }
-        if ( pkg == null && activePackage == null ) {
+        if (pkg == null && activePackage == null) {
             return false;
         }
-        return !pkg.equals( activePackage );
+        return !pkg.equals(activePackage);
     }
 
-    public static boolean hasFolderItemChanged( final FolderItem item,
-                                                final FolderItem activeItem ) {
-        if ( item == null && activeItem != null ) {
+    public static boolean hasFolderItemChanged(final FolderItem item,
+                                               final FolderItem activeItem) {
+        if (item == null && activeItem != null) {
             return true;
         }
-        if ( item != null && activeItem == null ) {
+        if (item != null && activeItem == null) {
             return true;
         }
-        if ( item == null && activeItem == null ) {
+        if (item == null && activeItem == null) {
             return false;
         }
-        return !item.equals( activeItem );
+        return !item.equals(activeItem);
     }
 
     /**
@@ -135,10 +135,10 @@ public class Utils {
      * @param path
      * @return
      */
-    public static FolderItem makeFileItem( final Path path ) {
-        return new FolderItem( path,
-                               path.getFileName(),
-                               FolderItemType.FILE);
+    public static FolderItem makeFileItem(final Path path) {
+        return new FolderItem(path,
+                              path.getFileName(),
+                              FolderItemType.FILE);
     }
 
     /**
@@ -146,86 +146,88 @@ public class Utils {
      * @param path
      * @return
      */
-    public static FolderItem makeFolderItem( final Path path ) {
-        return new FolderItem( path,
-                               path.getFileName(),
-                               FolderItemType.FOLDER);
+    public static FolderItem makeFolderItem(final Path path) {
+        return new FolderItem(path,
+                              path.getFileName(),
+                              FolderItemType.FOLDER);
     }
 
     /**
-     * Check whether the Project is contained within the Branch
+     * Check whether the Module is contained within the Branch
      * @param branchRootPath
-     * @param project
+     * @param module
      * @return
      */
-    public static boolean isInBranch( final Path branchRootPath,
-                                      final Project project ) {
-        if ( branchRootPath == null ) {
+    public static boolean isInBranch(final Path branchRootPath,
+                                     final Module module) {
+        if (branchRootPath == null) {
             return false;
         }
 
-        if ( project == null ) {
+        if (module == null) {
             return false;
         }
 
-        //Check Project path starts with the active repository path
-        final Path projectRootPath = project.getRootPath();
-        if ( Utils.isLeaf( projectRootPath,
-                           branchRootPath ) ) {
+        //Check Module path starts with the active repository path
+        final Path moduleRootPath = module.getRootPath();
+        if (Utils.isLeaf(moduleRootPath,
+                         branchRootPath)) {
             return true;
         }
         return false;
     }
 
     /**
-     * Check whether the Package is contained within the Project
-     * @param project
+     * Check whether the Package is contained within the Module
+     * @param module
      * @param pkg
      * @return
      */
-    public static boolean isInProject( final Project project,
-                                       final Package pkg ) {
-        if ( project == null ) {
+    public static boolean isInModule(final Module module,
+                                     final Package pkg) {
+        if (module == null) {
             return false;
         }
-        //Check Package path is within the active Project path
-        final Path projectRootPath = project.getRootPath();
+        //Check Package path is within the active Module path
+        final Path moduleRootPath = module.getRootPath();
         final Path pkgMainSrcPath = pkg.getPackageMainSrcPath();
         final Path pkgTestSrcPath = pkg.getPackageTestSrcPath();
         final Path pkgMainResourcesPath = pkg.getPackageMainResourcesPath();
         final Path pkgTestResourcesPath = pkg.getPackageTestResourcesPath();
 
-        if ( Utils.isSibling( pkgMainSrcPath,
-                              projectRootPath ) ) {
+        if (Utils.isSibling(pkgMainSrcPath,
+                            moduleRootPath)) {
             return true;
         }
-        if ( Utils.isSibling( pkgTestSrcPath,
-                              projectRootPath ) ) {
+        if (Utils.isSibling(pkgTestSrcPath,
+                            moduleRootPath)) {
             return true;
         }
-        if ( Utils.isSibling( pkgMainResourcesPath,
-                              projectRootPath ) ) {
+        if (Utils.isSibling(pkgMainResourcesPath,
+                            moduleRootPath)) {
             return true;
         }
-        if ( Utils.isSibling( pkgTestResourcesPath,
-                              projectRootPath ) ) {
+        if (Utils.isSibling(pkgTestResourcesPath,
+                            moduleRootPath)) {
             return true;
         }
         return false;
     }
 
-    public static boolean isInFolderItem( final FolderItem folderItem,
-                                          final Path resource ) {
-        if ( folderItem == null || folderItem.getItem() == null ) {
+    public static boolean isInFolderItem(final FolderItem folderItem,
+                                         final Path resource) {
+        if (folderItem == null || folderItem.getItem() == null) {
             return false;
         }
-        if ( !folderItem.getType().equals( FolderItemType.FOLDER ) ) {
+        if (!folderItem.getType().equals(FolderItemType.FOLDER)) {
             return false;
         }
-        if ( folderItem.getItem() instanceof Path ) {
-            return isLeaf( resource, (Path) folderItem.getItem() );
-        } else if ( folderItem.getItem() instanceof Package ) {
-            return isInPackage( (Package) folderItem.getItem(), resource );
+        if (folderItem.getItem() instanceof Path) {
+            return isLeaf(resource,
+                          (Path) folderItem.getItem());
+        } else if (folderItem.getItem() instanceof Package) {
+            return isInPackage((Package) folderItem.getItem(),
+                               resource);
         }
         return false;
     }
@@ -236,9 +238,9 @@ public class Utils {
      * @param resource
      * @return
      */
-    public static boolean isInPackage( final Package pkg,
-                                       final Path resource ) {
-        if ( pkg == null ) {
+    public static boolean isInPackage(final Package pkg,
+                                      final Path resource) {
+        if (pkg == null) {
             return false;
         }
         //Check resource path starts with the active folder list path
@@ -247,20 +249,20 @@ public class Utils {
         final Path pkgMainResourcesPath = pkg.getPackageMainResourcesPath();
         final Path pkgTestResourcesPath = pkg.getPackageTestResourcesPath();
 
-        if ( Utils.isLeaf( resource,
-                           pkgMainSrcPath ) ) {
+        if (Utils.isLeaf(resource,
+                         pkgMainSrcPath)) {
             return true;
         }
-        if ( Utils.isLeaf( resource,
-                           pkgTestSrcPath ) ) {
+        if (Utils.isLeaf(resource,
+                         pkgTestSrcPath)) {
             return true;
         }
-        if ( Utils.isLeaf( resource,
-                           pkgMainResourcesPath ) ) {
+        if (Utils.isLeaf(resource,
+                         pkgMainResourcesPath)) {
             return true;
         }
-        if ( Utils.isLeaf( resource,
-                           pkgTestResourcesPath ) ) {
+        if (Utils.isLeaf(resource,
+                         pkgTestResourcesPath)) {
             return true;
         }
         return false;
@@ -275,16 +277,16 @@ public class Utils {
      * @param parent
      * @return
      */
-    public static boolean isLeaf( final Path child,
-                                  final Path parent ) {
+    public static boolean isLeaf(final Path child,
+                                 final Path parent) {
         final String childUri = child.toURI();
         final String parentUri = parent.toURI();
-        if ( childUri.startsWith( parentUri ) ) {
+        if (childUri.startsWith(parentUri)) {
             //If there are no additional path separators the resource must be within the active folder listing
-            final String leafUri = childUri.replace( parentUri,
-                                                     "" );
-            return leafUri.indexOf( "/",
-                                    1 ) == -1;
+            final String leafUri = childUri.replace(parentUri,
+                                                    "");
+            return leafUri.indexOf("/",
+                                   1) == -1;
         }
         return false;
     }
@@ -296,11 +298,11 @@ public class Utils {
      * @param parent
      * @return
      */
-    public static boolean isSibling( final Path child,
-                                     final Path parent ) {
+    public static boolean isSibling(final Path child,
+                                    final Path parent) {
         final String childUri = child.toURI();
         final String parentUri = parent.toURI();
-        return childUri.startsWith( parentUri );
+        return childUri.startsWith(parentUri);
     }
 
     /**
@@ -308,10 +310,10 @@ public class Utils {
      * @param fileName
      * @return
      */
-    public static String getBaseFileName( final String fileName, final String suffix ) {
-        final int suffixIndex = fileName.lastIndexOf( "." + suffix );
-        return ( suffixIndex > 0 ? fileName.substring( 0,
-                                                    suffixIndex ) : fileName );
+    public static String getBaseFileName(final String fileName,
+                                         final String suffix) {
+        final int suffixIndex = fileName.lastIndexOf("." + suffix);
+        return (suffixIndex > 0 ? fileName.substring(0,
+                                                     suffixIndex) : fileName);
     }
-
 }

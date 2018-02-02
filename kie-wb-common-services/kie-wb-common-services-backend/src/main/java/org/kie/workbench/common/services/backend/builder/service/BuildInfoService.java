@@ -20,7 +20,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.builder.service.BuildService;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.kie.workbench.common.services.backend.builder.core.Builder;
 import org.kie.workbench.common.services.backend.builder.core.LRUBuilderCache;
 
@@ -36,29 +36,29 @@ public class BuildInfoService {
 
     private LRUBuilderCache builderCache;
 
-    public BuildInfoService( ) {
+    public BuildInfoService() {
         //Empty constructor for Weld proxying
     }
 
     @Inject
-    public BuildInfoService( BuildService buildService, LRUBuilderCache builderCache ) {
+    public BuildInfoService(BuildService buildService,
+                            LRUBuilderCache builderCache) {
         this.buildService = buildService;
         this.builderCache = builderCache;
     }
 
     /**
-     * Gets the BuildInfo for a given project. The BuildInfoService decides internally whenever the project should be
+     * Gets the BuildInfo for a given module. The BuildInfoService decides internally whenever the module should be
      * built prior to construct the BuildInfo.
-     *
-     * @param project The project for getting the BuildInfo.
-     *
-     * @return the BuildInfo for the given project.
+     * @param module The module for getting the BuildInfo.
+     * @return the BuildInfo for the given module.
      */
-    public BuildInfo getBuildInfo( Project project ) {
-        final Builder[] result = { builderCache.getBuilder( project ) };
-        if ( result[ 0 ] == null || !result[ 0 ].isBuilt() ) {
-            ( (BuildServiceImpl ) buildService ).build( project, builder -> result[ 0 ] = builder );
+    public BuildInfo getBuildInfo(final Module module) {
+        final Builder[] result = {builderCache.getBuilder(module)};
+        if (result[0] == null || !result[0].isBuilt()) {
+            ((BuildServiceImpl) buildService).build(module,
+                                                    builder -> result[0] = builder);
         }
-        return new BuildInfoImpl( result[ 0 ] );
+        return new BuildInfoImpl(result[0]);
     }
 }

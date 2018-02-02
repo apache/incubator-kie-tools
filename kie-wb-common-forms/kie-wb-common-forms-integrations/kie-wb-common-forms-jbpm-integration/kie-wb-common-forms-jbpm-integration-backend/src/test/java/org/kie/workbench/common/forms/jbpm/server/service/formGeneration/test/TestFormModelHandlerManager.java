@@ -26,21 +26,21 @@ import org.kie.workbench.common.forms.jbpm.server.service.impl.BusinessProcessFo
 import org.kie.workbench.common.forms.jbpm.server.service.impl.TaskFormModelHandler;
 import org.kie.workbench.common.forms.model.FormModel;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
-import org.kie.workbench.common.services.backend.project.ProjectClassLoaderHelper;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 
 public class TestFormModelHandlerManager implements FormModelHandlerManager {
 
-    private KieProjectService projectService;
+    private KieModuleService projectService;
 
-    private ProjectClassLoaderHelper projectClassLoaderHelper;
+    private ModuleClassLoaderHelper projectClassLoaderHelper;
 
     private FieldManager fieldManager;
 
     private DataObjectFinderService finderService;
 
-    public TestFormModelHandlerManager(KieProjectService projectService,
-                                       ProjectClassLoaderHelper projectClassLoaderHelper,
+    public TestFormModelHandlerManager(KieModuleService projectService,
+                                       ModuleClassLoaderHelper projectClassLoaderHelper,
                                        FieldManager fieldManager,
                                        DataObjectFinderService finderService) {
         this.projectService = projectService;

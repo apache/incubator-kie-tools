@@ -23,21 +23,25 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import javax.enterprise.event.Event;
 
-import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
+import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.structure.backend.config.ConfigurationFactoryImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
+import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
+import org.guvnor.structure.repositories.RepositoryCopier;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.guvnor.structure.server.config.ConfigGroup;
@@ -51,20 +55,22 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.examples.model.ExampleOrganizationalUnit;
 import org.kie.workbench.common.screens.examples.model.ExampleProject;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
-import org.kie.workbench.common.screens.examples.model.ExampleTargetRepository;
 import org.kie.workbench.common.screens.examples.model.ExamplesMetaData;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.rpc.SessionInfo;
+import org.uberfire.spaces.Space;
+import org.uberfire.spaces.SpacesAPI;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -82,10 +88,13 @@ public class ExamplesServiceImplTest {
     private RepositoryFactory repositoryFactory;
 
     @Mock
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     @Mock
     private RepositoryService repositoryService;
+
+    @Mock
+    private RepositoryCopier repositoryCopier;
 
     @Mock
     private OrganizationalUnitService ouService;
@@ -107,6 +116,15 @@ public class ExamplesServiceImplTest {
     @Mock
     private User user;
 
+    @Mock
+    private WorkspaceProjectService projectService;
+
+    @Mock
+    private SpacesAPI spaces;
+
+    @Mock
+    private ProjectScreenService projectScreenService;
+
     private ExamplesServiceImpl service;
 
     @Before
@@ -114,12 +132,15 @@ public class ExamplesServiceImplTest {
         service = spy(new ExamplesServiceImpl(ioService,
                                               configurationFactory,
                                               repositoryFactory,
-                                              projectService,
+                                              moduleService,
                                               repositoryService,
+                                              repositoryCopier,
                                               ouService,
+                                              projectService,
                                               metadataService,
+                                              spaces,
                                               newProjectEvent,
-                                              sessionInfo));
+                                              projectScreenService));
         when(ouService.getOrganizationalUnits()).thenReturn(new HashSet<OrganizationalUnit>() {{
             add(new OrganizationalUnitImpl("ou1Name",
                                            "ou1Owner",
@@ -128,18 +149,18 @@ public class ExamplesServiceImplTest {
                                            "ou2Owner",
                                            "ou2GroupId"));
         }});
-        when(projectService.resolveProject(any(Path.class))).thenAnswer(new Answer<KieProject>() {
+        when(moduleService.resolveModule(any(Path.class))).thenAnswer(new Answer<KieModule>() {
             @Override
-            public KieProject answer(final InvocationOnMock invocationOnMock) throws Throwable {
+            public KieModule answer(final InvocationOnMock invocationOnMock) throws Throwable {
                 final Path path = (Path) invocationOnMock.getArguments()[0];
-                final KieProject project = new KieProject(path,
-                                                          path,
-                                                          path,
-                                                          path,
-                                                          path,
-                                                          path,
-                                                          "");
-                return project;
+                final KieModule module = new KieModule(path,
+                                                       path,
+                                                       path,
+                                                       path,
+                                                       path,
+                                                       path,
+                                                       mock(POM.class));
+                return module;
             }
         });
         when(sessionInfo.getId()).thenReturn("sessionId");
@@ -169,295 +190,197 @@ public class ExamplesServiceImplTest {
 
         assertNotNull(metaData);
         assertNotNull(metaData.getRepository());
-        assertNotNull(metaData.getOrganizationalUnits());
-        assertEquals(2,
-                     metaData.getOrganizationalUnits().size());
 
         assertNotNull(metaData.getRepository().getUrl());
-
-        final Set<ExampleOrganizationalUnit> exampleOrganizationalUnits = metaData.getOrganizationalUnits();
-        assertTrue(exampleOrganizationalUnits.contains(new ExampleOrganizationalUnit("ou1Name")));
-        assertTrue(exampleOrganizationalUnits.contains(new ExampleOrganizationalUnit("ou2Name")));
     }
 
     @Test
     public void testGetProjects_NullRepository() {
-        final Set<ExampleProject> projects = service.getProjects(null);
-        assertNotNull(projects);
+        final Set<ExampleProject> modules = service.getProjects(null);
+        assertNotNull(modules);
         assertEquals(0,
-                     projects.size());
+                     modules.size());
     }
 
     @Test
     public void testGetProjects_NullRepositoryUrl() {
-        final Set<ExampleProject> projects = service.getProjects(new ExampleRepository(null));
-        assertNotNull(projects);
+        final Set<ExampleProject> modules = service.getProjects(new ExampleRepository(null));
+        assertNotNull(modules);
         assertEquals(0,
-                     projects.size());
+                     modules.size());
     }
 
     @Test
     public void testGetProjects_EmptyRepositoryUrl() {
-        final Set<ExampleProject> projects = service.getProjects(new ExampleRepository(""));
-        assertNotNull(projects);
+        final Set<ExampleProject> modules = service.getProjects(new ExampleRepository(""));
+        assertNotNull(modules);
         assertEquals(0,
-                     projects.size());
+                     modules.size());
     }
 
     @Test
     public void testGetProjects_WhiteSpaceRepositoryUrl() {
-        final Set<ExampleProject> projects = service.getProjects(new ExampleRepository("   "));
-        assertNotNull(projects);
+        final Set<ExampleProject> modules = service.getProjects(new ExampleRepository("   "));
+        assertNotNull(modules);
         assertEquals(0,
-                     projects.size());
+                     modules.size());
     }
 
     @Test
     public void testGetProjects_DefaultDescription() {
-        final Path projectRoot = mock(Path.class);
-        final KieProject project = mock(KieProject.class);
-        when(project.getRootPath()).thenReturn(projectRoot);
-        when(project.getProjectName()).thenReturn("project1");
-        when(projectRoot.toURI()).thenReturn("default:///project1");
+        final Path moduleRoot = mock(Path.class);
+        final KieModule module = mock(KieModule.class);
+        when(module.getRootPath()).thenReturn(moduleRoot);
+        when(module.getModuleName()).thenReturn("module1");
+        when(moduleRoot.toURI()).thenReturn("default:///module1");
         when(metadataService.getTags(any(Path.class))).thenReturn(Arrays.asList("tag1",
                                                                                 "tag2"));
 
-        final GitRepository repository = new GitRepository("guvnorng-playground");
+        final GitRepository repository = makeGitRepository();
         when(repositoryFactory.newRepository(any(ConfigGroup.class))).thenReturn(repository);
-        when(projectService.getProjects(eq(repository),
-                                        any(String.class))).thenReturn(new HashSet<Project>() {{
-            add(project);
+        when(moduleService.getAllModules(any(Branch.class))).thenReturn(new HashSet<Module>() {{
+            add(module);
         }});
 
         service.setPlaygroundRepository(mock(ExampleRepository.class));
 
-        final Set<ExampleProject> projects = service.getProjects(new ExampleRepository("https://github.com/guvnorngtestuser1/guvnorng-playground.git"));
-        assertNotNull(projects);
+        final Set<ExampleProject> modules = service.getProjects(new ExampleRepository("https://github.com/guvnorngtestuser1/guvnorng-playground.git"));
+        assertNotNull(modules);
         assertEquals(1,
-                     projects.size());
-        assertTrue(projects.contains(new ExampleProject(projectRoot,
-                                                        "project1",
-                                                        "Example 'project1' project",
-                                                        Arrays.asList("tag1",
-                                                                      "tag2"))));
+                     modules.size());
+        assertTrue(modules.contains(new ExampleProject(moduleRoot,
+                                                       "module1",
+                                                       "Example 'module1' module",
+                                                       Arrays.asList("tag1",
+                                                                     "tag2"))));
     }
 
     @Test
     public void testGetProjects_CustomDescription() {
-        final Path projectRoot = mock(Path.class);
-        final KieProject project = mock(KieProject.class);
-        when(project.getRootPath()).thenReturn(projectRoot);
-        when(project.getProjectName()).thenReturn("project1");
-        when(projectRoot.toURI()).thenReturn("default:///project1");
+        final Path moduleRoot = mock(Path.class);
+        final KieModule module = mock(KieModule.class);
+        when(module.getRootPath()).thenReturn(moduleRoot);
+        when(module.getModuleName()).thenReturn("module1");
+        when(moduleRoot.toURI()).thenReturn("default:///module1");
         when(ioService.exists(any(org.uberfire.java.nio.file.Path.class))).thenReturn(true);
         when(ioService.readAllString(any(org.uberfire.java.nio.file.Path.class))).thenReturn("This is custom description.\n\n This is a new line.");
         when(metadataService.getTags(any(Path.class))).thenReturn(Arrays.asList("tag1",
                                                                                 "tag2"));
 
-        final GitRepository repository = new GitRepository("guvnorng-playground");
+        final GitRepository repository = makeGitRepository();
         when(repositoryFactory.newRepository(any(ConfigGroup.class))).thenReturn(repository);
-        when(projectService.getProjects(eq(repository),
-                                        any(String.class))).thenReturn(new HashSet<Project>() {{
-            add(project);
+        when(moduleService.getAllModules(any(Branch.class))).thenReturn(new HashSet<Module>() {{
+            add(module);
         }});
 
-        final Set<ExampleProject> projects = service.getProjects(new ExampleRepository("https://github.com/guvnorngtestuser1/guvnorng-playground.git"));
-        assertNotNull(projects);
+        final Set<ExampleProject> modules = service.getProjects(new ExampleRepository("https://github.com/guvnorngtestuser1/guvnorng-playground.git"));
+        assertNotNull(modules);
         assertEquals(1,
-                     projects.size());
-        assertTrue(projects.contains(new ExampleProject(projectRoot,
-                                                        "project1",
-                                                        "This is custom description. This is a new line.",
-                                                        Arrays.asList("tag1",
-                                                                      "tag2"))));
+                     modules.size());
+        assertTrue(modules.contains(new ExampleProject(moduleRoot,
+                                                       "module1",
+                                                       "This is custom description. This is a new line.",
+                                                       Arrays.asList("tag1",
+                                                                     "tag2"))));
     }
 
     @Test
     public void testGetProjects_PomDescription() {
-        final Path projectRoot = mock(Path.class);
+        final Path moduleRoot = mock(Path.class);
         final POM pom = mock(POM.class);
-        final KieProject project = mock(KieProject.class);
+        final KieModule module = mock(KieModule.class);
         when(pom.getDescription()).thenReturn("pom description");
-        when(project.getRootPath()).thenReturn(projectRoot);
-        when(project.getProjectName()).thenReturn("project1");
-        when(project.getPom()).thenReturn(pom);
-        when(projectRoot.toURI()).thenReturn("default:///project1");
+        when(module.getRootPath()).thenReturn(moduleRoot);
+        when(module.getModuleName()).thenReturn("module1");
+        when(module.getPom()).thenReturn(pom);
+        when(moduleRoot.toURI()).thenReturn("default:///module1");
         when(metadataService.getTags(any(Path.class))).thenReturn(Arrays.asList("tag1",
                                                                                 "tag2"));
 
-        final GitRepository repository = new GitRepository("guvnorng-playground");
+        final GitRepository repository = makeGitRepository();
         when(repositoryFactory.newRepository(any(ConfigGroup.class))).thenReturn(repository);
-        when(projectService.getProjects(eq(repository),
-                                        any(String.class))).thenReturn(new HashSet<Project>() {{
-            add(project);
+        when(moduleService.getAllModules(any(Branch.class))).thenReturn(new HashSet<Module>() {{
+            add(module);
         }});
 
-        final Set<ExampleProject> projects = service.getProjects(new ExampleRepository("https://github.com/guvnorngtestuser1/guvnorng-playground.git"));
-        assertNotNull(projects);
+        final Set<ExampleProject> modules = service.getProjects(new ExampleRepository("https://github.com/guvnorngtestuser1/guvnorng-playground.git"));
+        assertNotNull(modules);
         assertEquals(1,
-                     projects.size());
-        assertTrue(projects.contains(new ExampleProject(projectRoot,
-                                                        "project1",
-                                                        "pom description",
-                                                        Arrays.asList("tag1",
-                                                                      "tag2"))));
-    }
-
-    @Test
-    public void testValidateRepositoryName() {
-        final String name = "name";
-        service.validateRepositoryName(name);
-        verify(repositoryService,
-               times(1)).validateRepositoryName(eq(name));
+                     modules.size());
+        assertTrue(modules.contains(new ExampleProject(moduleRoot,
+                                                       "module1",
+                                                       "pom description",
+                                                       Arrays.asList("tag1",
+                                                                     "tag2"))));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetupExamples_NullOrganizationalUnit() {
         service.setupExamples(null,
-                              mock(ExampleTargetRepository.class),
-                              "master",
                               mock(List.class));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSetupExamples_NullRepository() {
+    public void testSetupExamples_NullModule() {
         service.setupExamples(mock(ExampleOrganizationalUnit.class),
-                              null,
-                              "master",
-                              mock(List.class));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testSetupExamples_NullBranch() {
-        service.setupExamples(mock(ExampleOrganizationalUnit.class),
-                              mock(ExampleTargetRepository.class),
-                              null,
-                              mock(List.class));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testSetupExamples_NullProject() {
-        service.setupExamples(mock(ExampleOrganizationalUnit.class),
-                              mock(ExampleTargetRepository.class),
-                              "master",
                               null);
     }
 
     @Test(expected = IllegalStateException.class)
-    public void testSetupExamples_ZeroProjects() {
+    public void testSetupExamples_ZeroModules() {
         service.setupExamples(mock(ExampleOrganizationalUnit.class),
-                              mock(ExampleTargetRepository.class),
-                              "master",
                               Collections.<ExampleProject>emptyList());
     }
 
     @Test
     public void testSetupExamples_NewOrganizationalUnitNewRepository() {
         final ExampleOrganizationalUnit exOU = mock(ExampleOrganizationalUnit.class);
-        final ExampleTargetRepository exRepository = mock(ExampleTargetRepository.class);
-        final ExampleProject exProject = mock(ExampleProject.class);
-        final List<ExampleProject> exProjects = new ArrayList<ExampleProject>() {{
-            add(exProject);
+        final ExampleProject exModule = mock(ExampleProject.class);
+        doReturn("module").when(exModule).getName();
+        final List<ExampleProject> exModules = new ArrayList<ExampleProject>() {{
+            add(exModule);
         }};
         final OrganizationalUnit ou = mock(OrganizationalUnit.class);
+        doReturn("ou").when(ou).getName();
         final GitRepository repository = mock(GitRepository.class);
         final Path repositoryRoot = mock(Path.class);
-        final Path projectRoot = mock(Path.class);
+        final Path moduleRoot = mock(Path.class);
 
         when(exOU.getName()).thenReturn("ou");
-        when(exRepository.getAlias()).thenReturn("repository");
-        when(exProject.getName()).thenReturn("project");
-        when(exProject.getRoot()).thenReturn(projectRoot);
+        when(exModule.getName()).thenReturn("module");
+        when(exModule.getRoot()).thenReturn(moduleRoot);
 
-        when(repository.getBranchRoot("master")).thenReturn(repositoryRoot);
+        when(repository.getDefaultBranch()).thenReturn(Optional.of(new Branch("master",
+                                                                              repositoryRoot)));
         when(repositoryRoot.toURI()).thenReturn("default:///");
-        when(projectRoot.toURI()).thenReturn("default:///project");
+        when(moduleRoot.toURI()).thenReturn("default:///module");
 
         when(ouService.getOrganizationalUnit(eq("ou"))).thenReturn(null);
         when(ouService.createOrganizationalUnit(eq("ou"),
                                                 eq(""),
                                                 eq(""))).thenReturn(ou);
-        when(repositoryService.getRepository(eq("repository"))).thenReturn(null);
-        when(repositoryService.createRepository(eq(ou),
-                                                eq(GitRepository.SCHEME),
-                                                eq("repository"),
-                                                any(RepositoryEnvironmentConfigurations.class))).thenReturn(repository);
+        when(repositoryCopier.copy(eq(ou),
+                                   anyString(),
+                                   eq(moduleRoot))).thenReturn(repository);
+        final WorkspaceProject project = spy(new WorkspaceProject());
+        doReturn("project").when(project).getName();
+        doReturn(project).when(projectService).resolveProject(repository);
 
-        final ProjectContextChangeEvent event = service.setupExamples(exOU,
-                                                                      exRepository,
-                                                                      "master",
-                                                                      exProjects);
+        final WorkspaceProjectContextChangeEvent event = service.setupExamples(exOU,
+                                                                               exModules);
 
-        assertEquals(ou,
-                     event.getOrganizationalUnit());
-        assertEquals(repository,
-                     event.getRepository());
-        assertEquals(repository.getDefaultBranch(),
-                     event.getBranch());
-        assertEquals(exProject.getRoot().toURI(),
-                     event.getProject().getRootPath().toURI());
+        assertNull(event.getOrganizationalUnit());
+        assertEquals(project,
+                     event.getWorkspaceProject());
 
         verify(ouService,
                times(1)).createOrganizationalUnit(eq("ou"),
                                                   eq(""),
                                                   eq(""));
-        verify(repositoryService,
-               times(1)).createRepository(eq(ou),
-                                          eq(GitRepository.SCHEME),
-                                          eq("repository"),
-                                          any(RepositoryEnvironmentConfigurations.class));
-        verify(newProjectEvent,
-               times(1)).fire(any(NewProjectEvent.class));
-    }
-
-    @Test
-    public void testSetupExamples_ExistingOrganizationalUnitExistingRepository() {
-        final ExampleOrganizationalUnit exOU = mock(ExampleOrganizationalUnit.class);
-        final ExampleTargetRepository exRepository = mock(ExampleTargetRepository.class);
-        final ExampleProject exProject = mock(ExampleProject.class);
-        final List<ExampleProject> exProjects = new ArrayList<ExampleProject>() {{
-            add(exProject);
-        }};
-        final OrganizationalUnit ou = mock(OrganizationalUnit.class);
-        final GitRepository repository = mock(GitRepository.class);
-        final Path repositoryRoot = mock(Path.class);
-        final Path projectRoot = mock(Path.class);
-
-        when(exOU.getName()).thenReturn("ou");
-        when(exRepository.getAlias()).thenReturn("repository");
-        when(exProject.getName()).thenReturn("project");
-        when(exProject.getRoot()).thenReturn(projectRoot);
-
-        when(repository.getBranchRoot("master")).thenReturn(repositoryRoot);
-        when(repositoryRoot.toURI()).thenReturn("default:///");
-        when(projectRoot.toURI()).thenReturn("default:///project");
-
-        when(ouService.getOrganizationalUnit(eq("ou"))).thenReturn(ou);
-        when(repositoryService.getRepository(eq("repository"))).thenReturn(repository);
-
-        final ProjectContextChangeEvent event = service.setupExamples(exOU,
-                                                                      exRepository,
-                                                                      "master",
-                                                                      exProjects);
-
-        assertEquals(ou,
-                     event.getOrganizationalUnit());
-        assertEquals(repository,
-                     event.getRepository());
-        assertEquals(repository.getDefaultBranch(),
-                     event.getBranch());
-        assertEquals(exProject.getRoot().toURI(),
-                     event.getProject().getRootPath().toURI());
-
-        verify(ouService,
-               never()).createOrganizationalUnit(eq("ou"),
-                                                 eq(""),
-                                                 eq(""));
-        verify(repositoryService,
-               never()).createRepository(any(OrganizationalUnit.class),
-                                         any(String.class),
-                                         any(String.class),
-                                         any(RepositoryEnvironmentConfigurations.class));
+        verify(repositoryCopier,
+               times(1)).copy(eq(ou),
+                              anyString(),
+                              eq(moduleRoot));
         verify(newProjectEvent,
                times(1)).fire(any(NewProjectEvent.class));
     }
@@ -465,62 +388,67 @@ public class ExamplesServiceImplTest {
     @Test
     public void testSetupExamples_ProjectCopy() {
         final ExampleOrganizationalUnit exOU = mock(ExampleOrganizationalUnit.class);
-        final ExampleTargetRepository exRepository = mock(ExampleTargetRepository.class);
         final ExampleProject exProject1 = mock(ExampleProject.class);
+        doReturn("project 1").when(exProject1).getName();
         final ExampleProject exProject2 = mock(ExampleProject.class);
+        doReturn("project 2").when(exProject1).getName();
         final List<ExampleProject> exProjects = new ArrayList<ExampleProject>() {{
             add(exProject1);
             add(exProject2);
         }};
         final OrganizationalUnit ou = mock(OrganizationalUnit.class);
-        final GitRepository repository = mock(GitRepository.class);
+        doReturn("ou").when(ou).getName();
+        final GitRepository repository1 = mock(GitRepository.class);
         final Path repositoryRoot = mock(Path.class);
-        final Path project1Root = mock(Path.class);
-        final Path project2Root = mock(Path.class);
+        final Path module1Root = mock(Path.class);
+        final Path module2Root = mock(Path.class);
 
         when(exOU.getName()).thenReturn("ou");
-        when(exRepository.getAlias()).thenReturn("repository");
-        when(exProject1.getName()).thenReturn("project1");
-        when(exProject1.getRoot()).thenReturn(project1Root);
-        when(exProject2.getName()).thenReturn("project2");
-        when(exProject2.getRoot()).thenReturn(project2Root);
+        when(exProject1.getName()).thenReturn("module1");
+        when(exProject1.getRoot()).thenReturn(module1Root);
+        when(exProject2.getName()).thenReturn("module2");
+        when(exProject2.getRoot()).thenReturn(module2Root);
 
-        when(repository.getBranchRoot("dev_branch")).thenReturn(repositoryRoot);
-        when(repository.getDefaultBranch()).thenReturn("master");
+        when(repository1.getBranch("dev_branch")).thenReturn(Optional.of(new Branch("dev_branch",
+                                                                                    repositoryRoot)));
+        final Optional<Branch> master = Optional.of(new Branch("master",
+                                                               PathFactory.newPath("testFile",
+                                                                                   "file:///")));
+        when(repository1.getDefaultBranch()).thenReturn(master);
+
         when(repositoryRoot.toURI()).thenReturn("default:///");
-        when(project1Root.toURI()).thenReturn("default:///project1");
-        when(project2Root.toURI()).thenReturn("default:///project2");
+        when(module1Root.toURI()).thenReturn("default:///module1");
+        when(module2Root.toURI()).thenReturn("default:///module2");
 
         when(ouService.getOrganizationalUnit(eq("ou"))).thenReturn(ou);
-        when(repositoryService.getRepository(eq("repository"))).thenReturn(repository);
 
-        final ProjectContextChangeEvent event = service.setupExamples(exOU,
-                                                                      exRepository,
-                                                                      "dev_branch",
-                                                                      exProjects);
+        doReturn(repository1).when(repositoryCopier).copy(eq(ou),
+                                                          anyString(),
+                                                          eq(module1Root));
 
-        assertEquals(ou,
-                     event.getOrganizationalUnit());
-        assertEquals(repository,
-                     event.getRepository());
-        assertEquals(repository.getDefaultBranch(),
-                     event.getBranch());
-        assertEquals(exProject1.getRoot().toURI(),
-                     event.getProject().getRootPath().toURI());
+        doReturn(repository1).when(repositoryCopier).copy(eq(ou),
+                                                          anyString(),
+                                                          eq(module2Root));
+        final WorkspaceProject project = spy(new WorkspaceProject());
+        doReturn("project").when(project).getName();
+        doReturn(project).when(projectService).resolveProject(repository1);
+
+        final WorkspaceProjectContextChangeEvent event = service.setupExamples(exOU,
+                                                                               exProjects);
+
+        assertNull(event.getOrganizationalUnit());
+        assertEquals(project,
+                     event.getWorkspaceProject());
 
         verify(ouService,
                never()).createOrganizationalUnit(eq("ou"),
                                                  eq(""),
                                                  eq(""));
-        verify(repositoryService,
-               never()).createRepository(any(OrganizationalUnit.class),
-                                         any(String.class),
-                                         any(String.class),
-                                         any(RepositoryEnvironmentConfigurations.class));
-        verify(ioService,
-               times(1)).startBatch(any(FileSystem.class));
-        verify(ioService,
-               times(1)).endBatch();
+        verify(repositoryCopier,
+               times(2)).copy(eq(ou),
+                              anyString(),
+                              any(Path.class));
+
         verify(newProjectEvent,
                times(2)).fire(any(NewProjectEvent.class));
     }
@@ -599,5 +527,18 @@ public class ExamplesServiceImplTest {
 
         verify(repositoryFactory,
                never()).newRepository(any(ConfigGroup.class));
+    }
+
+    private GitRepository makeGitRepository() {
+        final GitRepository repository = new GitRepository("guvnorng-playground",
+                                                           new Space("space"));
+
+        final HashMap<String, Branch> branches = new HashMap<>();
+        branches.put("master",
+                     new Branch("master",
+                                mock(Path.class)));
+        repository.setBranches(branches);
+
+        return repository;
     }
 }

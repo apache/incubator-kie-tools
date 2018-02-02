@@ -24,7 +24,7 @@ import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.ElementType;
 import org.kie.workbench.common.services.datamodeller.driver.model.DriverError;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieModule;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
@@ -44,14 +44,14 @@ public abstract class CreateAnnotationWizardPage implements WizardPage {
 
     protected Caller<DataModelerService> modelerService;
 
-    protected KieProject project;
+    protected KieModule project;
 
     protected AnnotationDefinition annotationDefinition;
 
     protected ElementType target = ElementType.FIELD;
 
-    public CreateAnnotationWizardPage( Caller<DataModelerService> modelerService,
-            Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent ) {
+    public CreateAnnotationWizardPage(Caller<DataModelerService> modelerService,
+                                      Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent) {
         this.modelerService = modelerService;
         this.wizardPageStatusChangeEvent = wizardPageStatusChangeEvent;
     }
@@ -61,7 +61,7 @@ public abstract class CreateAnnotationWizardPage implements WizardPage {
         return title;
     }
 
-    public void setTitle( String title ) {
+    public void setTitle(String title) {
         this.title = title;
     }
 
@@ -69,18 +69,18 @@ public abstract class CreateAnnotationWizardPage implements WizardPage {
         return status;
     }
 
-    public void setStatus( PageStatus status ) {
+    public void setStatus(PageStatus status) {
         this.status = status;
         fireStatusChangeEvent();
     }
 
     public boolean isValid() {
-        return PageStatus.VALIDATED.equals( status );
+        return PageStatus.VALIDATED.equals(status);
     }
 
     @Override
-    public void isComplete( Callback<Boolean> callback ) {
-        callback.callback( isValid() );
+    public void isComplete(Callback<Boolean> callback) {
+        callback.callback(isValid());
     }
 
     @Override
@@ -94,16 +94,15 @@ public abstract class CreateAnnotationWizardPage implements WizardPage {
     }
 
     public void fireStatusChangeEvent() {
-        final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( this );
-        wizardPageStatusChangeEvent.fire( event );
+        final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent(this);
+        wizardPageStatusChangeEvent.fire(event);
     }
 
-    public String buildErrorList( List<DriverError> errors ) {
+    public String buildErrorList(List<DriverError> errors) {
         String message = "";
-        for ( DriverError error : errors ) {
+        for (DriverError error : errors) {
             message += error.getMessage();
         }
         return message;
     }
-
 }

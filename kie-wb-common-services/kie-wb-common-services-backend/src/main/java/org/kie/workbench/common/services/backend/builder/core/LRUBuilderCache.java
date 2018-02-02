@@ -18,7 +18,6 @@ package org.kie.workbench.common.services.backend.builder.core;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
@@ -29,14 +28,14 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.common.services.backend.cache.LRUCache;
-import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
+import org.guvnor.common.services.project.builder.events.InvalidateDMOModuleCacheEvent;
 import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
-import org.guvnor.common.services.project.model.Project;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.backend.builder.JavaSourceFilter;
 import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListServiceImpl;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
 import org.uberfire.io.IOService;
@@ -48,43 +47,34 @@ import static java.util.stream.StreamSupport.stream;
  * A simple LRU cache for Builders
  */
 @ApplicationScoped
-public class LRUBuilderCache extends LRUCache<Project, Builder> {
-
-    private IOService ioService;
-
-    private KieProjectService projectService;
-
-    private ProjectImportsService importsService;
-
-    private Instance<BuildValidationHelper> buildValidationHelperBeans;
-
-    private LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache;
-
-    private LRUPomModelCache pomModelCache;
-
-    private PackageNameWhiteListServiceImpl packageNameWhiteListService;
-
-    private Instance<Predicate<String>> classFilterBeans;
+public class LRUBuilderCache extends LRUCache<Module, Builder> {
 
     private final List<BuildValidationHelper> buildValidationHelpers = new ArrayList<>();
-
     private final List<Predicate<String>> classFilters = new ArrayList<>();
+    private IOService ioService;
+    private KieModuleService moduleService;
+    private ProjectImportsService importsService;
+    private Instance<BuildValidationHelper> buildValidationHelperBeans;
+    private LRUModuleDependenciesClassLoaderCache dependenciesClassLoaderCache;
+    private LRUPomModelCache pomModelCache;
+    private PackageNameWhiteListServiceImpl packageNameWhiteListService;
+    private Instance<Predicate<String>> classFilterBeans;
 
     public LRUBuilderCache() {
         //CDI proxy
     }
 
     @Inject
-    public LRUBuilderCache(@Named("ioStrategy") IOService ioService,
-                           KieProjectService projectService,
-                           ProjectImportsService importsService,
-                           @Any Instance<BuildValidationHelper> buildValidationHelperBeans,
-                           @Named("LRUProjectDependenciesClassLoaderCache") LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache,
-                           @Named("LRUPomModelCache") LRUPomModelCache pomModelCache,
-                           PackageNameWhiteListService packageNameWhiteListService,
-                           @JavaSourceFilter Instance<Predicate<String>> classFilterBeans) {
+    public LRUBuilderCache(final @Named("ioStrategy") IOService ioService,
+                           final KieModuleService moduleService,
+                           final ProjectImportsService importsService,
+                           final @Any Instance<BuildValidationHelper> buildValidationHelperBeans,
+                           final @Named("LRUModuleDependenciesClassLoaderCache") LRUModuleDependenciesClassLoaderCache dependenciesClassLoaderCache,
+                           final @Named("LRUPomModelCache") LRUPomModelCache pomModelCache,
+                           final PackageNameWhiteListService packageNameWhiteListService,
+                           final @JavaSourceFilter Instance<Predicate<String>> classFilterBeans) {
         this.ioService = ioService;
-        this.projectService = projectService;
+        this.moduleService = moduleService;
         this.importsService = importsService;
         this.buildValidationHelperBeans = buildValidationHelperBeans;
         this.dependenciesClassLoaderCache = dependenciesClassLoaderCache;
@@ -107,12 +97,12 @@ public class LRUBuilderCache extends LRUCache<Project, Builder> {
         classFilters.forEach(filter -> classFilterBeans.destroy(filter));
     }
 
-    public void invalidateProjectCache(@Observes final InvalidateDMOProjectCacheEvent event) {
+    public void invalidateProjectCache(@Observes final InvalidateDMOModuleCacheEvent event) {
         PortablePreconditions.checkNotNull("event",
                                            event);
-        final Project project = event.getProject();
+        final Module project = event.getModule();
 
-        //If resource was not within a Project there's nothing to invalidate
+        //If resource was not within a Module there's nothing to invalidate
         if (project != null) {
             invalidateCache(project);
         }
@@ -120,7 +110,7 @@ public class LRUBuilderCache extends LRUCache<Project, Builder> {
 
     public Builder assertBuilder(POM pom)
             throws NoBuilderFoundException {
-        for (Project project : getKeys()) {
+        for (Module project : getKeys()) {
             if (project.getPom().getGav().equals(pom.getGav())) {
                 return makeBuilder(project);
             }
@@ -128,20 +118,20 @@ public class LRUBuilderCache extends LRUCache<Project, Builder> {
         throw new NoBuilderFoundException();
     }
 
-    public Builder assertBuilder(final Project project) {
-        return makeBuilder(project);
+    public Builder assertBuilder(final Module module) {
+        return makeBuilder(module);
     }
 
-    public Builder getBuilder(final Project project) {
-        return getEntry(project);
+    public Builder getBuilder(final Module module) {
+        return getEntry(module);
     }
 
-    private Builder makeBuilder(Project project) {
-        Builder builder = getEntry(project);
+    private Builder makeBuilder(final Module module) {
+        Builder builder = getEntry(module);
         if (builder == null) {
-            builder = new Builder(project,
+            builder = new Builder(module,
                                   ioService,
-                                  projectService,
+                                  moduleService,
                                   importsService,
                                   buildValidationHelpers,
                                   dependenciesClassLoaderCache,
@@ -149,7 +139,7 @@ public class LRUBuilderCache extends LRUCache<Project, Builder> {
                                   packageNameWhiteListService,
                                   createSingleClassFilterPredicate());
 
-            setEntry(project,
+            setEntry(module,
                      builder);
         }
         return builder;

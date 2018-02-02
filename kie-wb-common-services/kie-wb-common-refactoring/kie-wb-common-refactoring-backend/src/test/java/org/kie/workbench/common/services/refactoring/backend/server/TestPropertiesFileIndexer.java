@@ -25,7 +25,7 @@ import javax.enterprise.context.ApplicationScoped;
 import org.kie.workbench.common.services.refactoring.KPropertyImpl;
 import org.kie.workbench.common.services.refactoring.backend.server.util.KObjectUtil;
 import org.kie.workbench.common.services.refactoring.model.index.terms.IndexTerm;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.model.KObjectKey;
@@ -41,7 +41,7 @@ public class TestPropertiesFileIndexer implements TestIndexer<TestPropertiesFile
 
     private IOService ioService;
 
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     private TestPropertiesFileTypeDefinition type;
 
@@ -51,8 +51,8 @@ public class TestPropertiesFileIndexer implements TestIndexer<TestPropertiesFile
     }
 
     @Override
-    public void setProjectService(final KieProjectService projectService) {
-        this.projectService = projectService;
+    public void setModuleService(final KieModuleService moduleService) {
+        this.moduleService = moduleService;
     }
 
     @Override

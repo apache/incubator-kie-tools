@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.screens.datasource.management.events;
 
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.screens.datasource.management.model.DriverDef;
@@ -26,61 +26,75 @@ public class UpdateDriverEvent extends BaseDriverEvent {
 
     private DriverDef originalDriverDef;
 
-    public UpdateDriverEvent( @MapsTo( "driverDef" ) final DriverDef driverDef,
-                              @MapsTo( "project" ) final Project project,
-                              @MapsTo( "sessionId" ) final String sessionId,
-                              @MapsTo( "identity" ) final String identity,
-                              @MapsTo( "originalDriverDef" ) final DriverDef originalDriverDef ) {
-        super( driverDef, project, sessionId, identity );
+    public UpdateDriverEvent(@MapsTo("driverDef") final DriverDef driverDef,
+                             @MapsTo("module") final Module module,
+                             @MapsTo("sessionId") final String sessionId,
+                             @MapsTo("identity") final String identity,
+                             @MapsTo("originalDriverDef") final DriverDef originalDriverDef) {
+        super(driverDef,
+              module,
+              sessionId,
+              identity);
         this.originalDriverDef = originalDriverDef;
     }
 
-    public UpdateDriverEvent( final DriverDef driverDef,
-                              final String sessionId,
-                              final String identity,
-                              final DriverDef originalDriverDef ) {
-        this( driverDef, null, sessionId, identity, originalDriverDef );
+    public UpdateDriverEvent(final DriverDef driverDef,
+                             final String sessionId,
+                             final String identity,
+                             final DriverDef originalDriverDef) {
+        this(driverDef,
+             null,
+             sessionId,
+             identity,
+             originalDriverDef);
     }
 
-    public UpdateDriverEvent( final DriverDef driverDef,
-                              final String sessionId,
-                              final String identity ) {
-        this( driverDef, sessionId, identity, null );
+    public UpdateDriverEvent(final DriverDef driverDef,
+                             final String sessionId,
+                             final String identity) {
+        this(driverDef,
+             sessionId,
+             identity,
+             null);
     }
 
-    public UpdateDriverEvent( final DriverDef driverDef,
-                              final Project project,
-                              final String sessionId,
-                              final String identity ) {
-        this( driverDef, project, sessionId, identity, null );
+    public UpdateDriverEvent(final DriverDef driverDef,
+                             final Module module,
+                             final String sessionId,
+                             final String identity) {
+        this(driverDef,
+             module,
+             sessionId,
+             identity,
+             null);
     }
 
-    public DriverDef getOriginalDriverDef( ) {
+    public DriverDef getOriginalDriverDef() {
         return originalDriverDef;
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null || getClass( ) != o.getClass( ) ) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        if ( !super.equals( o ) ) {
+        if (!super.equals(o)) {
             return false;
         }
 
-        UpdateDriverEvent that = ( UpdateDriverEvent ) o;
+        UpdateDriverEvent that = (UpdateDriverEvent) o;
 
-        return originalDriverDef != null ? originalDriverDef.equals( that.originalDriverDef ) : that.originalDriverDef == null;
+        return originalDriverDef != null ? originalDriverDef.equals(that.originalDriverDef) : that.originalDriverDef == null;
     }
 
     @Override
-    public int hashCode( ) {
-        int result = super.hashCode( );
+    public int hashCode() {
+        int result = super.hashCode();
         result = ~~result;
-        result = 31 * result + ( originalDriverDef != null ? originalDriverDef.hashCode( ) : 0 );
+        result = 31 * result + (originalDriverDef != null ? originalDriverDef.hashCode() : 0);
         result = ~~result;
         return result;
     }

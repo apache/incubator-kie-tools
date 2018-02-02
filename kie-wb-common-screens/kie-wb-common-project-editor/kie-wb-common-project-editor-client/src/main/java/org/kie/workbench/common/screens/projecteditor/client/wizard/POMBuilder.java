@@ -20,13 +20,13 @@ import java.util.ArrayList;
 import org.guvnor.common.services.project.model.Build;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Plugin;
-import org.kie.workbench.common.screens.projecteditor.util.NewProjectUtils;
+import org.kie.workbench.common.screens.projecteditor.util.NewWorkspaceProjectUtils;
 
 /**
- * The Project Name is used to generate the folder name and hence is only checked to be a valid file name.
- * The ArtifactID is initially set to the project name, subsequently validated against the maven regex,
+ * The Module Name is used to generate the folder name and hence is only checked to be a valid file name.
+ * The ArtifactID is initially set to the module name, subsequently validated against the maven regex,
  * and preserved as is in the pom.xml file. However, as it is used to construct the default workspace and
- * hence package names, it is sanitized in the ProjectService.newProject() method.
+ * hence package names, it is sanitized in the ModuleService.newModule() method.
  */
 public class POMBuilder {
 
@@ -54,10 +54,10 @@ public class POMBuilder {
         }
     }
 
-    public POMBuilder setProjectName(final String projectName) {
-        pom.setName(projectName);
-        if (projectName != null) {
-            pom.getGav().setArtifactId(NewProjectUtils.sanitizeProjectName(projectName));
+    public POMBuilder setModuleName(final String moduleName) {
+        pom.setName(moduleName);
+        if (moduleName != null) {
+            pom.getGav().setArtifactId(NewWorkspaceProjectUtils.sanitizeProjectName(moduleName));
         }
         return this;
     }

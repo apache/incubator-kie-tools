@@ -22,25 +22,26 @@ import javax.inject.Named;
 
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
-import org.guvnor.common.services.project.backend.server.ProjectResourcePathResolver;
+import org.guvnor.common.services.project.backend.server.ModuleResourcePathResolver;
 import org.guvnor.common.services.project.backend.server.ResourceResolver;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
-import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.POMService;
-import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
-import org.guvnor.structure.server.config.ConfigurationService;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieModule;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Files;
 
-import static org.guvnor.common.services.project.utils.ProjectResourcePaths.*;
-import static org.kie.workbench.common.services.backend.project.KieProjectResourcePaths.*;
+import static org.guvnor.common.services.project.utils.ModuleResourcePaths.POM_PATH;
+import static org.kie.workbench.common.services.backend.project.KieModuleResourcePaths.KMODULE_PATH;
+import static org.kie.workbench.common.services.backend.project.KieModuleResourcePaths.PACKAGE_NAME_WHITE_LIST;
+import static org.kie.workbench.common.services.backend.project.KieModuleResourcePaths.PROJECT_IMPORTS_PATH;
+import static org.kie.workbench.common.services.backend.project.KieModuleResourcePaths.PROJECT_REPOSITORIES_PATH;
 
 public class KieResourceResolver
-        extends ResourceResolver<KieProject> {
+        extends ResourceResolver<KieModule> {
 
     private KModuleService kModuleService;
 
@@ -49,115 +50,99 @@ public class KieResourceResolver
     }
 
     @Inject
-    public KieResourceResolver( final @Named("ioStrategy") IOService ioService,
-                                final POMService pomService,
-                                final ConfigurationService configurationService,
-                                final CommentedOptionFactory commentedOptionFactory,
-                                final BackwardCompatibleUtil backward,
-                                final KModuleService kModuleService,
-                                final Instance<ProjectResourcePathResolver> resourcePathResolversInstance ) {
-        super( ioService,
-               pomService,
-               configurationService,
-               commentedOptionFactory,
-               backward,
-               resourcePathResolversInstance );
+    public KieResourceResolver(final @Named("ioStrategy") IOService ioService,
+                               final POMService pomService,
+                               final CommentedOptionFactory commentedOptionFactory,
+                               final KModuleService kModuleService,
+                               final Instance<ModuleResourcePathResolver> resourcePathResolversInstance) {
+        super(ioService,
+              pomService,
+              commentedOptionFactory,
+              resourcePathResolversInstance);
         this.kModuleService = kModuleService;
     }
 
     @Override
-    public KieProject resolveProject( final Path resource ) {
+    public KieModule resolveModule(final Path resource) {
         try {
-            //Null resource paths cannot resolve to a Project
-            if ( resource == null ) {
+            //Null resource paths cannot resolve to a Module
+            if (resource == null) {
                 return null;
             }
 
-            //Check if resource is the project root
-            org.uberfire.java.nio.file.Path path = Paths.convert( resource ).normalize();
+            //Check if resource is the module root
+            org.uberfire.java.nio.file.Path path = Paths.convert(resource).normalize();
 
-            //A project root is the folder containing the pom.xml file. This will be the parent of the "src" folder
-            if ( Files.isRegularFile( path ) ) {
+            //A module root is the folder containing the pom.xml file. This will be the parent of the "src" folder
+            if (Files.isRegularFile(path)) {
                 path = path.getParent();
             }
-            while ( path.getNameCount() > 0 && !path.getFileName().toString().equals( SOURCE_FILENAME ) ) {
-                if ( hasPom( path ) && hasKModule( path ) ) {
-                    return makeProject( path );
+            while (!hasPom(path)) {
+                path = path.getParent();
+                if (path == null) {
+                    return null;
                 }
-                path = path.getParent();
             }
-            if ( path.getNameCount() == 0 ) {
-                return null;
-            }
-            path = path.getParent();
-            if ( path.getNameCount() == 0 || path == null ) {
-                return null;
-            }
-            if ( !hasPom( path ) ) {
-                return null;
-            }
-            if ( !hasKModule( path ) ) {
-                return null;
-            }
-            return makeProject( path );
 
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            if (!hasKModule(path)) {
+                return null;
+            }
+
+            return makeModule(path);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
-    @Override
-    protected KieProject makeProject( final org.uberfire.java.nio.file.Path nioProjectRootPath ) {
-        final KieProject project = simpleProjectInstance( nioProjectRootPath );
-        final POM pom = pomService.load( project.getPomXMLPath() );
-        project.setPom( pom );
+    protected KieModule makeModule(final org.uberfire.java.nio.file.Path nioModuleRootPath) {
+        final KieModule module = simpleModuleInstance(nioModuleRootPath);
+        final POM pom = pomService.load(module.getPomXMLPath());
+        module.setPom(pom);
 
-        addSecurityGroups( project );
-
-        return project;
+        return module;
     }
 
     @Override
-    public org.guvnor.common.services.project.model.Package resolvePackage( final Path resource ) {
+    public org.guvnor.common.services.project.model.Package resolvePackage(final Path resource) {
         try {
-            //Null resource paths cannot resolve to a Project
-            if ( resource == null ) {
+            //Null resource paths cannot resolve to a Module
+            if (resource == null) {
                 return null;
             }
 
-            //If Path is not within a Project we cannot resolve a package
-            final Project project = resolveProject( resource );
-            if ( project == null ) {
+            //If Path is not within a Module we cannot resolve a package
+            final Module module = resolveModule(resource);
+            if (module == null) {
                 return null;
             }
 
             //pom.xml and kmodule.xml are not inside packages
-            if ( isPom( resource ) || kModuleService.isKModule( resource ) ) {
+            if (isPom(resource) || kModuleService.isKModule(resource)) {
                 return null;
             }
 
-            return makePackage( project,
-                                resource );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return makePackage(module,
+                               resource);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public KieProject simpleProjectInstance( final org.uberfire.java.nio.file.Path nioProjectRootPath ) {
-        final Path projectRootPath = Paths.convert( nioProjectRootPath );
-        return new KieProject( projectRootPath,
-                               Paths.convert( nioProjectRootPath.resolve( POM_PATH ) ),
-                               Paths.convert( nioProjectRootPath.resolve( KMODULE_PATH ) ),
-                               Paths.convert( nioProjectRootPath.resolve( PROJECT_IMPORTS_PATH ) ),
-                               Paths.convert( nioProjectRootPath.resolve( PROJECT_REPOSITORIES_PATH ) ),
-                               Paths.convert( nioProjectRootPath.resolve( PACKAGE_NAME_WHITE_LIST ) ),
-                               projectRootPath.getFileName() );
+    public KieModule simpleModuleInstance(final org.uberfire.java.nio.file.Path nioModuleRootPath) {
+        final Path moduleRootPath = Paths.convert(nioModuleRootPath);
+        final Path pomXMLPath = Paths.convert(nioModuleRootPath.resolve(POM_PATH));
+
+        return new KieModule(moduleRootPath,
+                             pomXMLPath,
+                             Paths.convert(nioModuleRootPath.resolve(KMODULE_PATH)),
+                             Paths.convert(nioModuleRootPath.resolve(PROJECT_IMPORTS_PATH)),
+                             Paths.convert(nioModuleRootPath.resolve(PROJECT_REPOSITORIES_PATH)),
+                             Paths.convert(nioModuleRootPath.resolve(PACKAGE_NAME_WHITE_LIST)));
     }
 
-    protected boolean hasKModule( final org.uberfire.java.nio.file.Path path ) {
-        final org.uberfire.java.nio.file.Path kmodulePath = path.resolve( KMODULE_PATH );
-        return Files.exists( kmodulePath );
+    protected boolean hasKModule(final org.uberfire.java.nio.file.Path path) {
+        final org.uberfire.java.nio.file.Path kmodulePath = path.resolve(KMODULE_PATH);
+        return Files.exists(kmodulePath);
     }
 }

@@ -21,9 +21,9 @@ import javax.inject.Inject;
 
 import org.dashbuilder.displayer.client.Displayer;
 import org.dashbuilder.displayer.client.DisplayerCoordinator;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.kie.workbench.common.screens.library.api.ProjectInfo;
-import org.kie.workbench.common.screens.library.client.events.ProjectMetricsEvent;
+import org.kie.workbench.common.screens.library.client.events.WorkbenchProjectMetricsEvent;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.util.ProjectMetricsFactory;
@@ -65,7 +65,7 @@ public class ProjectMetricsScreen {
     ProjectMetricsFactory metricsFactory;
     DisplayerCoordinator displayerCoordinator;
 
-    ProjectInfo projectInfo;
+    WorkspaceProject workspaceProject;
 
     Displayer commitsOverTimeDisplayer;
     Displayer commitsPerAuthorDisplayer;
@@ -97,19 +97,19 @@ public class ProjectMetricsScreen {
         return view;
     }
 
-    public void onStartup(@Observes final ProjectMetricsEvent event) {
+    public void onStartup(@Observes final WorkbenchProjectMetricsEvent event) {
         this.view.init(this);
 
-        this.projectInfo = event.getProjectInfo();
+        this.workspaceProject = event.getProject();
 
-        this.commitsOverTimeDisplayer = metricsFactory.lookupCommitsOverTimeDisplayer(projectInfo);
-        this.commitsPerAuthorDisplayer = metricsFactory.lookupCommitsPerAuthorDisplayer(projectInfo);
-        this.commitsByYearDisplayer = metricsFactory.lookupCommitsByYearDisplayer(projectInfo);
-        this.commitsByQuarterDisplayer = metricsFactory.lookupCommitsByQuarterDisplayer(projectInfo);
-        this.commitsByDayOfWeekDisplayer = metricsFactory.lookupCommitsByDayOfWeekDisplayer(projectInfo);
-        this.allCommitsDisplayer = metricsFactory.lookupAllCommitsDisplayer(projectInfo);
-        this.topAuthorSelectorDisplayer = metricsFactory.lookupTopContributorSelectorDisplayer(projectInfo);
-        this.dateSelectorDisplayer = metricsFactory.lookupDateSelectorDisplayer(projectInfo);
+        this.commitsOverTimeDisplayer = metricsFactory.lookupCommitsOverTimeDisplayer(workspaceProject);
+        this.commitsPerAuthorDisplayer = metricsFactory.lookupCommitsPerAuthorDisplayer(workspaceProject);
+        this.commitsByYearDisplayer = metricsFactory.lookupCommitsByYearDisplayer(workspaceProject);
+        this.commitsByQuarterDisplayer = metricsFactory.lookupCommitsByQuarterDisplayer(workspaceProject);
+        this.commitsByDayOfWeekDisplayer = metricsFactory.lookupCommitsByDayOfWeekDisplayer(workspaceProject);
+        this.allCommitsDisplayer = metricsFactory.lookupAllCommitsDisplayer(workspaceProject);
+        this.topAuthorSelectorDisplayer = metricsFactory.lookupTopContributorSelectorDisplayer(workspaceProject);
+        this.dateSelectorDisplayer = metricsFactory.lookupDateSelectorDisplayer(workspaceProject);
 
         view.clear();
         view.setCommitsPerAuthorDisplayer(commitsPerAuthorDisplayer);

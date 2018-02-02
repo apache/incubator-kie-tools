@@ -17,7 +17,7 @@ package org.kie.workbench.common.screens.explorer.client;
 
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.context.ProjectContext;
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 import org.kie.workbench.common.screens.explorer.client.widgets.ActiveContextOptions;
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
@@ -37,35 +37,30 @@ import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
 
 /**
- * Repository, Package, Folder and File explorer
+ * Package, Folder and File explorer
  */
 @WorkbenchScreen(identifier = "org.kie.guvnor.explorer")
 public class ExplorerPresenter {
 
-    private ExplorerView view;
-
-    private BusinessViewPresenter businessViewPresenter;
-    private TechnicalViewPresenter technicalViewPresenter;
-
-    private ProjectContext context;
-
-    private ActiveContextOptions activeOptions;
-
-    public ExplorerMenu menu;
-
     private final static String INIT_PATH = "init_path";
     private final static String PATH = "path";
+    public ExplorerMenu menu;
+    private ExplorerView view;
+    private BusinessViewPresenter businessViewPresenter;
+    private TechnicalViewPresenter technicalViewPresenter;
+    private WorkspaceProjectContext context;
+    private ActiveContextOptions activeOptions;
 
     public ExplorerPresenter() {
     }
 
     @Inject
-    public ExplorerPresenter( final ExplorerView view,
-                              final BusinessViewPresenter businessViewPresenter,
-                              final TechnicalViewPresenter technicalViewPresenter,
-                              final ProjectContext context,
-                              final ActiveContextOptions activeOptions,
-                              final ExplorerMenu menu ) {
+    public ExplorerPresenter(final ExplorerView view,
+                             final BusinessViewPresenter businessViewPresenter,
+                             final TechnicalViewPresenter technicalViewPresenter,
+                             final WorkspaceProjectContext context,
+                             final ActiveContextOptions activeOptions,
+                             final ExplorerMenu menu) {
         this.view = view;
         this.businessViewPresenter = businessViewPresenter;
         this.technicalViewPresenter = technicalViewPresenter;
@@ -73,48 +68,48 @@ public class ExplorerPresenter {
         this.activeOptions = activeOptions;
         this.menu = menu;
 
-        menu.addRefreshCommand( new Command() {
+        menu.addRefreshCommand(new Command() {
             @Override
             public void execute() {
                 refresh();
             }
-        } );
-        menu.addUpdateCommand( new Command() {
+        });
+        menu.addUpdateCommand(new Command() {
             @Override
             public void execute() {
                 update();
             }
-        } );
+        });
     }
 
     @OnStartup
-    public void onStartup( final PlaceRequest placeRequest ) {
-        activeOptions.init( placeRequest,
-                            new Command() {
-                                @Override
-                                public void execute() {
-                                    String path = placeRequest.getParameter( PATH,
-                                                                             null );
-                                    path = placeRequest.getParameter( INIT_PATH,
-                                                                      path );
-                                    init( path );
-                                }
-                            } );
+    public void onStartup(final PlaceRequest placeRequest) {
+        activeOptions.init(placeRequest,
+                           new Command() {
+                               @Override
+                               public void execute() {
+                                   String path = placeRequest.getParameter(PATH,
+                                                                           null);
+                                   path = placeRequest.getParameter(INIT_PATH,
+                                                                    path);
+                                   init(path);
+                               }
+                           });
     }
 
-    private void init( final String initPath ) {
+    private void init(final String initPath) {
 
         menu.refresh();
 
-        getActiveView().setVisible( true );
-        getInactiveView().setVisible( false );
+        getActiveView().setVisible(true);
+        getInactiveView().setVisible(false);
 
-        if ( initPath == null ) {
-            technicalViewPresenter.initialiseViewForActiveContext( context );
-            businessViewPresenter.initialiseViewForActiveContext( context );
+        if (initPath == null) {
+            technicalViewPresenter.initialiseViewForActiveContext(context);
+            businessViewPresenter.initialiseViewForActiveContext(context);
         } else {
-            technicalViewPresenter.initialiseViewForActiveContext( initPath );
-            businessViewPresenter.initialiseViewForActiveContext( initPath );
+            technicalViewPresenter.initialiseViewForActiveContext(initPath);
+            businessViewPresenter.initialiseViewForActiveContext(initPath);
         }
 
         update();
@@ -149,7 +144,7 @@ public class ExplorerPresenter {
     }
 
     private BaseViewPresenter getActiveView() {
-        if ( activeOptions.isTechnicalViewActive() ) {
+        if (activeOptions.isTechnicalViewActive()) {
             return technicalViewPresenter;
         } else {
             return businessViewPresenter;
@@ -157,7 +152,7 @@ public class ExplorerPresenter {
     }
 
     private BaseViewPresenter getInactiveView() {
-        if ( activeOptions.isTechnicalViewActive() ) {
+        if (activeOptions.isTechnicalViewActive()) {
             return businessViewPresenter;
         } else {
             return technicalViewPresenter;

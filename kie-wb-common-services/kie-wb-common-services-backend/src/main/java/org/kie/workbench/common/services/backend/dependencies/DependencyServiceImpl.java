@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -31,14 +30,13 @@ import org.eclipse.aether.artifact.Artifact;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.GAV;
-import org.guvnor.common.services.project.model.Repository;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.shared.dependencies.DependencyService;
 import org.kie.workbench.common.services.shared.dependencies.EnhancedDependencies;
 import org.kie.workbench.common.services.shared.dependencies.NormalEnhancedDependency;
 import org.kie.workbench.common.services.shared.dependencies.TransitiveEnhancedDependency;
 
-import static org.kie.workbench.common.services.backend.dependencies.DependencyTestUtils.*;
+import static org.kie.workbench.common.services.backend.dependencies.DependencyTestUtils.toDependencies;
 
 @Service
 @ApplicationScoped
@@ -49,77 +47,77 @@ public class DependencyServiceImpl
     }
 
     @Override
-    public Collection<Dependency> loadDependencies( final Collection<GAV> gavs ) {
+    public Collection<Dependency> loadDependencies(final Collection<GAV> gavs) {
         final ArrayList<Dependency> dependencies = new ArrayList<Dependency>();
 
-        for ( final GAV gav : gavs ) {
-            dependencies.addAll( loadDependencies( gav ) );
+        for (final GAV gav : gavs) {
+            dependencies.addAll(loadDependencies(gav));
         }
 
         return dependencies;
     }
 
     @Override
-    public Collection<Dependency> loadDependencies( final GAV gav ) {
-        return toDependencies( getMavenRepository().getArtifactDependecies( gav.toString() ) );
+    public Collection<Dependency> loadDependencies(final GAV gav) {
+        return toDependencies(getMavenRepository().getArtifactDependecies(gav.toString()));
     }
 
     @Override
-    public Set<String> loadPackageNames( final GAV gav ) {
-        final Artifact artifact = getMavenRepository().resolveArtifact( gav.toString() );
+    public Set<String> loadPackageNames(final GAV gav) {
+        final Artifact artifact = getMavenRepository().resolveArtifact(gav.toString());
 
-        if ( artifact != null ) {
-            return stripPackageNamesFromJar( artifact.getFile() );
+        if (artifact != null) {
+            return stripPackageNamesFromJar(artifact.getFile());
         } else {
             return new HashSet<>();
         }
     }
 
     @Override
-    public EnhancedDependencies loadEnhancedDependencies( final Collection<Dependency> dependencies) {
+    public EnhancedDependencies loadEnhancedDependencies(final Collection<Dependency> dependencies) {
         EnhancedDependencies result = new EnhancedDependencies();
 
-        for ( final Dependency dependency : dependencies ) {
-            result.add( getEnhancedDependency( dependency ) );
+        for (final Dependency dependency : dependencies) {
+            result.add(getEnhancedDependency(dependency));
         }
 
         return result;
     }
 
-    private NormalEnhancedDependency getEnhancedDependency( final Dependency dependency ) {
-        final NormalEnhancedDependency enhancedDependency = new NormalEnhancedDependency( dependency,
-                                                                                          loadPackageNames( dependency ) );
+    private NormalEnhancedDependency getEnhancedDependency(final Dependency dependency) {
+        final NormalEnhancedDependency enhancedDependency = new NormalEnhancedDependency(dependency,
+                                                                                         loadPackageNames(dependency));
 
-        for ( Dependency transitiveDependency : loadDependencies( dependency ) ) {
-            enhancedDependency.addTransitiveDependency( new TransitiveEnhancedDependency( transitiveDependency,
-                                                                                          loadPackageNames( transitiveDependency ) ) );
+        for (Dependency transitiveDependency : loadDependencies(dependency)) {
+            enhancedDependency.addTransitiveDependency(new TransitiveEnhancedDependency(transitiveDependency,
+                                                                                        loadPackageNames(transitiveDependency)));
         }
 
         return enhancedDependency;
     }
 
-    private Set<String> stripPackageNamesFromJar( final File file ) {
+    private Set<String> stripPackageNamesFromJar(final File file) {
         final Set<String> packageNames = new HashSet<String>();
         ZipFile zipFile = null;
         try {
-            zipFile = new ZipFile( file );
+            zipFile = new ZipFile(file);
             final Enumeration<? extends ZipEntry> entries = zipFile.entries();
             while (entries.hasMoreElements()) {
                 String pathName = entries.nextElement().getName();
 
-                if ( pathName.endsWith( ".class" ) ) {
-                    String fqcn = pathName.replace( '/', '.' ).substring( 0, pathName.lastIndexOf( '.' ) );
-                    packageNames.add( fqcn.substring( 0, fqcn.lastIndexOf( '.' ) ) );
+                if (pathName.endsWith(".class")) {
+                    String fqcn = pathName.replace('/', '.').substring(0, pathName.lastIndexOf('.'));
+                    packageNames.add(fqcn.substring(0, fqcn.lastIndexOf('.')));
                 }
             }
         } catch (IOException e) {
-            throw ExceptionUtilities.handleException( e );
+            throw ExceptionUtilities.handleException(e);
         } finally {
-            if ( zipFile != null ) {
+            if (zipFile != null) {
                 try {
                     zipFile.close();
                 } catch (IOException e) {
-                    throw ExceptionUtilities.handleException( e );
+                    throw ExceptionUtilities.handleException(e);
                 }
             }
         }
@@ -129,5 +127,4 @@ public class DependencyServiceImpl
     protected MavenRepository getMavenRepository() {
         return MavenRepository.getMavenRepository();
     }
-
 }

@@ -16,18 +16,40 @@
 
 package org.kie.workbench.common.screens.library.client.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 import javax.enterprise.event.Event;
 
 import org.ext.uberfire.social.activities.model.ExtendedTypes;
 import org.ext.uberfire.social.activities.model.SocialFileSelectedEvent;
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.preferences.ProjectScopedResolutionStrategySupplier;
-import org.guvnor.common.services.project.context.ProjectContext;
-import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
-import org.guvnor.common.services.project.events.DeleteProjectEvent;
-import org.guvnor.common.services.project.events.RenameProjectEvent;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.social.ProjectEventType;
+import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
+import org.guvnor.common.services.project.events.RenameModuleEvent;
+import org.guvnor.common.services.project.model.Module;
+import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.common.services.project.service.WorkspaceProjectService;
+import org.guvnor.common.services.project.social.ModuleEventType;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -35,25 +57,25 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.examples.client.wizard.ExamplesWizard;
 import org.kie.workbench.common.screens.explorer.model.URIStructureExplorerModel;
-import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.screens.library.api.LibraryService;
-import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.client.events.AssetDetailEvent;
-import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
-import org.kie.workbench.common.screens.library.client.events.ProjectMetricsEvent;
+import org.kie.workbench.common.screens.library.client.events.WorkbenchProjectMetricsEvent;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
+import org.kie.workbench.common.screens.library.client.screens.importrepository.ImportRepositoryPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.widgets.library.LibraryToolbarPresenter;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.workbench.client.docks.AuthoringWorkbenchDocks;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceStatus;
+import org.uberfire.client.mvp.UberElement;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.ext.preferences.client.central.screen.PreferencesRootScreen;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralInitializationEvent;
@@ -62,15 +84,12 @@ import org.uberfire.ext.preferences.client.event.PreferencesCentralUndoChangesEv
 import org.uberfire.ext.widgets.common.client.breadcrumbs.UberfireBreadcrumbs;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.ConditionalPlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
-
-import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LibraryPlacesTest {
@@ -82,10 +101,7 @@ public class LibraryPlacesTest {
     private TranslationService ts;
 
     @Mock
-    private Event<ProjectDetailEvent> projectDetailEvent;
-
-    @Mock
-    private Event<ProjectMetricsEvent> projectMetricsEvent;
+    private Event<WorkbenchProjectMetricsEvent> projectMetricsEvent;
 
     @Mock
     private Event<AssetDetailEvent> assetDetailEvent;
@@ -101,10 +117,7 @@ public class LibraryPlacesTest {
     private PlaceManager placeManager;
 
     @Mock
-    private LibraryPerspective libraryPerspective;
-
-    @Mock
-    private ProjectContext projectContext;
+    private WorkspaceProjectContext projectContext;
 
     @Mock
     private LibraryToolbarPresenter libraryToolbar;
@@ -113,13 +126,10 @@ public class LibraryPlacesTest {
     private AuthoringWorkbenchDocks docks;
 
     @Mock
-    private Event<ProjectContextChangeEvent> projectContextChangeEvent;
+    private Event<WorkspaceProjectContextChangeEvent> projectContextChangeEvent;
 
     @Mock
     private Event<NotificationEvent> notificationEvent;
-
-    @Mock
-    private ManagedInstance<ExamplesWizard> examplesWizards;
 
     @Mock
     private TranslationUtils translationUtils;
@@ -129,79 +139,131 @@ public class LibraryPlacesTest {
     private Caller<VFSService> vfsServiceCaller;
 
     @Mock
-    private ExplorerService explorerService;
-    private Caller<ExplorerService> explorerServiceCaller;
-
-    @Mock
     private ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier;
 
     @Mock
     private Event<PreferencesCentralInitializationEvent> preferencesCentralInitializationEvent;
 
+    @Mock
+    private ManagedInstance<ImportRepositoryPopUpPresenter> importRepositoryPopUpPresenters;
+
+    @Mock
+    private ImportRepositoryPopUpPresenter importRepositoryPopUpPresenter;
+
+    @Mock
+    private WorkspaceProjectService projectService;
+
+    @Mock
+    private KieModuleService moduleService;
+
+    @Captor
+    private ArgumentCaptor<WorkspaceProjectContextChangeEvent> projectContextChangeEventArgumentCaptor;
+
     private LibraryPlaces libraryPlaces;
 
     private OrganizationalUnit activeOrganizationalUnit;
     private Repository activeRepository;
-    private String activeBranch;
-    private Project activeProject;
-
-    private boolean isProjectExplorerExpanded = false;
+    private Branch activeBranch;
+    private Module activeModule;
+    private WorkspaceProject activeProject;
 
     @Before
     public void setup() {
         libraryServiceCaller = new CallerMock<>(libraryService);
         vfsServiceCaller = new CallerMock<>(vfsService);
-        explorerServiceCaller = new CallerMock<>(explorerService);
+
+        final UberElement libraryToolBarView = mock(UberElement.class);
+        doReturn(libraryToolBarView).when(libraryToolbar).getView();
 
         libraryPlaces = spy(new LibraryPlaces(breadcrumbs,
                                               ts,
-                                              projectDetailEvent,
                                               projectMetricsEvent,
                                               assetDetailEvent,
                                               resourceUtils,
                                               libraryServiceCaller,
+                                              new CallerMock<>(projectService),
+                                              new CallerMock<>(moduleService),
                                               placeManager,
-                                              libraryPerspective,
                                               projectContext,
                                               libraryToolbar,
                                               docks,
                                               projectContextChangeEvent,
                                               notificationEvent,
-                                              examplesWizards,
                                               translationUtils,
                                               vfsServiceCaller,
-                                              explorerServiceCaller,
                                               projectScopedResolutionStrategySupplier,
-                                              preferencesCentralInitializationEvent));
+                                              preferencesCentralInitializationEvent,
+                                              importRepositoryPopUpPresenters));
+        libraryPlaces.setup();
+
+        verify(libraryToolBarView).getElement();
+
+        libraryPlaces.init(mock(LibraryPerspective.class));
 
         activeOrganizationalUnit = mock(OrganizationalUnit.class);
         activeRepository = mock(Repository.class);
-        activeBranch = "master";
-        activeProject = mock(Project.class);
+        activeBranch = new Branch("master",
+                                  mock(Path.class));
+        activeModule = mock(Module.class);
 
-        doReturn(activeOrganizationalUnit).when(projectContext).getActiveOrganizationalUnit();
-        doReturn(activeRepository).when(projectContext).getActiveRepository();
-        doReturn(activeBranch).when(projectContext).getActiveBranch();
-        doReturn(activeProject).when(projectContext).getActiveProject();
+        doReturn(Optional.of(activeOrganizationalUnit)).when(projectContext).getActiveOrganizationalUnit();
+        activeProject = new WorkspaceProject(activeOrganizationalUnit,
+                                             activeRepository,
+                                             activeBranch,
+                                             activeModule);
+        doReturn(Optional.of(activeProject)).when(projectContext).getActiveWorkspaceProject();
+        doReturn(Optional.of(activeModule)).when(projectContext).getActiveModule();
+        doReturn(Optional.empty()).when(projectContext).getActiveRepositoryRoot();
+        doReturn(Optional.empty()).when(projectContext).getActivePackage();
 
         final URIStructureExplorerModel model = mock(URIStructureExplorerModel.class);
         doReturn(mock(Repository.class)).when(model).getRepository();
-        doReturn(mock(Project.class)).when(model).getProject();
-        doReturn(model).when(explorerService).getURIStructureExplorerModel(any());
+        doReturn(mock(Module.class)).when(model).getModule();
 
         doReturn(mock(Path.class)).when(vfsService).get(any());
 
-        doNothing().when(libraryPlaces).setupToolBar();
         doNothing().when(libraryPlaces).setupLibraryBreadCrumbs();
-        doNothing().when(libraryPlaces).setupLibraryBreadCrumbsForTrySamples();
-        doNothing().when(libraryPlaces).setupLibraryBreadCrumbsForProject(any(ProjectInfo.class));
-        doNothing().when(libraryPlaces).setupLibraryBreadCrumbsForAsset(any(ProjectInfo.class),
-                                                                        any(Path.class));
+        doNothing().when(libraryPlaces).setupLibraryBreadCrumbsForAsset(any(Path.class));
         final PathPlaceRequest pathPlaceRequest = mock(PathPlaceRequest.class);
         doReturn(mock(ObservablePath.class)).when(pathPlaceRequest).getPath();
         doReturn(pathPlaceRequest).when(libraryPlaces).createPathPlaceRequest(any());
 
         doReturn(true).when(placeManager).closeAllPlacesOrNothing();
+
+        doReturn(importRepositoryPopUpPresenter).when(importRepositoryPopUpPresenters).get();
+    }
+
+    @Test
+    public void projectContextListenerIsSetup() {
+        verify(projectContext).addChangeHandler(any(LibraryPlaces.class));
+    }
+
+    @Test
+    public void onChange() {
+
+        libraryPlaces.onChange();
+
+        verify(libraryPlaces).goToProject();
+    }
+
+    @Test
+    public void onChangeNoActiveProject() {
+
+        doReturn(Optional.empty()).when(projectContext).getActiveWorkspaceProject();
+
+        libraryPlaces.onChange();
+
+        verify(libraryPlaces, never()).goToProject();
+    }
+
+    @Test
+    public void onNoChangeWhenThereIsActivePackage() {
+
+        doReturn(Optional.of(new Package())).when(projectContext).getActivePackage();
+
+        libraryPlaces.onChange();
+
+        verify(libraryPlaces, never()).goToProject();
     }
 
     @Test
@@ -228,8 +290,7 @@ public class LibraryPlacesTest {
 
         libraryPlaces.onSelectPlaceEvent(placeGainFocusEvent);
 
-        verify(libraryPlaces).setupLibraryBreadCrumbsForAsset(libraryPlaces.getProjectInfo(),
-                                                              path);
+        verify(libraryPlaces).setupLibraryBreadCrumbsForAsset(path);
         verify(libraryPlaces).showDocks();
     }
 
@@ -244,8 +305,7 @@ public class LibraryPlacesTest {
         libraryPlaces.onSelectPlaceEvent(placeGainFocusEvent);
 
         verify(libraryPlaces).hideDocks();
-        verify(libraryPlaces).setupLibraryBreadCrumbsForAsset(libraryPlaces.getProjectInfo(),
-                                                              null);
+        verify(libraryPlaces).setupLibraryBreadCrumbsForAsset(null);
     }
 
     @Test
@@ -259,7 +319,7 @@ public class LibraryPlacesTest {
         libraryPlaces.onSelectPlaceEvent(placeGainFocusEvent);
 
         verify(libraryPlaces).hideDocks();
-        verify(libraryPlaces).setupLibraryBreadCrumbsForProject(libraryPlaces.getProjectInfo());
+        verify(libraryPlaces).setupLibraryBreadCrumbs();
     }
 
     @Test
@@ -273,7 +333,7 @@ public class LibraryPlacesTest {
         libraryPlaces.onSelectPlaceEvent(placeGainFocusEvent);
 
         verify(libraryPlaces).hideDocks();
-        verify(libraryPlaces).setupLibraryBreadCrumbs();
+        verify(libraryPlaces).setupLibraryBreadCrumbsWithoutProject();
     }
 
     @Test
@@ -311,93 +371,13 @@ public class LibraryPlacesTest {
     }
 
     @Test
-    public void projectContextUnchanged() {
-        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
-
-        doReturn(activeRepository).when(libraryToolbar).getSelectedRepository();
-        doReturn(activeBranch).when(libraryToolbar).getSelectedBranch();
-
-        doReturn(activeProject).when(projectContext).getActiveProject();
-
-        libraryPlaces.goToProject(new ProjectInfo(activeOrganizationalUnit,
-                                                  activeRepository,
-                                                  activeBranch,
-                                                  activeProject),
-                                  false);
-        Mockito.reset(libraryPlaces);
-        libraryPlaces.projectContextChange();
-
-        verify(libraryToolbar,
-               never()).setSelectedInfo(any(),
-                                        any(),
-                                        any());
-        verify(libraryPlaces,
-               never()).goToProject(any(),
-                                    anyBoolean());
-    }
-
-    @Test
-    public void projectContextChanged_OrganizationalUnit() {
-        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
-
-        doReturn(activeRepository).when(libraryToolbar).getSelectedRepository();
-        doReturn(activeBranch).when(libraryToolbar).getSelectedBranch();
-
-        final OrganizationalUnit newOrganizationalUnit = mock(OrganizationalUnit.class);
-
-        doReturn(newOrganizationalUnit).when(projectContext).getActiveOrganizationalUnit();
-        doReturn(null).when(projectContext).getActiveRepository();
-        doReturn(null).when(projectContext).getActiveProject();
-
-        libraryPlaces.projectContextChange();
-
-        verify(libraryToolbar,
-               never()).setSelectedInfo(any(),
-                                        any(),
-                                        any());
-        verify(libraryPlaces,
-               never()).goToProject(any(),
-                                    anyBoolean());
-    }
-
-    @Test
-    public void projectContextChanged_Project() {
-        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
-
-        doReturn(activeRepository).when(libraryToolbar).getSelectedRepository();
-        doReturn(activeBranch).when(libraryToolbar).getSelectedBranch();
-
-        final Project newProject = mock(Project.class);
-
-        doReturn(newProject).when(projectContext).getActiveProject();
-
-        libraryPlaces.goToProject(new ProjectInfo(activeOrganizationalUnit,
-                                                  activeRepository,
-                                                  activeBranch,
-                                                  activeProject),
-                                  false);
-        Mockito.reset(libraryPlaces);
-        libraryPlaces.projectContextChange();
-
-        verify(libraryToolbar,
-               never()).setSelectedInfo(any(),
-                                        any(),
-                                        any());
-        verify(libraryPlaces).goToProject(new ProjectInfo(activeOrganizationalUnit,
-                                                          activeRepository,
-                                                          activeBranch,
-                                                          newProject),
-                                          false);
-    }
-
-    @Test
     public void onPreferencesSaveTest() {
         doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
-        doNothing().when(libraryPlaces).goToProject(any());
+        doNothing().when(libraryPlaces).goToProject();
 
         libraryPlaces.onPreferencesSave(mock(PreferencesCentralSaveEvent.class));
 
-        verify(libraryPlaces).goToProject(libraryPlaces.getProjectInfo());
+        verify(libraryPlaces).goToProject();
     }
 
     @Test
@@ -408,17 +388,17 @@ public class LibraryPlacesTest {
         libraryPlaces.onPreferencesSave(mock(PreferencesCentralSaveEvent.class));
 
         verify(libraryPlaces,
-               never()).goToProject(any());
+               never()).goToProject();
     }
 
     @Test
     public void onPreferencesCancelTest() {
         doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
-        doNothing().when(libraryPlaces).goToProject(any());
+        doNothing().when(libraryPlaces).goToProject();
 
         libraryPlaces.onPreferencesCancel(mock(PreferencesCentralUndoChangesEvent.class));
 
-        verify(libraryPlaces).goToProject(libraryPlaces.getProjectInfo());
+        verify(libraryPlaces).goToProject();
     }
 
     @Test
@@ -429,7 +409,7 @@ public class LibraryPlacesTest {
         libraryPlaces.onPreferencesCancel(mock(PreferencesCentralUndoChangesEvent.class));
 
         verify(libraryPlaces,
-               never()).goToProject(any());
+               never()).goToProject();
     }
 
     @Test
@@ -440,9 +420,18 @@ public class LibraryPlacesTest {
 
         libraryPlaces.goToOrganizationalUnits();
 
+        verify(projectContextChangeEvent).fire(projectContextChangeEventArgumentCaptor.capture());
+        assertNull(projectContextChangeEventArgumentCaptor.getValue().getOrganizationalUnit());
+
+        final ArgumentCaptor<WorkspaceProjectContextChangeEvent> eventArgumentCaptor = ArgumentCaptor.forClass(WorkspaceProjectContextChangeEvent.class);
+        verify(projectContextChangeEvent).fire(eventArgumentCaptor.capture());
+        final WorkspaceProjectContextChangeEvent event = eventArgumentCaptor.getValue();
+        assertNull(event.getOrganizationalUnit());
+        assertNull(event.getWorkspaceProject());
         verify(placeManager).closeAllPlacesOrNothing();
         verify(placeManager).goTo(eq(part),
                                   any(PanelDefinition.class));
+        verify(libraryPlaces).setupLibraryBreadCrumbs();
     }
 
     @Test
@@ -452,24 +441,63 @@ public class LibraryPlacesTest {
         doReturn(path).when(pathPlaceRequest).getPath();
         doReturn(pathPlaceRequest).when(libraryPlaces).createPathPlaceRequest(any(Path.class));
 
-        libraryPlaces.goToAsset(libraryPlaces.getProjectInfo(),
-                                path);
+        libraryPlaces.goToAsset(path);
 
         verify(placeManager).goTo(pathPlaceRequest);
+        final ArgumentCaptor<WorkspaceProjectContextChangeEvent> eventArgumentCaptor = ArgumentCaptor.forClass(WorkspaceProjectContextChangeEvent.class);
+        verify(projectContextChangeEvent).fire(eventArgumentCaptor.capture());
+
+        final WorkspaceProjectContextChangeEvent value = eventArgumentCaptor.getValue();
+        assertEquals(activeProject, value.getWorkspaceProject());
+        assertEquals(activeModule, value.getModule());
+        assertNull(value.getPackage());
+    }
+
+    @Test
+    public void goToAssetTestWithPackage() {
+
+        final ObservablePath path = mock(ObservablePath.class);
+        final PathPlaceRequest pathPlaceRequest = mock(PathPlaceRequest.class);
+        doReturn(path).when(pathPlaceRequest).getPath();
+        doReturn(pathPlaceRequest).when(libraryPlaces).createPathPlaceRequest(any(Path.class));
+
+        final Package pkg = mock(Package.class);
+        doReturn(pkg).when(moduleService).resolvePackage(path);
+
+        libraryPlaces.goToAsset(path);
+
+        verify(projectContextChangeEvent).fire(projectContextChangeEventArgumentCaptor.capture());
+        final WorkspaceProjectContextChangeEvent contextChangeEvent = projectContextChangeEventArgumentCaptor.getValue();
+        assertEquals(activeProject, contextChangeEvent.getWorkspaceProject());
+        assertEquals(activeModule, contextChangeEvent.getModule());
+        assertEquals(pkg, contextChangeEvent.getPackage());
+
+        verify(placeManager).goTo(pathPlaceRequest);
+        final ArgumentCaptor<WorkspaceProjectContextChangeEvent> eventArgumentCaptor = ArgumentCaptor.forClass(WorkspaceProjectContextChangeEvent.class);
+        verify(projectContextChangeEvent).fire(eventArgumentCaptor.capture());
+
+        final WorkspaceProjectContextChangeEvent value = eventArgumentCaptor.getValue();
+        assertEquals(activeProject, value.getWorkspaceProject());
+        assertEquals(activeModule, value.getModule());
+        assertEquals(pkg, value.getPackage());
     }
 
     @Test
     public void goToProjectSettingsTest() {
         final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest(LibraryPlaces.PROJECT_SETTINGS);
 
-        libraryPlaces.goToAsset(libraryPlaces.getProjectInfo(),
-                                null);
+        libraryPlaces.goToAsset(null);
 
         verify(placeManager).goTo(placeRequest);
     }
 
     @Test
-    public void goToLibraryTest() {
+    public void goToLibraryWithDefaultOrganizationalUnitTest() {
+        when(projectContext.getActiveOrganizationalUnit()).thenReturn(Optional.empty())
+                                                          .thenReturn(Optional.of(mock(OrganizationalUnit.class)));
+        doReturn(Optional.empty()).when(projectContext).getActiveWorkspaceProject();
+        doReturn(Optional.empty()).when(projectContext).getActiveModule();
+
         final PlaceRequest placeRequest = new DefaultPlaceRequest(LibraryPlaces.LIBRARY_SCREEN);
         final PartDefinitionImpl part = new PartDefinitionImpl(placeRequest);
         part.setSelectable(false);
@@ -479,31 +507,68 @@ public class LibraryPlacesTest {
         verify(libraryPlaces).closeLibraryPlaces();
         verify(placeManager).goTo(eq(part),
                                   any(PanelDefinition.class));
-        verify(libraryPlaces).setupLibraryBreadCrumbs();
-        verify(projectContextChangeEvent).fire(any(ProjectContextChangeEvent.class));
+        verify(libraryPlaces).setupLibraryBreadCrumbsWithoutProject();
+        verify(projectContextChangeEvent,
+               times(2)).fire(any(WorkspaceProjectContextChangeEvent.class));
+    }
+
+    @Test
+    public void goToLibraryFromOrganizationalUnitsScreenTest() {
+        doReturn(Optional.of(activeOrganizationalUnit)).when(projectContext).getActiveOrganizationalUnit();
+        doReturn(Optional.empty()).when(projectContext).getActiveWorkspaceProject();
+        doReturn(Optional.empty()).when(projectContext).getActiveModule();
+
+        final PlaceRequest placeRequest = new DefaultPlaceRequest(LibraryPlaces.LIBRARY_SCREEN);
+        final PartDefinitionImpl part = new PartDefinitionImpl(placeRequest);
+        part.setSelectable(false);
+
+        libraryPlaces.goToLibrary();
+
+        verify(libraryPlaces).closeLibraryPlaces();
+        verify(placeManager).goTo(eq(part),
+                                  any(PanelDefinition.class));
+        verify(libraryPlaces).setupLibraryBreadCrumbsWithoutProject();
+        verify(projectContextChangeEvent,
+               times(1)).fire(any(WorkspaceProjectContextChangeEvent.class));
+    }
+
+    @Test
+    public void goToLibraryWhenGoingBackFromProjectTest() {
+        doReturn(Optional.of(activeOrganizationalUnit)).when(projectContext).getActiveOrganizationalUnit();
+        activeProject = new WorkspaceProject(activeOrganizationalUnit,
+                                             activeRepository,
+                                             activeBranch,
+                                             activeModule);
+        doReturn(Optional.of(activeProject)).when(projectContext).getActiveWorkspaceProject();
+        doReturn(Optional.of(activeModule)).when(projectContext).getActiveModule();
+
+        final PlaceRequest placeRequest = new DefaultPlaceRequest(LibraryPlaces.LIBRARY_SCREEN);
+        final PartDefinitionImpl part = new PartDefinitionImpl(placeRequest);
+        part.setSelectable(false);
+
+        libraryPlaces.goToLibrary();
+
+        verify(libraryPlaces).closeLibraryPlaces();
+        verify(placeManager).goTo(eq(part),
+                                  any(PanelDefinition.class));
+        verify(libraryPlaces).setupLibraryBreadCrumbsWithoutProject();
+        verify(projectContextChangeEvent,
+               never()).fire(any(WorkspaceProjectContextChangeEvent.class));
     }
 
     @Test
     public void goToProjectTest() {
-        final PlaceRequest projectScreen = new ConditionalPlaceRequest(LibraryPlaces.PROJECT_SCREEN)
-                .when(p -> false)
-                .orElse(new DefaultPlaceRequest(LibraryPlaces.EMPTY_PROJECT_SCREEN));
+        final PlaceRequest projectScreen = new DefaultPlaceRequest(LibraryPlaces.PROJECT_SCREEN);
         final PartDefinitionImpl part = new PartDefinitionImpl(projectScreen);
         part.setSelectable(false);
-        final ProjectInfo projectInfo = new ProjectInfo(activeOrganizationalUnit,
-                                                        activeRepository,
-                                                        activeBranch,
-                                                        activeProject);
 
-        libraryPlaces.goToProject(projectInfo);
+        libraryPlaces.goToProject();
 
         verify(placeManager).goTo(eq(part),
                                   any(PanelDefinition.class));
-        verify(libraryPlaces).closeLibraryPlaces();
-        verify(projectDetailEvent).fire(any(ProjectDetailEvent.class));
-        verify(projectContextChangeEvent).fire(any(ProjectContextChangeEvent.class));
-        verify(libraryPlaces).setupLibraryBreadCrumbsForProject(projectInfo);
-        verify(placeManager).closeAllPlacesOrNothing();
+        verify(projectContextChangeEvent,
+               never()).fire(any(WorkspaceProjectContextChangeEvent.class));
+        verify(libraryPlaces).setupLibraryBreadCrumbs();
     }
 
     @Test
@@ -524,24 +589,67 @@ public class LibraryPlacesTest {
         final PlaceRequest projectScreen = new DefaultPlaceRequest(LibraryPlaces.PROJECT_METRICS_SCREEN);
         final PartDefinitionImpl part = new PartDefinitionImpl(projectScreen);
         part.setSelectable(false);
-        final ProjectInfo projectInfo = new ProjectInfo(activeOrganizationalUnit,
-                                                        activeRepository,
-                                                        activeBranch,
-                                                        activeProject);
 
-        libraryPlaces.goToProjectMetrics(projectInfo);
+        libraryPlaces.goToProjectMetrics();
 
         verify(placeManager).goTo(eq(part),
                                   any(PanelDefinition.class));
-        verify(projectMetricsEvent).fire(any(ProjectMetricsEvent.class));
-        verify(libraryPlaces).setupLibraryBreadCrumbsForProjectMetrics(projectInfo);
+        verify(projectMetricsEvent).fire(any(WorkbenchProjectMetricsEvent.class));
+        verify(libraryPlaces).setupLibraryBreadCrumbsForProjectMetrics();
+    }
+
+    @Test
+    public void goToTrySamplesTest() {
+        doReturn(true).when(libraryPlaces).closeAllPlacesOrNothing();
+
+        Map<String, String> params = new HashMap<>();
+        params.put("trySamples",
+                   "true");
+        final PlaceRequest trySamplesScreen = new DefaultPlaceRequest(LibraryPlaces.IMPORT_PROJECTS_SCREEN,
+                                                                      params);
+        final PartDefinitionImpl part = new PartDefinitionImpl(trySamplesScreen);
+        part.setSelectable(false);
+
+        libraryPlaces.goToTrySamples();
+
+        verify(libraryPlaces).closeAllPlacesOrNothing();
+        verify(placeManager).goTo(eq(part),
+                                  any(PanelDefinition.class));
+        verify(libraryPlaces).setupLibraryBreadCrumbsForTrySamples();
+    }
+
+    @Test
+    public void goToImportRepositoryPopUpTest() {
+        libraryPlaces.goToImportRepositoryPopUp();
+        verify(importRepositoryPopUpPresenter).show();
+    }
+
+    @Test
+    public void goToImportProjectsTest() {
+        doReturn(true).when(libraryPlaces).closeAllPlacesOrNothing();
+
+        Map<String, String> params = new HashMap<>();
+        params.put("title",
+                   null);
+        params.put("repositoryUrl",
+                   "repositoryUrl");
+        final PlaceRequest importProjectsScreen = new DefaultPlaceRequest(LibraryPlaces.IMPORT_PROJECTS_SCREEN,
+                                                                      params);
+        final PartDefinitionImpl part = new PartDefinitionImpl(importProjectsScreen);
+        part.setSelectable(false);
+
+        libraryPlaces.goToImportProjects("repositoryUrl");
+
+        verify(libraryPlaces).closeAllPlacesOrNothing();
+        verify(placeManager).goTo(eq(part),
+                                  any(PanelDefinition.class));
+        verify(libraryPlaces).setupLibraryBreadCrumbsForImportProjects("repositoryUrl");
     }
 
     @Test
     public void closeLibraryPlacesTest() {
         libraryPlaces.closeLibraryPlaces();
         verify(placeManager).closePlace(LibraryPlaces.LIBRARY_SCREEN);
-        verify(placeManager).closePlace(LibraryPlaces.EMPTY_PROJECT_SCREEN);
         verify(placeManager).closePlace(LibraryPlaces.PROJECT_SCREEN);
         verify(placeManager).closePlace(LibraryPlaces.PROJECT_METRICS_SCREEN);
         verify(placeManager).closePlace(LibraryPlaces.PROJECT_DETAIL_SCREEN);
@@ -551,28 +659,31 @@ public class LibraryPlacesTest {
     }
 
     @Test
-    public void goToSameProjectTest() {
-        final ProjectInfo projectInfo = new ProjectInfo(activeOrganizationalUnit,
-                                                        activeRepository,
-                                                        activeBranch,
-                                                        activeProject);
-        libraryPlaces.goToProject(projectInfo);
-        libraryPlaces.goToProject(projectInfo);
+    public void goToNewProject() {
 
-        verify(placeManager,
-               times(1)).closeAllPlacesOrNothing();
+        final WorkspaceProject project = new WorkspaceProject(activeOrganizationalUnit,
+                                                              activeRepository,
+                                                              activeBranch,
+                                                              mock(Module.class));
+        libraryPlaces.goToProject(project);
+
+        verify(projectContextChangeEvent).fire(any(WorkspaceProjectContextChangeEvent.class));
+
+        verify(placeManager).closeAllPlacesOrNothing();
     }
 
     @Test
-    public void goToImportProjectWizardTest() {
-        final ExamplesWizard examplesWizard = mock(ExamplesWizard.class);
-        doReturn(examplesWizard).when(examplesWizards).get();
+    public void goToSameProjectTest() {
 
-        libraryPlaces.goToImportProjectWizard();
+        final WorkspaceProject project = new WorkspaceProject(activeOrganizationalUnit,
+                                                              activeRepository,
+                                                              activeBranch,
+                                                              activeModule);
+        libraryPlaces.goToProject(project);
 
-        verify(examplesWizard).start();
-        verify(examplesWizard).setDefaultTargetOrganizationalUnit(anyString());
-        verify(examplesWizard).setDefaultTargetRepository(anyString());
+        verify(projectContextChangeEvent, never()).fire(any(WorkspaceProjectContextChangeEvent.class));
+
+        verify(placeManager, never()).closeAllPlacesOrNothing();
     }
 
     @Test
@@ -598,91 +709,48 @@ public class LibraryPlacesTest {
         verify(preferencesCentralInitializationEvent).fire(new PreferencesCentralInitializationEvent("ProjectPreferences",
                                                                                                      scopeResolutionStrategyInfo,
                                                                                                      null));
-        verify(libraryPlaces).setupLibraryBreadCrumbsForPreferences(any());
+        verify(libraryPlaces).setupLibraryBreadCrumbsForPreferences();
     }
 
     @Test
-    public void projectDeletedRedirectsToLibraryWhenItIsOpenedTest() {
-        final Project activeProject = mock(Project.class);
-        final DeleteProjectEvent deleteProjectEvent = mock(DeleteProjectEvent.class);
+    public void placesAreUpdatedWhenActiveModuleIsRenamedTest() {
+        final Module renamedModule = mock(Module.class);
+        final RenameModuleEvent renameModuleEvent = mock(RenameModuleEvent.class);
 
         doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
-        doReturn(activeProject).when(deleteProjectEvent).getProject();
 
-        libraryPlaces.goToProject(new ProjectInfo(projectContext.getActiveOrganizationalUnit(),
-                                                  projectContext.getActiveRepository(),
-                                                  projectContext.getActiveBranch(),
-                                                  activeProject));
-        libraryPlaces.projectDeleted(deleteProjectEvent);
+        doReturn(activeModule).when(renameModuleEvent).getOldModule();
+        doReturn(renamedModule).when(renameModuleEvent).getNewModule();
 
-        verify(libraryPlaces).closeAllPlaces();
-        verify(libraryPlaces).goToLibrary();
-        verify(notificationEvent).fire(any());
+        libraryPlaces.onProjectRenamed(renameModuleEvent);
+
+        verify(breadcrumbs).clearBreadcrumbs(LibraryPlaces.LIBRARY_PERSPECTIVE);
     }
 
     @Test
-    public void projectDeletedDoesNotRedirectToLibraryWhenItIsNotOpenedTest() {
-        final Project activeProject = mock(Project.class);
-        final Project deletedProject = mock(Project.class);
-        final DeleteProjectEvent deleteProjectEvent = mock(DeleteProjectEvent.class);
+    public void breadcrumbIsNotUpdatedWhenInactiveModuleIsRenamedTest() {
+        final Module activeModule = mock(Module.class);
+        final Module renamedModule = mock(Module.class);
+        final Module otherModule = mock(Module.class);
+        final RenameModuleEvent renameModuleEvent = mock(RenameModuleEvent.class);
 
         doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
-        doReturn(activeProject).when(projectContext).getActiveProject();
-        doReturn(deletedProject).when(deleteProjectEvent).getProject();
 
-        libraryPlaces.projectDeleted(deleteProjectEvent);
+        doReturn(Optional.of(activeModule)).when(projectContext).getActiveModule();
+        doReturn(otherModule).when(renameModuleEvent).getOldModule();
+        doReturn(renamedModule).when(renameModuleEvent).getNewModule();
+
+        libraryPlaces.onProjectRenamed(renameModuleEvent);
 
         verify(libraryPlaces,
-               never()).closeAllPlaces();
-        verify(libraryPlaces,
-               never()).goToLibrary();
-        verify(notificationEvent,
-               never()).fire(any());
-    }
-
-    @Test
-    public void breadcrumbIsUpdatedWhenActiveProjectIsRenamedTest() {
-        final Project activeProject = mock(Project.class);
-        final Project renamedProject = mock(Project.class);
-        final RenameProjectEvent renameProjectEvent = mock(RenameProjectEvent.class);
-
-        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
-
-        doReturn(activeProject).when(projectContext).getActiveProject();
-        doReturn(activeProject).when(renameProjectEvent).getOldProject();
-        doReturn(renamedProject).when(renameProjectEvent).getNewProject();
-
-        libraryPlaces.projectRenamed(renameProjectEvent);
-
-        verify(libraryPlaces).setupLibraryBreadCrumbsForAsset(new ProjectInfo(projectContext.getActiveOrganizationalUnit(),
-                                                                              projectContext.getActiveRepository(),
-                                                                              projectContext.getActiveBranch(),
-                                                                              renameProjectEvent.getNewProject()),
-                                                              null);
-    }
-
-    @Test
-    public void breadcrumbIsNotUpdatedWhenInactiveProjectIsRenamedTest() {
-        final Project activeProject = mock(Project.class);
-        final Project renamedProject = mock(Project.class);
-        final Project otherProject = mock(Project.class);
-        final RenameProjectEvent renameProjectEvent = mock(RenameProjectEvent.class);
-
-        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
-
-        doReturn(activeProject).when(projectContext).getActiveProject();
-        doReturn(otherProject).when(renameProjectEvent).getOldProject();
-        doReturn(renamedProject).when(renameProjectEvent).getNewProject();
-
-        libraryPlaces.projectRenamed(renameProjectEvent);
-
-        verify(libraryPlaces,
-               never()).setupLibraryBreadCrumbsForAsset(any(),
-                                                        any());
+               never()).setupLibraryBreadCrumbsForAsset(any());
     }
 
     @Test
     public void testOnSocialFileSelected_Repository() {
+
+        doReturn(mock(WorkspaceProject.class)).when(projectService).resolveProject(any(Path.class));
+
         doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
 
         final SocialFileSelectedEvent event = new SocialFileSelectedEvent(ExtendedTypes.NEW_REPOSITORY_EVENT.name(),
@@ -694,21 +762,27 @@ public class LibraryPlacesTest {
     }
 
     @Test
-    public void testOnSocialFileSelected_Project() {
+    public void testOnSocialFileSelected_Module() {
+
+        doReturn(mock(WorkspaceProject.class)).when(projectService).resolveProject(any(Path.class));
+
         doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
 
         final PlaceRequest libraryPerspective = libraryPlaces.getLibraryPlaceRequestWithoutRefresh();
-        final SocialFileSelectedEvent event = new SocialFileSelectedEvent(ProjectEventType.NEW_PROJECT.name(),
+        final SocialFileSelectedEvent event = new SocialFileSelectedEvent(ModuleEventType.NEW_MODULE.name(),
                                                                           null);
 
         libraryPlaces.onSocialFileSelected(event);
 
         verify(placeManager).goTo(libraryPerspective);
-        verify(libraryPlaces).goToProject(any(ProjectInfo.class));
+        verify(libraryPlaces).goToProject();
     }
 
     @Test
     public void testOnSocialFileSelected_Asset() {
+
+        doReturn(mock(WorkspaceProject.class)).when(projectService).resolveProject(any(Path.class));
+
         doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
 
         final PlaceRequest libraryPerspective = libraryPlaces.getLibraryPlaceRequestWithoutRefresh();
@@ -718,7 +792,6 @@ public class LibraryPlacesTest {
         libraryPlaces.onSocialFileSelected(event);
 
         verify(placeManager).goTo(libraryPerspective);
-        verify(libraryPlaces).goToAsset(any(ProjectInfo.class),
-                                        any(Path.class));
+        verify(libraryPlaces).goToAsset(any(Path.class));
     }
 }

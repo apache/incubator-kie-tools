@@ -18,7 +18,7 @@ package org.kie.workbench.common.screens.datasource.management.backend.service;
 
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.kie.workbench.common.screens.datasource.management.backend.core.DataSourceRuntimeManager;
 import org.kie.workbench.common.screens.datasource.management.backend.core.DeploymentOptions;
 import org.kie.workbench.common.screens.datasource.management.backend.core.UnDeploymentOptions;
@@ -27,7 +27,7 @@ import org.kie.workbench.common.screens.datasource.management.model.DefEditorCon
 import org.kie.workbench.common.screens.datasource.management.model.DeploymentInfo;
 import org.kie.workbench.common.screens.datasource.management.util.MavenArtifactResolver;
 import org.kie.workbench.common.screens.datasource.management.util.UUIDGenerator;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -36,7 +36,7 @@ import org.uberfire.ext.editor.commons.service.PathNamingService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public abstract class AbstractDefEditorService<C extends DefEditorContent<D>, D extends Def, I extends DeploymentInfo> {
 
@@ -48,7 +48,7 @@ public abstract class AbstractDefEditorService<C extends DefEditorContent<D>, D 
 
     protected IOService ioService;
 
-    protected KieProjectService projectService;
+    protected KieModuleService moduleService;
 
     protected CommentedOptionFactory optionsFactory;
 
@@ -62,14 +62,14 @@ public abstract class AbstractDefEditorService<C extends DefEditorContent<D>, D 
     public AbstractDefEditorService(DataSourceRuntimeManager runtimeManager,
                                     DataSourceServicesHelper serviceHelper,
                                     IOService ioService,
-                                    KieProjectService projectService,
+                                    KieModuleService moduleService,
                                     CommentedOptionFactory optionsFactory,
                                     PathNamingService pathNamingService,
                                     MavenArtifactResolver artifactResolver) {
         this.runtimeManager = runtimeManager;
         this.serviceHelper = serviceHelper;
         this.ioService = ioService;
-        this.projectService = projectService;
+        this.moduleService = moduleService;
         this.optionsFactory = optionsFactory;
         this.pathNamingService = pathNamingService;
         this.artifactResolver = artifactResolver;
@@ -90,16 +90,16 @@ public abstract class AbstractDefEditorService<C extends DefEditorContent<D>, D 
                                      UnDeploymentOptions options) throws Exception;
 
     protected abstract void fireCreateEvent(D def,
-                                            Project project);
+                                            Module module);
 
     protected abstract void fireCreateEvent(D def);
 
     protected abstract void fireUpdateEvent(D def,
-                                            Project project,
+                                            Module module,
                                             D originalDef);
 
     protected abstract void fireDeleteEvent(D def,
-                                            Project project);
+                                            Module module);
 
     protected abstract String buildFileName(D def);
 
@@ -112,7 +112,7 @@ public abstract class AbstractDefEditorService<C extends DefEditorContent<D>, D 
         String content = ioService.readAllString(Paths.convert(path));
         D def = deserializeDef(content);
         editorContent.setDef(def);
-        editorContent.setProject(projectService.resolveProject(path));
+        editorContent.setModule(moduleService.resolveModule(path));
         return editorContent;
     }
 
@@ -165,7 +165,7 @@ public abstract class AbstractDefEditorService<C extends DefEditorContent<D>, D 
                                                     editorContent.getDef());
 
             fireUpdateEvent(editorContent.getDef(),
-                            editorContent.getProject(),
+                            editorContent.getModule(),
                             originalDef);
         } catch (Exception e) {
             throw ExceptionUtilities.handleException(e);
@@ -178,18 +178,18 @@ public abstract class AbstractDefEditorService<C extends DefEditorContent<D>, D 
     }
 
     public Path create(final D def,
-                       final Project project) {
+                       final Module module) {
         checkNotNull("def",
                      def);
-        checkNotNull("project",
-                     project);
+        checkNotNull("module",
+                     module);
 
-        Path context = serviceHelper.getProjectDataSourcesContext(project);
+        Path context = serviceHelper.getModuleDataSourcesContext(module);
         Path newPath = create(def,
                               context);
 
         fireCreateEvent(def,
-                        project);
+                        module);
 
         return newPath;
     }
@@ -274,7 +274,7 @@ public abstract class AbstractDefEditorService<C extends DefEditorContent<D>, D 
         if (ioService.exists(nioPath)) {
             String content = ioService.readAllString(Paths.convert(path));
             D def = deserializeDef(content);
-            Project project = projectService.resolveProject(path);
+            Module module = moduleService.resolveModule(path);
             try {
 
                 I deploymentInfo = readDeploymentInfo(def.getUuid());
@@ -286,7 +286,7 @@ public abstract class AbstractDefEditorService<C extends DefEditorContent<D>, D 
                 ioService.delete(Paths.convert(path),
                                  optionsFactory.makeCommentedOption(comment));
                 fireDeleteEvent(def,
-                                project);
+                                module);
             } catch (Exception e) {
                 throw ExceptionUtilities.handleException(e);
             }

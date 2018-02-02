@@ -11,8 +11,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 package org.kie.workbench.common.screens.social.hp.service;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
@@ -21,14 +25,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.social.hp.security.SocialEventRepositoryConstraint;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.spaces.Space;
 
-import java.util.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class RepositoryListServiceImplTest {
 
     RepositoryListServiceImpl service = new RepositoryListServiceImpl();
@@ -36,19 +38,20 @@ public class RepositoryListServiceImplTest {
     @Before
     public void setup() {
         Set<Repository> repositories = new HashSet<Repository>();
-        repositories.add( new GitRepository( "dora" ) );
+        repositories.add(new GitRepository("dora",
+                                           new Space("space")));
         final SocialEventRepositoryConstraint socialEventRepositoryConstraint = mock(
-                SocialEventRepositoryConstraint.class );
-        when( socialEventRepositoryConstraint.getAuthorizedRepositories() ).thenReturn( repositories );
+                SocialEventRepositoryConstraint.class);
+        when(socialEventRepositoryConstraint.getAuthorizedRepositories()).thenReturn(repositories);
         service.repositoryConstraint = socialEventRepositoryConstraint;
     }
 
     @Test
     public void getRepositories() {
         final List<String> repositories = service.getRepositories();
-        assertEquals( 1, repositories.size() );
-        assertEquals( "dora", repositories.get( 0 ) );
-
+        assertEquals(1,
+                     repositories.size());
+        assertEquals("dora",
+                     repositories.get(0));
     }
-
 }

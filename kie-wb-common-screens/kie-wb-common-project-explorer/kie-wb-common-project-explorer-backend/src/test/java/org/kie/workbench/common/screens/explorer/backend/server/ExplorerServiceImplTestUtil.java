@@ -14,14 +14,14 @@
 */
 package org.kie.workbench.common.screens.explorer.backend.server;
 
-import org.guvnor.m2repo.service.M2RepoService;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
-
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
 import javax.inject.Singleton;
 
-import static org.mockito.Mockito.mock;
+import org.guvnor.m2repo.service.M2RepoService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
+
+import static org.mockito.Mockito.*;
 
 @Singleton
 @Alternative
@@ -29,15 +29,13 @@ public class ExplorerServiceImplTestUtil {
 
     @Produces
     @Alternative
-    public KieProjectService kieProjectService() {
-        return mock( KieProjectService.class );
+    public KieModuleService kieWorkspaceProjectService() {
+        return mock(KieModuleService.class);
     }
-
 
     @Produces
     @Alternative
     public M2RepoService m2RepoService() {
-        return mock( M2RepoService.class );
+        return mock(M2RepoService.class);
     }
-
 }

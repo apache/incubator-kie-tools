@@ -16,11 +16,9 @@
 
 package org.kie.workbench.common.screens.explorer.service;
 
-import java.util.Set;
-
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
@@ -28,10 +26,9 @@ import org.kie.workbench.common.screens.explorer.model.FolderItem;
 @Portable
 public class ProjectExplorerContentQuery {
 
-    private OrganizationalUnit organizationalUnit = null;
     private Repository repository = null;
-    private String branch = null;
-    private Project project = null;
+    private Branch branch = null;
+    private Module module = null;
     private org.guvnor.common.services.project.model.Package pkg = null;
     private FolderItem item = null;
     private ActiveOptions options = null;
@@ -39,76 +36,58 @@ public class ProjectExplorerContentQuery {
     public ProjectExplorerContentQuery() {
     }
 
-    public ProjectExplorerContentQuery( final OrganizationalUnit organizationalUnit ) {
-        this.organizationalUnit = organizationalUnit;
-    }
-
-    public ProjectExplorerContentQuery( final OrganizationalUnit organizationalUnit,
-                                        final Repository repository,
-                                        final String branch) {
-        this.organizationalUnit = organizationalUnit;
+    public ProjectExplorerContentQuery(final Repository repository,
+                                       final Branch branch) {
         this.repository = repository;
         this.branch = branch;
     }
 
-    public ProjectExplorerContentQuery( final OrganizationalUnit organizationalUnit,
-                                        final Repository repository,
-                                        final String branch,
-                                        final Project project ) {
-        this.organizationalUnit = organizationalUnit;
+    public ProjectExplorerContentQuery(final Repository repository,
+                                       final Branch branch,
+                                       final Module module) {
         this.repository = repository;
         this.branch = branch;
-        this.project = project;
+        this.module = module;
     }
 
-    public ProjectExplorerContentQuery( final OrganizationalUnit organizationalUnit,
-                                        final Repository repository,
-                                        final String branch,
-                                        final Project project,
-                                        final Package pkg ) {
-        this.organizationalUnit = organizationalUnit;
+    public ProjectExplorerContentQuery(final Repository repository,
+                                       final Branch branch,
+                                       final Module module,
+                                       final Package pkg) {
         this.repository = repository;
         this.branch = branch;
-        this.project = project;
+        this.module = module;
         this.pkg = pkg;
     }
 
-    public ProjectExplorerContentQuery( final OrganizationalUnit organizationalUnit,
-                                        final Repository repository,
-                                        final String branch,
-                                        final Project project,
-                                        final Package pkg,
-                                        final FolderItem item ) {
-        this.organizationalUnit = organizationalUnit;
+    public ProjectExplorerContentQuery(final Repository repository,
+                                       final Branch branch,
+                                       final Module module,
+                                       final Package pkg,
+                                       final FolderItem item) {
         this.repository = repository;
         this.branch = branch;
-        this.project = project;
+        this.module = module;
         this.pkg = pkg;
         this.item = item;
     }
 
-    public ProjectExplorerContentQuery( final OrganizationalUnit organizationalUnit,
-                                        final Repository repository,
-                                        final String branch,
-                                        final Project project,
-                                        final ActiveOptions activeOptions ) {
-        this.organizationalUnit = organizationalUnit;
+    public ProjectExplorerContentQuery(final Repository repository,
+                                       final Branch branch,
+                                       final Module module,
+                                       final ActiveOptions activeOptions) {
         this.repository = repository;
         this.branch = branch;
-        this.project = project;
+        this.module = module;
         this.options = activeOptions;
-    }
-
-    public OrganizationalUnit getOrganizationalUnit() {
-        return organizationalUnit;
     }
 
     public Repository getRepository() {
         return repository;
     }
 
-    public Project getProject() {
-        return project;
+    public Module getModule() {
+        return module;
     }
 
     public Package getPkg() {
@@ -123,12 +102,11 @@ public class ProjectExplorerContentQuery {
         return options;
     }
 
-    public String getBranch() {
+    public Branch getBranch() {
         return branch;
     }
 
-    public void setOptions( ActiveOptions options ) {
+    public void setOptions(ActiveOptions options) {
         this.options = options;
     }
-
 }

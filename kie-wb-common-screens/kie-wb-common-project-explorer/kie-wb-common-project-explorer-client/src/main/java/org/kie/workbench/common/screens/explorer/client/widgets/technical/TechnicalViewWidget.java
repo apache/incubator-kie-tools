@@ -17,7 +17,6 @@ package org.kie.workbench.common.screens.explorer.client.widgets.technical;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
@@ -27,13 +26,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.guvnor.structure.repositories.Repository;
+import org.guvnor.common.services.project.model.Module;
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewImpl;
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
 import org.kie.workbench.common.screens.explorer.client.widgets.View;
-import org.kie.workbench.common.screens.explorer.client.widgets.branches.BranchSelector;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explorer;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.NavigatorOptions;
 import org.kie.workbench.common.screens.explorer.client.widgets.tagSelector.TagChangedEvent;
@@ -51,6 +47,12 @@ public class TechnicalViewWidget
         extends BaseViewImpl
         implements View {
 
+    interface TechnicalViewImplBinder
+            extends
+            UiBinder<Widget, TechnicalViewWidget> {
+
+    }
+
     private static TechnicalViewImplBinder uiBinder = GWT.create(TechnicalViewImplBinder.class);
     private final NavigatorOptions techOptions = new NavigatorOptions() {{
         showFiles(true);
@@ -61,14 +63,11 @@ public class TechnicalViewWidget
         showItemMessage(false);
         showItemLastUpdater(false);
     }};
-
     @UiField
     Explorer explorer;
-
     @UiField(provided = true)
     @Inject
     TagSelector tagSelector;
-
     @Inject
     PlaceManager placeManager;
     private BaseViewPresenter presenter;
@@ -85,21 +84,19 @@ public class TechnicalViewWidget
         explorer.init(techOptions,
                       Explorer.NavType.BREADCRUMB,
                       presenter);
-
     }
 
     @Override
-    public void setContent(final Project activeProject,
+    public void setContent(final Module activeModule,
                            final FolderListing folderListing,
                            final Map<FolderItem, List<FolderItem>> siblings) {
-        explorer.setupHeader(activeProject);
+        explorer.setupHeader(activeModule);
 
         tagSelector.loadContent(presenter.getActiveContentTags(),
                                 presenter.getCurrentTag());
 
         explorer.loadContent(folderListing,
                              siblings);
-
     }
 
     @Override
@@ -164,12 +161,6 @@ public class TechnicalViewWidget
     }
 
     public void onTagChanged(@Observes TagChangedEvent event) {
-
-    }
-
-    interface TechnicalViewImplBinder
-            extends
-            UiBinder<Widget, TechnicalViewWidget> {
 
     }
 }

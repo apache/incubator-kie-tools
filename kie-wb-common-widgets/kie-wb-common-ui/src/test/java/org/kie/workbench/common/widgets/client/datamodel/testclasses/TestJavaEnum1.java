@@ -17,7 +17,7 @@
 package org.kie.workbench.common.widgets.client.datamodel.testclasses;
 
 /**
- * Test class to check Java enums are extracted correctly by ProjectDataModelOracleBuilder
+ * Test class to check Java enums are extracted correctly by ModuleDataModelOracleBuilder
  */
 public class TestJavaEnum1 {
 
@@ -33,8 +33,7 @@ public class TestJavaEnum1 {
         return field1;
     }
 
-    public void setField1( TestEnum field1 ) {
+    public void setField1(TestEnum field1) {
         this.field1 = field1;
     }
-
 }

@@ -35,10 +35,10 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.EventSourceMock;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class DriverDefEditorServiceTest
         extends DefEditorServiceBaseTest {
 
@@ -63,36 +63,45 @@ public class DriverDefEditorServiceTest
     public void setup() {
         super.setup();
 
-        editorService = new DriverDefEditorServiceImpl( runtimeManager,
-                serviceHelper, ioService, projectService, optionsFactory, pathNamingService, artifactResolver,
-                newDriverEvent, updateDriverEvent, deleteDriverEvent );
+        editorService = new DriverDefEditorServiceImpl(runtimeManager,
+                                                       serviceHelper,
+                                                       ioService,
+                                                       moduleService,
+                                                       optionsFactory,
+                                                       pathNamingService,
+                                                       artifactResolver,
+                                                       newDriverEvent,
+                                                       updateDriverEvent,
+                                                       deleteDriverEvent);
 
         driverDef = new DriverDef();
-        driverDef.setUuid( "uuid" );
-        driverDef.setName( "driverName" );
-        driverDef.setDriverClass( TestDriver.class.getName() );
-        driverDef.setGroupId( "groupId" );
-        driverDef.setArtifactId( "artifactId" );
-        driverDef.setVersion( "version" );
+        driverDef.setUuid("uuid");
+        driverDef.setName("driverName");
+        driverDef.setDriverClass(TestDriver.class.getName());
+        driverDef.setGroupId("groupId");
+        driverDef.setArtifactId("artifactId");
+        driverDef.setVersion("version");
 
         driverDefEditorContent = new DriverDefEditorContent();
-        driverDefEditorContent.setDef( driverDef );
-        driverDefEditorContent.setProject( project );
+        driverDefEditorContent.setDef(driverDef);
+        driverDefEditorContent.setModule(module);
 
         originalDriverDef = new DriverDef();
-        originalDriverDef.setUuid( "uuid" );
-        originalDriverDef.setName( "driverNameOriginal" );
-        originalDriverDef.setDriverClass( TestDriver.class.getName() );
-        originalDriverDef.setGroupId( "groupIdOriginal" );
-        originalDriverDef.setArtifactId( "artifactIdOriginal" );
-        originalDriverDef.setVersion( "versionOriginal" );
+        originalDriverDef.setUuid("uuid");
+        originalDriverDef.setName("driverNameOriginal");
+        originalDriverDef.setDriverClass(TestDriver.class.getName());
+        originalDriverDef.setGroupId("groupIdOriginal");
+        originalDriverDef.setArtifactId("artifactIdOriginal");
+        originalDriverDef.setVersion("versionOriginal");
 
         try {
-            URL resource = getClass().getClassLoader().getResource( "DataSourceFiles" );
+            URL resource = getClass().getClassLoader().getResource("DataSourceFiles");
             uri = resource.toURI();
-            when( artifactResolver.resolve( driverDef.getGroupId(), driverDef.getArtifactId(), driverDef.getVersion() ) ).thenReturn( uri );
-        } catch ( Exception e ) {
-            fail ( e.getMessage() );
+            when(artifactResolver.resolve(driverDef.getGroupId(),
+                                          driverDef.getArtifactId(),
+                                          driverDef.getVersion())).thenReturn(uri);
+        } catch (Exception e) {
+            fail(e.getMessage());
         }
     }
 
@@ -103,7 +112,7 @@ public class DriverDefEditorServiceTest
 
     @Override
     protected String getExpectedDefString() {
-        return DriverDefSerializer.serialize( driverDef );
+        return DriverDefSerializer.serialize(driverDef);
     }
 
     @Override
@@ -123,26 +132,34 @@ public class DriverDefEditorServiceTest
 
     @Override
     protected String getOriginalDefString() {
-        return DriverDefSerializer.serialize( originalDriverDef );
+        return DriverDefSerializer.serialize(originalDriverDef);
     }
 
     @Override
-    protected void verifyCreateConditions( boolean global ) {
+    protected void verifyCreateConditions(boolean global) {
         //we wants that:
         try {
             // 1) the definition was deployed.
-            verify( runtimeManager, times( 1 ) ).deployDriver( driverDef, DeploymentOptions.create() );
-        } catch ( Exception e ) {
-            fail ( e.getMessage() );
+            verify(runtimeManager,
+                   times(1)).deployDriver(driverDef,
+                                          DeploymentOptions.create());
+        } catch (Exception e) {
+            fail(e.getMessage());
         }
         // 2) the notification was fired.
         NewDriverEvent expectedEvent;
-        if ( global ) {
-            expectedEvent = new NewDriverEvent( driverDef, SESSION_ID, IDENTITY );
+        if (global) {
+            expectedEvent = new NewDriverEvent(driverDef,
+                                               SESSION_ID,
+                                               IDENTITY);
         } else {
-            expectedEvent = new NewDriverEvent( driverDef, project, SESSION_ID, IDENTITY );
+            expectedEvent = new NewDriverEvent(driverDef,
+                                               module,
+                                               SESSION_ID,
+                                               IDENTITY);
         }
-        verify( newDriverEvent, times( 1 ) ).fire( expectedEvent );
+        verify(newDriverEvent,
+               times(1)).fire(expectedEvent);
     }
 
     @Override
@@ -150,12 +167,19 @@ public class DriverDefEditorServiceTest
         //we wants that
         try {
             // 1) the definition was deployed
-            verify( runtimeManager, times( 1 ) ).deployDriver( driverDef, DeploymentOptions.create() );
-        } catch ( Exception e ) {
-            fail ( e.getMessage() );
+            verify(runtimeManager,
+                   times(1)).deployDriver(driverDef,
+                                          DeploymentOptions.create());
+        } catch (Exception e) {
+            fail(e.getMessage());
         }
         // 2) the update notification was fired.
-        verify( updateDriverEvent, times( 1 ) ).fire( new UpdateDriverEvent( driverDef, project, SESSION_ID, IDENTITY, originalDriverDef ) );
+        verify(updateDriverEvent,
+               times(1)).fire(new UpdateDriverEvent(driverDef,
+                                                    module,
+                                                    SESSION_ID,
+                                                    IDENTITY,
+                                                    originalDriverDef));
     }
 
     @Override
@@ -163,11 +187,17 @@ public class DriverDefEditorServiceTest
         //we wants that
         try {
             // 1) the definition was un-deployed.
-            verify( runtimeManager, times( 1 ) ).unDeployDriver( driverDeploymentInfo, UnDeploymentOptions.forcedUnDeployment() );
-        } catch ( Exception e ) {
-            fail( e.getMessage() );
+            verify(runtimeManager,
+                   times(1)).unDeployDriver(driverDeploymentInfo,
+                                            UnDeploymentOptions.forcedUnDeployment());
+        } catch (Exception e) {
+            fail(e.getMessage());
         }
         // 2) the delete notification was fired.
-        verify( deleteDriverEvent, times( 1 ) ).fire( new DeleteDriverEvent( driverDef, project, SESSION_ID, IDENTITY ) );
+        verify(deleteDriverEvent,
+               times(1)).fire(new DeleteDriverEvent(driverDef,
+                                                    module,
+                                                    SESSION_ID,
+                                                    IDENTITY));
     }
 }

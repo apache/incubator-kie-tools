@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.screens.datamodeller.events;
 
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.Method;
@@ -26,56 +26,62 @@ import org.uberfire.backend.vfs.Path;
 @Portable
 public class DataModelerEvent {
 
-    protected DataObject currentDataObject;
-
-    protected ObjectProperty currentField;
-
-    protected Method currentMethod;
-
-    protected Project currentProject;
-
-    protected String source;
-
-    protected String contextId;
-
-    protected Path path;
-
     public static final String DATA_MODEL_BROWSER = "DATA_MODEL_BROWSER";
-
     public static final String DATA_OBJECT_BROWSER = "DATA_OBJECT_BROWSER";
-
     public static final String DATA_OBJECT_EDITOR = "DATA_OBJECT_EDITOR";
+    protected DataObject currentDataObject;
+    protected ObjectProperty currentField;
+    protected Method currentMethod;
+    protected Module currentModule;
+    protected String source;
+    protected String contextId;
+    protected Path path;
 
     public DataModelerEvent() {
     }
 
-    public DataModelerEvent( DataObject currentDataObject ) {
+    public DataModelerEvent(DataObject currentDataObject) {
         this.currentDataObject = currentDataObject;
     }
 
-    public DataModelerEvent( String contextId, String source, DataObject currentDataObject ) {
-        this( contextId, source, currentDataObject, null );
+    public DataModelerEvent(String contextId,
+                            String source,
+                            DataObject currentDataObject) {
+        this(contextId,
+             source,
+             currentDataObject,
+             null);
     }
 
-    public DataModelerEvent( String source, DataObject currentDataObject ) {
-        this( null, source, currentDataObject, null );
+    public DataModelerEvent(String source,
+                            DataObject currentDataObject) {
+        this(null,
+             source,
+             currentDataObject,
+             null);
     }
 
-    public DataModelerEvent( String contextId, String source, DataObject currentDataObject, ObjectProperty currentField ) {
+    public DataModelerEvent(String contextId,
+                            String source,
+                            DataObject currentDataObject,
+                            ObjectProperty currentField) {
         this.contextId = contextId;
         this.source = source;
         this.currentDataObject = currentDataObject;
         this.currentField = currentField;
     }
 
-    public DataModelerEvent( String contextId, Project currentProject, DataObject currentDataObject ) {
+    public DataModelerEvent(String contextId,
+                            Module currentModule,
+                            DataObject currentDataObject) {
         this.contextId = contextId;
-        this.currentProject = currentProject;
+        this.currentModule = currentModule;
         this.currentDataObject = currentDataObject;
     }
 
-    public DataModelerEvent( Project currentProject, DataObject currentDataObject ) {
-        this.currentProject = currentProject;
+    public DataModelerEvent(Module currentModule,
+                            DataObject currentDataObject) {
+        this.currentModule = currentModule;
         this.currentDataObject = currentDataObject;
     }
 
@@ -83,12 +89,12 @@ public class DataModelerEvent {
         return currentDataObject;
     }
 
-    public DataModelerEvent withCurrentDataObject( DataObject currentDataObject ) {
-        setCurrentDataObject( currentDataObject );
+    public DataModelerEvent withCurrentDataObject(DataObject currentDataObject) {
+        setCurrentDataObject(currentDataObject);
         return this;
     }
 
-    public void setCurrentDataObject( DataObject currentDataObject ) {
+    public void setCurrentDataObject(DataObject currentDataObject) {
         this.currentDataObject = currentDataObject;
     }
 
@@ -96,21 +102,21 @@ public class DataModelerEvent {
         return currentField;
     }
 
-    public DataModelerEvent withCurrentField( ObjectProperty currentField ) {
-        setCurrentField( currentField );
+    public DataModelerEvent withCurrentField(ObjectProperty currentField) {
+        setCurrentField(currentField);
         return this;
     }
 
-    public void setCurrentField( ObjectProperty currentField ) {
+    public void setCurrentField(ObjectProperty currentField) {
         this.currentField = currentField;
     }
 
-    public DataModelerEvent withCurrentProject( Project currentProject ) {
-        setCurrentProject( currentProject );
+    public DataModelerEvent withCurrentProject(Module currentModule) {
+        setCurrentModule(currentModule);
         return this;
     }
 
-    public void setCurrentMethod( Method currentMethod ) {
+    public void setCurrentMethod(Method currentMethod) {
         this.currentMethod = currentMethod;
     }
 
@@ -118,29 +124,29 @@ public class DataModelerEvent {
         return currentMethod;
     }
 
-    public DataModelerEvent withCurrentMethod( Method currentMethod ) {
-        setCurrentMethod( currentMethod );
+    public DataModelerEvent withCurrentMethod(Method currentMethod) {
+        setCurrentMethod(currentMethod);
         return this;
     }
 
-    public Project getCurrentProject() {
-        return currentProject;
+    public Module getCurrentModule() {
+        return currentModule;
     }
 
-    public void setCurrentProject( Project currentProject ) {
-        this.currentProject = currentProject;
+    public void setCurrentModule(Module currentModule) {
+        this.currentModule = currentModule;
     }
 
     public String getSource() {
         return source;
     }
 
-    public DataModelerEvent withSource( String source ) {
-        setSource( source );
+    public DataModelerEvent withSource(String source) {
+        setSource(source);
         return this;
     }
 
-    public void setSource( String source ) {
+    public void setSource(String source) {
         this.source = source;
     }
 
@@ -148,12 +154,12 @@ public class DataModelerEvent {
         return contextId;
     }
 
-    public DataModelerEvent withContextId( String contextId ) {
-        setContextId( contextId );
+    public DataModelerEvent withContextId(String contextId) {
+        setContextId(contextId);
         return this;
     }
 
-    public void setContextId( String contextId ) {
+    public void setContextId(String contextId) {
         this.contextId = contextId;
     }
 
@@ -161,25 +167,24 @@ public class DataModelerEvent {
         return path;
     }
 
-    public DataModelerEvent withPath( Path path ) {
-        setPath( path );
+    public DataModelerEvent withPath(Path path) {
+        setPath(path);
         return this;
     }
 
-    public void setPath( Path path ) {
+    public void setPath(Path path) {
         this.path = path;
     }
 
-    public boolean isFrom( Project project ) {
-        return this.currentProject != null && this.currentProject.equals( project );
+    public boolean isFrom(Module module) {
+        return this.currentModule != null && this.currentModule.equals(module);
     }
 
-    public boolean isFrom( String source ) {
-        return this.source != null && this.source.equals( source );
+    public boolean isFrom(String source) {
+        return this.source != null && this.source.equals(source);
     }
 
-    public boolean isFromContext( String contextId ) {
-        return this.contextId != null && this.contextId.equals( contextId );
+    public boolean isFromContext(String contextId) {
+        return this.contextId != null && this.contextId.equals(contextId);
     }
-
 }

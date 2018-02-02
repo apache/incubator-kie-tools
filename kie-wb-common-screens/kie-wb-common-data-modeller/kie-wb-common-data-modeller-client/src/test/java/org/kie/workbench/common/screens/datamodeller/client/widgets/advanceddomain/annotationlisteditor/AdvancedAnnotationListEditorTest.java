@@ -38,7 +38,7 @@ import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationPar
 import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationSource;
 import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationSourceRequest;
 import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationSourceResponse;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieModule;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.client.callbacks.Callback;
@@ -91,7 +91,7 @@ public class AdvancedAnnotationListEditorTest {
     private Map<String, AnnotationSource> annotationSourcesMap = new HashMap<String, AnnotationSource>();
 
     @Mock
-    private KieProject kieProject;
+    private KieModule kieModule;
 
     @Mock
     private ElementType elementType;
@@ -268,13 +268,13 @@ public class AdvancedAnnotationListEditorTest {
 
     @Test
     public void testOnAddAnnotation() {
-        annotationListEditor.init(kieProject,
+        annotationListEditor.init(kieModule,
                                   elementType);
         annotationListEditor.onAddAnnotation();
         // the create annotation wizard should have been invoked.
         verify(view,
                times(1)).invokeCreateAnnotationWizard(annotationCallbackCaptor.capture(),
-                                                      eq(kieProject),
+                                                      eq(kieModule),
                                                       eq(elementType));
         // emulate the wizard completion.
         annotationCallbackCaptor.getValue().callback(annotation);
@@ -284,7 +284,7 @@ public class AdvancedAnnotationListEditorTest {
 
     @Test
     public void testOnDeleteAnnotation() {
-        annotationListEditor.init(kieProject,
+        annotationListEditor.init(kieModule,
                                   elementType);
         annotationListEditor.loadAnnotations(annotations,
                                              annotationSourcesMap);
@@ -364,7 +364,7 @@ public class AdvancedAnnotationListEditorTest {
         when(parsedAnnotation.getValue(currentValuePairName)).thenReturn(newValuePairValue);
         when(parseResponse.hasErrors()).thenReturn(false);
         when(dataModelerService.resolveParseRequest(any(AnnotationParseRequest.class),
-                                                    eq(kieProject))).thenReturn(parseResponse);
+                                                    eq(kieModule))).thenReturn(parseResponse);
 
         // emulate the user pressing the ok button on the valuePairEditor
         prepareValuePairEditorSubmit();
@@ -382,7 +382,7 @@ public class AdvancedAnnotationListEditorTest {
 
     private void prepareValuePairEdition() {
         // the editor was previously loaded with a set of annotations.
-        annotationListEditor.init(kieProject,
+        annotationListEditor.init(kieModule,
                                   elementType);
         annotationListEditor.loadAnnotations(annotations,
                                              annotationSourcesMap);

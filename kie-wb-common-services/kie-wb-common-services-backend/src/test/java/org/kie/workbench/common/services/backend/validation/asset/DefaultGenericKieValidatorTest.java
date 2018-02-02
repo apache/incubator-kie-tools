@@ -44,7 +44,7 @@ public class DefaultGenericKieValidatorTest {
     public void setUp() throws Exception {
         testFileSystem = new TestFileSystem();
 
-        validator = testFileSystem.getReference( DefaultGenericKieValidator.class );
+        validator = testFileSystem.getReference(DefaultGenericKieValidator.class);
     }
 
     @After
@@ -54,34 +54,34 @@ public class DefaultGenericKieValidatorTest {
 
     @Test
     public void testWorks() throws Exception {
-        final Path path = resourcePath( "/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl" );
-        final URL urlToValidate = this.getClass().getResource( "/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl" );
+        final Path path = resourcePath("/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl");
+        final URL urlToValidate = this.getClass().getResource("/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl");
 
-        final List<ValidationMessage> errors = validator.validate( path,
-                                                                   Resources.toString( urlToValidate, Charset.forName( "UTF-8" ) ) );
+        final List<ValidationMessage> errors = validator.validate(path,
+                                                                  Resources.toString(urlToValidate, Charset.forName("UTF-8")));
 
-        assertTrue( errors.isEmpty() );
+        assertTrue(errors.isEmpty());
     }
 
     @Test
     public void validatingAnAlreadyInvalidAssetShouldReportErrors() throws Exception {
-        final Path path = resourcePath( "/BuilderExampleBrokenSyntax/src/main/resources/rule1.drl" );
-        final URL urlToValidate = this.getClass().getResource( "/BuilderExampleBrokenSyntax/src/main/resources/rule1.drl" );
+        final Path path = resourcePath("/BuilderExampleBrokenSyntax/src/main/resources/rule1.drl");
+        final URL urlToValidate = this.getClass().getResource("/BuilderExampleBrokenSyntax/src/main/resources/rule1.drl");
 
-        final List<ValidationMessage> errors1 = validator.validate( path,
-                                                                    Resources.toString( urlToValidate, Charset.forName( "UTF-8" ) ) );
+        final List<ValidationMessage> errors1 = validator.validate(path,
+                                                                   Resources.toString(urlToValidate, Charset.forName("UTF-8")));
 
-        final List<ValidationMessage> errors2 = validator.validate( path,
-                                                                    Resources.toString( urlToValidate, Charset.forName( "UTF-8" ) ) );
+        final List<ValidationMessage> errors2 = validator.validate(path,
+                                                                   Resources.toString(urlToValidate, Charset.forName("UTF-8")));
 
-        assertFalse( errors1.isEmpty() );
-        assertFalse( errors2.isEmpty() );
-        assertEquals( errors1.size(),
-                      errors2.size() );
+        assertFalse(errors1.isEmpty());
+        assertFalse(errors2.isEmpty());
+        assertEquals(errors1.size(),
+                     errors2.size());
     }
 
-    private Path resourcePath( final String resourceName ) throws URISyntaxException {
-        final URL url = this.getClass().getResource( resourceName );
-        return Paths.convert( testFileSystem.fileSystemProvider.getPath( url.toURI() ) );
+    private Path resourcePath(final String resourceName) throws URISyntaxException {
+        final URL url = this.getClass().getResource(resourceName);
+        return Paths.convert(testFileSystem.fileSystemProvider.getPath(url.toURI()));
     }
 }

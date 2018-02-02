@@ -19,7 +19,7 @@ package org.kie.workbench.common.screens.datasource.management.service;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -29,15 +29,15 @@ import org.kie.workbench.common.screens.datasource.management.model.DriverDefInf
 @Portable
 public class DefExplorerQueryResult {
 
-    private Collection<OrganizationalUnit> organizationalUnits = new ArrayList<>(  );
+    private Collection<OrganizationalUnit> organizationalUnits = new ArrayList<>();
 
-    private Collection<Repository> repositories = new ArrayList<>(  );
+    private Collection<Repository> repositories = new ArrayList<>();
 
-    private Collection<Project> projects = new ArrayList<>(  );
+    private Collection<Module> modules = new ArrayList<>();
 
-    private Collection<DataSourceDefInfo> dataSourceDefs = new ArrayList<>(  );
+    private Collection<DataSourceDefInfo> dataSourceDefs = new ArrayList<>();
 
-    private Collection<DriverDefInfo> driverDefs = new ArrayList<>(  );
+    private Collection<DriverDefInfo> driverDefs = new ArrayList<>();
 
     public DefExplorerQueryResult() {
     }
@@ -46,7 +46,7 @@ public class DefExplorerQueryResult {
         return organizationalUnits;
     }
 
-    public void setOrganizationalUnits( Collection<OrganizationalUnit> organizationalUnits ) {
+    public void setOrganizationalUnits(Collection<OrganizationalUnit> organizationalUnits) {
         this.organizationalUnits = organizationalUnits;
     }
 
@@ -54,23 +54,23 @@ public class DefExplorerQueryResult {
         return repositories;
     }
 
-    public void setRepositories( Collection<Repository> repositories ) {
+    public void setRepositories(Collection<Repository> repositories) {
         this.repositories = repositories;
     }
 
-    public Collection<Project> getProjects() {
-        return projects;
+    public Collection<Module> getModules() {
+        return modules;
     }
 
-    public void setProjects( Collection<Project> projects ) {
-        this.projects = projects;
+    public void setModules(final Collection<Module> modules) {
+        this.modules = modules;
     }
 
     public Collection<DataSourceDefInfo> getDataSourceDefs() {
         return dataSourceDefs;
     }
 
-    public void setDataSourceDefs( Collection<DataSourceDefInfo> dataSourceDefs ) {
+    public void setDataSourceDefs(Collection<DataSourceDefInfo> dataSourceDefs) {
         this.dataSourceDefs = dataSourceDefs;
     }
 
@@ -78,7 +78,7 @@ public class DefExplorerQueryResult {
         return driverDefs;
     }
 
-    public void setDriverDefs( Collection<DriverDefInfo> driverDefs ) {
+    public void setDriverDefs(Collection<DriverDefInfo> driverDefs) {
         this.driverDefs = driverDefs;
     }
 }

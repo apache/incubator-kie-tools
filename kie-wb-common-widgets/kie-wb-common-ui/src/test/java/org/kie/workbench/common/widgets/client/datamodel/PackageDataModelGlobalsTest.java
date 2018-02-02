@@ -16,7 +16,6 @@
 package org.kie.workbench.common.widgets.client.datamodel;
 
 import java.util.Arrays;
-
 import javax.enterprise.inject.Instance;
 
 import org.jboss.errai.common.client.api.Caller;
@@ -26,10 +25,10 @@ import org.kie.soup.project.datamodel.commons.util.RawMVELEvaluator;
 import org.kie.soup.project.datamodel.imports.HasImports;
 import org.kie.soup.project.datamodel.imports.Import;
 import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
-import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
+import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ModuleDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
 import org.kie.workbench.common.widgets.client.datamodel.testclasses.Product;
@@ -50,13 +49,13 @@ public class PackageDataModelGlobalsTest {
 
     @Test
     public void testGlobal() throws Exception {
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle moduleLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addClass(Product.class)
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator(),
                                                                                                            "org.kie.workbench.common.widgets.client.datamodel.testclasses")
-                .setProjectOracle(projectLoader)
+                .setModuleOracle(moduleLoader)
                 .addGlobals("global org.kie.workbench.common.widgets.client.datamodel.testclasses.Product g;")
                 .build();
 
@@ -67,9 +66,9 @@ public class PackageDataModelGlobalsTest {
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName(packageLoader.getPackageName());
-        dataModel.setModelFields(packageLoader.getProjectModelFields());
+        dataModel.setModelFields(packageLoader.getModuleModelFields());
         dataModel.setGlobalTypes(packageLoader.getPackageGlobals());
-        dataModel.setCollectionTypes(packageLoader.getProjectCollectionTypes());
+        dataModel.setCollectionTypes(packageLoader.getModuleCollectionTypes());
         PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),
                                                                 new MockHasImports(),
                                                                 oracle,
@@ -110,13 +109,13 @@ public class PackageDataModelGlobalsTest {
 
     @Test
     public void testGlobalCollections() throws Exception {
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle moduleLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addClass(java.util.List.class)
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator(),
                                                                                                            "org.kie.workbench.common.services.datamodel.backend.server.testclasses")
-                .setProjectOracle(projectLoader)
+                .setModuleOracle(moduleLoader)
                 .addGlobals("global java.util.List list;")
                 .build();
 
@@ -130,9 +129,9 @@ public class PackageDataModelGlobalsTest {
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName(packageLoader.getPackageName());
-        dataModel.setModelFields(packageLoader.getProjectModelFields());
+        dataModel.setModelFields(packageLoader.getModuleModelFields());
         dataModel.setGlobalTypes(packageLoader.getPackageGlobals());
-        dataModel.setCollectionTypes(packageLoader.getProjectCollectionTypes());
+        dataModel.setCollectionTypes(packageLoader.getModuleCollectionTypes());
         PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),
                                                                 imports,
                                                                 oracle,

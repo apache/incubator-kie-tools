@@ -1,0 +1,7 @@
+<beans>
+  <alternatives>
+    <class>org.kie.workbench.common.screens.datamodeller.backend.server.TestAppSetup</class>
+    <class>org.guvnor.test.GuvnorTestAppSetup</class>
+    <class>org.guvnor.test.TestIdentityFactory</class>
+  </alternatives>
+</beans>

@@ -16,10 +16,14 @@
 
 package org.kie.workbench.common.screens.social.hp.client.homepage;
 
-import org.guvnor.common.services.project.social.ProjectEventType;
-import org.guvnor.structure.social.OrganizationalUnitEventType;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import org.ext.uberfire.social.activities.client.widgets.item.model.LinkCommandParams;
 import org.ext.uberfire.social.activities.model.SocialFileSelectedEvent;
+import org.guvnor.common.services.project.social.ModuleEventType;
+import org.guvnor.structure.social.OrganizationalUnitEventType;
 import org.kie.workbench.common.screens.social.hp.client.resources.i18n.Constants;
 import org.kie.workbench.common.workbench.client.PerspectiveIds;
 import org.uberfire.client.mvp.PlaceManager;
@@ -31,10 +35,6 @@ import org.uberfire.security.ResourceRef;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.ActivityResourceType;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 @ApplicationScoped
 public class DefaultSocialLinkCommandGenerator {
 
@@ -44,10 +44,10 @@ public class DefaultSocialLinkCommandGenerator {
     private SessionInfo sessionInfo;
 
     @Inject
-    public DefaultSocialLinkCommandGenerator( final AuthorizationManager authorizationManager,
-                                              final PlaceManager placeManager,
-                                              final Event<SocialFileSelectedEvent> socialFileSelectedEvent,
-                                              final SessionInfo sessionInfo ) {
+    public DefaultSocialLinkCommandGenerator(final AuthorizationManager authorizationManager,
+                                             final PlaceManager placeManager,
+                                             final Event<SocialFileSelectedEvent> socialFileSelectedEvent,
+                                             final SessionInfo sessionInfo) {
         this.authorizationManager = authorizationManager;
         this.placeManager = placeManager;
         this.socialFileSelectedEvent = socialFileSelectedEvent;
@@ -58,69 +58,71 @@ public class DefaultSocialLinkCommandGenerator {
 
         return new ParameterizedCommand<LinkCommandParams>() {
             @Override
-            public void execute( LinkCommandParams parameters ) {
-                if ( parameters.isVFSLink() ) {
-                    onVFSLinkEvent( parameters );
-                } else if ( isOrganizationalUnitEvent( parameters.getEventType() ) ) {
-                    onOrganizationalUnitEvent( parameters );
-                } else if ( isProjectEvent( parameters.getEventType() ) ) {
-                    onProjectEvent( parameters );
+            public void execute(LinkCommandParams parameters) {
+                if (parameters.isVFSLink()) {
+                    onVFSLinkEvent(parameters);
+                } else if (isOrganizationalUnitEvent(parameters.getEventType())) {
+                    onOrganizationalUnitEvent(parameters);
+                } else if (isModuleEvent(parameters.getEventType())) {
+                    onProjectEvent(parameters);
                 }
             }
         };
-
     }
 
-    private void onVFSLinkEvent( LinkCommandParams parameters ) {
-        if ( hasAccessToPerspective( PerspectiveIds.LIBRARY ) ) {
-            socialFileSelectedEvent.fire( new SocialFileSelectedEvent( parameters.getEventType(), parameters.getLink() ) );
+    private void onVFSLinkEvent(LinkCommandParams parameters) {
+        if (hasAccessToPerspective(PerspectiveIds.LIBRARY)) {
+            socialFileSelectedEvent.fire(new SocialFileSelectedEvent(parameters.getEventType(),
+                                                                     parameters.getLink()));
         } else {
             generateNoRightsPopup();
         }
     }
 
-    private void onOrganizationalUnitEvent( LinkCommandParams parameters ) {
-        if ( hasAccessToPerspective( PerspectiveIds.ADMINISTRATION) ) {
-            placeManager.goTo( PerspectiveIds.ADMINISTRATION);
-            placeManager.goTo( "org.kie.workbench.common.screens.organizationalunit.manager.OrganizationalUnitManager" );
+    private void onOrganizationalUnitEvent(LinkCommandParams parameters) {
+        if (hasAccessToPerspective(PerspectiveIds.ADMINISTRATION)) {
+            placeManager.goTo(PerspectiveIds.ADMINISTRATION);
+            placeManager.goTo("org.kie.workbench.common.screens.organizationalunit.manager.OrganizationalUnitManager");
         } else {
             generateNoRightsPopup();
         }
     }
 
     void generateNoRightsPopup() {
-        YesNoCancelPopup popup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
-                Constants.INSTANCE.Error_NoAccessRights(),
-                null,
-                null,
-                () -> {/* do nothing, just to show the cancel button*/} );
-        popup.setClosable( false );
+        YesNoCancelPopup popup = YesNoCancelPopup.newYesNoCancelPopup(CommonConstants.INSTANCE.Information(),
+                                                                      Constants.INSTANCE.Error_NoAccessRights(),
+                                                                      null,
+                                                                      null,
+                                                                      () -> {/* do nothing, just to show the cancel button*/});
+        popup.setClosable(false);
         popup.show();
     }
 
-    private void onProjectEvent( LinkCommandParams parameters ) {
-        if ( hasAccessToPerspective( PerspectiveIds.LIBRARY ) ) {
-            socialFileSelectedEvent.fire( new SocialFileSelectedEvent( parameters.getEventType(), parameters.getLink() ) );
+    private void onProjectEvent(LinkCommandParams parameters) {
+        if (hasAccessToPerspective(PerspectiveIds.LIBRARY)) {
+            socialFileSelectedEvent.fire(new SocialFileSelectedEvent(parameters.getEventType(),
+                                                                     parameters.getLink()));
         } else {
             generateNoRightsPopup();
         }
     }
 
-    private boolean isOrganizationalUnitEvent( String eventType ) {
+    private boolean isOrganizationalUnitEvent(String eventType) {
 
-        return OrganizationalUnitEventType.NEW_ORGANIZATIONAL_UNIT.name().equals( eventType ) ||
-                OrganizationalUnitEventType.ORGANIZATIONAL_UNIT_UPDATED.name().equals( eventType ) ||
-                OrganizationalUnitEventType.REPO_ADDED_TO_ORGANIZATIONAL_UNIT.name().equals( eventType ) ||
-                OrganizationalUnitEventType.REPO_REMOVED_FROM_ORGANIZATIONAL_UNIT.name().equals( eventType );
-
+        return OrganizationalUnitEventType.NEW_ORGANIZATIONAL_UNIT.name().equals(eventType) ||
+                OrganizationalUnitEventType.ORGANIZATIONAL_UNIT_UPDATED.name().equals(eventType) ||
+                OrganizationalUnitEventType.REPO_ADDED_TO_ORGANIZATIONAL_UNIT.name().equals(eventType) ||
+                OrganizationalUnitEventType.REPO_REMOVED_FROM_ORGANIZATIONAL_UNIT.name().equals(eventType);
     }
 
-    private boolean isProjectEvent( String eventType ) {
-        return ProjectEventType.NEW_PROJECT.name().equals( eventType );
+    private boolean isModuleEvent(final String eventType) {
+        return ModuleEventType.NEW_MODULE.name().equals(eventType);
     }
 
-    boolean hasAccessToPerspective( String perspectiveId ) {
-        ResourceRef resourceRef = new ResourceRef( perspectiveId, ActivityResourceType.PERSPECTIVE );
-        return authorizationManager.authorize( resourceRef, sessionInfo.getIdentity() );
+    boolean hasAccessToPerspective(String perspectiveId) {
+        ResourceRef resourceRef = new ResourceRef(perspectiveId,
+                                                  ActivityResourceType.PERSPECTIVE);
+        return authorizationManager.authorize(resourceRef,
+                                              sessionInfo.getIdentity());
     }
 }

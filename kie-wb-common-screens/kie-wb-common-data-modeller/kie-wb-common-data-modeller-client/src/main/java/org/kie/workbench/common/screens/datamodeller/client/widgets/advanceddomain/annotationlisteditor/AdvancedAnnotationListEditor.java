@@ -43,7 +43,7 @@ import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationSou
 import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationSourceRequest;
 import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationSourceResponse;
 import org.kie.workbench.common.services.datamodeller.driver.model.DriverError;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieModule;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.mvp.Command;
 
@@ -76,7 +76,7 @@ public class AdvancedAnnotationListEditor
 
     private Map<String, Boolean> annotationStatus = new HashMap<>();
 
-    private KieProject project;
+    private KieModule module;
 
     private ElementType elementType;
 
@@ -101,9 +101,9 @@ public class AdvancedAnnotationListEditor
         return view.asWidget();
     }
 
-    public void init(final KieProject project,
+    public void init(final KieModule module,
                      final ElementType elementType) {
-        this.project = project;
+        this.module = module;
         this.elementType = elementType;
     }
 
@@ -158,7 +158,7 @@ public class AdvancedAnnotationListEditor
     @Override
     public void onAddAnnotation() {
         view.invokeCreateAnnotationWizard(getAddAnnotationCallback(),
-                                          project,
+                                          module,
                                           elementType);
     }
 
@@ -277,7 +277,7 @@ public class AdvancedAnnotationListEditor
                                                                     elementType,
                                                                     valuePairEditor.getValuePairDefinition().getName(),
                                                                     strValue),
-                                         project);
+                                         module);
         } else {
             applyValuePairChange(valuePairEditor,
                                  value);

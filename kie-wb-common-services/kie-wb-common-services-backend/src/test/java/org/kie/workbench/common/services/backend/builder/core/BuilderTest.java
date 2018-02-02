@@ -31,8 +31,8 @@ import org.drools.core.rule.TypeMetaInfo;
 import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
-import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.junit.After;
 import org.junit.Before;
@@ -46,7 +46,7 @@ import org.kie.workbench.common.services.backend.whitelist.PackageNameSearchProv
 import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListLoader;
 import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListSaver;
 import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListServiceImpl;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
 import org.mockito.Mock;
@@ -65,7 +65,7 @@ import static org.mockito.Mockito.*;
 public class BuilderTest
         extends BuilderTestBase {
 
-    private static final Logger logger = LoggerFactory.getLogger( BuilderTest.class );
+    private static final Logger logger = LoggerFactory.getLogger(BuilderTest.class);
 
     private final Predicate<String> alwaysTrue = o -> true;
 
@@ -73,28 +73,28 @@ public class BuilderTest
     private PackageNameSearchProvider packageNameSearchProvider;
 
     private IOService ioService;
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
     private ProjectImportsService importsService;
-    private LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache;
+    private LRUModuleDependenciesClassLoaderCache dependenciesClassLoaderCache;
     private LRUPomModelCache pomModelCache;
     private BuildService buildService;
     private DefaultGenericKieValidator validator;
 
     @Before
     public void setUp() throws Exception {
-        PackageNameSearchProvider.PackageNameSearch nameSearch = mock( PackageNameSearchProvider.PackageNameSearch.class );
-        when( nameSearch.search() ).thenReturn( new HashSet<String>() );
-        when( packageNameSearchProvider.newTopLevelPackageNamesSearch( any( POM.class ) ) ).thenReturn( nameSearch );
+        PackageNameSearchProvider.PackageNameSearch nameSearch = mock(PackageNameSearchProvider.PackageNameSearch.class);
+        when(nameSearch.search()).thenReturn(new HashSet<String>());
+        when(packageNameSearchProvider.newTopLevelPackageNamesSearch(any(POM.class))).thenReturn(nameSearch);
         super.startWeld();
         setUpGuvnorM2Repo();
 
-        ioService = getReference( IOService.class );
-        projectService = getReference( KieProjectService.class );
-        importsService = getReference( ProjectImportsService.class );
-        dependenciesClassLoaderCache = getReference( LRUProjectDependenciesClassLoaderCache.class );
-        pomModelCache = getReference( LRUPomModelCache.class );
-        buildService = getReference( BuildService.class );
-        validator = getReference( DefaultGenericKieValidator.class );
+        ioService = getReference(IOService.class);
+        moduleService = getReference(KieModuleService.class);
+        importsService = getReference(ProjectImportsService.class);
+        dependenciesClassLoaderCache = getReference(LRUModuleDependenciesClassLoaderCache.class);
+        pomModelCache = getReference(LRUPomModelCache.class);
+        buildService = getReference(BuildService.class);
+        validator = getReference(DefaultGenericKieValidator.class);
     }
 
     @After
@@ -103,253 +103,254 @@ public class BuilderTest
     }
 
     @Test
-    public void testBuilderSimpleKProject() throws Exception {
-        LRUPomModelCache pomModelCache = getReference( LRUPomModelCache.class );
+    public void testBuilderSimpleKModule() throws Exception {
+        LRUPomModelCache pomModelCache = getReference(LRUPomModelCache.class);
 
-        URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample1" );
+        URL url = this.getClass().getResource("/GuvnorM2RepoDependencyExample1");
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
-        org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
+        org.uberfire.java.nio.file.Path path = p.getPath(url.toURI());
 
-        final Project project = projectService.resolveProject( Paths.convert( path ) );
+        final Module module = moduleService.resolveModule(Paths.convert(path));
 
-        final Builder builder = new Builder( project,
-                                             ioService,
-                                             projectService,
-                                             importsService,
-                                             new ArrayList<>(),
-                                             dependenciesClassLoaderCache,
-                                             pomModelCache,
-                                             getPackageNameWhiteListService(),
-                                             alwaysTrue );
+        final Builder builder = new Builder(module,
+                                            ioService,
+                                            moduleService,
+                                            importsService,
+                                            new ArrayList<>(),
+                                            dependenciesClassLoaderCache,
+                                            pomModelCache,
+                                            getPackageNameWhiteListService(),
+                                            alwaysTrue);
 
-        assertNotNull( builder.getKieContainer() );
+        assertNotNull(builder.getKieContainer());
     }
 
     @Test
-    public void testBuilderKProjectHasDependency() throws Exception {
-        URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2" );
+    public void testBuilderKModuleHasDependency() throws Exception {
+        URL url = this.getClass().getResource("/GuvnorM2RepoDependencyExample2");
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
-        org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
+        org.uberfire.java.nio.file.Path path = p.getPath(url.toURI());
 
-        final Project project = projectService.resolveProject( Paths.convert( path ) );
+        final Module module = moduleService.resolveModule(Paths.convert(path));
 
-        final Builder builder = new Builder( project,
-                                             ioService,
-                                             projectService,
-                                             importsService,
-                                             new ArrayList<>(),
-                                             dependenciesClassLoaderCache,
-                                             pomModelCache,
-                                             getPackageNameWhiteListService(),
-                                             alwaysTrue );
+        final Builder builder = new Builder(module,
+                                            ioService,
+                                            moduleService,
+                                            importsService,
+                                            new ArrayList<>(),
+                                            dependenciesClassLoaderCache,
+                                            pomModelCache,
+                                            getPackageNameWhiteListService(),
+                                            alwaysTrue);
 
         final BuildResults results = builder.build();
 
         //Debug output
-        if ( !results.getMessages().isEmpty() ) {
-            for ( BuildMessage m : results.getMessages() ) {
-                logger.debug( m.getText() );
+        if (!results.getMessages().isEmpty()) {
+            for (BuildMessage m : results.getMessages()) {
+                logger.debug(m.getText());
             }
         }
 
-        assertTrue( results.getMessages().isEmpty() );
+        assertTrue(results.getMessages().isEmpty());
     }
 
     @Test
-    public void testBuilderKProjectHasSnapshotDependency() throws Exception {
-        URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2Snapshot" );
+    public void testBuilderKModuleHasSnapshotDependency() throws Exception {
+        URL url = this.getClass().getResource("/GuvnorM2RepoDependencyExample2Snapshot");
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
-        org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
+        org.uberfire.java.nio.file.Path path = p.getPath(url.toURI());
 
-        final Project project = projectService.resolveProject( Paths.convert( path ) );
+        final Module module = moduleService.resolveModule(Paths.convert(path));
 
-        final Builder builder = new Builder( project,
-                                             ioService,
-                                             projectService,
-                                             importsService,
-                                             new ArrayList<>(),
-                                             dependenciesClassLoaderCache,
-                                             pomModelCache,
-                                             getPackageNameWhiteListService(),
-                                             alwaysTrue );
+        final Builder builder = new Builder(module,
+                                            ioService,
+                                            moduleService,
+                                            importsService,
+                                            new ArrayList<>(),
+                                            dependenciesClassLoaderCache,
+                                            pomModelCache,
+                                            getPackageNameWhiteListService(),
+                                            alwaysTrue);
 
         final BuildResults results = builder.build();
 
         //Debug output
-        if ( !results.getMessages().isEmpty() ) {
-            for ( BuildMessage m : results.getMessages() ) {
-                logger.debug( m.getText() );
+        if (!results.getMessages().isEmpty()) {
+            for (BuildMessage m : results.getMessages()) {
+                logger.debug(m.getText());
             }
         }
 
-        assertTrue( results.getMessages().isEmpty() );
+        assertTrue(results.getMessages().isEmpty());
     }
 
     @Test
-    public void testBuilderKProjectHasDependencyMetaData() throws Exception {
-        URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample2" );
+    public void testBuilderKModuleHasDependencyMetaData() throws Exception {
+        URL url = this.getClass().getResource("/GuvnorM2RepoDependencyExample2");
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
-        org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
+        org.uberfire.java.nio.file.Path path = p.getPath(url.toURI());
 
-        final Project project = projectService.resolveProject( Paths.convert( path ) );
+        final Module module = moduleService.resolveModule(Paths.convert(path));
 
-        final Builder builder = new Builder( project,
-                                             ioService,
-                                             projectService,
-                                             importsService,
-                                             new ArrayList<>(),
-                                             dependenciesClassLoaderCache,
-                                             pomModelCache,
-                                             getPackageNameWhiteListService(),
-                                             alwaysTrue );
+        final Builder builder = new Builder(module,
+                                            ioService,
+                                            moduleService,
+                                            importsService,
+                                            new ArrayList<>(),
+                                            dependenciesClassLoaderCache,
+                                            pomModelCache,
+                                            getPackageNameWhiteListService(),
+                                            alwaysTrue);
 
         final BuildResults results = builder.build();
 
         //Debug output
-        if ( !results.getMessages().isEmpty() ) {
-            for ( BuildMessage m : results.getMessages() ) {
-                logger.debug( m.getText() );
+        if (!results.getMessages().isEmpty()) {
+            for (BuildMessage m : results.getMessages()) {
+                logger.debug(m.getText());
             }
         }
 
-        assertTrue( results.getMessages().isEmpty() );
+        assertTrue(results.getMessages().isEmpty());
 
-        final KieModuleMetaData metaData = KieModuleMetaData.Factory.newKieModuleMetaData( builder.getKieModule() );
+        final KieModuleMetaData metaData = KieModuleMetaData.Factory.newKieModuleMetaData(builder.getKieModule());
 
         //Check packages
         final Set<String> packageNames = new HashSet<>();
         final Iterator<String> packageNameIterator = metaData.getPackages().iterator();
-        while ( packageNameIterator.hasNext() ) {
-            packageNames.add( packageNameIterator.next() );
+        while (packageNameIterator.hasNext()) {
+            packageNames.add(packageNameIterator.next());
         }
-        assertEquals( 2,
-                      packageNames.size() );
-        assertTrue( packageNames.contains( "defaultpkg" ) );
-        assertTrue( packageNames.contains( "org.kie.workbench.common.services.builder.tests.test1" ) );
+        assertEquals(2,
+                     packageNames.size());
+        assertTrue(packageNames.contains("defaultpkg"));
+        assertTrue(packageNames.contains("org.kie.workbench.common.services.builder.tests.test1"));
 
         //Check classes
         final String packageName = "org.kie.workbench.common.services.builder.tests.test1";
-        assertEquals( 1,
-                      metaData.getClasses( packageName ).size() );
-        final String className = metaData.getClasses( packageName ).iterator().next();
-        assertEquals( "Bean",
-                      className );
+        assertEquals(1,
+                     metaData.getClasses(packageName).size());
+        final String className = metaData.getClasses(packageName).iterator().next();
+        assertEquals("Bean",
+                     className);
 
         //Check metadata
-        final Class clazz = metaData.getClass( packageName,
-                                               className );
-        final TypeMetaInfo typeMetaInfo = metaData.getTypeMetaInfo( clazz );
-        assertNotNull( typeMetaInfo );
-        assertFalse( typeMetaInfo.isEvent() );
+        final Class clazz = metaData.getClass(packageName,
+                                              className);
+        final TypeMetaInfo typeMetaInfo = metaData.getTypeMetaInfo(clazz);
+        assertNotNull(typeMetaInfo);
+        assertFalse(typeMetaInfo.isEvent());
     }
 
     @Test
-    public void testKProjectContainsXLS() throws Exception {
-        URL url = this.getClass().getResource( "/ExampleWithExcel" );
+    public void testKModuleContainsXLS() throws Exception {
+        URL url = this.getClass().getResource("/ExampleWithExcel");
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
-        org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
+        org.uberfire.java.nio.file.Path path = p.getPath(url.toURI());
 
-        final Project project = projectService.resolveProject( Paths.convert( path ) );
+        final Module module = moduleService.resolveModule(Paths.convert(path));
 
-        final Builder builder = new Builder( project,
-                                             ioService,
-                                             projectService,
-                                             importsService,
-                                             new ArrayList<>(),
-                                             dependenciesClassLoaderCache,
-                                             pomModelCache,
-                                             getPackageNameWhiteListService(),
-                                             alwaysTrue );
+        final Builder builder = new Builder(module,
+                                            ioService,
+                                            moduleService,
+                                            importsService,
+                                            new ArrayList<>(),
+                                            dependenciesClassLoaderCache,
+                                            pomModelCache,
+                                            getPackageNameWhiteListService(),
+                                            alwaysTrue);
 
         final BuildResults results = builder.build();
 
         //Debug output
-        if ( !results.getMessages().isEmpty() ) {
-            for ( BuildMessage m : results.getMessages() ) {
-                logger.debug( m.getText() );
+        if (!results.getMessages().isEmpty()) {
+            for (BuildMessage m : results.getMessages()) {
+                logger.debug(m.getText());
             }
         }
 
-        assertTrue( results.getMessages().isEmpty() );
+        assertTrue(results.getMessages().isEmpty());
     }
 
     @Test
-    public void testBuilderFixForBrokenKProject() throws Exception {
+    public void testBuilderFixForBrokenKModule() throws Exception {
 
-        LRUPomModelCache pomModelCache = getReference( LRUPomModelCache.class );
+        LRUPomModelCache pomModelCache = getReference(LRUPomModelCache.class);
 
         SimpleFileSystemProvider provider = new SimpleFileSystemProvider();
-        org.uberfire.java.nio.file.Path path = provider.getPath( this.getClass().getResource( "/BuilderExampleBrokenSyntax" ).toURI() );
+        org.uberfire.java.nio.file.Path path = provider.getPath(this.getClass().getResource("/BuilderExampleBrokenSyntax").toURI());
 
-        final Project project = projectService.resolveProject( Paths.convert( path ) );
+        final Module module = moduleService.resolveModule(Paths.convert(path));
 
-        final Builder builder = new Builder( project,
-                                             ioService,
-                                             projectService,
-                                             importsService,
-                                             new ArrayList<>(),
-                                             dependenciesClassLoaderCache,
-                                             pomModelCache,
-                                             mock( PackageNameWhiteListService.class ),
-                                             alwaysTrue );
+        final Builder builder = new Builder(module,
+                                            ioService,
+                                            moduleService,
+                                            importsService,
+                                            new ArrayList<>(),
+                                            dependenciesClassLoaderCache,
+                                            pomModelCache,
+                                            mock(PackageNameWhiteListService.class),
+                                            alwaysTrue);
 
-        assertNull( builder.getKieContainer() );
+        assertNull(builder.getKieContainer());
 
-        builder.deleteResource( provider.getPath( this.getClass().getResource( File.separatorChar + "BuilderExampleBrokenSyntax" +
-                                                                                       File.separatorChar + "src" +
-                                                                                       File.separatorChar + "main" +
-                                                                                       File.separatorChar + "resources" +
-                                                                                       File.separatorChar + "rule1.drl"
-                                                                             ).toURI() ) );
+        builder.deleteResource(provider.getPath(this.getClass().getResource(File.separatorChar + "BuilderExampleBrokenSyntax" +
+                                                                                    File.separatorChar + "src" +
+                                                                                    File.separatorChar + "main" +
+                                                                                    File.separatorChar + "resources" +
+                                                                                    File.separatorChar + "rule1.drl"
+        ).toURI()));
 
-        assertNotNull( builder.getKieContainer() );
+        assertNotNull(builder.getKieContainer());
     }
 
     @Test
     public void testBuilderKieContainerInstantiation() throws Exception {
 
-        final URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample1" );
+        final URL url = this.getClass().getResource("/GuvnorM2RepoDependencyExample1");
         final SimpleFileSystemProvider p = new SimpleFileSystemProvider();
-        final org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
+        final org.uberfire.java.nio.file.Path path = p.getPath(url.toURI());
 
-        final Project project = projectService.resolveProject( Paths.convert( path ) );
+        final Module module = moduleService.resolveModule(Paths.convert(path));
 
-        //Build Project, including Rules and Global definition
-        final Builder builder = new Builder( project,
-                                             ioService,
-                                             projectService,
-                                             importsService,
-                                             new ArrayList<>(),
-                                             dependenciesClassLoaderCache,
-                                             pomModelCache,
-                                             getPackageNameWhiteListService(),
-                                             alwaysTrue );
+        //Build Module, including Rules and Global definition
+        final Builder builder = new Builder(module,
+                                            ioService,
+                                            moduleService,
+                                            importsService,
+                                            new ArrayList<>(),
+                                            dependenciesClassLoaderCache,
+                                            pomModelCache,
+                                            getPackageNameWhiteListService(),
+                                            alwaysTrue);
 
-        assertNotNull( builder.getKieContainer() );
+        assertNotNull(builder.getKieContainer());
 
         //Validate Rule excluding Global definition
-        final URL urlToValidate = this.getClass().getResource( "/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl" );
-        final org.uberfire.java.nio.file.Path pathToValidate = p.getPath( urlToValidate.toURI() );
-        final List<ValidationMessage> validationMessages = validator.validate( Paths.convert( pathToValidate ),
-                                                                               Resources.toString( urlToValidate, Charset.forName( "UTF-8" ) ) );
-        assertNotNull( validationMessages );
-        assertEquals( 0,
-                      validationMessages.size() );
+        final URL urlToValidate = this.getClass().getResource("/GuvnorM2RepoDependencyExample1/src/main/resources/rule2.drl");
+        final org.uberfire.java.nio.file.Path pathToValidate = p.getPath(urlToValidate.toURI());
+        final List<ValidationMessage> validationMessages = validator.validate(Paths.convert(pathToValidate),
+                                                                              Resources.toString(urlToValidate,
+                                                                                                 Charset.forName("UTF-8")));
+        assertNotNull(validationMessages);
+        assertEquals(0,
+                     validationMessages.size());
 
-        // Retrieve a KieSession for the Project and set the Global. This should not fail as the
+        // Retrieve a KieSession for the Module and set the Global. This should not fail as the
         // KieContainer is retrieved direct from the KieBuilder and not KieRepository (as was the
         // case before BZ1202551 was fixed.
         final KieContainer kieContainer1 = builder.getKieContainer();
         final KieSession kieSession1 = kieContainer1.newKieSession();
-        kieSession1.setGlobal( "list",
-                               new ArrayList<String>() );
+        kieSession1.setGlobal("list",
+                              new ArrayList<String>());
     }
 
     private PackageNameWhiteListService getPackageNameWhiteListService() {
-        return new PackageNameWhiteListServiceImpl( ioService,
-                                                    mock( KieProjectService.class ),
-                                                    new PackageNameWhiteListLoader( packageNameSearchProvider,
-                                                                                    ioService ),
-                                                    mock( PackageNameWhiteListSaver.class ) );
+        return new PackageNameWhiteListServiceImpl(ioService,
+                                                   mock(KieModuleService.class),
+                                                   new PackageNameWhiteListLoader(packageNameSearchProvider,
+                                                                                  ioService),
+                                                   mock(PackageNameWhiteListSaver.class));
     }
 }

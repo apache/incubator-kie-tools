@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.services.datamodel.backend.server.service;
 
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 
 public interface DataModelService {
@@ -26,5 +26,5 @@ public interface DataModelService {
 
     PackageDataModelOracle getDataModel(final Path resourcePath);
 
-    ProjectDataModelOracle getProjectDataModel(final Path resourcePath);
+    ModuleDataModelOracle getModuleDataModel(final Path resourcePath);
 }

@@ -22,13 +22,13 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindRulesByProjectQuery;
+import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindRulesByModuleQuery;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringRuleNamePageRow;
 import org.kie.workbench.common.services.refactoring.service.RefactoringQueryService;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
@@ -48,7 +48,7 @@ public class RuleNameServiceImplTest {
     private RefactoringQueryService queryService;
 
     @Mock
-    private KieProjectService projectService;
+    private KieModuleService projectService;
 
     @Mock
     private Path path;
@@ -57,7 +57,7 @@ public class RuleNameServiceImplTest {
     private Path projectRootPath;
 
     @Mock
-    private KieProject project;
+    private KieModule module;
 
     private RuleNameServiceImpl service;
 
@@ -66,11 +66,11 @@ public class RuleNameServiceImplTest {
         this.service = new RuleNameServiceImpl(queryService,
                                                projectService);
 
-        when(projectService.resolveProject(any(Path.class))).thenReturn(project);
-        when(project.getRootPath()).thenReturn(projectRootPath);
+        when(projectService.resolveModule(any(Path.class))).thenReturn(module);
+        when(module.getRootPath()).thenReturn(projectRootPath);
         when(projectRootPath.toURI()).thenReturn(PROJECT_ROOT_URI);
 
-        when(queryService.query(eq(FindRulesByProjectQuery.NAME),
+        when(queryService.query(eq(FindRulesByModuleQuery.NAME),
                                 anySetOf(ValueIndexTerm.class))).thenReturn(getResults());
     }
 

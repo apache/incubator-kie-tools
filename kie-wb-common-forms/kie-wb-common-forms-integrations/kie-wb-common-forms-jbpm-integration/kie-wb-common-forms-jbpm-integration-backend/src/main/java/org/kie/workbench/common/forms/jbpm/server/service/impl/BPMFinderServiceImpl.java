@@ -49,7 +49,7 @@ import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
 import org.kie.workbench.common.forms.jbpm.server.service.BPMNFormModelGenerator;
 import org.kie.workbench.common.forms.jbpm.service.shared.BPMFinderService;
 import org.kie.workbench.common.services.datamodeller.util.FileUtils;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -64,17 +64,17 @@ public class BPMFinderServiceImpl implements BPMFinderService {
 
     private IOService ioService;
 
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     private BPMNFormModelGenerator bpmnFormModelGenerator;
     private FileUtils fileUtils;
 
     @Inject
     public BPMFinderServiceImpl(@Named("ioStrategy") IOService ioService,
-                                KieProjectService projectService,
+                                KieModuleService moduleService,
                                 BPMNFormModelGenerator bpmnFormModelGenerator) {
         this.ioService = ioService;
-        this.projectService = projectService;
+        this.moduleService = moduleService;
         this.bpmnFormModelGenerator = bpmnFormModelGenerator;
     }
 
@@ -84,7 +84,7 @@ public class BPMFinderServiceImpl implements BPMFinderService {
     }
 
     @Override
-    public List<JBPMProcessModel> getAvailableProcessModels(Path path) {
+    public List<JBPMProcessModel> getAvailableProcessModels(final Path path) {
 
         final GenerationConfig<List<JBPMProcessModel>> operations = new GenerationConfig<>(new ArrayList<>());
 
@@ -92,7 +92,7 @@ public class BPMFinderServiceImpl implements BPMFinderService {
 
         operations.setConsumer(processModel -> operations.getValue().add(processModel));
 
-        Path rootPath = projectService.resolveProject(path).getRootPath();
+        Path rootPath = moduleService.resolveModule(path).getRootPath();
 
         scannProcessesForType(rootPath,
                               "bpmn2",
@@ -122,7 +122,7 @@ public class BPMFinderServiceImpl implements BPMFinderService {
 
         operations.setConsumer(processModel -> operations.setValue(Optional.ofNullable(processModel)));
 
-        Path rootPath = projectService.resolveProject(path).getRootPath();
+        Path rootPath = moduleService.resolveModule(path).getRootPath();
 
         scannProcessesForType(rootPath,
                               "bpmn2",

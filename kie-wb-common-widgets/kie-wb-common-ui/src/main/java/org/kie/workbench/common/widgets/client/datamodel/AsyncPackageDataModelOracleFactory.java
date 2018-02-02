@@ -58,7 +58,7 @@ public class AsyncPackageDataModelOracleFactory {
 
     private void populate(final AsyncPackageDataModelOracle oracle,
                           final PackageDataModelOracleBaselinePayload payload) {
-        oracle.setProjectName(payload.getProjectName());
+        oracle.setModuleName(payload.getModuleName());
         oracle.addModelFields(payload.getModelFields());
         oracle.addFieldParametersType(payload.getFieldParametersType());
         oracle.addEventTypes(payload.getEventTypes());

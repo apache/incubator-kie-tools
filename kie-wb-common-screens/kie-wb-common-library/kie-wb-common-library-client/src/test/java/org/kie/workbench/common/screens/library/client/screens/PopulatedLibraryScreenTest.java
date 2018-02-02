@@ -17,11 +17,14 @@ package org.kie.workbench.common.screens.library.client.screens;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.enterprise.event.Event;
 
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.structure.repositories.Repository;
+import org.guvnor.common.services.project.model.Module;
+import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
@@ -29,7 +32,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
-import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
 import org.kie.workbench.common.screens.library.client.screens.project.AddProjectPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
@@ -73,11 +75,17 @@ public class PopulatedLibraryScreenTest {
     @Mock
     private AddProjectPopUpPresenter addProjectPopUpPresenter;
 
+    @Mock
+    private OrganizationalUnit organizationalUnit;
+
+    @Mock
+    private WorkspaceProjectContext projectContext;
+
     private PopulatedLibraryScreen libraryScreen;
 
-    private Project project1;
-    private Project project2;
-    private Project project3;
+    private WorkspaceProject project1;
+    private WorkspaceProject project2;
+    private WorkspaceProject project3;
 
     @Before
     public void setup() {
@@ -88,36 +96,43 @@ public class PopulatedLibraryScreenTest {
                                                        projectDetailEvent,
                                                        libraryServiceCaller,
                                                        projectController,
+                                                       projectContext,
                                                        tileWidgets,
                                                        addProjectButtonPresenter));
 
-        project1 = mock(Project.class);
-        doReturn("project1Name").when(project1).getProjectName();
-        project2 = mock(Project.class);
-        doReturn("project2Name").when(project2).getProjectName();
-        project3 = mock(Project.class);
-        doReturn("project3Name").when(project3).getProjectName();
+        doReturn(true).when(projectController).canCreateProjects();
 
-        final List<Project> projects = new ArrayList<>();
+        project1 = mockProject("project1Name");
+        project2 = mockProject("project2Name");
+        project3 = mockProject("project3Name");
+
+        final List<WorkspaceProject> projects = new ArrayList<>();
         projects.add(project1);
         projects.add(project2);
         projects.add(project3);
 
-        final LibraryInfo libraryInfo = new LibraryInfo("master",
-                                                        projects);
-        doReturn(libraryInfo).when(libraryService).getLibraryInfo(any(Repository.class),
-                                                                  anyString());
 
-        doReturn(true).when(projectController).canCreateProjects();
-        doReturn(true).when(projectController).canReadProjects();
-        doReturn(true).when(projectController).canReadProject(any());
-        doReturn(false).when(projectController).canReadProject(project2);
+        when(projectContext.getActiveOrganizationalUnit()).thenReturn(Optional.of(organizationalUnit));
+        when(projectContext.getActiveWorkspaceProject()).thenReturn(Optional.empty());
+        when(projectContext.getActiveModule()).thenReturn(Optional.empty());
+        when(projectContext.getActiveRepositoryRoot()).thenReturn(Optional.empty());
+        when(projectContext.getActivePackage()).thenReturn(Optional.empty());
+
+        final LibraryInfo libraryInfo = new LibraryInfo(projects);
+        doReturn(libraryInfo).when(libraryService).getLibraryInfo(organizationalUnit);
 
         doReturn(mock(TileWidget.View.class)).when(tileWidget).getView();
         doReturn(tileWidget).when(tileWidgets).get();
         doReturn(mock(AddProjectButtonPresenter.View.class)).when(addProjectButtonPresenter).getView();
 
         libraryScreen.setup();
+    }
+
+    private WorkspaceProject mockProject(final String projectName) {
+        final WorkspaceProject result = mock(WorkspaceProject.class);
+        doReturn(projectName).when(result).getName();
+        doReturn(mock(Module.class)).when(result).getMainModule();
+        return result;
     }
 
     @Test
@@ -129,12 +144,17 @@ public class PopulatedLibraryScreenTest {
         verify(view).clearProjects();
 
         verify(tileWidget,
-               times(2)).init(any(),
+               times(3)).init(any(),
                               any(),
                               any(),
                               any(),
                               any());
         verify(tileWidget).init(eq("project1Name"),
+                                any(),
+                                any(),
+                                any(),
+                                any());
+        verify(tileWidget).init(eq("project2Name"),
                                 any(),
                                 any(),
                                 any(),
@@ -145,19 +165,19 @@ public class PopulatedLibraryScreenTest {
                                 any(),
                                 any());
         verify(view,
-               times(2)).addProject(any());
+               times(3)).addProject(any());
     }
 
     @Test
     public void selectCommandTest() {
         libraryScreen.selectCommand(project1).execute();
 
-        verify(libraryPlaces).goToProject(any(ProjectInfo.class));
+        verify(libraryPlaces).goToProject(any(WorkspaceProject.class));
     }
 
     @Test
     public void filterProjectsTest() {
-        assertEquals(2,
+        assertEquals(3,
                      libraryScreen.projects.size());
         assertEquals(1,
                      libraryScreen.filterProjects("project1").size());

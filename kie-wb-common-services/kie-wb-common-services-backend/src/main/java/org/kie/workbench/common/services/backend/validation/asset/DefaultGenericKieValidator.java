@@ -18,11 +18,13 @@ package org.kie.workbench.common.services.backend.validation.asset;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -38,40 +40,39 @@ public class DefaultGenericKieValidator implements GenericValidator {
     }
 
     @Inject
-    public DefaultGenericKieValidator( final ValidatorBuildService validatorBuildService ) {
+    public DefaultGenericKieValidator(final ValidatorBuildService validatorBuildService) {
         this.validatorBuildService = validatorBuildService;
     }
 
-    public List<ValidationMessage> validate( final Path path,
-                                             final String content ) {
-        return validatorBuildService.validate( path,
-                                               content )
+    public List<ValidationMessage> validate(final Path path,
+                                            final String content) {
+        return validatorBuildService.validate(path,
+                                              content)
                 .stream()
-                .filter( fromValidatedPath( path ) )
-                .collect( Collectors.toList() );
+                .filter(fromValidatedPath(path))
+                .collect(Collectors.toList());
     }
 
-    public List<ValidationMessage> validate( final Path path ) {
-        return validatorBuildService.validate( path )
+    public List<ValidationMessage> validate(final Path path) {
+        return validatorBuildService.validate(path)
                 .stream()
-                .filter( fromValidatedPath( path ) )
-                .collect( Collectors.toList() );
+                .filter(fromValidatedPath(path))
+                .collect(Collectors.toList());
     }
 
-    protected Predicate<ValidationMessage> fromValidatedPath( final Path path ) {
+    protected Predicate<ValidationMessage> fromValidatedPath(final Path path) {
         return message -> {
-            final String destinationPathURI = removeFileExtension( path.toURI() );
-            final String messageURI = message.getPath() != null ? removeFileExtension( message.getPath().toURI() ) : "";
-            return messageURI.isEmpty() || destinationPathURI.endsWith( messageURI );
+            final String destinationPathURI = removeFileExtension(Paths.convert(Paths.convert(path)).toURI());
+            final String messageURI = message.getPath() != null ? removeFileExtension(Paths.convert(Paths.convert(message.getPath())).toURI()) : "";
+            return messageURI.isEmpty() || destinationPathURI.endsWith(messageURI);
         };
     }
 
-    private String removeFileExtension( final String pathURI ) {
-        if ( pathURI != null && pathURI.contains( "." ) ) {
-            return pathURI.substring( 0, pathURI.lastIndexOf( "." ) );
+    private String removeFileExtension(final String pathURI) {
+        if (pathURI != null && pathURI.contains(".")) {
+            return pathURI.substring(0, pathURI.lastIndexOf("."));
         }
 
         return pathURI;
     }
-
 }

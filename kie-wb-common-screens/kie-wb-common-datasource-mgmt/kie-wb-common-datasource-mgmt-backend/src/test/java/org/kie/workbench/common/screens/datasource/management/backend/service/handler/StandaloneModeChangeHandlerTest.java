@@ -19,13 +19,16 @@ package org.kie.workbench.common.screens.datasource.management.backend.service.h
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class StandaloneModeChangeHandlerTest
         extends AbstractDefChangeHandlerTest {
 
     @Override
-    protected void setupChangeHandler( ) {
-        changeHandler = new StandaloneModeChangeHandler( runtimeManager,
-                serviceHelper, ioService, projectService, eventHelper );
+    protected void setupChangeHandler() {
+        changeHandler = new StandaloneModeChangeHandler(runtimeManager,
+                                                        serviceHelper,
+                                                        ioService,
+                                                        moduleService,
+                                                        eventHelper);
     }
 }

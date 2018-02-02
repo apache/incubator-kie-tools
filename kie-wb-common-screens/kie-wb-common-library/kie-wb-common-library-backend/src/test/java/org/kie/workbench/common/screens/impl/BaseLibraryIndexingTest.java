@@ -44,16 +44,16 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.kie.workbench.common.screens.library.api.index.LibraryFileNameIndexTerm;
-import org.kie.workbench.common.screens.library.api.index.LibraryProjectRootPathIndexTerm;
+import org.kie.workbench.common.screens.library.api.index.LibraryModuleRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.ImpactAnalysisAnalyzerWrapperFactory;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.LowerCaseOnlyAnalyzer;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQueries;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
 import org.kie.workbench.common.services.refactoring.backend.server.query.RefactoringQueryServiceImpl;
+import org.kie.workbench.common.services.refactoring.model.index.terms.ModuleRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.PackageNameIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.async.DescriptiveThreadFactory;
@@ -71,7 +71,6 @@ import static org.mockito.Mockito.*;
 public abstract class BaseLibraryIndexingTest {
 
     private static final String TEST_PACKAGE_NAME = "org.kie.workbench.mock.package";
-
     private static final Logger logger = LoggerFactory.getLogger(BaseLibraryIndexingTest.class);
 
     private static final List<File> tempFiles = new ArrayList<>();
@@ -89,13 +88,30 @@ public abstract class BaseLibraryIndexingTest {
     @AfterClass
     @BeforeClass
     public static void cleanup() {
-        for (final File tempFile : tempFiles) {
-            FileUtils.deleteQuietly(tempFile);
-        }
+        deleteTempFiles();
         if (config != null) {
             config.dispose();
             config = null;
         }
+    }
+
+    protected static void deleteTempFiles() {
+        for (final File tempFile : tempFiles) {
+            FileUtils.deleteQuietly(tempFile);
+        }
+    }
+
+    private static File createTempDirectory() throws IOException {
+        final File temp = File.createTempFile("temp",
+                                              Long.toString(System.nanoTime()));
+        if (!(temp.delete())) {
+            throw new IOException("Could not delete temp file: " + temp.getAbsolutePath());
+        }
+        if (!(temp.mkdir())) {
+            throw new IOException("Could not create temp directory: " + temp.getAbsolutePath());
+        }
+        tempFiles.add(temp);
+        return temp;
     }
 
     @Before
@@ -156,19 +172,6 @@ public abstract class BaseLibraryIndexingTest {
 
     protected abstract String getRepositoryName();
 
-    private static File createTempDirectory() throws IOException {
-        final File temp = File.createTempFile("temp",
-                                              Long.toString(System.nanoTime()));
-        if (!(temp.delete())) {
-            throw new IOException("Could not delete temp file: " + temp.getAbsolutePath());
-        }
-        if (!(temp.mkdir())) {
-            throw new IOException("Could not create temp directory: " + temp.getAbsolutePath());
-        }
-        tempFiles.add(temp);
-        return temp;
-    }
-
     private Path getDirectoryPath() {
         final String repositoryName = getRepositoryName();
         final Path dir = ioService().get(URI.create("git://" + repositoryName + "/_someDir" + seed));
@@ -176,9 +179,9 @@ public abstract class BaseLibraryIndexingTest {
         return dir;
     }
 
-    protected void addTestFile(final String projectName,
+    protected void addTestFile(final String moduleName,
                                final String pathToFile) throws IOException {
-        final Path path = basePath.resolve(projectName + "/" + pathToFile);
+        final Path path = basePath.resolve(moduleName + "/" + pathToFile);
         final String text = loadText(pathToFile);
         ioService().write(path,
                           text);
@@ -237,7 +240,7 @@ public abstract class BaseLibraryIndexingTest {
 
             //Mock CDI injection and setup
             indexer.setIOService(ioService);
-            indexer.setProjectService(getProjectService());
+            indexer.setModuleService(getModuleService());
         }
         return ioService;
     }
@@ -246,9 +249,9 @@ public abstract class BaseLibraryIndexingTest {
         return new HashMap<String, Analyzer>() {{
             put(LibraryFileNameIndexTerm.TERM,
                 new FilenameAnalyzer());
-            put(LibraryProjectRootPathIndexTerm.TERM,
+            put(LibraryModuleRootPathIndexTerm.TERM,
                 new FilenameAnalyzer());
-            put(ProjectRootPathIndexTerm.TERM,
+            put(ModuleRootPathIndexTerm.TERM,
                 new FilenameAnalyzer());
             put(PackageNameIndexTerm.TERM,
                 new LowerCaseOnlyAnalyzer());
@@ -257,24 +260,24 @@ public abstract class BaseLibraryIndexingTest {
         }};
     }
 
-    protected KieProjectService getProjectService() {
+    protected KieModuleService getModuleService() {
         final Package mockPackage = mock(Package.class);
         when(mockPackage.getPackageName()).thenReturn(TEST_PACKAGE_NAME);
 
-        final KieProjectService mockProjectService = mock(KieProjectService.class);
-        when(mockProjectService.resolvePackage(any(org.uberfire.backend.vfs.Path.class))).thenReturn(mockPackage);
+        final KieModuleService mockModuleService = mock(KieModuleService.class);
+        when(mockModuleService.resolvePackage(any(org.uberfire.backend.vfs.Path.class))).thenReturn(mockPackage);
 
-        return mockProjectService;
+        return mockModuleService;
     }
 
-    protected KieProject getKieProjectMock(final String testProjectRoot,
-                                           final String testProjectName) {
+    protected KieModule getKieModuleMock(final String testModuleRoot,
+                                         final String testModuleName) {
         final org.uberfire.backend.vfs.Path mockRoot = mock(org.uberfire.backend.vfs.Path.class);
-        when(mockRoot.toURI()).thenReturn(testProjectRoot);
+        when(mockRoot.toURI()).thenReturn(testModuleRoot);
 
-        final KieProject mockProject = mock(KieProject.class);
-        when(mockProject.getRootPath()).thenReturn(mockRoot);
-        when(mockProject.getProjectName()).thenReturn(testProjectName);
-        return mockProject;
+        final KieModule mockModule = mock(KieModule.class);
+        when(mockModule.getRootPath()).thenReturn(mockRoot);
+        when(mockModule.getModuleName()).thenReturn(testModuleName);
+        return mockModule;
     }
 }

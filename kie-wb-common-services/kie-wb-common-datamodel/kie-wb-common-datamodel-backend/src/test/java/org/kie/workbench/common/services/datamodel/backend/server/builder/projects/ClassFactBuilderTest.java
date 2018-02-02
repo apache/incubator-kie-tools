@@ -16,7 +16,7 @@
 package org.kie.workbench.common.services.datamodel.backend.server.builder.projects;
 
 import org.junit.Test;
-import org.kie.soup.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
+import org.kie.soup.project.datamodel.commons.oracle.ModuleDataModelOracleImpl;
 import org.kie.soup.project.datamodel.commons.util.RawMVELEvaluator;
 import org.kie.soup.project.datamodel.oracle.TypeSource;
 import org.kie.workbench.common.services.datamodel.backend.server.testclasses.superclasses.PapaSmurf;
@@ -27,8 +27,8 @@ public class ClassFactBuilderTest {
 
     @Test
     public void testSuperTypes() throws Exception {
-        final ProjectDataModelOracleBuilder builder = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator());
-        final ProjectDataModelOracleImpl oracle = new ProjectDataModelOracleImpl();
+        final ModuleDataModelOracleBuilder builder = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator());
+        final ModuleDataModelOracleImpl oracle = new ModuleDataModelOracleImpl();
 
         final ClassFactBuilder cb = new ClassFactBuilder(builder,
                                                          PapaSmurf.class,
@@ -36,6 +36,6 @@ public class ClassFactBuilderTest {
                                                          TypeSource.JAVA_PROJECT);
         cb.build(oracle);
 
-        assertEquals(2, oracle.getProjectSuperTypes().get(PapaSmurf.class.getName()).size());
+        assertEquals(2, oracle.getModuleSuperTypes().get(PapaSmurf.class.getName()).size());
     }
 }

@@ -36,8 +36,8 @@ import org.guvnor.common.services.project.model.Package;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.ImpactAnalysisAnalyzerWrapperFactory;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.async.DescriptiveThreadFactory;
@@ -57,8 +57,8 @@ import static org.mockito.Mockito.*;
 
 public abstract class IndexingTest<T extends ResourceTypeDefinition> {
 
-    public static final String TEST_PROJECT_ROOT = "/a/mock/project/root";
-    public static final String TEST_PROJECT_NAME = "mock-project";
+    public static final String TEST_MODULE_ROOT = "/a/mock/module/root";
+    public static final String TEST_MODULE_NAME = "mock-module";
     public static final String TEST_PACKAGE_NAME = "org.kie.workbench.mock.package";
     protected static final Logger logger = LoggerFactory.getLogger(IndexingTest.class);
     protected static final List<File> tempFiles = new ArrayList<File>();
@@ -172,7 +172,7 @@ public abstract class IndexingTest<T extends ResourceTypeDefinition> {
 
             //Mock CDI injection and setup
             indexer.setIOService(ioService);
-            indexer.setProjectService(getProjectService());
+            indexer.setModuleService(getModuleService());
             indexer.setResourceTypeDefinition(getResourceTypeDefinition());
         }
         return ioService;
@@ -183,30 +183,30 @@ public abstract class IndexingTest<T extends ResourceTypeDefinition> {
         ioService = null;
     }
 
-    protected KieProjectService getProjectService() {
+    protected KieModuleService getModuleService() {
 
-        final KieProject mockProject = getKieProjectMock(TEST_PROJECT_ROOT,
-                                                         TEST_PROJECT_NAME);
+        final KieModule mockModule = getKieModuleMock(TEST_MODULE_ROOT,
+                                                      TEST_MODULE_NAME);
 
         final Package mockPackage = mock(Package.class);
         when(mockPackage.getPackageName()).thenReturn(TEST_PACKAGE_NAME);
 
-        final KieProjectService mockProjectService = mock(KieProjectService.class);
-        when(mockProjectService.resolveProject(any(org.uberfire.backend.vfs.Path.class))).thenReturn(mockProject);
-        when(mockProjectService.resolvePackage(any(org.uberfire.backend.vfs.Path.class))).thenReturn(mockPackage);
+        final KieModuleService mockWorkspaceProjectService = mock(KieModuleService.class);
+        when(mockWorkspaceProjectService.resolveModule(any(org.uberfire.backend.vfs.Path.class))).thenReturn(mockModule);
+        when(mockWorkspaceProjectService.resolvePackage(any(org.uberfire.backend.vfs.Path.class))).thenReturn(mockPackage);
 
-        return mockProjectService;
+        return mockWorkspaceProjectService;
     }
 
-    protected KieProject getKieProjectMock(final String testProjectRoot,
-                                           final String testProjectName) {
+    protected KieModule getKieModuleMock(final String testModuleRoot,
+                                         final String testModuleName) {
         final org.uberfire.backend.vfs.Path mockRoot = mock(org.uberfire.backend.vfs.Path.class);
-        when(mockRoot.toURI()).thenReturn(testProjectRoot);
+        when(mockRoot.toURI()).thenReturn(testModuleRoot);
 
-        final KieProject mockProject = mock(KieProject.class);
-        when(mockProject.getRootPath()).thenReturn(mockRoot);
-        when(mockProject.getProjectName()).thenReturn(testProjectName);
-        return mockProject;
+        final KieModule mockModule = mock(KieModule.class);
+        when(mockModule.getRootPath()).thenReturn(mockRoot);
+        when(mockModule.getModuleName()).thenReturn(testModuleName);
+        return mockModule;
     }
 
     protected void assertContains(final Iterable<KObject> results,

@@ -24,6 +24,7 @@
     <module>kie-wb-common-stunner</module>
     <module>kie-wb-common-dmn</module>
     <module>kie-wb-common-ala</module>
+    <module>kie-wb-common-cli</module>
   </modules>
 
   <properties>

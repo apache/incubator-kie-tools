@@ -17,19 +17,18 @@
 package org.kie.workbench.common.screens.projecteditor.client.forms.repositories;
 
 import java.util.Set;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.model.ProjectRepositories;
+import org.guvnor.common.services.project.model.ModuleRepositories;
 import org.guvnor.common.services.shared.security.AppRoles;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.RoleImpl;
 import org.jboss.errai.security.shared.api.identity.User;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class RepositoriesWidgetPresenter
@@ -51,7 +50,7 @@ public class RepositoriesWidgetPresenter
     }
 
     @Override
-    public void setContent(final Set<ProjectRepositories.ProjectRepository> repositories,
+    public void setContent(final Set<ModuleRepositories.ModuleRepository> repositories,
                            final boolean isReadOnly) {
         checkNotNull("repositories",
                      repositories);
@@ -66,7 +65,7 @@ public class RepositoriesWidgetPresenter
     }
 
     @Override
-    public void setIncludeRepository(final ProjectRepositories.ProjectRepository repository,
+    public void setIncludeRepository(final ModuleRepositories.ModuleRepository repository,
                                      final boolean include) {
         repository.setIncluded(include);
     }

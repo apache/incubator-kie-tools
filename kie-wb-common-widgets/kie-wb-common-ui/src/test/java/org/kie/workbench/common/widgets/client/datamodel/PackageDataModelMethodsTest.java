@@ -19,7 +19,6 @@ package org.kie.workbench.common.widgets.client.datamodel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
-
 import javax.enterprise.inject.Instance;
 
 import org.jboss.errai.common.client.api.Caller;
@@ -32,10 +31,10 @@ import org.kie.soup.project.datamodel.imports.Imports;
 import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
 import org.kie.soup.project.datamodel.oracle.MethodInfo;
 import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
-import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
+import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ModuleDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
 import org.mockito.Mock;
@@ -43,7 +42,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
 
 import static org.junit.Assert.*;
-import static org.kie.workbench.common.widgets.client.datamodel.PackageDataModelOracleTestUtils.*;
+import static org.kie.workbench.common.widgets.client.datamodel.PackageDataModelOracleTestUtils.assertContains;
 import static org.mockito.Mockito.*;
 
 public class PackageDataModelMethodsTest {
@@ -53,13 +52,12 @@ public class PackageDataModelMethodsTest {
 
     @Test
     public void testMethodsOnJavaClass_TreeMap() throws Exception {
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle moduleLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addClass(TreeMap.class)
                 .build();
 
-        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator(), "java.util")
-                .setProjectOracle(projectLoader)
-                .build();
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator(),
+                                                                                                           "java.util").setModuleOracle(moduleLoader).build();
 
         //Emulate server-to-client conversions
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller(packageLoader);
@@ -68,8 +66,8 @@ public class PackageDataModelMethodsTest {
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName(packageLoader.getPackageName());
-        dataModel.setModelFields(packageLoader.getProjectModelFields());
-        dataModel.setMethodInformation(packageLoader.getProjectMethodInformation());
+        dataModel.setModelFields(packageLoader.getModuleModelFields());
+        dataModel.setMethodInformation(packageLoader.getModuleMethodInformation());
         PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),
                                                                 new MockHasImports(),
                                                                 oracle,
@@ -175,13 +173,12 @@ public class PackageDataModelMethodsTest {
 
     @Test
     public void testMethodsOnJavaClass_ArrayList() throws Exception {
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle moduleLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addClass(ArrayList.class)
                 .build();
 
-        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator(), "java.util")
-                .setProjectOracle(projectLoader)
-                .build();
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator(),
+                                                                                                           "java.util").setModuleOracle(moduleLoader).build();
 
         //Emulate server-to-client conversions
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller(packageLoader);
@@ -190,8 +187,8 @@ public class PackageDataModelMethodsTest {
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName(packageLoader.getPackageName());
-        dataModel.setModelFields(packageLoader.getProjectModelFields());
-        dataModel.setMethodInformation(packageLoader.getProjectMethodInformation());
+        dataModel.setModelFields(packageLoader.getModuleModelFields());
+        dataModel.setMethodInformation(packageLoader.getModuleMethodInformation());
         PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),
                                                                 new MockHasImports(),
                                                                 oracle,
@@ -213,14 +210,13 @@ public class PackageDataModelMethodsTest {
 
     @Test
     public void testMethodsOnJavaClass_Number() throws Exception {
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle moduleLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addClass(Number.class)
                 .addFact("int").end()
                 .build();
 
-        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator(), "p0")
-                .setProjectOracle(projectLoader)
-                .build();
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator(),
+                                                                                                           "p0").setModuleOracle(moduleLoader).build();
 
         //Emulate server-to-client conversions
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller(packageLoader);
@@ -229,8 +225,8 @@ public class PackageDataModelMethodsTest {
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName(packageLoader.getPackageName());
-        dataModel.setModelFields(packageLoader.getProjectModelFields());
-        dataModel.setMethodInformation(packageLoader.getProjectMethodInformation());
+        dataModel.setModelFields(packageLoader.getModuleModelFields());
+        dataModel.setMethodInformation(packageLoader.getModuleMethodInformation());
         PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),
                                                                 new HasImports() {
 

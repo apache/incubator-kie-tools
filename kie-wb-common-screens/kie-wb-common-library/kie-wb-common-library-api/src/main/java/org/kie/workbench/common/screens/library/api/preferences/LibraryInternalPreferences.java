@@ -29,9 +29,6 @@ public class LibraryInternalPreferences implements BasePreference<LibraryInterna
     @Property
     String lastOpenedOrganizationalUnit;
 
-    @Property
-    String lastOpenedRepository;
-
     @Override
     public LibraryInternalPreferences defaultValue(final LibraryInternalPreferences defaultValue) {
         defaultValue.projectExplorerExpanded = false;
@@ -53,13 +50,5 @@ public class LibraryInternalPreferences implements BasePreference<LibraryInterna
 
     public void setLastOpenedOrganizationalUnit(String lastOpenedOrganizationalUnit) {
         this.lastOpenedOrganizationalUnit = lastOpenedOrganizationalUnit;
-    }
-
-    public String getLastOpenedRepository() {
-        return lastOpenedRepository;
-    }
-
-    public void setLastOpenedRepository(String lastOpenedRepository) {
-        this.lastOpenedRepository = lastOpenedRepository;
     }
 }

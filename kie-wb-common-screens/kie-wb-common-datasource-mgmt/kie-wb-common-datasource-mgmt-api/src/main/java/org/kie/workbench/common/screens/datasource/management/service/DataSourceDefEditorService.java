@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.screens.datasource.management.service;
 
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.screens.datasource.management.model.DataSourceDef;
 import org.kie.workbench.common.screens.datasource.management.model.DataSourceDefEditorContent;
@@ -26,18 +26,22 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface DataSourceDefEditorService {
 
-    DataSourceDefEditorContent loadContent( final Path path );
+    DataSourceDefEditorContent loadContent(final Path path);
 
-    Path save( final Path path, final DataSourceDefEditorContent editorContent, final String comment );
+    Path save(final Path path,
+              final DataSourceDefEditorContent editorContent,
+              final String comment);
 
-    Path create( final DataSourceDef dataSourceDef, final Project project );
+    Path create(final DataSourceDef dataSourceDef,
+                final Module module);
 
-    Path createGlobal( final DataSourceDef dataSourceDef );
+    Path createGlobal(final DataSourceDef dataSourceDef);
 
-    void delete( final Path path, final String comment );
+    void delete(final Path path,
+                final String comment);
 
-    TestResult testConnection( final DataSourceDef dataSourceDef, final Project project );
+    TestResult testConnection(final DataSourceDef dataSourceDef,
+                              final Module module);
 
-    TestResult testConnection( final DataSourceDef dataSourceDef );
-
+    TestResult testConnection(final DataSourceDef dataSourceDef);
 }

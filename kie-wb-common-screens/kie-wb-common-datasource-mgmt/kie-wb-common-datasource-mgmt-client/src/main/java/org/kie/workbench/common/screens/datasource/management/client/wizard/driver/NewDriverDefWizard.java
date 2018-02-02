@@ -24,7 +24,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -46,7 +46,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 public class NewDriverDefWizard
         extends AbstractWizard {
 
-    private final List<WizardPage> pages = new ArrayList<>(  );
+    private final List<WizardPage> pages = new ArrayList<>();
 
     private DriverDefPage driverDefPage;
 
@@ -60,14 +60,14 @@ public class NewDriverDefWizard
 
     private Event<NotificationEvent> notification;
 
-    private Project project;
+    private Module module;
 
     @Inject
-    public NewDriverDefWizard( final DriverDefPage driverDefPage,
-            final Caller<DriverDefEditorService> driverDefService,
-            final TranslationService translationService,
-            final PopupsUtil popupsUtil,
-            final Event<NotificationEvent> notification ) {
+    public NewDriverDefWizard(final DriverDefPage driverDefPage,
+                              final Caller<DriverDefEditorService> driverDefService,
+                              final TranslationService translationService,
+                              final PopupsUtil popupsUtil,
+                              final Event<NotificationEvent> notification) {
         this.driverDefPage = driverDefPage;
         this.driverDefService = driverDefService;
         this.translationService = translationService;
@@ -77,15 +77,15 @@ public class NewDriverDefWizard
 
     @PostConstruct
     public void init() {
-        pages.add( driverDefPage );
+        pages.add(driverDefPage);
     }
 
     @Override
     public void start() {
         driverDefPage.clear();
-        driverDefPage.setComplete( false );
+        driverDefPage.setComplete(false);
         driverDef = new DriverDef();
-        driverDefPage.setDriverDef( driverDef );
+        driverDefPage.setDriverDef(driverDef);
 
         super.start();
     }
@@ -96,13 +96,13 @@ public class NewDriverDefWizard
     }
 
     @Override
-    public Widget getPageWidget( int pageNumber ) {
-        return pages.get( pageNumber ).asWidget();
+    public Widget getPageWidget(int pageNumber) {
+        return pages.get(pageNumber).asWidget();
     }
 
     @Override
     public String getTitle() {
-        return translationService.getTranslation( DataSourceManagementConstants.NewDriverDefWizard_title );
+        return translationService.getTranslation(DataSourceManagementConstants.NewDriverDefWizard_title);
     }
 
     @Override
@@ -116,8 +116,8 @@ public class NewDriverDefWizard
     }
 
     @Override
-    public void isComplete( Callback<Boolean> callback ) {
-        driverDefPage.isComplete( callback );
+    public void isComplete(Callback<Boolean> callback) {
+        driverDefPage.isComplete(callback);
     }
 
     @Override
@@ -125,29 +125,32 @@ public class NewDriverDefWizard
         doComplete();
     }
 
-    public void setProject( final Project project ) {
-        this.project = project;
+    public void setModule(final Module module) {
+        this.module = module;
     }
 
     public void setGlobal() {
-        this.project = null;
+        this.module = null;
     }
 
     private void doComplete() {
-        if ( isGlobal() ) {
-            driverDefService.call( getCreateSuccessCallback(), getCreateErrorCallback() ).createGlobal( driverDef );
+        if (isGlobal()) {
+            driverDefService.call(getCreateSuccessCallback(),
+                                  getCreateErrorCallback()).createGlobal(driverDef);
         } else {
-            driverDefService.call( getCreateSuccessCallback(), getCreateErrorCallback() ).create( driverDef, project );
+            driverDefService.call(getCreateSuccessCallback(),
+                                  getCreateErrorCallback()).create(driverDef,
+                                                                   module);
         }
     }
 
     private RemoteCallback<Path> getCreateSuccessCallback() {
         return new RemoteCallback<Path>() {
             @Override
-            public void callback( Path path ) {
-                notification.fire( new NotificationEvent(
-                        translationService.format( DataSourceManagementConstants.NewDriverDefWizard_DriverCreatedMessage,
-                                path.toString() ) ) );
+            public void callback(Path path) {
+                notification.fire(new NotificationEvent(
+                        translationService.format(DataSourceManagementConstants.NewDriverDefWizard_DriverCreatedMessage,
+                                                  path.toString())));
                 NewDriverDefWizard.super.complete();
             }
         };
@@ -156,26 +159,27 @@ public class NewDriverDefWizard
     private ErrorCallback<?> getCreateErrorCallback() {
         return new DefaultErrorCallback() {
             @Override
-            public boolean error( Message message, Throwable throwable ) {
+            public boolean error(Message message,
+                                 Throwable throwable) {
                 popupsUtil.showErrorPopup(
-                        translationService.format( DataSourceManagementConstants.NewDriverDefWizard_DriverCreateErrorMessage,
-                        buildOnCreateErrorMessage( throwable ) ) );
+                        translationService.format(DataSourceManagementConstants.NewDriverDefWizard_DriverCreateErrorMessage,
+                                                  buildOnCreateErrorMessage(throwable)));
                 return false;
             }
         };
     }
 
-    private String buildOnCreateErrorMessage( Throwable t ) {
-        if ( t instanceof FileAlreadyExistsException ) {
+    private String buildOnCreateErrorMessage(Throwable t) {
+        if (t instanceof FileAlreadyExistsException) {
             return translationService.format(
                     DataSourceManagementConstants.NewDataSourceDefWizard_FileExistsErrorMessage,
-                    ((FileAlreadyExistsException )t).getFile() );
+                    ((FileAlreadyExistsException) t).getFile());
         } else {
             return t.getMessage();
         }
     }
 
     private boolean isGlobal() {
-        return project == null;
+        return module == null;
     }
 }

@@ -18,14 +18,14 @@ package org.kie.workbench.common.screens.projecteditor.backend.server;
 
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.service.ModuleRepositoriesService;
 import org.guvnor.common.services.project.service.POMService;
-import org.guvnor.common.services.project.service.ProjectRepositoriesService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
 import org.uberfire.backend.server.util.Paths;
@@ -33,26 +33,26 @@ import org.uberfire.backend.vfs.Path;
 
 public class ProjectScreenModelLoader {
 
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
     private POMService pomService;
     private MetadataService metadataService;
     private KModuleService kModuleService;
     private ProjectImportsService importsService;
-    private ProjectRepositoriesService repositoriesService;
+    private ModuleRepositoriesService repositoriesService;
     private PackageNameWhiteListService whiteListService;
 
     public ProjectScreenModelLoader() {
     }
 
     @Inject
-    public ProjectScreenModelLoader( final KieProjectService projectService,
-                                     final POMService pomService,
-                                     final MetadataService metadataService,
-                                     final KModuleService kModuleService,
-                                     final ProjectImportsService importsService,
-                                     final ProjectRepositoriesService repositoriesService,
-                                     final PackageNameWhiteListService whiteListService ) {
-        this.projectService = projectService;
+    public ProjectScreenModelLoader(final KieModuleService moduleService,
+                                    final POMService pomService,
+                                    final MetadataService metadataService,
+                                    final KModuleService kModuleService,
+                                    final ProjectImportsService importsService,
+                                    final ModuleRepositoriesService repositoriesService,
+                                    final PackageNameWhiteListService whiteListService) {
+        this.moduleService = moduleService;
         this.pomService = pomService;
         this.metadataService = metadataService;
         this.kModuleService = kModuleService;
@@ -61,23 +61,23 @@ public class ProjectScreenModelLoader {
         this.whiteListService = whiteListService;
     }
 
-    public ProjectScreenModel load( final Path pathToPom ) {
-        return new Loader( pathToPom ).load();
+    public ProjectScreenModel load(final Path pathToPom) {
+        return new Loader(pathToPom).load();
     }
 
-    protected boolean fileExists( final Path path ) {
-        return org.uberfire.java.nio.file.Files.exists( Paths.convert( path ) );
+    protected boolean fileExists(final Path path) {
+        return org.uberfire.java.nio.file.Files.exists(Paths.convert(path));
     }
 
     class Loader {
 
         private final ProjectScreenModel model = new ProjectScreenModel();
         private final Path pathToPom;
-        private final KieProject project;
+        private final KieModule project;
 
-        public Loader( final Path pathToPom ) {
+        public Loader(final Path pathToPom) {
             this.pathToPom = pathToPom;
-            project = projectService.resolveProject( pathToPom );
+            project = moduleService.resolveModule(pathToPom);
         }
 
         public ProjectScreenModel load() {
@@ -92,37 +92,37 @@ public class ProjectScreenModelLoader {
         }
 
         private void loadPOM() {
-            model.setPOM( pomService.load( pathToPom ) );
-            model.setPOMMetaData( getMetadata( pathToPom ) );
-            model.setPathToPOM( pathToPom );
+            model.setPOM(pomService.load(pathToPom));
+            model.setPOMMetaData(getMetadata(pathToPom));
+            model.setPathToPOM(pathToPom);
         }
 
         private void loadKModule() {
-            model.setKModule( kModuleService.load( project.getKModuleXMLPath() ) );
-            model.setKModuleMetaData( getMetadata( project.getKModuleXMLPath() ) );
-            model.setPathToKModule( project.getKModuleXMLPath() );
+            model.setKModule(kModuleService.load(project.getKModuleXMLPath()));
+            model.setKModuleMetaData(getMetadata(project.getKModuleXMLPath()));
+            model.setPathToKModule(project.getKModuleXMLPath());
         }
 
         private void loadImports() {
-            model.setProjectImports( importsService.load( project.getImportsPath() ) );
-            model.setProjectImportsMetaData( getMetadata( project.getImportsPath() ) );
-            model.setPathToImports( project.getImportsPath() );
+            model.setProjectImports(importsService.load(project.getImportsPath()));
+            model.setProjectImportsMetaData(getMetadata(project.getImportsPath()));
+            model.setPathToImports(project.getImportsPath());
         }
 
         private void loadRepositories() {
-            model.setRepositories( repositoriesService.load( project.getRepositoriesPath() ) );
-            model.setPathToRepositories( project.getRepositoriesPath() );
+            model.setRepositories(repositoriesService.load(project.getRepositoriesPath()));
+            model.setPathToRepositories(project.getRepositoriesPath());
         }
 
         private void loadWhiteList() {
-            model.setWhiteList( whiteListService.load( project.getPackageNamesWhiteListPath() ) );
-            model.setWhiteListMetaData( getMetadata( project.getPackageNamesWhiteListPath() ) );
-            model.setPathToWhiteList( project.getPackageNamesWhiteListPath() );
+            model.setWhiteList(whiteListService.load(project.getPackageNamesWhiteListPath()));
+            model.setWhiteListMetaData(getMetadata(project.getPackageNamesWhiteListPath()));
+            model.setPathToWhiteList(project.getPackageNamesWhiteListPath());
         }
 
-        private Metadata getMetadata( final Path path ) {
-            if ( fileExists( path ) ) {
-                return metadataService.getMetadata( path );
+        private Metadata getMetadata(final Path path) {
+            if (fileExists(path)) {
+                return metadataService.getMetadata(path);
             } else {
                 return new Metadata();
             }

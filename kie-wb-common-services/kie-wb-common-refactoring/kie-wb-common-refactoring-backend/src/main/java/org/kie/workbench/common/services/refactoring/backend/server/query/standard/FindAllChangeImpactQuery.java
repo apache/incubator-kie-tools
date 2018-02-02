@@ -16,7 +16,6 @@
 package org.kie.workbench.common.services.refactoring.backend.server.query.standard;
 
 import java.util.Set;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -24,12 +23,12 @@ import org.apache.lucene.search.Query;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.DefaultResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValuePartReferenceIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueProjectNameIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueProjectRootPathIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueReferenceIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueBranchNameIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueModuleNameIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueModuleRootPathIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValuePartReferenceIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueReferenceIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueSharedPartIndexTerm;
 
 @ApplicationScoped
@@ -46,7 +45,7 @@ public class FindAllChangeImpactQuery extends AbstractFindQuery implements Named
     }
 
     @Override
-    public Query toQuery( final Set<ValueIndexTerm> terms ) {
+    public Query toQuery(final Set<ValueIndexTerm> terms) {
 
         checkNotNullAndNotEmpty(terms);
 
@@ -65,25 +64,24 @@ public class FindAllChangeImpactQuery extends AbstractFindQuery implements Named
     @SuppressWarnings("unchecked")
     public void validateTerms(Set<ValueIndexTerm> queryTerms) throws IllegalArgumentException {
 
-        Class<? extends ValueIndexTerm> [] acceptedTermClasses = new Class[] {
+        Class<? extends ValueIndexTerm>[] acceptedTermClasses = new Class[]{
                 ValueReferenceIndexTerm.class,
                 ValuePartReferenceIndexTerm.class,
                 ValueSharedPartIndexTerm.class,
                 ValueBranchNameIndexTerm.class,
-                ValueProjectNameIndexTerm.class,
-                ValueProjectRootPathIndexTerm.class
+                ValueModuleNameIndexTerm.class,
+                ValueModuleRootPathIndexTerm.class
         };
 
         // check invalid
-        TERMS: for( ValueIndexTerm term : queryTerms ) {
-            for( int i = 0; i < acceptedTermClasses.length; ++i ) {
-                if( acceptedTermClasses[i].isInstance(term) ) {
+        TERMS:
+        for (ValueIndexTerm term : queryTerms) {
+            for (int i = 0; i < acceptedTermClasses.length; ++i) {
+                if (acceptedTermClasses[i].isInstance(term)) {
                     continue TERMS;
                 }
             }
-            throw new IllegalArgumentException( "Index term '" + term.getTerm() + "' can not be used with the " + NAME );
+            throw new IllegalArgumentException("Index term '" + term.getTerm() + "' can not be used with the " + NAME);
         }
-
     }
-
 }

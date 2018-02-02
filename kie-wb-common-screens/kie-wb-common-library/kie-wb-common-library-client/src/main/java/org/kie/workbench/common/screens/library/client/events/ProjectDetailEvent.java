@@ -15,24 +15,24 @@
  */
 package org.kie.workbench.common.screens.library.client.events;
 
-import org.kie.workbench.common.screens.library.api.ProjectInfo;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public class ProjectDetailEvent {
 
-    private ProjectInfo projectInfo;
+    private WorkspaceProject projectInfo;
 
     public ProjectDetailEvent() {
 
     }
 
-    public ProjectDetailEvent(final ProjectInfo projectInfo) {
-        this.projectInfo = checkNotNull("projectInfo",
-                                        projectInfo);
+    public ProjectDetailEvent(final WorkspaceProject project) {
+        this.projectInfo = checkNotNull("project",
+                                        project);
     }
 
-    public ProjectInfo getProjectInfo() {
+    public WorkspaceProject getProject() {
         return projectInfo;
     }
 
@@ -47,11 +47,11 @@ public class ProjectDetailEvent {
 
         final ProjectDetailEvent that = (ProjectDetailEvent) o;
 
-        return !(getProjectInfo() != null ? !getProjectInfo().equals(that.getProjectInfo()) : that.getProjectInfo() != null);
+        return !(getProject() != null ? !getProject().equals(that.getProject()) : that.getProject() != null);
     }
 
     @Override
     public int hashCode() {
-        return getProjectInfo() != null ? getProjectInfo().hashCode() : 0;
+        return getProject() != null ? getProject().hashCode() : 0;
     }
 }

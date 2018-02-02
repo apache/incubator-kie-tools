@@ -22,10 +22,10 @@ import org.apache.lucene.analysis.Analyzer;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.screens.library.api.index.LibraryFileNameIndexTerm;
-import org.kie.workbench.common.screens.library.api.index.LibraryProjectRootPathIndexTerm;
+import org.kie.workbench.common.screens.library.api.index.LibraryModuleRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.LowerCaseOnlyAnalyzer;
+import org.kie.workbench.common.services.refactoring.model.index.terms.ModuleRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.PackageNameIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
 import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
 
@@ -47,8 +47,8 @@ public class DefaultLuceneConfigProducerTest {
         assertEquals(5,
                      analyzers.size());
         assertTrue(analyzers.get(LibraryFileNameIndexTerm.TERM) instanceof FilenameAnalyzer);
-        assertTrue(analyzers.get(LibraryProjectRootPathIndexTerm.TERM) instanceof FilenameAnalyzer);
-        assertTrue(analyzers.get(ProjectRootPathIndexTerm.TERM) instanceof FilenameAnalyzer);
+        assertTrue(analyzers.get(LibraryModuleRootPathIndexTerm.TERM) instanceof FilenameAnalyzer);
+        assertTrue(analyzers.get(ModuleRootPathIndexTerm.TERM) instanceof FilenameAnalyzer);
         assertTrue(analyzers.get(PackageNameIndexTerm.TERM) instanceof LowerCaseOnlyAnalyzer);
         assertTrue(analyzers.get(LuceneIndex.CUSTOM_FIELD_FILENAME) instanceof FilenameAnalyzer);
     }

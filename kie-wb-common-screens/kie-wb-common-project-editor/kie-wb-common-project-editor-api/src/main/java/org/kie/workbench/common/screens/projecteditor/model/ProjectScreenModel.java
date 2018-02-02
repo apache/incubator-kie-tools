@@ -15,9 +15,9 @@
 
 package org.kie.workbench.common.screens.projecteditor.model;
 
+import org.guvnor.common.services.project.model.ModuleRepositories;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
-import org.guvnor.common.services.project.model.ProjectRepositories;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
@@ -30,7 +30,7 @@ public class ProjectScreenModel {
     private POM pom;
     private KModuleModel KModule;
     private ProjectImports projectImports;
-    private ProjectRepositories repositories;
+    private ModuleRepositories repositories;
     private WhiteList whiteList;
     private Metadata POMMetaData;
     private Metadata KModuleMetaData;
@@ -47,7 +47,7 @@ public class ProjectScreenModel {
         return pom;
     }
 
-    public void setPOM( final POM pom ) {
+    public void setPOM(final POM pom) {
         this.pom = pom;
     }
 
@@ -55,7 +55,7 @@ public class ProjectScreenModel {
         return KModule;
     }
 
-    public void setKModule( final KModuleModel KModule ) {
+    public void setKModule(final KModuleModel KModule) {
         this.KModule = KModule;
     }
 
@@ -63,15 +63,15 @@ public class ProjectScreenModel {
         return projectImports;
     }
 
-    public void setProjectImports( final ProjectImports projectImports ) {
+    public void setProjectImports(final ProjectImports projectImports) {
         this.projectImports = projectImports;
     }
 
-    public ProjectRepositories getRepositories() {
+    public ModuleRepositories getRepositories() {
         return repositories;
     }
 
-    public void setRepositories( final ProjectRepositories repositories ) {
+    public void setRepositories(final ModuleRepositories repositories) {
         this.repositories = repositories;
     }
 
@@ -79,7 +79,7 @@ public class ProjectScreenModel {
         return whiteList;
     }
 
-    public void setWhiteList( final WhiteList whiteList ) {
+    public void setWhiteList(final WhiteList whiteList) {
         this.whiteList = whiteList;
     }
 
@@ -87,7 +87,7 @@ public class ProjectScreenModel {
         return POMMetaData;
     }
 
-    public void setPOMMetaData( final Metadata POMMetaData ) {
+    public void setPOMMetaData(final Metadata POMMetaData) {
         this.POMMetaData = POMMetaData;
     }
 
@@ -95,7 +95,7 @@ public class ProjectScreenModel {
         return KModuleMetaData;
     }
 
-    public void setKModuleMetaData( final Metadata KModuleMetaData ) {
+    public void setKModuleMetaData(final Metadata KModuleMetaData) {
         this.KModuleMetaData = KModuleMetaData;
     }
 
@@ -103,7 +103,7 @@ public class ProjectScreenModel {
         return projectImportsMetaData;
     }
 
-    public void setProjectImportsMetaData( final Metadata projectImportsMetaData ) {
+    public void setProjectImportsMetaData(final Metadata projectImportsMetaData) {
         this.projectImportsMetaData = projectImportsMetaData;
     }
 
@@ -111,7 +111,7 @@ public class ProjectScreenModel {
         return projectTagsMetaData;
     }
 
-    public void setProjectTagsMetaData( final Metadata projectTagsMetaData ) {
+    public void setProjectTagsMetaData(final Metadata projectTagsMetaData) {
         this.projectTagsMetaData = projectTagsMetaData;
     }
 
@@ -119,7 +119,7 @@ public class ProjectScreenModel {
         return whiteListMetaData;
     }
 
-    public void setWhiteListMetaData( final Metadata whiteListMetaData ) {
+    public void setWhiteListMetaData(final Metadata whiteListMetaData) {
         this.whiteListMetaData = whiteListMetaData;
     }
 
@@ -127,7 +127,7 @@ public class ProjectScreenModel {
         return pathToPOM;
     }
 
-    public void setPathToPOM( final Path pathToPOM ) {
+    public void setPathToPOM(final Path pathToPOM) {
         this.pathToPOM = pathToPOM;
     }
 
@@ -135,7 +135,7 @@ public class ProjectScreenModel {
         return pathToKModule;
     }
 
-    public void setPathToKModule( final Path pathToKModule ) {
+    public void setPathToKModule(final Path pathToKModule) {
         this.pathToKModule = pathToKModule;
     }
 
@@ -143,7 +143,7 @@ public class ProjectScreenModel {
         return pathToImports;
     }
 
-    public void setPathToImports( final Path pathToImports ) {
+    public void setPathToImports(final Path pathToImports) {
         this.pathToImports = pathToImports;
     }
 
@@ -151,7 +151,7 @@ public class ProjectScreenModel {
         return pathToRepositories;
     }
 
-    public void setPathToRepositories( final Path pathToRepositories ) {
+    public void setPathToRepositories(final Path pathToRepositories) {
         this.pathToRepositories = pathToRepositories;
     }
 
@@ -159,64 +159,64 @@ public class ProjectScreenModel {
         return pathToWhiteList;
     }
 
-    public void setPathToWhiteList( final Path pathToWhiteList ) {
+    public void setPathToWhiteList(final Path pathToWhiteList) {
         this.pathToWhiteList = pathToWhiteList;
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null || getClass() != o.getClass() ) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
         ProjectScreenModel that = (ProjectScreenModel) o;
 
-        if ( pom != null ? !pom.equals( that.pom ) : that.pom != null ) {
+        if (pom != null ? !pom.equals(that.pom) : that.pom != null) {
             return false;
         }
-        if ( pathToPOM != null ? !pathToPOM.equals( that.pathToPOM ) : that.pathToPOM != null ) {
+        if (pathToPOM != null ? !pathToPOM.equals(that.pathToPOM) : that.pathToPOM != null) {
             return false;
         }
-        if ( POMMetaData != null ? !POMMetaData.equals( that.POMMetaData ) : that.POMMetaData != null ) {
+        if (POMMetaData != null ? !POMMetaData.equals(that.POMMetaData) : that.POMMetaData != null) {
             return false;
         }
-        if ( KModule != null ? !KModule.equals( that.KModule ) : that.KModule != null ) {
+        if (KModule != null ? !KModule.equals(that.KModule) : that.KModule != null) {
             return false;
         }
-        if ( pathToKModule != null ? !pathToKModule.equals( that.pathToKModule ) : that.pathToKModule != null ) {
+        if (pathToKModule != null ? !pathToKModule.equals(that.pathToKModule) : that.pathToKModule != null) {
             return false;
         }
-        if ( KModuleMetaData != null ? !KModuleMetaData.equals( that.KModuleMetaData ) : that.KModuleMetaData != null ) {
+        if (KModuleMetaData != null ? !KModuleMetaData.equals(that.KModuleMetaData) : that.KModuleMetaData != null) {
             return false;
         }
-        if ( projectTagsMetaData != null ? !projectTagsMetaData.equals( that.projectTagsMetaData ) : that.projectTagsMetaData != null ) {
+        if (projectTagsMetaData != null ? !projectTagsMetaData.equals(that.projectTagsMetaData) : that.projectTagsMetaData != null) {
             return false;
         }
-        if ( projectImports != null ? !projectImports.equals( that.projectImports ) : that.projectImports != null ) {
+        if (projectImports != null ? !projectImports.equals(that.projectImports) : that.projectImports != null) {
             return false;
         }
-        if ( pathToImports != null ? !pathToImports.equals( that.pathToImports ) : that.pathToImports != null ) {
+        if (pathToImports != null ? !pathToImports.equals(that.pathToImports) : that.pathToImports != null) {
             return false;
         }
-        if ( projectImportsMetaData != null ? !projectImportsMetaData.equals( that.projectImportsMetaData ) : that.projectImportsMetaData != null ) {
+        if (projectImportsMetaData != null ? !projectImportsMetaData.equals(that.projectImportsMetaData) : that.projectImportsMetaData != null) {
             return false;
         }
-        if ( whiteList != null ? !whiteList.equals( that.whiteList ) : that.whiteList != null ) {
+        if (whiteList != null ? !whiteList.equals(that.whiteList) : that.whiteList != null) {
             return false;
         }
-        if ( pathToWhiteList != null ? !pathToWhiteList.equals( that.pathToWhiteList ) : that.pathToWhiteList != null ) {
+        if (pathToWhiteList != null ? !pathToWhiteList.equals(that.pathToWhiteList) : that.pathToWhiteList != null) {
             return false;
         }
-        if ( whiteListMetaData != null ? !whiteListMetaData.equals( that.whiteListMetaData ) : that.whiteListMetaData != null ) {
+        if (whiteListMetaData != null ? !whiteListMetaData.equals(that.whiteListMetaData) : that.whiteListMetaData != null) {
             return false;
         }
-        if ( repositories != null ? !repositories.equals( that.repositories ) : that.repositories != null ) {
+        if (repositories != null ? !repositories.equals(that.repositories) : that.repositories != null) {
             return false;
         }
-        if ( pathToRepositories != null ? !pathToRepositories.equals( that.pathToRepositories ) : that.pathToRepositories != null ) {
+        if (pathToRepositories != null ? !pathToRepositories.equals(that.pathToRepositories) : that.pathToRepositories != null) {
             return false;
         }
 
@@ -226,35 +226,34 @@ public class ProjectScreenModel {
     @Override
     public int hashCode() {
         int result = pom != null ? pom.hashCode() : 0;
-        result = 31 * result + ( pathToPOM != null ? pathToPOM.hashCode() : 0 );
+        result = 31 * result + (pathToPOM != null ? pathToPOM.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( POMMetaData != null ? POMMetaData.hashCode() : 0 );
+        result = 31 * result + (POMMetaData != null ? POMMetaData.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( KModule != null ? KModule.hashCode() : 0 );
+        result = 31 * result + (KModule != null ? KModule.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( pathToKModule != null ? pathToKModule.hashCode() : 0 );
+        result = 31 * result + (pathToKModule != null ? pathToKModule.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( KModuleMetaData != null ? KModuleMetaData.hashCode() : 0 );
+        result = 31 * result + (KModuleMetaData != null ? KModuleMetaData.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( projectImports != null ? projectImports.hashCode() : 0 );
+        result = 31 * result + (projectImports != null ? projectImports.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( pathToImports != null ? pathToImports.hashCode() : 0 );
+        result = 31 * result + (pathToImports != null ? pathToImports.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( projectImportsMetaData != null ? projectImportsMetaData.hashCode() : 0 );
+        result = 31 * result + (projectImportsMetaData != null ? projectImportsMetaData.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( projectTagsMetaData != null ? projectTagsMetaData.hashCode() : 0 );
+        result = 31 * result + (projectTagsMetaData != null ? projectTagsMetaData.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( whiteList != null ? whiteList.hashCode() : 0 );
+        result = 31 * result + (whiteList != null ? whiteList.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( pathToWhiteList != null ? pathToWhiteList.hashCode() : 0 );
+        result = 31 * result + (pathToWhiteList != null ? pathToWhiteList.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( whiteListMetaData != null ? whiteListMetaData.hashCode() : 0 );
+        result = 31 * result + (whiteListMetaData != null ? whiteListMetaData.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( repositories != null ? repositories.hashCode() : 0 );
+        result = 31 * result + (repositories != null ? repositories.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( pathToRepositories != null ? pathToRepositories.hashCode() : 0 );
+        result = 31 * result + (pathToRepositories != null ? pathToRepositories.hashCode() : 0);
         result = ~~result;
         return result;
     }
-
 }

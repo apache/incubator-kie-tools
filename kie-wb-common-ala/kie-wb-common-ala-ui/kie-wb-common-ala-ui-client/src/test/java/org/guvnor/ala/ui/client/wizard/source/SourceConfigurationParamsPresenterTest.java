@@ -16,6 +16,15 @@
 
 package org.guvnor.ala.ui.client.wizard.source;
 
+import static org.guvnor.ala.ui.client.util.UIUtil.EMPTY_STRING;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +34,7 @@ import org.guvnor.ala.ui.client.util.ContentChangeHandler;
 import org.guvnor.ala.ui.client.widget.FormStatus;
 import org.guvnor.ala.ui.client.wizard.NewDeployWizard;
 import org.guvnor.ala.ui.service.SourceService;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.jboss.errai.common.client.api.Caller;
 import org.junit.Assert;
 import org.junit.Before;
@@ -33,10 +42,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.mocks.CallerMock;
-
-import static org.guvnor.ala.ui.client.util.UIUtil.EMPTY_STRING;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import org.uberfire.spaces.Space;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class SourceConfigurationParamsPresenterTest {
@@ -53,7 +59,9 @@ public class SourceConfigurationParamsPresenterTest {
 
     private static final String BRANCH = "BRANCH";
 
-    private static final String PROJECT = "PROJECT";
+    private static final String MODULE = "PROJECT";
+
+    private static final Space SPACE = new Space(OU);
 
     @Mock
     private SourceConfigurationParamsPresenter.View view;
@@ -74,14 +82,14 @@ public class SourceConfigurationParamsPresenterTest {
 
     private List<String> branches;
 
-    private List<Project> projects;
+    private List<Module> modules;
 
     @Before
     public void setUp() {
         ous = createOUs();
         repositories = createRepositories();
         branches = createBranches();
-        projects = createProjects();
+        modules = createModules();
 
         sourceServiceCaller = spy(new CallerMock<>(sourceService));
         presenter = new SourceConfigurationParamsPresenter(view,
@@ -105,7 +113,7 @@ public class SourceConfigurationParamsPresenterTest {
         verify(view,
                times(1)).clearBranches();
         verify(view,
-               times(1)).clearProjects();
+               times(1)).clearModules();
     }
 
     @Test
@@ -114,7 +122,7 @@ public class SourceConfigurationParamsPresenterTest {
         when(view.getOU()).thenReturn(EMPTY_STRING);
         when(view.getRepository()).thenReturn(EMPTY_STRING);
         when(view.getBranch()).thenReturn(EMPTY_STRING);
-        when(view.getProject()).thenReturn(EMPTY_STRING);
+        when(view.getModule()).thenReturn(EMPTY_STRING);
 
         presenter.isComplete(Assert::assertFalse);
 
@@ -129,15 +137,16 @@ public class SourceConfigurationParamsPresenterTest {
 
         //now the branch is completed and emulate the projects are loaded.
         when(view.getBranch()).thenReturn(BRANCH);
-        when(sourceService.getProjects(REPOSITORY,
-                                       BRANCH)).thenReturn(projects);
+        when(sourceService.getModules(eq(SPACE),
+                                      eq(REPOSITORY),
+                                      eq(BRANCH))).thenReturn(modules);
 
         presenter.onBranchChange();
 
         //pick an arbitrary project as the selected one
-        int selectedProject = 1;
-        String projectName = projects.get(selectedProject).getProjectName();
-        when(view.getProject()).thenReturn(projectName);
+        int selectedModule = 1;
+        String moduleName = modules.get(selectedModule).getModuleName();
+        when(view.getModule()).thenReturn(moduleName);
         //completed when al values are in place.
         presenter.isComplete(Assert::assertTrue);
     }
@@ -149,14 +158,16 @@ public class SourceConfigurationParamsPresenterTest {
         when(view.getOU()).thenReturn(OU);
         when(view.getRepository()).thenReturn(REPOSITORY);
         when(view.getBranch()).thenReturn(BRANCH);
-        when(sourceService.getProjects(REPOSITORY,
-                                       BRANCH)).thenReturn(projects);
+        when(sourceService.getModules(eq(SPACE),
+                                      eq(REPOSITORY),
+                                      eq(BRANCH))).thenReturn(modules);
+        when(view.getModule()).thenReturn(MODULE);
         presenter.onBranchChange();
 
         //pick an arbitrary project as the selected one
-        int selectedProject = 2;
-        String projectName = projects.get(selectedProject).getProjectName();
-        when(view.getProject()).thenReturn(projectName);
+        int selectedModule = 2;
+        String moduleName = modules.get(selectedModule).getModuleName();
+        when(view.getModule()).thenReturn(moduleName);
 
         Map<String, String> params = presenter.buildParams();
         assertEquals(RUNTIME_NAME,
@@ -165,8 +176,8 @@ public class SourceConfigurationParamsPresenterTest {
                      params.get(SourceConfigurationParamsPresenter.REPO_NAME));
         assertEquals(BRANCH,
                      params.get(SourceConfigurationParamsPresenter.BRANCH));
-        assertEquals(projectName,
-                     params.get(SourceConfigurationParamsPresenter.PROJECT_DIR));
+        assertEquals(moduleName,
+                     params.get(SourceConfigurationParamsPresenter.MODULE_DIR));
     }
 
     @Test
@@ -217,7 +228,7 @@ public class SourceConfigurationParamsPresenterTest {
         verify(view,
                times(2)).clearBranches();
         verify(view,
-               times(2)).clearProjects();
+               times(2)).clearModules();
 
         verityRepositoriesWereLoaded();
         verifyHandlerNotified();
@@ -235,7 +246,8 @@ public class SourceConfigurationParamsPresenterTest {
     @Test
     public void testOnRepositoryChangeValid() {
         when(view.getRepository()).thenReturn(REPOSITORY);
-        when(sourceService.getBranches(REPOSITORY)).thenReturn(branches);
+        when(view.getOU()).thenReturn(OU);
+        when(sourceService.getBranches(eq(SPACE), eq(REPOSITORY))).thenReturn(branches);
         presenter.onRepositoryChange();
 
         verify(view,
@@ -244,7 +256,7 @@ public class SourceConfigurationParamsPresenterTest {
         verify(view,
                times(2)).clearBranches();
         verify(view,
-               times(2)).clearProjects();
+               times(2)).clearModules();
 
         verifyBranchesWereLoaded();
         verifyHandlerNotified();
@@ -261,10 +273,12 @@ public class SourceConfigurationParamsPresenterTest {
 
     @Test
     public void testOnBranchChangeValid() {
+        when(view.getOU()).thenReturn(OU);
         when(view.getRepository()).thenReturn(REPOSITORY);
         when(view.getBranch()).thenReturn(BRANCH);
-        when(sourceService.getProjects(REPOSITORY,
-                                       BRANCH)).thenReturn(projects);
+        when(sourceService.getModules(eq(SPACE),
+                                      eq(REPOSITORY),
+                                      eq(BRANCH))).thenReturn(modules);
 
         presenter.onBranchChange();
 
@@ -272,7 +286,7 @@ public class SourceConfigurationParamsPresenterTest {
                times(1)).setBranchStatus(FormStatus.VALID);
 
         verify(view,
-               times(2)).clearProjects();
+               times(2)).clearModules();
 
         verifyProjectsWereLoaded();
         verifyHandlerNotified();
@@ -289,8 +303,8 @@ public class SourceConfigurationParamsPresenterTest {
 
     @Test
     public void testOnProjectChangeValid() {
-        when(view.getProject()).thenReturn(PROJECT);
-        presenter.onProjectChange();
+        when(view.getModule()).thenReturn(MODULE);
+        presenter.onModuleChange();
         verify(view,
                times(1)).setProjectStatus(FormStatus.VALID);
         verifyHandlerNotified();
@@ -298,8 +312,8 @@ public class SourceConfigurationParamsPresenterTest {
 
     @Test
     public void testOnProjectChangeInValid() {
-        when(view.getProject()).thenReturn(EMPTY_STRING);
-        presenter.onProjectChange();
+        when(view.getModule()).thenReturn(EMPTY_STRING);
+        presenter.onModuleChange();
         verify(view,
                times(1)).setProjectStatus(FormStatus.ERROR);
         verifyHandlerNotified();
@@ -316,8 +330,8 @@ public class SourceConfigurationParamsPresenterTest {
     }
 
     private void verifyProjectsWereLoaded() {
-        projects.forEach(project -> verify(view,
-                                           times(1)).addProject(project.getProjectName()));
+        modules.forEach(module -> verify(view,
+                                         times(1)).addModule(module.getModuleName()));
     }
 
     private List<String> createOUs() {
@@ -335,12 +349,12 @@ public class SourceConfigurationParamsPresenterTest {
                             "Branch.name.");
     }
 
-    private List<Project> createProjects() {
-        List<Project> elements = new ArrayList<>();
+    private List<Module> createModules() {
+        List<Module> elements = new ArrayList<>();
         for (int i = 0; i < ELEMENTS_SIZE; i++) {
-            Project project = mock(Project.class);
-            when(project.getProjectName()).thenReturn("Project.name." + i);
-            elements.add(project);
+            Module module = mock(Module.class);
+            when(module.getModuleName()).thenReturn("Module.name." + i);
+            elements.add(module);
         }
         return elements;
     }

@@ -24,8 +24,8 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
 import org.kie.workbench.common.services.shared.whitelist.WhiteList;
 import org.mockito.Mock;
@@ -56,109 +56,108 @@ public class PackageNameWhiteListServiceImplTest {
 
     @Before
     public void setUp() throws Exception {
-        when( packageNameSearchProvider.newTopLevelPackageNamesSearch( any( POM.class ) ) ).thenReturn( mock( PackageNameSearchProvider.PackageNameSearch.class ) );
+        when(packageNameSearchProvider.newTopLevelPackageNamesSearch(any(POM.class))).thenReturn(mock(PackageNameSearchProvider.PackageNameSearch.class));
     }
-
 
     @Test
     public void ifWhiteListIsEmptyWhiteListEverything() throws
-                                                        Exception {
-        final PackageNameWhiteListService packageNameWhiteListService = makeService( "" );
+            Exception {
+        final PackageNameWhiteListService packageNameWhiteListService = makeService("");
 
-        WhiteList filterPackageNames = packageNameWhiteListService.filterPackageNames( mock( KieProject.class ),
-                                                                                       new ArrayList<String>
-                                                                                               () {{
-                                                                                           add( "a" );
-                                                                                           add( "b" );
-                                                                                           add( "c" );
-                                                                                       }} );
+        WhiteList filterPackageNames = packageNameWhiteListService.filterPackageNames(mock(KieModule.class),
+                                                                                      new ArrayList<String>
+                                                                                              () {{
+                                                                                          add("a");
+                                                                                          add("b");
+                                                                                          add("c");
+                                                                                      }});
 
-        assertEquals( 3,
-                      filterPackageNames.size() );
-        assertTrue( filterPackageNames.contains( "a" ) );
-        assertTrue( filterPackageNames.contains( "b" ) );
-        assertTrue( filterPackageNames.contains( "c" ) );
+        assertEquals(3,
+                     filterPackageNames.size());
+        assertTrue(filterPackageNames.contains("a"));
+        assertTrue(filterPackageNames.contains("b"));
+        assertTrue(filterPackageNames.contains("c"));
     }
 
     @Test
     public void testWindowsEncoding() {
 
-        final PackageNameWhiteListService packageNameWhiteListService = makeService( "a.**\r\nb\r\n" );
-        final Set<String> results = packageNameWhiteListService.filterPackageNames( mock( KieProject.class ),
-                                                                                    new ArrayList<String>() {{
-                                                                                        add( "a" );
-                                                                                        add( "b" );
-                                                                                        add( "a.b" );
-                                                                                    }} );
-        assertEquals( 3,
-                      results.size() );
-        assertContains( "a",
-                        results );
-        assertContains( "b",
-                        results );
-        assertContains( "a.b",
-                        results );
+        final PackageNameWhiteListService packageNameWhiteListService = makeService("a.**\r\nb\r\n");
+        final Set<String> results = packageNameWhiteListService.filterPackageNames(mock(KieModule.class),
+                                                                                   new ArrayList<String>() {{
+                                                                                       add("a");
+                                                                                       add("b");
+                                                                                       add("a.b");
+                                                                                   }});
+        assertEquals(3,
+                     results.size());
+        assertContains("a",
+                       results);
+        assertContains("b",
+                       results);
+        assertContains("a.b",
+                       results);
     }
 
     @Test
     public void testSave() throws Exception {
-        final PackageNameWhiteListService service = makeService( "" );
+        final PackageNameWhiteListService service = makeService("");
 
-        final Path path = mock( Path.class );
+        final Path path = mock(Path.class);
         final WhiteList whiteList = new WhiteList();
         final Metadata metadata = new Metadata();
         final String comment = "comment";
 
-        service.save( path,
-                      whiteList,
-                      metadata,
-                      comment );
+        service.save(path,
+                     whiteList,
+                     metadata,
+                     comment);
 
-        verify( saver ).save( path,
-                              whiteList,
-                              metadata,
-                              comment );
+        verify(saver).save(path,
+                           whiteList,
+                           metadata,
+                           comment);
     }
 
     @Test
     public void testUnixEncoding() {
-        final PackageNameWhiteListService packageNameWhiteListService = makeService( "a.**\nb\n" );
-        final Set<String> results = packageNameWhiteListService.filterPackageNames( mock( KieProject.class ),
-                                                                                    new ArrayList<String>() {{
-                                                                                        add( "a" );
-                                                                                        add( "b" );
-                                                                                        add( "a.b" );
-                                                                                    }} );
-        assertEquals( 3,
-                      results.size() );
-        assertContains( "a",
-                        results );
-        assertContains( "b",
-                        results );
-        assertContains( "a.b",
-                        results );
+        final PackageNameWhiteListService packageNameWhiteListService = makeService("a.**\nb\n");
+        final Set<String> results = packageNameWhiteListService.filterPackageNames(mock(KieModule.class),
+                                                                                   new ArrayList<String>() {{
+                                                                                       add("a");
+                                                                                       add("b");
+                                                                                       add("a.b");
+                                                                                   }});
+        assertEquals(3,
+                     results.size());
+        assertContains("a",
+                       results);
+        assertContains("b",
+                       results);
+        assertContains("a.b",
+                       results);
     }
 
-    private void assertContains( final String expected,
-                                 final Set<String> actual ) {
-        for ( String a : actual ) {
-            if ( expected.equals( a ) ) {
+    private void assertContains(final String expected,
+                                final Set<String> actual) {
+        for (String a : actual) {
+            if (expected.equals(a)) {
                 return;
             }
         }
-        fail( "Expected pattern '" + expected + "' was not found in actual." );
+        fail("Expected pattern '" + expected + "' was not found in actual.");
     }
 
-    private PackageNameWhiteListService makeService( final String content ) {
-        return new PackageNameWhiteListServiceImpl( mock( IOService.class ),
-                                                    mock( KieProjectService.class ),
-                                                    new PackageNameWhiteListLoader( packageNameSearchProvider,
-                                                                                    mock( IOService.class ) ) {
-                                                        @Override
-                                                        protected String loadContent( final Path packageNamesWhiteListPath ) {
-                                                            return content;
-                                                        }
-                                                    },
-                                                    saver );
+    private PackageNameWhiteListService makeService(final String content) {
+        return new PackageNameWhiteListServiceImpl(mock(IOService.class),
+                                                   mock(KieModuleService.class),
+                                                   new PackageNameWhiteListLoader(packageNameSearchProvider,
+                                                                                  mock(IOService.class)) {
+                                                       @Override
+                                                       protected String loadContent(final Path packageNamesWhiteListPath) {
+                                                           return content;
+                                                       }
+                                                   },
+                                                   saver);
     }
 }

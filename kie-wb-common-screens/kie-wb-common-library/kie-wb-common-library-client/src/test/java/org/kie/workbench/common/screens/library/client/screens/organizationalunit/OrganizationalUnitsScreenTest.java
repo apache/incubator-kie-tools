@@ -21,7 +21,8 @@ import java.util.Collections;
 import java.util.List;
 import javax.enterprise.event.Event;
 
-import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
+import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.events.AfterCreateOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -41,8 +42,10 @@ import org.kie.workbench.common.screens.library.client.widgets.common.TileWidget
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
+import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.*;
+import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.COLUMN_DATE;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -69,7 +72,7 @@ public class OrganizationalUnitsScreenTest {
     private ManagedInstance<TileWidget> organizationalUnitTileWidgets;
 
     @Mock
-    private Event<ProjectContextChangeEvent> projectContextChangeEvent;
+    private Event<WorkspaceProjectContextChangeEvent> projectContextChangeEvent;
 
     @Mock
     private LibraryInternalPreferences libraryInternalPreferences;
@@ -121,6 +124,7 @@ public class OrganizationalUnitsScreenTest {
                                                       organizationalUnitController,
                                                       organizationalUnitTileWidgets,
                                                       projectContextChangeEvent,
+                                                      mock(WorkspaceProjectContext.class),
                                                       libraryInternalPreferences,
                                                       emptyOrganizationalUnitsScreen));
 

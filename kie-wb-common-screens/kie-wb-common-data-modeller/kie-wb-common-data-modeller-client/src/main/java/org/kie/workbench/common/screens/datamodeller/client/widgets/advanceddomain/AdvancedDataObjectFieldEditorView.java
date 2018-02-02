@@ -22,7 +22,7 @@ import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddoma
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.BaseEditorView;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.ElementType;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieModule;
 
 public interface AdvancedDataObjectFieldEditorView
         extends BaseEditorView<AdvancedDataObjectFieldEditorView.Presenter> {
@@ -31,14 +31,13 @@ public interface AdvancedDataObjectFieldEditorView
 
     }
 
-    void init( KieProject project, ElementType elementType );
+    void init(KieModule project, ElementType elementType);
 
-    void loadAnnotations( List<Annotation> annotations );
+    void loadAnnotations(List<Annotation> annotations);
 
-    void removeAnnotation( Annotation annotation );
+    void removeAnnotation(Annotation annotation);
 
-    void setReadonly( boolean readonly );
+    void setReadonly(boolean readonly);
 
     void clear();
-
 }

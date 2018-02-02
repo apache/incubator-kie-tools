@@ -18,7 +18,7 @@ package org.kie.workbench.common.screens.datasource.management.service;
 
 import java.util.List;
 
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.screens.datasource.management.model.DriverDef;
@@ -28,15 +28,19 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface DriverDefEditorService {
 
-    DriverDefEditorContent loadContent( final Path path );
+    DriverDefEditorContent loadContent(final Path path);
 
-    Path save( final Path path, final DriverDefEditorContent editorContent, final String comment );
+    Path save(final Path path,
+              final DriverDefEditorContent editorContent,
+              final String comment);
 
-    Path create( final DriverDef driverDef, final Project project );
+    Path create(final DriverDef driverDef,
+                final Module module);
 
-    Path createGlobal( final DriverDef driverDef );
+    Path createGlobal(final DriverDef driverDef);
 
-    void delete( final Path path, final String comment );
+    void delete(final Path path,
+                final String comment);
 
-    List<ValidationMessage> validate( final DriverDef driverDef );
+    List<ValidationMessage> validate(final DriverDef driverDef);
 }

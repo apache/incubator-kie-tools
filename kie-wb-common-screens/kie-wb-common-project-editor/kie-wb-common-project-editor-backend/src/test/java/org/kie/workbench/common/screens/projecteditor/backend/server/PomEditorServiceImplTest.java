@@ -29,12 +29,12 @@ import org.guvnor.common.services.project.backend.server.utils.POMContentHandler
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.MavenRepositorySource;
+import org.guvnor.common.services.project.model.ModuleRepositories;
 import org.guvnor.common.services.project.model.POM;
-import org.guvnor.common.services.project.model.ProjectRepositories;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
-import org.guvnor.common.services.project.service.ProjectRepositoriesService;
-import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
+import org.guvnor.common.services.project.service.ModuleRepositoriesService;
+import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -43,8 +43,8 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorContent;
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorService;
 import org.kie.workbench.common.screens.projecteditor.service.PomEditorService;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -72,13 +72,13 @@ public class PomEditorServiceImplTest {
     private CommentedOptionFactory commentedOptionFactory;
 
     @Mock
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     @Mock
-    private ProjectRepositoryResolver repositoryResolver;
+    private ModuleRepositoryResolver repositoryResolver;
 
     @Mock
-    private ProjectRepositoriesService projectRepositoriesService;
+    private ModuleRepositoriesService moduleRepositoriesService;
 
     @Mock
     private Path pomPath;
@@ -87,13 +87,13 @@ public class PomEditorServiceImplTest {
     private Metadata metaData;
 
     @Mock
-    private KieProject project;
+    private KieModule module;
 
     @Mock
     private POM pom;
 
     @Mock
-    private Path projectRepositoriesPath;
+    private Path moduleRepositoriesPath;
 
     private PomEditorService service;
 
@@ -120,354 +120,350 @@ public class PomEditorServiceImplTest {
     @BeforeClass
     public static void setupSystemProperties() {
         //These are not needed for the tests
-        System.setProperty( "org.uberfire.nio.git.daemon.enabled",
-                            "false" );
-        System.setProperty( "org.uberfire.nio.git.ssh.enabled",
-                            "false" );
-        System.setProperty( "org.uberfire.sys.repo.monitor.disabled",
-                            "true" );
+        System.setProperty("org.uberfire.nio.git.daemon.enabled",
+                           "false");
+        System.setProperty("org.uberfire.nio.git.ssh.enabled",
+                           "false");
+        System.setProperty("org.uberfire.sys.repo.monitor.disabled",
+                           "true");
     }
 
     @Before
     public void setup() {
-        service = new PomEditorServiceImpl( ioService,
-                                            defaultEditorService,
-                                            metadataService,
-                                            commentedOptionFactory,
-                                            projectService,
-                                            pomContentHandler,
-                                            repositoryResolver,
-                                            projectRepositoriesService );
+        service = new PomEditorServiceImpl(ioService,
+                                           defaultEditorService,
+                                           metadataService,
+                                           commentedOptionFactory,
+                                           moduleService,
+                                           pomContentHandler,
+                                           repositoryResolver,
+                                           moduleRepositoriesService);
 
-        when( pomPath.toURI() ).thenReturn( pomPathUri );
-        when( defaultEditorService.loadContent( pomPath ) ).thenReturn( content );
-        when( metadataService.setUpAttributes( eq( pomPath ),
-                                               any( Metadata.class ) ) ).thenReturn( attributes );
-        when( projectService.resolveProject( pomPath ) ).thenReturn( project );
-        when( project.getRepositoriesPath() ).thenReturn( projectRepositoriesPath );
-        when( project.getPom() ).thenReturn( pom );
+        when(pomPath.toURI()).thenReturn(pomPathUri);
+        when(defaultEditorService.loadContent(pomPath)).thenReturn(content);
+        when(metadataService.setUpAttributes(eq(pomPath),
+                                             any(Metadata.class))).thenReturn(attributes);
+        when(moduleService.resolveModule(pomPath)).thenReturn(module);
+        when(module.getRepositoriesPath()).thenReturn(moduleRepositoriesPath);
+        when(module.getPom()).thenReturn(pom);
     }
 
     @Test
     public void testLoad() {
-        final DefaultEditorContent content = service.loadContent( pomPath );
-        assertNotNull( content );
-        assertEquals( this.content,
-                      content );
+        final DefaultEditorContent content = service.loadContent(pomPath);
+        assertNotNull(content);
+        assertEquals(this.content,
+                     content);
     }
 
     @Test
     public void testSaveNonClashingGAVChangeToGAV() {
-        final Set<ProjectRepositories.ProjectRepository> projectRepositoriesMetadata = new HashSet<ProjectRepositories.ProjectRepository>();
-        final ProjectRepositories projectRepositories = new ProjectRepositories( projectRepositoriesMetadata );
-        when( projectRepositoriesService.load( projectRepositoriesPath ) ).thenReturn( projectRepositories );
+        final Set<ModuleRepositories.ModuleRepository> moduleRepositoriesMetadata = new HashSet<ModuleRepositories.ModuleRepository>();
+        final ModuleRepositories moduleRepositories = new ModuleRepositories(moduleRepositoriesMetadata);
+        when(moduleRepositoriesService.load(moduleRepositoriesPath)).thenReturn(moduleRepositories);
 
-        final ArgumentCaptor<MavenRepositoryMetadata> resolvedRepositoriesCaptor = ArgumentCaptor.forClass( MavenRepositoryMetadata.class );
-        when( repositoryResolver.getRepositoriesResolvingArtifact( eq( pomXml ),
-                                                                   resolvedRepositoriesCaptor.capture() ) ).thenReturn( Collections.EMPTY_SET );
-        when( pom.getGav() ).thenReturn( new GAV( "groupId",
-                                                  "artifactId",
-                                                  "0.0.2" ) );
+        final ArgumentCaptor<MavenRepositoryMetadata> resolvedRepositoriesCaptor = ArgumentCaptor.forClass(MavenRepositoryMetadata.class);
+        when(repositoryResolver.getRepositoriesResolvingArtifact(eq(pomXml),
+                                                                 resolvedRepositoriesCaptor.capture())).thenReturn(Collections.EMPTY_SET);
+        when(pom.getGav()).thenReturn(new GAV("groupId",
+                                              "artifactId",
+                                              "0.0.2"));
 
-        service.save( pomPath,
-                      pomXml,
-                      metaData,
-                      comment,
-                      DeploymentMode.VALIDATED );
+        service.save(pomPath,
+                     pomXml,
+                     metaData,
+                     comment,
+                     DeploymentMode.VALIDATED);
 
-        verify( projectService,
-                times( 1 ) ).resolveProject( pomPath );
-        verify( projectRepositoriesService,
-                times( 1 ) ).load( projectRepositoriesPath );
-        verify( repositoryResolver,
-                times( 1 ) ).getRepositoriesResolvingArtifact( eq( pomXml ) );
+        verify(moduleService,
+               times(1)).resolveModule(pomPath);
+        verify(moduleRepositoriesService,
+               times(1)).load(moduleRepositoriesPath);
+        verify(repositoryResolver,
+               times(1)).getRepositoriesResolvingArtifact(eq(pomXml));
         final List<MavenRepositoryMetadata> resolvedRepositories = resolvedRepositoriesCaptor.getAllValues();
-        assertNotNull( resolvedRepositories );
-        assertEquals( 0,
-                      resolvedRepositories.size() );
+        assertNotNull(resolvedRepositories);
+        assertEquals(0,
+                     resolvedRepositories.size());
 
-        verify( ioService,
-                times( 1 ) ).startBatch( any( FileSystem.class ) );
-        verify( ioService,
-                times( 1 ) ).write( any( org.uberfire.java.nio.file.Path.class ),
-                                    eq( pomXml ),
-                                    eq( attributes ),
-                                    any( CommentedOption.class ) );
-        verify( ioService,
-                times( 1 ) ).endBatch();
+        verify(ioService,
+               times(1)).startBatch(any(FileSystem.class));
+        verify(ioService,
+               times(1)).write(any(org.uberfire.java.nio.file.Path.class),
+                               eq(pomXml),
+                               eq(attributes),
+                               any(CommentedOption.class));
+        verify(ioService,
+               times(1)).endBatch();
     }
 
     @Test
     public void testSaveNonClashingGAVNoChangeToGAV() {
-        when( pom.getGav() ).thenReturn( new GAV( "groupId",
-                                                  "artifactId",
-                                                  "0.0.1" ) );
+        when(pom.getGav()).thenReturn(new GAV("groupId",
+                                              "artifactId",
+                                              "0.0.1"));
 
-        service.save( pomPath,
-                      pomXml,
-                      metaData,
-                      comment,
-                      DeploymentMode.VALIDATED );
+        service.save(pomPath,
+                     pomXml,
+                     metaData,
+                     comment,
+                     DeploymentMode.VALIDATED);
 
-        verify( projectService,
-                times( 1 ) ).resolveProject( pomPath );
-        verify( projectRepositoriesService,
-                never() ).load( projectRepositoriesPath );
-        verify( repositoryResolver,
-                never() ).getRepositoriesResolvingArtifact( eq( pomXml ) );
+        verify(moduleService,
+               times(1)).resolveModule(pomPath);
+        verify(moduleRepositoriesService,
+               never()).load(moduleRepositoriesPath);
+        verify(repositoryResolver,
+               never()).getRepositoriesResolvingArtifact(eq(pomXml));
 
-        verify( ioService,
-                times( 1 ) ).startBatch( any( FileSystem.class ) );
-        verify( ioService,
-                times( 1 ) ).write( any( org.uberfire.java.nio.file.Path.class ),
-                                    eq( pomXml ),
-                                    eq( attributes ),
-                                    any( CommentedOption.class ) );
-        verify( ioService,
-                times( 1 ) ).endBatch();
+        verify(ioService,
+               times(1)).startBatch(any(FileSystem.class));
+        verify(ioService,
+               times(1)).write(any(org.uberfire.java.nio.file.Path.class),
+                               eq(pomXml),
+                               eq(attributes),
+                               any(CommentedOption.class));
+        verify(ioService,
+               times(1)).endBatch();
     }
 
     @Test
     public void testSaveNonClashingGAVFilteredChangeToGAV() {
-        final Set<ProjectRepositories.ProjectRepository> projectRepositoriesMetadata = new HashSet<ProjectRepositories.ProjectRepository>() {{
-            add( new ProjectRepositories.ProjectRepository( true,
-                                                            new MavenRepositoryMetadata( "local-id",
-                                                                                         "local-url",
-                                                                                         MavenRepositorySource.LOCAL ) ) );
+        final Set<ModuleRepositories.ModuleRepository> moduleRepositoriesMetadata = new HashSet<ModuleRepositories.ModuleRepository>() {{
+            add(new ModuleRepositories.ModuleRepository(true,
+                                                        new MavenRepositoryMetadata("local-id",
+                                                                                    "local-url",
+                                                                                    MavenRepositorySource.LOCAL)));
         }};
-        final ProjectRepositories projectRepositories = new ProjectRepositories( projectRepositoriesMetadata );
-        when( projectRepositoriesService.load( projectRepositoriesPath ) ).thenReturn( projectRepositories );
+        final ModuleRepositories moduleRepositories = new ModuleRepositories(moduleRepositoriesMetadata);
+        when(moduleRepositoriesService.load(moduleRepositoriesPath)).thenReturn(moduleRepositories);
 
-        final ArgumentCaptor<MavenRepositoryMetadata> resolvedRepositoriesCaptor = ArgumentCaptor.forClass( MavenRepositoryMetadata.class );
-        when( repositoryResolver.getRepositoriesResolvingArtifact( eq( pomXml ),
-                                                                   resolvedRepositoriesCaptor.capture() ) ).thenReturn( Collections.EMPTY_SET );
-        when( pom.getGav() ).thenReturn( new GAV( "groupId",
-                                                  "artifactId",
-                                                  "0.0.2" ) );
+        final ArgumentCaptor<MavenRepositoryMetadata> resolvedRepositoriesCaptor = ArgumentCaptor.forClass(MavenRepositoryMetadata.class);
+        when(repositoryResolver.getRepositoriesResolvingArtifact(eq(pomXml),
+                                                                 resolvedRepositoriesCaptor.capture())).thenReturn(Collections.EMPTY_SET);
+        when(pom.getGav()).thenReturn(new GAV("groupId",
+                                              "artifactId",
+                                              "0.0.2"));
 
-        service.save( pomPath,
-                      pomXml,
-                      metaData,
-                      comment,
-                      DeploymentMode.VALIDATED );
+        service.save(pomPath,
+                     pomXml,
+                     metaData,
+                     comment,
+                     DeploymentMode.VALIDATED);
 
-        verify( projectService,
-                times( 1 ) ).resolveProject( pomPath );
-        verify( projectRepositoriesService,
-                times( 1 ) ).load( projectRepositoriesPath );
-        verify( repositoryResolver,
-                times( 1 ) ).getRepositoriesResolvingArtifact( eq( pomXml ),
-                                                               any( MavenRepositoryMetadata.class ) );
+        verify(moduleService,
+               times(1)).resolveModule(pomPath);
+        verify(moduleRepositoriesService,
+               times(1)).load(moduleRepositoriesPath);
+        verify(repositoryResolver,
+               times(1)).getRepositoriesResolvingArtifact(eq(pomXml),
+                                                          any(MavenRepositoryMetadata.class));
         final List<MavenRepositoryMetadata> resolvedRepositories = resolvedRepositoriesCaptor.getAllValues();
-        assertNotNull( resolvedRepositories );
-        assertEquals( 1,
-                      resolvedRepositories.size() );
-        final MavenRepositoryMetadata repositoryMetadata = resolvedRepositories.get( 0 );
-        assertEquals( "local-id",
-                      repositoryMetadata.getId() );
-        assertEquals( "local-url",
-                      repositoryMetadata.getUrl() );
-        assertEquals( MavenRepositorySource.LOCAL,
-                      repositoryMetadata.getSource() );
+        assertNotNull(resolvedRepositories);
+        assertEquals(1,
+                     resolvedRepositories.size());
+        final MavenRepositoryMetadata repositoryMetadata = resolvedRepositories.get(0);
+        assertEquals("local-id",
+                     repositoryMetadata.getId());
+        assertEquals("local-url",
+                     repositoryMetadata.getUrl());
+        assertEquals(MavenRepositorySource.LOCAL,
+                     repositoryMetadata.getSource());
 
-        verify( ioService,
-                times( 1 ) ).startBatch( any( FileSystem.class ) );
-        verify( ioService,
-                times( 1 ) ).write( any( org.uberfire.java.nio.file.Path.class ),
-                                    eq( pomXml ),
-                                    eq( attributes ),
-                                    any( CommentedOption.class ) );
-        verify( ioService,
-                times( 1 ) ).endBatch();
+        verify(ioService,
+               times(1)).startBatch(any(FileSystem.class));
+        verify(ioService,
+               times(1)).write(any(org.uberfire.java.nio.file.Path.class),
+                               eq(pomXml),
+                               eq(attributes),
+                               any(CommentedOption.class));
+        verify(ioService,
+               times(1)).endBatch();
     }
 
     @Test
     public void testSaveNonClashingGAVFilteredNoChangeToGAV() {
-        when( pom.getGav() ).thenReturn( new GAV( "groupId",
-                                                  "artifactId",
-                                                  "0.0.1" ) );
+        when(pom.getGav()).thenReturn(new GAV("groupId",
+                                              "artifactId",
+                                              "0.0.1"));
 
-        service.save( pomPath,
-                      pomXml,
-                      metaData,
-                      comment,
-                      DeploymentMode.VALIDATED );
+        service.save(pomPath,
+                     pomXml,
+                     metaData,
+                     comment,
+                     DeploymentMode.VALIDATED);
 
-        verify( projectService,
-                times( 1 ) ).resolveProject( pomPath );
-        verify( projectRepositoriesService,
-                never() ).load( projectRepositoriesPath );
-        verify( repositoryResolver,
-                never() ).getRepositoriesResolvingArtifact( eq( pomXml ),
-                                                            any( MavenRepositoryMetadata.class ) );
+        verify(moduleService,
+               times(1)).resolveModule(pomPath);
+        verify(moduleRepositoriesService,
+               never()).load(moduleRepositoriesPath);
+        verify(repositoryResolver,
+               never()).getRepositoriesResolvingArtifact(eq(pomXml),
+                                                         any(MavenRepositoryMetadata.class));
 
-        verify( ioService,
-                times( 1 ) ).startBatch( any( FileSystem.class ) );
-        verify( ioService,
-                times( 1 ) ).write( any( org.uberfire.java.nio.file.Path.class ),
-                                    eq( pomXml ),
-                                    eq( attributes ),
-                                    any( CommentedOption.class ) );
-        verify( ioService,
-                times( 1 ) ).endBatch();
+        verify(ioService,
+               times(1)).startBatch(any(FileSystem.class));
+        verify(ioService,
+               times(1)).write(any(org.uberfire.java.nio.file.Path.class),
+                               eq(pomXml),
+                               eq(attributes),
+                               any(CommentedOption.class));
+        verify(ioService,
+               times(1)).endBatch();
     }
 
     @Test
     public void testSaveClashingGAVChangeToGAV() {
-        final Set<ProjectRepositories.ProjectRepository> projectRepositoriesMetadata = new HashSet<ProjectRepositories.ProjectRepository>() {{
-            add( new ProjectRepositories.ProjectRepository( true,
-                                                            new MavenRepositoryMetadata( "local-id",
-                                                                                         "local-url",
-                                                                                         MavenRepositorySource.LOCAL ) ) );
+        final Set<ModuleRepositories.ModuleRepository> moduleRepositoriesMetadata = new HashSet<ModuleRepositories.ModuleRepository>() {{
+            add(new ModuleRepositories.ModuleRepository(true,
+                                                        new MavenRepositoryMetadata("local-id",
+                                                                                    "local-url",
+                                                                                    MavenRepositorySource.LOCAL)));
         }};
-        final ProjectRepositories projectRepositories = new ProjectRepositories( projectRepositoriesMetadata );
-        when( projectRepositoriesService.load( projectRepositoriesPath ) ).thenReturn( projectRepositories );
+        final ModuleRepositories moduleRepositories = new ModuleRepositories(moduleRepositoriesMetadata);
+        when(moduleRepositoriesService.load(moduleRepositoriesPath)).thenReturn(moduleRepositories);
 
         final Set<MavenRepositoryMetadata> clashingRepositories = new HashSet<MavenRepositoryMetadata>() {{
-            add( new MavenRepositoryMetadata( "local-id",
-                                              "local-url",
-                                              MavenRepositorySource.LOCAL ) );
+            add(new MavenRepositoryMetadata("local-id",
+                                            "local-url",
+                                            MavenRepositorySource.LOCAL));
         }};
-        final ArgumentCaptor<MavenRepositoryMetadata> resolvedRepositoriesCaptor = ArgumentCaptor.forClass( MavenRepositoryMetadata.class );
-        when( repositoryResolver.getRepositoriesResolvingArtifact( eq( pomXml ),
-                                                                   resolvedRepositoriesCaptor.capture() ) ).thenReturn( clashingRepositories );
-        when( pom.getGav() ).thenReturn( new GAV( "groupId",
-                                                  "artifactId",
-                                                  "0.0.2" ) );
+        final ArgumentCaptor<MavenRepositoryMetadata> resolvedRepositoriesCaptor = ArgumentCaptor.forClass(MavenRepositoryMetadata.class);
+        when(repositoryResolver.getRepositoriesResolvingArtifact(eq(pomXml),
+                                                                 resolvedRepositoriesCaptor.capture())).thenReturn(clashingRepositories);
+        when(pom.getGav()).thenReturn(new GAV("groupId",
+                                              "artifactId",
+                                              "0.0.2"));
 
         try {
-            service.save( pomPath,
-                          pomXml,
-                          metaData,
-                          comment,
-                          DeploymentMode.VALIDATED );
-
-        } catch ( GAVAlreadyExistsException e ) {
+            service.save(pomPath,
+                         pomXml,
+                         metaData,
+                         comment,
+                         DeploymentMode.VALIDATED);
+        } catch (GAVAlreadyExistsException e) {
             // This is expected! We catch here rather than let JUnit handle it with
             // @Test(expected = GAVAlreadyExistsException.class) so we can verify
             // that only the expected methods have been invoked.
 
-        } catch ( Exception e ) {
-            fail( e.getMessage() );
+        } catch (Exception e) {
+            fail(e.getMessage());
         }
 
-        verify( projectService,
-                times( 1 ) ).resolveProject( pomPath );
-        verify( projectRepositoriesService,
-                times( 1 ) ).load( projectRepositoriesPath );
-        verify( repositoryResolver,
-                times( 1 ) ).getRepositoriesResolvingArtifact( eq( pomXml ),
-                                                               any( MavenRepositoryMetadata.class ) );
+        verify(moduleService,
+               times(1)).resolveModule(pomPath);
+        verify(moduleRepositoriesService,
+               times(1)).load(moduleRepositoriesPath);
+        verify(repositoryResolver,
+               times(1)).getRepositoriesResolvingArtifact(eq(pomXml),
+                                                          any(MavenRepositoryMetadata.class));
         final List<MavenRepositoryMetadata> resolvedRepositories = resolvedRepositoriesCaptor.getAllValues();
-        assertNotNull( resolvedRepositories );
-        assertEquals( 1,
-                      resolvedRepositories.size() );
-        final MavenRepositoryMetadata repositoryMetadata = resolvedRepositories.get( 0 );
-        assertEquals( "local-id",
-                      repositoryMetadata.getId() );
-        assertEquals( "local-url",
-                      repositoryMetadata.getUrl() );
-        assertEquals( MavenRepositorySource.LOCAL,
-                      repositoryMetadata.getSource() );
+        assertNotNull(resolvedRepositories);
+        assertEquals(1,
+                     resolvedRepositories.size());
+        final MavenRepositoryMetadata repositoryMetadata = resolvedRepositories.get(0);
+        assertEquals("local-id",
+                     repositoryMetadata.getId());
+        assertEquals("local-url",
+                     repositoryMetadata.getUrl());
+        assertEquals(MavenRepositorySource.LOCAL,
+                     repositoryMetadata.getSource());
 
-        verify( ioService,
-                never() ).startBatch( any( FileSystem.class ) );
-        verify( ioService,
-                never() ).write( any( org.uberfire.java.nio.file.Path.class ),
-                                 eq( pomXml ),
-                                 eq( attributes ),
-                                 any( CommentedOption.class ) );
-        verify( ioService,
-                never() ).endBatch();
+        verify(ioService,
+               never()).startBatch(any(FileSystem.class));
+        verify(ioService,
+               never()).write(any(org.uberfire.java.nio.file.Path.class),
+                              eq(pomXml),
+                              eq(attributes),
+                              any(CommentedOption.class));
+        verify(ioService,
+               never()).endBatch();
     }
 
     @Test
     public void testSaveClashingGAVNoChangeToGAV() {
-        when( pom.getGav() ).thenReturn( new GAV( "groupId",
-                                                  "artifactId",
-                                                  "0.0.1" ) );
+        when(pom.getGav()).thenReturn(new GAV("groupId",
+                                              "artifactId",
+                                              "0.0.1"));
 
         try {
-            service.save( pomPath,
-                          pomXml,
-                          metaData,
-                          comment,
-                          DeploymentMode.VALIDATED );
-
-        } catch ( GAVAlreadyExistsException e ) {
+            service.save(pomPath,
+                         pomXml,
+                         metaData,
+                         comment,
+                         DeploymentMode.VALIDATED);
+        } catch (GAVAlreadyExistsException e) {
             // This is should not be thrown if the GAV has not changed.
-            fail( e.getMessage() );
+            fail(e.getMessage());
         }
 
-        verify( projectService,
-                times( 1 ) ).resolveProject( pomPath );
-        verify( projectRepositoriesService,
-                never() ).load( projectRepositoriesPath );
-        verify( repositoryResolver,
-                never() ).getRepositoriesResolvingArtifact( eq( pomXml ),
-                                                            any( MavenRepositoryMetadata.class ) );
+        verify(moduleService,
+               times(1)).resolveModule(pomPath);
+        verify(moduleRepositoriesService,
+               never()).load(moduleRepositoriesPath);
+        verify(repositoryResolver,
+               never()).getRepositoriesResolvingArtifact(eq(pomXml),
+                                                         any(MavenRepositoryMetadata.class));
 
-        verify( ioService,
-                times( 1 ) ).startBatch( any( FileSystem.class ) );
-        verify( ioService,
-                times( 1 ) ).write( any( org.uberfire.java.nio.file.Path.class ),
-                                    eq( pomXml ),
-                                    eq( attributes ),
-                                    any( CommentedOption.class ) );
-        verify( ioService,
-                times( 1 ) ).endBatch();
+        verify(ioService,
+               times(1)).startBatch(any(FileSystem.class));
+        verify(ioService,
+               times(1)).write(any(org.uberfire.java.nio.file.Path.class),
+                               eq(pomXml),
+                               eq(attributes),
+                               any(CommentedOption.class));
+        verify(ioService,
+               times(1)).endBatch();
     }
 
     @Test
     public void testSaveClashingGAVForced() {
-        final Set<ProjectRepositories.ProjectRepository> projectRepositoriesMetadata = new HashSet<ProjectRepositories.ProjectRepository>() {{
-            add( new ProjectRepositories.ProjectRepository( true,
-                                                            new MavenRepositoryMetadata( "local-id",
-                                                                                         "local-url",
-                                                                                         MavenRepositorySource.LOCAL ) ) );
+        final Set<ModuleRepositories.ModuleRepository> moduleRepositoriesMetadata = new HashSet<ModuleRepositories.ModuleRepository>() {{
+            add(new ModuleRepositories.ModuleRepository(true,
+                                                        new MavenRepositoryMetadata("local-id",
+                                                                                    "local-url",
+                                                                                    MavenRepositorySource.LOCAL)));
         }};
-        final ProjectRepositories projectRepositories = new ProjectRepositories( projectRepositoriesMetadata );
-        when( projectRepositoriesService.load( projectRepositoriesPath ) ).thenReturn( projectRepositories );
+        final ModuleRepositories moduleRepositories = new ModuleRepositories(moduleRepositoriesMetadata);
+        when(moduleRepositoriesService.load(moduleRepositoriesPath)).thenReturn(moduleRepositories);
 
         final Set<MavenRepositoryMetadata> clashingRepositories = new HashSet<MavenRepositoryMetadata>() {{
-            add( new MavenRepositoryMetadata( "local-id",
-                                              "local-url",
-                                              MavenRepositorySource.LOCAL ) );
+            add(new MavenRepositoryMetadata("local-id",
+                                            "local-url",
+                                            MavenRepositorySource.LOCAL));
         }};
-        when( repositoryResolver.getRepositoriesResolvingArtifact( eq( pomXml ),
-                                                                   any( MavenRepositoryMetadata.class ) ) ).thenReturn( clashingRepositories );
-        when( pom.getGav() ).thenReturn( new GAV( "groupId",
-                                                  "artifactId",
-                                                  "0.0.1" ) );
+        when(repositoryResolver.getRepositoriesResolvingArtifact(eq(pomXml),
+                                                                 any(MavenRepositoryMetadata.class))).thenReturn(clashingRepositories);
+        when(pom.getGav()).thenReturn(new GAV("groupId",
+                                              "artifactId",
+                                              "0.0.1"));
 
         try {
-            service.save( pomPath,
-                          pomXml,
-                          metaData,
-                          comment,
-                          DeploymentMode.FORCED );
-
-        } catch ( GAVAlreadyExistsException e ) {
-            fail( e.getMessage() );
+            service.save(pomPath,
+                         pomXml,
+                         metaData,
+                         comment,
+                         DeploymentMode.FORCED);
+        } catch (GAVAlreadyExistsException e) {
+            fail(e.getMessage());
         }
 
-        verify( projectService,
-                never() ).resolveProject( pomPath );
-        verify( projectRepositoriesService,
-                never() ).load( pomPath );
-        verify( repositoryResolver,
-                never() ).getRepositoriesResolvingArtifact( eq( pomXml ),
-                                                            any( MavenRepositoryMetadata.class ) );
+        verify(moduleService,
+               never()).resolveModule(pomPath);
+        verify(moduleRepositoriesService,
+               never()).load(pomPath);
+        verify(repositoryResolver,
+               never()).getRepositoriesResolvingArtifact(eq(pomXml),
+                                                         any(MavenRepositoryMetadata.class));
 
-        verify( ioService,
-                times( 1 ) ).startBatch( any( FileSystem.class ) );
-        verify( ioService,
-                times( 1 ) ).write( any( org.uberfire.java.nio.file.Path.class ),
-                                    eq( pomXml ),
-                                    eq( attributes ),
-                                    any( CommentedOption.class ) );
-        verify( ioService,
-                times( 1 ) ).endBatch();
+        verify(ioService,
+               times(1)).startBatch(any(FileSystem.class));
+        verify(ioService,
+               times(1)).write(any(org.uberfire.java.nio.file.Path.class),
+                               eq(pomXml),
+                               eq(attributes),
+                               any(CommentedOption.class));
+        verify(ioService,
+               times(1)).endBatch();
     }
-
 }

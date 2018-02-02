@@ -36,10 +36,10 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.EventSourceMock;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class DataSourceDefEditorServiceTest
         extends DefEditorServiceBaseTest {
 
@@ -68,27 +68,36 @@ public class DataSourceDefEditorServiceTest
     public void setup() {
         super.setup();
 
-        editorService = new DataSourceDefEditorServiceImpl( runtimeManager,
-                serviceHelper, ioService, projectService, optionsFactory, pathNamingService, artifactResolver,
-                dataSourceDefQueryService, driverDefService, newDataSourceEvent, updateDataSourceEvent, deleteDataSourceEvent );
+        editorService = new DataSourceDefEditorServiceImpl(runtimeManager,
+                                                           serviceHelper,
+                                                           ioService,
+                                                           moduleService,
+                                                           optionsFactory,
+                                                           pathNamingService,
+                                                           artifactResolver,
+                                                           dataSourceDefQueryService,
+                                                           driverDefService,
+                                                           newDataSourceEvent,
+                                                           updateDataSourceEvent,
+                                                           deleteDataSourceEvent);
 
         dataSourceDef = new DataSourceDef();
-        dataSourceDef.setUuid( "uuid" );
-        dataSourceDef.setName( "dataSourceName" );
-        dataSourceDef.setConnectionURL( "connectionURL" );
-        dataSourceDef.setUser( "user" );
-        dataSourceDef.setPassword( "password" );
+        dataSourceDef.setUuid("uuid");
+        dataSourceDef.setName("dataSourceName");
+        dataSourceDef.setConnectionURL("connectionURL");
+        dataSourceDef.setUser("user");
+        dataSourceDef.setPassword("password");
 
         dataSourceDefEditorContent = new DataSourceDefEditorContent();
-        dataSourceDefEditorContent.setDef( dataSourceDef );
-        dataSourceDefEditorContent.setProject( project );
+        dataSourceDefEditorContent.setDef(dataSourceDef);
+        dataSourceDefEditorContent.setModule(module);
 
         originalDataSourceDef = new DataSourceDef();
-        originalDataSourceDef.setUuid( "uuid" );
-        originalDataSourceDef.setName( "dataSourceNameOriginal" );
-        originalDataSourceDef.setConnectionURL( "connectionURLOriginal" );
-        originalDataSourceDef.setUser( "userOriginal" );
-        originalDataSourceDef.setPassword( "passwordOriginal" );
+        originalDataSourceDef.setUuid("uuid");
+        originalDataSourceDef.setName("dataSourceNameOriginal");
+        originalDataSourceDef.setConnectionURL("connectionURLOriginal");
+        originalDataSourceDef.setUser("userOriginal");
+        originalDataSourceDef.setPassword("passwordOriginal");
     }
 
     @Override
@@ -98,7 +107,7 @@ public class DataSourceDefEditorServiceTest
 
     @Override
     protected String getExpectedDefString() {
-        return DataSourceDefSerializer.serialize( dataSourceDef );
+        return DataSourceDefSerializer.serialize(dataSourceDef);
     }
 
     @Override
@@ -118,26 +127,34 @@ public class DataSourceDefEditorServiceTest
 
     @Override
     protected String getOriginalDefString() {
-        return DataSourceDefSerializer.serialize( originalDataSourceDef );
+        return DataSourceDefSerializer.serialize(originalDataSourceDef);
     }
 
     @Override
-    protected void verifyCreateConditions( boolean global ) {
+    protected void verifyCreateConditions(boolean global) {
         //we wants that:
         try {
             // 1) the definition was deployed
-            verify( runtimeManager, times( 1 ) ).deployDataSource( dataSourceDef, DeploymentOptions.create() );
-        } catch ( Exception e ) {
-            fail( e.getMessage() );
+            verify(runtimeManager,
+                   times(1)).deployDataSource(dataSourceDef,
+                                              DeploymentOptions.create());
+        } catch (Exception e) {
+            fail(e.getMessage());
         }
         // 2) the notification was fired.
         NewDataSourceEvent expectedEvent;
-        if ( global ) {
-            expectedEvent = new NewDataSourceEvent( dataSourceDef, SESSION_ID, IDENTITY );
+        if (global) {
+            expectedEvent = new NewDataSourceEvent(dataSourceDef,
+                                                   SESSION_ID,
+                                                   IDENTITY);
         } else {
-            expectedEvent = new NewDataSourceEvent( dataSourceDef, project, SESSION_ID, IDENTITY );
+            expectedEvent = new NewDataSourceEvent(dataSourceDef,
+                                                   module,
+                                                   SESSION_ID,
+                                                   IDENTITY);
         }
-        verify( newDataSourceEvent, times( 1 ) ).fire( expectedEvent );
+        verify(newDataSourceEvent,
+               times(1)).fire(expectedEvent);
     }
 
     @Override
@@ -145,12 +162,19 @@ public class DataSourceDefEditorServiceTest
         //we wants that
         try {
             // 1) the definition was deployed
-            verify( runtimeManager, times( 1 ) ).deployDataSource( dataSourceDef, DeploymentOptions.create() );
-        } catch ( Exception e ) {
-            fail( e.getMessage() );
+            verify(runtimeManager,
+                   times(1)).deployDataSource(dataSourceDef,
+                                              DeploymentOptions.create());
+        } catch (Exception e) {
+            fail(e.getMessage());
         }
         // 2) the update notification was fired.
-        verify( updateDataSourceEvent, times( 1 ) ).fire( new UpdateDataSourceEvent( dataSourceDef, project, SESSION_ID, IDENTITY, originalDataSourceDef ) );
+        verify(updateDataSourceEvent,
+               times(1)).fire(new UpdateDataSourceEvent(dataSourceDef,
+                                                        module,
+                                                        SESSION_ID,
+                                                        IDENTITY,
+                                                        originalDataSourceDef));
     }
 
     @Override
@@ -158,11 +182,17 @@ public class DataSourceDefEditorServiceTest
         //we wants that
         try {
             // 1) the definition was un-deployed.
-            verify( runtimeManager, times( 1 ) ).unDeployDataSource( dataSourceDeploymentInfo, UnDeploymentOptions.forcedUnDeployment() );
-        } catch ( Exception e ) {
-            fail( e.getMessage() );
+            verify(runtimeManager,
+                   times(1)).unDeployDataSource(dataSourceDeploymentInfo,
+                                                UnDeploymentOptions.forcedUnDeployment());
+        } catch (Exception e) {
+            fail(e.getMessage());
         }
         // 2) the delete notification was fired.
-        verify( deleteDataSourceEvent, times( 1 ) ).fire( new DeleteDataSourceEvent( dataSourceDef, project, SESSION_ID, IDENTITY ) );
+        verify(deleteDataSourceEvent,
+               times(1)).fire(new DeleteDataSourceEvent(dataSourceDef,
+                                                        module,
+                                                        SESSION_ID,
+                                                        IDENTITY));
     }
 }

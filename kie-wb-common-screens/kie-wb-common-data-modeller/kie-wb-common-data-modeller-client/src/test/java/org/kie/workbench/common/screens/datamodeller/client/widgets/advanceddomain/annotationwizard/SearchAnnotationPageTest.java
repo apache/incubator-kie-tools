@@ -28,7 +28,7 @@ import org.kie.workbench.common.services.datamodeller.core.ElementType;
 import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationDefinitionRequest;
 import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationDefinitionResponse;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieModule;
 import org.mockito.Mock;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 import org.uberfire.mocks.CallerMock;
@@ -37,7 +37,7 @@ import org.uberfire.mocks.EventSourceMock;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class SearchAnnotationPageTest {
 
     @GwtMock
@@ -51,100 +51,102 @@ public class SearchAnnotationPageTest {
 
     protected CallerMock<DataModelerService> modelerServiceCaller;
 
-    protected Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent = mock( EventSourceMock.class );
+    protected Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent = mock(EventSourceMock.class);
 
     @Mock
-    protected KieProject kieProject;
+    protected KieModule kieModule;
 
     @Test
     public void testPageLoad() {
 
-        modelerServiceCaller = new CallerMock<DataModelerService>( modelerService );
-        SearchAnnotationPage searchPage = new SearchAnnotationPage( view,
-                modelerServiceCaller,
-                wizardPageStatusChangeEvent );
+        modelerServiceCaller = new CallerMock<DataModelerService>(modelerService);
+        SearchAnnotationPage searchPage = new SearchAnnotationPage(view,
+                                                                   modelerServiceCaller,
+                                                                   wizardPageStatusChangeEvent);
 
         searchPage.prepareView();
 
-        WizardTestUtil.assertPageComplete( false, searchPage );
+        WizardTestUtil.assertPageComplete(false, searchPage);
     }
 
     @Test
     public void testSearchAnnotationFound() {
 
-        modelerServiceCaller = new CallerMock<DataModelerService>( modelerService );
-        SearchAnnotationPage searchPage = new SearchAnnotationPage( view,
-                modelerServiceCaller,
-                wizardPageStatusChangeEvent );
+        modelerServiceCaller = new CallerMock<DataModelerService>(modelerService);
+        SearchAnnotationPage searchPage = new SearchAnnotationPage(view,
+                                                                   modelerServiceCaller,
+                                                                   wizardPageStatusChangeEvent);
 
-        searchPage.init( kieProject, ElementType.FIELD );
+        searchPage.init(kieModule, ElementType.FIELD);
         searchPage.prepareView();
-        searchPage.addSearchAnnotationHandler( searchAnnotationHandler );
+        searchPage.addSearchAnnotationHandler(searchAnnotationHandler);
         //emulates the user is typing
         searchPage.onSearchClassChanged();
 
         //the wizard page should be automatically invalidated since the annotation class name to search
         //has changed.
-        verify( wizardPageStatusChangeEvent, times( 1 ) ).fire( any( WizardPageStatusChangeEvent.class ) );
-        WizardTestUtil.assertPageComplete( false, searchPage );
-        assertEquals( CreateAnnotationWizardPage.PageStatus.NOT_VALIDATED, searchPage.getStatus() );
-        verify( searchAnnotationHandler, times( 1 ) ).onSearchClassChanged(); //the handler should also have been invocked.
+        verify(wizardPageStatusChangeEvent, times(1)).fire(any(WizardPageStatusChangeEvent.class));
+        WizardTestUtil.assertPageComplete(false, searchPage);
+        assertEquals(CreateAnnotationWizardPage.PageStatus.NOT_VALIDATED, searchPage.getStatus());
+        verify(searchAnnotationHandler, times(1)).onSearchClassChanged(); //the handler should also have been invocked.
 
         //emulate the user is searching the javax.persistence.Entity annotation.
-        AnnotationDefinitionRequest request = new AnnotationDefinitionRequest( Entity.class.getName() );
+        AnnotationDefinitionRequest request = new AnnotationDefinitionRequest(Entity.class.getName());
         //the response has a definition
         AnnotationDefinitionResponse response = new AnnotationDefinitionResponse(
-                DriverUtils.buildAnnotationDefinition( Entity.class ) );
+                DriverUtils.buildAnnotationDefinition(Entity.class));
 
-        when( view.getClassName() ).thenReturn( Entity.class.getName() );
-        when( modelerService.resolveDefinitionRequest( request, kieProject ) ).thenReturn( response );
+        when(view.getClassName()).thenReturn(Entity.class.getName());
+        when(modelerService.resolveDefinitionRequest(request,
+                                                     kieModule)).thenReturn(response);
 
         //emulate the user click on the search button
         searchPage.onSearchClass();
 
         //now the page should be completed
-        WizardTestUtil.assertPageComplete( true, searchPage );
-        verify( wizardPageStatusChangeEvent, times( 2 ) ).fire( any( WizardPageStatusChangeEvent.class) );
+        WizardTestUtil.assertPageComplete(true, searchPage);
+        verify(wizardPageStatusChangeEvent, times(2)).fire(any(WizardPageStatusChangeEvent.class));
         //the handler should also have been invoked with the expected annotation definition.
-        verify( searchAnnotationHandler, times( 1 ) ).onAnnotationDefinitionChange( response.getAnnotationDefinition() );
+        verify(searchAnnotationHandler, times(1)).onAnnotationDefinitionChange(response.getAnnotationDefinition());
     }
 
     @Test
     public void testSearchAnnotationNotFound() {
 
-        modelerServiceCaller = new CallerMock<DataModelerService>( modelerService );
-        SearchAnnotationPage searchPage = new SearchAnnotationPage( view,
-                modelerServiceCaller,
-                wizardPageStatusChangeEvent );
+        modelerServiceCaller = new CallerMock<DataModelerService>(modelerService);
+        SearchAnnotationPage searchPage = new SearchAnnotationPage(view,
+                                                                   modelerServiceCaller,
+                                                                   wizardPageStatusChangeEvent);
 
-        searchPage.init( kieProject, ElementType.FIELD );
+        searchPage.init(kieModule, ElementType.FIELD);
         searchPage.prepareView();
-        searchPage.addSearchAnnotationHandler( searchAnnotationHandler );
+        searchPage.addSearchAnnotationHandler(searchAnnotationHandler);
         //emulates the user is typing
         searchPage.onSearchClassChanged();
 
         //the wizard page should be automatically invalidated since the annotation class name to search
         //has changed.
-        verify( wizardPageStatusChangeEvent, times( 1 ) ).fire( any( WizardPageStatusChangeEvent.class ) );
-        WizardTestUtil.assertPageComplete( false, searchPage );
-        assertEquals( CreateAnnotationWizardPage.PageStatus.NOT_VALIDATED, searchPage.getStatus() );
-        verify( searchAnnotationHandler, times( 1 ) ).onSearchClassChanged(); //the handler should also have been invocked.
+        verify(wizardPageStatusChangeEvent, times(1)).fire(any(WizardPageStatusChangeEvent.class));
+        WizardTestUtil.assertPageComplete(false, searchPage);
+        assertEquals(CreateAnnotationWizardPage.PageStatus.NOT_VALIDATED, searchPage.getStatus());
+        verify(searchAnnotationHandler, times(1)).onSearchClassChanged(); //the handler should also have been invocked.
 
         //emulate the user is searching the javax.persistence.Entity annotation.
-        AnnotationDefinitionRequest request = new AnnotationDefinitionRequest( Entity.class.getName() );
+        AnnotationDefinitionRequest request = new AnnotationDefinitionRequest(Entity.class.getName());
         //empty response was returned
-        AnnotationDefinitionResponse response = new AnnotationDefinitionResponse( null );
+        AnnotationDefinitionResponse response = new AnnotationDefinitionResponse(null);
 
-        when( view.getClassName() ).thenReturn( Entity.class.getName() );
-        when( modelerService.resolveDefinitionRequest( request, kieProject ) ).thenReturn( response );
+        when(view.getClassName()).thenReturn(Entity.class.getName());
+        when(modelerService.resolveDefinitionRequest(request,
+                                                     kieModule)).thenReturn(response);
 
         //emulate the user click on the search button
         searchPage.onSearchClass();
 
         //now the page should be completed
-        WizardTestUtil.assertPageComplete( false, searchPage );
-        verify( wizardPageStatusChangeEvent, times( 2 ) ).fire( any( WizardPageStatusChangeEvent.class ) );
+        WizardTestUtil.assertPageComplete(false, searchPage);
+        verify(wizardPageStatusChangeEvent, times(2)).fire(any(WizardPageStatusChangeEvent.class));
         //the handler should also have been invoked with the expected annotation definition.
-        verify( searchAnnotationHandler, times( 1 ) ).onAnnotationDefinitionChange( null );
+        verify(searchAnnotationHandler, times(1)).onAnnotationDefinitionChange(null);
     }
 }

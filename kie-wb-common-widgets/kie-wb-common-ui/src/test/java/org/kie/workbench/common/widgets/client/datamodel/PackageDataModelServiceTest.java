@@ -16,7 +16,6 @@
 package org.kie.workbench.common.widgets.client.datamodel;
 
 import java.net.URL;
-
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Bean;
@@ -30,8 +29,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
@@ -41,7 +40,7 @@ import org.uberfire.client.callbacks.Callback;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
 import static org.junit.Assert.*;
-import static org.kie.workbench.common.widgets.client.datamodel.PackageDataModelOracleTestUtils.*;
+import static org.kie.workbench.common.widgets.client.datamodel.PackageDataModelOracleTestUtils.assertContains;
 import static org.mockito.Mockito.*;
 
 @RunWith(WeldJUnitRunner.class)
@@ -85,7 +84,7 @@ public class PackageDataModelServiceTest {
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName("t3p1");
-        dataModel.setModelFields(packageLoader.getProjectModelFields());
+        dataModel.setModelFields(packageLoader.getModuleModelFields());
         PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),
                                                                 new MockHasImports(),
                                                                 oracle,
@@ -130,7 +129,7 @@ public class PackageDataModelServiceTest {
     }
 
     @Test
-    public void testProjectDataModelOracle() throws Exception {
+    public void testModuleDataModelOracle() throws Exception {
         final Bean dataModelServiceBean = (Bean) beanManager.getBeans(DataModelService.class).iterator().next();
         final CreationalContext cc = beanManager.createCreationalContext(dataModelServiceBean);
         final DataModelService dataModelService = (DataModelService) beanManager.getReference(dataModelServiceBean,
@@ -142,7 +141,7 @@ public class PackageDataModelServiceTest {
         final Path packagePath = paths.convert(nioPackagePath);
 
         final PackageDataModelOracle packageLoader = dataModelService.getDataModel(packagePath);
-        final ProjectDataModelOracle projectLoader = dataModelService.getProjectDataModel(packagePath);
+        final ModuleDataModelOracle moduleLoader = dataModelService.getModuleDataModel(packagePath);
 
         //Emulate server-to-client conversions
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller(packageLoader);
@@ -150,7 +149,7 @@ public class PackageDataModelServiceTest {
                                                                                        validatorInstance);
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-        dataModel.setModelFields(projectLoader.getProjectModelFields());
+        dataModel.setModelFields(moduleLoader.getModuleModelFields());
         PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),
                                                                 new MockHasImports(),
                                                                 oracle,

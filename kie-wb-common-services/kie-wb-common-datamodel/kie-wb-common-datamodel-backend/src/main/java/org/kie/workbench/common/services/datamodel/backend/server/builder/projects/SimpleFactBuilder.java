@@ -26,7 +26,7 @@ import org.kie.soup.project.datamodel.oracle.TypeSource;
  */
 public class SimpleFactBuilder extends BaseFactBuilder {
 
-    public SimpleFactBuilder(final ProjectDataModelOracleBuilder builder,
+    public SimpleFactBuilder(final ModuleDataModelOracleBuilder builder,
                              final String factType,
                              final boolean isEvent,
                              final TypeSource typeSource) {

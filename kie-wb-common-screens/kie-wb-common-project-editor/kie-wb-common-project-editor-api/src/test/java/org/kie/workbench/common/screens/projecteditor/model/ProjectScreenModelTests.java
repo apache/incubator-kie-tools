@@ -16,9 +16,9 @@
 package org.kie.workbench.common.screens.projecteditor.model;
 
 import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.common.services.project.model.MavenRepository;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
-import org.guvnor.common.services.project.model.Repository;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.imports.Import;
@@ -37,7 +37,7 @@ public class ProjectScreenModelTests {
                              new GAV("groupID",
                                      "artifactID",
                                      "version")));
-        final Repository repository = new Repository();
+        final MavenRepository repository = new MavenRepository();
         repository.setId("guvnor-m2-repo");
         repository.setName("Guvnor M2 Repo");
         repository.setUrl("http://localhost/maven2/");

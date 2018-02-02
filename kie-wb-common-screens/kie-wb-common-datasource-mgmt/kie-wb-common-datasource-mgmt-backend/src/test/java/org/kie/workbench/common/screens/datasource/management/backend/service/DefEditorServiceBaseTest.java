@@ -25,8 +25,8 @@ import org.kie.workbench.common.screens.datasource.management.model.Def;
 import org.kie.workbench.common.screens.datasource.management.model.DefEditorContent;
 import org.kie.workbench.common.screens.datasource.management.model.DriverDeploymentInfo;
 import org.kie.workbench.common.screens.datasource.management.util.MavenArtifactResolver;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -45,9 +45,9 @@ public abstract class DefEditorServiceBaseTest {
 
     protected static final String GLOBAL_URI = "default://master@datasources/";
 
-    protected static final String PROJECT_URI = "default://master@TestRepo/project/src/resources/META-INF";
+    protected static final String PROJECT_URI = "default://master@TestRepo/module/src/resources/META-INF";
 
-    protected static final String FILE_URI = "default://master@TestRepo/project/src/resources/META-INF/someFile.txt";
+    protected static final String FILE_URI = "default://master@TestRepo/module/src/resources/META-INF/someFile.txt";
 
     protected static final String COMMENT = "Some comment";
 
@@ -64,7 +64,7 @@ public abstract class DefEditorServiceBaseTest {
     protected IOService ioService;
 
     @Mock
-    protected KieProjectService projectService;
+    protected KieModuleService moduleService;
 
     @Mock
     protected CommentedOptionFactory optionsFactory;
@@ -82,7 +82,7 @@ public abstract class DefEditorServiceBaseTest {
     protected Path renamedPath;
 
     @Mock
-    protected KieProject project;
+    protected KieModule module;
 
     protected AbstractDefEditorService editorService;
 
@@ -94,9 +94,9 @@ public abstract class DefEditorServiceBaseTest {
 
     @Before
     public void setup() {
-        when ( optionsFactory.getSafeSessionId() ).thenReturn( SESSION_ID );
-        when( optionsFactory.getSafeIdentityName() ).thenReturn( IDENTITY );
-        when ( serviceHelper.getDefRegistry() ).thenReturn( defRegistry );
+        when(optionsFactory.getSafeSessionId()).thenReturn(SESSION_ID);
+        when(optionsFactory.getSafeIdentityName()).thenReturn(IDENTITY);
+        when(serviceHelper.getDefRegistry()).thenReturn(defRegistry);
     }
 
     protected abstract DefEditorContent getExpectedContent();
@@ -114,118 +114,147 @@ public abstract class DefEditorServiceBaseTest {
     @Test
     public void testLoadContent() {
 
-        when( path.toURI() ).thenReturn( FILE_URI );
-        org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
+        when(path.toURI()).thenReturn(FILE_URI);
+        org.uberfire.java.nio.file.Path nioPath = Paths.convert(path);
 
         String source = getExpectedDefString();
-        when( ioService.readAllString( nioPath ) ).thenReturn( source );
-        when( projectService.resolveProject( path ) ).thenReturn( project );
+        when(ioService.readAllString(nioPath)).thenReturn(source);
+        when(moduleService.resolveModule(path)).thenReturn(module);
 
-        DefEditorContent result = editorService.loadContent( path );
+        DefEditorContent result = editorService.loadContent(path);
 
         //The returned content should be the expected.
-        assertEquals( getExpectedContent(), result );
+        assertEquals(getExpectedContent(),
+                     result);
     }
 
     @Test
-    public void testCreateInProject() {
-        testCreate( false );
+    public void testCreateInModule() {
+        testCreate(false);
     }
 
     @Test
     public void testCreateGlobal() {
-        testCreate( true );
+        testCreate(true);
     }
 
-    private void testCreate( boolean global ) {
+    private void testCreate(boolean global) {
 
-        if ( global ) {
-            when( path.toURI() ).thenReturn( GLOBAL_URI );
+        if (global) {
+            when(path.toURI()).thenReturn(GLOBAL_URI);
         } else {
-            when( path.toURI() ).thenReturn( PROJECT_URI );
-            when( serviceHelper.getProjectDataSourcesContext( project ) ).thenReturn( path );
+            when(path.toURI()).thenReturn(PROJECT_URI);
+            when(serviceHelper.getModuleDataSourcesContext(module)).thenReturn(path);
         }
 
         //expected target path
-        org.uberfire.java.nio.file.Path targetNioPath = Paths.convert( path ).resolve( getExpectedFileName() );
+        org.uberfire.java.nio.file.Path targetNioPath = Paths.convert(path).resolve(getExpectedFileName());
         //expected source
         String source = getExpectedDefString();
 
-        when ( serviceHelper.getGlobalDataSourcesContext() ).thenReturn( path );
-        when ( ioService.exists( targetNioPath ) ).thenReturn( false );
+        when(serviceHelper.getGlobalDataSourcesContext()).thenReturn(path);
+        when(ioService.exists(targetNioPath)).thenReturn(false);
 
-        if ( global ) {
-            editorService.createGlobal( getExpectedDef() );
+        if (global) {
+            editorService.createGlobal(getExpectedDef());
         } else {
-            editorService.create( getExpectedDef(), project );
+            editorService.create(getExpectedDef(),
+                                 module);
         }
 
         //we wants that:
         // 1) the expected file was saved.
-        verify( ioService, times( 1 ) ).write( eq( targetNioPath ), eq( source ), any( CommentedOption.class) );
+        verify(ioService,
+               times(1)).write(eq(targetNioPath),
+                               eq(source),
+                               any(CommentedOption.class));
         // 2) the definition was registered
-        verify( defRegistry, times( 1 ) ).setEntry( Paths.convert( targetNioPath ), getExpectedDef() );
+        verify(defRegistry,
+               times(1)).setEntry(Paths.convert(targetNioPath),
+                                  getExpectedDef());
         // 3) the definition was deployed, and 4) the notification was fired.
-        verifyCreateConditions( global );
+        verifyCreateConditions(global);
     }
 
-    protected abstract void verifyCreateConditions( boolean global );
+    protected abstract void verifyCreateConditions(boolean global);
 
     @Test
     public void testSave() {
         //The name was not chanted.
-        getExpectedContent().getDef().setName( getOriginalDef().getName() );
+        getExpectedContent().getDef().setName(getOriginalDef().getName());
         String originalSource = getOriginalDefString();
 
         //expected path
-        when( path.toURI() ).thenReturn( FILE_URI );
-        org.uberfire.java.nio.file.Path targetNioPath = Paths.convert( path );
+        when(path.toURI()).thenReturn(FILE_URI);
+        org.uberfire.java.nio.file.Path targetNioPath = Paths.convert(path);
 
-        when ( ioService.readAllString( targetNioPath ) ).thenReturn( originalSource );
-        when ( projectService.resolveProject( path ) ).thenReturn( project );
+        when(ioService.readAllString(targetNioPath)).thenReturn(originalSource);
+        when(moduleService.resolveModule(path)).thenReturn(module);
 
-        editorService.save( path, getExpectedContent(), COMMENT );
+        editorService.save(path,
+                           getExpectedContent(),
+                           COMMENT);
 
         //we wants that:
         // 1) previous definition was un-registered and the expected file was saved
-        verify( defRegistry, times( 1 ) ).invalidateCache( path );
-        verify( ioService, times( 1 ) ).write( eq( targetNioPath ), eq( getExpectedDefString() ), any( CommentedOption.class ) );
-        verify( optionsFactory, times( 1 ) ).makeCommentedOption( COMMENT );
+        verify(defRegistry,
+               times(1)).invalidateCache(path);
+        verify(ioService,
+               times(1)).write(eq(targetNioPath),
+                               eq(getExpectedDefString()),
+                               any(CommentedOption.class));
+        verify(optionsFactory,
+               times(1)).makeCommentedOption(COMMENT);
         // 2) the new definition was registered.
-        verify( defRegistry, times( 1 ) ).setEntry( path, getExpectedDef() );
+        verify(defRegistry,
+               times(1)).setEntry(path,
+                                  getExpectedDef());
 
         // 3) the definition was deployed and 4) the notification was fired.
-        verifySaveConditions( );
+        verifySaveConditions();
     }
 
     @Test
     public void testSaveWithNameModified() {
         String originalSource = getOriginalDefString();
         //expected path
-        when( path.toURI() ).thenReturn( FILE_URI );
-        org.uberfire.java.nio.file.Path targetNioPath = Paths.convert( path );
+        when(path.toURI()).thenReturn(FILE_URI);
+        org.uberfire.java.nio.file.Path targetNioPath = Paths.convert(path);
 
         //rename path
-        when( renamedPath.toURI() ).thenReturn( FILE_URI );
-        when( pathNamingService.buildTargetPath( path, getExpectedDef().getName() ) ).thenReturn( renamedPath );
-        org.uberfire.java.nio.file.Path renamedNioPath = Paths.convert( renamedPath );
+        when(renamedPath.toURI()).thenReturn(FILE_URI);
+        when(pathNamingService.buildTargetPath(path,
+                                               getExpectedDef().getName())).thenReturn(renamedPath);
+        org.uberfire.java.nio.file.Path renamedNioPath = Paths.convert(renamedPath);
 
-        when ( ioService.readAllString( targetNioPath ) ).thenReturn( originalSource );
-        when ( projectService.resolveProject( path ) ).thenReturn( project );
+        when(ioService.readAllString(targetNioPath)).thenReturn(originalSource);
+        when(moduleService.resolveModule(path)).thenReturn(module);
 
-        editorService.save( path, getExpectedContent(), COMMENT );
+        editorService.save(path,
+                           getExpectedContent(),
+                           COMMENT);
 
         //we wants that:
         //1) previous definition was un-registered and the expected file was saved
-        verify( defRegistry, times( 1 ) ).invalidateCache( path );
-        verify( ioService, times( 1 ) ).write( eq( targetNioPath ), eq( getExpectedDefString() ), any( CommentedOption.class ) );
+        verify(defRegistry,
+               times(1)).invalidateCache(path);
+        verify(ioService,
+               times(1)).write(eq(targetNioPath),
+                               eq(getExpectedDefString()),
+                               any(CommentedOption.class));
         //2) the expected file was renamed and the new definition was registered.
-        verify( ioService, timeout( 1 ) ).move( eq( targetNioPath ), eq( renamedNioPath ), any( CommentedOption.class ) );
-        verify( optionsFactory, times( 2 ) ).makeCommentedOption( COMMENT );
-        verify( defRegistry, times( 1 ) ).setEntry( Paths.convert( Paths.convert( renamedPath ) ), getExpectedDef() );
+        verify(ioService,
+               timeout(1)).move(eq(targetNioPath),
+                                eq(renamedNioPath),
+                                any(CommentedOption.class));
+        verify(optionsFactory,
+               times(2)).makeCommentedOption(COMMENT);
+        verify(defRegistry,
+               times(1)).setEntry(Paths.convert(Paths.convert(renamedPath)),
+                                  getExpectedDef());
 
         //3) the definition was deployed and 4) the notification was fired.
-        verifySaveConditions( );
+        verifySaveConditions();
     }
 
     protected abstract void verifySaveConditions();
@@ -234,29 +263,33 @@ public abstract class DefEditorServiceBaseTest {
     public void testDelete() throws Exception {
         //current file
         String content = getExpectedDefString();
-        when( path.toURI() ).thenReturn( FILE_URI );
-        org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
-        when( ioService.readAllString( nioPath ) ).thenReturn( content );
-        when( ioService.exists( nioPath ) ).thenReturn( true );
+        when(path.toURI()).thenReturn(FILE_URI);
+        org.uberfire.java.nio.file.Path nioPath = Paths.convert(path);
+        when(ioService.readAllString(nioPath)).thenReturn(content);
+        when(ioService.exists(nioPath)).thenReturn(true);
 
-        when( projectService.resolveProject( path ) ).thenReturn( project );
+        when(moduleService.resolveModule(path)).thenReturn(module);
 
-        when( runtimeManager.getDataSourceDeploymentInfo(
-                getExpectedDef().getUuid() ) ).thenReturn( dataSourceDeploymentInfo );
-        when( runtimeManager.getDriverDeploymentInfo(
-                getExpectedDef().getUuid() ) ).thenReturn( driverDeploymentInfo );
+        when(runtimeManager.getDataSourceDeploymentInfo(
+                getExpectedDef().getUuid())).thenReturn(dataSourceDeploymentInfo);
+        when(runtimeManager.getDriverDeploymentInfo(
+                getExpectedDef().getUuid())).thenReturn(driverDeploymentInfo);
 
-        editorService.delete( path, COMMENT );
+        editorService.delete(path,
+                             COMMENT);
 
         //we wants that:
         //1) the file was deleted, and the definition was un-registered
-        verify( ioService, times( 1 ) ).delete( eq( Paths.convert( path ) ), any( CommentedOption.class ) );
-        verify( optionsFactory, times( 1 ) ).makeCommentedOption( COMMENT );
-        verify( defRegistry, times( 1 ) ).invalidateCache( path );
+        verify(ioService,
+               times(1)).delete(eq(Paths.convert(path)),
+                                any(CommentedOption.class));
+        verify(optionsFactory,
+               times(1)).makeCommentedOption(COMMENT);
+        verify(defRegistry,
+               times(1)).invalidateCache(path);
         //2) the definition was un-deployed, and 3) the delete notification was fired.
         verifyDeleteConditions();
     }
 
     protected abstract void verifyDeleteConditions();
-
 }

@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 import org.guvnor.ala.config.BuildConfig;
 import org.guvnor.ala.config.Config;
@@ -38,105 +37,101 @@ import org.uberfire.workbench.events.ResourceChangeType;
  */
 @ApplicationScoped
 public class LocalBuildConfigExecutor
-        implements BiFunctionConfigExecutor< LocalProject, LocalBuildConfig, BuildConfig > {
+        implements BiFunctionConfigExecutor<LocalModule, LocalBuildConfig, BuildConfig> {
 
-    public LocalBuildConfigExecutor( ) {
+    public LocalBuildConfigExecutor() {
         //Empty constructor for Weld proxying
     }
 
     /**
      * This executor mainly translates the local project configuration and the build configuration parameters provided
      * by the pipeline input into an internal format convenient for building the project in the local build system.
-     *
-     * @param localProject the internal representation of the project in the local build system.
-     *
+     * @param localModule the internal representation of the project in the local build system.
      * @param localBuildConfig the build configuration.
-     *
      * @return the internal build configuration for building the project in the local build system.
      */
     @Override
-    public Optional< BuildConfig > apply( LocalProject localProject, LocalBuildConfig localBuildConfig ) {
-        Optional< BuildConfig > result = Optional.empty( );
-        LocalBuildConfig.BuildType buildType = decodeBuildType( localBuildConfig.getBuildType( ) );
-        switch ( buildType ) {
+    public Optional<BuildConfig> apply(LocalModule localModule, LocalBuildConfig localBuildConfig) {
+        Optional<BuildConfig> result = Optional.empty();
+        LocalBuildConfig.BuildType buildType = decodeBuildType(localBuildConfig.getBuildType());
+        switch (buildType) {
             case FULL_BUILD:
-                result = Optional.of( new LocalBuildConfigInternal( localProject.getProject( ) ) );
+                result = Optional.of(new LocalBuildConfigInternal(localModule.getModule()));
                 break;
             case INCREMENTAL_ADD_RESOURCE:
             case INCREMENTAL_DELETE_RESOURCE:
             case INCREMENTAL_UPDATE_RESOURCE:
-                result = Optional.of( new LocalBuildConfigInternal( localProject.getProject( ), buildType,
-                        decodePath( localBuildConfig.getResource( ) ) ) );
+                result = Optional.of(new LocalBuildConfigInternal(localModule.getModule(), buildType,
+                                                                  decodePath(localBuildConfig.getResource())));
                 break;
             case INCREMENTAL_BATCH_CHANGES:
-                result = Optional.of( new LocalBuildConfigInternal( localProject.getProject( ),
-                        getResourceChanges( localBuildConfig.getResourceChanges( ) ) ) );
+                result = Optional.of(new LocalBuildConfigInternal(localModule.getModule(),
+                                                                  getResourceChanges(localBuildConfig.getResourceChanges())));
                 break;
             case FULL_BUILD_AND_DEPLOY:
-                result = Optional.of( new LocalBuildConfigInternal( localProject.getProject( ),
-                        decodeDeploymentType( localBuildConfig.getDeploymentType( ) ),
-                        decodeSuppressHandlers( localBuildConfig.getSuppressHandlers( ) ) ) );
-
+                result = Optional.of(new LocalBuildConfigInternal(localModule.getModule(),
+                                                                  decodeDeploymentType(localBuildConfig.getDeploymentType()),
+                                                                  decodeSuppressHandlers(localBuildConfig.getSuppressHandlers())));
         }
         return result;
     }
 
     @Override
-    public Class< ? extends Config > executeFor( ) {
+    public Class<? extends Config> executeFor() {
         return LocalBuildConfig.class;
     }
 
     @Override
-    public String outputId( ) {
+    public String outputId() {
         return "local-build";
     }
 
-    private LocalBuildConfig.BuildType decodeBuildType( String value ) {
-        return LocalBuildConfig.BuildType.valueOf( value );
+    private LocalBuildConfig.BuildType decodeBuildType(String value) {
+        return LocalBuildConfig.BuildType.valueOf(value);
     }
 
-    private Map< Path, Collection< ResourceChange > > getResourceChanges( Map< String, String > input ) {
-        Map< Path, Collection< ResourceChange > > resourceChanges = new HashMap<>( );
-        input.entrySet( )
-                .stream( )
-                .filter( entry -> entry.getKey( ).startsWith( LocalBuildConfig.RESOURCE_CHANGE ) )
-                .forEach( entry -> {
-                    resourceChanges.put( decodePath( entry.getKey( ), LocalBuildConfig.RESOURCE_CHANGE ), decodeChanges( entry.getValue( ) ) );
-                } );
+    private Map<Path, Collection<ResourceChange>> getResourceChanges(Map<String, String> input) {
+        Map<Path, Collection<ResourceChange>> resourceChanges = new HashMap<>();
+        input.entrySet()
+                .stream()
+                .filter(entry -> entry.getKey().startsWith(LocalBuildConfig.RESOURCE_CHANGE))
+                .forEach(entry -> {
+                    resourceChanges.put(decodePath(entry.getKey(), LocalBuildConfig.RESOURCE_CHANGE), decodeChanges(entry.getValue()));
+                });
         return resourceChanges;
     }
 
-    private Collection< ResourceChange > decodeChanges( String value ) {
-        return Arrays.stream( value.split( "," ) )
-                .map( s -> new ResourceChange( ) {
+    private Collection<ResourceChange> decodeChanges(String value) {
+        return Arrays.stream(value.split(","))
+                .map(s -> new ResourceChange() {
                     @Override
-                    public ResourceChangeType getType( ) {
-                        return ResourceChangeType.valueOf( s.trim( ) );
+                    public ResourceChangeType getType() {
+                        return ResourceChangeType.valueOf(s.trim());
                     }
 
                     @Override
-                    public String getMessage( ) {
+                    public String getMessage() {
                         return null;
                     }
-                } )
-                .collect( Collectors.toList( ) );
+                })
+                .collect(Collectors.toList());
     }
 
-    private Path decodePath( String uri ) {
-        return decodePath( uri, "" );
+    private Path decodePath(String uri) {
+        return decodePath(uri, "");
     }
 
-    private Path decodePath( String uri, String prefix ) {
-        final String name = uri.substring( uri.lastIndexOf( '/' ) + 1, uri.length( ) );
-        final String decodedURI = uri.substring( prefix.length( ), uri.length( ) );
-        return PathFactory.newPath( name, decodedURI );
+    private Path decodePath(String uri, String prefix) {
+        final String name = uri.substring(uri.lastIndexOf('/') + 1, uri.length());
+        final String decodedURI = uri.substring(prefix.length(), uri.length());
+        return PathFactory.newPath(name, decodedURI);
     }
 
-    private LocalBuildConfig.DeploymentType decodeDeploymentType( String value ) {
-        return LocalBuildConfig.DeploymentType.valueOf( value );
+    private LocalBuildConfig.DeploymentType decodeDeploymentType(String value) {
+        return LocalBuildConfig.DeploymentType.valueOf(value);
     }
 
-    private boolean decodeSuppressHandlers( String suppressHandlers ) {
-        return Boolean.parseBoolean( suppressHandlers );
+    private boolean decodeSuppressHandlers(String suppressHandlers) {
+        return Boolean.parseBoolean(suppressHandlers);
     }
 }

@@ -18,16 +18,11 @@ package org.kie.workbench.common.screens.explorer.client.widgets.navigator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.guvnor.structure.repositories.Repository;
+import org.guvnor.common.services.project.model.Module;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.workbench.common.screens.explorer.client.utils.IdHelper;
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
@@ -103,9 +98,9 @@ public class Explorer
         }
     }
 
-    public void setupHeader(final Project activeProject) {
+    public void setupHeader(final Module activeModule) {
 
-        presenter.onProjectSelected(activeProject);
+        presenter.onModuleSelected(activeModule);
 
         if (!isAlreadyInitialized) {
             container.clear();

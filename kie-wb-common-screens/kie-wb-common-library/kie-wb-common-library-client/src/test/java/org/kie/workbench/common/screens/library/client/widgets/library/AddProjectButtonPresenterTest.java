@@ -27,7 +27,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.client.screens.project.AddProjectPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.common.MenuResourceHandlerWidget;
-import org.kie.workbench.common.widgets.client.handlers.NewProjectHandler;
+import org.kie.workbench.common.widgets.client.handlers.NewWorkspaceProjectHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.mockito.Mock;
@@ -49,10 +49,10 @@ public class AddProjectButtonPresenterTest {
     private ManagedInstance<MenuResourceHandlerWidget> menuResourceHandlerWidgets;
 
     @Mock
-    private ManagedInstance<NewProjectHandler> newProjectHandlers;
+    private ManagedInstance<NewWorkspaceProjectHandler> newProjectHandlers;
 
     @Mock
-    private org.kie.workbench.common.screens.projecteditor.client.handlers.NewProjectHandler newDefaultProjectHandler;
+    private org.kie.workbench.common.screens.projecteditor.client.handlers.NewWorkspaceProjectHandler newDefaultProjectHandler;
 
     @Mock
     private NewResourcePresenter newResourcePresenter;
@@ -89,15 +89,15 @@ public class AddProjectButtonPresenterTest {
 
     @Test
     public void initTest() {
-        NewProjectHandler otherNewProjectHandler1 = mock(NewProjectHandler.class);
-        doReturn(true).when(otherNewProjectHandler1).canCreate();
-        NewProjectHandler otherNewProjectHandler2 = mock(NewProjectHandler.class);
-        doReturn(false).when(otherNewProjectHandler2).canCreate();
+        NewWorkspaceProjectHandler otherNewWorkspaceProjectHandler1 = mock(NewWorkspaceProjectHandler.class);
+        doReturn(true).when(otherNewWorkspaceProjectHandler1).canCreate();
+        NewWorkspaceProjectHandler otherNewWorkspaceProjectHandler2 = mock(NewWorkspaceProjectHandler.class);
+        doReturn(false).when(otherNewWorkspaceProjectHandler2).canCreate();
 
         List<NewResourceHandler> handlers = new ArrayList<>();
         handlers.add(newDefaultProjectHandler);
-        handlers.add(otherNewProjectHandler1);
-        handlers.add(otherNewProjectHandler2);
+        handlers.add(otherNewWorkspaceProjectHandler1);
+        handlers.add(otherNewWorkspaceProjectHandler2);
         doReturn(handlers).when(presenter).getNewProjectHandlers();
 
         presenter.init();
@@ -106,7 +106,7 @@ public class AddProjectButtonPresenterTest {
                never()).hideOtherProjects();
         verify(presenter,
                times(1)).addNewProjectHandler(any());
-        verify(presenter).addNewProjectHandler(otherNewProjectHandler1);
+        verify(presenter).addNewProjectHandler(otherNewWorkspaceProjectHandler1);
         verify(view,
                times(1)).addOtherProject(any());
     }

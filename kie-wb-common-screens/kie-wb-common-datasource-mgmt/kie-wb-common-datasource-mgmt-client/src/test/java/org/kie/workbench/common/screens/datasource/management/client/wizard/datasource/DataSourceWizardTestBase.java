@@ -98,46 +98,46 @@ public abstract class DataSourceWizardTestBase
      */
     protected void setup() {
         //initialize the services
-        editorServiceCaller = new CallerMock<>( editorService );
-        queryServiceCaller = new CallerMock<>( queryService );
+        editorServiceCaller = new CallerMock<>(editorService);
+        queryServiceCaller = new CallerMock<>(queryService);
 
         //initialize the wizard page
-        mainPanel = new DataSourceDefMainPanel( mainPanelView );
+        mainPanel = new DataSourceDefMainPanel(mainPanelView);
         dataSourceDef = new DataSourceDef();
 
-        editorHelper = new DataSourceDefEditorHelper( translationService,
-                editorServiceCaller, queryServiceCaller, new ClientValidationServiceMock(), popupsUtil );
-        defPage = new DataSourceDefPage( view, mainPanel, editorHelper, statusChangeEvent );
-        defPage.setDataSourceDef( dataSourceDef );
+        editorHelper = new DataSourceDefEditorHelper(translationService,
+                                                     editorServiceCaller, queryServiceCaller, new ClientValidationServiceMock(), popupsUtil);
+        defPage = new DataSourceDefPage(view, mainPanel, editorHelper, statusChangeEvent);
+        defPage.setDataSourceDef(dataSourceDef);
 
         //prepare the drivers info
-        drivers = new ArrayList<>(  );
-        drivers.add( driver1 );
-        drivers.add( driver2 );
+        drivers = new ArrayList<>();
+        drivers.add(driver1);
+        drivers.add(driver2);
 
-        options = new ArrayList<>(  );
-        options.add( new Pair( "Driver1.name", DRIVER_UUID ) );
-        options.add( new Pair( "Driver2.name", DRIVER_UUID_2 ) );
+        options = new ArrayList<>();
+        options.add(new Pair("Driver1.name", DRIVER_UUID));
+        options.add(new Pair("Driver2.name", DRIVER_UUID_2));
 
-        when( driver1.getName() ).thenReturn( "Driver1.name" );
-        when( driver1.getUuid() ).thenReturn( DRIVER_UUID );
-        when( driver2.getName() ).thenReturn( "Driver2.name" );
-        when( driver2.getUuid() ).thenReturn( DRIVER_UUID_2 );
+        when(driver1.getName()).thenReturn("Driver1.name");
+        when(driver1.getUuid()).thenReturn(DRIVER_UUID);
+        when(driver2.getName()).thenReturn("Driver2.name");
+        when(driver2.getUuid()).thenReturn(DRIVER_UUID_2);
 
         //emulates the service returning the requested drivers.
-        when( queryService.findProjectDrivers( path ) ).thenReturn( drivers );
-        when( queryService.findGlobalDrivers() ).thenReturn( drivers );
+        when(queryService.findModuleDrivers(path)).thenReturn(drivers);
+        when(queryService.findGlobalDrivers()).thenReturn(drivers);
     }
 
     /**
      * Emulates the user completing the page by entering valid values in all fields
      */
     protected void completeValidDefPage() {
-        when( mainPanelView.getName() ).thenReturn( NAME );
-        when( mainPanelView.getConnectionURL() ).thenReturn( CONNECTION_URL );
-        when( mainPanelView.getUser() ).thenReturn( USER );
-        when( mainPanelView.getPassword() ).thenReturn( PASSWORD );
-        when( mainPanelView.getDriver() ).thenReturn( DRIVER_UUID );
+        when(mainPanelView.getName()).thenReturn(NAME);
+        when(mainPanelView.getConnectionURL()).thenReturn(CONNECTION_URL);
+        when(mainPanelView.getUser()).thenReturn(USER);
+        when(mainPanelView.getPassword()).thenReturn(PASSWORD);
+        when(mainPanelView.getDriver()).thenReturn(DRIVER_UUID);
 
         mainPanel.onNameChange();
         mainPanel.onConnectionURLChange();

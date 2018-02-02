@@ -19,11 +19,15 @@ package org.kie.workbench.common.widgets.metadata.client;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.metadata.model.Overview;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -61,7 +65,7 @@ public class KieMultipleDocumentEditorTest
 
     @Test
     public void testSetupMenuBar() {
-        doReturn(mock(Project.class)).when(workbenchContext).getActiveProject();
+        doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
         doReturn(true).when(projectController).canUpdateProject(any());
 
         editor.setupMenuBar();
@@ -85,7 +89,7 @@ public class KieMultipleDocumentEditorTest
 
     @Test
     public void testSetupMenuBarWithoutUpdateProjectPermission() {
-        doReturn(mock(Project.class)).when(workbenchContext).getActiveProject();
+        doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
         doReturn(false).when(projectController).canUpdateProject(any());
 
         editor.setupMenuBar();
@@ -665,7 +669,7 @@ public class KieMultipleDocumentEditorTest
 
     @Test
     public void testSave() {
-        doReturn(mock(Project.class)).when(workbenchContext).getActiveProject();
+        doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
         doReturn(true).when(projectController).canUpdateProject(any());
 
         final TestDocument document = createTestDocument();
@@ -749,7 +753,10 @@ public class KieMultipleDocumentEditorTest
     @Test
     public void testOnRepositoryRemoved() {
         final Repository repository = mock(Repository.class);
-        when(workbenchContext.getActiveRepository()).thenReturn(repository);
+        when(workbenchContext.getActiveWorkspaceProject()).thenReturn(Optional.of(new WorkspaceProject(mock(OrganizationalUnit.class),
+                                                                                                       repository,
+                                                                                                       mock(Branch.class),
+                                                                                                       mock(Module.class))));
 
         editor.setupMenuBar();
 

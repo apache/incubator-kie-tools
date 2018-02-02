@@ -20,6 +20,7 @@ import javax.inject.Inject;
 
 import org.dashbuilder.displayer.client.Displayer;
 import org.dashbuilder.displayer.client.DisplayerCoordinator;
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
@@ -57,6 +58,7 @@ public class OrgUnitsMetricsScreen {
     TranslationService translationService;
     OrgUnitsMetricsFactory metricsFactory;
     DisplayerCoordinator displayerCoordinator;
+    private WorkspaceProjectContext projectContext;
     LibraryPlaces libraryPlaces;
 
     OrganizationalUnit organizationalUnit;
@@ -77,11 +79,13 @@ public class OrgUnitsMetricsScreen {
                                  final TranslationService translationService,
                                  final OrgUnitsMetricsFactory metricsFactory,
                                  final DisplayerCoordinator displayerCoordinator,
+                                 final WorkspaceProjectContext projectContext,
                                  final LibraryPlaces libraryPlaces) {
         this.view = view;
         this.translationService = translationService;
         this.metricsFactory = metricsFactory;
         this.displayerCoordinator = displayerCoordinator;
+        this.projectContext = projectContext;
         this.libraryPlaces = libraryPlaces;
     }
 
@@ -89,7 +93,8 @@ public class OrgUnitsMetricsScreen {
     public void init() {
         this.view.init(this);
 
-        this.organizationalUnit = libraryPlaces.getSelectedOrganizationalUnit();
+        this.organizationalUnit = projectContext.getActiveOrganizationalUnit()
+                                                .orElseThrow(() -> new IllegalStateException("Cannot initialize OrgUnitsMetricsScreen without an active organizational unit."));
 
         this.commitsOverTimeDisplayer = metricsFactory.lookupCommitsOverTimeDisplayer(organizationalUnit);
         this.commitsPerAuthorDisplayer = metricsFactory.lookupCommitsPerAuthorDisplayer(organizationalUnit);

@@ -20,12 +20,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.kie.soup.project.datamodel.commons.oracle.ModuleDataModelOracleImpl;
 import org.kie.soup.project.datamodel.commons.oracle.PackageDataModelOracleImpl;
-import org.kie.soup.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
 import org.kie.soup.project.datamodel.commons.util.MVELEvaluator;
 import org.kie.soup.project.datamodel.oracle.ExtensionKind;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.DataEnumLoader;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.GlobalsParser;
 import org.uberfire.commons.data.Pair;
@@ -38,7 +38,7 @@ public final class PackageDataModelOracleBuilder {
     private final String packageName;
 
     private PackageDataModelOracleImpl packageOracle = new PackageDataModelOracleImpl();
-    private ProjectDataModelOracle projectOracle = new ProjectDataModelOracleImpl();
+    private ModuleDataModelOracle moduleOracle = new ModuleDataModelOracleImpl();
 
     private Map<String, String[]> factFieldEnums = new HashMap<>();
     private Map<ExtensionKind<?>, List<?>> extensions = new HashMap<>();
@@ -61,8 +61,8 @@ public final class PackageDataModelOracleBuilder {
         this.evaluator = evaluator;
     }
 
-    public PackageDataModelOracleBuilder setProjectOracle(final ProjectDataModelOracle projectOracle) {
-        this.projectOracle = projectOracle;
+    public PackageDataModelOracleBuilder setModuleOracle(final ModuleDataModelOracle moduleOracle) {
+        this.moduleOracle = moduleOracle;
         return this;
     }
 
@@ -104,30 +104,30 @@ public final class PackageDataModelOracleBuilder {
     }
 
     public PackageDataModelOracle build() {
-        //Copy Project DMO into Package DMO
-        final ProjectDataModelOracleImpl pd = (ProjectDataModelOracleImpl) projectOracle;
-        packageOracle.addProjectModelFields(pd.getProjectModelFields());
-        packageOracle.addProjectFieldParametersType(pd.getProjectFieldParametersType());
-        packageOracle.addProjectJavaEnumDefinitions(pd.getProjectJavaEnumDefinitions());
-        packageOracle.addProjectMethodInformation(pd.getProjectMethodInformation());
-        packageOracle.addProjectCollectionTypes(pd.getProjectCollectionTypes());
-        packageOracle.addProjectEventTypes(pd.getProjectEventTypes());
-        packageOracle.addProjectTypeSources(pd.getProjectTypeSources());
-        packageOracle.addProjectSuperTypes(pd.getProjectSuperTypes());
-        packageOracle.addProjectTypeAnnotations(pd.getProjectTypeAnnotations());
-        packageOracle.addProjectTypeFieldsAnnotations(pd.getProjectTypeFieldsAnnotations());
-        packageOracle.addProjectPackageNames(pd.getProjectPackageNames());
+        //Copy Module DMO into Package DMO
+        final ModuleDataModelOracleImpl pd = (ModuleDataModelOracleImpl) moduleOracle;
+        packageOracle.addModuleModelFields(pd.getModuleModelFields());
+        packageOracle.addModuleFieldParametersType(pd.getModuleFieldParametersType());
+        packageOracle.addModuleJavaEnumDefinitions(pd.getModuleJavaEnumDefinitions());
+        packageOracle.addModuleMethodInformation(pd.getModuleMethodInformation());
+        packageOracle.addModuleCollectionTypes(pd.getModuleCollectionTypes());
+        packageOracle.addModuleEventTypes(pd.getModuleEventTypes());
+        packageOracle.addModuleTypeSources(pd.getModuleTypeSources());
+        packageOracle.addModuleSuperTypes(pd.getModuleSuperTypes());
+        packageOracle.addModuleTypeAnnotations(pd.getModuleTypeAnnotations());
+        packageOracle.addModuleTypeFieldsAnnotations(pd.getModuleTypeFieldsAnnotations());
+        packageOracle.addModulePackageNames(pd.getModulePackageNames());
 
         //Add Package DMO specifics
         loadEnums();
         loadPackageElements();
         loadGlobals();
-        loadProjectOracle();
+        loadModuleOracle();
 
         return packageOracle;
     }
 
-    private void loadProjectOracle() {
+    private void loadModuleOracle() {
         packageOracle.setPackageName(packageName);
     }
 

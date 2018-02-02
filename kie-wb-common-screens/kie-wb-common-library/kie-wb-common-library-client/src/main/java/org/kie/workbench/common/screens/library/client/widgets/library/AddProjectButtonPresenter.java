@@ -21,12 +21,11 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.client.screens.project.AddProjectPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.util.ResourceUtils;
 import org.kie.workbench.common.screens.library.client.widgets.common.MenuResourceHandlerWidget;
-import org.kie.workbench.common.widgets.client.handlers.NewProjectHandler;
+import org.kie.workbench.common.widgets.client.handlers.NewWorkspaceProjectHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.uberfire.client.mvp.UberElement;
 
@@ -45,9 +44,9 @@ public class AddProjectButtonPresenter {
 
     private ManagedInstance<MenuResourceHandlerWidget> menuResourceHandlerWidgets;
 
-    private ManagedInstance<NewProjectHandler> newProjectHandlers;
+    private ManagedInstance<NewWorkspaceProjectHandler> newProjectHandlers;
 
-    private org.kie.workbench.common.screens.projecteditor.client.handlers.NewProjectHandler newDefaultProjectHandler;
+    private org.kie.workbench.common.screens.projecteditor.client.handlers.NewWorkspaceProjectHandler newDefaultProjectHandler;
 
     private NewResourcePresenter newResourcePresenter;
 
@@ -59,8 +58,8 @@ public class AddProjectButtonPresenter {
     public AddProjectButtonPresenter(final View view,
                                      final ManagedInstance<AddProjectPopUpPresenter> addProjectPopUpPresenters,
                                      final ManagedInstance<MenuResourceHandlerWidget> menuResourceHandlerWidgets,
-                                     final ManagedInstance<NewProjectHandler> newProjectHandlers,
-                                     final org.kie.workbench.common.screens.projecteditor.client.handlers.NewProjectHandler newDefaultProjectHandler,
+                                     final ManagedInstance<NewWorkspaceProjectHandler> newProjectHandlers,
+                                     final org.kie.workbench.common.screens.projecteditor.client.handlers.NewWorkspaceProjectHandler newDefaultProjectHandler,
                                      final NewResourcePresenter newResourcePresenter,
                                      final ProjectController projectController,
                                      final LibraryPlaces libraryPlaces) {
@@ -83,9 +82,9 @@ public class AddProjectButtonPresenter {
     private void setupOtherProjects() {
         if (userCanCreateProjects()) {
             boolean hasOtherProjects = false;
-            for (NewProjectHandler newProjectHandler : getNewProjectHandlers()) {
-                if (!ResourceUtils.isDefaultProjectHandler(newProjectHandler) && newProjectHandler.canCreate()) {
-                    addNewProjectHandler(newProjectHandler);
+            for (NewWorkspaceProjectHandler newWorkspaceProjectHandler : getNewProjectHandlers()) {
+                if (!ResourceUtils.isDefaultProjectHandler(newWorkspaceProjectHandler) && newWorkspaceProjectHandler.canCreate()) {
+                    addNewProjectHandler(newWorkspaceProjectHandler);
                     hasOtherProjects = true;
                 }
             }
@@ -96,21 +95,17 @@ public class AddProjectButtonPresenter {
         }
     }
 
-    void addNewProjectHandler(final NewProjectHandler newProjectHandler) {
-        newProjectHandler.setOpenEditorOnCreation(false);
-        newProjectHandler.setCreationSuccessCallback(project -> {
+    void addNewProjectHandler(final NewWorkspaceProjectHandler newWorkspaceProjectHandler) {
+        newWorkspaceProjectHandler.setOpenEditorOnCreation(false);
+        newWorkspaceProjectHandler.setCreationSuccessCallback(project -> {
             if (project != null) {
-                final ProjectInfo projectInfo = new ProjectInfo(libraryPlaces.getSelectedOrganizationalUnit(),
-                                                                libraryPlaces.getSelectedRepository(),
-                                                                libraryPlaces.getSelectedBranch(),
-                                                                project);
-                libraryPlaces.goToProject(projectInfo);
+                libraryPlaces.goToProject(project);
             }
         });
 
         final MenuResourceHandlerWidget menuResourceHandlerWidget = menuResourceHandlerWidgets.get();
-        menuResourceHandlerWidget.init(newProjectHandler.getDescription(),
-                                       newProjectHandler.getCommand(newResourcePresenter));
+        menuResourceHandlerWidget.init(newWorkspaceProjectHandler.getDescription(),
+                                       newWorkspaceProjectHandler.getCommand(newResourcePresenter));
         view.addOtherProject(menuResourceHandlerWidget);
     }
 
@@ -129,7 +124,7 @@ public class AddProjectButtonPresenter {
         return view;
     }
 
-    Iterable<NewProjectHandler> getNewProjectHandlers() {
+    Iterable<NewWorkspaceProjectHandler> getNewProjectHandlers() {
         return newProjectHandlers;
     }
 }

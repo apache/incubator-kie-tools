@@ -21,7 +21,6 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.guvnor.structure.security.RepositoryFeatures;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.uberfire.security.authz.Permission;
 import org.uberfire.security.authz.PermissionManager;
@@ -91,31 +90,21 @@ public class WorkbenchTreeProvider implements PermissionTreeProvider {
     protected List<PermissionNode> createPermissions() {
         List<PermissionNode> permissions = new ArrayList<>();
 
-        PermissionLeafNode node1 = createPermissionLeafNode(RepositoryFeatures.CONFIGURE_REPOSITORY,
-                                                            i18n.ConfigureRepositories(),
-                                                            i18n.ConfigureRepositoriesHelp());
-        PermissionLeafNode node2 = createPermissionLeafNode(EDIT_SOURCES,
-                                                            i18n.DataModelerEditSources(),
-                                                            i18n.DataModelerEditSourcesHelp());
-        PermissionLeafNode node3 = createPermissionLeafNode(PLANNER_AVAILABLE,
-                                                            i18n.ResourcePlanner(),
-                                                            i18n.ResourcePlannerHelp());
-        PermissionLeafNode node4 = createPermissionLeafNode(JAR_DOWNLOAD,
-                                                            i18n.MavenRepositoryPagedJarTableDownloadJar(),
-                                                            i18n.MavenRepositoryPagedJarTableDownloadJarHelp());
-        PermissionLeafNode node5 = createPermissionLeafNode(EDIT_GLOBAL_PREFERENCES,
-                                                            i18n.EditGlobalPreferences(),
-                                                            i18n.EditGlobalPreferencesHelp());
-        PermissionLeafNode node6 = createPermissionLeafNode(GUIDED_DECISION_TABLE_EDIT_COLUMNS,
-                                                            i18n.GuidedDecisionTableEditColumns(),
-                                                            i18n.GuidedDecisionTableEditColumnsHelp());
-
-        permissions.add(node1);
-        permissions.add(node2);
-        permissions.add(node3);
-        permissions.add(node4);
-        permissions.add(node5);
-        permissions.add(node6);
+        permissions.add(createPermissionLeafNode(EDIT_SOURCES,
+                                                 i18n.DataModelerEditSources(),
+                                                 i18n.DataModelerEditSourcesHelp()));
+        permissions.add(createPermissionLeafNode(PLANNER_AVAILABLE,
+                                                 i18n.ResourcePlanner(),
+                                                 i18n.ResourcePlannerHelp()));
+        permissions.add(createPermissionLeafNode(JAR_DOWNLOAD,
+                                                 i18n.MavenRepositoryPagedJarTableDownloadJar(),
+                                                 i18n.MavenRepositoryPagedJarTableDownloadJarHelp()));
+        permissions.add(createPermissionLeafNode(EDIT_GLOBAL_PREFERENCES,
+                                                 i18n.EditGlobalPreferences(),
+                                                 i18n.EditGlobalPreferencesHelp()));
+        permissions.add(createPermissionLeafNode(GUIDED_DECISION_TABLE_EDIT_COLUMNS,
+                                                 i18n.GuidedDecisionTableEditColumns(),
+                                                 i18n.GuidedDecisionTableEditColumnsHelp()));
 
         return permissions;
     }

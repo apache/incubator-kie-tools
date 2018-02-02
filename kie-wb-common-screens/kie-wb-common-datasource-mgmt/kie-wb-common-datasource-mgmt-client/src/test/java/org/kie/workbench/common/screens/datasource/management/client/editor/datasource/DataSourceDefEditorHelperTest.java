@@ -45,7 +45,7 @@ import org.uberfire.mvp.ParameterizedCommand;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class DataSourceDefEditorHelperTest
         implements DataSourceManagementTestConstants {
 
@@ -84,242 +84,244 @@ public class DataSourceDefEditorHelperTest
     public void setup() {
 
         clientValidationService = new ClientValidationServiceMock();
-        editorServiceCaller = new CallerMock<>( editorService );
+        editorServiceCaller = new CallerMock<>(editorService);
 
-        queryServiceCaller = new CallerMock<>( queryService );
+        queryServiceCaller = new CallerMock<>(queryService);
 
-        when( driverDefInfo.getUuid() ).thenReturn( DRIVER_UUID );
-        when( driverDefInfo.getName() ).thenReturn( "DriverName" );
-        List<DriverDefInfo> drivers = new ArrayList<>( );
-        drivers.add( driverDefInfo );
+        when(driverDefInfo.getUuid()).thenReturn(DRIVER_UUID);
+        when(driverDefInfo.getName()).thenReturn("DriverName");
+        List<DriverDefInfo> drivers = new ArrayList<>();
+        drivers.add(driverDefInfo);
 
-        when( queryService.findGlobalDrivers() ).thenReturn( drivers );
-        when( queryService.findProjectDrivers( any( Path.class ) ) ).thenReturn( drivers );
+        when(queryService.findGlobalDrivers()).thenReturn(drivers);
+        when(queryService.findModuleDrivers(any(Path.class))).thenReturn(drivers);
 
-        editorHelper = new DataSourceDefEditorHelper( translationService,
-                editorServiceCaller, queryServiceCaller, clientValidationService, popupsUtil );
-        editorHelper.setHandler( handler );
-        editorHelper.init( mainPanel );
-        editorHelper.loadDrivers( new Command() {
-            @Override public void execute() {
+        editorHelper = new DataSourceDefEditorHelper(translationService,
+                                                     editorServiceCaller, queryServiceCaller, clientValidationService, popupsUtil);
+        editorHelper.setHandler(handler);
+        editorHelper.init(mainPanel);
+        editorHelper.loadDrivers(new Command() {
+            @Override
+            public void execute() {
                 //do nothing
             }
         }, new ParameterizedCommand<Throwable>() {
-            @Override public void execute( Throwable parameter ) {
+            @Override
+            public void execute(Throwable parameter) {
                 //do nothing
             }
-        } );
+        });
 
         dataSourceDef = new DataSourceDef();
-        editorHelper.setDataSourceDef( dataSourceDef );
+        editorHelper.setDataSourceDef(dataSourceDef);
 
-        verify( mainPanel, times( 1 ) ).clear();
-        verify( mainPanel, times( 1 ) ).setName( dataSourceDef.getName() );
-        verify( mainPanel, times( 1 ) ).setConnectionURL( dataSourceDef.getConnectionURL() );
-        verify( mainPanel, times( 1 ) ).setUser( dataSourceDef.getUser() );
-        verify( mainPanel, times( 1 ) ).setPassword( dataSourceDef.getPassword() );
-        verify( mainPanel, times( 1 ) ).setDriver( dataSourceDef.getDriverUuid() );
+        verify(mainPanel, times(1)).clear();
+        verify(mainPanel, times(1)).setName(dataSourceDef.getName());
+        verify(mainPanel, times(1)).setConnectionURL(dataSourceDef.getConnectionURL());
+        verify(mainPanel, times(1)).setUser(dataSourceDef.getUser());
+        verify(mainPanel, times(1)).setPassword(dataSourceDef.getPassword());
+        verify(mainPanel, times(1)).setDriver(dataSourceDef.getDriverUuid());
     }
 
     @Test
     public void testValidNameChange() {
-        testNameChange( true );
+        testNameChange(true);
     }
 
     @Test
     public void testInvalidNameChange() {
-        testNameChange( false );
+        testNameChange(false);
     }
 
-    private void testNameChange( boolean isValid ) {
-        if ( isValid ) {
-            when( mainPanel.getName() ).thenReturn( NAME );
+    private void testNameChange(boolean isValid) {
+        if (isValid) {
+            when(mainPanel.getName()).thenReturn(NAME);
         } else {
-            when( mainPanel.getName() ).thenReturn( INVALID_NAME );
+            when(mainPanel.getName()).thenReturn(INVALID_NAME);
         }
-        when( translationService.getTranslation(
-                DataSourceManagementConstants.DataSourceDefEditor_InvalidNameMessage ) ).thenReturn( ERROR );
+        when(translationService.getTranslation(
+                DataSourceManagementConstants.DataSourceDefEditor_InvalidNameMessage)).thenReturn(ERROR);
 
         //emulates the helper receiving the change event
         editorHelper.onNameChange();
 
-        if ( isValid ) {
-            assertTrue( editorHelper.isNameValid() );
-            assertEquals( NAME, dataSourceDef.getName() );
-            verify( mainPanel, times( 1 ) ).clearNameErrorMessage();
+        if (isValid) {
+            assertTrue(editorHelper.isNameValid());
+            assertEquals(NAME, dataSourceDef.getName());
+            verify(mainPanel, times(1)).clearNameErrorMessage();
         } else {
-            assertFalse( editorHelper.isNameValid() );
-            assertEquals( INVALID_NAME, dataSourceDef.getName() );
-            verify( mainPanel, times( 1 ) ).setNameErrorMessage( ERROR );
+            assertFalse(editorHelper.isNameValid());
+            assertEquals(INVALID_NAME, dataSourceDef.getName());
+            verify(mainPanel, times(1)).setNameErrorMessage(ERROR);
         }
-        verify( handler, times( 1 ) ).onNameChange();
+        verify(handler, times(1)).onNameChange();
     }
 
     @Test
     public void testValidConnectionURLChange() {
-        testConnectionURLChange( true );
+        testConnectionURLChange(true);
     }
 
     @Test
     public void testInvalidConnectionURLChange() {
-        testConnectionURLChange( false );
+        testConnectionURLChange(false);
     }
 
-    private void testConnectionURLChange( boolean isValid ) {
-        if ( isValid ) {
-            when( mainPanel.getConnectionURL() ).thenReturn( CONNECTION_URL );
+    private void testConnectionURLChange(boolean isValid) {
+        if (isValid) {
+            when(mainPanel.getConnectionURL()).thenReturn(CONNECTION_URL);
         } else {
-            when( mainPanel.getConnectionURL() ).thenReturn( INVALID_CONNECTION_URL );
+            when(mainPanel.getConnectionURL()).thenReturn(INVALID_CONNECTION_URL);
         }
-        when( translationService.getTranslation(
-                DataSourceManagementConstants.DataSourceDefEditor_InvalidConnectionURLMessage ) ).thenReturn( ERROR );
+        when(translationService.getTranslation(
+                DataSourceManagementConstants.DataSourceDefEditor_InvalidConnectionURLMessage)).thenReturn(ERROR);
 
         //emulates the helper receiving the change event
         editorHelper.onConnectionURLChange();
 
-        if ( isValid ) {
-            assertTrue( editorHelper.isConnectionURLValid() );
-            assertEquals( CONNECTION_URL, dataSourceDef.getConnectionURL() );
-            verify( mainPanel, times( 1 ) ).clearConnectionURLErrorMessage();
+        if (isValid) {
+            assertTrue(editorHelper.isConnectionURLValid());
+            assertEquals(CONNECTION_URL, dataSourceDef.getConnectionURL());
+            verify(mainPanel, times(1)).clearConnectionURLErrorMessage();
         } else {
-            assertFalse( editorHelper.isConnectionURLValid() );
-            assertEquals( INVALID_CONNECTION_URL, dataSourceDef.getConnectionURL() );
-            verify( mainPanel, times( 1 ) ).setConnectionURLErrorMessage( ERROR );
+            assertFalse(editorHelper.isConnectionURLValid());
+            assertEquals(INVALID_CONNECTION_URL, dataSourceDef.getConnectionURL());
+            verify(mainPanel, times(1)).setConnectionURLErrorMessage(ERROR);
         }
-        verify( handler, times( 1 ) ).onConnectionURLChange();
+        verify(handler, times(1)).onConnectionURLChange();
     }
 
     @Test
     public void testValidUserChange() {
-        testUserChange( true );
+        testUserChange(true);
     }
 
     @Test
     public void testInvalidUserChange() {
-        testUserChange( false );
+        testUserChange(false);
     }
 
-    private void testUserChange( boolean isValid ) {
-        if ( isValid ) {
-            when( mainPanel.getUser() ).thenReturn( USER );
+    private void testUserChange(boolean isValid) {
+        if (isValid) {
+            when(mainPanel.getUser()).thenReturn(USER);
         } else {
-            when( mainPanel.getUser() ).thenReturn( "" );
+            when(mainPanel.getUser()).thenReturn("");
         }
-        when( translationService.getTranslation(
-                DataSourceManagementConstants.DataSourceDefEditor_InvalidUserMessage ) ).thenReturn( ERROR );
+        when(translationService.getTranslation(
+                DataSourceManagementConstants.DataSourceDefEditor_InvalidUserMessage)).thenReturn(ERROR);
 
         //emulates the helper receiving the change event
         editorHelper.onUserChange();
 
-        if ( isValid ) {
-            assertTrue( editorHelper.isUserValid() );
-            assertEquals( USER, dataSourceDef.getUser() );
-            verify( mainPanel, times( 1 ) ).clearUserErrorMessage();
+        if (isValid) {
+            assertTrue(editorHelper.isUserValid());
+            assertEquals(USER, dataSourceDef.getUser());
+            verify(mainPanel, times(1)).clearUserErrorMessage();
         } else {
-            assertFalse( editorHelper.isUserValid() );
-            assertEquals( "", dataSourceDef.getUser() );
-            verify( mainPanel, times( 1 ) ).setUserErrorMessage( ERROR );
+            assertFalse(editorHelper.isUserValid());
+            assertEquals("", dataSourceDef.getUser());
+            verify(mainPanel, times(1)).setUserErrorMessage(ERROR);
         }
-        verify( handler, times( 1 ) ).onUserChange();
+        verify(handler, times(1)).onUserChange();
     }
 
     @Test
     public void testValidPasswordChange() {
-        testPasswordChange( true );
+        testPasswordChange(true);
     }
 
     @Test
     public void testInvalidPassword() {
-        testPasswordChange( false );
+        testPasswordChange(false);
     }
 
-    private void testPasswordChange( boolean isValid ) {
-        if ( isValid ) {
-            when( mainPanel.getPassword() ).thenReturn( PASSWORD );
+    private void testPasswordChange(boolean isValid) {
+        if (isValid) {
+            when(mainPanel.getPassword()).thenReturn(PASSWORD);
         } else {
-            when( mainPanel.getPassword() ).thenReturn( "" );
+            when(mainPanel.getPassword()).thenReturn("");
         }
-        when( translationService.getTranslation(
-                DataSourceManagementConstants.DataSourceDefEditor_InvalidPasswordMessage ) ).thenReturn( ERROR );
+        when(translationService.getTranslation(
+                DataSourceManagementConstants.DataSourceDefEditor_InvalidPasswordMessage)).thenReturn(ERROR);
 
         //emulates the helper receiving the change event
         editorHelper.onPasswordChange();
 
-        if ( isValid ) {
-            assertTrue( editorHelper.isPasswordValid() );
-            assertEquals( PASSWORD, dataSourceDef.getPassword() );
-            verify( mainPanel, times( 1 ) ).clearPasswordErrorMessage();
+        if (isValid) {
+            assertTrue(editorHelper.isPasswordValid());
+            assertEquals(PASSWORD, dataSourceDef.getPassword());
+            verify(mainPanel, times(1)).clearPasswordErrorMessage();
         } else {
-            assertFalse( editorHelper.isPasswordValid() );
-                    assertEquals( "", dataSourceDef.getPassword() );
-            verify( mainPanel, times( 1 ) ).setPasswordErrorMessage( ERROR );
+            assertFalse(editorHelper.isPasswordValid());
+            assertEquals("", dataSourceDef.getPassword());
+            verify(mainPanel, times(1)).setPasswordErrorMessage(ERROR);
         }
-        verify( handler, times( 1 ) ).onPasswordChange();
+        verify(handler, times(1)).onPasswordChange();
     }
 
     @Test
     public void testValidDriverChange() {
-        testDriverChange( true );
+        testDriverChange(true);
     }
 
     @Test
     public void testInvalidDriverChange() {
-        testDriverChange( false );
+        testDriverChange(false);
     }
 
-    private void testDriverChange( boolean isValid ) {
-        if ( isValid ) {
-            when( mainPanel.getDriver() ).thenReturn( DRIVER_UUID );
+    private void testDriverChange(boolean isValid) {
+        if (isValid) {
+            when(mainPanel.getDriver()).thenReturn(DRIVER_UUID);
         } else {
-            when( mainPanel.getDriver() ).thenReturn( null );
+            when(mainPanel.getDriver()).thenReturn(null);
         }
-        when( translationService.getTranslation(
-                DataSourceManagementConstants.DataSourceDefEditor_DriverRequiredMessage ) ).thenReturn( ERROR );
+        when(translationService.getTranslation(
+                DataSourceManagementConstants.DataSourceDefEditor_DriverRequiredMessage)).thenReturn(ERROR);
 
         //emulates the helper receiving the change event
         editorHelper.onDriverChange();
 
-        if ( isValid ) {
-            assertTrue( editorHelper.isDriverValid() );
-            assertEquals( DRIVER_UUID, dataSourceDef.getDriverUuid() );
-            verify( mainPanel, times( 1 ) ).clearDriverErrorMessage();
+        if (isValid) {
+            assertTrue(editorHelper.isDriverValid());
+            assertEquals(DRIVER_UUID, dataSourceDef.getDriverUuid());
+            verify(mainPanel, times(1)).clearDriverErrorMessage();
         } else {
-            assertFalse( editorHelper.isDriverValid() );
-            assertNull( dataSourceDef.getDriverUuid() );
-            verify( mainPanel, times( 1 ) ).setDriverErrorMessage( ERROR );
+            assertFalse(editorHelper.isDriverValid());
+            assertNull(dataSourceDef.getDriverUuid());
+            verify(mainPanel, times(1)).setDriverErrorMessage(ERROR);
         }
-        verify( handler, times( 1 ) ).onDriverChange();
+        verify(handler, times(1)).onDriverChange();
     }
 
     @Test
     public void testValidConnection() {
-        testConnection( true );
+        testConnection(true);
     }
 
     @Test
     public void testInvalidConnection() {
-        testConnection( false );
+        testConnection(false);
     }
 
-    private void testConnection( boolean isValid ) {
+    private void testConnection(boolean isValid) {
 
-        TestResult result = new TestResult( isValid );
-        result.setMessage( "Message" );
-        when( editorService.testConnection( any( DataSourceDef.class ) ) ).thenReturn( result );
-        when( translationService.getTranslation(
-                DataSourceManagementConstants.DataSourceDefEditor_ConnectionTestFailedMessage ) ).thenReturn( ERROR );
+        TestResult result = new TestResult(isValid);
+        result.setMessage("Message");
+        when(editorService.testConnection(any(DataSourceDef.class))).thenReturn(result);
+        when(translationService.getTranslation(
+                DataSourceManagementConstants.DataSourceDefEditor_ConnectionTestFailedMessage)).thenReturn(ERROR);
 
-        when( translationService.getTranslation(
-                DataSourceManagementConstants.DataSourceDefEditor_ConnectionTestSuccessfulMessage ) ).thenReturn( "OK" );
+        when(translationService.getTranslation(
+                DataSourceManagementConstants.DataSourceDefEditor_ConnectionTestSuccessfulMessage)).thenReturn("OK");
 
         editorHelper.onTestConnection();
 
-        if ( isValid ) {
-            verify( popupsUtil, times( 1 ) ).showInformationPopup(
-                    new SafeHtmlBuilder().appendEscapedLines( "OK" + "\n" + "Message" ).toSafeHtml().asString() );
+        if (isValid) {
+            verify(popupsUtil, times(1)).showInformationPopup(
+                    new SafeHtmlBuilder().appendEscapedLines("OK" + "\n" + "Message").toSafeHtml().asString());
         } else {
-            verify( popupsUtil, times( 1 ) ).showInformationPopup(
-                    new SafeHtmlBuilder().appendEscapedLines( ERROR + "\n" + "Message" ).toSafeHtml().asString() );
+            verify(popupsUtil, times(1)).showInformationPopup(
+                    new SafeHtmlBuilder().appendEscapedLines(ERROR + "\n" + "Message").toSafeHtml().asString());
         }
     }
 }

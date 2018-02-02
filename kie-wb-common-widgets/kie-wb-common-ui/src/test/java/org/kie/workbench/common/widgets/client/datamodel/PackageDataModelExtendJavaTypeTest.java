@@ -17,7 +17,6 @@ package org.kie.workbench.common.widgets.client.datamodel;
 
 import java.net.URL;
 import java.util.HashMap;
-
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
@@ -28,8 +27,8 @@ import org.jboss.errai.validation.client.dynamic.DynamicValidator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
@@ -39,7 +38,7 @@ import org.uberfire.client.callbacks.Callback;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
 import static org.junit.Assert.*;
-import static org.kie.workbench.common.widgets.client.datamodel.PackageDataModelOracleTestUtils.*;
+import static org.kie.workbench.common.widgets.client.datamodel.PackageDataModelOracleTestUtils.assertContains;
 import static org.mockito.Mockito.*;
 
 @RunWith(WeldJUnitRunner.class)
@@ -80,7 +79,7 @@ public class PackageDataModelExtendJavaTypeTest {
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName("t4p1");
-        dataModel.setModelFields(projectLoader.getProjectModelFields());
+        dataModel.setModelFields(projectLoader.getModuleModelFields());
         dataModel.setEventTypes(new HashMap<String, Boolean>() {
             {
                 put("t4p1.Bean1", true);
@@ -108,13 +107,13 @@ public class PackageDataModelExtendJavaTypeTest {
     }
 
     @Test
-    public void testProjectExtendJavaTypeWithQualifiedDRLBeanName() throws Exception {
+    public void testModuleExtendJavaTypeWithQualifiedDRLBeanName() throws Exception {
         final URL packageUrl = this.getClass().getResource("/DataModelBackendExtendJavaTypeTest1/src/main/java/t4p1");
         final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath(packageUrl.toURI());
         final Path packagePath = paths.convert(nioPackagePath);
 
         final PackageDataModelOracle packageLoader = dataModelService.getDataModel(packagePath);
-        final ProjectDataModelOracle projectLoader = dataModelService.getProjectDataModel(packagePath);
+        final ModuleDataModelOracle projectLoader = dataModelService.getModuleDataModel(packagePath);
 
         //Emulate server-to-client conversions
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller(packageLoader);
@@ -123,7 +122,7 @@ public class PackageDataModelExtendJavaTypeTest {
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName("t4p1");
-        dataModel.setModelFields(projectLoader.getProjectModelFields());
+        dataModel.setModelFields(projectLoader.getModuleModelFields());
         dataModel.setEventTypes(new HashMap<String, Boolean>() {
             {
                 put("t4p1.Bean1", true);
@@ -165,7 +164,7 @@ public class PackageDataModelExtendJavaTypeTest {
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName("t5p1");
-        dataModel.setModelFields(projectLoader.getProjectModelFields());
+        dataModel.setModelFields(projectLoader.getModuleModelFields());
         dataModel.setEventTypes(new HashMap<String, Boolean>() {
             {
                 put("t5p1.Bean1", true);
@@ -192,13 +191,13 @@ public class PackageDataModelExtendJavaTypeTest {
     }
 
     @Test
-    public void testProjectExtendJavaTypeWithImport() throws Exception {
+    public void testModuleExtendJavaTypeWithImport() throws Exception {
         final URL packageUrl = this.getClass().getResource("/DataModelBackendExtendJavaTypeTest2/src/main/java/t5p1");
         final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath(packageUrl.toURI());
         final Path packagePath = paths.convert(nioPackagePath);
 
         final PackageDataModelOracle packageLoader = dataModelService.getDataModel(packagePath);
-        final ProjectDataModelOracle projectLoader = dataModelService.getProjectDataModel(packagePath);
+        final ModuleDataModelOracle projectLoader = dataModelService.getModuleDataModel(packagePath);
 
         //Emulate server-to-client conversions
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller(packageLoader);
@@ -207,7 +206,7 @@ public class PackageDataModelExtendJavaTypeTest {
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName("t5p1");
-        dataModel.setModelFields(projectLoader.getProjectModelFields());
+        dataModel.setModelFields(projectLoader.getModuleModelFields());
         dataModel.setEventTypes(new HashMap<String, Boolean>() {
             {
                 put("t5p1.Bean1", true);

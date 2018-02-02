@@ -20,7 +20,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.client.security.ProjectTreeProvider;
 import org.guvnor.structure.client.security.OrganizationalUnitTreeProvider;
 import org.guvnor.structure.client.security.RepositoryTreeProvider;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
@@ -66,7 +65,6 @@ public class PermissionTreeSetup {
     private EditorTreeProvider editorTreeProvider;
     private Instance<OrganizationalUnitTreeProvider> orgUnitTreeProvider;
     private Instance<RepositoryTreeProvider> repositoryTreeProvider;
-    private Instance<ProjectTreeProvider> projectTreeProvider;
 
     private DefaultWorkbenchConstants i18n = DefaultWorkbenchConstants.INSTANCE;
 
@@ -79,14 +77,12 @@ public class PermissionTreeSetup {
                                final PerspectiveTreeProvider perspectiveTreeProvider,
                                final EditorTreeProvider editorTreeProvider,
                                final Instance<OrganizationalUnitTreeProvider> orgUnitTreeProvider,
-                               final Instance<RepositoryTreeProvider> repositoryTreeProvider,
-                               final Instance<ProjectTreeProvider> projectTreeProvider) {
+                               final Instance<RepositoryTreeProvider> repositoryTreeProvider) {
         this.workbenchTreeProvider = workbenchTreeProvider;
         this.perspectiveTreeProvider = perspectiveTreeProvider;
         this.editorTreeProvider = editorTreeProvider;
         this.orgUnitTreeProvider = orgUnitTreeProvider;
         this.repositoryTreeProvider = repositoryTreeProvider;
-        this.projectTreeProvider = projectTreeProvider;
     }
 
     public void configureTree() {
@@ -142,7 +138,6 @@ public class PermissionTreeSetup {
         perspectiveTreeProvider.excludePerspectiveId(APPS); /* uberfire */
         perspectiveTreeProvider.excludePerspectiveId(SOCIAL_HOME); /* uberfire */
         perspectiveTreeProvider.excludePerspectiveId(SOCIAL_USER_HOME); /* uberfire */
-        perspectiveTreeProvider.excludePerspectiveId("Asset Management"); /* guvnor */
 
         // Include optional editors
         editorTreeProvider.registerEditor(GUIDED_DECISION_TREE,
@@ -163,9 +158,6 @@ public class PermissionTreeSetup {
         }
         if (!repositoryTreeProvider.isUnsatisfied()) {
             repositoryTreeProvider.get().setRootNodePosition(4);
-        }
-        if (!projectTreeProvider.isUnsatisfied()) {
-            projectTreeProvider.get().setRootNodePosition(5);
         }
     }
 }

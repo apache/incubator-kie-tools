@@ -22,13 +22,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
-import org.kie.workbench.common.screens.explorer.client.widgets.branches.BranchSelector;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explorer;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.NavigatorOptions;
 
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class BusinessViewWidgetTest {
 
     @GwtMock
@@ -47,27 +46,29 @@ public class BusinessViewWidgetTest {
 
     @Test
     public void testInit() throws Exception {
-        final BaseViewPresenter presenter = mock( BaseViewPresenter.class );
-        businessViewWidget.init( presenter );
+        final BaseViewPresenter presenter = mock(BaseViewPresenter.class);
+        businessViewWidget.init(presenter);
 
-        verify( explorer ).init( any( NavigatorOptions.class ),
-                                 eq( Explorer.NavType.TREE ),
-                                 eq( presenter ) );
+        verify(explorer).init(any(NavigatorOptions.class),
+                              eq(Explorer.NavType.TREE),
+                              eq(presenter));
     }
 
     @Test
     public void showHeaderNavigation() throws Exception {
         businessViewWidget.showHeaderNavigator();
 
-        verify( explorer ).showHeaderNavigator();
-        verify( explorer, never() ).hideHeaderNavigator();
+        verify(explorer).showHeaderNavigator();
+        verify(explorer,
+               never()).hideHeaderNavigator();
     }
 
     @Test
     public void hideHeaderNavigation() throws Exception {
         businessViewWidget.hideHeaderNavigator();
 
-        verify( explorer ).hideHeaderNavigator();
-        verify( explorer, never() ).showHeaderNavigator();
+        verify(explorer).hideHeaderNavigator();
+        verify(explorer,
+               never()).showHeaderNavigator();
     }
 }

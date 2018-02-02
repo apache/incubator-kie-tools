@@ -18,7 +18,7 @@ package org.kie.workbench.common.screens.datamodeller.backend.server;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieModule;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -27,9 +27,9 @@ public class DataModelerInnerTypesWeldTest extends AbstractDataModelerServiceWel
 
     @Test
     public void dataModelerShouldIgnoreEnumFieldsOfInnerClasses() throws Exception {
-        KieProject project = loadProjectFromResources("/TestInnerTypes");
+        KieModule module = loadProjectFromResources("/TestInnerTypes");
 
-        DataModel dataModel = dataModelService.loadModel(project);
+        DataModel dataModel = dataModelService.loadModel(module);
         DataObject dataObject = dataModel.getDataObject("test.Outer");
         assertNotNull("DataObject test.Outer should be loaded",
                       dataObject);

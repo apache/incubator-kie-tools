@@ -15,9 +15,9 @@
  */
 package org.kie.workbench.common.stunner.bpmn.backend.service.indexing;
 
-import org.kie.workbench.common.services.backend.project.ProjectClassLoaderHelper;
+import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.stunner.bpmn.backend.indexing.BpmnFileIndexer;
 import org.kie.workbench.common.stunner.bpmn.resource.BPMNDefinitionSetResourceType;
 import org.uberfire.io.IOService;
@@ -29,8 +29,8 @@ import static org.mockito.Mockito.when;
 public class TestBpmnFileIndexer extends BpmnFileIndexer implements TestIndexer<BPMNDefinitionSetResourceType> {
 
     public TestBpmnFileIndexer() {
-        this.classLoaderHelper = mock(ProjectClassLoaderHelper.class);
-        when(this.classLoaderHelper.getProjectClassLoader(any())).thenReturn(this.getClass().getClassLoader());
+        this.classLoaderHelper = mock(ModuleClassLoaderHelper.class);
+        when(this.classLoaderHelper.getModuleClassLoader(any())).thenReturn(this.getClass().getClassLoader());
     }
 
     @Override
@@ -39,8 +39,8 @@ public class TestBpmnFileIndexer extends BpmnFileIndexer implements TestIndexer<
     }
 
     @Override
-    public void setProjectService(KieProjectService projectService) {
-        this.projectService = projectService;
+    public void setModuleService(KieModuleService moduleService) {
+        this.moduleService = moduleService;
     }
 
     @Override

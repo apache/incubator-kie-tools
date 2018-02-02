@@ -16,16 +16,26 @@
 
 package org.kie.workbench.common.services.refactoring.backend.server.query.standard;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.lucene.search.Query;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
 import org.kie.workbench.common.services.refactoring.model.index.terms.SharedPartIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueBranchNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueProjectNameIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueModuleNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueSharedPartIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringMapPageRow;
+import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
 import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,12 +45,6 @@ import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.model.KProperty;
 import org.uberfire.io.IOService;
 import org.uberfire.paging.PageResponse;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.net.URI;
-import java.util.*;
 
 @ApplicationScoped
 public class FindRuleFlowNamesQuery extends AbstractFindQuery implements NamedQuery {
@@ -81,17 +85,18 @@ public class FindRuleFlowNamesQuery extends AbstractFindQuery implements NamedQu
         checkNotNullAndNotEmpty(queryTerms);
 
         checkInvalidAndRequiredTerms(queryTerms,
-                NAME,
-                new String [] {
-                        null, null,  // not required
-                        ruleFlowTerm.getTerm()
-                },
-                (t) -> (t instanceof ValueProjectNameIndexTerm),
-                (t) -> (t instanceof ValueBranchNameIndexTerm),
-                (t) -> (t.getTerm().equals(ruleFlowTerm.getTerm())));
+                                     NAME,
+                                     new String[]{
+                                             null, null,  // not required
+                                             ruleFlowTerm.getTerm()
+                                     },
+                                     (t) -> (t instanceof ValueModuleNameIndexTerm),
+                                     (t) -> (t instanceof ValueBranchNameIndexTerm),
+                                     (t) -> (t.getTerm().equals(ruleFlowTerm.getTerm())));
     }
 
     private static class RuleFlowNamesResponseBuilder implements ResponseBuilder {
+
         private IOService ioService;
 
         public void setIOService(IOService ioService) {
@@ -99,28 +104,28 @@ public class FindRuleFlowNamesQuery extends AbstractFindQuery implements NamedQu
         }
 
         @Override
-        public PageResponse<RefactoringPageRow> buildResponse( final int pageSize,
-                                                               final int startRow,
-                                                               final List<KObject> kObjects ) {
+        public PageResponse<RefactoringPageRow> buildResponse(final int pageSize,
+                                                              final int startRow,
+                                                              final List<KObject> kObjects) {
             final int hits = kObjects.size();
             final PageResponse<RefactoringPageRow> response = new PageResponse();
-            final List<RefactoringPageRow> result = buildResponse( kObjects );
-            response.setTotalRowSize( hits );
-            response.setPageRowList( result );
-            response.setTotalRowSizeExact( true );
-            response.setStartRowIndex( startRow );
-            response.setLastPage( ( pageSize * startRow + 2 ) >= hits );
+            final List<RefactoringPageRow> result = buildResponse(kObjects);
+            response.setTotalRowSize(hits);
+            response.setPageRowList(result);
+            response.setTotalRowSizeExact(true);
+            response.setStartRowIndex(startRow);
+            response.setLastPage((pageSize * startRow + 2) >= hits);
 
             return response;
         }
 
         @Override
-        public List<RefactoringPageRow> buildResponse( final List<KObject> kObjects ) {
-            final List<RefactoringPageRow> result = new ArrayList( kObjects.size() );
+        public List<RefactoringPageRow> buildResponse(final List<KObject> kObjects) {
+            final List<RefactoringPageRow> result = new ArrayList(kObjects.size());
 
-            for ( final KObject kObject : kObjects ) {
+            for (final KObject kObject : kObjects) {
                 final Map<String, Map<String, String>> ruleFlowGroupNames = getRuleFlowGroupNamesNamesFromKObject(kObject);
-                for(String rkey : ruleFlowGroupNames.keySet()) {
+                for (String rkey : ruleFlowGroupNames.keySet()) {
                     RefactoringMapPageRow row = new RefactoringMapPageRow();
                     row.setValue(ruleFlowGroupNames.get(rkey));
                     result.add(row);
@@ -130,14 +135,14 @@ public class FindRuleFlowNamesQuery extends AbstractFindQuery implements NamedQu
             return result;
         }
 
-        private Map<String, Map<String, String>> getRuleFlowGroupNamesNamesFromKObject( final KObject kObject ) {
+        private Map<String, Map<String, String>> getRuleFlowGroupNamesNamesFromKObject(final KObject kObject) {
             final Map<String, Map<String, String>> ruleFlowGroupNames = new HashMap<String, Map<String, String>>();
-            if ( kObject == null ) {
+            if (kObject == null) {
                 return ruleFlowGroupNames;
             }
-            for ( KProperty property : kObject.getProperties() ) {
-                if ( property.getName().equals(  SharedPartIndexTerm.TERM + ":" + PartType.RULEFLOW_GROUP.toString() ) ) {
-                    if(ruleFlowGroupNames.containsKey(property.getValue().toString())) {
+            for (KProperty property : kObject.getProperties()) {
+                if (property.getName().equals(SharedPartIndexTerm.TERM + ":" + PartType.RULEFLOW_GROUP.toString())) {
+                    if (ruleFlowGroupNames.containsKey(property.getValue().toString())) {
                         final Path path = Paths.convert(ioService.get(URI.create(kObject.getKey())));
                         ruleFlowGroupNames.get(property.getValue().toString()).put("name", property.getValue().toString());
                         ruleFlowGroupNames.get(property.getValue().toString()).put("filename", path.getFileName());
@@ -154,7 +159,6 @@ public class FindRuleFlowNamesQuery extends AbstractFindQuery implements NamedQu
 
             return ruleFlowGroupNames;
         }
-
     }
 }
 

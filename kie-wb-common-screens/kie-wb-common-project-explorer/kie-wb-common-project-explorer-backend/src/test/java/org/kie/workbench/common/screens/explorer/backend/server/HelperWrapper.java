@@ -15,31 +15,24 @@
 
 package org.kie.workbench.common.screens.explorer.backend.server;
 
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.guvnor.structure.repositories.Repository;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
-import org.kie.workbench.common.screens.explorer.service.Option;
 import org.mockito.ArgumentCaptor;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class HelperWrapper {
 
-    private ArgumentCaptor<OrganizationalUnit> organizationalUnitArgumentCaptor;
-    private ArgumentCaptor<Repository> repositoryArgumentCaptor;
-    private ArgumentCaptor<String> branchArgumentCaptor;
-    private ArgumentCaptor<Project> projectArgumentCaptor;
+    private ArgumentCaptor<WorkspaceProject> projectArgumentCaptor;
+    private ArgumentCaptor<Module> moduleArgumentCaptor;
     private ArgumentCaptor<FolderListing> folderListingArgumentCaptor;
     private ArgumentCaptor<Package> packageArgumentCaptor;
     private ArgumentCaptor<ActiveOptions> activeOptionsArgumentCaptor;
     private ExplorerServiceHelper helper;
     private boolean includePackage = true;
-
 
     public HelperWrapper(ExplorerServiceHelper helper) {
         this.helper = helper;
@@ -64,37 +57,31 @@ public class HelperWrapper {
         FolderListing folderListing = folderListingArgumentCaptor.getValue();
         if (folderListing != null) {
             userExplorerLastData.setFolderItem(
-                    organizationalUnitArgumentCaptor.getValue(),
-                    repositoryArgumentCaptor.getValue(),
-                    branchArgumentCaptor.getValue(),
-                    projectArgumentCaptor.getValue(),
+                    projectArgumentCaptor.getValue().getRepository(),
+                    projectArgumentCaptor.getValue().getBranch().getName(),
+                    moduleArgumentCaptor.getValue(),
                     folderListing.getItem());
         }
-        if ( value != null && includePackage ) {
+        if (value != null && includePackage) {
             userExplorerLastData.setPackage(
-                    organizationalUnitArgumentCaptor.getValue(),
-                    repositoryArgumentCaptor.getValue(),
-                    branchArgumentCaptor.getValue(),
-                    projectArgumentCaptor.getValue(),
+                    projectArgumentCaptor.getValue().getRepository(),
+                    projectArgumentCaptor.getValue().getBranch().getName(),
+                    moduleArgumentCaptor.getValue(),
                     value);
-        } else if( includePackage ){
+        } else if (includePackage) {
             userExplorerLastData.setPackage(
-                    organizationalUnitArgumentCaptor.getValue(),
-                    repositoryArgumentCaptor.getValue(),
-                    branchArgumentCaptor.getValue(),
-                    projectArgumentCaptor.getValue(),
+                    projectArgumentCaptor.getValue().getRepository(),
+                    projectArgumentCaptor.getValue().getBranch().getName(),
+                    moduleArgumentCaptor.getValue(),
                     new Package());
-
         }
 
         return userExplorerLastData;
     }
 
     public void reset() {
-        organizationalUnitArgumentCaptor = ArgumentCaptor.forClass(OrganizationalUnit.class);
-        repositoryArgumentCaptor = ArgumentCaptor.forClass(Repository.class);
-        branchArgumentCaptor = ArgumentCaptor.forClass(String.class);
-        projectArgumentCaptor = ArgumentCaptor.forClass(Project.class);
+        projectArgumentCaptor = ArgumentCaptor.forClass(WorkspaceProject.class);
+        moduleArgumentCaptor = ArgumentCaptor.forClass(Module.class);
         folderListingArgumentCaptor = ArgumentCaptor.forClass(FolderListing.class);
         packageArgumentCaptor = ArgumentCaptor.forClass(Package.class);
         activeOptionsArgumentCaptor = ArgumentCaptor.forClass(ActiveOptions.class);
@@ -102,15 +89,10 @@ public class HelperWrapper {
         verify(
                 helper,
                 atLeastOnce()
-        ).store(organizationalUnitArgumentCaptor.capture(),
-                repositoryArgumentCaptor.capture(),
-                branchArgumentCaptor.capture(),
-                projectArgumentCaptor.capture(),
+        ).store(projectArgumentCaptor.capture(),
+                moduleArgumentCaptor.capture(),
                 folderListingArgumentCaptor.capture(),
                 packageArgumentCaptor.capture(),
                 activeOptionsArgumentCaptor.capture());
-
     }
-
-
 }

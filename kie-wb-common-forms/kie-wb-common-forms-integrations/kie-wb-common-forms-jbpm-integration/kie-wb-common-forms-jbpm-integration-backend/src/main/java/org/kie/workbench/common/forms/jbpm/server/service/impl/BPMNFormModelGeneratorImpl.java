@@ -49,8 +49,8 @@ import org.kie.workbench.common.forms.model.impl.meta.entries.FieldReadOnlyEntry
 import org.kie.workbench.common.forms.model.impl.meta.entries.FieldTypeEntry;
 import org.kie.workbench.common.forms.model.util.formModel.FormModelPropertiesUtil;
 import org.kie.workbench.common.forms.service.backend.util.ModelPropertiesGenerator;
-import org.kie.workbench.common.services.backend.project.ProjectClassLoaderHelper;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.vfs.Path;
@@ -60,13 +60,13 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
 
     private static final Logger logger = LoggerFactory.getLogger(BPMNFormModelGeneratorImpl.class);
 
-    private KieProjectService projectService;
-    private ProjectClassLoaderHelper projectClassLoaderHelper;
+    private KieModuleService moduleService;
+    private ModuleClassLoaderHelper projectClassLoaderHelper;
 
     @Inject
-    public BPMNFormModelGeneratorImpl(KieProjectService projectService,
-                                      ProjectClassLoaderHelper projectClassLoaderHelper) {
-        this.projectService = projectService;
+    public BPMNFormModelGeneratorImpl(KieModuleService moduleService,
+                                      ModuleClassLoaderHelper projectClassLoaderHelper) {
+        this.moduleService = moduleService;
         this.projectClassLoaderHelper = projectClassLoaderHelper;
     }
 
@@ -77,7 +77,7 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
 
         if (process != null) {
 
-            final ClassLoader projectClassLoader = projectClassLoaderHelper.getProjectClassLoader(projectService.resolveProject(path));
+            final ClassLoader projectClassLoader = projectClassLoaderHelper.getModuleClassLoader(moduleService.resolveModule(path));
 
             List<ModelProperty> properties = process.getProperties().stream().map(property -> {
                 String varName = property.getId();
@@ -105,7 +105,7 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
 
         Process process = getProcess(source);
 
-        final ClassLoader projectClassLoader = projectClassLoaderHelper.getProjectClassLoader(projectService.resolveProject(path));
+        final ClassLoader projectClassLoader = projectClassLoaderHelper.getModuleClassLoader(moduleService.resolveModule(path));
 
         if (process != null) {
             ProcessTaskFormsGenerationResult result = readUserTaskFormVariables(process);
@@ -116,7 +116,7 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
                 }
                 return true;
             }).map(taskFormVariables -> taskFormVariables.toFormModel(variable -> createModelProperty(variable,
-                                                                                                          projectClassLoader))).collect(Collectors.toList());
+                                                                                                      projectClassLoader))).collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
@@ -128,10 +128,9 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
                                                                               FormModelPropertiesUtil.isListType(variable.getType()),
                                                                               classLoader);
 
-
         property.getMetaData().addEntry(new FieldReadOnlyEntry(variable.isInput() && !variable.isOutput()));
 
-        if(!property.getTypeInfo().isMultiple() && property.getTypeInfo().getClassName().equals(Object.class.getName())) {
+        if (!property.getTypeInfo().isMultiple() && property.getTypeInfo().getClassName().equals(Object.class.getName())) {
             property.getMetaData().addEntry(new FieldTypeEntry(TextAreaFieldDefinition.FIELD_TYPE.getTypeName()));
         }
 
@@ -157,10 +156,10 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
                     throw new IllegalStateException(generateErrorMessage(formVariables));
                 }
 
-                final ClassLoader projectClassLoader = projectClassLoaderHelper.getProjectClassLoader(projectService.resolveProject(path));
+                final ClassLoader projectClassLoader = projectClassLoaderHelper.getModuleClassLoader(moduleService.resolveModule(path));
 
                 return formVariables.toFormModel(variable -> createModelProperty(variable,
-                                                                                     projectClassLoader));
+                                                                                 projectClassLoader));
             }
         }
         return null;
@@ -222,7 +221,6 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
                         variable.setInput(true);
 
                         formVariables.addVariable(variable);
-
                     } else if (BPMNVariableUtils.TASK_FORM_VARIABLE.equals(name)) {
                         List<Assignment> assignments = inputAssociation.getAssignment();
 

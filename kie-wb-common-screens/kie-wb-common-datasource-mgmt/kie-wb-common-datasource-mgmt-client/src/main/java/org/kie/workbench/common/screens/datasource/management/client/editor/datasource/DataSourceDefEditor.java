@@ -341,7 +341,7 @@ public class DataSourceDefEditor
         this.editorContent = editorContent;
         view.setDataSourceName(editorContent.getDef().getName());
         editorHelper.setDataSourceDef(editorContent.getDef());
-        editorHelper.setProject(editorContent.getProject());
+        editorHelper.setModule(editorContent.getModule());
         editorHelper.setValid(true);
     }
 

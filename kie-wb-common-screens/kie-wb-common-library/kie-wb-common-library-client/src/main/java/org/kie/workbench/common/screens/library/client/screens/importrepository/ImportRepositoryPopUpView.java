@@ -18,15 +18,18 @@ package org.kie.workbench.common.screens.library.client.screens.importrepository
 
 import javax.inject.Inject;
 
+import com.google.gwt.event.dom.client.ClickEvent;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Input;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.uberfire.ext.editor.commons.client.file.popups.CommonModalBuilder;
@@ -62,6 +65,22 @@ public class ImportRepositoryPopUpView implements ImportRepositoryPopUpPresenter
     @DataField("repository-url")
     Input repositoryURL;
 
+    @Inject
+    @DataField("show-hide-authentication-options")
+    Anchor showHideAuthenticationOptions;
+
+    @Inject
+    @DataField("authentication-options")
+    Div authenticationOptions;
+
+    @Inject
+    @DataField("user-name")
+    Input userName;
+
+    @Inject
+    @DataField("password")
+    Input password;
+
     @Override
     public void init(final ImportRepositoryPopUpPresenter presenter) {
         this.presenter = presenter;
@@ -74,8 +93,21 @@ public class ImportRepositoryPopUpView implements ImportRepositoryPopUpPresenter
     }
 
     @Override
+    public String getUserName() {
+        final String userName = this.userName.getValue();
+        return userName == null || userName.isEmpty() ? null : userName;
+    }
+
+    @Override
+    public String getPassword() {
+        final String password = this.password.getValue();
+        return password == null || password.isEmpty() ? null : password;
+    }
+
+    @Override
     public void show() {
         errorSetup();
+        authenticationOptions.setHidden(true);
         modal.show();
     }
 
@@ -105,6 +137,19 @@ public class ImportRepositoryPopUpView implements ImportRepositoryPopUpPresenter
     @Override
     public void hide() {
         modal.hide();
+    }
+
+    @EventHandler("show-hide-authentication-options")
+    public void showAuthenticationOptions(final ClickEvent clickEvent) {
+        if (authenticationOptions.getHidden()) {
+            authenticationOptions.setHidden(false);
+            showHideAuthenticationOptions.setTextContent(ts.format(LibraryConstants.HideAuthenticationOptions));
+        } else {
+            authenticationOptions.setHidden(true);
+            showHideAuthenticationOptions.setTextContent(ts.format(LibraryConstants.ShowAuthenticationOptions));
+            userName.setValue("");
+            password.setValue("");
+        }
     }
 
     private void modalSetup() {

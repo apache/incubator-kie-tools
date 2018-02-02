@@ -21,13 +21,13 @@ import java.util.List;
 
 import com.google.gwt.dev.util.collect.HashSet;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.guvnor.common.services.project.context.ProjectContext;
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
 
@@ -36,17 +36,17 @@ import static org.mockito.Mockito.*;
 @RunWith(GwtMockitoTestRunner.class)
 public class PackageListBoxTest {
 
-    private KieProjectService projectService;
-    private CallerMock<KieProjectService> projectServiceCaller;
+    private KieModuleService moduleService;
+    private CallerMock<KieModuleService> moduleServiceCaller;
 
-    private ProjectContext projectContext;
+    private WorkspaceProjectContext moduleContext;
 
     private PackageListBox packageListBox;
 
     @Before
     public void setup() {
-        setupProjectService();
-        setupProjectContext();
+        setupModuleService();
+        setupWorkspaceProjectContext();
         setupPackageListBox();
     }
 
@@ -55,17 +55,16 @@ public class PackageListBoxTest {
         final List<Package> packages = new ArrayList<>();
         packages.add(createPackage("com"));
         packages.add(createPackage("com.myteam"));
-        packages.add(createPackage("com.myteam.myproject"));
-        packages.add(createPackage("com.myteam.myproject.mypackage"));
+        packages.add(createPackage("com.myteam.mymodule"));
+        packages.add(createPackage("com.myteam.mymodule.mypackage"));
 
         final Command packagesLoadedCommand = mock(Command.class);
 
-        doReturn(new HashSet<>(packages)).when(projectService).resolvePackages(any(Project.class));
-        doReturn(packages.get(2)).when(projectService).resolveDefaultWorkspacePackage(any());
+        doReturn(new HashSet<>(packages)).when(moduleService).resolvePackages(any(Module.class));
+        doReturn(packages.get(2)).when(moduleService).resolveDefaultWorkspacePackage(any());
 
-        packageListBox.setContext(projectContext,
-                                  true,
-                                  packagesLoadedCommand);
+        packageListBox.setUp(true,
+                             packagesLoadedCommand);
 
         verify(packageListBox,
                times(4)).addPackage(any(),
@@ -88,19 +87,23 @@ public class PackageListBoxTest {
         return p;
     }
 
-    private void setupProjectService() {
-        projectService = mock(KieProjectService.class);
-        projectServiceCaller = new CallerMock<>(projectService);
+    private void setupModuleService() {
+        moduleService = mock(KieModuleService.class);
+        moduleServiceCaller = new CallerMock<>(moduleService);
     }
 
-    private void setupProjectContext() {
-        projectContext = new ProjectContext();
-        projectContext.setActiveProject(mock(Project.class));
-        projectContext.setActivePackage(mock(Package.class));
+    private void setupWorkspaceProjectContext() {
+        moduleContext = new WorkspaceProjectContext() {
+            {
+                setActiveModule(mock(Module.class));
+                setActivePackage(mock(Package.class));
+            }
+        };
     }
 
     private void setupPackageListBox() {
-        packageListBox = spy(new PackageListBox(projectServiceCaller));
+        packageListBox = spy(new PackageListBox(moduleContext,
+                                                moduleServiceCaller));
         doNothing().when(packageListBox).addPackage(any(Package.class),
                                                     any(Package.class));
         doNothing().when(packageListBox).noPackage();

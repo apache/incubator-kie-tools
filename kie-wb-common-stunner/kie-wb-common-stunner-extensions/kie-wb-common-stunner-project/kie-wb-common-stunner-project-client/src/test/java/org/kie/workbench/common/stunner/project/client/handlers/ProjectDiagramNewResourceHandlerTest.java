@@ -69,7 +69,7 @@ public class ProjectDiagramNewResourceHandlerTest {
     @Mock
     Path path;
     @Mock
-    Path projRootPath;
+    Path moduleRootPath;
 
     private ProjectDiagramNewResourceHandlerStub tested;
 
@@ -84,8 +84,8 @@ public class ProjectDiagramNewResourceHandlerTest {
         when(definitionSetAdapter.getId(eq(definitionSet))).thenReturn(DEFSET_ID);
         when(aPackage.getPackageMainResourcesPath()).thenReturn(path);
         when(aPackage.getPackageName()).thenReturn(PROJ_PKG);
-        when(aPackage.getProjectRootPath()).thenReturn(projRootPath);
-        when(projRootPath.getFileName()).thenReturn(PROJ_ROOT_FILENAME);
+        when(aPackage.getModuleRootPath()).thenReturn(moduleRootPath);
+        when(moduleRootPath.getFileName()).thenReturn(PROJ_ROOT_FILENAME);
         when(projectDiagramResourceType.getSuffix()).thenReturn("bpmn2");
         when(projectDiagramResourceType.getPrefix()).thenReturn("");
         this.tested = new ProjectDiagramNewResourceHandlerStub(definitionManager,

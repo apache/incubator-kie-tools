@@ -39,17 +39,17 @@ public class DriverDefDeployerImpl
         extends AbstractDefDeployer<DriverDefInfo>
         implements DriverDefDeployer {
 
-    private static final Logger logger = LoggerFactory.getLogger( DriverDefDeployerImpl.class );
+    private static final Logger logger = LoggerFactory.getLogger(DriverDefDeployerImpl.class);
 
     public DriverDefDeployerImpl() {
     }
 
     @Inject
-    public DriverDefDeployerImpl( @Named("ioStrategy") IOService ioService,
-                                  DataSourceDefQueryService queryService,
-                                  DataSourceRuntimeManager runtimeManager,
-                                  DefRegistry defRegistry ) {
-        super( ioService, queryService, runtimeManager, defRegistry );
+    public DriverDefDeployerImpl(@Named("ioStrategy") IOService ioService,
+                                 DataSourceDefQueryService queryService,
+                                 DataSourceRuntimeManager runtimeManager,
+                                 DefRegistry defRegistry) {
+        super(ioService, queryService, runtimeManager, defRegistry);
     }
 
     @Override
@@ -58,21 +58,21 @@ public class DriverDefDeployerImpl
     }
 
     @Override
-    protected Collection<DriverDefInfo> findProjectDefs( Path path ) {
-        return queryService.findProjectDrivers( path );
+    protected Collection<DriverDefInfo> findProjectDefs(Path path) {
+        return queryService.findModuleDrivers(path);
     }
 
     @Override
-    protected void deployDef( DriverDefInfo defInfo ) {
+    protected void deployDef(DriverDefInfo defInfo) {
         try {
-            logger.debug( "Deploying driver def: " + defInfo );
-            String source = ioService.readAllString( Paths.convert( defInfo.getPath() ) );
-            DriverDef driverDef = DriverDefSerializer.deserialize( source );
-            runtimeManager.deployDriver( driverDef, DeploymentOptions.createOrResync() );
-            defRegistry.setEntry( defInfo.getPath(), driverDef );
-            logger.debug( "Driver was successfully deployed" );
-        } catch ( Exception e ) {
-            logger.error( "Driver deployment failed, defInfo: " + defInfo, e );
+            logger.debug("Deploying driver def: " + defInfo);
+            String source = ioService.readAllString(Paths.convert(defInfo.getPath()));
+            DriverDef driverDef = DriverDefSerializer.deserialize(source);
+            runtimeManager.deployDriver(driverDef, DeploymentOptions.createOrResync());
+            defRegistry.setEntry(defInfo.getPath(), driverDef);
+            logger.debug("Driver was successfully deployed");
+        } catch (Exception e) {
+            logger.error("Driver deployment failed, defInfo: " + defInfo, e);
         }
     }
 }

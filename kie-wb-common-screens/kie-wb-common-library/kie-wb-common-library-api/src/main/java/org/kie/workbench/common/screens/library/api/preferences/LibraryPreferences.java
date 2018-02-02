@@ -27,9 +27,6 @@ public class LibraryPreferences implements BasePreference<LibraryPreferences> {
     @Property(bundleKey = "LibraryPreferences.OrganizationalUnitPreferences")
     LibraryOrganizationalUnitPreferences organizationalUnitPreferences;
 
-    @Property(bundleKey = "LibraryPreferences.RepositoryPreferences")
-    LibraryRepositoryPreferences repositoryPreferences;
-
     @Property(bundleKey = "LibraryPreferences.ProjectPreferences")
     LibraryProjectPreferences projectPreferences;
 
@@ -41,9 +38,6 @@ public class LibraryPreferences implements BasePreference<LibraryPreferences> {
         defaultValue.organizationalUnitPreferences.aliasInSingular = "";
         defaultValue.organizationalUnitPreferences.aliasInPlural = "";
 
-        defaultValue.repositoryPreferences.name = "myrepo";
-        defaultValue.repositoryPreferences.scheme = "git";
-
         defaultValue.projectPreferences.version = "1.0.0";
         defaultValue.projectPreferences.description = "";
         defaultValue.projectPreferences.branch = "master";
@@ -53,10 +47,6 @@ public class LibraryPreferences implements BasePreference<LibraryPreferences> {
 
     public LibraryOrganizationalUnitPreferences getOrganizationalUnitPreferences() {
         return organizationalUnitPreferences;
-    }
-
-    public LibraryRepositoryPreferences getRepositoryPreferences() {
-        return repositoryPreferences;
     }
 
     public LibraryProjectPreferences getProjectPreferences() {

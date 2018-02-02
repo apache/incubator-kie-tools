@@ -34,9 +34,9 @@ import org.guvnor.common.services.project.client.ArtifactIdChangeHandler;
 import org.guvnor.common.services.project.client.GroupIdChangeHandler;
 import org.guvnor.common.services.project.client.POMEditorPanel;
 import org.guvnor.common.services.project.client.VersionChangeHandler;
+import org.guvnor.common.services.project.model.ModuleRepositories;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
-import org.guvnor.common.services.project.model.ProjectRepositories;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Button;
@@ -279,7 +279,7 @@ public class ProjectScreenViewImpl
     }
 
     @Override
-    public void setRepositories(ProjectRepositories repositories) {
+    public void setRepositories(ModuleRepositories repositories) {
         repositoriesWidgetPresenter.setContent(repositories.getRepositories(),
                                                false);
     }

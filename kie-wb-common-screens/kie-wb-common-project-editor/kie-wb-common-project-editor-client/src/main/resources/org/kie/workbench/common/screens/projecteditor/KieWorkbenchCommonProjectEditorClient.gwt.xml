@@ -39,7 +39,6 @@
 
   <inherits name="org.kie.workbench.common.screens.projectimportsscreen.KieWorkbenchCommonProjectImportsScreenClient"/>
   <inherits name="org.guvnor.structure.GuvnorStructureAPI"/>
-  <inherits name="org.guvnor.asset.management.GuvnorAssetMgmtAPI"/>
   <inherits name="org.kie.workbench.common.widgets.decoratedgrid.KieWorkbenchDecoratedGridWidget"/>
 
   <source path="client"/>

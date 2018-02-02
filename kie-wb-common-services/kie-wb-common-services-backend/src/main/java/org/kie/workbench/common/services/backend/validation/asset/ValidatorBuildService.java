@@ -22,21 +22,22 @@ import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.google.common.base.Charsets;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
+import org.kie.workbench.common.services.backend.builder.core.Builder;
+import org.kie.workbench.common.services.backend.builder.core.LRUBuilderCache;
 import org.kie.workbench.common.services.backend.builder.service.BuildInfo;
 import org.kie.workbench.common.services.backend.builder.service.BuildInfoImpl;
 import org.kie.workbench.common.services.backend.builder.service.BuildInfoService;
-import org.kie.workbench.common.services.backend.builder.core.Builder;
-import org.kie.workbench.common.services.backend.builder.core.LRUBuilderCache;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -44,11 +45,11 @@ import org.uberfire.io.IOService;
 @ApplicationScoped
 public class ValidatorBuildService {
 
-    private final static String ERROR_CLASS_NOT_FOUND = "Definition of class \"{0}\" was not found. Consequentially validation cannot be performed.\nPlease check the necessary external dependencies for this project are configured correctly.";
+    private final static String ERROR_CLASS_NOT_FOUND = "Definition of class \"{0}\" was not found. Consequentially validation cannot be performed.\nPlease check the necessary external dependencies for this module are configured correctly.";
 
     private IOService ioService;
     private LRUBuilderCache builderCache;
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
     private BuildInfoService buildInfoService;
 
     public ValidatorBuildService() {
@@ -56,120 +57,122 @@ public class ValidatorBuildService {
     }
 
     @Inject
-    public ValidatorBuildService( final @Named("ioStrategy") IOService ioService,
-                                  final LRUBuilderCache builderCache,
-                                  final KieProjectService projectService,
-                                  final BuildInfoService buildInfoService ) {
+    public ValidatorBuildService(final @Named("ioStrategy") IOService ioService,
+                                 final LRUBuilderCache builderCache,
+                                 final KieModuleService moduleService,
+                                 final BuildInfoService buildInfoService) {
         this.ioService = ioService;
         this.builderCache = builderCache;
-        this.projectService = projectService;
+        this.moduleService = moduleService;
         this.buildInfoService = buildInfoService;
     }
 
-    public List<ValidationMessage> validate( final Path resourcePath,
-                                             final String content ) {
+    public List<ValidationMessage> validate(final Path resourcePath,
+                                            final String content) {
         InputStream inputStream = null;
         try {
-            inputStream = new ByteArrayInputStream( content.getBytes( Charsets.UTF_8 ) );
-            final List<ValidationMessage> results = doValidation( resourcePath,
-                                                                  inputStream );
+            inputStream = new ByteArrayInputStream(content.getBytes(Charsets.UTF_8));
+            final List<ValidationMessage> results = doValidation(resourcePath,
+                                                                 inputStream);
             return results;
-
-        } catch ( NoProjectException e ) {
+        } catch (NoModuleException e) {
             return new ArrayList<>();
-        } catch ( NoClassDefFoundError e ) {
-            return error( MessageFormat.format( ERROR_CLASS_NOT_FOUND,
-                                                e.getLocalizedMessage() ) );
-        } catch ( Throwable e ) {
-            return error( e.getLocalizedMessage() );
+        } catch (NoClassDefFoundError e) {
+            return error(MessageFormat.format(ERROR_CLASS_NOT_FOUND,
+                                              e.getLocalizedMessage()));
+        } catch (Throwable e) {
+            return error(e.getLocalizedMessage());
         } finally {
-            if ( inputStream != null ) {
+            if (inputStream != null) {
                 try {
                     inputStream.close();
-                } catch ( IOException e ) {
+                } catch (IOException e) {
                 }
             }
         }
     }
 
-    public List<ValidationMessage> validate( final Path resourcePath ) {
+    public List<ValidationMessage> validate(final Path resourcePath) {
         InputStream inputStream = null;
         try {
-            inputStream = ioService.newInputStream( Paths.convert( resourcePath ) );
-            final List<ValidationMessage> results = doValidation( resourcePath,
-                                                                  inputStream );
+            inputStream = ioService.newInputStream(Paths.convert(resourcePath));
+            final List<ValidationMessage> results = doValidation(resourcePath,
+                                                                 inputStream);
             return results;
-
-        } catch ( NoProjectException e ) {
+        } catch (NoModuleException e) {
             return new ArrayList<>();
-        } catch ( NoClassDefFoundError e ) {
-            return error( MessageFormat.format( ERROR_CLASS_NOT_FOUND,
-                                                e.getLocalizedMessage() ) );
-        } catch ( Throwable e ) {
-            return error( e.getLocalizedMessage() );
+        } catch (NoClassDefFoundError e) {
+            return error(MessageFormat.format(ERROR_CLASS_NOT_FOUND,
+                                              e.getLocalizedMessage()));
+        } catch (Throwable e) {
+            return error(e.getLocalizedMessage());
         } finally {
-            if ( inputStream != null ) {
+            if (inputStream != null) {
                 try {
                     inputStream.close();
-                } catch ( IOException e ) {
+                } catch (IOException e) {
                 }
             }
         }
     }
 
-    private List<ValidationMessage> doValidation( final Path resourcePath,
-                                                  final InputStream inputStream ) throws NoProjectException {
+    private List<ValidationMessage> doValidation(final Path resourcePath,
+                                                 final InputStream inputStream) throws NoModuleException {
         final ValidatorResultBuilder resultBuilder = new ValidatorResultBuilder();
-        final Project project = project( resourcePath );
-        final org.uberfire.java.nio.file.Path nioResourcePath = Paths.convert( resourcePath );
+        final Module module = module(resourcePath);
+        final org.uberfire.java.nio.file.Path nioResourcePath = Paths.convert(resourcePath);
 
         //Incremental Build does not support Java classes
-        if ( isIncrementalBuildPossible( resourcePath ) ) {
+        if (isIncrementalBuildPossible(resourcePath)) {
             //Build the Builder from the cache so it's "built" state can be preserved for re-use
-            BuildInfo buildInfo = buildInfoService.getBuildInfo( project );
-            final Builder clone = ( ( BuildInfoImpl ) buildInfo ).getBuilder().clone();
+            BuildInfo buildInfo = buildInfoService.getBuildInfo(module);
+            final Builder clone = ((BuildInfoImpl) buildInfo).getBuilder().clone();
             //First delete resource otherwise if the resource already had errors following builder.build()
             //the incremental compilation will not report any additional errors and the resource will be
             //considered valid.
-            clone.deleteResource( nioResourcePath );
+            clone.deleteResource(nioResourcePath);
 
-            final IncrementalBuildResults incrementalBuildResults = clone.updateResource( nioResourcePath,
-                                                                                          inputStream );
-            resultBuilder.add( incrementalBuildResults.getAddedMessages() );
-
+            final IncrementalBuildResults incrementalBuildResults = clone.updateResource(nioResourcePath,
+                                                                                         inputStream);
+            resultBuilder.add(incrementalBuildResults.getAddedMessages());
         } else {
-            Builder builder = builderCache.assertBuilder( project( resourcePath ) );
+            Builder builder = builderCache.assertBuilder(module(resourcePath));
             final Builder clone = builder.clone();
-            resultBuilder.add( clone.build( nioResourcePath,
-                                            inputStream ).getMessages() );
+            resultBuilder.add(clone.build(nioResourcePath,
+                                          inputStream).getMessages());
         }
 
         return resultBuilder.results();
     }
 
-    private boolean isIncrementalBuildPossible( final Path resourcePath ) throws NoProjectException {
-        final boolean isResource = getDestinationPath( resourcePath ).startsWith( "src/main/resources/" );
+    private boolean isIncrementalBuildPossible(final Path resourcePath) throws NoModuleException {
+        final boolean isResource = getDestinationPath(resourcePath).startsWith("src/main/resources/");
         return isResource;
     }
 
-    private String getDestinationPath( final Path path ) throws NoProjectException {
-        final int rootPathLength = project( path ).getRootPath().toURI().length() + 1;
-        return path.toURI().substring( rootPathLength );
+    private String getDestinationPath(final Path originalPath) throws NoModuleException {
+
+        final Path rootPath = Paths.convert(Paths.convert(module(originalPath).getRootPath()));
+        final Path path = Paths.convert(Paths.convert(originalPath));
+
+        final int rootPathLength = rootPath.toURI().length() + 1;
+        final String substring = path.toURI().substring(rootPathLength);
+        return substring;
     }
 
-    private Project project( final Path resourcePath ) throws NoProjectException {
-        final Project project = projectService.resolveProject( resourcePath );
+    private Module module(final Path resourcePath) throws NoModuleException {
+        final Module module = moduleService.resolveModule(resourcePath);
 
-        if ( project == null ) {
-            throw new NoProjectException();
+        if (module == null) {
+            throw new NoModuleException();
         }
 
-        return project;
+        return module;
     }
 
-    private ArrayList<ValidationMessage> error( final String errorMessage ) {
+    private ArrayList<ValidationMessage> error(final String errorMessage) {
         return new ArrayList<ValidationMessage>() {{
-            add( new ValidationMessage( Level.ERROR, errorMessage ) );
+            add(new ValidationMessage(Level.ERROR, errorMessage));
         }};
     }
 }

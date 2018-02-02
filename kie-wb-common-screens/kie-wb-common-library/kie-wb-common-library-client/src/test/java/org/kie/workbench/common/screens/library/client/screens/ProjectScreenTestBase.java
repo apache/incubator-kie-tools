@@ -18,10 +18,13 @@ package org.kie.workbench.common.screens.library.client.screens;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.guvnor.common.services.project.client.security.ProjectController;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.explorer.client.utils.Classifier;
@@ -30,7 +33,6 @@ import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.library.api.AssetInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
-import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.client.events.AssetDetailEvent;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.ArgumentCaptor;
@@ -47,7 +49,7 @@ import static org.mockito.Mockito.*;
 public class ProjectScreenTestBase {
 
     @Mock
-    protected ProjectScreen.View view;
+    protected WorkspaceProjectListAssetsPresenter.View view;
 
     @Mock
     protected LibraryPlaces libraryPlaces;
@@ -73,9 +75,9 @@ public class ProjectScreenTestBase {
     @Captor
     protected ArgumentCaptor<ProjectAssetsQuery> queryArgumentCaptor;
 
-    protected ProjectScreen projectScreen;
+    protected WorkspaceProjectListAssetsPresenter workspaceProjectListAssetsPresenter;
 
-    protected ProjectInfo projectInfo;
+    protected WorkspaceProject project;
 
     protected List<AssetInfo> assets = new ArrayList<>();
 
@@ -86,21 +88,27 @@ public class ProjectScreenTestBase {
         doReturn(clientResourceType).when(assetClassifier).findResourceType(any(FolderItem.class));
     }
 
-    protected ProjectInfo createProjectInfo() {
+    protected WorkspaceProject createProject() {
         final Path rootPath = mock(Path.class);
-        doReturn("git://projectPath").when(rootPath).toURI();
-        final Project project = mock(Project.class);
-        doReturn("projectName").when(project).getProjectName();
-        doReturn("projectPath").when(project).getIdentifier();
-        doReturn(rootPath).when(project).getRootPath();
+        doReturn("git://modulePath").when(rootPath).toURI();
+        final Module module = mock(Module.class);
+        doReturn("mainModuleName").when(module).getModuleName();
+        doReturn("modulePath").when(module).getIdentifier();
+        doReturn(rootPath).when(module).getRootPath();
 
         final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
         final Repository repository = mock(Repository.class);
-        final String branch = "master";
-        return new ProjectInfo(organizationalUnit,
-                               repository,
-                               branch,
-                               project);
+        final Path repositoryRootPath = mock(Path.class);
+
+        doReturn(Optional.of(new Branch("master",
+                                        repositoryRootPath))).when(repository).getDefaultBranch();
+        doReturn("rootpath").when(repositoryRootPath).toURI();
+
+        return new WorkspaceProject(organizationalUnit,
+                                    repository,
+                                    new Branch("master",
+                                               mock(Path.class)),
+                                    module);
     }
 
     protected AssetInfo getAssetInfo(final String assetPathString,
@@ -120,13 +128,13 @@ public class ProjectScreenTestBase {
 
     protected void mockAssets() {
 
-        assets.add(getAssetInfo("git://projectPath/folder1",
+        assets.add(getAssetInfo("git://modulePath/folder1",
                                 FolderItemType.FOLDER,
                                 "folder1"));
-        assets.add(getAssetInfo("git://projectPath/file2.txt",
+        assets.add(getAssetInfo("git://modulePath/file2.txt",
                                 FolderItemType.FILE,
                                 "file2.txt"));
-        assets.add(getAssetInfo("git://projectPath/file3.txt",
+        assets.add(getAssetInfo("git://modulePath/file3.txt",
                                 FolderItemType.FILE,
                                 "file3.txt"));
 

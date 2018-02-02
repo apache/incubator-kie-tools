@@ -24,12 +24,11 @@ import org.kie.workbench.common.forms.editor.model.FormModelSynchronizationResul
 import org.kie.workbench.common.forms.editor.model.impl.FormModelSynchronizationResultImpl;
 import org.kie.workbench.common.forms.editor.model.impl.TypeConflictImpl;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
-import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
 import org.kie.workbench.common.forms.model.ModelProperty;
 import org.kie.workbench.common.forms.service.backend.util.ModelPropertiesGenerator;
-import org.kie.workbench.common.services.backend.project.ProjectClassLoaderHelper;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.vfs.Path;
 
 public abstract class AbstractFormModelHandler<F extends FormModel> implements FormModelHandler<F> {
@@ -38,13 +37,13 @@ public abstract class AbstractFormModelHandler<F extends FormModel> implements F
     protected Path path;
     protected ClassLoader projectClassLoader;
 
-    protected KieProjectService projectService;
+    protected KieModuleService moduleService;
 
-    protected ProjectClassLoaderHelper classLoaderHelper;
+    protected ModuleClassLoaderHelper classLoaderHelper;
 
-    public AbstractFormModelHandler(KieProjectService projectService,
-                                    ProjectClassLoaderHelper classLoaderHelper) {
-        this.projectService = projectService;
+    public AbstractFormModelHandler(final KieModuleService moduleService,
+                                    final ModuleClassLoaderHelper classLoaderHelper) {
+        this.moduleService = moduleService;
         this.classLoaderHelper = classLoaderHelper;
     }
 
@@ -58,7 +57,7 @@ public abstract class AbstractFormModelHandler<F extends FormModel> implements F
     }
 
     protected void initClassLoader() {
-        this.projectClassLoader = classLoaderHelper.getProjectClassLoader(projectService.resolveProject(path));
+        this.projectClassLoader = classLoaderHelper.getModuleClassLoader(moduleService.resolveModule(path));
     }
 
     protected abstract void initialize();

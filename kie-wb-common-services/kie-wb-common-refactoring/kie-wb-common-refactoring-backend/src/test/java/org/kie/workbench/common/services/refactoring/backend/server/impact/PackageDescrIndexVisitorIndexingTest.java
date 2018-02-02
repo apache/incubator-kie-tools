@@ -62,18 +62,18 @@ public class PackageDescrIndexVisitorIndexingTest
 
     protected Set<NamedQuery> getQueries() {
         return new HashSet<NamedQuery>() {{
-            add( new FindResourceReferencesQuery() {
+            add(new FindResourceReferencesQuery() {
                 @Override
                 public ResponseBuilder getResponseBuilder() {
-                    return new DefaultResponseBuilder( ioService() );
+                    return new DefaultResponseBuilder(ioService());
                 }
-            } );
-            add( new FindAllChangeImpactQuery() {
+            });
+            add(new FindAllChangeImpactQuery() {
                 @Override
                 public ResponseBuilder getResponseBuilder() {
-                    return new DefaultResponseBuilder( ioService() );
+                    return new DefaultResponseBuilder(ioService());
                 }
-            } );
+            });
         }};
     }
 
@@ -82,7 +82,7 @@ public class PackageDescrIndexVisitorIndexingTest
     @Test
     public void allPackageDescrIndexVisitorMethodsTest() throws IOException, InterruptedException {
         //Add test files
-        Path path = basePath.resolve( getUniqueDrlFileName() );
+        Path path = basePath.resolve(getUniqueDrlFileName());
 
         String accFunctionName = "testAcc";
         String accFunctionClass = "org.kie.test.objects.TestAccumulator";
@@ -96,92 +96,92 @@ public class PackageDescrIndexVisitorIndexingTest
 
         String drlSource =
                 "package org.kie.indexing;\n" +
-                "import org.kie.test.objects.*;\n" +
-                "import accumulate " + accFunctionClass + " " + accFunctionName + "\n\n" +
-                // 3
-                "declare entry-point '" + entryPointName + "' @" + entryPointAnno + " end\n\n" +
-                // 5
-                "declare enum Workload\n" + // this info (local reference) can *not* be retrieved via compilation!
-                "  LIGHT( 4 ),\n" +
-                "  MEDIUM( 8 ),\n" +
-                "  HEAVY( 12 );\n" +
-                "  hours   : int\n" +
-                "end\n\n" +
-                // 12
-                "declare TestWork\n" +
-                "  load  : WorkLoad\n" +
-                "  num   : int = 111\n" +
-                "  pers  : Person \n" +
-                "end\n\n" +
-                // NOTE: it looks like Window.pattern object type name resolution requires compile time information
-                // (Trace why this test fails, to see why.. )
-                 "declare window " + windowName + "\n" +
-                 "Person( name == 'mark' )\n" +
-                 "  over window:length( 10 )\n" +
-                 "  from entry-point " + entryPointName +"\n" +
-                 "end\n\n" +
-                 // 18
+                        "import org.kie.test.objects.*;\n" +
+                        "import accumulate " + accFunctionClass + " " + accFunctionName + "\n\n" +
+                        // 3
+                        "declare entry-point '" + entryPointName + "' @" + entryPointAnno + " end\n\n" +
+                        // 5
+                        "declare enum Workload\n" + // this info (local reference) can *not* be retrieved via compilation!
+                        "  LIGHT( 4 ),\n" +
+                        "  MEDIUM( 8 ),\n" +
+                        "  HEAVY( 12 );\n" +
+                        "  hours   : int\n" +
+                        "end\n\n" +
+                        // 12
+                        "declare TestWork\n" +
+                        "  load  : WorkLoad\n" +
+                        "  num   : int = 111\n" +
+                        "  pers  : Person \n" +
+                        "end\n\n" +
+                        // NOTE: it looks like Window.pattern object type name resolution requires compile time information
+                        // (Trace why this test fails, to see why.. )
+                        "declare window " + windowName + "\n" +
+                        "Person( name == 'mark' )\n" +
+                        "  over window:length( 10 )\n" +
+                        "  from entry-point " + entryPointName + "\n" +
+                        "end\n\n" +
+                        // 18
 
-                 "function String " + funcDeclName + "(Cheese cheese) {\n" +
-                 "  return 'Hello' cheese.type\n" +
-                 "}\n\n" +
+                        "function String " + funcDeclName + "(Cheese cheese) {\n" +
+                        "  return 'Hello' cheese.type\n" +
+                        "}\n\n" +
 
-                 "rule EnumRule\n" +
-                 "when\n" +
-                 "  TestWork( WorkLoad.LIGHT, $h : load.hours )\n" + // Workload.LIGHT reference info must be retrieved via compilation!
-                 "then\n" +
-                 "  list.add( $h );\n" +
-                 "end\n" +
+                        "rule EnumRule\n" +
+                        "when\n" +
+                        "  TestWork( WorkLoad.LIGHT, $h : load.hours )\n" + // Workload.LIGHT reference info must be retrieved via compilation!
+                        "then\n" +
+                        "  list.add( $h );\n" +
+                        "end\n" +
 
-                "rule " + rule1Name + "\n" +
-                "when\n" +
-                "  Person( name == \"mark\", cheese.(price == 10, type.(length == 10) ) )\n" +
-                "then\n" +
-                "end\n\n" +
-                 // 28
-                "rule " + rule2Name + "\n" +
-                "when\n" +
-                "  accumulate( Person( name == 'mark' ) from window TestWindow, $cnt : " + accFunctionName +"(1) )\n" +
-                "then\n" +
-                "  // there has been $cnt RHT ticks over the last 10 ticks\n" +
-                "end\n\n" +
-                 // 35
-                "rule " + rule3Name  + "\n" +
-                "when\n" +
-                "  $customer : Customer( age > 60 )\n" +
-                "  if ( type == Golden ) do[giveDiscount]\n" +
-                "  $car : Car ( owner == $customer )\n" +
-                "then\n" +
-                "  modify($car) { setFreeParking( true ) }\n" +
-                "then[giveDiscount]\n" +
-                "  modify($customer) { setDiscount( 0.1 ) }\n" +
-                "end\n";
+                        "rule " + rule1Name + "\n" +
+                        "when\n" +
+                        "  Person( name == \"mark\", cheese.(price == 10, type.(length == 10) ) )\n" +
+                        "then\n" +
+                        "end\n\n" +
+                        // 28
+                        "rule " + rule2Name + "\n" +
+                        "when\n" +
+                        "  accumulate( Person( name == 'mark' ) from window TestWindow, $cnt : " + accFunctionName + "(1) )\n" +
+                        "then\n" +
+                        "  // there has been $cnt RHT ticks over the last 10 ticks\n" +
+                        "end\n\n" +
+                        // 35
+                        "rule " + rule3Name + "\n" +
+                        "when\n" +
+                        "  $customer : Customer( age > 60 )\n" +
+                        "  if ( type == Golden ) do[giveDiscount]\n" +
+                        "  $car : Car ( owner == $customer )\n" +
+                        "then\n" +
+                        "  modify($car) { setFreeParking( true ) }\n" +
+                        "then[giveDiscount]\n" +
+                        "  modify($customer) { setDiscount( 0.1 ) }\n" +
+                        "end\n";
 
-        ioService().write( path, drlSource );
+        ioService().write(path, drlSource);
 
-        path = basePath.resolve( getUniqueDrlFileName() );
+        path = basePath.resolve(getUniqueDrlFileName());
         drlSource = loadText("accumulate.drl");
-        ioService().write( path, drlSource );
+        ioService().write(path, drlSource);
 
-        Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+        Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
         String className = Person.class.getName();
-        QueryOperationRequest refOpRequest = QueryOperationRequest.referencesPart(className, "setName(String)", PartType.METHOD )
-                .inAllProjects()
+        QueryOperationRequest refOpRequest = QueryOperationRequest.referencesPart(className, "setName(String)", PartType.METHOD)
+                .inAllModules()
                 .onAllBranches();
 
         List<RefactoringPageRow> response = service.queryToList(refOpRequest);
 
         assertNotNull("Null PageResonse", response);
-        assertNotNull("Null PageRefactoringRow list", response );
-        assertEquals("Objects referencing " + className, 1, response.size() );
+        assertNotNull("Null PageRefactoringRow list", response);
+        assertEquals("Objects referencing " + className, 1, response.size());
 
         Object pageRowValue = response.get(0).getValue();
-        assertTrue( "Expected a " + org.uberfire.backend.vfs.Path.class.getName() + ", not a " + pageRowValue.getClass().getSimpleName(),
-                    org.uberfire.backend.vfs.Path.class.isAssignableFrom(pageRowValue.getClass()) );
+        assertTrue("Expected a " + org.uberfire.backend.vfs.Path.class.getName() + ", not a " + pageRowValue.getClass().getSimpleName(),
+                   org.uberfire.backend.vfs.Path.class.isAssignableFrom(pageRowValue.getClass()));
         String fileName = ((org.uberfire.backend.vfs.Path) pageRowValue).getFileName();
-        assertTrue( "File does not end with '.java'", fileName.endsWith(".java"));
-        assertEquals( "File name", className, fileName.subSequence(0, fileName.indexOf(".java")));
+        assertTrue("File does not end with '.java'", fileName.endsWith(".java"));
+        assertEquals("File name", className, fileName.subSequence(0, fileName.indexOf(".java")));
     }
 
     private String getUniqueDrlFileName() {
@@ -202,5 +202,4 @@ public class PackageDescrIndexVisitorIndexingTest
     protected String getRepositoryName() {
         return testName.getMethodName();
     }
-
 }

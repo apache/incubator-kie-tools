@@ -33,7 +33,7 @@ import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDe
 import org.kie.workbench.common.services.datamodeller.core.ElementType;
 import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationParseRequest;
 import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationParseResponse;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieModule;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 
 @Dependent
@@ -50,15 +50,15 @@ public class ValuePairEditorPage
     private Object currentValue = null;
 
     @Inject
-    public ValuePairEditorPage( ValuePairEditorPageView view,
-            ValuePairEditorProvider valuePairEditorProvider,
-            Caller<DataModelerService> modelerService,
-            Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent ) {
-        super( modelerService, wizardPageStatusChangeEvent );
+    public ValuePairEditorPage(ValuePairEditorPageView view,
+                               ValuePairEditorProvider valuePairEditorProvider,
+                               Caller<DataModelerService> modelerService,
+                               Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent) {
+        super(modelerService, wizardPageStatusChangeEvent);
         this.valuePairEditorProvider = valuePairEditorProvider;
         this.view = view;
-        view.init( this );
-        setTitle( "" );
+        view.init(this);
+        setTitle("");
     }
 
     @Override
@@ -66,15 +66,15 @@ public class ValuePairEditorPage
         return view.asWidget();
     }
 
-    public void init( AnnotationDefinition annotationDefinition,
-            AnnotationValuePairDefinition valuePairDefinition, ElementType target, KieProject project ) {
+    public void init(AnnotationDefinition annotationDefinition,
+                     AnnotationValuePairDefinition valuePairDefinition, ElementType target, KieModule project) {
 
         this.annotationDefinition = annotationDefinition;
-        setValuePairDefinition( valuePairDefinition );
+        setValuePairDefinition(valuePairDefinition);
         this.target = target;
         this.project = project;
 
-        setStatus( isRequired() ? PageStatus.NOT_VALIDATED : PageStatus.VALIDATED );
+        setStatus(isRequired() ? PageStatus.NOT_VALIDATED : PageStatus.VALIDATED);
     }
 
     public String getStringValue() {
@@ -91,9 +91,9 @@ public class ValuePairEditorPage
 
     @Override
     public void onValidate() {
-        modelerService.call( getOnValidateValidateSuccessCallback(), new CreateAnnotationWizard.CreateAnnotationWizardErrorCallback() )
-                .resolveParseRequest( new AnnotationParseRequest( annotationDefinition.getClassName(), target,
-                        valuePairDefinition.getName(), getStringValue() ), project );
+        modelerService.call(getOnValidateValidateSuccessCallback(), new CreateAnnotationWizard.CreateAnnotationWizardErrorCallback())
+                .resolveParseRequest(new AnnotationParseRequest(annotationDefinition.getClassName(), target,
+                                                                valuePairDefinition.getName(), getStringValue()), project);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class ValuePairEditorPage
         PageStatus nextStatus = PageStatus.NOT_VALIDATED;
         currentValue = view.getValuePairEditor().getValue();
 
-        if ( view.getValuePairEditor() instanceof GenericValuePairEditor ) {
+        if (view.getValuePairEditor() instanceof GenericValuePairEditor) {
             //for the generic editor we should use the validate button
 
             //available options
@@ -112,76 +112,72 @@ public class ValuePairEditorPage
             //      2.1) if a value != null has been entered, then it should be validated
             //      2.2) if a value == null has been entered, then NO validation is needed
 
-            if ( isRequired() ) {
-                if ( isEmpty( currentValue ) ) {
-                    setHelpMessage( Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_enter_required_value_and_validate() );
+            if (isRequired()) {
+                if (isEmpty(currentValue)) {
+                    setHelpMessage(Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_enter_required_value_and_validate());
                 } else {
-                    setHelpMessage( Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_value_not_validated() );
+                    setHelpMessage(Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_value_not_validated());
                 }
                 nextStatus = PageStatus.NOT_VALIDATED;
-
             } else {
-                if ( isEmpty( currentValue ) ) {
-                    setHelpMessage( Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_enter_optional_value_and_validate() );
+                if (isEmpty(currentValue)) {
+                    setHelpMessage(Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_enter_optional_value_and_validate());
                     nextStatus = PageStatus.VALIDATED;
                 } else {
-                    setHelpMessage( Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_value_not_validated() );
+                    setHelpMessage(Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_value_not_validated());
                     nextStatus = PageStatus.NOT_VALIDATED;
                 }
             }
-
-
-        } else if ( view.getValuePairEditor().isValid() &&
-                ( ( isRequired() && view.getValuePairEditor().getValue() != null) || !isRequired() ) ) {
+        } else if (view.getValuePairEditor().isValid() &&
+                ((isRequired() && view.getValuePairEditor().getValue() != null) || !isRequired())) {
             nextStatus = PageStatus.VALIDATED;
         }
 
-        setStatus( nextStatus );
+        setStatus(nextStatus);
     }
 
-    private void setValuePairDefinition( AnnotationValuePairDefinition valuePairDefinition ) {
+    private void setValuePairDefinition(AnnotationValuePairDefinition valuePairDefinition) {
         this.valuePairDefinition = valuePairDefinition;
 
-        String required =  isRequired() ? "* " : "";
-        setTitle( "  -> " + required + valuePairDefinition.getName() );
+        String required = isRequired() ? "* " : "";
+        setTitle("  -> " + required + valuePairDefinition.getName());
 
-        initValuePairEditor( valuePairDefinition );
+        initValuePairEditor(valuePairDefinition);
 
-        if ( view.getValuePairEditor() instanceof GenericValuePairEditor ) {
-            if ( isRequired() ) {
-                setHelpMessage( Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_enter_required_value_and_validate() );
+        if (view.getValuePairEditor() instanceof GenericValuePairEditor) {
+            if (isRequired()) {
+                setHelpMessage(Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_enter_required_value_and_validate());
             } else {
-                setHelpMessage( Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_enter_optional_value_and_validate() );
+                setHelpMessage(Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_enter_optional_value_and_validate());
             }
         }
     }
 
-    private void initValuePairEditor( AnnotationValuePairDefinition valuePairDefinition ) {
-        ValuePairEditor valuePairEditor = valuePairEditorProvider.getValuePairEditor( valuePairDefinition );
-        view.setValuePairEditor( valuePairEditor );
+    private void initValuePairEditor(AnnotationValuePairDefinition valuePairDefinition) {
+        ValuePairEditor valuePairEditor = valuePairEditorProvider.getValuePairEditor(valuePairDefinition);
+        view.setValuePairEditor(valuePairEditor);
     }
 
-    private RemoteCallback<AnnotationParseResponse> getOnValidateValidateSuccessCallback( ) {
+    private RemoteCallback<AnnotationParseResponse> getOnValidateValidateSuccessCallback() {
         return new RemoteCallback<AnnotationParseResponse>() {
 
             @Override
-            public void callback( AnnotationParseResponse annotationParseResponse ) {
+            public void callback(AnnotationParseResponse annotationParseResponse) {
                 PageStatus newStatus;
 
-                if ( !annotationParseResponse.hasErrors() && annotationParseResponse.getAnnotation() != null ) {
-                    currentValue = annotationParseResponse.getAnnotation().getValue( valuePairDefinition.getName() );
+                if (!annotationParseResponse.hasErrors() && annotationParseResponse.getAnnotation() != null) {
+                    currentValue = annotationParseResponse.getAnnotation().getValue(valuePairDefinition.getName());
                     newStatus = PageStatus.VALIDATED;
-                    setHelpMessage( Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_value_validated() );
-
+                    setHelpMessage(Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_value_validated());
                 } else {
                     currentValue = null;
                     newStatus = PageStatus.NOT_VALIDATED;
                     String errorMessage = Constants.INSTANCE.advanced_domain_wizard_value_pair_editor_page_message_value_not_validated();
-                    errorMessage += "\n" + buildErrorList( annotationParseResponse.getErrors() );
-                    setHelpMessage( errorMessage );
+                    errorMessage += "\n" + buildErrorList(annotationParseResponse.getErrors());
+                    setHelpMessage(errorMessage);
                 }
 
-                setStatus( newStatus );
+                setStatus(newStatus);
             }
         };
     }
@@ -190,15 +186,15 @@ public class ValuePairEditorPage
         view.clearHelpMessage();
     }
 
-    private void setHelpMessage( String helpMessage ) {
-        view.setHelpMessage( helpMessage );
+    private void setHelpMessage(String helpMessage) {
+        view.setHelpMessage(helpMessage);
     }
 
     private boolean isRequired() {
         return valuePairDefinition != null && valuePairDefinition.getDefaultValue() == null;
     }
 
-    private boolean isEmpty( Object value ) {
-        return value == null || "".equals( value.toString().trim() );
+    private boolean isEmpty(Object value) {
+        return value == null || "".equals(value.toString().trim());
     }
 }

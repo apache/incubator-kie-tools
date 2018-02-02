@@ -18,57 +18,47 @@ package org.kie.workbench.common.screens.explorer.backend.server;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
-
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.thoughtworks.xstream.XStream;
-import org.guvnor.common.services.project.events.DeleteProjectEvent;
-import org.guvnor.common.services.project.events.RenameProjectEvent;
+import org.guvnor.common.services.project.events.DeleteModuleEvent;
+import org.guvnor.common.services.project.events.RenameModuleEvent;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.soup.commons.xstream.XStreamUtils;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
-import org.kie.workbench.common.screens.explorer.model.URIStructureExplorerModel;
 import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.screens.explorer.service.ProjectExplorerContentQuery;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.UserServicesBackendImpl;
 import org.uberfire.backend.server.UserServicesImpl;
-import org.uberfire.backend.server.VFSLockServiceImpl;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.async.DescriptiveRunnable;
 import org.uberfire.commons.concurrent.Managed;
-import org.uberfire.ext.editor.commons.backend.service.helper.CopyHelper;
-import org.uberfire.ext.editor.commons.backend.service.helper.RenameHelper;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 
 import static java.util.Collections.emptyList;
@@ -94,19 +84,10 @@ public class ExplorerServiceImpl
     private FileSystem fileSystem;
 
     @Inject
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     @Inject
     private ExplorerServiceHelper helper;
-
-    @Inject
-    private OrganizationalUnitService organizationalUnitService;
-
-    @Inject
-    private User identity;
-
-    @Inject
-    private SessionInfo sessionInfo;
 
     @Inject
     private UserServicesImpl userServices;
@@ -115,19 +96,10 @@ public class ExplorerServiceImpl
     private UserServicesBackendImpl userServicesBackend;
 
     @Inject
-    private Instance<RenameHelper> renameHelpers;
-
-    @Inject
-    private Instance<CopyHelper> copyHelpers;
-
-    @Inject
     private ProjectExplorerContentResolver projectExplorerContentResolver;
 
     @Inject
     private RepositoryService repositoryService;
-
-    @Inject
-    private VFSLockServiceImpl lockService;
 
     @Inject
     private DeleteService deleteService;
@@ -154,14 +126,10 @@ public class ExplorerServiceImpl
     }
 
     public ExplorerServiceImpl(final IOService ioService,
-                               final KieProjectService projectService,
-                               final OrganizationalUnitService organizationalUnitService,
-                               final User identity) {
+                               final KieModuleService moduleService) {
         this();
         this.ioService = ioService;
-        this.projectService = projectService;
-        this.organizationalUnitService = organizationalUnitService;
-        this.identity = identity;
+        this.moduleService = moduleService;
     }
 
     @Override
@@ -171,34 +139,25 @@ public class ExplorerServiceImpl
                       _path);
 
         final Path path = Paths.convert(ioService.get(URI.create(_path.trim())));
-        final Project project = projectService.resolveProject(path);
+        final Module module = moduleService.resolveModule(path);
 
         final Path convertedPath = Paths.convert(Paths.convert(path).getRoot());
         final Repository repo = repositoryService.getRepository(convertedPath);
 
-        String branch = getBranchName(repo,
-                                      convertedPath);
+        final Branch branch = getBranch(repo,
+                                        convertedPath);
 
-        OrganizationalUnit ou = null;
-        for (final OrganizationalUnit organizationalUnit : organizationalUnitService.getOrganizationalUnits()) {
-            if (organizationalUnit.getRepositories().contains(repo)) {
-                ou = organizationalUnit;
-                break;
-            }
-        }
-
-        return getContent(new ProjectExplorerContentQuery(ou,
-                                                          repo,
+        return getContent(new ProjectExplorerContentQuery(repo,
                                                           branch,
-                                                          project,
+                                                          module,
                                                           activeOptions));
     }
 
-    private String getBranchName(final Repository repository,
-                                 final Path convertedPath) {
-        for (String branchName : repository.getBranches()) {
-            if (repository.getBranchRoot(branchName).equals(convertedPath)) {
-                return branchName;
+    private Branch getBranch(final Repository repository,
+                             final Path convertedPath) {
+        for (final Branch branch : repository.getBranches()) {
+            if (branch.getPath().equals(convertedPath)) {
+                return branch;
             }
         }
         return null;
@@ -210,50 +169,8 @@ public class ExplorerServiceImpl
     }
 
     @Override
-    public URIStructureExplorerModel getURIStructureExplorerModel(final Path originalURI) {
-        final Project project = getURIProject(originalURI);
-        final Repository repository = getURIRepository(originalURI);
-        final OrganizationalUnit ou = getURIOrganizationalUnits(repository);
-        return new URIStructureExplorerModel(ou,
-                                             repository,
-                                             project);
-    }
-
-    private KieProject getURIProject(final Path originalURI) {
-        return projectService.resolveProject(originalURI);
-    }
-
-    private Repository getURIRepository(final Path originalURI) {
-        org.uberfire.java.nio.file.Path ufPath = Paths.convert(originalURI);
-        return repositoryService.getRepository(Paths.convert(ufPath.getRoot()));
-    }
-
-    private OrganizationalUnit getURIOrganizationalUnits(final Repository repository) {
-        for (OrganizationalUnit organizationalUnit : getOrganizationalUnits()) {
-            if (organizationalUnit.getRepositories().contains(repository)) {
-                return organizationalUnit;
-            }
-        }
-        throw new OrganizationalUnitNotFoundForURI();
-    }
-
-    private Set<OrganizationalUnit> getOrganizationalUnits() {
-        final Collection<OrganizationalUnit> organizationalUnits = organizationalUnitService.getOrganizationalUnits();
-        final Set<OrganizationalUnit> authorizedOrganizationalUnits = new HashSet<OrganizationalUnit>();
-        for (OrganizationalUnit organizationalUnit : organizationalUnits) {
-            if (authorizationManager.authorize(organizationalUnit,
-                                               identity)) {
-                authorizedOrganizationalUnits.add(organizationalUnit);
-            }
-        }
-        return authorizedOrganizationalUnits;
-    }
-
-    @Override
-    public FolderListing getFolderListing(final OrganizationalUnit organizationalUnit,
-                                          final Repository repository,
-                                          final String branch,
-                                          final Project project,
+    public FolderListing getFolderListing(final WorkspaceProject project,
+                                          final Module module,
                                           final FolderItem item,
                                           final ActiveOptions options) {
         //TODO: BUSINESS_CONTENT, TECHNICAL_CONTENT
@@ -281,10 +198,8 @@ public class ExplorerServiceImpl
                         }
                         helper.store(userNavPath,
                                      lastUserNavPath,
-                                     organizationalUnit,
-                                     repository,
-                                     branch,
                                      project,
+                                     module,
                                      pkg,
                                      item,
                                      options);
@@ -317,7 +232,7 @@ public class ExplorerServiceImpl
         if (item.getItem() instanceof Path) {
             //Path could represent a package
             if (item.getType() == FolderItemType.FOLDER) {
-                final Package pkg = projectService.resolvePackage((Path) item.getItem());
+                final Package pkg = moduleService.resolvePackage((Path) item.getItem());
                 if (pkg == null) {
                     return new ArrayList<Path>(1) {{
                         add((Path) item.getItem());
@@ -349,7 +264,7 @@ public class ExplorerServiceImpl
             return (Package) item.getItem();
         }
         if (item.getItem() instanceof Path) {
-            return projectService.resolvePackage((Path) item.getItem());
+            return moduleService.resolvePackage((Path) item.getItem());
         }
 
         return null;
@@ -399,15 +314,15 @@ public class ExplorerServiceImpl
         }
     }
 
-    void onProjectRename(@Observes final RenameProjectEvent event) {
-        cleanup(event.getOldProject());
+    void onModuleRename(@Observes final RenameModuleEvent event) {
+        cleanup(event.getOldModule());
     }
 
-    void onProjectDelete(@Observes final DeleteProjectEvent event) {
-        cleanup(event.getProject());
+    void onModuleDelete(@Observes final DeleteModuleEvent event) {
+        cleanup(event.getModule());
     }
 
-    private void cleanup(final Project project) {
+    private void cleanup(final Module module) {
         final Collection<org.uberfire.java.nio.file.Path> lastNavs = userServicesBackend.getAllUsersData("explorer",
                                                                                                          "last.user.nav");
         final Collection<org.uberfire.java.nio.file.Path> userNavs = userServicesBackend.getAllUsersData("explorer",
@@ -419,7 +334,7 @@ public class ExplorerServiceImpl
             for (org.uberfire.java.nio.file.Path path : userNavs) {
                 final UserExplorerData userContent = helper.loadUserContent(path);
                 if (userContent != null) {
-                    if (userContent.deleteProject(project)) {
+                    if (userContent.deleteModule(module)) {
                         ioServiceConfig.write(path,
                                               xs.toXML(userContent));
                     }
@@ -429,7 +344,7 @@ public class ExplorerServiceImpl
             for (org.uberfire.java.nio.file.Path lastNav : lastNavs) {
                 final UserExplorerLastData lastUserContent = helper.getLastContent(lastNav);
                 if (lastUserContent != null) {
-                    if (lastUserContent.deleteProject(project)) {
+                    if (lastUserContent.deleteModule(module)) {
                         ioServiceConfig.write(lastNav,
                                               xs.toXML(lastUserContent));
                     }

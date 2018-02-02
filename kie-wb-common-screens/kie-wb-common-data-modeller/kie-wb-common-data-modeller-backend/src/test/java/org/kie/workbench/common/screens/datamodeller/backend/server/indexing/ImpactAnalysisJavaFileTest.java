@@ -48,7 +48,6 @@ import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.kie.workbench.common.services.refactoring.service.impact.QueryOperationRequest;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 
 import static org.junit.Assert.*;
 
@@ -87,7 +86,7 @@ public class ImpactAnalysisJavaFileTest extends BaseIndexingTest<JavaResourceTyp
      * This method is used by the {{@link #testReferenceQueryInfrastructure()} method.
      */
     @Abducible
-    private KieInternalServices impactAnalysisTestMethod( KieSession ksession, StatefulKnowledgeSession otherKsession ) {
+    private KieInternalServices impactAnalysisTestMethod(KieSession ksession, StatefulKnowledgeSession otherKsession) {
         return null;
     }
 
@@ -120,7 +119,7 @@ public class ImpactAnalysisJavaFileTest extends BaseIndexingTest<JavaResourceTyp
                        target);
 
         // Add this class to the repository/index
-        final Path branchedBasePath = ioService.get( URI.create( "git://" + randomBranchName + "@" + getRepositoryName() +  "/_someDir" + seed  ) );
+        final Path branchedBasePath = ioService.get(URI.create("git://" + randomBranchName + "@" + getRepositoryName() + "/_someDir" + seed));
         path = branchedBasePath.resolve(fileName);
         javaSourceText = loadText(fileLoc);
         ioService.write(path, javaSourceText);
@@ -133,66 +132,66 @@ public class ImpactAnalysisJavaFileTest extends BaseIndexingTest<JavaResourceTyp
     public void testReferenceQueryInfrastructure() throws Exception {
         Class referencedClass = AnnotationValuesAnnotation.class;
         QueryOperationRequest queryOpRequest = QueryOperationRequest
-                .references( referencedClass.getName(),
-                             ResourceType.JAVA )
-                .inAllProjects()
+                .references(referencedClass.getName(),
+                            ResourceType.JAVA)
+                .inAllModules()
                 .onAllBranches();
 
-        testQueryOperationRequest( queryOpRequest );
+        testQueryOperationRequest(queryOpRequest);
 
         queryOpRequest = QueryOperationRequest
-                .references( referencedClass.getName(),
-                             ResourceType.JAVA )
-                .inProject( TEST_PROJECT_NAME )
+                .references(referencedClass.getName(),
+                            ResourceType.JAVA)
+                .inModule(TEST_MODULE_NAME)
                 .onAllBranches();
 
-        testQueryOperationRequest( queryOpRequest );
+        testQueryOperationRequest(queryOpRequest);
 
         queryOpRequest = QueryOperationRequest
-                .references( referencedClass.getName(),
-                             ResourceType.JAVA )
-                .inProjectRootPathURI( TEST_PROJECT_ROOT )
+                .references(referencedClass.getName(),
+                            ResourceType.JAVA)
+                .inModuleRootPathURI(TEST_MODULE_ROOT)
                 .onAllBranches();
 
-        testQueryOperationRequest( queryOpRequest );
+        testQueryOperationRequest(queryOpRequest);
 
         queryOpRequest = QueryOperationRequest
-                .references( referencedClass.getName(),
-                             ResourceType.JAVA )
-                .inAllProjects()
-                .onBranch( "master" );
+                .references(referencedClass.getName(),
+                            ResourceType.JAVA)
+                .inAllModules()
+                .onBranch("master");
 
-        testQueryOperationRequest( queryOpRequest );
+        testQueryOperationRequest(queryOpRequest);
     }
 
-    private void testQueryOperationRequest( QueryOperationRequest queryOpRequest ) {
-        List<RefactoringPageRow> response = service.queryToList( queryOpRequest );
-        assertNotNull( "Null PageResonse",
-                       response );
-        assertNotNull( "Null PageRefactoringRow list",
-                       response );
-        assertEquals( "Objects referencing " + AnnotationValuesAnnotation.class.getName(),
-                      1,
-                      response.size() );
+    private void testQueryOperationRequest(QueryOperationRequest queryOpRequest) {
+        List<RefactoringPageRow> response = service.queryToList(queryOpRequest);
+        assertNotNull("Null PageResonse",
+                      response);
+        assertNotNull("Null PageRefactoringRow list",
+                      response);
+        assertEquals("Objects referencing " + AnnotationValuesAnnotation.class.getName(),
+                     1,
+                     response.size());
 
-        for ( RefactoringPageRow row : response ) {
+        for (RefactoringPageRow row : response) {
             org.uberfire.backend.vfs.Path rowPath = (org.uberfire.backend.vfs.Path) row.getValue();
-            logger.debug( rowPath.toURI() );
+            logger.debug(rowPath.toURI());
         }
 
-        Object pageRowValue = response.get( 0 ).getValue();
-        assertTrue( "Expected a " + org.uberfire.backend.vfs.Path.class.getName() + ", not a " + pageRowValue.getClass().getSimpleName(),
-                    org.uberfire.backend.vfs.Path.class.isAssignableFrom( pageRowValue.getClass() ) );
-        String fileName = ( (org.uberfire.backend.vfs.Path) pageRowValue ).getFileName();
-        assertTrue( "File does not end with '.java'",
-                    fileName.endsWith( ".java" ) );
-        assertEquals( "File name",
-                      this.getClass().getSimpleName(),
-                      fileName.subSequence( 0,
-                                            fileName.indexOf( ".java" ) ) );
+        Object pageRowValue = response.get(0).getValue();
+        assertTrue("Expected a " + org.uberfire.backend.vfs.Path.class.getName() + ", not a " + pageRowValue.getClass().getSimpleName(),
+                   org.uberfire.backend.vfs.Path.class.isAssignableFrom(pageRowValue.getClass()));
+        String fileName = ((org.uberfire.backend.vfs.Path) pageRowValue).getFileName();
+        assertTrue("File does not end with '.java'",
+                   fileName.endsWith(".java"));
+        assertEquals("File name",
+                     this.getClass().getSimpleName(),
+                     fileName.subSequence(0,
+                                          fileName.indexOf(".java")));
     }
 
-    private String getLocationOfTestClass( String fileName ) throws Exception {
+    private String getLocationOfTestClass(String fileName) throws Exception {
         URL url = this.getClass().getProtectionDomain().getCodeSource().getLocation();
         String loc = url.toURI().toString();
         loc = loc.replace("target/test-classes/", "src/test/java/");

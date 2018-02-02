@@ -15,7 +15,7 @@
 
 package org.kie.workbench.common.screens.explorer.model;
 
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -25,17 +25,19 @@ public class URIStructureExplorerModel {
 
     private OrganizationalUnit organizationalUnit;
     private Repository repository;
-    private Project project;
+    private Module module;
 
     public URIStructureExplorerModel() {
-    };
+    }
 
-    public URIStructureExplorerModel( OrganizationalUnit ou,
-                                      Repository repository,
-                                      Project project ) {
+    ;
+
+    public URIStructureExplorerModel(final OrganizationalUnit ou,
+                                     final Repository repository,
+                                     final Module module) {
         this.organizationalUnit = ou;
         this.repository = repository;
-        this.project = project;
+        this.module = module;
     }
 
     public OrganizationalUnit getOrganizationalUnit() {
@@ -46,7 +48,7 @@ public class URIStructureExplorerModel {
         return repository;
     }
 
-    public Project getProject() {
-        return project;
+    public Module getModule() {
+        return module;
     }
 }

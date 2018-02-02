@@ -52,14 +52,15 @@ import org.kie.workbench.common.forms.model.TypeKind;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.kie.workbench.common.screens.datamodeller.backend.server.handler.JPADomainHandler;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
-import org.kie.workbench.common.services.backend.project.ProjectClassLoaderHelper;
+import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
+import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataModelImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.PropertyTypeFactoryImpl;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
@@ -71,6 +72,8 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -89,7 +92,7 @@ public class DataObjectFormModelHandlerTest extends AbstractDataObjectTest {
     private FieldManager fieldManager = new TestFieldManager();
 
     @Mock
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     @Mock
     private DataModelerService dataModelerService;
@@ -100,10 +103,10 @@ public class DataObjectFormModelHandlerTest extends AbstractDataObjectTest {
     private DataObjectFinderService finderService;
 
     @Mock
-    private KieProject project;
+    private KieModule module;
 
     @Mock
-    private ProjectClassLoaderHelper projectClassLoaderHelper;
+    private ModuleClassLoaderHelper moduleClassLoaderHelper;
 
     @Mock
     private ClassLoader classLoader;
@@ -111,16 +114,16 @@ public class DataObjectFormModelHandlerTest extends AbstractDataObjectTest {
     @Before
     public void setUp() throws Exception {
 
-        when(projectService.resolveProject(any())).thenReturn(project);
-        when(projectClassLoaderHelper.getProjectClassLoader(project)).thenReturn(classLoader);
+        when(moduleService.resolveModule(any())).thenReturn(module);
+        when(moduleClassLoaderHelper.getModuleClassLoader(module)).thenReturn(classLoader);
         when(classLoader.loadClass(any())).thenAnswer((Answer<Class>) invocation -> String.class);
 
         createModel();
 
-        finderService = new DataObjectFinderServiceImpl(projectService,
+        finderService = new DataObjectFinderServiceImpl(moduleService,
                                                         dataModelerService);
-        handler = new DataObjectFormModelHandler(projectService,
-                                                 projectClassLoaderHelper,
+        handler = new DataObjectFormModelHandler(moduleService,
+                                                 moduleClassLoaderHelper,
                                                  finderService,
                                                  new TestFieldManager());
         when(dataModelerService.loadModel(any())).thenReturn(dataModel);
@@ -129,6 +132,32 @@ public class DataObjectFormModelHandlerTest extends AbstractDataObjectTest {
         handler.init(formModel,
                      path);
         handler.synchronizeFormModel();
+    }
+
+    @Test
+    public void usesRestrictedPropertyName() throws Exception {
+        final ObjectProperty property = mock(ObjectProperty.class);
+        doReturn("serialVersionUID").when(property).getName();
+
+        assertFalse(DataObjectFormModelHandler.isValidDataObjectProperty(property));
+    }
+
+    @Test
+    public void usesRestrictedAnnotation() throws Exception {
+        final ObjectProperty property = mock(ObjectProperty.class);
+
+        doReturn(mock(Annotation.class)).when(property).getAnnotation("javax.persistence.Id");
+
+        assertFalse(DataObjectFormModelHandler.isValidDataObjectProperty(property));
+    }
+
+    @Test
+    public void usesLegalAnnotation() throws Exception {
+        final ObjectProperty property = mock(ObjectProperty.class);
+
+        doReturn(null).when(property).getAnnotation("I.am.OK");
+
+        assertTrue(DataObjectFormModelHandler.isValidDataObjectProperty(property));
     }
 
     @Test

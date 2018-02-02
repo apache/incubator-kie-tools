@@ -18,7 +18,7 @@ package org.kie.workbench.common.screens.datasource.management.client.wizard.dri
 
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +37,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class NewDriverWizardTest
         extends DriverWizardTestBase {
 
@@ -55,7 +55,7 @@ public class NewDriverWizardTest
     private EventSourceMock<NotificationEvent> notificationEvent;
 
     @Mock
-    private Project project;
+    private Module module;
 
     @Mock
     private Path path;
@@ -69,14 +69,17 @@ public class NewDriverWizardTest
     @Before
     public void setup() {
         super.setup();
-        driverDefServiceCaller = new CallerMock<>( driverDefService );
-        driverDefWizard = new NewDriverDefWizard( defPage,
-                driverDefServiceCaller, translationService, popupsUtil, notificationEvent ) {
+        driverDefServiceCaller = new CallerMock<>(driverDefService);
+        driverDefWizard = new NewDriverDefWizard(defPage,
+                                                 driverDefServiceCaller,
+                                                 translationService,
+                                                 popupsUtil,
+                                                 notificationEvent) {
             {
                 this.view = wizardView;
             }
         };
-        when ( project.getRootPath() ).thenReturn( path );
+        when(module.getRootPath()).thenReturn(path);
     }
 
     /**
@@ -84,7 +87,7 @@ public class NewDriverWizardTest
      */
     @Test
     public void testCreateProjectDriver() {
-        testCreate( project  );
+        testCreate(module);
     }
 
     /**
@@ -92,23 +95,24 @@ public class NewDriverWizardTest
      */
     @Test
     public void testCreateGlobalDriver() {
-        testCreate( null );
+        testCreate(null);
     }
 
     /**
      * Emulates a sequence of valid data entering and the wizard completion.
      */
-    private void testCreate( final Project project ) {
+    private void testCreate(final Module module) {
 
-        when( path.toString() ).thenReturn( "target_driver_path" );
-        when( translationService.format( eq( DataSourceManagementConstants.NewDriverDefWizard_DriverCreatedMessage ),
-                anyVararg() ) ).thenReturn( "OkMessage" );
+        when(path.toString()).thenReturn("target_driver_path");
+        when(translationService.format(eq(DataSourceManagementConstants.NewDriverDefWizard_DriverCreatedMessage),
+                                       anyVararg())).thenReturn("OkMessage");
 
-        if ( project != null ) {
-            when( driverDefService.create( any( DriverDef.class ), eq( project ) ) ).thenReturn( path );
-            driverDefWizard.setProject( project );
+        if (module != null) {
+            when(driverDefService.create(any(DriverDef.class),
+                                         eq(module))).thenReturn(path);
+            driverDefWizard.setModule(module);
         } else {
-            when( driverDefService.createGlobal( any( DriverDef.class ) ) ).thenReturn( path );
+            when(driverDefService.createGlobal(any(DriverDef.class))).thenReturn(path);
         }
 
         driverDefWizard.start();
@@ -118,19 +122,22 @@ public class NewDriverWizardTest
         driverDefWizard.complete();
 
         DriverDef expectedDriverDef = new DriverDef();
-        expectedDriverDef.setName( NAME );
-        expectedDriverDef.setGroupId( GROUP_ID );
-        expectedDriverDef.setArtifactId( ARTIFACT_ID );
-        expectedDriverDef.setVersion( VERSION );
-        expectedDriverDef.setDriverClass( DRIVER_CLASS );
+        expectedDriverDef.setName(NAME);
+        expectedDriverDef.setGroupId(GROUP_ID);
+        expectedDriverDef.setArtifactId(ARTIFACT_ID);
+        expectedDriverDef.setVersion(VERSION);
+        expectedDriverDef.setDriverClass(DRIVER_CLASS);
 
-        if ( project != null ) {
-            verify( driverDefService, times( 1 ) ).create( expectedDriverDef, project );
-
+        if (module != null) {
+            verify(driverDefService,
+                   times(1)).create(expectedDriverDef,
+                                    module);
         } else {
-            verify( driverDefService, times( 1 ) ).createGlobal( expectedDriverDef );
+            verify(driverDefService,
+                   times(1)).createGlobal(expectedDriverDef);
         }
-        verify( notificationEvent, times( 1 ) ).fire(
-                new NotificationEvent( "OkMessage" ) );
+        verify(notificationEvent,
+               times(1)).fire(
+                new NotificationEvent("OkMessage"));
     }
 }

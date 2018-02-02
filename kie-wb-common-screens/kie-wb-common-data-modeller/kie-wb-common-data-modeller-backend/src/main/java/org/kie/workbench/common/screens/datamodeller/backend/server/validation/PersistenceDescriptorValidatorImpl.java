@@ -28,9 +28,9 @@ import org.kie.workbench.common.screens.datamodeller.model.persistence.Persisten
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceUnitModel;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.TransactionType;
 import org.kie.workbench.common.screens.datamodeller.validation.PersistenceDescriptorValidator;
-import org.kie.workbench.common.services.backend.project.ProjectClassLoaderHelper;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.vfs.Path;
 
 import static org.kie.workbench.common.screens.datamodeller.backend.server.validation.PersistenceDescriptorValidationMessages.newErrorMessage;
@@ -39,78 +39,78 @@ import static org.kie.workbench.common.screens.datamodeller.backend.server.valid
 public class PersistenceDescriptorValidatorImpl
         implements PersistenceDescriptorValidator {
 
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
-    private ProjectClassLoaderHelper projectClassLoaderHelper;
+    private ModuleClassLoaderHelper moduleClassLoaderHelper;
 
-    private PersistableClassValidator classValidator = new PersistableClassValidator( );
+    private PersistableClassValidator classValidator = new PersistableClassValidator();
 
-    private PropertyValidator propertyValidator = new PropertyValidator( );
+    private PropertyValidator propertyValidator = new PropertyValidator();
 
-    public PersistenceDescriptorValidatorImpl( ) {
+    public PersistenceDescriptorValidatorImpl() {
         //Empty constructor for Weld proxying
     }
 
     @Inject
-    public PersistenceDescriptorValidatorImpl( KieProjectService projectService,
-                                               ProjectClassLoaderHelper projectClassLoaderHelper ) {
-        this.projectService = projectService;
-        this.projectClassLoaderHelper = projectClassLoaderHelper;
+    public PersistenceDescriptorValidatorImpl(KieModuleService moduleService,
+                                              ModuleClassLoaderHelper moduleClassLoaderHelper) {
+        this.moduleService = moduleService;
+        this.moduleClassLoaderHelper = moduleClassLoaderHelper;
     }
 
     @Override
-    public List< ValidationMessage > validate( Path path, PersistenceDescriptorModel model ) {
+    public List<ValidationMessage> validate(Path path, PersistenceDescriptorModel model) {
 
-        final List< ValidationMessage > messages = new ArrayList< ValidationMessage >( );
-        final KieProject project = projectService.resolveProject( path );
+        final List<ValidationMessage> messages = new ArrayList<ValidationMessage>();
+        final KieModule module = moduleService.resolveModule(path);
 
-        if ( project == null ) {
+        if (module == null) {
             //uncommon scenario, since by construction, the same as with other wb assets, a persistence descriptor
-            // belongs to a project
-            messages.add( newErrorMessage( PersistenceDescriptorValidationMessages.DESCRIPTOR_NOT_BELONG_TO_PROJECT_ID,
-                    PersistenceDescriptorValidationMessages.DESCRIPTOR_NOT_BELONG_TO_PROJECT ) );
+            // belongs to a module
+            messages.add(newErrorMessage(PersistenceDescriptorValidationMessages.DESCRIPTOR_NOT_BELONG_TO_PROJECT_ID,
+                                         PersistenceDescriptorValidationMessages.DESCRIPTOR_NOT_BELONG_TO_PROJECT));
             return messages;
         }
 
-        if ( model.getPersistenceUnit( ) == null ) {
-            messages.add( newErrorMessage( PersistenceDescriptorValidationMessages.PERSISTENCE_UNIT_NOT_FOUND_ID,
-                    PersistenceDescriptorValidationMessages.PERSISTENCE_UNIT_NOT_FOUND ) );
+        if (model.getPersistenceUnit() == null) {
+            messages.add(newErrorMessage(PersistenceDescriptorValidationMessages.PERSISTENCE_UNIT_NOT_FOUND_ID,
+                                         PersistenceDescriptorValidationMessages.PERSISTENCE_UNIT_NOT_FOUND));
             return messages;
         }
 
         final PersistenceUnitModel unitModel = model.getPersistenceUnit();
-        if ( unitModel.getName( ) == null || unitModel.getName( ).trim( ).isEmpty( ) ) {
-            messages.add( newErrorMessage( PersistenceDescriptorValidationMessages.PERSISTENCE_UNIT_NAME_EMPTY_ID,
-                    PersistenceDescriptorValidationMessages.PERSISTENCE_UNIT_NAME_EMPTY ) );
+        if (unitModel.getName() == null || unitModel.getName().trim().isEmpty()) {
+            messages.add(newErrorMessage(PersistenceDescriptorValidationMessages.PERSISTENCE_UNIT_NAME_EMPTY_ID,
+                                         PersistenceDescriptorValidationMessages.PERSISTENCE_UNIT_NAME_EMPTY));
         }
 
-        if ( unitModel.getProvider( ) == null || unitModel.getProvider( ).trim( ).isEmpty( ) ) {
-            messages.add( newErrorMessage( PersistenceDescriptorValidationMessages.PERSISTENCE_UNIT_PROVIDER_ID,
-                    PersistenceDescriptorValidationMessages.PERSISTENCE_UNIT_PROVIDER_EMPTY ) );
+        if (unitModel.getProvider() == null || unitModel.getProvider().trim().isEmpty()) {
+            messages.add(newErrorMessage(PersistenceDescriptorValidationMessages.PERSISTENCE_UNIT_PROVIDER_ID,
+                                         PersistenceDescriptorValidationMessages.PERSISTENCE_UNIT_PROVIDER_EMPTY));
         }
 
-        if ( unitModel.getTransactionType( ) == null ) {
-            messages.add( newErrorMessage( PersistenceDescriptorValidationMessages.PERSISTENCE_UNIT_TRANSACTION_TYPE_EMPTY_ID,
-                    PersistenceDescriptorValidationMessages.PERSISTENCE_UNIT_TRANSACTION_TYPE_EMPTY ) );
-        } else if ( unitModel.getTransactionType( ) == TransactionType.JTA &&
-                ( unitModel.getJtaDataSource( ) == null || unitModel.getJtaDataSource( ).trim( ).isEmpty( ) ) ) {
-            messages.add( newErrorMessage( PersistenceDescriptorValidationMessages.PERSISTENCE_UNIT_JTA_DATASOURCE_EMPTY_ID,
-                    PersistenceDescriptorValidationMessages.PERSISTENCE_UNIT_JTA_DATASOURCE_EMPTY ) );
-        } else if ( unitModel.getTransactionType( ) == TransactionType.RESOURCE_LOCAL &&
-                ( unitModel.getNonJtaDataSource( ) == null || unitModel.getNonJtaDataSource( ).trim( ).isEmpty( ) ) ) {
-            messages.add( newErrorMessage( PersistenceDescriptorValidationMessages.PERSISTENCE_UNIT_NON_JTA_DATASOURCE_EMPTY_ID,
-                    PersistenceDescriptorValidationMessages.PERSISTENCE_UNIT_NON_JTA_DATASOURCE_EMPTY ) );
+        if (unitModel.getTransactionType() == null) {
+            messages.add(newErrorMessage(PersistenceDescriptorValidationMessages.PERSISTENCE_UNIT_TRANSACTION_TYPE_EMPTY_ID,
+                                         PersistenceDescriptorValidationMessages.PERSISTENCE_UNIT_TRANSACTION_TYPE_EMPTY));
+        } else if (unitModel.getTransactionType() == TransactionType.JTA &&
+                (unitModel.getJtaDataSource() == null || unitModel.getJtaDataSource().trim().isEmpty())) {
+            messages.add(newErrorMessage(PersistenceDescriptorValidationMessages.PERSISTENCE_UNIT_JTA_DATASOURCE_EMPTY_ID,
+                                         PersistenceDescriptorValidationMessages.PERSISTENCE_UNIT_JTA_DATASOURCE_EMPTY));
+        } else if (unitModel.getTransactionType() == TransactionType.RESOURCE_LOCAL &&
+                (unitModel.getNonJtaDataSource() == null || unitModel.getNonJtaDataSource().trim().isEmpty())) {
+            messages.add(newErrorMessage(PersistenceDescriptorValidationMessages.PERSISTENCE_UNIT_NON_JTA_DATASOURCE_EMPTY_ID,
+                                         PersistenceDescriptorValidationMessages.PERSISTENCE_UNIT_NON_JTA_DATASOURCE_EMPTY));
         }
 
-        if ( unitModel.getClasses( ) != null && !unitModel.getClasses( ).isEmpty( ) ) {
-            ClassLoader projectClassLoader = projectClassLoaderHelper.getProjectClassLoader( project );
-            unitModel.getClasses( ).forEach( clazz -> Optional.ofNullable( classValidator.validate( clazz, projectClassLoader ) ).ifPresent( messages::addAll ) );
+        if (unitModel.getClasses() != null && !unitModel.getClasses().isEmpty()) {
+            ClassLoader moduleClassLoader = moduleClassLoaderHelper.getModuleClassLoader(module);
+            unitModel.getClasses().forEach(clazz -> Optional.ofNullable(classValidator.validate(clazz, moduleClassLoader)).ifPresent(messages::addAll));
         }
 
-        if ( unitModel.getProperties( ) != null ) {
-            int[] index = { 1 };
-            unitModel.getProperties( ).forEach( property ->
-                    messages.addAll( Optional.ofNullable( propertyValidator.validate( property.getName( ), property.getValue( ), index[ 0 ]++ ) ).orElse( Collections.emptyList( ) ) )
+        if (unitModel.getProperties() != null) {
+            int[] index = {1};
+            unitModel.getProperties().forEach(property ->
+                                                      messages.addAll(Optional.ofNullable(propertyValidator.validate(property.getName(), property.getValue(), index[0]++)).orElse(Collections.emptyList()))
             );
         }
         return messages;

@@ -30,7 +30,7 @@ import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 import org.kie.workbench.common.services.datamodeller.core.ElementType;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieModule;
 import org.mockito.Mock;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 import org.uberfire.mocks.CallerMock;
@@ -39,7 +39,7 @@ import org.uberfire.mocks.EventSourceMock;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class ValuePairEditorPageTest {
 
     @GwtMock
@@ -56,109 +56,112 @@ public class ValuePairEditorPageTest {
 
     protected CallerMock<DataModelerService> modelerServiceCaller;
 
-    protected Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent = mock( EventSourceMock.class );
+    protected Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent = mock(EventSourceMock.class);
 
     @Mock
-    protected KieProject kieProject;
+    protected KieModule kieModule;
 
     @Test
     public void testPageLoad() {
 
-        modelerServiceCaller = new CallerMock<DataModelerService>( modelerService );
-        ValuePairEditorPage editorPage = new ValuePairEditorPage( view,
-                valuePairEditorProvider,
-                modelerServiceCaller,
-                wizardPageStatusChangeEvent );
+        modelerServiceCaller = new CallerMock<DataModelerService>(modelerService);
+        ValuePairEditorPage editorPage = new ValuePairEditorPage(view,
+                                                                 valuePairEditorProvider,
+                                                                 modelerServiceCaller,
+                                                                 wizardPageStatusChangeEvent);
 
         editorPage.prepareView();
-        WizardTestUtil.assertPageComplete( false, editorPage );
+        WizardTestUtil.assertPageComplete(false, editorPage);
     }
 
     @Test
     public void testPageInitialization() {
 
-        modelerServiceCaller = new CallerMock<DataModelerService>( modelerService );
-        ValuePairEditorPage editorPage = new ValuePairEditorPage( view,
-                valuePairEditorProvider,
-                modelerServiceCaller,
-                wizardPageStatusChangeEvent );
+        modelerServiceCaller = new CallerMock<DataModelerService>(modelerService);
+        ValuePairEditorPage editorPage = new ValuePairEditorPage(view,
+                                                                 valuePairEditorProvider,
+                                                                 modelerServiceCaller,
+                                                                 wizardPageStatusChangeEvent);
 
         editorPage.prepareView();
 
-        AnnotationDefinition annotationDefinition = DriverUtils.buildAnnotationDefinition( Entity.class );
-        AnnotationValuePairDefinition valuePairDefinition = annotationDefinition.getValuePair( "name" );
+        AnnotationDefinition annotationDefinition = DriverUtils.buildAnnotationDefinition(Entity.class);
+        AnnotationValuePairDefinition valuePairDefinition = annotationDefinition.getValuePair("name");
 
-        when( valuePairEditorProvider.getValuePairEditor( valuePairDefinition ) ).thenReturn( valuePairEditor );
+        when(valuePairEditorProvider.getValuePairEditor(valuePairDefinition)).thenReturn(valuePairEditor);
 
-        editorPage.init( annotationDefinition, valuePairDefinition, ElementType.FIELD, kieProject );
+        editorPage.init(annotationDefinition, valuePairDefinition, ElementType.FIELD,
+                        kieModule);
 
         //the view should be properly initialized with the corresponding editor.
-        verify( view, times( 1 ) ).setValuePairEditor( valuePairEditor );
-        WizardTestUtil.assertPageComplete( true, editorPage ); //the "name" value pair is not mandatory, so the page is completed.
+        verify(view, times(1)).setValuePairEditor(valuePairEditor);
+        WizardTestUtil.assertPageComplete(true, editorPage); //the "name" value pair is not mandatory, so the page is completed.
     }
 
     @Test
     public void testValidValueChange() {
 
-        modelerServiceCaller = new CallerMock<DataModelerService>( modelerService );
-        ValuePairEditorPage editorPage = new ValuePairEditorPage( view,
-                valuePairEditorProvider,
-                modelerServiceCaller,
-                wizardPageStatusChangeEvent );
+        modelerServiceCaller = new CallerMock<DataModelerService>(modelerService);
+        ValuePairEditorPage editorPage = new ValuePairEditorPage(view,
+                                                                 valuePairEditorProvider,
+                                                                 modelerServiceCaller,
+                                                                 wizardPageStatusChangeEvent);
 
         editorPage.prepareView();
 
-        AnnotationDefinition annotationDefinition = DriverUtils.buildAnnotationDefinition( Entity.class );
-        AnnotationValuePairDefinition valuePairDefinition = annotationDefinition.getValuePair( "name" );
+        AnnotationDefinition annotationDefinition = DriverUtils.buildAnnotationDefinition(Entity.class);
+        AnnotationValuePairDefinition valuePairDefinition = annotationDefinition.getValuePair("name");
 
-        when( valuePairEditorProvider.getValuePairEditor( valuePairDefinition ) ).thenReturn( valuePairEditor );
+        when(valuePairEditorProvider.getValuePairEditor(valuePairDefinition)).thenReturn(valuePairEditor);
 
-        editorPage.init( annotationDefinition, valuePairDefinition, ElementType.FIELD, kieProject );
+        editorPage.init(annotationDefinition, valuePairDefinition, ElementType.FIELD,
+                        kieModule);
 
         //emulate a change in the internal ValuePairEditor with a valid value.
-        when( view.getValuePairEditor() ).thenReturn( valuePairEditor );
-        when( valuePairEditor.getValue() ).thenReturn( "TheEntityName" );
-        when( valuePairEditor.isValid() ).thenReturn( true );
+        when(view.getValuePairEditor()).thenReturn(valuePairEditor);
+        when(valuePairEditor.getValue()).thenReturn("TheEntityName");
+        when(valuePairEditor.isValid()).thenReturn(true);
 
         editorPage.onValueChange();
 
         //the view should be properly initialized with the corresponding editor.
-        verify( view, times( 1 ) ).setValuePairEditor( valuePairEditor );
-        verify( valuePairEditor, times( 1 ) ).getValue();
-        verify( valuePairEditor, times( 1 ) ).isValid();
-        assertEquals( "TheEntityName", editorPage.getCurrentValue() );
-        WizardTestUtil.assertPageComplete( true, editorPage );
+        verify(view, times(1)).setValuePairEditor(valuePairEditor);
+        verify(valuePairEditor, times(1)).getValue();
+        verify(valuePairEditor, times(1)).isValid();
+        assertEquals("TheEntityName", editorPage.getCurrentValue());
+        WizardTestUtil.assertPageComplete(true, editorPage);
     }
 
     @Test
     public void testInvalidValueChange() {
 
-        modelerServiceCaller = new CallerMock<DataModelerService>( modelerService );
-        ValuePairEditorPage editorPage = new ValuePairEditorPage( view,
-                valuePairEditorProvider,
-                modelerServiceCaller,
-                wizardPageStatusChangeEvent );
+        modelerServiceCaller = new CallerMock<DataModelerService>(modelerService);
+        ValuePairEditorPage editorPage = new ValuePairEditorPage(view,
+                                                                 valuePairEditorProvider,
+                                                                 modelerServiceCaller,
+                                                                 wizardPageStatusChangeEvent);
 
         editorPage.prepareView();
 
-        AnnotationDefinition annotationDefinition = DriverUtils.buildAnnotationDefinition( Entity.class );
-        AnnotationValuePairDefinition valuePairDefinition = annotationDefinition.getValuePair( "name" );
+        AnnotationDefinition annotationDefinition = DriverUtils.buildAnnotationDefinition(Entity.class);
+        AnnotationValuePairDefinition valuePairDefinition = annotationDefinition.getValuePair("name");
 
-        when( valuePairEditorProvider.getValuePairEditor( valuePairDefinition ) ).thenReturn( valuePairEditor );
+        when(valuePairEditorProvider.getValuePairEditor(valuePairDefinition)).thenReturn(valuePairEditor);
 
-        editorPage.init( annotationDefinition, valuePairDefinition, ElementType.FIELD, kieProject );
+        editorPage.init(annotationDefinition, valuePairDefinition, ElementType.FIELD,
+                        kieModule);
 
         //emulate a change in the internal ValuePairEditor with a valid value.
-        when( view.getValuePairEditor() ).thenReturn( valuePairEditor );
-        when( valuePairEditor.getValue() ).thenReturn( null );
-        when( valuePairEditor.isValid() ).thenReturn( false );
+        when(view.getValuePairEditor()).thenReturn(valuePairEditor);
+        when(valuePairEditor.getValue()).thenReturn(null);
+        when(valuePairEditor.isValid()).thenReturn(false);
 
         editorPage.onValueChange();
 
         //the view should be properly initialized with the corresponding editor.
-        verify( view, times( 1 ) ).setValuePairEditor( valuePairEditor );
-        verify( valuePairEditor, times( 1 ) ).getValue();
-        verify( valuePairEditor, times( 1 ) ).isValid();
-        WizardTestUtil.assertPageComplete( false, editorPage );
+        verify(view, times(1)).setValuePairEditor(valuePairEditor);
+        verify(valuePairEditor, times(1)).getValue();
+        verify(valuePairEditor, times(1)).isValid();
+        WizardTestUtil.assertPageComplete(false, editorPage);
     }
 }

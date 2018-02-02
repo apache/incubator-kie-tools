@@ -28,13 +28,13 @@ import com.google.common.base.Charsets;
 import org.guvnor.common.services.project.builder.service.PostBuildHandler;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
+import org.guvnor.common.services.project.model.ModuleRepositories;
 import org.guvnor.common.services.project.model.POM;
-import org.guvnor.common.services.project.model.ProjectRepositories;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
+import org.guvnor.common.services.project.service.ModuleRepositoriesService;
+import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.project.service.POMService;
-import org.guvnor.common.services.project.service.ProjectRepositoriesService;
-import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
 import org.guvnor.test.TestFileSystem;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -44,8 +44,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.builder.KieFileSystem;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.server.util.Paths;
@@ -65,31 +65,24 @@ public class BuildHelperTest {
 
     private static final String SNAPSHOT_VERSION = "1.0.0-SNAPSHOT";
 
-    private POMService pomService;
-
-    @Mock
-    private ExtendedM2RepoService m2RepoService;
-
-    @Mock
-    private ProjectRepositoryResolver repositoryResolver;
-
-    @Mock
-    private ProjectRepositoriesService projectRepositoriesService;
-
-    @Mock
-    private Instance<PostBuildHandler> handlers;
-
     @Mock
     protected Instance<User> identity;
-
     @Mock
     protected User user;
-
+    private POMService pomService;
+    @Mock
+    private ExtendedM2RepoService m2RepoService;
+    @Mock
+    private ModuleRepositoryResolver repositoryResolver;
+    @Mock
+    private ModuleRepositoriesService moduleRepositoriesService;
+    @Mock
+    private Instance<PostBuildHandler> handlers;
     private LRUBuilderCache cache;
 
     private TestFileSystem testFileSystem;
 
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     private BuildHelper buildHelper;
 
@@ -99,7 +92,7 @@ public class BuildHelperTest {
 
     private Path snapshotRootPath;
 
-    private KieProject project;
+    private KieModule module;
 
     @Mock
     private POM pom;
@@ -111,7 +104,7 @@ public class BuildHelperTest {
     private Path repositoriesPath;
 
     @Mock
-    private ProjectRepositories projectRepositories;
+    private ModuleRepositories moduleRepositories;
 
     private Set<MavenRepositoryMetadata> repositories;
 
@@ -135,14 +128,14 @@ public class BuildHelperTest {
     @Before
     public void setUp() throws Exception {
         testFileSystem = new TestFileSystem();
-        projectService = testFileSystem.getReference(KieProjectService.class);
+        moduleService = testFileSystem.getReference(KieModuleService.class);
         pomService = testFileSystem.getReference(POMService.class);
         cache = testFileSystem.getReference(LRUBuilderCache.class);
         deploymentVerifier = new DeploymentVerifier(repositoryResolver,
-                                                    projectRepositoriesService);
+                                                    moduleRepositoriesService);
         buildHelper = spy(new BuildHelper(pomService,
                                           m2RepoService,
-                                          projectService,
+                                          moduleService,
                                           deploymentVerifier,
                                           cache,
                                           handlers,
@@ -176,12 +169,12 @@ public class BuildHelperTest {
                               gav,
                               false);
 
-        buildHelper.buildAndDeploy(project);
+        buildHelper.buildAndDeploy(module);
 
         verify(buildHelper,
-               times(1)).buildAndDeploy(eq(project),
+               times(1)).buildAndDeploy(eq(module),
                                         eq(DeploymentMode.VALIDATED));
-        verifyBuildAndDeploy(project,
+        verifyBuildAndDeploy(module,
                              gav);
     }
 
@@ -195,13 +188,13 @@ public class BuildHelperTest {
                               true);
         Exception exception = null;
         try {
-            buildHelper.buildAndDeploy(project);
+            buildHelper.buildAndDeploy(module);
         } catch (Exception e) {
             exception = e;
         }
 
         verify(buildHelper,
-               times(1)).buildAndDeploy(eq(project),
+               times(1)).buildAndDeploy(eq(module),
                                         eq(DeploymentMode.VALIDATED));
 
         assertNotNull(exception);
@@ -218,12 +211,12 @@ public class BuildHelperTest {
         prepareBuildAndDeploy(snapshotRootPath,
                               gav);
 
-        buildHelper.buildAndDeploy(project);
+        buildHelper.buildAndDeploy(module);
 
         verify(buildHelper,
-               times(1)).buildAndDeploy(eq(project),
+               times(1)).buildAndDeploy(eq(module),
                                         eq(DeploymentMode.VALIDATED));
-        verifyBuildAndDeploySnapshot(project,
+        verifyBuildAndDeploySnapshot(module,
                                      gav);
     }
 
@@ -235,14 +228,14 @@ public class BuildHelperTest {
         prepareBuildAndDeploy(rootPath,
                               gav);
 
-        buildHelper.buildAndDeploy(project,
+        buildHelper.buildAndDeploy(module,
                                    true);
 
         verify(buildHelper,
-               times(1)).buildAndDeploy(eq(project),
+               times(1)).buildAndDeploy(eq(module),
                                         eq(true),
                                         eq(DeploymentMode.VALIDATED));
-        verifyBuildAndDeploy(project,
+        verifyBuildAndDeploy(module,
                              gav);
     }
 
@@ -254,14 +247,14 @@ public class BuildHelperTest {
         prepareBuildAndDeploy(snapshotRootPath,
                               gav);
 
-        buildHelper.buildAndDeploy(project,
+        buildHelper.buildAndDeploy(module,
                                    true);
 
         verify(buildHelper,
-               times(1)).buildAndDeploy(eq(project),
+               times(1)).buildAndDeploy(eq(module),
                                         eq(true),
                                         eq(DeploymentMode.VALIDATED));
-        verifyBuildAndDeploySnapshot(project,
+        verifyBuildAndDeploySnapshot(module,
                                      gav);
     }
 
@@ -275,45 +268,45 @@ public class BuildHelperTest {
     private void prepareBuildAndDeploy(Path rootPath,
                                        GAV gav,
                                        boolean isDeployed) {
-        project = projectService.resolveProject(rootPath);
+        module = moduleService.resolveModule(rootPath);
 
         repositories = new HashSet<>();
         if (isDeployed) {
             repositories.add(repositoryMetadata1);
             repositories.add(repositoryMetadata2);
         }
-        when(projectRepositoriesService.load(project.getRepositoriesPath())).thenReturn(projectRepositories);
+        when(moduleRepositoriesService.load(module.getRepositoriesPath())).thenReturn(moduleRepositories);
         when(repositoryResolver.getRepositoriesResolvingArtifact(eq(gav),
-                                                                 eq(project),
+                                                                 eq(module),
                                                                  any(MavenRepositoryMetadata[].class))).thenReturn(repositories);
     }
 
-    private void verifyBuildAndDeploy(KieProject project,
+    private void verifyBuildAndDeploy(KieModule module,
                                       GAV gav) {
-        verify(projectRepositoriesService,
+        verify(moduleRepositoriesService,
                times(1)).load(any(Path.class));
         verify(repositoryResolver,
                times(1)).getRepositoriesResolvingArtifact(eq(gav),
-                                                          eq(project),
+                                                          eq(module),
                                                           any(MavenRepositoryMetadata[].class));
-        verifyBuilder(project,
+        verifyBuilder(module,
                       gav);
     }
 
-    private void verifyBuildAndDeploySnapshot(KieProject project,
+    private void verifyBuildAndDeploySnapshot(KieModule module,
                                               GAV gav) {
-        verify(projectRepositoriesService,
+        verify(moduleRepositoriesService,
                never()).load(any(Path.class));
         verify(repositoryResolver,
                never()).getRepositoriesResolvingArtifact(eq(gav),
-                                                         eq(project));
-        verifyBuilder(project,
+                                                         eq(module));
+        verifyBuilder(module,
                       gav);
     }
 
-    private void verifyBuilder(KieProject project,
+    private void verifyBuilder(KieModule module,
                                GAV gav) {
-        Builder builder = cache.getBuilder(project);
+        Builder builder = cache.getBuilder(module);
         assertNotNull(builder);
         assertTrue(builder.isBuilt());
         verify(m2RepoService,
@@ -325,7 +318,7 @@ public class BuildHelperTest {
     public void testBuildThatDoesNotUpdateTheCache() throws Exception {
         final Path path = path();
 
-        buildHelper.build(projectService.resolveProject(path));
+        buildHelper.build(moduleService.resolveModule(path));
 
         assertTrue(cachedFileSystemDoesNotChange());
     }
@@ -334,7 +327,7 @@ public class BuildHelperTest {
     public void testUpdatePackageResourceThatDoesNotUpdateTheCache() throws Exception {
         final Path path = path();
 
-        buildHelper.build(projectService.resolveProject(path));
+        buildHelper.build(moduleService.resolveModule(path));
         buildHelper.updatePackageResource(path);
 
         assertTrue(cachedFileSystemDoesNotChange());
@@ -356,7 +349,7 @@ public class BuildHelperTest {
     }
 
     private boolean cachedFileSystemDoesNotChange() throws URISyntaxException {
-        final Builder builder = cache.assertBuilder(projectService.resolveProject(path()));
+        final Builder builder = cache.assertBuilder(moduleService.resolveModule(path()));
         final KieFileSystem fileSystem = builder.getKieFileSystem();
         final String fileContent = new String(fileSystem.read("src/main/resources/rule2.drl"),
                                               Charsets.UTF_8);

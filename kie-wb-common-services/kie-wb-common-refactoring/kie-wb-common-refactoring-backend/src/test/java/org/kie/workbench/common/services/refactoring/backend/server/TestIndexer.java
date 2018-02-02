@@ -15,7 +15,7 @@
  */
 package org.kie.workbench.common.services.refactoring.backend.server;
 
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.ext.metadata.engine.Indexer;
 import org.uberfire.io.IOService;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
@@ -26,18 +26,17 @@ public interface TestIndexer<T extends ResourceTypeDefinition> extends Indexer {
      * Mock CDI injection of IOService
      * @param ioService
      */
-    void setIOService( final IOService ioService );
+    void setIOService(final IOService ioService);
 
     /**
-     * Mock CDI injection of ProjectService
-     * @param projectService
+     * Mock CDI injection of ModuleService
+     * @param moduleService
      */
-    void setProjectService( final KieProjectService projectService );
+    void setModuleService(final KieModuleService moduleService);
 
     /**
      * Mock CDI injection of ResourceTypeDefinition
      * @param type
      */
-    void setResourceTypeDefinition( final T type );
-
+    void setResourceTypeDefinition(final T type);
 }

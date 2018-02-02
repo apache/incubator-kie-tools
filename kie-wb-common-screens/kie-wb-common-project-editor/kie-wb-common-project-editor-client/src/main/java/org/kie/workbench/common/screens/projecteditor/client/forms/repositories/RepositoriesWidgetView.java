@@ -18,7 +18,7 @@ package org.kie.workbench.common.screens.projecteditor.client.forms.repositories
 import java.util.Set;
 
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.model.ProjectRepositories;
+import org.guvnor.common.services.project.model.ModuleRepositories;
 import org.uberfire.client.mvp.UberView;
 
 public interface RepositoriesWidgetView
@@ -26,17 +26,15 @@ public interface RepositoriesWidgetView
 
     interface Presenter {
 
-        void setContent( final Set<ProjectRepositories.ProjectRepository> repositories,
-                         final boolean isReadOnly );
+        void setContent(final Set<ModuleRepositories.ModuleRepository> repositories,
+                        final boolean isReadOnly);
 
-        void setIncludeRepository( final ProjectRepositories.ProjectRepository repository,
-                                   final boolean include );
+        void setIncludeRepository(final ModuleRepositories.ModuleRepository repository,
+                                  final boolean include);
 
         Widget asWidget();
-
     }
 
-    void setContent( final Set<ProjectRepositories.ProjectRepository> repositories,
-                     final boolean isReadOnly );
-
+    void setContent(final Set<ModuleRepositories.ModuleRepository> repositories,
+                    final boolean isReadOnly);
 }

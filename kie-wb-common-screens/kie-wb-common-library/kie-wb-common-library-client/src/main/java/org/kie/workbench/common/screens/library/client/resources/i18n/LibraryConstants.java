@@ -280,4 +280,13 @@ public class LibraryConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String RepositoryURL = "RepositoryURL";
+
+    @TranslationKey(defaultValue = "")
+    public static final String MigrationWasSuccessful = "MigrationWasSuccessful";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ShowAuthenticationOptions = "ShowAuthenticationOptions";
+
+    @TranslationKey(defaultValue = "")
+    public static final String HideAuthenticationOptions = "HideAuthenticationOptions";
 }

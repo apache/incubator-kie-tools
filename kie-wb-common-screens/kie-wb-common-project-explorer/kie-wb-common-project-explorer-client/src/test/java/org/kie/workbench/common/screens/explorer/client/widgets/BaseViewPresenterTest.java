@@ -23,12 +23,12 @@ import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
-import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
+import org.guvnor.common.services.project.model.Module;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
+import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
@@ -69,78 +69,55 @@ import org.uberfire.workbench.events.NotificationEvent;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-
 @RunWith(GwtMockitoTestRunner.class)
 public class BaseViewPresenterTest {
 
-    @GwtMock
-    CommonConstants commonConstants;
-
-    private ExplorerService explorerServiceActual = mock( ExplorerService.class );
-
-    private BuildService buildServiceActual = mock( BuildService.class );
-
-    @Spy
-    private Caller<ExplorerService> explorerService = new CallerMock<ExplorerService>( explorerServiceActual );
-
-    @Spy
-    private Caller<BuildService> buildService = new CallerMock<BuildService>( buildServiceActual );
-
-    @Spy
-    private Caller<VFSService> vfsService = new CallerMock<VFSService>( mock( VFSService.class ) );
-
-    @Spy
-    private Caller<ValidationService> validationService = new CallerMock<ValidationService>( mock( ValidationService.class ) );
-
-    @Mock
-    private EventSourceMock<BuildResults> buildResultsEvent;
-
-    @Mock
-    private EventSourceMock<ProjectContextChangeEvent> contextChangedEvent;
-
-    @Mock
-    private EventSourceMock<NotificationEvent> notification;
-
-    @Mock
-    private User identity;
-
-    @Mock
-    private PlaceManager placeManager;
-
-    @Mock
-    private SessionInfo sessionInfo;
-
-    @Mock
-    private BusinessViewWidget view;
-
-    @Mock
-    private ActiveContextItems activeContextItems;
-
-    @Mock
-    private ActiveContextManager activeContextManager;
-
-    @Mock
-    private ActiveContextOptions activeOptions;
-
     @Mock
     protected DeletePopUpPresenter deletePopUpPresenterMock;
-
     @Mock
     protected RenamePopUpPresenter renamePopUpPresenterMock;
-
     @Mock
     protected CopyPopUpPresenter copyPopUpPresenterMock;
-
     @Mock
     protected CopyPopupWithPackageView copyPopUpView;
-
     @Mock
     protected RenamePopUpPresenter.View renamePopUpView;
-
+    @GwtMock
+    CommonConstants commonConstants;
+    private ExplorerService explorerServiceActual = mock(ExplorerService.class);
+    private BuildService buildServiceActual = mock(BuildService.class);
+    @Spy
+    private Caller<ExplorerService> explorerService = new CallerMock<ExplorerService>(explorerServiceActual);
+    @Spy
+    private Caller<BuildService> buildService = new CallerMock<BuildService>(buildServiceActual);
+    @Spy
+    private Caller<VFSService> vfsService = new CallerMock<VFSService>(mock(VFSService.class));
+    @Spy
+    private Caller<ValidationService> validationService = new CallerMock<ValidationService>(mock(ValidationService.class));
+    @Mock
+    private EventSourceMock<BuildResults> buildResultsEvent;
+    @Mock
+    private EventSourceMock<WorkspaceProjectContextChangeEvent> contextChangedEvent;
+    @Mock
+    private EventSourceMock<NotificationEvent> notification;
+    @Mock
+    private User identity;
+    @Mock
+    private PlaceManager placeManager;
+    @Mock
+    private SessionInfo sessionInfo;
+    @Mock
+    private BusinessViewWidget view;
+    @Mock
+    private ActiveContextItems activeContextItems;
+    @Mock
+    private ActiveContextManager activeContextManager;
+    @Mock
+    private ActiveContextOptions activeOptions;
     private boolean isPresenterVisible = true;
 
     @InjectMocks
-    private BaseViewPresenter presenter = new BaseViewPresenter( view ) {
+    private BaseViewPresenter presenter = new BaseViewPresenter(view) {
         {
             this.deletePopUpPresenter = deletePopUpPresenterMock;
             this.renamePopUpPresenter = renamePopUpPresenterMock;
@@ -154,218 +131,235 @@ public class BaseViewPresenterTest {
         }
     };
 
-    private ProjectExplorerContent content = new ProjectExplorerContent( Collections.<OrganizationalUnit>emptySet(),
-                                                                         new OrganizationalUnitImpl(),
-                                                                         Collections.<Repository>emptySet(),
-                                                                         new GitRepository(),
-                                                                         "master",
-                                                                         Collections.<Project>emptySet(),
-                                                                         new Project(),
-                                                                         new FolderListing(),
-                                                                         Collections.<FolderItem, List<FolderItem>>emptyMap() );
+    private ProjectExplorerContent content = new ProjectExplorerContent(new WorkspaceProject(mock(OrganizationalUnit.class),
+                                                                                             mock(Repository.class),
+                                                                                             new Branch("master",
+                                                                                                        mock(Path.class)),
+                                                                                             mock(Module.class)),
+                                                                        new Module(),
+                                                                        new FolderListing(),
+                                                                        Collections.<FolderItem, List<FolderItem>>emptyMap());
 
     @Before
     public void setup() {
-        when( view.getExplorer() ).thenReturn( mock( Explorer.class ) );
-        when( explorerServiceActual.getContent( any( ProjectExplorerContentQuery.class ) ) ).thenReturn( content );
-        when( activeOptions.getOptions() ).thenReturn( new ActiveOptions() );
+        when(view.getExplorer()).thenReturn(mock(Explorer.class));
+        when(explorerServiceActual.getContent(any(ProjectExplorerContentQuery.class))).thenReturn(content);
+        when(activeOptions.getOptions()).thenReturn(new ActiveOptions());
     }
 
     @Test
     public void testInitCalled() throws Exception {
         presenter.init();
-        verify( view ).init( presenter );
+        verify(view).init(presenter);
     }
 
     @Test
     public void testDeleteNotification() {
         deletePopUpPresenterShowMock();
 
-        final FolderItem item = mock( FolderItem.class );
-        presenter.deleteItem( item );
+        final FolderItem item = mock(FolderItem.class);
+        presenter.deleteItem(item);
 
-        verify( notification,
-                times( 1 ) ).fire( any( NotificationEvent.class ) );
+        verify(notification,
+               times(1)).fire(any(NotificationEvent.class));
     }
 
     @Test
     public void testCopyNotification() {
         copyPopUpPresenterShowMock();
-        when( copyPopUpPresenterMock.getView() ).thenReturn( copyPopUpView );
-        final FolderItem item = mock( FolderItem.class );
+        when(copyPopUpPresenterMock.getView()).thenReturn(copyPopUpView);
+        final FolderItem item = mock(FolderItem.class);
 
-        presenter.copyItem( item );
+        presenter.copyItem(item);
 
-        verify( notification,
-                times( 1 ) ).fire( any( NotificationEvent.class ) );
+        verify(notification,
+               times(1)).fire(any(NotificationEvent.class));
     }
 
     @Test
     public void testRenameNotification() {
         renamePopUpPresenterShowMock();
-        when( renamePopUpPresenterMock.getView() ).thenReturn( renamePopUpView );
+        when(renamePopUpPresenterMock.getView()).thenReturn(renamePopUpView);
 
-        final FolderItem item = mock( FolderItem.class );
-        presenter.renameItem( item );
+        final FolderItem item = mock(FolderItem.class);
+        presenter.renameItem(item);
 
-        verify( notification,
-                times( 1 ) ).fire( any( NotificationEvent.class ) );
+        verify(notification,
+               times(1)).fire(any(NotificationEvent.class));
     }
 
     @Test
-    public void testAutomaticProjectBuildDisabled() {
-        final OrganizationalUnit ou = mock( OrganizationalUnit.class );
-        final Repository repository = mock( Repository.class );
-        final Project project = mock( Project.class );
+    public void testAutomaticModuleBuildDisabled() {
+        final OrganizationalUnit ou = mock(OrganizationalUnit.class);
+        final Repository repository = mock(Repository.class);
+        final Module module = mock(Module.class);
 
-        ApplicationPreferences.setUp( new HashMap<String, String>() {{
-            put( ExplorerService.BUILD_PROJECT_PROPERTY_NAME,
-                 "true" );
-        }} );
+        ApplicationPreferences.setUp(new HashMap<String, String>() {{
+            put(ExplorerService.BUILD_PROJECT_PROPERTY_NAME,
+                "true");
+        }});
 
-        when( activeContextItems.setupActiveProject( content ) ).thenReturn( true );
-        when( activeContextItems.getActiveOrganizationalUnit() ).thenReturn( ou );
-        when( activeContextItems.getActiveRepository() ).thenReturn( repository );
-        when( activeContextItems.getActiveBranch() ).thenReturn( "master" );
-        when( activeContextItems.getActiveProject() ).thenReturn( project );
+        when(activeContextItems.setupActiveModule(content)).thenReturn(true);
 
-        presenter.doContentCallback( content );
+        final WorkspaceProject project = mock(WorkspaceProject.class);
+        when(project.getOrganizationalUnit()).thenReturn(ou);
+        when(project.getRepository()).thenReturn(repository);
+        when(project.getBranch()).thenReturn(new Branch("master",
+                                                        mock(Path.class)));
+        when(activeContextItems.getActiveProject()).thenReturn(project);
 
-        verify( buildServiceActual,
-                never() ).build( any( Project.class ) );
+        when(activeContextItems.getActiveModule()).thenReturn(module);
+
+        presenter.doContentCallback(content);
+
+        verify(buildServiceActual,
+               never()).build(any(Module.class));
     }
 
     @Test
-    public void testAutomaticProjectBuildEnabled() {
-        final OrganizationalUnit ou = mock( OrganizationalUnit.class );
-        final Repository repository = mock( Repository.class );
-        final Project project = mock( Project.class );
+    public void testAutomaticModuleBuildEnabled() {
+        final OrganizationalUnit ou = mock(OrganizationalUnit.class);
+        final Repository repository = mock(Repository.class);
+        final Module module = mock(Module.class);
 
-        ApplicationPreferences.setUp( new HashMap<String, String>() );
+        ApplicationPreferences.setUp(new HashMap<String, String>());
 
-        when( activeContextItems.setupActiveProject( content ) ).thenReturn( true );
-        when( activeContextItems.getActiveOrganizationalUnit() ).thenReturn( ou );
-        when( activeContextItems.getActiveRepository() ).thenReturn( repository );
-        when( activeContextItems.getActiveBranch() ).thenReturn( "master" );
-        when( activeContextItems.getActiveProject() ).thenReturn( project );
+        when(activeContextItems.setupActiveModule(content)).thenReturn(true);
 
-        presenter.doContentCallback( content );
+        final WorkspaceProject project = mock(WorkspaceProject.class);
+        when(activeContextItems.getActiveProject()).thenReturn(project);
+        when(project.getOrganizationalUnit()).thenReturn(ou);
+        when(project.getRepository()).thenReturn(repository);
+        when(project.getBranch()).thenReturn(new Branch("master",
+                                                        mock(Path.class)));
+        when(activeContextItems.getActiveModule()).thenReturn(module);
 
-        verify( buildServiceActual,
-                times( 1 ) ).build( project );
+        presenter.doContentCallback(content);
+
+        verify(buildServiceActual,
+               times(1)).build(module);
     }
 
     @Test
-    public void testAutomaticProjectBuildDisabledSystemProperty() {
-        final OrganizationalUnit ou = mock( OrganizationalUnit.class );
-        final Repository repository = mock( Repository.class );
-        final Project project = mock( Project.class );
+    public void testAutomaticModuleBuildDisabledSystemProperty() {
+        final OrganizationalUnit ou = mock(OrganizationalUnit.class);
+        final Repository repository = mock(Repository.class);
+        final Module module = mock(Module.class);
 
-        String spBuildDisableProjectExplorer = null;
+        String spBuildDisableModuleExplorer = null;
         try {
-            spBuildDisableProjectExplorer = System.getProperty( ExplorerService.BUILD_PROJECT_PROPERTY_NAME );
+            spBuildDisableModuleExplorer = System.getProperty(ExplorerService.BUILD_PROJECT_PROPERTY_NAME);
 
-            System.setProperty( ExplorerService.BUILD_PROJECT_PROPERTY_NAME,
-                                "true" );
+            System.setProperty(ExplorerService.BUILD_PROJECT_PROPERTY_NAME,
+                               "true");
 
             final ExplorerPreferencesLoader preferencesLoader = new ExplorerPreferencesLoader();
-            ApplicationPreferences.setUp( preferencesLoader.load() );
+            ApplicationPreferences.setUp(preferencesLoader.load());
 
-            when( activeContextItems.setupActiveProject( content ) ).thenReturn( true );
-            when( activeContextItems.getActiveOrganizationalUnit() ).thenReturn( ou );
-            when( activeContextItems.getActiveRepository() ).thenReturn( repository );
-            when( activeContextItems.getActiveBranch() ).thenReturn( "master" );
-            when( activeContextItems.getActiveProject() ).thenReturn( project );
+            when(activeContextItems.setupActiveModule(content)).thenReturn(true);
 
-            presenter.doContentCallback( content );
+            final WorkspaceProject project = mock(WorkspaceProject.class);
+            when(activeContextItems.getActiveProject()).thenReturn(project);
+            when(project.getOrganizationalUnit()).thenReturn(ou);
+            when(project.getRepository()).thenReturn(repository);
+            when(project.getBranch()).thenReturn(new Branch("master",
+                                                            mock(Path.class)));
+            when(activeContextItems.getActiveModule()).thenReturn(module);
 
-            verify( buildServiceActual,
-                    never() ).build( any( Project.class ) );
+            presenter.doContentCallback(content);
 
+            verify(buildServiceActual,
+                   never()).build(any(Module.class));
         } finally {
-            if ( spBuildDisableProjectExplorer != null ) {
-                System.setProperty( ExplorerService.BUILD_PROJECT_PROPERTY_NAME,
-                                    spBuildDisableProjectExplorer );
+            if (spBuildDisableModuleExplorer != null) {
+                System.setProperty(ExplorerService.BUILD_PROJECT_PROPERTY_NAME,
+                                   spBuildDisableModuleExplorer);
             }
         }
     }
 
-    @Test
-    public void testChangeOfBranchActivatesContextChange() {
-
-        ApplicationPreferences.setUp( new ExplorerPreferencesLoader().load() );
-
-        when( activeContextItems.setupActiveBranch( content ) ).thenReturn( true );
-        presenter.doContentCallback( content );
-        verify( activeContextItems ).fireContextChangeEvent();
-
-        reset( activeContextItems );
-        when( activeContextItems.setupActiveBranch( content ) ).thenReturn( false );
-        presenter.doContentCallback( content );
-        verify( activeContextItems, never() ).fireContextChangeEvent();
-
-        reset( activeContextItems );
-        when( activeContextItems.setupActiveBranch( content ) ).thenReturn( true );
-        presenter.doContentCallback( content );
-        verify( activeContextItems ).fireContextChangeEvent();
-    }
+    // TODO: Manage branch change.
+//    @Test
+//    public void testChangeOfBranchActivatesContextChange() {
+//
+//        ApplicationPreferences.setUp(new ExplorerPreferencesLoader().load());
+//
+//        when(activeContextItems.setupActiveBranch(content)).thenReturn(true);
+//        presenter.doContentCallback(content);
+//        verify(activeContextItems).fireContextChangeEvent();
+//
+//        reset(activeContextItems);
+//        when(activeContextItems.setupActiveBranch(content)).thenReturn(false);
+//        presenter.doContentCallback(content);
+//        verify(activeContextItems,
+//               never()).fireContextChangeEvent();
+//
+//        reset(activeContextItems);
+//        when(activeContextItems.setupActiveBranch(content)).thenReturn(true);
+//        presenter.doContentCallback(content);
+//        verify(activeContextItems).fireContextChangeEvent();
+//    }
 
     @Test
     public void testOnActiveOptionsChange() throws Exception {
 
-        presenter.onActiveOptionsChange( new ActiveOptionsChangedEvent() );
-        verify( view ).setVisible( true );
+        presenter.onActiveOptionsChange(new ActiveOptionsChangedEvent());
+        verify(view).setVisible(true);
 
         isPresenterVisible = false;
-        presenter.onActiveOptionsChange( new ActiveOptionsChangedEvent() );
-        verify( view ).setVisible( false );
-
+        presenter.onActiveOptionsChange(new ActiveOptionsChangedEvent());
+        verify(view).setVisible(false);
     }
 
     @Test
     public void testGetCopyView() {
-        when( copyPopUpPresenterMock.getView() ).thenReturn( copyPopUpView );
+        when(copyPopUpPresenterMock.getView()).thenReturn(copyPopUpView);
 
         CopyPopUpPresenter.View view = presenter.getCopyView();
 
-        assertTrue( view instanceof CopyPopupWithPackageView );
+        assertTrue(view instanceof CopyPopupWithPackageView);
     }
 
     @Test
     public void testGetRenameView() {
-        when( renamePopUpPresenterMock.getView() ).thenReturn( renamePopUpView );
+        when(renamePopUpPresenterMock.getView()).thenReturn(renamePopUpView);
 
         RenamePopUpPresenter.View view = presenter.getRenameView();
 
-        assertTrue( view instanceof RenamePopUpPresenter.View );
+        assertTrue(view instanceof RenamePopUpPresenter.View);
     }
 
     private void copyPopUpPresenterShowMock() {
-        final ArgumentCaptor<CommandWithFileNameAndCommitMessage> commandCaptor = ArgumentCaptor.forClass( CommandWithFileNameAndCommitMessage.class );
+        final ArgumentCaptor<CommandWithFileNameAndCommitMessage> commandCaptor = ArgumentCaptor.forClass(CommandWithFileNameAndCommitMessage.class);
 
-        doAnswer( invocation -> {
-            commandCaptor.getValue().execute( new FileNameAndCommitMessage( "fileName", "message" ) );
+        doAnswer(invocation -> {
+            commandCaptor.getValue().execute(new FileNameAndCommitMessage("fileName",
+                                                                          "message"));
             return null;
-        } ).when( copyPopUpPresenterMock ).show( any( Path.class ), any( Validator.class ), commandCaptor.capture() );
+        }).when(copyPopUpPresenterMock).show(any(Path.class),
+                                             any(Validator.class),
+                                             commandCaptor.capture());
     }
 
     private void renamePopUpPresenterShowMock() {
-        final ArgumentCaptor<CommandWithFileNameAndCommitMessage> commandCaptor = ArgumentCaptor.forClass( CommandWithFileNameAndCommitMessage.class );
+        final ArgumentCaptor<CommandWithFileNameAndCommitMessage> commandCaptor = ArgumentCaptor.forClass(CommandWithFileNameAndCommitMessage.class);
 
-        doAnswer( invocation -> {
-            commandCaptor.getValue().execute( new FileNameAndCommitMessage( "fileName", "message" ) );
+        doAnswer(invocation -> {
+            commandCaptor.getValue().execute(new FileNameAndCommitMessage("fileName",
+                                                                          "message"));
             return null;
-        } ).when( renamePopUpPresenterMock ).show( any( Path.class ), any( Validator.class ), commandCaptor.capture() );
+        }).when(renamePopUpPresenterMock).show(any(Path.class),
+                                               any(Validator.class),
+                                               commandCaptor.capture());
     }
 
     private void deletePopUpPresenterShowMock() {
         final Class<ParameterizedCommand<String>> commandClass = (Class<ParameterizedCommand<String>>) (Class) ParameterizedCommand.class;
-        final ArgumentCaptor<ParameterizedCommand<String>> commandCaptor = ArgumentCaptor.forClass( commandClass );
+        final ArgumentCaptor<ParameterizedCommand<String>> commandCaptor = ArgumentCaptor.forClass(commandClass);
 
-        doAnswer( invocation -> {
-            commandCaptor.getValue().execute( "message" );
+        doAnswer(invocation -> {
+            commandCaptor.getValue().execute("message");
             return null;
-        } ).when( deletePopUpPresenterMock ).show( commandCaptor.capture() );
+        }).when(deletePopUpPresenterMock).show(commandCaptor.capture());
     }
-
 }

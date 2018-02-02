@@ -21,13 +21,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.screens.datasource.management.backend.core.DataSourceProviderFactory;
 import org.kie.workbench.common.screens.datasource.management.backend.core.DataSourceRuntimeManager;
@@ -41,7 +40,7 @@ import org.kie.workbench.common.screens.datasource.management.model.DriverDeploy
 import org.kie.workbench.common.screens.datasource.management.service.DataSourceDefQueryService;
 import org.kie.workbench.common.screens.datasource.management.util.DataSourceDefSerializer;
 import org.kie.workbench.common.screens.datasource.management.util.DriverDefSerializer;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -50,7 +49,7 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Service
 @ApplicationScoped
@@ -65,7 +64,7 @@ public class DataSourceDefQueryServiceImpl
 
     private IOService ioService;
 
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     private DataSourceServicesHelper serviceHelper;
 
@@ -78,12 +77,12 @@ public class DataSourceDefQueryServiceImpl
 
     @Inject
     public DataSourceDefQueryServiceImpl(@Named("ioStrategy") IOService ioService,
-                                         KieProjectService projectService,
+                                         KieModuleService moduleService,
                                          DataSourceServicesHelper serviceHelper,
                                          DataSourceProviderFactory providerFactory,
                                          DataSourceRuntimeManager runtimeManager) {
         this.ioService = ioService;
-        this.projectService = projectService;
+        this.moduleService = moduleService;
         this.serviceHelper = serviceHelper;
         this.providerFactory = providerFactory;
         this.runtimeManager = runtimeManager;
@@ -119,21 +118,21 @@ public class DataSourceDefQueryServiceImpl
     }
 
     @Override
-    public Collection<DataSourceDefInfo> findProjectDataSources(final Path path) {
+    public Collection<DataSourceDefInfo> findModuleDataSources(final Path path) {
         checkNotNull("path",
                      path);
-        Project project = projectService.resolveProject(path);
-        if (project == null) {
+        final Module module = moduleService.resolveModule(path);
+        if (module == null) {
             return new ArrayList<>();
         } else {
-            return resolveDataSources(serviceHelper.getProjectDataSourcesContext(project));
+            return resolveDataSources(serviceHelper.getModuleDataSourcesContext(module));
         }
     }
 
     @Override
-    public Collection<DataSourceDefInfo> findProjectDataSources(final Project project) {
-        if (project != null) {
-            return resolveDataSources(serviceHelper.getProjectDataSourcesContext(project));
+    public Collection<DataSourceDefInfo> findModuleDataSources(final Module module) {
+        if (module != null) {
+            return resolveDataSources(serviceHelper.getModuleDataSourcesContext(module));
         } else {
             return new ArrayList<>();
         }
@@ -145,26 +144,26 @@ public class DataSourceDefQueryServiceImpl
     }
 
     @Override
-    public Collection<DriverDefInfo> findProjectDrivers(final Path path) {
+    public Collection<DriverDefInfo> findModuleDrivers(final Path path) {
         checkNotNull("path",
                      path);
-        Project project = projectService.resolveProject(path);
-        if (project == null) {
+        Module module = moduleService.resolveModule(path);
+        if (module == null) {
             return new ArrayList<>();
         } else {
-            return resolveDrivers(serviceHelper.getProjectDataSourcesContext(project));
+            return resolveDrivers(serviceHelper.getModuleDataSourcesContext(module));
         }
     }
 
     @Override
-    public DriverDefInfo findProjectDriver(final String uuid,
-                                           final Path path) {
+    public DriverDefInfo findModuleDriver(final String uuid,
+                                          final Path path) {
         checkNotNull("uuid",
                      uuid);
         checkNotNull("path",
                      path);
 
-        for (DriverDefInfo driverDefInfo : findProjectDrivers(path)) {
+        for (DriverDefInfo driverDefInfo : findModuleDrivers(path)) {
             if (uuid.equals(driverDefInfo.getUuid())) {
                 return driverDefInfo;
             }
@@ -172,10 +171,9 @@ public class DataSourceDefQueryServiceImpl
         return null;
     }
 
-    @Override
-    public Collection<DriverDefInfo> findProjectDrivers(final Project project) {
-        if (project != null) {
-            return resolveDrivers(serviceHelper.getProjectDataSourcesContext(project));
+    public Collection<DriverDefInfo> findModuleDrivers(final Module module) {
+        if (module != null) {
+            return resolveDrivers(serviceHelper.getModuleDataSourcesContext(module));
         } else {
             return new ArrayList<>();
         }

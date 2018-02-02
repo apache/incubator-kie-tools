@@ -26,13 +26,12 @@ import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.kie.soup.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
+import org.kie.soup.project.datamodel.commons.oracle.ModuleDataModelOracleImpl;
 import org.kie.soup.project.datamodel.commons.util.MVELEvaluator;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.ModelField;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.soup.project.datamodel.oracle.TypeSource;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHolder;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.AbstractBPMNFormGeneratorService;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.GenerationContext;
 import org.kie.workbench.common.forms.jbpm.service.bpmn.util.BPMNVariableUtils;
@@ -48,7 +47,7 @@ import org.kie.workbench.common.forms.model.util.formModel.FormModelPropertiesUt
 import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ClassFactBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.FactBuilder;
-import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
+import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ModuleDataModelOracleBuilder;
 
 @Runtime
 @Dependent
@@ -106,23 +105,23 @@ public class BPMNRuntimeFormGeneratorService extends AbstractBPMNFormGeneratorSe
             throw new IllegalArgumentException("Unable to extract Form Fields for class '" + modelType + "'");
         }
 
-        ProjectDataModelOracle oracle = getProjectOracle(clazz);
+        ModuleDataModelOracle oracle = getModuleOracle(clazz);
         if (oracle != null) {
 
             List<FieldDefinition> formFields = new ArrayList<>();
 
-            ModelField[] fields = oracle.getProjectModelFields().get(modelType);
+            ModelField[] fields = oracle.getModuleModelFields().get(modelType);
 
             Arrays.stream(fields).forEach(modelField -> {
                 if (modelField.getName().equals("this")) {
                     return;
                 }
                 String fieldType = modelField.getClassName();
-                boolean isEnunm = oracle.getProjectJavaEnumDefinitions().get(modelType + "#" + modelField.getName()) != null;
+                boolean isEnunm = oracle.getModuleJavaEnumDefinitions().get(modelType + "#" + modelField.getName()) != null;
                 boolean isList = DataType.TYPE_COLLECTION.equals(modelField.getType());
 
                 if (isList) {
-                    fieldType = oracle.getProjectFieldParametersType().get(modelType + "#" + modelField.getName());
+                    fieldType = oracle.getModuleFieldParametersType().get(modelType + "#" + modelField.getName());
                 }
 
                 TypeKind typeKind = isEnunm ? TypeKind.ENUM : FormModelPropertiesUtil.isBaseType(fieldType) ? TypeKind.BASE : TypeKind.OBJECT;
@@ -148,16 +147,16 @@ public class BPMNRuntimeFormGeneratorService extends AbstractBPMNFormGeneratorSe
         return null;
     }
 
-    protected ProjectDataModelOracle getProjectOracle(Class clazz) {
+    protected ModuleDataModelOracle getModuleOracle(Class clazz) {
         try {
-            final ProjectDataModelOracleBuilder builder = ProjectDataModelOracleBuilder.newProjectOracleBuilder(evaluator);
+            final ModuleDataModelOracleBuilder builder = ModuleDataModelOracleBuilder.newModuleOracleBuilder(evaluator);
 
             final ClassFactBuilder modelFactBuilder = new ClassFactBuilder(builder,
                                                                            clazz,
                                                                            false,
                                                                            TypeSource.JAVA_PROJECT);
 
-            ProjectDataModelOracle oracle = modelFactBuilder.getDataModelBuilder().build();
+            ModuleDataModelOracle oracle = modelFactBuilder.getDataModelBuilder().build();
 
             Map<String, FactBuilder> builders = new HashMap<>();
 
@@ -165,13 +164,13 @@ public class BPMNRuntimeFormGeneratorService extends AbstractBPMNFormGeneratorSe
                 if (factBuilder instanceof ClassFactBuilder) {
                     builders.put(((ClassFactBuilder) factBuilder).getType(),
                                  factBuilder);
-                    factBuilder.build((ProjectDataModelOracleImpl) oracle);
+                    factBuilder.build((ModuleDataModelOracleImpl) oracle);
                 }
             }
             builders.put(modelFactBuilder.getType(),
                          modelFactBuilder);
 
-            modelFactBuilder.build((ProjectDataModelOracleImpl) oracle);
+            modelFactBuilder.build((ModuleDataModelOracleImpl) oracle);
 
             return oracle;
         } catch (IOException ex) {

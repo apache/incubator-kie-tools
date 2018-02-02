@@ -37,7 +37,7 @@ import org.uberfire.io.IOService;
 @ApplicationScoped
 public class DataModelerEventObserver {
 
-    private static final Logger logger = LoggerFactory.getLogger( DataModelerEventObserver.class );
+    private static final Logger logger = LoggerFactory.getLogger(DataModelerEventObserver.class);
 
     private PersistenceDescriptorService descriptorService;
 
@@ -47,66 +47,65 @@ public class DataModelerEventObserver {
     }
 
     @Inject
-    public DataModelerEventObserver( final PersistenceDescriptorService descriptorService,
-            final @Named( "ioStrategy" ) IOService ioService ) {
+    public DataModelerEventObserver(final PersistenceDescriptorService descriptorService,
+                                    final @Named("ioStrategy") IOService ioService) {
         this.descriptorService = descriptorService;
         this.ioService = ioService;
     }
 
-    public void onDataObjectCreated( @Observes DataObjectCreatedEvent event ) {
+    public void onDataObjectCreated(@Observes DataObjectCreatedEvent event) {
         Path descriptorPath;
         PersistenceDescriptorModel persistenceDescriptor;
 
-        if ( isPersistable( event.getCurrentDataObject() ) ) {
-            descriptorPath = descriptorService.calculatePersistenceDescriptorPath( event.getCurrentProject() );
-            persistenceDescriptor = safeLoad( descriptorPath );
-            if ( persistenceDescriptor != null &&
-                    !containsClass( persistenceDescriptor.getPersistenceUnit(), event.getCurrentDataObject().getClassName() ) ) {
-                persistenceDescriptor.getPersistenceUnit().getClasses().add( event.getCurrentDataObject().getClassName() );
-                descriptorService.save( descriptorPath,
-                        persistenceDescriptor,
-                        null,
-                        "Entity added to persistence descriptor" );
+        if (isPersistable(event.getCurrentDataObject())) {
+            descriptorPath = descriptorService.calculatePersistenceDescriptorPath(event.getCurrentModule());
+            persistenceDescriptor = safeLoad(descriptorPath);
+            if (persistenceDescriptor != null &&
+                    !containsClass(persistenceDescriptor.getPersistenceUnit(), event.getCurrentDataObject().getClassName())) {
+                persistenceDescriptor.getPersistenceUnit().getClasses().add(event.getCurrentDataObject().getClassName());
+                descriptorService.save(descriptorPath,
+                                       persistenceDescriptor,
+                                       null,
+                                       "Entity added to persistence descriptor");
             }
         }
     }
 
-    public void onDataObjectDeleted( @Observes DataObjectDeletedEvent event ) {
+    public void onDataObjectDeleted(@Observes DataObjectDeletedEvent event) {
         Path descriptorPath;
         PersistenceDescriptorModel persistenceDescriptor;
 
-        descriptorPath = descriptorService.calculatePersistenceDescriptorPath( event.getCurrentProject() );
-        persistenceDescriptor = safeLoad( descriptorPath );
+        descriptorPath = descriptorService.calculatePersistenceDescriptorPath(event.getCurrentModule());
+        persistenceDescriptor = safeLoad(descriptorPath);
 
-        if ( persistenceDescriptor != null &&
-                containsClass( persistenceDescriptor.getPersistenceUnit(), event.getCurrentDataObject().getClassName() ) ) {
-            persistenceDescriptor.getPersistenceUnit().getClasses().remove( event.getCurrentDataObject().getClassName() );
-            descriptorService.save( descriptorPath,
-                    persistenceDescriptor,
-                    null,
-                    "Entity removed from persistence descriptor" );
+        if (persistenceDescriptor != null &&
+                containsClass(persistenceDescriptor.getPersistenceUnit(), event.getCurrentDataObject().getClassName())) {
+            persistenceDescriptor.getPersistenceUnit().getClasses().remove(event.getCurrentDataObject().getClassName());
+            descriptorService.save(descriptorPath,
+                                   persistenceDescriptor,
+                                   null,
+                                   "Entity removed from persistence descriptor");
         }
     }
 
-    private boolean containsClass( PersistenceUnitModel persistenceUnit, String className ) {
+    private boolean containsClass(PersistenceUnitModel persistenceUnit, String className) {
         return persistenceUnit != null &&
                 persistenceUnit.getClasses() != null &&
-                persistenceUnit.getClasses().contains( className );
+                persistenceUnit.getClasses().contains(className);
     }
 
-    private PersistenceDescriptorModel safeLoad( final Path path ) {
+    private PersistenceDescriptorModel safeLoad(final Path path) {
         try {
-            if ( path != null && ioService.exists( Paths.convert( path ) ) ) {
-                return descriptorService.load( path );
+            if (path != null && ioService.exists(Paths.convert(path))) {
+                return descriptorService.load(path);
             }
-        } catch ( Exception e ) {
-            logger.warn( "It was not possible to read persistence descriptor por project: " + path );
+        } catch (Exception e) {
+            logger.warn("It was not possible to read persistence descriptor por project: " + path);
         }
         return null;
     }
 
-    private boolean isPersistable( DataObject dataObject ) {
-        return dataObject != null && dataObject.getAnnotation( Entity.class.getName() ) != null;
+    private boolean isPersistable(DataObject dataObject) {
+        return dataObject != null && dataObject.getAnnotation(Entity.class.getName()) != null;
     }
-
 }

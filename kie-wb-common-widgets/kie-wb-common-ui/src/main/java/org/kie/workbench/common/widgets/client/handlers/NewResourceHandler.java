@@ -19,7 +19,6 @@ import java.util.List;
 
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.Package;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
@@ -80,12 +79,6 @@ public interface NewResourceHandler {
      */
     void validate(final String baseFileName,
                   final ValidatorWithReasonCallback callback);
-
-    /**
-     * Returns the actual ProjectContext
-     * @return the actual ProjectContext
-     */
-    ProjectContext getProjectContext();
 
     /**
      * Indicates if the NewResourceHandler can create the assets on the default package

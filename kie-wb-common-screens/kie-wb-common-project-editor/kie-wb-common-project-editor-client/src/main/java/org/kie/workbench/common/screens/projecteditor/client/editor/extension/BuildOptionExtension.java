@@ -18,13 +18,10 @@ package org.kie.workbench.common.screens.projecteditor.client.editor.extension;
 
 import java.util.Collection;
 
-import org.guvnor.common.services.project.model.Project;
-
 import com.google.gwt.user.client.ui.Widget;
-
+import org.guvnor.common.services.project.model.Module;
 
 public interface BuildOptionExtension {
 
-    Collection<Widget> getBuildOptions( Project project );
-
+    Collection<Widget> getBuildOptions(final Module module);
 }

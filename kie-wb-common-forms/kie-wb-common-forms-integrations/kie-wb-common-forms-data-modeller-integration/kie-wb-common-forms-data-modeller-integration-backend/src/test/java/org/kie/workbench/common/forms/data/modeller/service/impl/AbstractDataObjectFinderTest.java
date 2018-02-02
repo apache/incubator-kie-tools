@@ -26,7 +26,7 @@ import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationDefinitionImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataModelImpl;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 
@@ -50,7 +50,7 @@ public abstract class AbstractDataObjectFinderTest extends AbstractDataObjectTes
     public static final int DATA_OBJECT_VALID_FIELDS = 5;
 
     @Mock
-    protected KieProjectService projectService;
+    protected KieModuleService moduleService;
 
     @Mock
     protected DataModelerService dataModelerService;
@@ -111,7 +111,7 @@ public abstract class AbstractDataObjectFinderTest extends AbstractDataObjectTes
 
         when(dataModelerService.loadModel(any())).thenReturn(dataModel);
 
-        service = new DataObjectFinderServiceImpl(projectService,
+        service = new DataObjectFinderServiceImpl(moduleService,
                                                   dataModelerService);
     }
 }

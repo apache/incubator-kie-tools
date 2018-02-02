@@ -15,7 +15,7 @@
  */
 package org.kie.workbench.common.screens.library.api;
 
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
@@ -24,16 +24,16 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 @Portable
 public class ProjectAssetsQuery {
 
-    private final Project project;
+    private final WorkspaceProject project;
     private final int startIndex;
     private final int amount;
     private String filter;
 
-    public ProjectAssetsQuery(@MapsTo("project") final Project project,
+    public ProjectAssetsQuery(@MapsTo("project") final WorkspaceProject project,
                               @MapsTo("filter") final String filter,
                               @MapsTo("startIndex") final int startIndex,
                               @MapsTo("amount") final int amount) {
-        this.project = checkNotNull("project",
+        this.project = checkNotNull("ProjectAssetsQuery.project",
                                     project);
         this.filter = checkNotNull("filter",
                                    filter);
@@ -43,7 +43,7 @@ public class ProjectAssetsQuery {
                                    amount);
     }
 
-    public Project getProject() {
+    public WorkspaceProject getProject() {
         return project;
     }
 

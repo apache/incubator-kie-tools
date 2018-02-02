@@ -34,8 +34,8 @@ import org.kie.workbench.common.services.refactoring.backend.server.query.standa
 import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindResourcePartReferencesQuery;
 import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.server.util.Paths;
@@ -60,7 +60,7 @@ public class AssetsUsageServiceImplTest extends BaseIndexingTest<TestJavaResourc
     private static final int OTHER_USAGES = 0;
 
     @Mock
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     @Mock
     private Package aPackage;
@@ -68,18 +68,18 @@ public class AssetsUsageServiceImplTest extends BaseIndexingTest<TestJavaResourc
     private Path path;
 
     @Mock
-    private KieProject project;
+    private KieModule project;
 
     private AssetsUsageServiceImpl assetsUsageService;
 
     @Before
     public void init() throws IOException, InterruptedException {
         path = Paths.convert(basePath);
-        when(projectService.resolveProject(any(Path.class))).thenReturn(project);
+        when(moduleService.resolveModule(any(Path.class))).thenReturn(project);
         when(project.getRootPath()).thenReturn(path);
-        when(projectService.resolvePackage(any())).thenReturn(aPackage);
+        when(moduleService.resolvePackage(any())).thenReturn(aPackage);
 
-        assetsUsageService = new AssetsUsageServiceImpl(projectService,
+        assetsUsageService = new AssetsUsageServiceImpl(moduleService,
                                                         service);
 
         indexResource("Wheel.java");
@@ -161,7 +161,7 @@ public class AssetsUsageServiceImplTest extends BaseIndexingTest<TestJavaResourc
 
     @Override
     protected TestIndexer getIndexer() {
-        return new TestJavaIndexer(projectService);
+        return new TestJavaIndexer(moduleService);
     }
 
     @Override

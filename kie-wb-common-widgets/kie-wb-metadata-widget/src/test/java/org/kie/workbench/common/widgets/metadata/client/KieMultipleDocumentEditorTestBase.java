@@ -16,9 +16,10 @@
 package org.kie.workbench.common.widgets.metadata.client;
 
 import java.lang.reflect.Field;
+import java.util.Optional;
 
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
-import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.junit.Before;
 import org.kie.soup.project.datamodel.imports.Imports;
@@ -75,7 +76,7 @@ abstract class KieMultipleDocumentEditorTestBase {
     protected EventSourceMock<ChangeTitleWidgetEvent> changeTitleEvent;
 
     @Mock
-    protected ProjectContext workbenchContext;
+    protected WorkspaceProjectContext workbenchContext;
 
     @Mock
     protected ProjectController projectController;
@@ -182,6 +183,13 @@ abstract class KieMultipleDocumentEditorTestBase {
 
         when(versionRecordManager.newSaveMenuItem(any(Command.class))).thenReturn(saveMenuItem);
         when(versionRecordManager.buildMenu()).thenReturn(versionManagerMenuItem);
+        
+        // Setup defaults for nothing active in context that can be overriden in individual tests
+        when(workbenchContext.getActiveOrganizationalUnit()).thenReturn(Optional.empty());
+        when(workbenchContext.getActiveWorkspaceProject()).thenReturn(Optional.empty());
+        when(workbenchContext.getActiveModule()).thenReturn(Optional.empty());
+        when(workbenchContext.getActiveRepositoryRoot()).thenReturn(Optional.empty());
+        when(workbenchContext.getActivePackage()).thenReturn(Optional.empty());
     }
 
     protected TestDocument createTestDocument() {

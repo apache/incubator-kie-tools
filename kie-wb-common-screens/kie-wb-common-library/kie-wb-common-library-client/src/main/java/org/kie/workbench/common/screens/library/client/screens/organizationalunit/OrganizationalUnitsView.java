@@ -30,6 +30,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.util.TranslationUtils;
 import org.kie.workbench.common.screens.library.client.widgets.common.TileWidget;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 
 @Templated
 public class OrganizationalUnitsView implements OrganizationalUnitsScreen.View,
@@ -69,8 +70,8 @@ public class OrganizationalUnitsView implements OrganizationalUnitsScreen.View,
     }
 
     @Override
-    public void hideCreateOrganizationalUnitAction() {
-        createOrganizationalUnit.setHidden(true);
+    public void showCreateOrganizationalUnitAction() {
+        createOrganizationalUnit.setHidden(false);
     }
 
     @Override
@@ -98,5 +99,20 @@ public class OrganizationalUnitsView implements OrganizationalUnitsScreen.View,
     @EventHandler("create-organizational-unit")
     public void createOrganizationalUnit(final ClickEvent event) {
         presenter.createOrganizationalUnit();
+    }
+
+    @Override
+    public void showBusyIndicator() {
+        showBusyIndicator(ts.format(LibraryConstants.Loading));
+    }
+
+    @Override
+    public void showBusyIndicator(final String message) {
+        BusyPopup.showMessage(message);
+    }
+
+    @Override
+    public void hideBusyIndicator() {
+        BusyPopup.close();
     }
 }

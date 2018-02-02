@@ -23,18 +23,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.validation.UnexpectedTypeException;
 
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.repositories.ConflictingRepositoriesPopup;
-import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
-import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.jboss.errai.bus.client.api.messaging.Message;
@@ -43,7 +44,15 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.server.api.model.KieContainerStatus;
 import org.kie.server.api.model.KieScannerStatus;
 import org.kie.server.api.model.ReleaseId;
-import org.kie.server.controller.api.model.spec.*;
+import org.kie.server.controller.api.model.spec.Capability;
+import org.kie.server.controller.api.model.spec.ContainerConfig;
+import org.kie.server.controller.api.model.spec.ContainerSpec;
+import org.kie.server.controller.api.model.spec.ContainerSpecKey;
+import org.kie.server.controller.api.model.spec.ProcessConfig;
+import org.kie.server.controller.api.model.spec.RuleConfig;
+import org.kie.server.controller.api.model.spec.ServerTemplate;
+import org.kie.server.controller.api.model.spec.ServerTemplateKey;
+import org.kie.server.controller.api.model.spec.ServerTemplateList;
 import org.kie.workbench.common.screens.projecteditor.client.editor.DeploymentScreenPopupViewImpl;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.server.management.model.MergeMode;
@@ -68,7 +77,7 @@ public class BuildExecutor {
 
     private ConflictingRepositoriesPopup conflictingRepositoriesPopup;
 
-    private ProjectContext projectContext;
+    private WorkspaceProjectContext projectContext;
 
     private View view;
 
@@ -81,7 +90,7 @@ public class BuildExecutor {
                          final Event<BuildResults> buildResultsEvent,
                          final Event<NotificationEvent> notificationEvent,
                          final ConflictingRepositoriesPopup conflictingRepositoriesPopup,
-                         final ProjectContext projectContext) {
+                         final WorkspaceProjectContext projectContext) {
 
         this.deploymentScreenPopupView = deploymentScreenPopupView;
         this.specManagementService = specManagementService;
@@ -209,7 +218,7 @@ public class BuildExecutor {
     private void build() {
         building = true;
         buildServiceCaller.call(onBuildSuccess(),
-                                onErrorCallback()).build(activeProject());
+                                onErrorCallback()).build(activeModule());
     }
 
     private BuildFailureErrorCallback onErrorCallback() {
@@ -252,7 +261,7 @@ public class BuildExecutor {
                                                                                      onBuildAndDeployGavExistsHandler());
         building = true;
         buildServiceCaller.call(onBuildSuccess(),
-                                onBuildError).buildAndDeploy(activeProject(),
+                                onBuildError).buildAndDeploy(activeModule(),
                                                              mode);
     }
 
@@ -273,7 +282,7 @@ public class BuildExecutor {
                                                                   getOnBuildAndDeployAndProvisionGavExistsHandler(containerId,
                                                                                                                   containerAlias,
                                                                                                                   serverTemplate,
-                                                                                                                  startContainer))).buildAndDeploy(activeProject(),
+                                                                                                                  startContainer))).buildAndDeploy(activeModule(),
                                                                                                                                                    mode);
         };
     }
@@ -346,7 +355,7 @@ public class BuildExecutor {
                                  releaseId,
                                  status,
                                  makeConfigs(serverTemplate,
-                                		 parameters));
+                                             parameters));
     }
 
     private ReleaseId makeReleaseId() {
@@ -363,7 +372,7 @@ public class BuildExecutor {
     }
 
     Map<Capability, ContainerConfig> makeConfigs(final ServerTemplate serverTemplate,
-            									 final Map<String, String> parameters) {
+                                                 final Map<String, String> parameters) {
         final Map<Capability, ContainerConfig> configs = new HashMap<>();
 
         if (hasProcessCapability(serverTemplate)) {
@@ -382,9 +391,9 @@ public class BuildExecutor {
                               KieScannerStatus.STOPPED);
     }
 
-    ProcessConfig makeProcessConfig(final Map<String, String> parameters) {    	
-    	String strategy = parameters.getOrDefault("RuntimeStrategy", RuntimeStrategy.SINGLETON.name());
-    	
+    ProcessConfig makeProcessConfig(final Map<String, String> parameters) {
+        String strategy = parameters.getOrDefault("RuntimeStrategy", RuntimeStrategy.SINGLETON.name());
+
         return new ProcessConfig(strategy,
                                  "",
                                  "",
@@ -446,12 +455,13 @@ public class BuildExecutor {
         conflictingRepositoriesPopup.show();
     }
 
-    private Project activeProject() {
-        return projectContext.getActiveProject();
+    private Module activeModule() {
+        return projectContext.getActiveModule()
+                             .orElseThrow(() -> new IllegalStateException("Cannot perform build without active module."));
     }
 
     private GAV projectGAV() {
-        final POM pom = activeProject().getPom();
+        final POM pom = activeModule().getPom();
 
         return pom.getGav();
     }

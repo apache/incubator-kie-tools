@@ -44,10 +44,10 @@ public abstract class DefExplorerBase {
 
     protected Caller<DefExplorerQueryService> explorerService;
 
-    protected DefExplorerBase( final DefExplorerContent defExplorerContent,
-            final NewDataSourceDefWizard newDataSourceDefWizard,
-            final NewDriverDefWizard newDriverDefWizard,
-            final Caller<DefExplorerQueryService> explorerService ) {
+    protected DefExplorerBase(final DefExplorerContent defExplorerContent,
+                              final NewDataSourceDefWizard newDataSourceDefWizard,
+                              final NewDriverDefWizard newDriverDefWizard,
+                              final Caller<DefExplorerQueryService> explorerService) {
         this.defExplorerContent = defExplorerContent;
         this.newDataSourceDefWizard = newDataSourceDefWizard;
         this.newDriverDefWizard = newDriverDefWizard;
@@ -55,7 +55,7 @@ public abstract class DefExplorerBase {
     }
 
     protected void init() {
-        defExplorerContent.setHandler( new DefExplorerContentView.Handler() {
+        defExplorerContent.setHandler(new DefExplorerContentView.Handler() {
             @Override
             public void onAddDataSource() {
                 DefExplorerBase.this.onAddDataSource();
@@ -65,7 +65,7 @@ public abstract class DefExplorerBase {
             public void onAddDriver() {
                 DefExplorerBase.this.onAddDriver();
             }
-        } );
+        });
     }
 
     protected abstract void onAddDataSource();
@@ -73,7 +73,7 @@ public abstract class DefExplorerBase {
     protected abstract void onAddDriver();
 
     public void refresh() {
-        explorerService.call( getRefreshCallback() ).executeQuery( createRefreshQuery() );
+        explorerService.call(getRefreshCallback()).executeQuery(createRefreshQuery());
     }
 
     protected abstract DefExplorerQuery createRefreshQuery();
@@ -81,50 +81,50 @@ public abstract class DefExplorerBase {
     protected RemoteCallback<?> getRefreshCallback() {
         return new RemoteCallback<DefExplorerQueryResult>() {
             @Override
-            public void callback( DefExplorerQueryResult content ) {
-                loadContent( content );
+            public void callback(DefExplorerQueryResult content) {
+                loadContent(content);
             }
         };
     }
 
-    protected abstract void loadContent( DefExplorerQueryResult content );
+    protected abstract void loadContent(DefExplorerQueryResult content);
 
-    protected abstract boolean refreshOnDataSourceEvent( BaseDataSourceEvent event );
+    protected abstract boolean refreshOnDataSourceEvent(BaseDataSourceEvent event);
 
-    protected abstract boolean refreshOnDriverEvent( BaseDriverEvent event );
+    protected abstract boolean refreshOnDriverEvent(BaseDriverEvent event);
 
-    protected void onDataSourceCreated( @Observes NewDataSourceEvent event ) {
-        if ( refreshOnDataSourceEvent( event ) ) {
+    protected void onDataSourceCreated(@Observes NewDataSourceEvent event) {
+        if (refreshOnDataSourceEvent(event)) {
             refresh();
         }
     }
 
-    protected void onDataSourceDeleted( @Observes DeleteDataSourceEvent event ) {
-        if ( refreshOnDataSourceEvent( event ) ) {
+    protected void onDataSourceDeleted(@Observes DeleteDataSourceEvent event) {
+        if (refreshOnDataSourceEvent(event)) {
             refresh();
         }
     }
 
-    protected void onDataSourceUpdated( @Observes UpdateDataSourceEvent event ) {
-        if ( refreshOnDataSourceEvent( event ) ) {
+    protected void onDataSourceUpdated(@Observes UpdateDataSourceEvent event) {
+        if (refreshOnDataSourceEvent(event)) {
             refresh();
         }
     }
 
-    protected void onDriverCreated( @Observes NewDriverEvent event ) {
-        if ( refreshOnDriverEvent( event ) ) {
+    protected void onDriverCreated(@Observes NewDriverEvent event) {
+        if (refreshOnDriverEvent(event)) {
             refresh();
         }
     }
 
-    protected void onDriverUpdated( @Observes UpdateDriverEvent event ) {
-        if ( refreshOnDriverEvent( event ) ) {
+    protected void onDriverUpdated(@Observes UpdateDriverEvent event) {
+        if (refreshOnDriverEvent(event)) {
             refresh();
         }
     }
 
-    protected void onDriverDeleted( @Observes DeleteDriverEvent event ) {
-        if ( refreshOnDriverEvent( event ) ) {
+    protected void onDriverDeleted(@Observes DeleteDriverEvent event) {
+        if (refreshOnDriverEvent(event)) {
             refresh();
         }
     }

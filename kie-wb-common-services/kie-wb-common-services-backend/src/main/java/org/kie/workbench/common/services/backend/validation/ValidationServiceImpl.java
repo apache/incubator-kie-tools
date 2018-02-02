@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -47,7 +46,7 @@ public class ValidationServiceImpl
 
     private org.uberfire.ext.editor.commons.service.ValidationService validationService;
     private PackageNameValidator packageNameValidator;
-    private ProjectNameValidator projectNameValidator;
+    private ModuleNameValidator moduleNameValidator;
     private JavaFileNameValidator javaFileNameValidator;
     private Collection<SaveValidator> saveValidators = new ArrayList<>();
     private Collection<CopyValidator> copyValidators = new ArrayList<>();
@@ -59,14 +58,14 @@ public class ValidationServiceImpl
     @Inject
     public ValidationServiceImpl(final org.uberfire.ext.editor.commons.service.ValidationService validationService,
                                  final PackageNameValidator packageNameValidator,
-                                 final ProjectNameValidator projectNameValidator,
+                                 final ModuleNameValidator moduleNameValidator,
                                  final JavaFileNameValidator javaFileNameValidator,
                                  final Instance<SaveValidator<?>> saveValidatorInstance,
                                  final Instance<CopyValidator<?>> copyValidatorInstance,
                                  final Instance<DeleteValidator<?>> deleteValidatorInstance) {
         this.validationService = validationService;
         this.packageNameValidator = packageNameValidator;
-        this.projectNameValidator = projectNameValidator;
+        this.moduleNameValidator = moduleNameValidator;
         this.javaFileNameValidator = javaFileNameValidator;
 
         saveValidatorInstance.forEach(saveValidators::add);
@@ -76,7 +75,7 @@ public class ValidationServiceImpl
 
     @Override
     public boolean isProjectNameValid(final String projectName) {
-        return projectNameValidator.isValid(projectName);
+        return moduleNameValidator.isValid(projectName);
     }
 
     @Override

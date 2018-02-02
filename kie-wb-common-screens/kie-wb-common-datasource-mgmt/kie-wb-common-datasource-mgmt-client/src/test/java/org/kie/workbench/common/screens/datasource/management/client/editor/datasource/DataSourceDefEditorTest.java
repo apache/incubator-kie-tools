@@ -27,7 +27,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.datasource.management.client.dbexplorer.DatabaseStructureExplorer;
-import org.kie.workbench.common.screens.datasource.management.client.resources.i18n.DataSourceManagementConstants;
 import org.kie.workbench.common.screens.datasource.management.client.type.DataSourceDefType;
 import org.kie.workbench.common.screens.datasource.management.client.util.ClientValidationServiceMock;
 import org.kie.workbench.common.screens.datasource.management.client.util.DataSourceManagementTestConstants;
@@ -40,7 +39,6 @@ import org.kie.workbench.common.screens.datasource.management.model.DriverDefInf
 import org.kie.workbench.common.screens.datasource.management.service.DataSourceDefEditorService;
 import org.kie.workbench.common.screens.datasource.management.service.DataSourceDefQueryService;
 import org.kie.workbench.common.screens.datasource.management.service.DataSourceRuntimeManagerClientService;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.mvp.PlaceManager;
@@ -52,10 +50,10 @@ import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.PlaceRequest;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class DataSourceDefEditorTest
         implements DataSourceManagementTestConstants {
 
@@ -130,71 +128,70 @@ public class DataSourceDefEditorTest
 
     private List<Pair<String, String>> options;
 
-
     @Before
     public void setup() {
-        drivers = new ArrayList<>(  );
-        drivers.add( driver1 );
-        drivers.add( driver2 );
+        drivers = new ArrayList<>();
+        drivers.add(driver1);
+        drivers.add(driver2);
 
-        when( driver1.getName() ).thenReturn( "Driver1.name" );
-        when( driver1.getUuid() ).thenReturn( DRIVER_UUID );
-        when( driver2.getName() ).thenReturn( "Driver2.name" );
-        when( driver2.getUuid() ).thenReturn( DRIVER_UUID_2 );
+        when(driver1.getName()).thenReturn("Driver1.name");
+        when(driver1.getUuid()).thenReturn(DRIVER_UUID);
+        when(driver2.getName()).thenReturn("Driver2.name");
+        when(driver2.getUuid()).thenReturn(DRIVER_UUID_2);
 
-        options = new ArrayList<>(  );
-        options.add( new Pair( "Driver1.name", DRIVER_UUID ) );
-        options.add( new Pair( "Driver2.name", DRIVER_UUID_2 ) );
+        options = new ArrayList<>();
+        options.add(new Pair("Driver1.name", DRIVER_UUID));
+        options.add(new Pair("Driver2.name", DRIVER_UUID_2));
 
-        mainPanel = new DataSourceDefMainPanel( mainPanelView );
+        mainPanel = new DataSourceDefMainPanel(mainPanelView);
         clientValidationService = new ClientValidationServiceMock();
-        editorServiceCaller = new CallerMock<>( editorService );
-        queryServiceCaller = new CallerMock<>( queryService );
+        editorServiceCaller = new CallerMock<>(editorService);
+        queryServiceCaller = new CallerMock<>(queryService);
 
-        editorHelper = new DataSourceDefEditorHelper( translationService,
-                editorServiceCaller, queryServiceCaller, clientValidationService, popupsUtil );
+        editorHelper = new DataSourceDefEditorHelper(translationService,
+                                                     editorServiceCaller, queryServiceCaller, clientValidationService, popupsUtil);
 
-        editor = new DataSourceDefEditor( view,
-                mainPanel, editorHelper, dbStructureExplorer, popupsUtil, placeManager, type, savePopupPresenter, deletePopUpPresenter,
-                editorServiceCaller, dataSourceManagerClientCaller ) {
+        editor = new DataSourceDefEditor(view,
+                                         mainPanel, editorHelper, dbStructureExplorer, popupsUtil, placeManager, type, savePopupPresenter, deletePopUpPresenter,
+                                         editorServiceCaller, dataSourceManagerClientCaller) {
             {
                 this.versionRecordManager = DataSourceDefEditorTest.this.versionRecordManager;
-                this.menuBuilder = mock( BasicFileMenuBuilder.class );
+                this.menuBuilder = mock(BasicFileMenuBuilder.class);
             }
         };
         editor.init();
 
-        verify( view, times( 1 ) ).init( editor );
-        verify( view, times( 1 ) ).setContent( mainPanel );
+        verify(view, times(1)).init(editor);
+        verify(view, times(1)).setContent(mainPanel);
     }
 
     private void prepareLoadFileSuccessful() {
         //opens the editor with a valid content.
         content = createContent();
-        when( queryService.findProjectDrivers( path ) ).thenReturn( drivers );
-        when( queryService.findGlobalDrivers() ).thenReturn( drivers );
-        when( versionRecordManager.getCurrentPath() ).thenReturn( path );
-        when( editorService.loadContent( path ) ).thenReturn( content );
+        when(queryService.findModuleDrivers(path)).thenReturn(drivers);
+        when(queryService.findGlobalDrivers()).thenReturn(drivers);
+        when(versionRecordManager.getCurrentPath()).thenReturn(path);
+        when(editorService.loadContent(path)).thenReturn(content);
 
-        editor.onStartup( path, placeRequest );
+        editor.onStartup(path, placeRequest);
     }
 
     @Test
-    public void testLoadFileSuccessFul(){
+    public void testLoadFileSuccessFul() {
 
         prepareLoadFileSuccessful();
 
         //verifies the content was properly loaded.
-        verify( view, times( 1 ) ).showLoading();
-        verify( view, times( 1 ) ).hideBusyIndicator();
-        assertEquals( content, editor.getContent() );
+        verify(view, times(1)).showLoading();
+        verify(view, times(1)).hideBusyIndicator();
+        assertEquals(content, editor.getContent());
 
-        verify( mainPanelView, times( 1 ) ).loadDriverOptions( eq( options ), eq( true ) );
-        verify( mainPanelView, times( 1 ) ).setName( content.getDef().getName() );
-        verify( mainPanelView, times( 1 ) ).setConnectionURL( content.getDef().getConnectionURL() );
-        verify( mainPanelView, times( 1 ) ).setUser( content.getDef().getUser() );
-        verify( mainPanelView, times( 1 ) ).setPassword( content.getDef().getPassword() );
-        verify( mainPanelView, times( 2 ) ).setDriver( content.getDef().getDriverUuid() );
+        verify(mainPanelView, times(1)).loadDriverOptions(eq(options), eq(true));
+        verify(mainPanelView, times(1)).setName(content.getDef().getName());
+        verify(mainPanelView, times(1)).setConnectionURL(content.getDef().getConnectionURL());
+        verify(mainPanelView, times(1)).setUser(content.getDef().getUser());
+        verify(mainPanelView, times(1)).setPassword(content.getDef().getPassword());
+        verify(mainPanelView, times(2)).setDriver(content.getDef().getDriverUuid());
     }
 
     @Test
@@ -204,11 +201,11 @@ public class DataSourceDefEditorTest
         prepareLoadFileSuccessful();
 
         //emulates some valid changes in the editor.
-        when( mainPanelView.getName() ).thenReturn( NAME_2 );
-        when( mainPanelView.getConnectionURL() ).thenReturn( CONNECTION_URL_2 );
-        when( mainPanelView.getUser() ).thenReturn( USER_2 );
-        when( mainPanelView.getPassword() ).thenReturn( PASSWORD_2 );
-        when( mainPanelView.getDriver() ).thenReturn( DRIVER_UUID_2 );
+        when(mainPanelView.getName()).thenReturn(NAME_2);
+        when(mainPanelView.getConnectionURL()).thenReturn(CONNECTION_URL_2);
+        when(mainPanelView.getUser()).thenReturn(USER_2);
+        when(mainPanelView.getPassword()).thenReturn(PASSWORD_2);
+        when(mainPanelView.getDriver()).thenReturn(DRIVER_UUID_2);
 
         mainPanel.onNameChange();
         mainPanel.onConnectionURLChange();
@@ -217,11 +214,11 @@ public class DataSourceDefEditorTest
         mainPanel.onDriverChange();
 
         //the content of the editor should have been properly modified.
-        assertEquals( NAME_2, content.getDef().getName() );
-        assertEquals( CONNECTION_URL_2, content.getDef().getConnectionURL() );
-        assertEquals( USER_2, content.getDef().getUser() );
-        assertEquals( PASSWORD_2, content.getDef().getPassword() );
-        assertEquals( DRIVER_UUID_2, content.getDef().getDriverUuid() );
+        assertEquals(NAME_2, content.getDef().getName());
+        assertEquals(CONNECTION_URL_2, content.getDef().getConnectionURL());
+        assertEquals(USER_2, content.getDef().getUser());
+        assertEquals(PASSWORD_2, content.getDef().getPassword());
+        assertEquals(DRIVER_UUID_2, content.getDef().getDriverUuid());
     }
 
     @Test
@@ -233,29 +230,29 @@ public class DataSourceDefEditorTest
         //emulates the selection of the show content action from the UI
         editor.onShowContent();
 
-        DatabaseStructureExplorer.Settings expectedSettings = new DatabaseStructureExplorer.Settings( );
-        expectedSettings.dataSourceUuid( content.getDef().getUuid() );
-        expectedSettings.dataSourceName( content.getDef().getName() );
+        DatabaseStructureExplorer.Settings expectedSettings = new DatabaseStructureExplorer.Settings();
+        expectedSettings.dataSourceUuid(content.getDef().getUuid());
+        expectedSettings.dataSourceName(content.getDef().getName());
 
         //dbStructureExplorer should have been initialized with the proper datasource parameters.
-        verify( dbStructureExplorer, times( 1 ) ).initialize( eq( expectedSettings ), any( InitializeCallback.class ) );
+        verify(dbStructureExplorer, times(1)).initialize(eq(expectedSettings), any(InitializeCallback.class));
     }
 
     @Test
     public void testCancel() {
         prepareLoadFileSuccessful();
         editor.onCancel();
-        verify( placeManager, times( 1 ) ).closePlace( placeRequest );
+        verify(placeManager, times(1)).closePlace(placeRequest);
     }
 
     private DataSourceDefEditorContent createContent() {
         DataSourceDefEditorContent content = new DataSourceDefEditorContent();
-        content.setDef( new DataSourceDef() );
-        content.getDef().setName( NAME );
-        content.getDef().setDriverUuid( DRIVER_UUID );
-        content.getDef().setConnectionURL( CONNECTION_URL );
-        content.getDef().setUser( USER );
-        content.getDef().setPassword( PASSWORD );
+        content.setDef(new DataSourceDef());
+        content.getDef().setName(NAME);
+        content.getDef().setDriverUuid(DRIVER_UUID);
+        content.getDef().setConnectionURL(CONNECTION_URL);
+        content.getDef().setUser(USER);
+        content.getDef().setPassword(PASSWORD);
         return content;
     }
 }

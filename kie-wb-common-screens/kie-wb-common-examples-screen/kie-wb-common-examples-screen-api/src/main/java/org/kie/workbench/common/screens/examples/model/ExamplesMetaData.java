@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.screens.examples.model;
 
-import java.util.Set;
-
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
@@ -25,20 +23,12 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 public class ExamplesMetaData {
 
     private ExampleRepository repository;
-    private Set<ExampleOrganizationalUnit> organizationalUnits;
 
-    public ExamplesMetaData( final @MapsTo("repository") ExampleRepository repository,
-                             final @MapsTo("organizationalUnits") Set<ExampleOrganizationalUnit> organizationalUnits ) {
+    public ExamplesMetaData(final @MapsTo("repository") ExampleRepository repository) {
         this.repository = repository;
-        this.organizationalUnits = organizationalUnits;
     }
 
     public ExampleRepository getRepository() {
         return repository;
     }
-
-    public Set<ExampleOrganizationalUnit> getOrganizationalUnits() {
-        return organizationalUnits;
-    }
-
 }

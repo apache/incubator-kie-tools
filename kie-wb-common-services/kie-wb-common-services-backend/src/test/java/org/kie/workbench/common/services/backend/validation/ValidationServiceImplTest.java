@@ -18,9 +18,6 @@ package org.kie.workbench.common.services.backend.validation;
 
 import javax.enterprise.inject.Instance;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.validation.CopyValidator;
@@ -32,6 +29,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.ValidationService;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 @RunWith(MockitoJUnitRunner.class)
 public class ValidationServiceImplTest {
 
@@ -40,7 +40,7 @@ public class ValidationServiceImplTest {
     @Mock
     private PackageNameValidator packageValidator;
     @Mock
-    private ProjectNameValidator projectValidator;
+    private ModuleNameValidator projectValidator;
     @Mock
     private JavaFileNameValidator javaValidator;
     @Mock

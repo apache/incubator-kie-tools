@@ -19,11 +19,14 @@ package org.kie.workbench.common.services.backend.service;
 import java.net.URISyntaxException;
 
 import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
+import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -60,82 +63,96 @@ public class KieServiceTest {
         //Ensure URLs use the default:// scheme
         fileSystemProvider.forceAsDefault();
 
-        mainFilePath = fileSystemProvider.getPath( this.getClass().getResource( "mymodel.model" ).toURI() );
-        dotFilePath = fileSystemProvider.getPath( this.getClass().getResource( ".mymodel.model" ).toURI() );
-        orphanDotFilePath = fileSystemProvider.getPath( this.getClass().getResource( ".mymodel" ).toURI() );
+        mainFilePath = fileSystemProvider.getPath(this.getClass().getResource("mymodel.model").toURI());
+        dotFilePath = fileSystemProvider.getPath(this.getClass().getResource(".mymodel.model").toURI());
+        orphanDotFilePath = fileSystemProvider.getPath(this.getClass().getResource(".mymodel").toURI());
 
-        kieService = spy( new KieService<TestModel>() {
+        kieService = spy(new KieService<TestModel>() {
 
             {
-                IOService mockIOService = mock( IOService.class );
-                when( mockIOService.exists( mainFilePath ) ).thenReturn( true );
-                when( mockIOService.exists( dotFilePath ) ).thenReturn( false );
+                IOService mockIOService = mock(IOService.class);
+                when(mockIOService.exists(mainFilePath)).thenReturn(true);
+                when(mockIOService.exists(dotFilePath)).thenReturn(false);
 
-                this.logger = mock( Logger.class );
+                this.logger = mock(Logger.class);
                 this.pathResolver = new PathResolverMock();
                 this.ioService = mockIOService;
-                this.projectService = mock( KieProjectService.class );
+                this.moduleService = mock(KieModuleService.class);
+                this.projectService = mock(WorkspaceProjectService.class);
                 this.metadataService = KieServiceTest.this.metadataService;
-
             }
 
             @Override
-            protected TestModel constructContent( Path path,
-                                                  Overview overview ) {
-                if ( path.getFileName().toString().equals( mainFilePath.getFileName().toString() ) ) {
-                    return new TestModel( overview );
-                } else if ( path.getFileName().toString().equals( orphanDotFilePath.getFileName().toString() ) ) {
-                    return new TestModel( overview );
+            protected TestModel constructContent(Path path,
+                                                 Overview overview) {
+                if (path.getFileName().toString().equals(mainFilePath.getFileName().toString())) {
+                    return new TestModel(overview);
+                } else if (path.getFileName().toString().equals(orphanDotFilePath.getFileName().toString())) {
+                    return new TestModel(overview);
                 } else {
                     return null;
                 }
             }
-        } );
+        });
     }
 
     @Test
     public void testBasic() throws Exception {
-        TestModel testModel = kieService.loadContent( Paths.convert( mainFilePath ) );
+        TestModel testModel = kieService.loadContent(Paths.convert(mainFilePath));
 
-        assertNotNull( testModel );
+        assertNotNull(testModel);
         assertMetadataRequestedForMainFile();
     }
 
     @Test
-    public void testPathPointsToDotFile() throws Exception {
-        TestModel testModel = kieService.loadContent( Paths.convert( dotFilePath ) );
+    public void testProjectName() throws Exception {
+        final KieModule module = mock(KieModule.class);
+        doReturn(module).when(kieService.moduleService).resolveModule(any(Path.class));
 
-        assertNotNull( testModel );
+        final WorkspaceProject project = mock(WorkspaceProject.class);
+        doReturn("test name").when(project).getName();
+        doReturn(project).when(kieService.projectService).resolveProject(any(Path.class));
+
+        final TestModel testModel = kieService.loadContent(Paths.convert(mainFilePath));
+
+        assertEquals("test name", testModel.overview.getProjectName());
+    }
+
+    @Test
+    public void testPathPointsToDotFile() throws Exception {
+        TestModel testModel = kieService.loadContent(Paths.convert(dotFilePath));
+
+        assertNotNull(testModel);
         assertMetadataRequestedForMainFile();
     }
 
     @Test
     public void testPathPointsToOrphanDotFile() throws Exception {
-        TestModel testModel = kieService.loadContent( Paths.convert( orphanDotFilePath ) );
+        TestModel testModel = kieService.loadContent(Paths.convert(orphanDotFilePath));
 
-        assertNotNull( testModel );
+        assertNotNull(testModel);
         assertMetadataRequestedForOrphanFile();
     }
 
     private void assertMetadataRequestedForMainFile() {
-        ArgumentCaptor<Path> pathArgumentCaptor = ArgumentCaptor.forClass( Path.class );
-        verify( metadataService ).getMetadata( pathArgumentCaptor.capture() );
-        assertEquals( mainFilePath.getFileName().toString(),
-                      pathArgumentCaptor.getValue().getFileName() );
+        ArgumentCaptor<Path> pathArgumentCaptor = ArgumentCaptor.forClass(Path.class);
+        verify(metadataService).getMetadata(pathArgumentCaptor.capture());
+        assertEquals(mainFilePath.getFileName().toString(),
+                     pathArgumentCaptor.getValue().getFileName());
     }
 
     private void assertMetadataRequestedForOrphanFile() {
-        ArgumentCaptor<Path> pathArgumentCaptor = ArgumentCaptor.forClass( Path.class );
-        verify( metadataService ).getMetadata( pathArgumentCaptor.capture() );
-        assertEquals( orphanDotFilePath.getFileName().toString(),
-                      pathArgumentCaptor.getValue().getFileName() );
+        ArgumentCaptor<Path> pathArgumentCaptor = ArgumentCaptor.forClass(Path.class);
+        verify(metadataService).getMetadata(pathArgumentCaptor.capture());
+        assertEquals(orphanDotFilePath.getFileName().toString(),
+                     pathArgumentCaptor.getValue().getFileName());
     }
 
     private class TestModel {
 
         private Overview overview;
 
-        public TestModel( Overview overview ) {
+        public TestModel(Overview overview) {
             this.overview = overview;
         }
     }
@@ -144,13 +161,13 @@ public class KieServiceTest {
             implements PathResolver {
 
         @Override
-        public boolean isDotFile( org.uberfire.java.nio.file.Path path ) {
-            return path.getFileName().toString().startsWith( "." );
+        public boolean isDotFile(org.uberfire.java.nio.file.Path path) {
+            return path.getFileName().toString().startsWith(".");
         }
 
         @Override
-        public org.uberfire.java.nio.file.Path resolveMainFilePath( org.uberfire.java.nio.file.Path path ) throws URISyntaxException {
-            if ( path.getFileName().toString().equals( dotFilePath.getFileName().toString() ) ) {
+        public org.uberfire.java.nio.file.Path resolveMainFilePath(org.uberfire.java.nio.file.Path path) throws URISyntaxException {
+            if (path.getFileName().toString().equals(dotFilePath.getFileName().toString())) {
                 return mainFilePath;
             } else {
                 return null;

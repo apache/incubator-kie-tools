@@ -16,20 +16,19 @@
 package org.kie.workbench.common.widgets.client.datamodel;
 
 import java.util.Set;
-
 import javax.enterprise.inject.Instance;
 
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.validation.client.dynamic.DynamicValidator;
 import org.junit.Test;
-import org.kie.soup.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
+import org.kie.soup.project.datamodel.commons.oracle.ModuleDataModelOracleImpl;
 import org.kie.soup.project.datamodel.commons.util.RawMVELEvaluator;
 import org.kie.soup.project.datamodel.oracle.Annotation;
 import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
 import org.kie.soup.project.datamodel.oracle.TypeSource;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ClassFactBuilder;
-import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
+import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ModuleDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
 import org.kie.workbench.common.widgets.client.datamodel.testclasses.Product;
@@ -52,20 +51,20 @@ public class PackageDataModelFactAnnotationsTest {
 
     @Test
     public void testCorrectPackageDMOZeroAnnotationAttributes() throws Exception {
-        //Build ProjectDMO
-        final ProjectDataModelOracleBuilder projectBuilder = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator());
-        final ProjectDataModelOracleImpl projectLoader = new ProjectDataModelOracleImpl();
+        //Build ModuleDMO
+        final ModuleDataModelOracleBuilder moduleBuilder = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator());
+        final ModuleDataModelOracleImpl moduleLoader = new ModuleDataModelOracleImpl();
 
-        final ClassFactBuilder cb = new ClassFactBuilder(projectBuilder,
+        final ClassFactBuilder cb = new ClassFactBuilder(moduleBuilder,
                                                          Product.class,
                                                          false,
                                                          TypeSource.JAVA_PROJECT);
-        cb.build(projectLoader);
+        cb.build(moduleLoader);
 
         //Build PackageDMO
         final PackageDataModelOracleBuilder packageBuilder = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator(),
                                                                                                                    "org.kie.workbench.common.widgets.client.datamodel.testclasses");
-        packageBuilder.setProjectOracle(projectLoader);
+        packageBuilder.setModuleOracle(moduleLoader);
         final PackageDataModelOracle packageLoader = packageBuilder.build();
 
         //Emulate server-to-client conversions
@@ -75,9 +74,9 @@ public class PackageDataModelFactAnnotationsTest {
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName(packageLoader.getPackageName());
-        dataModel.setModelFields(packageLoader.getProjectModelFields());
-        dataModel.setTypeAnnotations(packageLoader.getProjectTypeAnnotations());
-        dataModel.setTypeFieldsAnnotations(packageLoader.getProjectTypeFieldsAnnotations());
+        dataModel.setModelFields(packageLoader.getModuleModelFields());
+        dataModel.setTypeAnnotations(packageLoader.getModuleTypeAnnotations());
+        dataModel.setTypeFieldsAnnotations(packageLoader.getModuleTypeFieldsAnnotations());
         PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),
                                                                 new MockHasImports(),
                                                                 oracle,
@@ -101,20 +100,20 @@ public class PackageDataModelFactAnnotationsTest {
 
     @Test
     public void testCorrectPackageDMOAnnotationAttributes() throws Exception {
-        //Build ProjectDMO
-        final ProjectDataModelOracleBuilder projectBuilder = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator());
-        final ProjectDataModelOracleImpl projectLoader = new ProjectDataModelOracleImpl();
+        //Build ModuleDMO
+        final ModuleDataModelOracleBuilder moduleBuilder = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator());
+        final ModuleDataModelOracleImpl moduleLoader = new ModuleDataModelOracleImpl();
 
-        final ClassFactBuilder cb = new ClassFactBuilder(projectBuilder,
+        final ClassFactBuilder cb = new ClassFactBuilder(moduleBuilder,
                                                          Smurf.class,
                                                          false,
                                                          TypeSource.JAVA_PROJECT);
-        cb.build(projectLoader);
+        cb.build(moduleLoader);
 
         //Build PackageDMO
         final PackageDataModelOracleBuilder packageBuilder = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator(),
                                                                                                                    "org.kie.workbench.common.widgets.client.datamodel.testclasses.annotations");
-        packageBuilder.setProjectOracle(projectLoader);
+        packageBuilder.setModuleOracle(moduleLoader);
         final PackageDataModelOracle packageLoader = packageBuilder.build();
 
         //Emulate server-to-client conversions
@@ -124,9 +123,9 @@ public class PackageDataModelFactAnnotationsTest {
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName(packageLoader.getPackageName());
-        dataModel.setModelFields(packageLoader.getProjectModelFields());
-        dataModel.setTypeAnnotations(packageLoader.getProjectTypeAnnotations());
-        dataModel.setTypeFieldsAnnotations(packageLoader.getProjectTypeFieldsAnnotations());
+        dataModel.setModelFields(packageLoader.getModuleModelFields());
+        dataModel.setTypeAnnotations(packageLoader.getModuleTypeAnnotations());
+        dataModel.setTypeFieldsAnnotations(packageLoader.getModuleTypeFieldsAnnotations());
         PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),
                                                                 new MockHasImports(),
                                                                 oracle,
@@ -160,20 +159,20 @@ public class PackageDataModelFactAnnotationsTest {
 
     @Test
     public void testCorrectPackageDMOAnnotationAttributes2() throws Exception {
-        //Build ProjectDMO
-        final ProjectDataModelOracleBuilder projectBuilder = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator());
-        final ProjectDataModelOracleImpl projectLoader = new ProjectDataModelOracleImpl();
+        //Build ModuleDMO
+        final ModuleDataModelOracleBuilder moduleBuilder = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator());
+        final ModuleDataModelOracleImpl moduleLoader = new ModuleDataModelOracleImpl();
 
-        final ClassFactBuilder cb = new ClassFactBuilder(projectBuilder,
+        final ClassFactBuilder cb = new ClassFactBuilder(moduleBuilder,
                                                          RoleSmurf.class,
                                                          false,
                                                          TypeSource.JAVA_PROJECT);
-        cb.build(projectLoader);
+        cb.build(moduleLoader);
 
         //Build PackageDMO
         final PackageDataModelOracleBuilder packageBuilder = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator(),
                                                                                                                    "org.kie.workbench.common.widgets.client.datamodel.testclasses.annotations");
-        packageBuilder.setProjectOracle(projectLoader);
+        packageBuilder.setModuleOracle(moduleLoader);
         final PackageDataModelOracle packageLoader = packageBuilder.build();
 
         //Emulate server-to-client conversions
@@ -183,9 +182,9 @@ public class PackageDataModelFactAnnotationsTest {
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName(packageLoader.getPackageName());
-        dataModel.setModelFields(packageLoader.getProjectModelFields());
-        dataModel.setTypeAnnotations(packageLoader.getProjectTypeAnnotations());
-        dataModel.setTypeFieldsAnnotations(packageLoader.getProjectTypeFieldsAnnotations());
+        dataModel.setModelFields(packageLoader.getModuleModelFields());
+        dataModel.setTypeAnnotations(packageLoader.getModuleTypeAnnotations());
+        dataModel.setTypeFieldsAnnotations(packageLoader.getModuleTypeFieldsAnnotations());
         PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),
                                                                 new MockHasImports(),
                                                                 oracle,
@@ -215,19 +214,19 @@ public class PackageDataModelFactAnnotationsTest {
 
     @Test
     public void testIncorrectPackageDMOZeroAnnotationAttributes() throws Exception {
-        //Build ProjectDMO
-        final ProjectDataModelOracleBuilder projectBuilder = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator());
-        final ProjectDataModelOracleImpl projectLoader = new ProjectDataModelOracleImpl();
+        //Build ModuleDMO
+        final ModuleDataModelOracleBuilder moduleBuilder = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator());
+        final ModuleDataModelOracleImpl moduleLoader = new ModuleDataModelOracleImpl();
 
-        final ClassFactBuilder cb = new ClassFactBuilder(projectBuilder,
+        final ClassFactBuilder cb = new ClassFactBuilder(moduleBuilder,
                                                          Product.class,
                                                          false,
                                                          TypeSource.JAVA_PROJECT);
-        cb.build(projectLoader);
+        cb.build(moduleLoader);
 
         //Build PackageDMO. Defaults to defaultpkg
         final PackageDataModelOracleBuilder packageBuilder = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator());
-        packageBuilder.setProjectOracle(projectLoader);
+        packageBuilder.setModuleOracle(moduleLoader);
         final PackageDataModelOracle packageLoader = packageBuilder.build();
 
         //Emulate server-to-client conversions
@@ -237,9 +236,9 @@ public class PackageDataModelFactAnnotationsTest {
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName(packageLoader.getPackageName());
-        dataModel.setModelFields(packageLoader.getProjectModelFields());
-        dataModel.setTypeAnnotations(packageLoader.getProjectTypeAnnotations());
-        dataModel.setTypeFieldsAnnotations(packageLoader.getProjectTypeFieldsAnnotations());
+        dataModel.setModelFields(packageLoader.getModuleModelFields());
+        dataModel.setTypeAnnotations(packageLoader.getModuleTypeAnnotations());
+        dataModel.setTypeFieldsAnnotations(packageLoader.getModuleTypeFieldsAnnotations());
         PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),
                                                                 new MockHasImports(),
                                                                 oracle,
@@ -261,19 +260,19 @@ public class PackageDataModelFactAnnotationsTest {
 
     @Test
     public void testIncorrectPackageDMOAnnotationAttributes() throws Exception {
-        //Build ProjectDMO
-        final ProjectDataModelOracleBuilder projectBuilder = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator());
-        final ProjectDataModelOracleImpl projectLoader = new ProjectDataModelOracleImpl();
+        //Build ModuleDMO
+        final ModuleDataModelOracleBuilder moduleBuilder = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator());
+        final ModuleDataModelOracleImpl moduleLoader = new ModuleDataModelOracleImpl();
 
-        final ClassFactBuilder cb = new ClassFactBuilder(projectBuilder,
+        final ClassFactBuilder cb = new ClassFactBuilder(moduleBuilder,
                                                          Smurf.class,
                                                          false,
                                                          TypeSource.JAVA_PROJECT);
-        cb.build(projectLoader);
+        cb.build(moduleLoader);
 
         //Build PackageDMO. Defaults to defaultpkg
         final PackageDataModelOracleBuilder packageBuilder = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator());
-        packageBuilder.setProjectOracle(projectLoader);
+        packageBuilder.setModuleOracle(moduleLoader);
         final PackageDataModelOracle packageLoader = packageBuilder.build();
 
         //Emulate server-to-client conversions
@@ -283,9 +282,9 @@ public class PackageDataModelFactAnnotationsTest {
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName(packageLoader.getPackageName());
-        dataModel.setModelFields(packageLoader.getProjectModelFields());
-        dataModel.setTypeAnnotations(packageLoader.getProjectTypeAnnotations());
-        dataModel.setTypeFieldsAnnotations(packageLoader.getProjectTypeFieldsAnnotations());
+        dataModel.setModelFields(packageLoader.getModuleModelFields());
+        dataModel.setTypeAnnotations(packageLoader.getModuleTypeAnnotations());
+        dataModel.setTypeFieldsAnnotations(packageLoader.getModuleTypeFieldsAnnotations());
         PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),
                                                                 new MockHasImports(),
                                                                 oracle,

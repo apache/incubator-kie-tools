@@ -46,22 +46,18 @@ public class EmptyLibraryScreenTest {
     @Mock
     private ManagedInstance<ImportRepositoryPopUpPresenter> importRepositoryPopUpPresenters;
 
-    @Mock
-    private ImportRepositoryPopUpPresenter importRepositoryPopUpPresenter;
-
     private EmptyLibraryScreen emptyLibraryScreen;
 
     @Before
     public void setup() {
-        doReturn(importRepositoryPopUpPresenter).when(importRepositoryPopUpPresenters).get();
         doReturn(mock(AddProjectButtonPresenter.View.class)).when(addProjectButtonPresenter).getView();
         doReturn(true).when(projectController).canCreateProjects();
+        doReturn(true).when(libraryPlaces).closeAllPlacesOrNothing();
 
         emptyLibraryScreen = new EmptyLibraryScreen(view,
                                                     addProjectButtonPresenter,
                                                     projectController,
-                                                    libraryPlaces,
-                                                    importRepositoryPopUpPresenters);
+                                                    libraryPlaces);
     }
 
     @Test
@@ -107,7 +103,7 @@ public class EmptyLibraryScreenTest {
     public void importProjectWithPermissionTest() {
         emptyLibraryScreen.importProject();
 
-        verify(importRepositoryPopUpPresenter).show();
+        verify(libraryPlaces).goToImportRepositoryPopUp();
     }
 
     @Test
@@ -116,7 +112,7 @@ public class EmptyLibraryScreenTest {
 
         emptyLibraryScreen.importProject();
 
-        verify(importRepositoryPopUpPresenter,
-               never()).show();
+        verify(libraryPlaces,
+               never()).goToImportRepositoryPopUp();
     }
 }

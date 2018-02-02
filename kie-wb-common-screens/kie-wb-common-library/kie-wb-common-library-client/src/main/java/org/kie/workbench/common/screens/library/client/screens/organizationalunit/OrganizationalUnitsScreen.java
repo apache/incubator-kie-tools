@@ -22,7 +22,8 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
+import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.events.AfterCreateOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -40,16 +41,19 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberElement;
+import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
+import org.uberfire.lifecycle.OnStartup;
 
 @WorkbenchScreen(identifier = LibraryPlaces.ORGANIZATIONAL_UNITS_SCREEN,
         owningPerspective = LibraryPerspective.class)
 public class OrganizationalUnitsScreen {
 
-    public interface View extends UberElement<OrganizationalUnitsScreen> {
+    public interface View extends UberElement<OrganizationalUnitsScreen>,
+                                  HasBusyIndicator {
 
         void clearOrganizationalUnits();
 
-        void hideCreateOrganizationalUnitAction();
+        void showCreateOrganizationalUnitAction();
 
         void addOrganizationalUnit(TileWidget tileWidget);
 
@@ -58,6 +62,8 @@ public class OrganizationalUnitsScreen {
         String getNumberOfRepositoriesLabel(int numberOfRepositories);
 
         void showNoOrganizationalUnits(HTMLElement view);
+
+        void showBusyIndicator();
     }
 
     private View view;
@@ -72,8 +78,9 @@ public class OrganizationalUnitsScreen {
 
     private ManagedInstance<TileWidget> organizationalUnitTileWidgets;
 
-    private Event<ProjectContextChangeEvent> projectContextChangeEvent;
+    private Event<WorkspaceProjectContextChangeEvent> projectContextChangeEvent;
 
+    private WorkspaceProjectContext projectContext;
     private LibraryInternalPreferences libraryInternalPreferences;
 
     private EmptyOrganizationalUnitsScreen emptyOrganizationalUnitsScreen;
@@ -87,7 +94,8 @@ public class OrganizationalUnitsScreen {
                                      final OrganizationalUnitPopUpPresenter organizationalUnitPopUpPresenter,
                                      final OrganizationalUnitController organizationalUnitController,
                                      final ManagedInstance<TileWidget> organizationalUnitTileWidgets,
-                                     final Event<ProjectContextChangeEvent> projectContextChangeEvent,
+                                     final Event<WorkspaceProjectContextChangeEvent> projectContextChangeEvent,
+                                     final WorkspaceProjectContext projectContext,
                                      final LibraryInternalPreferences libraryInternalPreferences,
                                      final EmptyOrganizationalUnitsScreen emptyOrganizationalUnitsScreen) {
         this.view = view;
@@ -97,24 +105,30 @@ public class OrganizationalUnitsScreen {
         this.organizationalUnitController = organizationalUnitController;
         this.organizationalUnitTileWidgets = organizationalUnitTileWidgets;
         this.projectContextChangeEvent = projectContextChangeEvent;
+        this.projectContext = projectContext;
         this.libraryInternalPreferences = libraryInternalPreferences;
         this.emptyOrganizationalUnitsScreen = emptyOrganizationalUnitsScreen;
     }
 
     @PostConstruct
     public void init() {
-        setupView();
         setupOrganizationalUnits();
     }
 
+    @OnStartup
+    public void onStartup() {
+        projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent());
+    }
+
     private void setupView() {
-        if (!canCreateOrganizationalUnit()) {
-            view.hideCreateOrganizationalUnitAction();
+        if (canCreateOrganizationalUnit()) {
+            view.showCreateOrganizationalUnitAction();
         }
     }
 
     private void setupOrganizationalUnits() {
         if (organizationalUnitController.canReadOrgUnits()) {
+            view.showBusyIndicator();
             libraryService.call((List<OrganizationalUnit> allOrganizationalUnits) -> {
                 organizationalUnits = allOrganizationalUnits;
                 if (allOrganizationalUnits.isEmpty()) {
@@ -122,6 +136,8 @@ public class OrganizationalUnitsScreen {
                 } else {
                     refresh();
                 }
+                setupView();
+                view.hideBusyIndicator();
             }).getOrganizationalUnits();
         }
     }
@@ -143,28 +159,15 @@ public class OrganizationalUnitsScreen {
         return libraryService.call((OrganizationalUnitRepositoryInfo info) -> {
             libraryInternalPreferences.load(loadedLibraryInternalPreferences -> {
                                                 loadedLibraryInternalPreferences.setLastOpenedOrganizationalUnit(info.getSelectedOrganizationalUnit().getIdentifier());
-                                                loadedLibraryInternalPreferences.setLastOpenedRepository(info.getSelectedRepository().getAlias());
                                                 loadedLibraryInternalPreferences.save();
                                             },
                                             error -> {
                                             });
 
-            if (teamAlreadySelected(info)) {
-                libraryPlaces.goToLibrary(() -> {
-                });
-            } else {
-                final ProjectContextChangeEvent event = new ProjectContextChangeEvent(info.getSelectedOrganizationalUnit(),
-                                                                                      info.getSelectedRepository(),
-                                                                                      info.getSelectedRepository().getDefaultBranch());
-                projectContextChangeEvent.fire(event);
-            }
+            final WorkspaceProjectContextChangeEvent event = new WorkspaceProjectContextChangeEvent(info.getSelectedOrganizationalUnit());
+            projectContextChangeEvent.fire(event);
+            libraryPlaces.goToLibrary();
         }).getOrganizationalUnitRepositoryInfo(organizationalUnit);
-    }
-
-    private boolean teamAlreadySelected(OrganizationalUnitRepositoryInfo info) {
-        return info.getSelectedOrganizationalUnit().equals(libraryPlaces.getSelectedOrganizationalUnit())
-                && info.getSelectedRepository().equals(libraryPlaces.getSelectedRepository())
-                && info.getSelectedRepository().getDefaultBranch().equals(libraryPlaces.getSelectedBranch());
     }
 
     public void createOrganizationalUnit() {

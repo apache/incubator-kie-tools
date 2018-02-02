@@ -22,12 +22,11 @@ import java.util.Set;
 
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,31 +59,28 @@ public class ProjectScreenPresenterTest
 
     @Before
     public void setup() {
-        ApplicationPreferences.setUp(new HashMap<String, String>());
+        ApplicationPreferences.setUp(new HashMap<>());
 
         //The BuildOptions widget is manipulated in the Presenter so we need some nasty mocking
         mockBuildOptions();
 
-        constructProjectScreenPresenter(project);
-
         //Mock ProjectScreenService
         model = new ProjectScreenModel();
+
         final POM pom = mockProjectScreenService(model);
+
+        //Mock WorkspaceProjectContext
+        mockWorkspaceProjectContext(pom,
+                           repository,
+                           module,
+                           pomPath);
 
         //Mock LockManager initialisation
         mockLockManager(model);
 
-        //Mock ProjectContext
-        mockProjectContext(pom,
-                           repository,
-                           project,
-                           pomPath);
+        doReturn(new WorkspaceProject()).when(projectScreenService).save(any(), any(), anyString(), any());
 
-        //Trigger initialisation of view. Unfortunately this is the only way to initialise a Project in the Presenter
-        context.onProjectContextChanged(new ProjectContextChangeEvent(mock(OrganizationalUnit.class),
-                                                                      repository,
-                                                                      "master",
-                                                                      project));
+        constructProjectScreenPresenter(module);
 
         verify(view,
                times(1)).setGAVCheckDisabledSetting(eq(false));
@@ -187,7 +183,7 @@ public class ProjectScreenPresenterTest
                               eq(""),
                               eq(DeploymentMode.VALIDATED));
         verifyBusyShowHideAnyString(1,
-                                    2,
+                                    3,
                                     CommonConstants.INSTANCE.Saving());
     }
 
@@ -200,10 +196,10 @@ public class ProjectScreenPresenterTest
                                     1,
                                     CommonConstants.INSTANCE.Loading());
 
-        doThrow(GAVAlreadyExistsException.class).when(projectScreenService).save(presenter.pathToPomXML,
-                                                                                 model,
-                                                                                 "",
-                                                                                 DeploymentMode.VALIDATED);
+        doThrow(GAVAlreadyExistsException.class).when(projectScreenService).save(eq(presenter.pathToPomXML),
+                                                                                 eq(model),
+                                                                                 eq(""),
+                                                                                 eq(DeploymentMode.VALIDATED));
 
         final GAV gav = model.getPOM().getGav();
         final ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass(Command.class);
@@ -237,7 +233,7 @@ public class ProjectScreenPresenterTest
         //We attempted to save the Project twice
         //We hid the BusyPopup 1 x loading, 1 x per save attempt
         verifyBusyShowHideAnyString(2,
-                                    3,
+                                    4,
                                     CommonConstants.INSTANCE.Saving());
     }
 
@@ -253,6 +249,7 @@ public class ProjectScreenPresenterTest
 
     @Test
     public void testGetReimportCommand() throws Exception {
+
         Command reImportCommand = presenter.getReImportCommand();
 
         reImportCommand.execute();
@@ -262,24 +259,8 @@ public class ProjectScreenPresenterTest
     }
 
     @Test
-    public void projectContextWithNoProjectDisablesMenus() {
-        //setup() mocks the ProjectContext so we need to reset it
-        reset(context);
-
-        context.onProjectContextChanged(new ProjectContextChangeEvent(mock(OrganizationalUnit.class)));
-
-        assertMenuItems(false);
-    }
-
-    @Test
-    public void projectContextWithProjectEnablesMenus() {
-        //setup() mocks the ProjectContext so we need to reset it
-        reset(context);
-
-        context.onProjectContextChanged(new ProjectContextChangeEvent(mock(OrganizationalUnit.class),
-                                                                      repository,
-                                                                      "master",
-                                                                      project));
+    public void moduleContextWithProjectEnablesMenus() {
+        presenter.onStartup(mock(PlaceRequest.class));
 
         assertMenuItems(true);
     }

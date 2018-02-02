@@ -27,11 +27,11 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.annotationlisteditor.AdvancedAnnotationListEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.annotationlisteditor.AdvancedAnnotationListEditorView;
+import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.ElementType;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieModule;
 
 @Dependent
 public class AdvancedDataObjectEditorViewImpl
@@ -43,7 +43,7 @@ public class AdvancedDataObjectEditorViewImpl
 
     }
 
-    private static AdvancedDataObjectEditorViewImplUiBinder uiBinder = GWT.create( AdvancedDataObjectEditorViewImplUiBinder.class );
+    private static AdvancedDataObjectEditorViewImplUiBinder uiBinder = GWT.create(AdvancedDataObjectEditorViewImplUiBinder.class);
 
     @UiField
     SimplePanel annotationEditorPanel;
@@ -53,66 +53,64 @@ public class AdvancedDataObjectEditorViewImpl
     private Presenter presenter;
 
     @Inject
-    public AdvancedDataObjectEditorViewImpl( AdvancedAnnotationListEditor annotationListEditor ) {
-        initWidget( uiBinder.createAndBindUi( this ) );
+    public AdvancedDataObjectEditorViewImpl(AdvancedAnnotationListEditor annotationListEditor) {
+        initWidget(uiBinder.createAndBindUi(this));
         this.annotationListEditor = annotationListEditor;
     }
 
     @PostConstruct
     protected void init() {
-        annotationEditorPanel.add( annotationListEditor );
-        annotationListEditor.addDeleteAnnotationHandler( new AdvancedAnnotationListEditorView.DeleteAnnotationHandler() {
+        annotationEditorPanel.add(annotationListEditor);
+        annotationListEditor.addDeleteAnnotationHandler(new AdvancedAnnotationListEditorView.DeleteAnnotationHandler() {
             @Override
-            public void onDeleteAnnotation( Annotation annotation ) {
-                presenter.onDeleteAnnotation( annotation );
+            public void onDeleteAnnotation(Annotation annotation) {
+                presenter.onDeleteAnnotation(annotation);
             }
-        } );
-        annotationListEditor.addClearValuePairHandler( new AdvancedAnnotationListEditorView.ClearValuePairHandler() {
+        });
+        annotationListEditor.addClearValuePairHandler(new AdvancedAnnotationListEditorView.ClearValuePairHandler() {
             @Override
-            public void onClearValuePair( Annotation annotation, String valuePair ) {
-                presenter.onClearValuePair( annotation, valuePair );
+            public void onClearValuePair(Annotation annotation, String valuePair) {
+                presenter.onClearValuePair(annotation, valuePair);
             }
-        } );
-        annotationListEditor.addValuePairChangeHandler( new AdvancedAnnotationListEditorView.ValuePairChangeHandler() {
+        });
+        annotationListEditor.addValuePairChangeHandler(new AdvancedAnnotationListEditorView.ValuePairChangeHandler() {
             @Override
-            public void onValuePairChange( String annotationClassName, String valuePairName, Object newValue ) {
-                presenter.onValuePairChange( annotationClassName, valuePairName, newValue );
-
+            public void onValuePairChange(String annotationClassName, String valuePairName, Object newValue) {
+                presenter.onValuePairChange(annotationClassName, valuePairName, newValue);
             }
-        } );
-        annotationListEditor.addAddAnnotationHandler( new AdvancedAnnotationListEditorView.AddAnnotationHandler() {
+        });
+        annotationListEditor.addAddAnnotationHandler(new AdvancedAnnotationListEditorView.AddAnnotationHandler() {
             @Override
-            public void onAddAnnotation( Annotation annotation ) {
-                presenter.onAddAnnotation( annotation );
+            public void onAddAnnotation(Annotation annotation) {
+                presenter.onAddAnnotation(annotation);
             }
-        } );
+        });
     }
 
     @Override
-    public void init( Presenter presenter ) {
+    public void init(Presenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void init( KieProject project, ElementType elementType ) {
-        annotationListEditor.init( project, elementType );
+    public void init(KieModule project, ElementType elementType) {
+        annotationListEditor.init(project, elementType);
     }
 
     @Override
-    public void setReadonly( boolean readonly ) {
-        annotationListEditor.setReadonly( readonly );
+    public void setReadonly(boolean readonly) {
+        annotationListEditor.setReadonly(readonly);
     }
 
-    public void loadAnnotations( List<Annotation> annotations ) {
-        annotationListEditor.loadAnnotations( annotations );
+    public void loadAnnotations(List<Annotation> annotations) {
+        annotationListEditor.loadAnnotations(annotations);
     }
 
-    public void removeAnnotation( Annotation annotation ) {
-        annotationListEditor.removeAnnotation( annotation );
+    public void removeAnnotation(Annotation annotation) {
+        annotationListEditor.removeAnnotation(annotation);
     }
 
     public void clear() {
         annotationListEditor.clear();
     }
-
 }

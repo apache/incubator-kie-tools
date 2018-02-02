@@ -15,58 +15,56 @@
  */
 package org.kie.workbench.common.screens.datamodeller.backend.server.indexing;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import org.guvnor.common.services.project.model.Package;
 import org.kie.workbench.common.screens.javaeditor.type.JavaResourceTypeDefinition;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
+
+import static org.mockito.Mockito.*;
 
 public class TestJavaFileIndexer extends JavaFileIndexer implements TestIndexer<JavaResourceTypeDefinition> {
 
     @Override
-    public void setIOService( final IOService ioService ) {
+    public void setIOService(final IOService ioService) {
         this.ioService = ioService;
     }
 
     @Override
-    public void setProjectService( final KieProjectService projectService ) {
-        this.projectService = projectService;
+    public void setModuleService(final KieModuleService moduleService) {
+        this.moduleService = moduleService;
     }
 
     @Override
-    public void setResourceTypeDefinition( final JavaResourceTypeDefinition type ) {
+    public void setResourceTypeDefinition(final JavaResourceTypeDefinition type) {
         this.javaResourceTypeDefinition = type;
     }
 
     @Override
-    protected ClassLoader getProjectClassLoader( final KieProject project ) {
+    protected ClassLoader getModuleClassLoader(final KieModule project) {
         //for testing purposes
         return this.getClass().getClassLoader();
     }
 
     @Override
-    protected KieProject getProject( final Path path ) {
-        final org.uberfire.backend.vfs.Path mockRoot = mock( org.uberfire.backend.vfs.Path.class );
-        when( mockRoot.toURI() ).thenReturn( BaseIndexingTest.TEST_PROJECT_ROOT );
+    protected KieModule getModule(final Path path) {
+        final org.uberfire.backend.vfs.Path mockRoot = mock(org.uberfire.backend.vfs.Path.class);
+        when(mockRoot.toURI()).thenReturn(BaseIndexingTest.TEST_MODULE_ROOT);
 
-        final KieProject mockProject = mock( KieProject.class );
-        when( mockProject.getRootPath() ).thenReturn( mockRoot );
-        when( mockProject.getProjectName() ).thenReturn( BaseIndexingTest.TEST_PROJECT_NAME );
+        final KieModule mockProject = mock(KieModule.class);
+        when(mockProject.getRootPath()).thenReturn(mockRoot);
+        when(mockProject.getModuleName()).thenReturn(BaseIndexingTest.TEST_MODULE_NAME);
         return mockProject;
     }
 
     @Override
-    protected Package getPackage( final Path path ) {
-        final org.guvnor.common.services.project.model.Package mockPackage = mock( Package.class );
-        when( mockPackage.getPackageName() ).thenReturn( BaseIndexingTest.TEST_PACKAGE_NAME );
+    protected Package getPackage(final Path path) {
+        final org.guvnor.common.services.project.model.Package mockPackage = mock(Package.class);
+        when(mockPackage.getPackageName()).thenReturn(BaseIndexingTest.TEST_PACKAGE_NAME);
         return mockPackage;
     }
-
 }
 

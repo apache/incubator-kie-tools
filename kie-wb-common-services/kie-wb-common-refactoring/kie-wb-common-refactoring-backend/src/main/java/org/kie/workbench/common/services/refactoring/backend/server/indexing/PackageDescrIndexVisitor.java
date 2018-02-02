@@ -23,8 +23,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.drools.compiler.compiler.DrlExprParser;
-import org.drools.compiler.lang.descr.AccumulateDescr.AccumulateFunctionCallDescr;
 import org.drools.compiler.lang.descr.AccumulateDescr;
+import org.drools.compiler.lang.descr.AccumulateDescr.AccumulateFunctionCallDescr;
 import org.drools.compiler.lang.descr.AccumulateImportDescr;
 import org.drools.compiler.lang.descr.ActionDescr;
 import org.drools.compiler.lang.descr.AndDescr;
@@ -82,7 +82,7 @@ import org.drools.compiler.lang.descr.WindowReferenceDescr;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.soup.project.datamodel.oracle.ModelField;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.workbench.common.services.refactoring.ResourceReference;
 import org.kie.workbench.common.services.refactoring.SharedPart;
 import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
@@ -96,7 +96,7 @@ public class PackageDescrIndexVisitor extends ResourceReferenceCollector {
 
     private static final Logger logger = LoggerFactory.getLogger(PackageDescrIndexVisitor.class);
 
-    private final ProjectDataModelOracle dmo;
+    private final ModuleDataModelOracle dmo;
     private final DefaultIndexBuilder builder;
     private final PackageDescr packageDescr;
     private final PackageDescrIndexVisitorContext context = new PackageDescrIndexVisitorContext();
@@ -133,7 +133,7 @@ public class PackageDescrIndexVisitor extends ResourceReferenceCollector {
         }
     }
 
-    public PackageDescrIndexVisitor(final ProjectDataModelOracle dmo,
+    public PackageDescrIndexVisitor(final ModuleDataModelOracle dmo,
                                     final DefaultIndexBuilder builder,
                                     final PackageDescr packageDescr) {
         this.dmo = PortablePreconditions.checkNotNull("dmo",
@@ -713,7 +713,7 @@ public class PackageDescrIndexVisitor extends ResourceReferenceCollector {
 
     private String addField(final String fieldName,
                             final String fullyQualifiedClassName) {
-        final ModelField[] mfs = dmo.getProjectModelFields().get(fullyQualifiedClassName);
+        final ModelField[] mfs = dmo.getModuleModelFields().get(fullyQualifiedClassName);
         if (mfs != null) {
             for (ModelField mf : mfs) {
                 if (mf.getName().equals(fieldName)) {
@@ -743,7 +743,7 @@ public class PackageDescrIndexVisitor extends ResourceReferenceCollector {
         }
 
         // We are guessing, like a blindman playing blackjack... there has to be a better way..
-        for (Entry<String, ModelField[]> entry : dmo.getProjectModelFields().entrySet()) {
+        for (Entry<String, ModelField[]> entry : dmo.getModuleModelFields().entrySet()) {
             ModelField[] mfs = entry.getValue();
             String key = entry.getKey();
             for (ModelField mf : mfs) {

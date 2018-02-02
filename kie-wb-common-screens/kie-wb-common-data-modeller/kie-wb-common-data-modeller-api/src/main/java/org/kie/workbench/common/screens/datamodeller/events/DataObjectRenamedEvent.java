@@ -16,14 +16,12 @@
 
 package org.kie.workbench.common.screens.datamodeller.events;
 
-import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.workbench.common.services.datamodeller.core.DataObject;
 
 @Portable
-public class DataObjectRenamedEvent extends DataModelerEvent {
+public class DataObjectRenamedEvent
+        extends DataModelerEvent {
 
     public DataObjectRenamedEvent() {
     }
-
 }

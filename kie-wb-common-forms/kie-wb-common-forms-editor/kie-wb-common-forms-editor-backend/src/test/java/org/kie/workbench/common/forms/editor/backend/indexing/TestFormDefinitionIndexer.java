@@ -22,7 +22,7 @@ import org.kie.workbench.common.forms.editor.type.FormResourceTypeDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
 import org.kie.workbench.common.forms.serialization.FormDefinitionSerializer;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.io.IOService;
 
 public class TestFormDefinitionIndexer extends FormDefinitionIndexer implements TestIndexer<FormResourceTypeDefinition> {
@@ -41,8 +41,8 @@ public class TestFormDefinitionIndexer extends FormDefinitionIndexer implements 
     }
 
     @Override
-    public void setProjectService(KieProjectService projectService) {
-        this.projectService = projectService;
+    public void setModuleService(KieModuleService moduleService) {
+        this.moduleService = moduleService;
     }
 
     @Override

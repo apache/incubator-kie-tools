@@ -16,24 +16,20 @@
 
 package org.kie.workbench.common.screens.examples.client.wizard;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.enterprise.event.Event;
 
-import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
+import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.examples.client.wizard.model.ExamplesWizardModel;
-import org.kie.workbench.common.screens.examples.client.wizard.pages.targetrepository.TargetRepositoryPage;
 import org.kie.workbench.common.screens.examples.client.wizard.pages.project.ProjectPage;
 import org.kie.workbench.common.screens.examples.client.wizard.pages.sourcerepository.SourceRepositoryPage;
 import org.kie.workbench.common.screens.examples.model.ExampleOrganizationalUnit;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
-import org.kie.workbench.common.screens.examples.model.ExampleTargetRepository;
 import org.kie.workbench.common.screens.examples.model.ExamplesMetaData;
 import org.kie.workbench.common.screens.examples.service.ExamplesService;
 import org.mockito.ArgumentCaptor;
@@ -60,24 +56,18 @@ public class ExamplesWizardTest {
     private static final String EXAMPLE_ORGANIZATIONAL_UNIT2 = "ou2";
     private final WizardView mockView = mock(WizardView.class);
     private final ExampleRepository repository = new ExampleRepository(EXAMPLE_REPOSITORY1);
-    private final Set<ExampleOrganizationalUnit> organizationalUnits = new HashSet<ExampleOrganizationalUnit>() {{
-        add(new ExampleOrganizationalUnit(EXAMPLE_ORGANIZATIONAL_UNIT1));
-        add(new ExampleOrganizationalUnit(EXAMPLE_ORGANIZATIONAL_UNIT2));
-    }};
     @Mock
     private SourceRepositoryPage sourceRepositoryPage;
     @Mock
     private ProjectPage projectPage;
     @Mock
-    private TargetRepositoryPage organizationalUnitPage;
-    @Mock
     private BusyIndicatorView busyIndicatorView;
     private ExamplesService examplesService = mock(ExamplesService.class);
     private Caller<ExamplesService> examplesServiceCaller = new CallerMock<ExamplesService>(examplesService);
     @Spy
-    private Event<ProjectContextChangeEvent> event = new EventSourceMock<ProjectContextChangeEvent>() {
+    private Event<WorkspaceProjectContextChangeEvent> event = new EventSourceMock<WorkspaceProjectContextChangeEvent>() {
         @Override
-        public void fire(final ProjectContextChangeEvent event) {
+        public void fire(final WorkspaceProjectContextChangeEvent event) {
             //Do nothing. Default implementation throws an exception.
         }
     };
@@ -87,8 +77,7 @@ public class ExamplesWizardTest {
     private ArgumentCaptor<ExampleRepository> repositoryArgumentCaptor;
     @Mock
     private Callback<Boolean> callback;
-    private ExamplesMetaData metaData = new ExamplesMetaData(repository,
-                                                             organizationalUnits);
+    private ExamplesMetaData metaData = new ExamplesMetaData(repository);
 
     private ExamplesWizard wizard;
 
@@ -96,7 +85,6 @@ public class ExamplesWizardTest {
     public void setup() {
         wizard = new ExamplesWizard(sourceRepositoryPage,
                                     projectPage,
-                                    organizationalUnitPage,
                                     busyIndicatorView,
                                     examplesServiceCaller,
                                     event,
@@ -117,13 +105,9 @@ public class ExamplesWizardTest {
                times(1)).initialise();
         verify(projectPage,
                times(1)).initialise();
-        verify(organizationalUnitPage,
-               times(1)).initialise();
         verify(sourceRepositoryPage,
                times(1)).setModel(modelArgumentCaptor.capture());
         verify(projectPage,
-               times(1)).setModel(modelArgumentCaptor.getValue());
-        verify(organizationalUnitPage,
                times(1)).setModel(modelArgumentCaptor.getValue());
         verify(sourceRepositoryPage,
                times(1)).setPlaygroundRepository(repositoryArgumentCaptor.capture());
@@ -140,8 +124,6 @@ public class ExamplesWizardTest {
                times(1)).destroy();
         verify(projectPage,
                times(1)).destroy();
-        verify(organizationalUnitPage,
-               times(1)).destroy();
     }
 
     @Test
@@ -156,12 +138,6 @@ public class ExamplesWizardTest {
         verify(projectPage,
                times(1)).prepareView();
         verify(projectPage,
-               times(1)).asWidget();
-
-        wizard.getPageWidget(2);
-        verify(organizationalUnitPage,
-               times(1)).prepareView();
-        verify(organizationalUnitPage,
                times(1)).asWidget();
     }
 
@@ -207,26 +183,6 @@ public class ExamplesWizardTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testIsComplete_OrganizationalUnitPageIncomplete() {
-        doAnswer(new Answer<Boolean>() {
-            @Override
-            public Boolean answer(final InvocationOnMock invocation) throws Throwable {
-                final Callback<Boolean> callback = (Callback<Boolean>) invocation.getArguments()[0];
-                callback.callback(false);
-                return null;
-            }
-        }).when(organizationalUnitPage).isComplete(any(Callback.class));
-
-        wizard.isComplete(callback);
-
-        verify(callback,
-               times(1)).callback(eq(true));
-        verify(callback,
-               times(1)).callback(eq(false));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
     public void testIsComplete_AllPagesComplete() {
         doAnswer(new Answer<Boolean>() {
             @Override
@@ -244,14 +200,6 @@ public class ExamplesWizardTest {
                 return null;
             }
         }).when(projectPage).isComplete(any(Callback.class));
-        doAnswer(new Answer<Boolean>() {
-            @Override
-            public Boolean answer(final InvocationOnMock invocation) throws Throwable {
-                final Callback<Boolean> callback = (Callback<Boolean>) invocation.getArguments()[0];
-                callback.callback(true);
-                return null;
-            }
-        }).when(organizationalUnitPage).isComplete(any(Callback.class));
 
         wizard.isComplete(callback);
 
@@ -273,11 +221,9 @@ public class ExamplesWizardTest {
                times(1)).hideBusyIndicator();
         verify(examplesService,
                times(1)).setupExamples(any(ExampleOrganizationalUnit.class),
-                                       any(ExampleTargetRepository.class),
-                                       anyString(),
                                        any(List.class));
         verify(event,
-               times(1)).fire(any(ProjectContextChangeEvent.class));
+               times(1)).fire(any(WorkspaceProjectContextChangeEvent.class));
     }
 
     @Test
@@ -289,21 +235,5 @@ public class ExamplesWizardTest {
         assertNotNull(targetOrganizationalUnit);
         assertEquals("testOU",
                      targetOrganizationalUnit.getName());
-    }
-
-    @Test
-    public void testSetDefaultTargetRepository() {
-        wizard.setDefaultTargetRepository("testRepository");
-
-        ArgumentCaptor<ExampleTargetRepository> targetRepositoryArgumentCaptor = ArgumentCaptor.forClass(ExampleTargetRepository.class);
-
-        verify(organizationalUnitPage,
-               times(1)).setTargetRepository(targetRepositoryArgumentCaptor.capture());
-
-        ExampleTargetRepository capturedRepository = targetRepositoryArgumentCaptor.getValue();
-
-        assertNotNull(capturedRepository);
-        assertEquals("testRepository",
-                     capturedRepository.getAlias());
     }
 }

@@ -19,9 +19,9 @@ package org.kie.workbench.common.widgets.client.popups.copy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.context.ProjectContext;
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.utils.ProjectResourcePaths;
+import org.guvnor.common.services.project.utils.ModuleResourcePaths;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.Label;
@@ -81,7 +81,7 @@ public class CopyPopupWithPackageView implements CopyPopUpPresenter.View,
     TranslationService translationService;
 
     @Inject
-    ProjectContext context;
+    WorkspaceProjectContext context;
 
     CopyPopUpPresenter presenter;
 
@@ -127,13 +127,13 @@ public class CopyPopupWithPackageView implements CopyPopUpPresenter.View,
             final String path = presenter.getPath().toURI();
             final Package selectedPackage = packageListBox.getSelectedPackage();
 
-            if (path.contains(ProjectResourcePaths.MAIN_RESOURCES_PATH)) {
+            if (path.contains(ModuleResourcePaths.MAIN_RESOURCES_PATH)) {
                 return selectedPackage.getPackageMainResourcesPath();
-            } else if (path.contains(ProjectResourcePaths.MAIN_SRC_PATH)) {
+            } else if (path.contains(ModuleResourcePaths.MAIN_SRC_PATH)) {
                 return selectedPackage.getPackageMainSrcPath();
-            } else if (path.contains(ProjectResourcePaths.TEST_RESOURCES_PATH)) {
+            } else if (path.contains(ModuleResourcePaths.TEST_RESOURCES_PATH)) {
                 return selectedPackage.getPackageTestResourcesPath();
-            } else if (path.contains(ProjectResourcePaths.TEST_SRC_PATH)) {
+            } else if (path.contains(ModuleResourcePaths.TEST_SRC_PATH)) {
                 return selectedPackage.getPackageTestSrcPath();
             }
         }
@@ -224,9 +224,8 @@ public class CopyPopupWithPackageView implements CopyPopUpPresenter.View,
 
         if (thereIsAnActiveProject() && isAProjectResource(path)) {
             copyButton().setEnabled(false);
-            packageListBox.setContext(context,
-                                      true,
-                                      () -> copyButton.setEnabled(true));
+            packageListBox.setUp(true,
+                                 () -> copyButton.setEnabled(true));
         }
     }
 
@@ -239,13 +238,13 @@ public class CopyPopupWithPackageView implements CopyPopUpPresenter.View,
     }
 
     boolean isAProjectResource(final String path) {
-        return path.contains(ProjectResourcePaths.MAIN_RESOURCES_PATH)
-                || path.contains(ProjectResourcePaths.MAIN_SRC_PATH)
-                || path.contains(ProjectResourcePaths.TEST_RESOURCES_PATH)
-                || path.contains(ProjectResourcePaths.TEST_SRC_PATH);
+        return path.contains(ModuleResourcePaths.MAIN_RESOURCES_PATH)
+                || path.contains(ModuleResourcePaths.MAIN_SRC_PATH)
+                || path.contains(ModuleResourcePaths.TEST_RESOURCES_PATH)
+                || path.contains(ModuleResourcePaths.TEST_SRC_PATH);
     }
 
     boolean thereIsAnActiveProject() {
-        return context.getActiveProject() != null;
+        return context.getActiveModule().isPresent();
     }
 }

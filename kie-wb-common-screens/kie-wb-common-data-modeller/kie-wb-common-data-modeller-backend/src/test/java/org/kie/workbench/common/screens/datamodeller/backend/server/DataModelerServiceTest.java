@@ -17,13 +17,12 @@
 package org.kie.workbench.common.screens.datamodeller.backend.server;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import javax.enterprise.inject.Instance;
 
 import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +31,7 @@ import org.kie.workbench.common.screens.datamodeller.backend.server.helper.DataM
 import org.kie.workbench.common.screens.datamodeller.backend.server.helper.DataModelerSaveHelper;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -45,7 +44,6 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileSystem;
 
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -53,11 +51,11 @@ import static org.mockito.Mockito.*;
 public class DataModelerServiceTest {
 
     private static final Path PATH = PathFactory.newPath("Sample.java",
-                                                         "default://project/src/main/java/old/package/Sample.java");
+                                                         "default://module/src/main/java/old/package/Sample.java");
     private static final String NEW_NAME = "NewSample";
     private static final String NEW_PACKAGE_NAME = "new.package";
     private static final Path TARGET_DIRECTORY = PathFactory.newPath("/",
-                                                                     "default://project/src/main/java/new/package");
+                                                                     "default://module/src/main/java/new/package");
     private static final String COMMENT = "comment";
 
     @Mock
@@ -67,7 +65,7 @@ public class DataModelerServiceTest {
     private CopyService copyService;
 
     @Mock
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     @Mock
     private IOService ioService;
@@ -159,7 +157,7 @@ public class DataModelerServiceTest {
                                            "file:///src");
         Package packageMock = mock(Package.class);
         when(packageMock.getPackageMainSrcPath()).thenReturn(srcPath);
-        when(serviceHelper.ensurePackageStructure(any(Project.class),
+        when(serviceHelper.ensurePackageStructure(any(Module.class),
                                                   anyString())).thenReturn(packageMock);
 
         DataModelerSaveHelper saveHelper = mock(DataModelerSaveHelper.class);

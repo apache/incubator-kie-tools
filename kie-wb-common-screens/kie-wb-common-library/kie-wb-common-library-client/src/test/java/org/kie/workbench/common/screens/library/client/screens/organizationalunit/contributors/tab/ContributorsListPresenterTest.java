@@ -18,8 +18,9 @@ package org.kie.workbench.common.screens.library.client.screens.organizationalun
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import org.guvnor.common.services.project.context.ProjectContext;
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.events.AfterEditOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -53,7 +54,7 @@ public class ContributorsListPresenterTest {
     private ManagedInstance<EditContributorsPopUpPresenter> editContributorsPopUpPresenters;
 
     @Mock
-    private ProjectContext projectContext;
+    private WorkspaceProjectContext projectContext;
 
     @Mock
     private OrganizationalUnitController organizationalUnitController;
@@ -81,6 +82,12 @@ public class ContributorsListPresenterTest {
         doReturn("Owner").when(view).getOwnerRoleLabel();
         doReturn("Contributor").when(view).getContributorRoleLabel();
 
+        when(projectContext.getActiveOrganizationalUnit()).thenReturn(Optional.empty());
+        when(projectContext.getActiveWorkspaceProject()).thenReturn(Optional.empty());
+        when(projectContext.getActiveModule()).thenReturn(Optional.empty());
+        when(projectContext.getActiveRepositoryRoot()).thenReturn(Optional.empty());
+        when(projectContext.getActivePackage()).thenReturn(Optional.empty());
+
         presenter = spy(new ContributorsListPresenter(view,
                                                       libraryPlaces,
                                                       contributorsListItemPresenters,
@@ -101,7 +108,11 @@ public class ContributorsListPresenterTest {
         final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
         doReturn("B").when(organizationalUnit).getOwner();
         doReturn(contributors).when(organizationalUnit).getContributors();
-        doReturn(organizationalUnit).when(libraryPlaces).getSelectedOrganizationalUnit();
+        when(projectContext.getActiveOrganizationalUnit()).thenReturn(Optional.of(organizationalUnit));
+        when(projectContext.getActiveWorkspaceProject()).thenReturn(Optional.empty());
+        when(projectContext.getActiveModule()).thenReturn(Optional.empty());
+        when(projectContext.getActiveRepositoryRoot()).thenReturn(Optional.empty());
+        when(projectContext.getActivePackage()).thenReturn(Optional.empty());
 
         presenter.setup();
 
@@ -129,7 +140,7 @@ public class ContributorsListPresenterTest {
         final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
         doReturn("Mary").when(organizationalUnit).getOwner();
         doReturn(presenter.contributors).when(organizationalUnit).getContributors();
-        doReturn(organizationalUnit).when(libraryPlaces).getSelectedOrganizationalUnit();
+        doReturn(Optional.of(organizationalUnit)).when(projectContext).getActiveOrganizationalUnit();
 
         presenter.filterContributors("h");
 
@@ -145,7 +156,7 @@ public class ContributorsListPresenterTest {
     @Test
     public void editWithPermissionTest() {
         final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
-        doReturn(organizationalUnit).when(projectContext).getActiveOrganizationalUnit();
+        doReturn(Optional.of(organizationalUnit)).when(projectContext).getActiveOrganizationalUnit();
 
         presenter.edit();
 
@@ -155,7 +166,7 @@ public class ContributorsListPresenterTest {
     @Test
     public void editWithoutPermissionTest() {
         final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
-        doReturn(organizationalUnit).when(projectContext).getActiveOrganizationalUnit();
+        doReturn(Optional.of(organizationalUnit)).when(projectContext).getActiveOrganizationalUnit();
 
         doReturn(false).when(organizationalUnitController).canUpdateOrgUnit(organizationalUnit);
 
@@ -170,6 +181,7 @@ public class ContributorsListPresenterTest {
         final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
         final AfterEditOrganizationalUnitEvent afterEditOrganizationalUnitEvent = mock(AfterEditOrganizationalUnitEvent.class);
         doReturn(organizationalUnit).when(afterEditOrganizationalUnitEvent).getEditedOrganizationalUnit();
+        when(projectContext.getActiveOrganizationalUnit()).thenReturn(Optional.of(organizationalUnit));
 
         presenter.organizationalUnitEdited(afterEditOrganizationalUnitEvent);
 
@@ -187,7 +199,7 @@ public class ContributorsListPresenterTest {
         final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
         doReturn("B").when(organizationalUnit).getOwner();
         doReturn(contributors).when(organizationalUnit).getContributors();
-        doReturn(organizationalUnit).when(libraryPlaces).getSelectedOrganizationalUnit();
+        doReturn(Optional.of(organizationalUnit)).when(projectContext).getActiveOrganizationalUnit();
 
         assertEquals(3,
                      presenter.getContributorsCount());

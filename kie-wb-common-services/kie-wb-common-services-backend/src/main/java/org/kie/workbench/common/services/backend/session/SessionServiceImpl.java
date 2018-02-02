@@ -22,7 +22,7 @@ import org.drools.core.SessionConfiguration;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.workbench.common.services.backend.builder.service.BuildInfoService;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieModule;
 
 public class SessionServiceImpl
         implements SessionService {
@@ -39,9 +39,9 @@ public class SessionServiceImpl
     }
 
     @Override
-    public KieSession newKieSession(KieProject project, String ksessionName) {
+    public KieSession newKieSession(KieModule project, String ksessionName) {
 
-        KieContainer kieContainer = buildInfoService.getBuildInfo( project ).getKieContainer();
+        KieContainer kieContainer = buildInfoService.getBuildInfo(project).getKieContainer();
 
         //If a KieContainer could not be built there is a build error somewhere; so return null to be handled elsewhere
         if (kieContainer == null) {
@@ -49,13 +49,12 @@ public class SessionServiceImpl
         }
 
         return kieContainer.newKieSession(ksessionName);
-
     }
 
     @Override
-    public KieSession newDefaultKieSessionWithPseudoClock(final KieProject project) {
+    public KieSession newDefaultKieSessionWithPseudoClock(final KieModule project) {
 
-        KieContainer kieContainer = buildInfoService.getBuildInfo( project ).getKieContainer();
+        KieContainer kieContainer = buildInfoService.getBuildInfo(project).getKieContainer();
 
         //If a KieContainer could not be built there is a build error somewhere; so return null to be handled elsewhere
         if (kieContainer == null) {
@@ -67,7 +66,5 @@ public class SessionServiceImpl
         conf.setClockType(ClockType.PSEUDO_CLOCK);
 
         return kieContainer.getKieBase().newKieSession(conf, null);
-
     }
-
 }

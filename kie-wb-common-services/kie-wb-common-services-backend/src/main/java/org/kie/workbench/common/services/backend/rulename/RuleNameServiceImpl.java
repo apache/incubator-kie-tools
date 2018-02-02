@@ -24,16 +24,16 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindRulesByProjectQuery;
+import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindRulesByModuleQuery;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueModuleRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValuePackageNameIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringRuleNamePageRow;
 import org.kie.workbench.common.services.refactoring.service.RefactoringQueryService;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.uberfire.backend.vfs.Path;
 
@@ -43,7 +43,9 @@ public class RuleNameServiceImpl
         implements RuleNamesService {
 
     private RefactoringQueryService queryService;
-    private KieProjectService projectService;
+
+    @Inject
+    private KieModuleService moduleService;
 
     public RuleNameServiceImpl() {
         //CDI proxy
@@ -51,32 +53,32 @@ public class RuleNameServiceImpl
 
     @Inject
     public RuleNameServiceImpl(final RefactoringQueryService queryService,
-                               final KieProjectService projectService) {
+                               final KieModuleService moduleService) {
         this.queryService = queryService;
-        this.projectService = projectService;
+        this.moduleService = moduleService;
     }
 
     @Override
     public Collection<String> getRuleNames(final Path path,
                                            final String packageName) {
-        final Project project = projectService.resolveProject(path);
+        final Module module = moduleService.resolveModule(path);
 
-        if (project == null) {
+        if (module == null) {
             return Collections.emptyList();
         } else {
             return queryRuleNames(
                     packageName,
-                    project.getRootPath().toURI());
+                    module.getRootPath().toURI());
         }
     }
 
     private List<String> queryRuleNames(final String packageName,
-                                        final String projectPath) {
+                                        final String modulePath) {
 
         //Query for Rule Names
-        final List<RefactoringPageRow> results = queryService.query(FindRulesByProjectQuery.NAME,
+        final List<RefactoringPageRow> results = queryService.query(FindRulesByModuleQuery.NAME,
                                                                     new HashSet<ValueIndexTerm>() {{
-                                                                        add(new ValueProjectRootPathIndexTerm(projectPath));
+                                                                        add(new ValueModuleRootPathIndexTerm(modulePath));
                                                                         add(new ValuePackageNameIndexTerm(packageName));
                                                                     }});
 

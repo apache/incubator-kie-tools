@@ -21,12 +21,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
-import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
@@ -52,7 +53,7 @@ import org.kie.workbench.common.services.datamodeller.core.PropertyType;
 import org.kie.workbench.common.services.datamodeller.core.impl.PropertyTypeFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 import org.kie.workbench.common.services.refactoring.client.usages.ShowAssetUsagesDisplayer;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilderImpl;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
@@ -161,7 +162,7 @@ public abstract class DataModelerScreenPresenterTestBase {
     protected ProjectController projectController;
 
     @Mock
-    protected ProjectContext workbenchContext;
+    protected WorkspaceProjectContext workbenchContext;
 
     @Mock
     protected DeletePopUpPresenter deletePopUpPresenter;
@@ -181,7 +182,7 @@ public abstract class DataModelerScreenPresenterTestBase {
      * Emulates the project returned from server.
      */
     @Mock
-    protected KieProject kieProject;
+    protected KieModule kieModule;
 
     /**
      * Emulates the data object returned from server.
@@ -260,6 +261,12 @@ public abstract class DataModelerScreenPresenterTestBase {
                 deletePopUpPresenter = DataModelerScreenPresenterTestBase.this.deletePopUpPresenter;
                 showAssetUsagesDisplayer = DataModelerScreenPresenterTestBase.this.showAssetUsages;
                 uiStarted = true;
+
+                when(workbenchContext.getActiveOrganizationalUnit()).thenReturn(Optional.empty());
+                when(workbenchContext.getActiveWorkspaceProject()).thenReturn(Optional.empty());
+                when(workbenchContext.getActiveModule()).thenReturn(Optional.empty());
+                when(workbenchContext.getActiveRepositoryRoot()).thenReturn(Optional.empty());
+                when(workbenchContext.getActivePackage()).thenReturn(Optional.empty());
             }
 
             @Override
@@ -304,8 +311,8 @@ public abstract class DataModelerScreenPresenterTestBase {
         content.setOriginalClassName(testObject1.getClassName());
         content.setOriginalPackageName(testObject1.getPackageName());
         content.setPath(path);
-        content.setCurrentProject(kieProject);
-        content.setCurrentProjectPackages(testPackages);
+        content.setCurrentModule(kieModule);
+        content.setCurrentModulePackages(testPackages);
         content.setOverview(overview);
 
         if (includeTypesInfo) {

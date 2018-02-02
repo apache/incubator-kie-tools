@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.screens.datamodeller.service;
 
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.ValidationService;
 import org.jboss.errai.bus.server.annotations.Remote;
@@ -27,15 +27,17 @@ import org.uberfire.ext.editor.commons.service.support.SupportsRead;
 import org.uberfire.ext.editor.commons.service.support.SupportsUpdate;
 
 @Remote
-public interface PersistenceDescriptorService extends ViewSourceService<PersistenceDescriptorModel>,
-        ValidationService<PersistenceDescriptorModel>,
-        SupportsRead<PersistenceDescriptorModel>,
-        SupportsUpdate<PersistenceDescriptorModel, Metadata> {
+public interface PersistenceDescriptorService
+        extends ViewSourceService<PersistenceDescriptorModel>,
+                ValidationService<PersistenceDescriptorModel>,
+                SupportsRead<PersistenceDescriptorModel>,
+                SupportsUpdate<PersistenceDescriptorModel, Metadata> {
 
-    PersistenceDescriptorModel createProjectDefaultDescriptor( final Path path );
+    public static final String PERSISTENCE_DESCRIPTOR_PATH = "src/main/resources/META-INF/persistence.xml";
 
-    PersistenceDescriptorModel load( final Project project );
+    PersistenceDescriptorModel createModuleDefaultDescriptor(final Path path);
 
-    Path calculatePersistenceDescriptorPath( final Project project );
+    PersistenceDescriptorModel load(final Module module);
 
+    Path calculatePersistenceDescriptorPath(final Module module);
 }

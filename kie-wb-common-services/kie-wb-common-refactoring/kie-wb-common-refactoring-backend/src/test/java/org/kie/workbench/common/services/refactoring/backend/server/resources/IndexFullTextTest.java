@@ -30,7 +30,7 @@ import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexing
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.TestPropertiesFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.TestPropertiesFileTypeDefinition;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.ext.metadata.io.KObjectUtil;
 
 import static org.mockito.Mockito.*;
@@ -41,17 +41,17 @@ public class IndexFullTextTest extends BaseIndexingTest<TestPropertiesFileTypeDe
     @Test
     public void testIndexingFullText() throws IOException, InterruptedException {
         //Add test files
-        loadProperties( "file1.properties",
-                        basePath );
-        loadProperties( "file2.properties",
-                        basePath );
+        loadProperties("file1.properties",
+                       basePath);
+        loadProperties("file2.properties",
+                       basePath);
 
-        Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+        Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
         List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath.getFileSystem()).getClusterId());
 
         searchFor(index,
-                  new WildcardQuery( new Term( FULL_TEXT_FIELD, "*file*" ) ),
+                  new WildcardQuery(new Term(FULL_TEXT_FIELD, "*file*")),
                   2);
     }
 
@@ -76,8 +76,7 @@ public class IndexFullTextTest extends BaseIndexingTest<TestPropertiesFileTypeDe
     }
 
     @Override
-    protected KieProjectService getProjectService() {
-        return mock( KieProjectService.class );
+    protected KieModuleService getModuleService() {
+        return mock(KieModuleService.class);
     }
-
 }

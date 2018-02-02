@@ -18,7 +18,6 @@ package org.kie.workbench.common.widgets.client.datamodel;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.enterprise.inject.Instance;
 
 import org.jboss.errai.common.client.api.Caller;
@@ -29,10 +28,10 @@ import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.DropDownData;
 import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
 import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
-import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
+import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ModuleDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
 import org.kie.workbench.common.widgets.client.datamodel.testclasses.TestJavaEnum1;
@@ -44,7 +43,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**
- * Tests for the ProjectDataModelOracle enums
+ * Tests for the ModuleDataModelOracle enums
  */
 public class PackageDataModelOracleEnumTest {
 
@@ -53,7 +52,7 @@ public class PackageDataModelOracleEnumTest {
 
     @Test
     public void testBasicEnums() {
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Person")
                 .addField(new ModelField("age",
                                          Integer.class.getName(),
@@ -87,9 +86,7 @@ public class PackageDataModelOracleEnumTest {
                          new String[]{"M", "F"})
                 .build();
 
-        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator())
-                .setProjectOracle(projectLoader)
-                .build();
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator()).setModuleOracle(projectLoader).build();
 
         //Emulate server-to-client conversions
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller(packageLoader);
@@ -98,8 +95,8 @@ public class PackageDataModelOracleEnumTest {
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName(packageLoader.getPackageName());
-        dataModel.setModelFields(packageLoader.getProjectModelFields());
-        dataModel.setJavaEnumDefinitions(packageLoader.getProjectJavaEnumDefinitions());
+        dataModel.setModelFields(packageLoader.getModuleModelFields());
+        dataModel.setJavaEnumDefinitions(packageLoader.getModuleJavaEnumDefinitions());
         dataModel.setWorkbenchEnumDefinitions(packageLoader.getPackageWorkbenchDefinitions());
         PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),
                                                                 new MockHasImports(),
@@ -136,7 +133,7 @@ public class PackageDataModelOracleEnumTest {
 
     @Test
     public void testBasicDependentEnums() {
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Fact")
                 .addField(new ModelField("field1",
                                          String.class.getName(),
@@ -163,9 +160,7 @@ public class PackageDataModelOracleEnumTest {
                          Thread.currentThread().getContextClassLoader())
                 .build();
 
-        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator())
-                .setProjectOracle(projectLoader)
-                .build();
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator()).setModuleOracle(projectLoader).build();
 
         //Emulate server-to-client conversions
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller(packageLoader);
@@ -174,8 +169,8 @@ public class PackageDataModelOracleEnumTest {
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName(packageLoader.getPackageName());
-        dataModel.setModelFields(packageLoader.getProjectModelFields());
-        dataModel.setJavaEnumDefinitions(packageLoader.getProjectJavaEnumDefinitions());
+        dataModel.setModelFields(packageLoader.getModuleModelFields());
+        dataModel.setJavaEnumDefinitions(packageLoader.getModuleJavaEnumDefinitions());
         dataModel.setWorkbenchEnumDefinitions(packageLoader.getPackageWorkbenchDefinitions());
         PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),
                                                                 new MockHasImports(),
@@ -210,7 +205,7 @@ public class PackageDataModelOracleEnumTest {
 
     @Test
     public void testSmartEnums1() {
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Fact")
                 .addField(new ModelField("type",
                                          String.class.getName(),
@@ -236,9 +231,7 @@ public class PackageDataModelOracleEnumTest {
                          new String[]{"RED", "WHITE", "BLUE"})
                 .build();
 
-        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator())
-                .setProjectOracle(projectLoader)
-                .build();
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator()).setModuleOracle(projectLoader).build();
 
         //Emulate server-to-client conversions
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller(packageLoader);
@@ -247,8 +240,8 @@ public class PackageDataModelOracleEnumTest {
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName(packageLoader.getPackageName());
-        dataModel.setModelFields(packageLoader.getProjectModelFields());
-        dataModel.setJavaEnumDefinitions(packageLoader.getProjectJavaEnumDefinitions());
+        dataModel.setModelFields(packageLoader.getModuleModelFields());
+        dataModel.setJavaEnumDefinitions(packageLoader.getModuleJavaEnumDefinitions());
         dataModel.setWorkbenchEnumDefinitions(packageLoader.getPackageWorkbenchDefinitions());
         PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),
                                                                 new MockHasImports(),
@@ -295,7 +288,7 @@ public class PackageDataModelOracleEnumTest {
 
     @Test
     public void testSmartEnumsDependingOnSeveralFields1() {
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Fact")
                 .addField(new ModelField("field1",
                                          String.class.getName(),
@@ -336,9 +329,7 @@ public class PackageDataModelOracleEnumTest {
                          new String[]{"d1", "d2"})
                 .build();
 
-        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator())
-                .setProjectOracle(projectLoader)
-                .build();
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator()).setModuleOracle(projectLoader).build();
 
         //Emulate server-to-client conversions
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller(packageLoader);
@@ -347,8 +338,8 @@ public class PackageDataModelOracleEnumTest {
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName(packageLoader.getPackageName());
-        dataModel.setModelFields(packageLoader.getProjectModelFields());
-        dataModel.setJavaEnumDefinitions(packageLoader.getProjectJavaEnumDefinitions());
+        dataModel.setModelFields(packageLoader.getModuleModelFields());
+        dataModel.setJavaEnumDefinitions(packageLoader.getModuleJavaEnumDefinitions());
         dataModel.setWorkbenchEnumDefinitions(packageLoader.getPackageWorkbenchDefinitions());
         PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),
                                                                 new MockHasImports(),
@@ -386,7 +377,7 @@ public class PackageDataModelOracleEnumTest {
 
     @Test
     public void testSmartLookupEnums() {
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Fact")
                 .addField(new ModelField("type",
                                          String.class.getName(),
@@ -409,9 +400,7 @@ public class PackageDataModelOracleEnumTest {
                          new String[]{"select something from database where x=@{f1} and y=@{f2}"})
                 .build();
 
-        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator())
-                .setProjectOracle(projectLoader)
-                .build();
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator()).setModuleOracle(projectLoader).build();
 
         //Emulate server-to-client conversions
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller(packageLoader);
@@ -420,8 +409,8 @@ public class PackageDataModelOracleEnumTest {
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName(packageLoader.getPackageName());
-        dataModel.setModelFields(packageLoader.getProjectModelFields());
-        dataModel.setJavaEnumDefinitions(packageLoader.getProjectJavaEnumDefinitions());
+        dataModel.setModelFields(packageLoader.getModuleModelFields());
+        dataModel.setJavaEnumDefinitions(packageLoader.getModuleJavaEnumDefinitions());
         dataModel.setWorkbenchEnumDefinitions(packageLoader.getPackageWorkbenchDefinitions());
         PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),
                                                                 new MockHasImports(),
@@ -463,7 +452,7 @@ public class PackageDataModelOracleEnumTest {
 
     @Test
     public void testDataHasEnums() {
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Fact")
                 .addField(new ModelField("field1",
                                          String.class.getName(),
@@ -482,9 +471,7 @@ public class PackageDataModelOracleEnumTest {
                          Thread.currentThread().getContextClassLoader())
                 .build();
 
-        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator())
-                .setProjectOracle(projectLoader)
-                .build();
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator()).setModuleOracle(projectLoader).build();
 
         //Emulate server-to-client conversions
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller(packageLoader);
@@ -493,8 +480,8 @@ public class PackageDataModelOracleEnumTest {
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName(packageLoader.getPackageName());
-        dataModel.setModelFields(packageLoader.getProjectModelFields());
-        dataModel.setJavaEnumDefinitions(packageLoader.getProjectJavaEnumDefinitions());
+        dataModel.setModelFields(packageLoader.getModuleModelFields());
+        dataModel.setJavaEnumDefinitions(packageLoader.getModuleJavaEnumDefinitions());
         dataModel.setWorkbenchEnumDefinitions(packageLoader.getPackageWorkbenchDefinitions());
         PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),
                                                                 new MockHasImports(),
@@ -514,7 +501,7 @@ public class PackageDataModelOracleEnumTest {
 
     @Test
     public void testDataHasEnumsFieldSuffixes() {
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Fact")
                 .addField(new ModelField("field1",
                                          String.class.getName(),
@@ -539,9 +526,7 @@ public class PackageDataModelOracleEnumTest {
                          Thread.currentThread().getContextClassLoader())
                 .build();
 
-        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator())
-                .setProjectOracle(projectLoader)
-                .build();
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator()).setModuleOracle(projectLoader).build();
 
         //Emulate server-to-client conversions
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller(packageLoader);
@@ -550,8 +535,8 @@ public class PackageDataModelOracleEnumTest {
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName(packageLoader.getPackageName());
-        dataModel.setModelFields(packageLoader.getProjectModelFields());
-        dataModel.setJavaEnumDefinitions(packageLoader.getProjectJavaEnumDefinitions());
+        dataModel.setModelFields(packageLoader.getModuleModelFields());
+        dataModel.setJavaEnumDefinitions(packageLoader.getModuleJavaEnumDefinitions());
         dataModel.setWorkbenchEnumDefinitions(packageLoader.getPackageWorkbenchDefinitions());
         PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),
                                                                 new MockHasImports(),
@@ -576,7 +561,7 @@ public class PackageDataModelOracleEnumTest {
 
     @Test
     public void testDependentEnums() {
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addFact("Fact")
                 .addField(new ModelField("field1",
                                          String.class.getName(),
@@ -621,9 +606,7 @@ public class PackageDataModelOracleEnumTest {
                          Thread.currentThread().getContextClassLoader())
                 .build();
 
-        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator())
-                .setProjectOracle(projectLoader)
-                .build();
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator()).setModuleOracle(projectLoader).build();
 
         //Emulate server-to-client conversions
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller(packageLoader);
@@ -632,8 +615,8 @@ public class PackageDataModelOracleEnumTest {
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName(packageLoader.getPackageName());
-        dataModel.setModelFields(packageLoader.getProjectModelFields());
-        dataModel.setJavaEnumDefinitions(packageLoader.getProjectJavaEnumDefinitions());
+        dataModel.setModelFields(packageLoader.getModuleModelFields());
+        dataModel.setJavaEnumDefinitions(packageLoader.getModuleJavaEnumDefinitions());
         dataModel.setWorkbenchEnumDefinitions(packageLoader.getPackageWorkbenchDefinitions());
         PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),
                                                                 new MockHasImports(),
@@ -656,11 +639,12 @@ public class PackageDataModelOracleEnumTest {
 
     @Test
     public void testJavaEnum1() throws IOException {
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addClass(TestJavaEnum1.class)
                 .build();
 
-        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator(), "org.kie.workbench.common.widgets.client.datamodel.testclasses").setProjectOracle(projectLoader).build();
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator(),
+                                                                                                           "org.kie.workbench.common.widgets.client.datamodel.testclasses").setModuleOracle(projectLoader).build();
 
         //Emulate server-to-client conversions
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller(packageLoader);
@@ -669,8 +653,8 @@ public class PackageDataModelOracleEnumTest {
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName(packageLoader.getPackageName());
-        dataModel.setModelFields(packageLoader.getProjectModelFields());
-        dataModel.setJavaEnumDefinitions(packageLoader.getProjectJavaEnumDefinitions());
+        dataModel.setModelFields(packageLoader.getModuleModelFields());
+        dataModel.setJavaEnumDefinitions(packageLoader.getModuleJavaEnumDefinitions());
         dataModel.setWorkbenchEnumDefinitions(packageLoader.getPackageWorkbenchDefinitions());
         PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),
                                                                 new MockHasImports(),
@@ -709,11 +693,12 @@ public class PackageDataModelOracleEnumTest {
 
     @Test
     public void testJavaEnum2() throws IOException {
-        final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder(new RawMVELEvaluator())
+        final ModuleDataModelOracle projectLoader = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator())
                 .addClass(TestJavaEnum2.class)
                 .build();
 
-        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator(), "org.kie.workbench.common.widgets.client.datamodel.testclasses").setProjectOracle(projectLoader).build();
+        final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder(new RawMVELEvaluator(),
+                                                                                                           "org.kie.workbench.common.widgets.client.datamodel.testclasses").setModuleOracle(projectLoader).build();
 
         //Emulate server-to-client conversions
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller(packageLoader);
@@ -722,8 +707,8 @@ public class PackageDataModelOracleEnumTest {
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName(packageLoader.getPackageName());
-        dataModel.setModelFields(packageLoader.getProjectModelFields());
-        dataModel.setJavaEnumDefinitions(packageLoader.getProjectJavaEnumDefinitions());
+        dataModel.setModelFields(packageLoader.getModuleModelFields());
+        dataModel.setJavaEnumDefinitions(packageLoader.getModuleJavaEnumDefinitions());
         dataModel.setWorkbenchEnumDefinitions(packageLoader.getPackageWorkbenchDefinitions());
         PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),
                                                                 new MockHasImports(),

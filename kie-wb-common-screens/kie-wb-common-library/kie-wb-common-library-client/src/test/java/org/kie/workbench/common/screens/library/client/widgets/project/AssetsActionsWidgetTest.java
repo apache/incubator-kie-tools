@@ -24,7 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.client.util.ResourceUtils;
 import org.kie.workbench.common.screens.projecteditor.client.handlers.NewPackageHandler;
-import org.kie.workbench.common.screens.projecteditor.client.handlers.NewProjectHandler;
+import org.kie.workbench.common.screens.projecteditor.client.handlers.NewWorkspaceProjectHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.mockito.Mock;
@@ -55,7 +55,7 @@ public class AssetsActionsWidgetTest {
 
     @Test
     public void initTest() {
-        NewResourceHandler projectHandler = mock(NewProjectHandler.class);
+        NewResourceHandler projectHandler = mock(NewWorkspaceProjectHandler.class);
         doReturn(true).when(projectHandler).canCreate();
         NewResourceHandler packageHandler = mock(NewPackageHandler.class);
         doReturn(true).when(packageHandler).canCreate();

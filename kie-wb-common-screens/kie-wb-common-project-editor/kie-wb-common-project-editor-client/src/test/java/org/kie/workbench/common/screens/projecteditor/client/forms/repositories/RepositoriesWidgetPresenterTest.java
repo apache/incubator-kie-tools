@@ -20,7 +20,7 @@ import java.util.Set;
 
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.MavenRepositorySource;
-import org.guvnor.common.services.project.model.ProjectRepositories;
+import org.guvnor.common.services.project.model.ModuleRepositories;
 import org.guvnor.common.services.shared.security.AppRoles;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.RoleImpl;
@@ -44,74 +44,73 @@ public class RepositoriesWidgetPresenterTest {
 
     private RepositoriesWidgetPresenter presenter;
 
-    private ProjectRepositories.ProjectRepository repository = new ProjectRepositories.ProjectRepository( true,
-                                                                                                          new MavenRepositoryMetadata( "id",
-                                                                                                                                       "url",
-                                                                                                                                       MavenRepositorySource.LOCAL ) );
-    private Set<ProjectRepositories.ProjectRepository> repositories;
+    private ModuleRepositories.ModuleRepository repository = new ModuleRepositories.ModuleRepository(true,
+                                                                                                     new MavenRepositoryMetadata("id",
+                                                                                                                                 "url",
+                                                                                                                                 MavenRepositorySource.LOCAL));
+    private Set<ModuleRepositories.ModuleRepository> repositories;
 
     @Before
     public void setup() {
-        presenter = new RepositoriesWidgetPresenter( identity,
-                                                     view );
-        repositories = new HashSet<ProjectRepositories.ProjectRepository>();
-        repositories.add( repository );
+        presenter = new RepositoriesWidgetPresenter(identity,
+                                                    view);
+        repositories = new HashSet<ModuleRepositories.ModuleRepository>();
+        repositories.add(repository);
     }
 
     @Test
     public void testSetContentNotReadOnlyNotAdminRole() {
-        when( identity.getRoles() ).thenReturn( new HashSet<Role>() {{
-            add( new RoleImpl( "user" ) );
-        }} );
+        when(identity.getRoles()).thenReturn(new HashSet<Role>() {{
+            add(new RoleImpl("user"));
+        }});
 
-        presenter.setContent( repositories,
-                              false );
+        presenter.setContent(repositories,
+                             false);
 
-        verify( view,
-                times( 1 ) ).setContent( eq( repositories ),
-                                         eq( true ) );
+        verify(view,
+               times(1)).setContent(eq(repositories),
+                                    eq(true));
     }
 
     @Test
     public void testSetContentNotReadOnlyAdminRole() {
-        when( identity.getRoles() ).thenReturn( new HashSet<Role>() {{
-            add( new RoleImpl( AppRoles.ADMIN.getName() ) );
-        }} );
+        when(identity.getRoles()).thenReturn(new HashSet<Role>() {{
+            add(new RoleImpl(AppRoles.ADMIN.getName()));
+        }});
 
-        presenter.setContent( repositories,
-                              false );
+        presenter.setContent(repositories,
+                             false);
 
-        verify( view,
-                times( 1 ) ).setContent( eq( repositories ),
-                                         eq( false ) );
+        verify(view,
+               times(1)).setContent(eq(repositories),
+                                    eq(false));
     }
 
     @Test
     public void testSetContentReadOnlyNotAdminRole() {
-        when( identity.getRoles() ).thenReturn( new HashSet<Role>() {{
-            add( new RoleImpl( "user" ) );
-        }} );
+        when(identity.getRoles()).thenReturn(new HashSet<Role>() {{
+            add(new RoleImpl("user"));
+        }});
 
-        presenter.setContent( repositories,
-                              true );
+        presenter.setContent(repositories,
+                             true);
 
-        verify( view,
-                times( 1 ) ).setContent( eq( repositories ),
-                                         eq( true ) );
+        verify(view,
+               times(1)).setContent(eq(repositories),
+                                    eq(true));
     }
 
     @Test
     public void testSetContentReadOnlyAdminRole() {
-        when( identity.getRoles() ).thenReturn( new HashSet<Role>() {{
-            add( new RoleImpl( AppRoles.ADMIN.getName() ) );
-        }} );
+        when(identity.getRoles()).thenReturn(new HashSet<Role>() {{
+            add(new RoleImpl(AppRoles.ADMIN.getName()));
+        }});
 
-        presenter.setContent( repositories,
-                              true );
+        presenter.setContent(repositories,
+                             true);
 
-        verify( view,
-                times( 1 ) ).setContent( eq( repositories ),
-                                         eq( true ) );
+        verify(view,
+               times(1)).setContent(eq(repositories),
+                                    eq(true));
     }
-
 }

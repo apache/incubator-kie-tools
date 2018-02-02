@@ -16,22 +16,26 @@
 package org.kie.workbench.common.screens.library.client.screens.project;
 
 import java.util.ArrayList;
+import java.util.Optional;
+
 import javax.enterprise.event.Event;
 
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.repositories.ConflictingRepositoriesPopup;
 import org.guvnor.common.services.project.events.NewProjectEvent;
+import org.guvnor.common.services.project.model.POM;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.guvnor.structure.repositories.Repository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
-import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
@@ -75,12 +79,16 @@ public class AddProjectPopUpPresenterTest {
     private ConflictingRepositoriesPopup conflictingRepositoriesPopup;
 
     @Mock
+    private WorkspaceProjectContext projectContext;
+
+    @Mock
     private ValidationService validationService;
     private CallerMock<ValidationService> validationServiceCaller;
 
     private AddProjectPopUpPresenter presenter;
 
     private LibraryInfo libraryInfo;
+    private OrganizationalUnit selectedOrganizationalUnit;
 
     @Before
     public void setup() {
@@ -88,14 +96,20 @@ public class AddProjectPopUpPresenterTest {
         validationServiceCaller = new CallerMock<>(validationService);
         sessionInfo = new SessionInfoMock();
 
-        final OrganizationalUnit selectedOrganizationalUnit = mock(OrganizationalUnit.class);
+        selectedOrganizationalUnit = mock(OrganizationalUnit.class);
         doReturn("selectedOrganizationalUnit").when(selectedOrganizationalUnit).getIdentifier();
-        doReturn(selectedOrganizationalUnit).when(libraryPlaces).getSelectedOrganizationalUnit();
+
+        when(projectContext.getActiveOrganizationalUnit()).thenReturn(Optional.of(selectedOrganizationalUnit));
+        when(projectContext.getActiveWorkspaceProject()).thenReturn(Optional.empty());
+        when(projectContext.getActiveModule()).thenReturn(Optional.empty());
+        when(projectContext.getActiveRepositoryRoot()).thenReturn(Optional.empty());
+        when(projectContext.getActivePackage()).thenReturn(Optional.empty());
 
         presenter = spy(new AddProjectPopUpPresenter(libraryServiceCaller,
                                                      busyIndicatorView,
                                                      notificationEvent,
                                                      libraryPlaces,
+                                                     projectContext,
                                                      view,
                                                      sessionInfo,
                                                      newProjectEvent,
@@ -109,10 +123,8 @@ public class AddProjectPopUpPresenterTest {
         doReturn("invalidNameMessage").when(view).getInvalidNameMessage();
         doReturn("duplicatedProjectMessage").when(view).getDuplicatedProjectMessage();
 
-        libraryInfo = new LibraryInfo("master",
-                                      new ArrayList<>());
-        doReturn(libraryInfo).when(libraryService).getLibraryInfo(any(Repository.class),
-                                                                  anyString());
+        libraryInfo = new LibraryInfo(new ArrayList<>());
+        doReturn(libraryInfo).when(libraryService).getLibraryInfo(selectedOrganizationalUnit);
 
         doReturn(true).when(validationService).isProjectNameValid(any());
         doReturn(true).when(validationService).validateGroupId(any());
@@ -136,12 +148,9 @@ public class AddProjectPopUpPresenterTest {
     }
 
     @Test
-    public void newProjectIsCreatedIntoSelectedRepository() throws Exception {
+    public void newProjectIsCreated() throws Exception {
         final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
-        when(libraryPlaces.getSelectedOrganizationalUnit()).thenReturn(organizationalUnit);
-
-        final Repository repository = mock(Repository.class);
-        when(libraryPlaces.getSelectedRepository()).thenReturn(repository);
+        when(projectContext.getActiveOrganizationalUnit()).thenReturn(Optional.of(organizationalUnit));
 
         doReturn("test").when(view).getName();
         doReturn("description").when(view).getDescription();
@@ -150,19 +159,14 @@ public class AddProjectPopUpPresenterTest {
 
         verify(libraryService).createProject("test",
                                              organizationalUnit,
-                                             repository,
-                                             "baseUrl",
                                              "description",
                                              DeploymentMode.VALIDATED);
     }
 
     @Test
-    public void newAdvancedProjectIsCreatedIntoSelectedRepository() throws Exception {
+    public void newWorkbenchProjectWithAdvancedSettingsIsCreated() throws Exception {
         final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
-        when(libraryPlaces.getSelectedOrganizationalUnit()).thenReturn(organizationalUnit);
-
-        final Repository repository = mock(Repository.class);
-        when(libraryPlaces.getSelectedRepository()).thenReturn(repository);
+        when(projectContext.getActiveOrganizationalUnit()).thenReturn(Optional.of(organizationalUnit));
 
         doReturn("test").when(view).getName();
         doReturn("description").when(view).getDescription();
@@ -173,15 +177,19 @@ public class AddProjectPopUpPresenterTest {
 
         presenter.add();
 
-        verify(libraryService).createProject("test",
-                                             "description",
-                                             "groupId",
-                                             "artifactId",
-                                             "version",
-                                             organizationalUnit,
-                                             repository,
-                                             "baseUrl",
-                                             DeploymentMode.VALIDATED);
+        final ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass(POM.class);
+
+        verify(libraryService).createProject(eq(organizationalUnit),
+                                             pomArgumentCaptor.capture(),
+                                             eq(DeploymentMode.VALIDATED));
+
+        final POM pom = pomArgumentCaptor.getValue();
+
+        assertEquals("test", pom.getName());
+        assertEquals("description", pom.getDescription());
+        assertEquals("groupId", pom.getGav().getGroupId());
+        assertEquals("artifactId", pom.getGav().getArtifactId());
+        assertEquals("version", pom.getGav().getVersion());
     }
 
     @Test
@@ -193,10 +201,9 @@ public class AddProjectPopUpPresenterTest {
 
         verify(view).showBusyIndicator(anyString());
         verify(newProjectEvent).fire(any(NewProjectEvent.class));
-        verify(view).hideBusyIndicator();
         verify(view).hide();
         verify(notificationEvent).fire(any(NotificationEvent.class));
-        verify(libraryPlaces).goToProject(any(ProjectInfo.class));
+        verify(libraryPlaces).goToProject(any(WorkspaceProject.class));
     }
 
     @Test
@@ -206,8 +213,6 @@ public class AddProjectPopUpPresenterTest {
 
         doThrow(new FileAlreadyExistsException()).when(libraryService).createProject(anyString(),
                                                                                      any(),
-                                                                                     any(Repository.class),
-                                                                                     anyString(),
                                                                                      anyString(),
                                                                                      any());
         doAnswer(invocationOnMock -> ((Throwable) invocationOnMock.getArguments()[0]).getCause() instanceof FileAlreadyExistsException)
@@ -223,7 +228,7 @@ public class AddProjectPopUpPresenterTest {
                never()).hide();
         verify(view).showError(anyString());
         verify(libraryPlaces,
-               never()).goToProject(any(ProjectInfo.class));
+               never()).goToProject(any(WorkspaceProject.class));
     }
 
     @Test
@@ -245,7 +250,7 @@ public class AddProjectPopUpPresenterTest {
                never()).hide();
         verify(view).showError(anyString());
         verify(libraryPlaces,
-               never()).goToProject(any(ProjectInfo.class));
+               never()).goToProject(any(WorkspaceProject.class));
     }
 
     @Test
@@ -267,7 +272,7 @@ public class AddProjectPopUpPresenterTest {
                never()).hide();
         verify(view).showError(anyString());
         verify(libraryPlaces,
-               never()).goToProject(any(ProjectInfo.class));
+               never()).goToProject(any(WorkspaceProject.class));
     }
 
     @Test
@@ -289,7 +294,7 @@ public class AddProjectPopUpPresenterTest {
                never()).hide();
         verify(view).showError(anyString());
         verify(libraryPlaces,
-               never()).goToProject(any(ProjectInfo.class));
+               never()).goToProject(any(WorkspaceProject.class));
     }
 
     @Test
@@ -311,7 +316,7 @@ public class AddProjectPopUpPresenterTest {
                never()).hide();
         verify(view).showError(anyString());
         verify(libraryPlaces,
-               never()).goToProject(any(ProjectInfo.class));
+               never()).goToProject(any(WorkspaceProject.class));
     }
 
     @Test
@@ -335,7 +340,7 @@ public class AddProjectPopUpPresenterTest {
                never()).hide();
         verify(view).showError(anyString());
         verify(libraryPlaces,
-               never()).goToProject(any(ProjectInfo.class));
+               never()).goToProject(any(WorkspaceProject.class));
     }
 
     @Test
@@ -359,7 +364,7 @@ public class AddProjectPopUpPresenterTest {
                never()).hide();
         verify(view).showError(anyString());
         verify(libraryPlaces,
-               never()).goToProject(any(ProjectInfo.class));
+               never()).goToProject(any(WorkspaceProject.class));
     }
 
     @Test
@@ -383,7 +388,7 @@ public class AddProjectPopUpPresenterTest {
                never()).hide();
         verify(view).showError(anyString());
         verify(libraryPlaces,
-               never()).goToProject(any(ProjectInfo.class));
+               never()).goToProject(any(WorkspaceProject.class));
     }
 
     @Test
@@ -407,6 +412,6 @@ public class AddProjectPopUpPresenterTest {
                never()).hide();
         verify(view).showError(anyString());
         verify(libraryPlaces,
-               never()).goToProject(any(ProjectInfo.class));
+               never()).goToProject(any(WorkspaceProject.class));
     }
 }

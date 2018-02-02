@@ -23,7 +23,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.context.ProjectContext;
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.events.AfterEditOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -56,7 +56,7 @@ public class ContributorsListPresenter {
 
     private ManagedInstance<EditContributorsPopUpPresenter> editContributorsPopUpPresenters;
 
-    private ProjectContext projectContext;
+    private WorkspaceProjectContext projectContext;
 
     private OrganizationalUnitController organizationalUnitController;
 
@@ -67,7 +67,7 @@ public class ContributorsListPresenter {
                                      final LibraryPlaces libraryPlaces,
                                      final ManagedInstance<ContributorsListItemPresenter> contributorsListItemPresenters,
                                      final ManagedInstance<EditContributorsPopUpPresenter> editContributorsPopUpPresenters,
-                                     final ProjectContext projectContext,
+                                     final WorkspaceProjectContext projectContext,
                                      final OrganizationalUnitController organizationalUnitController) {
         this.view = view;
         this.libraryPlaces = libraryPlaces;
@@ -80,7 +80,8 @@ public class ContributorsListPresenter {
     @PostConstruct
     public void setup() {
         view.init(this);
-        updateContributors(libraryPlaces.getSelectedOrganizationalUnit());
+        updateContributors(projectContext.getActiveOrganizationalUnit()
+                                         .orElseThrow(() -> new IllegalStateException("Cannot setup contributors list without an active organizational unit.")));
     }
 
     public void updateContributors(final OrganizationalUnit organizationalUnit) {
@@ -98,7 +99,8 @@ public class ContributorsListPresenter {
     }
 
     private void updateView(final List<String> contributors) {
-        final OrganizationalUnit organizationalUnit = libraryPlaces.getSelectedOrganizationalUnit();
+        final OrganizationalUnit organizationalUnit = projectContext.getActiveOrganizationalUnit()
+                                                                    .orElseThrow(() -> new IllegalStateException("Cannot update contributors list without an active organizational unit."));
 
         view.clearContributors();
 
@@ -115,7 +117,8 @@ public class ContributorsListPresenter {
     public void edit() {
         if (userCanUpdateOrganizationalUnit()) {
             final EditContributorsPopUpPresenter editContributorsPopUpPresenter = editContributorsPopUpPresenters.get();
-            editContributorsPopUpPresenter.show(projectContext.getActiveOrganizationalUnit());
+            // There has to be an active OU if the condition passes, so just call get.
+            editContributorsPopUpPresenter.show(projectContext.getActiveOrganizationalUnit().get());
         }
     }
 
@@ -125,11 +128,15 @@ public class ContributorsListPresenter {
     }
 
     public boolean userCanUpdateOrganizationalUnit() {
-        return organizationalUnitController.canUpdateOrgUnit(projectContext.getActiveOrganizationalUnit());
+        return organizationalUnitController.canUpdateOrgUnit(projectContext.getActiveOrganizationalUnit()
+                                                                           .orElseThrow(() -> new IllegalStateException("Cannot update organizational unit when none is active.")));
     }
 
     public int getContributorsCount() {
-        return libraryPlaces.getSelectedOrganizationalUnit().getContributors().size();
+        return projectContext.getActiveOrganizationalUnit()
+                             .orElseThrow(() -> new IllegalStateException("Cannot get contributors count when no organizational unit is active."))
+                             .getContributors()
+                             .size();
     }
 
     public View getView() {

@@ -22,8 +22,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -39,15 +37,14 @@ import org.dashbuilder.dataset.def.DataSetDef;
 import org.dashbuilder.dataset.def.DataSetDefFactory;
 import org.dashbuilder.dataset.def.DataSetDefRegistry;
 import org.dashbuilder.dataset.events.DataSetStaleEvent;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.RepoAddedToOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.RepoRemovedFromOrganizationalUnitEvent;
-import org.guvnor.structure.repositories.Repository;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.ext.editor.commons.backend.version.VersionRecordService;
@@ -60,9 +57,14 @@ import org.uberfire.workbench.events.ResourceDeletedEvent;
 import org.uberfire.workbench.events.ResourceRenamedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
-import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.*;
-import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSets.*;
-import static org.kie.soup.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.COLUMN_AUTHOR;
+import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.COLUMN_DATE;
+import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.COLUMN_MSG;
+import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.COLUMN_ORG;
+import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.COLUMN_PROJECT;
+import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.COLUMN_REPO;
+import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSets.GIT_CONTRIB;
 
 /**
  * This class is in charge of the initialization of a data set holding all the
@@ -79,7 +81,7 @@ public class ContributorsManager implements DataSetGenerator {
     protected OrganizationalUnitService organizationalUnitService;
 
     @Inject
-    protected KieProjectService projectService;
+    protected WorkspaceProjectService projectService;
 
     @Inject
     protected VersionRecordService recordService;
@@ -124,35 +126,41 @@ public class ContributorsManager implements DataSetGenerator {
 
     @Override
     public DataSet buildDataSet(Map<String, String> params) {
-        DataSetBuilder dsBuilder = DataSetFactory.newDataSetBuilder();
-        for (DataColumnDef columnDef : dataSetdef.getColumns()) {
+        final DataSetBuilder dsBuilder = DataSetFactory.newDataSetBuilder();
+        for (final DataColumnDef columnDef : dataSetdef.getColumns()) {
             dsBuilder.column(columnDef.getId(),
                              columnDef.getColumnType());
         }
 
-        Collection<OrganizationalUnit> orgUnitList = organizationalUnitService.getOrganizationalUnits();
-        for (OrganizationalUnit orgUnit : orgUnitList) {
-            String org = orgUnit.getName();
+        final Collection<OrganizationalUnit> orgUnitList = organizationalUnitService.getOrganizationalUnits();
+        for (final OrganizationalUnit orgUnit : orgUnitList) {
+            final String org = orgUnit.getName();
+            final Collection<WorkspaceProject> projects = projectService.getAllWorkspaceProjects(orgUnit);
 
-            Collection<Repository> repoList = orgUnit.getRepositories();
-            for (Repository repo : repoList) {
-                String repoAlias = repo.getAlias();
-                Set<Project> repoProjects = projectService.getAllProjects(repo,
-                                                                          repo.getDefaultBranch());
+            if (projects.isEmpty()) {
+                dsBuilder.row(org,//org
+                              null,//repo
+                              null,//project
+                              null,//author
+                              "Empty organizational unit",//message
+                              null);//date
 
-                for (Project project : repoProjects) {
-                    String projectName = project.getProjectName();
-                    Path projectRoot = Paths.convert(project.getRootPath());
-                    List<VersionRecord> recordList = recordService.loadVersionRecords(projectRoot);
+            } else {
+
+                for (final WorkspaceProject project : projects) {
+                    final String repoAlias = project.getRepository().getAlias();
+                    final String projectName = project.getName();
+                    org.uberfire.backend.vfs.Path rootPath = project.getRootPath();
+                    final Path projectRoot = Paths.convert(rootPath);
+                    final List<VersionRecord> recordList = recordService.loadVersionRecords(projectRoot);
 
                     if (recordList.isEmpty()) {
-                        dsBuilder.row(org,
-                                      repoAlias,
-                                      null,
-                                      null,
-                                      null,
-                                      "Empty project",
-                                      null);
+                        dsBuilder.row(org, //org
+                                      repoAlias,//repo
+                                      null,//project
+                                      null,//author
+                                      "Empty project", //mesage
+                                      null);//date
                     } else {
                         for (VersionRecord record : recordList) {
                             String alias = record.author();

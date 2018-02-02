@@ -41,8 +41,6 @@
   <inherits name="org.guvnor.common.services.workingset.GuvnorWorkingsetAPI"/>
   <inherits name="org.guvnor.common.services.workingset.GuvnorWorkingsetClient"/>
   <inherits name="org.guvnor.messageconsole.GuvnorMessageConsoleClient"/>
-  <inherits name="org.guvnor.asset.management.GuvnorAssetMgmtAPI"/>
-  <inherits name='org.guvnor.asset.management.GuvnorAssetMgmtClient'/>
 
   <!--Common Screens and services. -->
   <inherits name="org.kie.workbench.common.services.datamodel.KieWorkbenchCommonDataModelAPI"/>

@@ -33,10 +33,10 @@ import org.kie.workbench.common.screens.library.client.widgets.project.ProjectAc
 import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 
 @Templated
-public class EmptyProjectView implements EmptyProjectScreen.View,
+public class EmptyProjectView implements EmptyWorkspaceProjectPresenter.View,
                                          IsElement {
 
-    private EmptyProjectScreen presenter;
+    private EmptyWorkspaceProjectPresenter presenter;
 
     @Inject
     private ManagedInstance<NewAssetHandlerWidget> resourceHandlerWidgets;
@@ -75,8 +75,12 @@ public class EmptyProjectView implements EmptyProjectScreen.View,
     @DataField("uploader")
     Anchor uploader;
 
+    public EmptyProjectView() {
+    }
+
     @Override
-    public void init(final EmptyProjectScreen presenter) {
+    public void init(final EmptyWorkspaceProjectPresenter presenter) {
+
         this.presenter = presenter;
         resourceHandlerContainer.setTextContent("");
         assetsActionsWidget.init();

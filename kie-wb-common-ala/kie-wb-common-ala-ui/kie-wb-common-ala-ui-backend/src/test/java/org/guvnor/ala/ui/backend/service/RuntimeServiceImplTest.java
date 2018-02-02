@@ -41,7 +41,7 @@ import org.guvnor.ala.ui.model.RuntimeKey;
 import org.guvnor.ala.ui.model.RuntimeListItem;
 import org.guvnor.ala.ui.service.ProviderService;
 import org.guvnor.ala.ui.service.RuntimeService;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -67,7 +67,7 @@ public class RuntimeServiceImplTest {
 
     private static final String RUNTIME_ID = "RUNTIME_ID";
 
-    private static final String PROJECT_NAME = "PROJECT_NAME";
+    private static final String MODULE_NAME = "MODULE_NAME";
 
     private static final String PIPELINE = "PIPELINE";
 
@@ -78,7 +78,7 @@ public class RuntimeServiceImplTest {
     private static final int PARAMS_COUNT = 5;
 
     @Mock
-    private Project project;
+    private Module module;
 
     @Mock
     private RuntimeProvisioningServiceBackend runtimeProvisioningService;
@@ -108,7 +108,7 @@ public class RuntimeServiceImplTest {
 
     @Before
     public void setUp() {
-        when(project.getProjectName()).thenReturn(PROJECT_NAME);
+        when(module.getModuleName()).thenReturn(MODULE_NAME);
         queryItems = mockRuntimeQueryResultItemList(QUERY_ITEMS_SIZE);
         pipelineNames = mockPipelineNames(QUERY_ITEMS_SIZE);
         pipelineKeys = mockPipelineKeys(pipelineNames);

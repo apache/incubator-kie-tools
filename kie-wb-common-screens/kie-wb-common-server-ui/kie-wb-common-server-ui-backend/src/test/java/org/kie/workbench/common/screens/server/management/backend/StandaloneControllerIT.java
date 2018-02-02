@@ -97,7 +97,7 @@ public class StandaloneControllerIT extends AbstractControllerIT {
             client = ClientBuilder.newClient().register(new BasicAuthentication(USER,
                                                                                 PASSWORD));
             WebTarget target = client.target(URI.create(new URL(baseURL,
-                                                                "rest/repositories").toExternalForm()));
+                                                                "rest/spaces").toExternalForm()));
 
             Response response = target.request().accept(MediaType.APPLICATION_JSON).get();
 

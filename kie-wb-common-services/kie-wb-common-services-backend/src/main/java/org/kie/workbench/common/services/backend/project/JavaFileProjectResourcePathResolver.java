@@ -18,30 +18,30 @@ package org.kie.workbench.common.services.backend.project;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.guvnor.common.services.project.backend.server.ProjectResourcePathResolver;
+import org.guvnor.common.services.project.backend.server.ModuleResourcePathResolver;
 import org.guvnor.common.services.project.model.Package;
 import org.uberfire.backend.vfs.Path;
 
 @ApplicationScoped
 public class JavaFileProjectResourcePathResolver
-        implements ProjectResourcePathResolver {
+        implements ModuleResourcePathResolver {
 
-    public JavaFileProjectResourcePathResolver( ) {
+    public JavaFileProjectResourcePathResolver() {
         //Empty constructor for Weld proxying
     }
 
     @Override
-    public int getPriority( ) {
+    public int getPriority() {
         return 0;
     }
 
     @Override
-    public boolean accept( String resourceType ) {
-        return "java".equals( resourceType );
+    public boolean accept(String resourceType) {
+        return "java".equals(resourceType);
     }
 
     @Override
-    public Path resolveDefaultPath( Package pkg ) {
+    public Path resolveDefaultPath(Package pkg) {
         return pkg.getPackageMainSrcPath();
     }
 }

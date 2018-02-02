@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.datasourceselector;
 
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -27,23 +27,20 @@ public interface DataSourceSelector {
 
     /**
      * Use this method to restrict the data sources selection to a given project.
-     *
-     * @param project Project where to select the data sources from.
+     * @param module Module where to select the data sources from.
      */
-    void setProjectSelection( Project project );
+    void setModuleSelection(Module module);
 
     /**
      * Use this method to select global data sources.
      */
-    void setGlobalSelection( );
+    void setGlobalSelection();
 
     /**
      * Opens the data source selector in popup mode.
-     *
      * @param onSelectCommand when a data source is selected the popup is automatically closed and the onSelectCommand
      * is executed to let clients now about the selection.
-     *
      * @param onCloseCommand executed when the popup is closed with no selection.
      */
-    void show( ParameterizedCommand<DataSourceInfo> onSelectCommand, Command onCloseCommand );
+    void show(ParameterizedCommand<DataSourceInfo> onSelectCommand, Command onCloseCommand);
 }

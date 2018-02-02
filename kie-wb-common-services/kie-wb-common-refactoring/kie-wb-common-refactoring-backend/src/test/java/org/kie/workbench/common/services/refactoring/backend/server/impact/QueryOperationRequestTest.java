@@ -32,7 +32,7 @@ import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQ
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.DefaultResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindAllChangeImpactQuery;
-import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.ModuleRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm.TermSearchType;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
 import org.kie.workbench.common.services.refactoring.service.PartType;
@@ -59,7 +59,7 @@ public class QueryOperationRequestTest extends BaseIndexingTest<TestDrlFileTypeD
         return new HashMap<String, Analyzer>() {
 
             {
-                put(ProjectRootPathIndexTerm.TERM,
+                put(ModuleRootPathIndexTerm.TERM,
                     new FilenameAnalyzer());
             }
         };
@@ -111,7 +111,7 @@ public class QueryOperationRequestTest extends BaseIndexingTest<TestDrlFileTypeD
 
         {
             QueryOperationRequest request = QueryOperationRequest.referencesSharedPart("myRuleFlowGroup",
-                                                                                       PartType.RULEFLOW_GROUP).inAllProjects().onAllBranches();
+                                                                                       PartType.RULEFLOW_GROUP).inAllModules().onAllBranches();
 
             try {
                 final List<RefactoringPageRow> response = service.queryToList(request);
@@ -131,7 +131,7 @@ public class QueryOperationRequestTest extends BaseIndexingTest<TestDrlFileTypeD
         {
             QueryOperationRequest request = QueryOperationRequest.referencesSharedPart("*",
                                                                                        PartType.RULEFLOW_GROUP,
-                                                                                       TermSearchType.WILDCARD).inAllProjects().onAllBranches();
+                                                                                       TermSearchType.WILDCARD).inAllModules().onAllBranches();
 
             try {
                 final List<RefactoringPageRow> response = service.queryToList(request);
@@ -160,46 +160,46 @@ public class QueryOperationRequestTest extends BaseIndexingTest<TestDrlFileTypeD
         String newClassName = Random.class.getName();
 
         DeleteOperationRequest delReq = DeleteOperationRequest.deleteReferences(className,
-                                                                                ResourceType.JAVA).inProject(projectName).onAllBranches();
+                                                                                ResourceType.JAVA).inModule(projectName).onAllBranches();
 
         delReq = DeleteOperationRequest.deleteReferences(className,
-                                                         ResourceType.JAVA).inProjectRootPathURI(projectRootPathURI).onAllBranches();
+                                                         ResourceType.JAVA).inModuleRootPathURI(projectRootPathURI).onAllBranches();
 
         delReq = DeleteOperationRequest.deletePartReferences(className,
                                                              "setAge(long)",
-                                                             PartType.METHOD).inProject(projectName).onAllBranches();
+                                                             PartType.METHOD).inModule(projectName).onAllBranches();
 
         delReq = DeleteOperationRequest.deletePartReferences(className,
                                                              "setAge(long)",
-                                                             PartType.METHOD).inProjectRootPathURI(projectRootPathURI).onAllBranches();
+                                                             PartType.METHOD).inModuleRootPathURI(projectRootPathURI).onAllBranches();
 
         RefactorOperationRequest refOp = RefactorOperationRequest.refactorReferences(className,
                                                                                      ResourceType.JAVA,
-                                                                                     newClassName).inProject(projectName).onBranch("branch-name");
+                                                                                     newClassName).inModule(projectName).onBranch("branch-name");
 
         refOp = RefactorOperationRequest.refactorReferences(className,
                                                             ResourceType.JAVA,
-                                                            newClassName).inProjectRootPathURI(projectRootPathURI).onBranch("branch-name");
+                                                            newClassName).inModuleRootPathURI(projectRootPathURI).onBranch("branch-name");
 
         refOp = RefactorOperationRequest.refactorPartReferences(className,
                                                                 "toName(int)",
                                                                 PartType.METHOD,
-                                                                "toSurName(int)").inProject(projectName).onAllBranches();
+                                                                "toSurName(int)").inModule(projectName).onAllBranches();
 
         refOp = RefactorOperationRequest.refactorPartReferences(className,
                                                                 "toName(int)",
                                                                 PartType.METHOD,
-                                                                "toSurName(int)").inProjectRootPathURI(projectRootPathURI).onAllBranches();
+                                                                "toSurName(int)").inModuleRootPathURI(projectRootPathURI).onAllBranches();
 
         refOp = RefactorOperationRequest.refactorPartReferences(className,
                                                                 "toName(int)",
                                                                 PartType.METHOD,
-                                                                "toSurName(int)").inProject(projectName).onBranch("branch-name");
+                                                                "toSurName(int)").inModule(projectName).onBranch("branch-name");
 
         QueryOperationRequest queOp = QueryOperationRequest.references(className,
-                                                                       ResourceType.JAVA).inProject(projectName).onBranch("branch-name");
+                                                                       ResourceType.JAVA).inModule(projectName).onBranch("branch-name");
 
         queOp = QueryOperationRequest.references(className,
-                                                 ResourceType.JAVA).inProjectRootPathURI(projectRootPathURI).onBranch("branch-name");
+                                                 ResourceType.JAVA).inModuleRootPathURI(projectRootPathURI).onBranch("branch-name");
     }
 }

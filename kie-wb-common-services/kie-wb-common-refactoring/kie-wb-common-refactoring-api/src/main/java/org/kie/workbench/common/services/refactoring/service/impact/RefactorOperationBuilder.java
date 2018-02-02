@@ -24,11 +24,11 @@ public class RefactorOperationBuilder<R extends AbstractOperationRequest> extend
 
     private R request;
 
-    RefactorOperationBuilder(OperationType operation, R request) {
+    RefactorOperationBuilder(final OperationType operation,
+                             final R request) {
         this.changeType = operation;
         this.request = request;
     }
-
 
     private R internalBuild() {
         this.request.setChangeType(changeType);
@@ -39,11 +39,23 @@ public class RefactorOperationBuilder<R extends AbstractOperationRequest> extend
         this.request.setStartRowIndex(startRowIndex);
         this.request.setPageSize(pageSize);
 
-        this.request.setProjectName(projectName);
-        this.request.setProjectRootPathURI( projectRootPathURI );
+        this.request.setModuleName(moduleName);
+        this.request.setModuleRootPathURI(moduleRootPathURI);
         this.request.setBranchName(branchName);
 
         return this.request;
+    }
+
+    RefactorOperationBuilder<R>.RequiresPart requiresPart(RefactorOperationBuilder<R> builder) {
+        return new RequiresPart(builder);
+    }
+
+    RefactorOperationBuilder<R>.PossiblyRequiresPart possiblyRequiresPart(RefactorOperationBuilder<R> builder) {
+        return new PossiblyRequiresPart(builder);
+    }
+
+    RequiresModule requiresModule(RefactorOperationBuilder<R> builder) {
+        return new RequiresModule(builder);
     }
 
     public class RequiresPart extends Requires {
@@ -52,60 +64,66 @@ public class RefactorOperationBuilder<R extends AbstractOperationRequest> extend
             super(delegate);
         }
 
-        public RequiresProject referencesPart( String resourceFQN, ResourceType resourceType, String partName, PartType partType ) {
-            this.delegate.queryTerms.add(new ValuePartReferenceIndexTerm(resourceFQN, partName, partType));
-            return new RequiresProject(delegate);
+        public RequiresModule referencesPart(String resourceFQN,
+                                             ResourceType resourceType,
+                                             String partName,
+                                             PartType partType) {
+            this.delegate.queryTerms.add(new ValuePartReferenceIndexTerm(resourceFQN,
+                                                                         partName,
+                                                                         partType));
+            return new RequiresModule(delegate);
         }
 
-        public RequiresPart pageSize( int pageSize ) {
+        public RequiresPart pageSize(int pageSize) {
             this.delegate.setPageSize(pageSize);
             return this;
         }
 
-        public RequiresPart startRowIndex( int startRowIndex ) {
+        public RequiresPart startRowIndex(int startRowIndex) {
             this.delegate.setStartRowIndex(startRowIndex);
             return this;
         }
-
     }
 
-    RefactorOperationBuilder<R>.RequiresPart requiresPart(RefactorOperationBuilder<R> builder) {
-        return new RequiresPart(builder);
-    }
-
-    public class PossiblyRequiresPart extends RequiresProject {
+    public class PossiblyRequiresPart extends RequiresModule {
 
         PossiblyRequiresPart(RefactorOperationBuilder<R> delegate) {
             super(delegate);
         }
 
-        public RequiresProject referencesSharedPart( String resourceFQN, String partName, PartType partType ) {
-            this.delegate.queryTerms.add(new ValuePartReferenceIndexTerm(resourceFQN, partName, partType));
-            return new RequiresProject(delegate);
+        public RequiresModule referencesSharedPart(String resourceFQN,
+                                                   String partName,
+                                                   PartType partType) {
+            this.delegate.queryTerms.add(new ValuePartReferenceIndexTerm(resourceFQN,
+                                                                         partName,
+                                                                         partType));
+            return new RequiresModule(delegate);
         }
 
-        public RequiresProject referencesPart( String resourceFQN, String partName, PartType partType, TermSearchType searchType ) {
-            this.delegate.queryTerms.add(new ValuePartReferenceIndexTerm(resourceFQN, partName, partType, searchType));
-            return new RequiresProject(delegate);
+        public RequiresModule referencesPart(String resourceFQN,
+                                             String partName,
+                                             PartType partType,
+                                             TermSearchType searchType) {
+            this.delegate.queryTerms.add(new ValuePartReferenceIndexTerm(resourceFQN,
+                                                                         partName,
+                                                                         partType,
+                                                                         searchType));
+            return new RequiresModule(delegate);
         }
 
-        public PossiblyRequiresPart pageSize( int pageSize ) {
+        public PossiblyRequiresPart pageSize(int pageSize) {
             this.delegate.setPageSize(pageSize);
             return this;
         }
 
-        public PossiblyRequiresPart startRowIndex( int startRowIndex ) {
+        public PossiblyRequiresPart startRowIndex(int startRowIndex) {
             this.delegate.setStartRowIndex(startRowIndex);
             return this;
         }
-
-    }
-
-    RefactorOperationBuilder<R>.PossiblyRequiresPart possiblyRequiresPart(RefactorOperationBuilder<R> builder) {
-        return new PossiblyRequiresPart(builder);
     }
 
     abstract class Requires<N extends Requires> {
+
         protected final RefactorOperationBuilder<R> delegate;
 
         Requires(RefactorOperationBuilder<R> delegate) {
@@ -115,34 +133,29 @@ public class RefactorOperationBuilder<R extends AbstractOperationRequest> extend
         RefactorOperationBuilder getDelegate() {
             return delegate;
         }
-
     }
 
-    public class RequiresProject extends Requires<RequiresProject> {
+    public class RequiresModule extends Requires<RequiresModule> {
 
-        RequiresProject(RefactorOperationBuilder<R> delegate) {
+        RequiresModule(RefactorOperationBuilder<R> delegate) {
             super(delegate);
         }
 
-        public RequiresBranch inProject( String projectName ) {
-            this.delegate.projectName = projectName;
+        public RequiresBranch inModule(String moduleName) {
+            this.delegate.moduleName = moduleName;
             return new RequiresBranch(delegate);
         }
 
-        public RequiresBranch inProjectRootPathURI( String projectRootPathURI ) {
-            this.delegate.projectRootPathURI = projectRootPathURI;
+        public RequiresBranch inModuleRootPathURI(String moduleRootPathURI) {
+            this.delegate.moduleRootPathURI = moduleRootPathURI;
             return new RequiresBranch(delegate);
         }
 
-        public RequiresBranch inAllProjects() {
-            this.delegate.projectName = ALL;
-            this.delegate.projectRootPathURI = ALL;
+        public RequiresBranch inAllModules() {
+            this.delegate.moduleName = ALL;
+            this.delegate.moduleRootPathURI = ALL;
             return new RequiresBranch(delegate);
         }
-    }
-
-    RefactorOperationBuilder<R>.RequiresProject requiresProject(RefactorOperationBuilder<R> builder) {
-        return new RequiresProject(builder);
     }
 
     public class RequiresBranch extends Requires<RequiresBranch> {
@@ -151,7 +164,7 @@ public class RefactorOperationBuilder<R extends AbstractOperationRequest> extend
             super(delegate);
         }
 
-        public R onBranch( String branchName ) {
+        public R onBranch(String branchName) {
             this.delegate.branchName = branchName;
             return this.delegate.internalBuild();
         }
@@ -161,5 +174,4 @@ public class RefactorOperationBuilder<R extends AbstractOperationRequest> extend
             return this.delegate.internalBuild();
         }
     }
-
 }

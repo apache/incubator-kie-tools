@@ -22,9 +22,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.After;
 import org.junit.Test;
 import org.kie.workbench.common.screens.library.api.index.LibraryValueFileNameIndexTerm;
-import org.kie.workbench.common.screens.library.api.index.LibraryValueProjectRootPathIndexTerm;
+import org.kie.workbench.common.screens.library.api.index.LibraryValueModuleRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.DefaultResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
@@ -32,7 +33,7 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.valueterm
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm.TermSearchType;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.ext.metadata.model.KObject;
@@ -46,11 +47,11 @@ import static org.mockito.Mockito.*;
 public class FindAllLibraryAssetsQueryTest
         extends BaseLibraryIndexingTest {
 
-    private static final String TEST_PROJECT_ROOT = "/find/all/library/assets/query/test/a/mock/project/root";
-    private static final String TEST_PROJECT_NAME = "mock-project";
+    private static final String TEST_MODULE_ROOT = "/find/all/library/assets/query/test/a/mock/module/root";
+    private static final String TEST_MODULE_NAME = "mock-module";
 
-    private static final String SOME_OTHER_PROJECT_ROOT = "/find/all/library/assets/query/test/some/other/projectRoot";
-    private static final String SOME_OTHER_PROJECT_NAME = "other-mock-project";
+    private static final String SOME_OTHER_MODULE_ROOT = "/find/all/library/assets/query/test/some/other/moduleRoot";
+    private static final String SOME_OTHER_MODULE_NAME = "other-mock-module";
 
     protected Set<NamedQuery> getQueries() {
         return new HashSet<NamedQuery>() {{
@@ -63,42 +64,48 @@ public class FindAllLibraryAssetsQueryTest
         }};
     }
 
+    @After
+    public void dispose() {
+        super.dispose();
+        super.cleanup();
+    }
+
     @Override
-    protected KieProjectService getProjectService() {
+    protected KieModuleService getModuleService() {
 
-        final KieProjectService mock = super.getProjectService();
+        final KieModuleService moduleService = super.getModuleService();
 
-        when(mock.resolveProject(any(org.uberfire.backend.vfs.Path.class)))
+        when(moduleService.resolveModule(any(org.uberfire.backend.vfs.Path.class)))
                 .thenAnswer(new Answer() {
                     @Override
                     public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
                         org.uberfire.backend.vfs.Path resource = (org.uberfire.backend.vfs.Path) invocationOnMock.getArguments()[0];
-                        if (resource.toURI().contains(TEST_PROJECT_ROOT)) {
-                            return getKieProjectMock(TEST_PROJECT_ROOT,
-                                                     TEST_PROJECT_NAME);
-                        } else if (resource.toURI().contains(SOME_OTHER_PROJECT_ROOT)) {
-                            return getKieProjectMock(SOME_OTHER_PROJECT_ROOT,
-                                                     SOME_OTHER_PROJECT_NAME);
+                        if (resource.toURI().contains(TEST_MODULE_ROOT)) {
+                            return getKieModuleMock(TEST_MODULE_ROOT,
+                                                    TEST_MODULE_NAME);
+                        } else if (resource.toURI().contains(SOME_OTHER_MODULE_ROOT)) {
+                            return getKieModuleMock(SOME_OTHER_MODULE_ROOT,
+                                                    SOME_OTHER_MODULE_NAME);
                         } else {
                             return null;
                         }
                     }
                 });
 
-        return mock;
+        return moduleService;
     }
 
     @Test
-    public void listAllInProject() throws IOException, InterruptedException {
+    public void listAllInModule() throws IOException, InterruptedException {
 
         //Add test files
-        addTestFile(TEST_PROJECT_ROOT,
+        addTestFile(TEST_MODULE_ROOT,
                     "drl1.drl");
-        addTestFile(TEST_PROJECT_ROOT,
+        addTestFile(TEST_MODULE_ROOT,
                     "drl2.ext2");
-        addTestFile(SOME_OTHER_PROJECT_ROOT,
+        addTestFile(SOME_OTHER_MODULE_ROOT,
                     "drl3.ext3");
-        addTestFile(TEST_PROJECT_ROOT,
+        addTestFile(TEST_MODULE_ROOT,
                     "functions.functions");
 
         Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
@@ -106,8 +113,8 @@ public class FindAllLibraryAssetsQueryTest
         {
             final RefactoringPageRequest request = new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
                                                                               new HashSet<ValueIndexTerm>() {{
-                                                                                  add(new LibraryValueProjectRootPathIndexTerm(TEST_PROJECT_ROOT,
-                                                                                                                               TermSearchType.WILDCARD));
+                                                                                  add(new LibraryValueModuleRootPathIndexTerm(TEST_MODULE_ROOT,
+                                                                                                                              TermSearchType.WILDCARD));
                                                                               }},
                                                                               0,
                                                                               10);
@@ -160,16 +167,16 @@ public class FindAllLibraryAssetsQueryTest
     }
 
     @Test
-    public void filterFilesFromProject() throws IOException, InterruptedException {
+    public void filterFilesFromModule() throws IOException, InterruptedException {
 
         //Add test files
-        addTestFile(TEST_PROJECT_ROOT,
+        addTestFile(TEST_MODULE_ROOT,
                     "rule1.rule");
-        addTestFile(TEST_PROJECT_ROOT,
+        addTestFile(TEST_MODULE_ROOT,
                     "rule2.rule");
-        addTestFile(SOME_OTHER_PROJECT_ROOT,
+        addTestFile(SOME_OTHER_MODULE_ROOT,
                     "rule3.rule");
-        addTestFile(TEST_PROJECT_ROOT,
+        addTestFile(TEST_MODULE_ROOT,
                     "functions.functions");
 
         Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
@@ -177,8 +184,8 @@ public class FindAllLibraryAssetsQueryTest
         {
             final RefactoringPageRequest request = new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
                                                                               new HashSet<ValueIndexTerm>() {{
-                                                                                  add(new LibraryValueProjectRootPathIndexTerm(TEST_PROJECT_ROOT,
-                                                                                                                               TermSearchType.WILDCARD));
+                                                                                  add(new LibraryValueModuleRootPathIndexTerm(TEST_MODULE_ROOT,
+                                                                                                                              TermSearchType.WILDCARD));
                                                                                   add(new LibraryValueFileNameIndexTerm("*rule*",
                                                                                                                         TermSearchType.WILDCARD));
                                                                               }},

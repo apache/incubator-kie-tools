@@ -27,8 +27,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.Callback;
-import org.guvnor.common.services.project.context.ProjectContext;
-import org.guvnor.common.services.project.context.ProjectContextChangeHandler;
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
+import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeHandler;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.mvp.Command;
@@ -40,7 +40,7 @@ import org.uberfire.workbench.model.menu.MenuItem;
  */
 @ApplicationScoped
 public class NewResourcesMenu
-        implements ProjectContextChangeHandler {
+        implements WorkspaceProjectContextChangeHandler {
 
     private SyncBeanManager iocBeanManager;
     private NewResourcePresenter newResourcePresenter;
@@ -55,7 +55,7 @@ public class NewResourcesMenu
     @Inject
     public NewResourcesMenu( final SyncBeanManager iocBeanManager,
                              final NewResourcePresenter newResourcePresenter,
-                             final ProjectContext projectContext ) {
+                             final WorkspaceProjectContext projectContext ) {
         this.iocBeanManager = iocBeanManager;
         this.newResourcePresenter = newResourcePresenter;
         projectContext.addChangeHandler( this );

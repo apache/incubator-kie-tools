@@ -31,7 +31,7 @@ import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexing
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.TestPropertiesFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.TestPropertiesFileTypeDefinition;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.ext.metadata.io.KObjectUtil;
 
 import static org.mockito.Mockito.*;
@@ -41,32 +41,32 @@ public class IndexUpdatedResourcesTest extends BaseIndexingTest {
     @Test
     public void testIndexingUpdatedResources() throws IOException, InterruptedException {
         //Add test files
-        loadProperties( "file1.properties",
-                        basePath );
-        loadProperties( "file2.properties",
-                        basePath );
-        loadProperties( "file3.properties",
-                        basePath );
-        loadProperties( "file4.properties",
-                        basePath );
+        loadProperties("file1.properties",
+                       basePath);
+        loadProperties("file2.properties",
+                       basePath);
+        loadProperties("file3.properties",
+                       basePath);
+        loadProperties("file4.properties",
+                       basePath);
 
-        Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+        Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
         List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath.getFileSystem()).getClusterId());
 
         searchFor(index,
-                  new TermQuery( new Term( "title", "lucene" ) ),
+                  new TermQuery(new Term("title", "lucene")),
                   2);
 
         //Update one of the files returned by the previous search, removing the "lucene" title
         final Properties properties = new Properties();
-        ioService().write( basePath.resolve( "file1.properties" ),
-                           propertiesToString( properties ) );
+        ioService().write(basePath.resolve("file1.properties"),
+                          propertiesToString(properties));
 
-        Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+        Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
         searchFor(index,
-                  new TermQuery( new Term( "title", "lucene" ) ),
+                  new TermQuery(new Term("title", "lucene")),
                   1);
     }
 
@@ -91,8 +91,7 @@ public class IndexUpdatedResourcesTest extends BaseIndexingTest {
     }
 
     @Override
-    protected KieProjectService getProjectService() {
-        return mock( KieProjectService.class );
+    protected KieModuleService getModuleService() {
+        return mock(KieModuleService.class);
     }
-
 }

@@ -21,16 +21,16 @@ import java.util.Set;
 
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
+import org.guvnor.common.services.project.model.ModuleRepositories;
 import org.guvnor.common.services.project.model.POM;
-import org.guvnor.common.services.project.model.ProjectRepositories;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
-import org.guvnor.common.services.project.service.ProjectRepositoriesService;
-import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
+import org.guvnor.common.services.project.service.ModuleRepositoriesService;
+import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieModule;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
@@ -43,15 +43,15 @@ import static org.mockito.Mockito.*;
 public class DeploymentVerifierTest {
 
     @Mock
-    private ProjectRepositoryResolver repositoryResolver;
+    private ModuleRepositoryResolver repositoryResolver;
 
     @Mock
-    private ProjectRepositoriesService projectRepositoriesService;
+    private ModuleRepositoriesService moduleRepositoriesService;
 
     private DeploymentVerifier deploymentVerifier;
 
     @Mock
-    private KieProject project;
+    private KieModule module;
 
     @Mock
     private POM pom;
@@ -63,7 +63,7 @@ public class DeploymentVerifierTest {
     private Path path;
 
     @Mock
-    private ProjectRepositories projectRepositories;
+    private ModuleRepositories moduleRepositories;
 
     private Set<MavenRepositoryMetadata> repositories;
 
@@ -78,14 +78,14 @@ public class DeploymentVerifierTest {
     @Before
     public void setUp() {
         deploymentVerifier = new DeploymentVerifier(repositoryResolver,
-                                                    projectRepositoriesService);
-        when(project.getPom()).thenReturn(pom);
+                                                    moduleRepositoriesService);
+        when(module.getPom()).thenReturn(pom);
         when(pom.getGav()).thenReturn(gav);
     }
 
     /**
-     * Test the case when a VALIDATED deployment is about to be performed, the project is already deployed, and the
-     * project version is a snapshot.
+     * Test the case when a VALIDATED deployment is about to be performed, the module is already deployed, and the
+     * module version is a snapshot.
      */
     @Test
     public void testVerifyAlreadyDeployedValidatedSNAPSHOT() {
@@ -95,8 +95,8 @@ public class DeploymentVerifierTest {
     }
 
     /**
-     * Test the case when a VALIDATED deployment is about to be performed, the project is not deployed, and the
-     * project version is a snapshot.
+     * Test the case when a VALIDATED deployment is about to be performed, the module is not deployed, and the
+     * module version is a snapshot.
      */
     @Test
     public void testVerifyNonDeployedValidatedSNAPSHOT() {
@@ -106,7 +106,7 @@ public class DeploymentVerifierTest {
     }
 
     /**
-     * Test the case when a VALIDATED deployment is about to be performed, the project is deployed, and the project
+     * Test the case when a VALIDATED deployment is about to be performed, the module is deployed, and the module
      * version is a non snapshot.
      */
     @Test
@@ -114,7 +114,7 @@ public class DeploymentVerifierTest {
         prepareProjectIsDeployed(true);
         when(gav.isSnapshot()).thenReturn(false);
         try {
-            deploymentVerifier.verifyWithException(project,
+            deploymentVerifier.verifyWithException(module,
                                                    DeploymentMode.VALIDATED);
         } catch (Exception e) {
             exception = e;
@@ -128,7 +128,7 @@ public class DeploymentVerifierTest {
     }
 
     /**
-     * Test the case when a VALIDATED deployment is about to be performed, the project is not deployed, and the project
+     * Test the case when a VALIDATED deployment is about to be performed, the module is not deployed, and the module
      * version is a non snapshot.
      */
     @Test
@@ -140,7 +140,7 @@ public class DeploymentVerifierTest {
 
     private void executeNonErrorCase(DeploymentMode deploymentMode) {
         try {
-            deploymentVerifier.verifyWithException(project,
+            deploymentVerifier.verifyWithException(module,
                                                    deploymentMode);
         } catch (Exception e) {
             exception = e;
@@ -154,10 +154,10 @@ public class DeploymentVerifierTest {
             repositories.add(repositoryMetadata1);
             repositories.add(repositoryMetadata2);
         }
-        when(project.getRepositoriesPath()).thenReturn(path);
-        when(projectRepositoriesService.load(path)).thenReturn(projectRepositories);
+        when(module.getRepositoriesPath()).thenReturn(path);
+        when(moduleRepositoriesService.load(path)).thenReturn(moduleRepositories);
         when(repositoryResolver.getRepositoriesResolvingArtifact(eq(gav),
-                                                                 eq(project),
+                                                                 eq(module),
                                                                  any(MavenRepositoryMetadata[].class))).thenReturn(repositories);
     }
 }

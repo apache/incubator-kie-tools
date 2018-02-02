@@ -16,11 +16,16 @@
 
 package org.kie.workbench.common.workbench.client.admin;
 
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.ADMIN;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.GUVNOR_M2REPO;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.SECURITY_MANAGEMENT;
+
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.preferences.scope.GlobalPreferenceScope;
+import org.guvnor.common.services.shared.preferences.GuvnorPreferenceScopes;
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -40,12 +45,11 @@ import org.uberfire.ext.security.management.impl.SearchRequestImpl;
 import org.uberfire.ext.widgets.common.client.breadcrumbs.UberfireBreadcrumbs;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.preferences.shared.PreferenceScopeFactory;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.ResourceRef;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.ActivityResourceType;
-
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.*;
 
 public class DefaultAdminPageHelper {
 
@@ -70,7 +74,7 @@ public class DefaultAdminPageHelper {
     private SessionInfo sessionInfo;
 
     @Inject
-    private GlobalPreferenceScope globalPreferenceScope;
+    private PreferenceScopeFactory scopeFactory;
 
     @Inject
     private UberfireBreadcrumbs breadcrumbs;
@@ -264,7 +268,7 @@ public class DefaultAdminPageHelper {
                                     translationService.format(PreferencesConstants.ProjectPreferences_Label),
                                     "fa-pencil-square-o",
                                     "preferences",
-                                    globalPreferenceScope.resolve(),
+                                    scopeFactory.createScope(GuvnorPreferenceScopes.GLOBAL),
                                     AdminPageOptions.WITH_BREADCRUMBS);
         }
 
@@ -274,7 +278,7 @@ public class DefaultAdminPageHelper {
                                     translationService.format(PreferencesConstants.LibraryPreferences_Title),
                                     "fa-cubes",
                                     "preferences",
-                                    globalPreferenceScope.resolve(),
+                                    scopeFactory.createScope(GuvnorPreferenceScopes.GLOBAL),
                                     AdminPageOptions.WITH_BREADCRUMBS);
         }
 
@@ -284,7 +288,7 @@ public class DefaultAdminPageHelper {
                                     translationService.format(PreferencesConstants.ArtifactRepositoryPreferences_Title),
                                     "fa-archive",
                                     "preferences",
-                                    globalPreferenceScope.resolve(),
+                                    scopeFactory.createScope(GuvnorPreferenceScopes.GLOBAL),
                                     AdminPageOptions.WITH_BREADCRUMBS);
         }
     }

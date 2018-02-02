@@ -18,9 +18,9 @@ package org.kie.workbench.common.screens.projecteditor.client.editor;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.common.services.project.model.ModuleRepositories;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
-import org.guvnor.common.services.project.model.ProjectRepositories;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.gwtbootstrap3.client.ui.ButtonGroup;
 import org.kie.workbench.common.screens.projecteditor.client.build.BuildExecutor;
@@ -90,7 +90,7 @@ public interface ProjectScreenView
 
     void setImportsMetadataUnlockHandler(Runnable unlockHandler);
 
-    void setRepositories(ProjectRepositories repositories);
+    void setRepositories(ModuleRepositories repositories);
 
     void showImportsPanel();
 

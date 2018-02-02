@@ -25,7 +25,6 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 public class ExamplesModel {
 
     private ExampleRepository sourceRepository;
-    private ExampleTargetRepository targetRepository;
     private ExampleOrganizationalUnit targetOrganizationalUnit;
     private List<ExampleProject> projects = new ArrayList<ExampleProject>();
 
@@ -33,28 +32,19 @@ public class ExamplesModel {
         return sourceRepository;
     }
 
-    public void setSourceRepository( final ExampleRepository sourceRepository ) {
+    public void setSourceRepository(final ExampleRepository sourceRepository) {
         this.sourceRepository = sourceRepository;
-    }
-
-    public ExampleTargetRepository getTargetRepository() {
-        return targetRepository;
-    }
-
-    public void setTargetRepository( final ExampleTargetRepository targetRepository ) {
-        this.targetRepository = targetRepository;
     }
 
     public ExampleOrganizationalUnit getTargetOrganizationalUnit() {
         return targetOrganizationalUnit;
     }
 
-    public void setTargetOrganizationalUnit( final ExampleOrganizationalUnit targetOrganizationalUnit ) {
+    public void setTargetOrganizationalUnit(final ExampleOrganizationalUnit targetOrganizationalUnit) {
         this.targetOrganizationalUnit = targetOrganizationalUnit;
     }
 
     public List<ExampleProject> getProjects() {
         return projects;
     }
-
 }

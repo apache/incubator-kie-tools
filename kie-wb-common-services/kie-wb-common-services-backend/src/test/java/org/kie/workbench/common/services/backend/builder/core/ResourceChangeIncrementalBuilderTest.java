@@ -35,8 +35,8 @@ import org.guvnor.test.WeldJUnitRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
@@ -69,7 +69,7 @@ public class ResourceChangeIncrementalBuilderTest extends BuilderTestBase {
     private BuildService buildService;
 
     @Inject
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     @Inject
     private org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder buildChangeListener;
@@ -107,8 +107,8 @@ public class ResourceChangeIncrementalBuilderTest extends BuilderTestBase {
         final Path resourcePath = paths.convert(nioResourcePath);
 
         //Force full build before attempting incremental changes
-        final KieProject project = projectService.resolveProject(resourcePath);
-        final BuildResults buildResults = buildService.build(project);
+        final KieModule module = moduleService.resolveModule(resourcePath);
+        final BuildResults buildResults = buildService.build(module);
         assertNotNull(buildResults);
         assertEquals(0,
                      buildResults.getErrorMessages().size());
@@ -133,8 +133,8 @@ public class ResourceChangeIncrementalBuilderTest extends BuilderTestBase {
         final Path resourcePath = paths.convert(nioResourcePath);
 
         //Force full build before attempting incremental changes
-        final KieProject project = projectService.resolveProject(resourcePath);
-        final BuildResults buildResults = buildService.build(project);
+        final KieModule module = moduleService.resolveModule(resourcePath);
+        final BuildResults buildResults = buildService.build(module);
         assertNotNull(buildResults);
         assertEquals(0,
                      buildResults.getErrorMessages().size());
@@ -160,8 +160,8 @@ public class ResourceChangeIncrementalBuilderTest extends BuilderTestBase {
         final Path resourcePath = paths.convert(nioResourcePath);
 
         //Force full build before attempting incremental changes
-        final KieProject project = projectService.resolveProject(resourcePath);
-        final BuildResults buildResults = buildService.build(project);
+        final KieModule module = moduleService.resolveModule(resourcePath);
+        final BuildResults buildResults = buildService.build(module);
         assertNotNull(buildResults);
         assertEquals(0,
                      buildResults.getErrorMessages().size());
@@ -182,8 +182,8 @@ public class ResourceChangeIncrementalBuilderTest extends BuilderTestBase {
         final Path resourcePath = paths.convert(nioResourcePath);
 
         //Force full build before attempting incremental changes
-        final KieProject project = projectService.resolveProject(resourcePath);
-        final BuildResults buildResults = buildService.build(project);
+        final KieModule module = moduleService.resolveModule(resourcePath);
+        final BuildResults buildResults = buildService.build(module);
         assertNotNull(buildResults);
         assertEquals(0,
                      buildResults.getErrorMessages().size());
@@ -211,8 +211,8 @@ public class ResourceChangeIncrementalBuilderTest extends BuilderTestBase {
         final Path resourcePath = paths.convert(nioResourcePath);
 
         //Force full build before attempting incremental changes
-        final KieProject project = projectService.resolveProject(resourcePath);
-        final BuildResults buildResults = buildService.build(project);
+        final KieModule module = moduleService.resolveModule(resourcePath);
+        final BuildResults buildResults = buildService.build(module);
         assertNotNull(buildResults);
         assertEquals(0,
                      buildResults.getErrorMessages().size());
@@ -277,8 +277,8 @@ public class ResourceChangeIncrementalBuilderTest extends BuilderTestBase {
                   }});
 
         //Force full build before attempting incremental changes
-        final KieProject project = projectService.resolveProject(resourcePath1);
-        final BuildResults buildResults = buildService.build(project);
+        final KieModule module = moduleService.resolveModule(resourcePath1);
+        final BuildResults buildResults = buildService.build(module);
         assertNotNull(buildResults);
         assertEquals(0,
                      buildResults.getErrorMessages().size());

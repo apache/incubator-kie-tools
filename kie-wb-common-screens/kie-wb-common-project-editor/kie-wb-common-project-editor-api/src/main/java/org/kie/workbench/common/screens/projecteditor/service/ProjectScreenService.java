@@ -15,6 +15,7 @@
 
 package org.kie.workbench.common.screens.projecteditor.service;
 
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
@@ -23,27 +24,21 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface ProjectScreenService {
 
-    ProjectScreenModel load( final Path path );
+    ProjectScreenModel load(final Path path);
 
-    void save( final Path pathToPomXML,
-               final ProjectScreenModel model,
-               final String comment );
+    void save(final Path pathToPomXML,
+              final ProjectScreenModel model,
+              final String comment);
 
-    void save( final Path pathToPomXML,
-               final ProjectScreenModel model,
-               final String comment,
-               final DeploymentMode mode );
+    WorkspaceProject save(final Path pathToPomXML,
+                          final ProjectScreenModel model,
+                          final String comment,
+                          final DeploymentMode mode);
 
-    ProjectScreenModel rename( final Path pathToPomXML,
-                               final String renameModel,
-                               final String comment );
+    void delete(final WorkspaceProject project);
 
-    void delete( final Path pomXMLPath,
-                 final String comment );
+    void copy(final WorkspaceProject project,
+              final String newFileName);
 
-    void copy( final Path pomXMLPath,
-               final String newFileName,
-               final String commitMessage );
-
-    void reImport( Path pathToPomXML );
+    void reImport(Path pathToPomXML);
 }

@@ -29,7 +29,7 @@ import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.datamodeller.core.ElementType;
 import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationDefinitionRequest;
 import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationDefinitionResponse;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieModule;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 
 @Dependent
@@ -37,19 +37,18 @@ public class SearchAnnotationPage
         extends CreateAnnotationWizardPage
         implements SearchAnnotationPageView.Presenter {
 
-
     private SearchAnnotationPageView.SearchAnnotationHandler searchAnnotationHandler;
 
     private SearchAnnotationPageView view;
 
     @Inject
-    public SearchAnnotationPage( SearchAnnotationPageView view,
-            Caller<DataModelerService> modelerService,
-            Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent ) {
-        super( modelerService, wizardPageStatusChangeEvent );
+    public SearchAnnotationPage(SearchAnnotationPageView view,
+                                Caller<DataModelerService> modelerService,
+                                Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent) {
+        super(modelerService, wizardPageStatusChangeEvent);
         this.view = view;
-        view.init( this );
-        setTitle( Constants.INSTANCE.advanced_domain_wizard_search_page_title() );
+        view.init(this);
+        setTitle(Constants.INSTANCE.advanced_domain_wizard_search_page_title());
     }
 
     @Override
@@ -57,62 +56,62 @@ public class SearchAnnotationPage
         return view.asWidget();
     }
 
-    public void init( KieProject project, ElementType target ) {
+    public void init(KieModule project, ElementType target) {
         this.project = project;
         this.target = target;
         this.status = PageStatus.NOT_VALIDATED;
-        view.setClassName( null );
+        view.setClassName(null);
         view.clearHelpMessage();
     }
 
     @Override
     public void onSearchClass() {
         AnnotationDefinitionRequest definitionRequest = new AnnotationDefinitionRequest(
-                DataModelerUtils.trim( view.getClassName() ) );
-        modelerService.call( getOnSearchClassSuccessCallback( definitionRequest) ).resolveDefinitionRequest( definitionRequest, project );
+                DataModelerUtils.trim(view.getClassName()));
+        modelerService.call(getOnSearchClassSuccessCallback(definitionRequest)).resolveDefinitionRequest(definitionRequest, project);
     }
 
-    private RemoteCallback<AnnotationDefinitionResponse> getOnSearchClassSuccessCallback( final AnnotationDefinitionRequest definitionRequest ) {
+    private RemoteCallback<AnnotationDefinitionResponse> getOnSearchClassSuccessCallback(final AnnotationDefinitionRequest definitionRequest) {
         return new RemoteCallback<AnnotationDefinitionResponse>() {
             @Override
-            public void callback( AnnotationDefinitionResponse definitionResponse ) {
-                processAnnotationDefinitionRequest( definitionRequest, definitionResponse );
+            public void callback(AnnotationDefinitionResponse definitionResponse) {
+                processAnnotationDefinitionRequest(definitionRequest, definitionResponse);
             }
         };
     }
 
-    private void processAnnotationDefinitionRequest( AnnotationDefinitionRequest definitionRequest,
-            AnnotationDefinitionResponse definitionResponse ) {
+    private void processAnnotationDefinitionRequest(AnnotationDefinitionRequest definitionRequest,
+                                                    AnnotationDefinitionResponse definitionResponse) {
 
         annotationDefinition = definitionResponse.getAnnotationDefinition();
-        if ( definitionResponse.hasErrors() || definitionResponse.getAnnotationDefinition() == null ) {
-            setHelpMessage( Constants.INSTANCE.advanced_domain_wizard_search_page_message_class_not_found( definitionRequest.getClassName() ) );
+        if (definitionResponse.hasErrors() || definitionResponse.getAnnotationDefinition() == null) {
+            setHelpMessage(Constants.INSTANCE.advanced_domain_wizard_search_page_message_class_not_found(definitionRequest.getClassName()));
         } else {
-            setHelpMessage( Constants.INSTANCE.advanced_domain_wizard_search_page_message_annotation_is_loaded() );
+            setHelpMessage(Constants.INSTANCE.advanced_domain_wizard_search_page_message_annotation_is_loaded());
         }
 
-        setStatus( annotationDefinition != null ? PageStatus.VALIDATED : PageStatus.NOT_VALIDATED );
-        if ( searchAnnotationHandler != null ) {
-            searchAnnotationHandler.onAnnotationDefinitionChange( annotationDefinition );
+        setStatus(annotationDefinition != null ? PageStatus.VALIDATED : PageStatus.NOT_VALIDATED);
+        if (searchAnnotationHandler != null) {
+            searchAnnotationHandler.onAnnotationDefinitionChange(annotationDefinition);
         }
     }
 
     @Override
     public void onSearchClassChanged() {
-        setHelpMessage( Constants.INSTANCE.advanced_domain_wizard_search_page_message_annotation_not_loaded() );
+        setHelpMessage(Constants.INSTANCE.advanced_domain_wizard_search_page_message_annotation_not_loaded());
         annotationDefinition = null;
-        if ( searchAnnotationHandler != null ) {
+        if (searchAnnotationHandler != null) {
             searchAnnotationHandler.onSearchClassChanged();
         }
-        setStatus( PageStatus.NOT_VALIDATED );
+        setStatus(PageStatus.NOT_VALIDATED);
     }
 
     public void requestFocus() {
-        view.setClassNameFocus( true );
+        view.setClassNameFocus(true);
     }
 
     @Override
-    public void addSearchAnnotationHandler( SearchAnnotationPageView.SearchAnnotationHandler searchAnnotationHandler ) {
+    public void addSearchAnnotationHandler(SearchAnnotationPageView.SearchAnnotationHandler searchAnnotationHandler) {
         this.searchAnnotationHandler = searchAnnotationHandler;
     }
 
@@ -120,8 +119,7 @@ public class SearchAnnotationPage
         view.clearHelpMessage();
     }
 
-    void setHelpMessage( String helpMessage ) {
-        view.setHelpMessage( helpMessage );
+    void setHelpMessage(String helpMessage) {
+        view.setHelpMessage(helpMessage);
     }
-
 }

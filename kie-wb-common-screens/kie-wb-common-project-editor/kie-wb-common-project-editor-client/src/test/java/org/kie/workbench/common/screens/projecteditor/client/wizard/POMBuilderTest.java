@@ -35,56 +35,69 @@ public class POMBuilderTest {
     @Before
     public void setUp() throws Exception {
         HashMap<String, String> preferences = new HashMap<String, String>();
-        preferences.put( ApplicationPreferences.KIE_VERSION_PROPERTY_NAME, "1.2.3" );
-        ApplicationPreferences.setUp( preferences );
+        preferences.put(ApplicationPreferences.KIE_VERSION_PROPERTY_NAME,
+                        "1.2.3");
+        ApplicationPreferences.setUp(preferences);
         pomDefaultOptions = new KiePOMDefaultOptions();
         pomBuilder = new POMBuilder();
     }
 
     @Test
     public void testDefaultVersion() throws Exception {
-        assertEquals( "1.0", pomBuilder.build().getGav().getVersion() );
+        assertEquals("1.0",
+                     pomBuilder.build().getGav().getVersion());
     }
 
     @Test
     public void testDefaultPackaging() throws Exception {
-        assertEquals( "kjar", pomBuilder.build().getPackaging() );
+        assertEquals("kjar",
+                     pomBuilder.build().getPackaging());
     }
 
     @Test
     public void testContainsKieMavenPlugin() throws Exception {
-        pomBuilder.setBuildPlugins( pomDefaultOptions.getBuildPlugins() );
+        pomBuilder.setBuildPlugins(pomDefaultOptions.getBuildPlugins());
 
         ArrayList<Plugin> plugins = pomBuilder.build().getBuild().getPlugins();
 
-        assertEquals( 1, plugins.size() );
+        assertEquals(1,
+                     plugins.size());
 
-        assertEquals( "org.kie", plugins.get( 0 ).getGroupId() );
-        assertEquals( "kie-maven-plugin", plugins.get( 0 ).getArtifactId() );
-        assertEquals( "1.2.3", plugins.get( 0 ).getVersion() );
+        assertEquals("org.kie",
+                     plugins.get(0).getGroupId());
+        assertEquals("kie-maven-plugin",
+                     plugins.get(0).getArtifactId());
+        assertEquals("1.2.3",
+                     plugins.get(0).getVersion());
     }
 
     @Test
     public void testSetGAV() throws Exception {
         POM pom = pomBuilder
-                .setProjectName( "projectName" )
-                .setGroupId( "my.group" )
-                .setVersion( "2.0" )
+                .setModuleName("moduleName")
+                .setGroupId("my.group")
+                .setVersion("2.0")
                 .build();
 
-        assertEquals( "projectName", pom.getName() );
-        assertEquals( "projectName", pom.getGav().getArtifactId() );
-        assertEquals( "my.group", pom.getGav().getGroupId() );
-        assertEquals( "2.0", pom.getGav().getVersion() );
+        assertEquals("moduleName",
+                     pom.getName());
+        assertEquals("moduleName",
+                     pom.getGav().getArtifactId());
+        assertEquals("my.group",
+                     pom.getGav().getGroupId());
+        assertEquals("2.0",
+                     pom.getGav().getVersion());
     }
 
     @Test
     public void testSetName() throws Exception {
         POM pom = pomBuilder
-                .setProjectName( "project name with spaces!" )
+                .setModuleName("module name with spaces!")
                 .build();
 
-        assertEquals( "project name with spaces!", pom.getName() );
-        assertEquals( "projectnamewithspaces", pom.getGav().getArtifactId() );
+        assertEquals("module name with spaces!",
+                     pom.getName());
+        assertEquals("modulenamewithspaces",
+                     pom.getGav().getArtifactId());
     }
 }

@@ -18,13 +18,13 @@ package org.kie.workbench.common.widgets.client.datamodel.testclasses;
 import java.util.List;
 
 /**
- * Test class to check data-types are extracted correctly by ProjectDataModelOracleBuilder for subclasses and delegated classes
+ * Test class to check data-types are extracted correctly by ModuleDataModelOracleBuilder for subclasses and delegated classes
  */
 public class TestDelegatedClass {
 
     private TestSuperClass superClass;
 
-    public TestDelegatedClass( final TestSuperClass superClass ) {
+    public TestDelegatedClass(final TestSuperClass superClass) {
         this.superClass = superClass;
     }
 
@@ -32,12 +32,11 @@ public class TestDelegatedClass {
         return superClass.getField1();
     }
 
-    public void setField1( final String field1 ) {
-        this.superClass.setField1( field1 );
+    public void setField1(final String field1) {
+        this.superClass.setField1(field1);
     }
 
     public List<String> getList() {
         return this.superClass.getList();
     }
-
 }

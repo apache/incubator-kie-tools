@@ -24,7 +24,6 @@ import org.uberfire.paging.PageRequest;
 
 /**
  * This class is the input into the the {@link ImpactAnalysisService#getImpactedFiles(RefactorOperation)} operation.
- *
  */
 @Portable
 public class AbstractOperationRequest extends PageRequest {
@@ -33,32 +32,32 @@ public class AbstractOperationRequest extends PageRequest {
 
     protected OperationType changeType;
 
-    protected String projectName = ALL;
-    protected String projectRootPathURI = ALL;
+    protected String moduleName = ALL;
+    protected String moduleRootPathURI = ALL;
     protected String branchName = ALL;
 
     // git branch names may not contain ".."
-    // project names may not contain a " " (space)
+    // module names may not contain a " " (space)
     public static final String ALL = ".. all".intern();
 
     public AbstractOperationRequest() {
-        super(0,10);
+        super(0, 10);
     }
 
-    public String getProjectName() {
-        return projectName;
+    public String getModuleName() {
+        return moduleName;
     }
 
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
+    public void setModuleName(String moduleName) {
+        this.moduleName = moduleName;
     }
 
-    public String getProjectRootPathURI() {
-        return projectRootPathURI;
+    public String getModuleRootPathURI() {
+        return moduleRootPathURI;
     }
 
-    public void setProjectRootPathURI( String projectRootPathURI ) {
-        this.projectRootPathURI = projectRootPathURI;
+    public void setModuleRootPathURI(String moduleRootPathURI) {
+        this.moduleRootPathURI = moduleRootPathURI;
     }
 
     public String getBranchName() {
@@ -80,5 +79,4 @@ public class AbstractOperationRequest extends PageRequest {
     public List<ValueIndexTerm> getQueryTerms() {
         return this.queryTerms;
     }
-
 }

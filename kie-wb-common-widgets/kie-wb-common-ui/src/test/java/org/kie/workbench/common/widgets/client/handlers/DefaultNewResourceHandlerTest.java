@@ -16,19 +16,31 @@
 
 package org.kie.workbench.common.widgets.client.handlers;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
+
 import javax.enterprise.event.Event;
 
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.guvnor.common.services.project.context.ProjectContext;
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
@@ -41,17 +53,14 @@ import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 @RunWith(GwtMockitoTestRunner.class)
 public class DefaultNewResourceHandlerTest {
 
     private DefaultNewResourceHandler handler;
 
-    private ProjectContext context;
-    private KieProjectService projectService;
-    private Caller<KieProjectService> projectServiceCaller;
+    private WorkspaceProjectContext context;
+    private KieModuleService moduleService;
+    private Caller<KieModuleService> moduleServiceCaller;
     private ValidationService validationService;
     private Caller<ValidationService> validationServiceCaller;
     private PlaceManager placeManager;
@@ -61,30 +70,30 @@ public class DefaultNewResourceHandlerTest {
 
     @Before
     public void setup() {
-        context = mock( ProjectContext.class );
-        projectService = mock( KieProjectService.class );
-        projectServiceCaller = new CallerMock<>( projectService );
-        validationService = mock( ValidationService.class );
-        validationServiceCaller = new CallerMock<>( validationService );
-        placeManager = mock( PlaceManager.class );
+        context = mock(WorkspaceProjectContext.class);
+        moduleService = mock(KieModuleService.class);
+        moduleServiceCaller = new CallerMock<>(moduleService);
+        validationService = mock(ValidationService.class);
+        validationServiceCaller = new CallerMock<>(validationService);
+        placeManager = mock(PlaceManager.class);
         notificationEvent = new EventSourceMock<NotificationEvent>() {
             @Override
-            public void fire( final NotificationEvent event ) {
+            public void fire(final NotificationEvent event) {
             }
         };
-        newResourceSuccessEventMock = spy( new EventSourceMock<NewResourceSuccessEvent>() {
+        newResourceSuccessEventMock = spy(new EventSourceMock<NewResourceSuccessEvent>() {
             @Override
-            public void fire( final NewResourceSuccessEvent event ) {
+            public void fire(final NewResourceSuccessEvent event) {
             }
-        } );
-        busyIndicatorView = mock( BusyIndicatorView.class );
+        });
+        busyIndicatorView = mock(BusyIndicatorView.class);
 
-        handler = new DefaultNewResourceHandler( context,
-                                                 projectServiceCaller,
-                                                 validationServiceCaller,
-                                                 placeManager,
-                                                 notificationEvent,
-                                                 busyIndicatorView ) {
+        handler = new DefaultNewResourceHandler(context,
+                                                moduleServiceCaller,
+                                                validationServiceCaller,
+                                                placeManager,
+                                                notificationEvent,
+                                                busyIndicatorView) {
             {
                 newResourceSuccessEvent = newResourceSuccessEventMock;
             }
@@ -101,16 +110,16 @@ public class DefaultNewResourceHandlerTest {
 
             @Override
             public ResourceTypeDefinition getResourceType() {
-                final ResourceTypeDefinition resourceType = mock( ResourceTypeDefinition.class );
-                when( resourceType.getPrefix() ).thenReturn( "" );
-                when( resourceType.getSuffix() ).thenReturn( "suffix" );
+                final ResourceTypeDefinition resourceType = mock(ResourceTypeDefinition.class);
+                when(resourceType.getPrefix()).thenReturn("");
+                when(resourceType.getSuffix()).thenReturn("suffix");
                 return resourceType;
             }
 
             @Override
-            public void create( final org.guvnor.common.services.project.model.Package pkg,
-                                final String baseFileName,
-                                final NewResourcePresenter presenter ) {
+            public void create(final org.guvnor.common.services.project.model.Package pkg,
+                               final String baseFileName,
+                               final NewResourcePresenter presenter) {
 
             }
         };
@@ -118,92 +127,87 @@ public class DefaultNewResourceHandlerTest {
 
     @Test
     public void testValidateValidFileName() {
-        final org.guvnor.common.services.project.model.Package pkg = mock( Package.class );
-        final ValidatorWithReasonCallback callback = mock( ValidatorWithReasonCallback.class );
-        when( validationService.isFileNameValid( "filename.suffix" ) ).thenReturn( true );
+        final org.guvnor.common.services.project.model.Package pkg = mock(Package.class);
+        final ValidatorWithReasonCallback callback = mock(ValidatorWithReasonCallback.class);
+        when(validationService.isFileNameValid("filename.suffix")).thenReturn(true);
 
-        handler.validate( "filename",
-                          callback );
+        handler.validate("filename",
+                         callback);
 
-        verify( callback,
-                times( 1 ) ).onSuccess();
-        verify( callback,
-                never() ).onFailure();
-        verify( callback,
-                never() ).onFailure( any( String.class ) );
+        verify(callback,
+               times(1)).onSuccess();
+        verify(callback,
+               never()).onFailure();
+        verify(callback,
+               never()).onFailure(any(String.class));
     }
 
     @Test
     public void testValidateInvalidFileName() {
-        final org.guvnor.common.services.project.model.Package pkg = mock( Package.class );
-        final ValidatorWithReasonCallback callback = mock( ValidatorWithReasonCallback.class );
-        when( validationService.isFileNameValid( "filename.suffix" ) ).thenReturn( false );
+        final org.guvnor.common.services.project.model.Package pkg = mock(Package.class);
+        final ValidatorWithReasonCallback callback = mock(ValidatorWithReasonCallback.class);
+        when(validationService.isFileNameValid("filename.suffix")).thenReturn(false);
 
-        handler.validate( "filename",
-                          callback );
+        handler.validate("filename",
+                         callback);
 
-        verify( callback,
-                times( 1 ) ).onFailure( any( String.class ) );
-        verify( callback,
-                never() ).onFailure();
-        verify( callback,
-                never() ).onSuccess();
-    }
-
-    @Test
-    public void testAcceptContextWithNoContext() {
-        final Callback<Boolean, Void> callback = mock( Callback.class );
-
-        handler.acceptContext( callback );
-
-        verify( callback,
-                times( 1 ) ).onSuccess( false );
+        verify(callback,
+               times(1)).onFailure(any(String.class));
+        verify(callback,
+               never()).onFailure();
+        verify(callback,
+               never()).onSuccess();
     }
 
     @Test
     public void testAcceptContextWithContextWithNoProject() {
-        final Callback<Boolean, Void> callback = mock( Callback.class );
-        when( context.getActiveProject() ).thenReturn( null );
+        final Callback<Boolean, Void> callback = mock(Callback.class);
+        when(context.getActiveModule()).thenReturn(Optional.empty());
 
-        handler.acceptContext( callback );
-        verify( callback,
-                times( 1 ) ).onSuccess( false );
+        handler.acceptContext(callback);
+        verify(callback,
+               times(1)).onSuccess(false);
     }
 
     @Test
     public void testAcceptContextWithContextWithProject() {
-        final Callback<Boolean, Void> callback = mock( Callback.class );
-        when( context.getActiveProject() ).thenReturn( mock( Project.class ) );
+        final Callback<Boolean, Void> callback = mock(Callback.class);
+        when(context.getActiveModule()).thenReturn(Optional.of(mock(Module.class)));
 
-        handler.acceptContext( callback );
-        verify( callback,
-                times( 1 ) ).onSuccess( true );
+        handler.acceptContext(callback);
+        verify(callback,
+               times(1)).onSuccess(true);
     }
 
     @Test
     public void testGetCommand() {
-        final NewResourcePresenter presenter = mock( NewResourcePresenter.class );
-        final Command command = handler.getCommand( presenter );
-        assertNotNull( command );
+        final NewResourcePresenter presenter = mock(NewResourcePresenter.class);
+        final Command command = handler.getCommand(presenter);
+        assertNotNull(command);
 
         command.execute();
-        verify( presenter,
-                times( 1 ) ).show( handler );
+        verify(presenter,
+               times(1)).show(handler);
     }
 
     @Test
     public void testCreateSuccessCallback() {
-        final ArgumentCaptor<Path> pathArgumentCaptor = ArgumentCaptor.forClass( Path.class );
-        final NewResourcePresenter presenter = mock( NewResourcePresenter.class );
+        final ArgumentCaptor<Path> pathArgumentCaptor = ArgumentCaptor.forClass(Path.class);
+        final NewResourcePresenter presenter = mock(NewResourcePresenter.class);
 
-        final Path path = mock( Path.class );
-        handler.getSuccessCallback( presenter ).callback( path );
+        final Path path = mock(Path.class);
+        handler.getSuccessCallback(presenter).callback(path);
 
-        verify( busyIndicatorView, times( 1 ) ).hideBusyIndicator();
-        verify( presenter, times( 1 ) ).complete();
-        verify( newResourceSuccessEventMock, times( 1 ) ).fire( any( NewResourceSuccessEvent.class ) );
-        verify( placeManager, times( 1 ) ).goTo( pathArgumentCaptor.capture() );
+        verify(busyIndicatorView,
+               times(1)).hideBusyIndicator();
+        verify(presenter,
+               times(1)).complete();
+        verify(newResourceSuccessEventMock,
+               times(1)).fire(any(NewResourceSuccessEvent.class));
+        verify(placeManager,
+               times(1)).goTo(pathArgumentCaptor.capture());
 
-        assertEquals( path, pathArgumentCaptor.getValue() );
+        assertEquals(path,
+                     pathArgumentCaptor.getValue());
     }
 }

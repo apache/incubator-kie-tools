@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.junit.Test;
-import org.kie.workbench.common.screens.library.api.index.LibraryValueProjectRootPathIndexTerm;
+import org.kie.workbench.common.screens.library.api.index.LibraryValueModuleRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.DefaultResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
@@ -29,7 +29,7 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.valueterm
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm.TermSearchType;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.paging.PageResponse;
@@ -73,19 +73,19 @@ public class FindAllLibraryAssetsSortedQueryTest
     }
 
     @Override
-    protected KieProjectService getProjectService() {
+    protected KieModuleService getModuleService() {
 
-        final KieProjectService mock = super.getProjectService();
+        final KieModuleService mock = super.getModuleService();
 
-        when(mock.resolveProject(any(Path.class)))
+        when(mock.resolveModule(any(Path.class)))
                 .thenAnswer((Answer) invocationOnMock -> {
                     Path resource = (Path) invocationOnMock.getArguments()[0];
                     if (resource.toURI().contains(TEST_PROJECT_ROOT1)) {
-                        return getKieProjectMock(TEST_PROJECT_ROOT1,
-                                                 TEST_PROJECT_NAME1);
+                        return getKieModuleMock(TEST_PROJECT_ROOT1,
+                                                TEST_PROJECT_NAME1);
                     } else if (resource.toURI().contains(TEST_PROJECT_ROOT2)) {
-                        return getKieProjectMock(TEST_PROJECT_ROOT2,
-                                                 TEST_PROJECT_NAME2);
+                        return getKieModuleMock(TEST_PROJECT_ROOT2,
+                                                TEST_PROJECT_NAME2);
                     } else {
                         return null;
                     }
@@ -100,8 +100,8 @@ public class FindAllLibraryAssetsSortedQueryTest
 
         final RefactoringPageRequest request = new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
                                                                           new HashSet<ValueIndexTerm>() {{
-                                                                              add(new LibraryValueProjectRootPathIndexTerm(TEST_PROJECT_ROOT1,
-                                                                                                                           TermSearchType.WILDCARD));
+                                                                              add(new LibraryValueModuleRootPathIndexTerm(TEST_PROJECT_ROOT1,
+                                                                                                                          TermSearchType.WILDCARD));
                                                                           }},
                                                                           0,
                                                                           10);
@@ -128,8 +128,8 @@ public class FindAllLibraryAssetsSortedQueryTest
 
         final RefactoringPageRequest request1 = new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
                                                                            new HashSet<ValueIndexTerm>() {{
-                                                                               add(new LibraryValueProjectRootPathIndexTerm(TEST_PROJECT_ROOT2,
-                                                                                                                            TermSearchType.WILDCARD));
+                                                                               add(new LibraryValueModuleRootPathIndexTerm(TEST_PROJECT_ROOT2,
+                                                                                                                           TermSearchType.WILDCARD));
                                                                            }},
                                                                            0,
                                                                            4);
@@ -152,8 +152,8 @@ public class FindAllLibraryAssetsSortedQueryTest
 
         final RefactoringPageRequest request2 = new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
                                                                            new HashSet<ValueIndexTerm>() {{
-                                                                               add(new LibraryValueProjectRootPathIndexTerm(TEST_PROJECT_ROOT2,
-                                                                                                                            TermSearchType.WILDCARD));
+                                                                               add(new LibraryValueModuleRootPathIndexTerm(TEST_PROJECT_ROOT2,
+                                                                                                                           TermSearchType.WILDCARD));
                                                                            }},
                                                                            4,
                                                                            4);

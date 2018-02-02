@@ -24,7 +24,7 @@ import org.kie.workbench.common.screens.datasource.management.backend.core.DataS
 import org.kie.workbench.common.screens.datasource.management.backend.service.DataSourceServicesHelper;
 import org.kie.workbench.common.screens.datasource.management.model.Def;
 import org.kie.workbench.common.screens.datasource.management.util.DataSourceEventHelper;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.io.IOService;
 
 /**
@@ -33,28 +33,32 @@ import org.uberfire.io.IOService;
  * WildflyDataSourceProvider and WildflyDriverProvider implementations.
  */
 @ApplicationScoped
-@Named( value = "DomainModeChangeHandler" )
+@Named(value = "DomainModeChangeHandler")
 public class DomainModeChangeHandler extends AbstractDefChangeHandler {
 
-    public DomainModeChangeHandler( ) {
+    public DomainModeChangeHandler() {
     }
 
     @Inject
-    public DomainModeChangeHandler( DataSourceRuntimeManager runtimeManager,
-                                    DataSourceServicesHelper serviceHelper,
-                                    @Named( "ioStrategy" ) IOService ioService,
-                                    KieProjectService projectService,
-                                    DataSourceEventHelper eventHelper ) {
-        super( runtimeManager, serviceHelper, ioService, projectService, eventHelper );
+    public DomainModeChangeHandler(DataSourceRuntimeManager runtimeManager,
+                                   DataSourceServicesHelper serviceHelper,
+                                   @Named("ioStrategy") IOService ioService,
+                                   KieModuleService moduleService,
+                                   DataSourceEventHelper eventHelper) {
+        super(runtimeManager,
+              serviceHelper,
+              ioService,
+              moduleService,
+              eventHelper);
     }
 
     @Override
-    protected void unDeploy( Def def ) throws Exception {
+    protected void unDeploy(Def def) throws Exception {
         //avoid un-deployments in this mode.
     }
 
     @Override
-    protected void deploy( Def def ) throws Exception {
+    protected void deploy(Def def) throws Exception {
         //avoid deployments in this mode.
     }
 }

@@ -22,7 +22,6 @@ import org.kie.workbench.common.services.refactoring.service.ResourceType;
 
 /**
  * This class is the input into the the {@link ImpactAnalysisService#getImpactedFiles(RefactorOperation)} operation.
- *
  */
 @Portable
 public class QueryOperationRequest extends AbstractOperationRequest {
@@ -35,7 +34,7 @@ public class QueryOperationRequest extends AbstractOperationRequest {
 
     public static RefactorOperationBuilder<QueryOperationRequest>.PossiblyRequiresPart references(
             String fullyQualifiedResourceName,
-            ResourceType type ) {
+            ResourceType type) {
 
         RefactorOperationBuilder<QueryOperationRequest> builder = RefactorOperationBuilderFactory.newResourceBasedInstance(
                 fullyQualifiedResourceName, type, OperationType.QUERY);
@@ -52,44 +51,43 @@ public class QueryOperationRequest extends AbstractOperationRequest {
         return builder.possiblyRequiresPart(builder);
     }
 
-    public static RefactorOperationBuilder<QueryOperationRequest>.RequiresProject referencesSharedPart(
+    public static RefactorOperationBuilder<QueryOperationRequest>.RequiresModule referencesSharedPart(
             String fullyQualifiedPartName,
-            PartType partType ) {
+            PartType partType) {
 
         RefactorOperationBuilder<QueryOperationRequest> builder = RefactorOperationBuilderFactory.newSharedPartBasedInstance(
                 fullyQualifiedPartName, partType, OperationType.QUERY);
-        return builder.requiresProject(builder);
+        return builder.requiresModule(builder);
     }
 
-    public static RefactorOperationBuilder<QueryOperationRequest>.RequiresProject referencesSharedPart(
+    public static RefactorOperationBuilder<QueryOperationRequest>.RequiresModule referencesSharedPart(
             String fullyQualifiedPartName,
             PartType partType,
             TermSearchType searchType) {
 
         RefactorOperationBuilder<QueryOperationRequest> builder = RefactorOperationBuilderFactory.newSharedPartBasedInstance(
                 fullyQualifiedPartName, partType, searchType, OperationType.QUERY);
-        return builder.requiresProject(builder);
+        return builder.requiresModule(builder);
     }
 
-    public static RefactorOperationBuilder<QueryOperationRequest>.RequiresProject referencesPart(
+    public static RefactorOperationBuilder<QueryOperationRequest>.RequiresModule referencesPart(
             String fullyQualifiedResourceName,
             String fullyQualifiedPartName,
-            PartType partType ) {
+            PartType partType) {
 
         RefactorOperationBuilder<QueryOperationRequest> builder = RefactorOperationBuilderFactory.newResourcePartBasedInstance(
                 fullyQualifiedResourceName, fullyQualifiedPartName, partType, OperationType.QUERY);
-        return builder.requiresProject(builder);
+        return builder.requiresModule(builder);
     }
 
-    public static RefactorOperationBuilder<QueryOperationRequest>.RequiresProject referencesPart(
+    public static RefactorOperationBuilder<QueryOperationRequest>.RequiresModule referencesPart(
             String fullyQualifiedResourceName,
             String fullyQualifiedPartName,
             PartType partType,
-            TermSearchType searchType ) {
+            TermSearchType searchType) {
 
         RefactorOperationBuilder<QueryOperationRequest> builder = RefactorOperationBuilderFactory.newResourcePartBasedInstance(
                 fullyQualifiedResourceName, fullyQualifiedPartName, partType, searchType, OperationType.QUERY);
-        return builder.requiresProject(builder);
+        return builder.requiresModule(builder);
     }
-
 }

@@ -19,10 +19,11 @@ package org.kie.workbench.common.forms.editor.client.editor;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import com.google.gwtmockito.GwtMock;
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
-import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -139,7 +140,7 @@ public class FormEditorPresenterAbstractTest {
     protected ProjectController projectController;
 
     @Mock
-    protected ProjectContext workbenchContext;
+    protected WorkspaceProjectContext workbenchContext;
 
     @Mock
     protected DeletePopUpView deletePopUpView;
@@ -196,6 +197,12 @@ public class FormEditorPresenterAbstractTest {
         modelProperties = new ArrayList<>(model.getProperties());
 
         employeeFields = new ArrayList<>(form.getFields());
+
+        when(workbenchContext.getActiveOrganizationalUnit()).thenReturn(Optional.empty());
+        when(workbenchContext.getActiveWorkspaceProject()).thenReturn(Optional.empty());
+        when(workbenchContext.getActiveModule()).thenReturn(Optional.empty());
+        when(workbenchContext.getActiveRepositoryRoot()).thenReturn(Optional.empty());
+        when(workbenchContext.getActivePackage()).thenReturn(Optional.empty());
     }
 
     protected void loadContent() {

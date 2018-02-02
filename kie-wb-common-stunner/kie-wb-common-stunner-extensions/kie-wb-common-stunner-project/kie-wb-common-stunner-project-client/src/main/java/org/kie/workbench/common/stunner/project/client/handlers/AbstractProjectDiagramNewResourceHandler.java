@@ -72,11 +72,11 @@ public abstract class AbstractProjectDiagramNewResourceHandler<R extends ClientR
         final Class<?> type = getDefinitionSetType();
         final String setId = getId(type);
         final String projPkg = pkg.getPackageName();
-        final String projName = pkg.getProjectRootPath().getFileName();
+        final String moduleName = pkg.getModuleRootPath().getFileName();
         projectDiagramServices.create(path,
                                       name,
                                       setId,
-                                      projName,
+                                      moduleName,
                                       projPkg,
                                       new ServiceCallback<Path>() {
                                           @Override

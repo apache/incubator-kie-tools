@@ -18,7 +18,7 @@ package org.kie.workbench.common.services.backend.builder.service;
 
 import java.util.function.Consumer;
 
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +32,7 @@ import org.mockito.stubbing.Answer;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class BuildInfoServiceTest {
 
     @Mock
@@ -44,7 +44,7 @@ public class BuildInfoServiceTest {
     private LRUBuilderCache cache;
 
     @Mock
-    private Project project;
+    private Module module;
 
     @Mock
     private Builder builder;
@@ -53,52 +53,52 @@ public class BuildInfoServiceTest {
     private Builder builderNotBuilt;
 
     @Before
-    public void setUp( ) {
-        buildInfoService = new BuildInfoService( buildService, cache );
+    public void setUp() {
+        buildInfoService = new BuildInfoService(buildService, cache);
     }
 
     @Test
-    public void testGetBuildInfoWhenProjectIsBuilt( ) {
-        when( cache.getBuilder( project ) ).thenReturn( builder );
-        when( builder.isBuilt( ) ).thenReturn( true );
-        BuildInfo expectedBuildInfo = new BuildInfoImpl( builder );
+    public void testGetBuildInfoWhenModuleIsBuilt() {
+        when(cache.getBuilder(module)).thenReturn(builder);
+        when(builder.isBuilt()).thenReturn(true);
+        BuildInfo expectedBuildInfo = new BuildInfoImpl(builder);
 
-        BuildInfo result = buildInfoService.getBuildInfo( project );
+        BuildInfo result = buildInfoService.getBuildInfo(module);
 
-        assertEquals( expectedBuildInfo, result );
-        verify( cache, times( 1 ) ).getBuilder( project );
-        verify( buildService, never( ) ).build( eq( project ), any( Consumer.class ) );
+        assertEquals(expectedBuildInfo, result);
+        verify(cache, times(1)).getBuilder(module);
+        verify(buildService, never()).build(eq(module), any(Consumer.class));
     }
 
     @Test
-    public void testGetBuildInfoWhenProjectIsNotBuilt( ) {
+    public void testGetBuildInfoWhenModuleIsNotBuilt() {
         //the builder exists, but was never built.
-        when( cache.getBuilder( project ) ).thenReturn( builderNotBuilt );
-        when( builderNotBuilt.isBuilt( ) ).thenReturn( false );
-        testBuildIsRequired( );
+        when(cache.getBuilder(module)).thenReturn(builderNotBuilt);
+        when(builderNotBuilt.isBuilt()).thenReturn(false);
+        testBuildIsRequired();
     }
 
     @Test
-    public void testGetBuildInfoWhenBuilerNotExist( ) {
+    public void testGetBuildInfoWhenBuilerNotExist() {
         //the builder don't exists.
-        when( cache.getBuilder( project ) ).thenReturn( null );
-        testBuildIsRequired( );
+        when(cache.getBuilder(module)).thenReturn(null);
+        testBuildIsRequired();
     }
 
-    private void testBuildIsRequired( ) {
-        doAnswer( new Answer< Void >( ) {
-            public Void answer( InvocationOnMock invocation ) {
-                Consumer consumer = ( Consumer ) invocation.getArguments( )[ 1 ];
-                consumer.accept( builder );
+    private void testBuildIsRequired() {
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Consumer consumer = (Consumer) invocation.getArguments()[1];
+                consumer.accept(builder);
                 return null;
             }
-        } ).when( buildService ).build( eq( project ), any( Consumer.class ) );
+        }).when(buildService).build(eq(module), any(Consumer.class));
 
-        BuildInfo result = buildInfoService.getBuildInfo( project );
-        BuildInfo expectedBuildInfo = new BuildInfoImpl( builder );
+        BuildInfo result = buildInfoService.getBuildInfo(module);
+        BuildInfo expectedBuildInfo = new BuildInfoImpl(builder);
 
-        assertEquals( expectedBuildInfo, result );
-        verify( cache, times( 1 ) ).getBuilder( project );
-        verify( buildService, times( 1 ) ).build( eq( project ), any( Consumer.class ) );
+        assertEquals(expectedBuildInfo, result);
+        verify(cache, times(1)).getBuilder(module);
+        verify(buildService, times(1)).build(eq(module), any(Consumer.class));
     }
 }

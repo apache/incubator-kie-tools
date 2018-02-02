@@ -15,37 +15,34 @@
  */
 package org.kie.workbench.common.services.backend.builder.core;
 
-import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
+import org.guvnor.common.services.project.builder.events.InvalidateDMOModuleCacheEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
 
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LRUPomModelCacheTest {
 
     @Mock
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     @Mock
     private SessionInfo sessionInfo;
 
     @Mock
-    private KieProject project;
+    private KieModule module;
 
     @Mock
-    private KieProject otherProject;
+    private KieModule otherModule;
 
     @Mock
     private Path resourcePath;
@@ -54,20 +51,20 @@ public class LRUPomModelCacheTest {
 
     @Before
     public void setup() {
-        this.cache = spy(new LRUPomModelCache(projectService));
+        this.cache = spy(new LRUPomModelCache(moduleService));
     }
 
     @Test
     public void testCacheIsInvalidatedWhenResourceThatMapsToProject() {
-        final InvalidateDMOProjectCacheEvent event = new InvalidateDMOProjectCacheEvent(sessionInfo,
-                                                                                        project,
-                                                                                        resourcePath);
-        doReturn(project).when(projectService).resolveProject(resourcePath);
+        final InvalidateDMOModuleCacheEvent event = new InvalidateDMOModuleCacheEvent(sessionInfo,
+                                                                                      module,
+                                                                                      resourcePath);
+        doReturn(module).when(moduleService).resolveModule(resourcePath);
 
         cache.invalidateProjectCache(event);
 
-        verify(cache).invalidateCache(eq(project));
+        verify(cache).invalidateCache(eq(module));
         verify(cache,
-               never()).invalidateCache(eq(otherProject));
+               never()).invalidateCache(eq(otherModule));
     }
 }

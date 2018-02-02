@@ -23,9 +23,9 @@ import org.apache.lucene.analysis.DelegatingAnalyzerWrapper;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.util.CharArraySet;
+import org.kie.workbench.common.services.refactoring.model.index.terms.ModuleNameIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.ModuleRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.PackageNameIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectNameIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.ReferenceIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.SharedPartIndexTerm;
 import org.kie.workbench.common.services.refactoring.service.PartType;
@@ -77,8 +77,8 @@ public final class ImpactAnalysisAnalyzerWrapper extends DelegatingAnalyzerWrapp
     private static final String RESOURCE_REF_FIELD_NAME_BEGIN = ReferenceIndexTerm.TERM + ":";
     private static final String SHARED_PART_REF_FIELD_NAME_BEGIN = SharedPartIndexTerm.TERM + ":";
     private static final String PACKAGE_NAME_FIELD_NAME = PackageNameIndexTerm.TERM;
-    private static final String PROJECT_NAME_FIELD_NAME = ProjectNameIndexTerm.TERM;
-    private static final String PROJECT_ROOT_PATH_FIELD_NAME = ProjectRootPathIndexTerm.TERM;
+    private static final String PROJECT_NAME_FIELD_NAME = ModuleNameIndexTerm.TERM;
+    private static final String PROJECT_ROOT_PATH_FIELD_NAME = ModuleRootPathIndexTerm.TERM;
     private static final String[] PART_FIELD_NAME_BEGINS;
 
     static {

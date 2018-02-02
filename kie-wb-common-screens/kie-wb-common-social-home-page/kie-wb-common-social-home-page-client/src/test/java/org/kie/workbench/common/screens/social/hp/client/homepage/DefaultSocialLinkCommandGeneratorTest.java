@@ -15,13 +15,13 @@
  */
 package org.kie.workbench.common.screens.social.hp.client.homepage;
 
-import org.guvnor.common.services.project.social.ProjectEventType;
+import org.ext.uberfire.social.activities.client.widgets.item.model.LinkCommandParams;
+import org.ext.uberfire.social.activities.model.SocialFileSelectedEvent;
+import org.guvnor.common.services.project.social.ModuleEventType;
 import org.guvnor.structure.social.OrganizationalUnitEventType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ext.uberfire.social.activities.client.widgets.item.model.LinkCommandParams;
-import org.ext.uberfire.social.activities.model.SocialFileSelectedEvent;
 import org.kie.workbench.common.workbench.client.PerspectiveIds;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -33,9 +33,8 @@ import org.uberfire.security.authz.AuthorizationManager;
 
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class DefaultSocialLinkCommandGeneratorTest {
-
 
     DefaultSocialLinkCommandGenerator generator;
     private ParameterizedCommand<LinkCommandParams> command;
@@ -52,7 +51,10 @@ public class DefaultSocialLinkCommandGeneratorTest {
 
     @Before
     public void setUp() throws Exception {
-        generator = new DefaultSocialLinkCommandGenerator( authorizationManager, placeManager, eventSourceMock, mock( SessionInfo.class ) ) {
+        generator = new DefaultSocialLinkCommandGenerator(authorizationManager,
+                                                          placeManager,
+                                                          eventSourceMock,
+                                                          mock(SessionInfo.class)) {
             @Override
             void generateNoRightsPopup() {
             }
@@ -64,89 +66,85 @@ public class DefaultSocialLinkCommandGeneratorTest {
         };
 
         command = generator.generateLinkCommand();
-
     }
 
     @Test
     public void setHasAccessRightsForAuthoringPerspectiveFeatureVFSLink() throws Exception {
         hasAccessToPerspective = true;
 
-        final LinkCommandParams parameter = mock( LinkCommandParams.class );
-        when( parameter.isVFSLink() ).thenReturn( true );
-        command.execute( parameter );
+        final LinkCommandParams parameter = mock(LinkCommandParams.class);
+        when(parameter.isVFSLink()).thenReturn(true);
+        command.execute(parameter);
 
-        verify( eventSourceMock ).fire( any( SocialFileSelectedEvent.class ) );
-
+        verify(eventSourceMock).fire(any(SocialFileSelectedEvent.class));
     }
 
     @Test
     public void setHasNoAccessRightsForAuthoringPerspectiveFeatureVFSLink() throws Exception {
         hasAccessToPerspective = false;
 
-        final LinkCommandParams parameter = mock( LinkCommandParams.class );
-        when( parameter.isVFSLink() ).thenReturn( true );
-        command.execute( parameter );
+        final LinkCommandParams parameter = mock(LinkCommandParams.class);
+        when(parameter.isVFSLink()).thenReturn(true);
+        command.execute(parameter);
 
-        verify( placeManager, never() ).goTo( PerspectiveIds.LIBRARY );
-        verify( eventSourceMock, never() ).fire( any( SocialFileSelectedEvent.class ) );
-
+        verify(placeManager,
+               never()).goTo(PerspectiveIds.LIBRARY);
+        verify(eventSourceMock,
+               never()).fire(any(SocialFileSelectedEvent.class));
     }
-
 
     @Test
     public void setHasAccessRightsForAuthoringPerspectiveFeatureOUEvent() throws Exception {
         hasAccessToPerspective = true;
 
-        final LinkCommandParams parameter = mock( LinkCommandParams.class );
-        when( parameter.isVFSLink() ).thenReturn( false );
-        when( parameter.getEventType() ).thenReturn( OrganizationalUnitEventType.NEW_ORGANIZATIONAL_UNIT.name() );
-        command.execute( parameter );
+        final LinkCommandParams parameter = mock(LinkCommandParams.class);
+        when(parameter.isVFSLink()).thenReturn(false);
+        when(parameter.getEventType()).thenReturn(OrganizationalUnitEventType.NEW_ORGANIZATIONAL_UNIT.name());
+        command.execute(parameter);
 
-        verify( placeManager ).goTo( PerspectiveIds.ADMINISTRATION);
-        verify( placeManager ).goTo( "org.kie.workbench.common.screens.organizationalunit.manager.OrganizationalUnitManager" );
-
+        verify(placeManager).goTo(PerspectiveIds.ADMINISTRATION);
+        verify(placeManager).goTo("org.kie.workbench.common.screens.organizationalunit.manager.OrganizationalUnitManager");
     }
 
     @Test
     public void setHasNoAccessRightsForAuthoringPerspectiveFeatureOUEvent() throws Exception {
         hasAccessToPerspective = false;
 
-        final LinkCommandParams parameter = mock( LinkCommandParams.class );
-        when( parameter.isVFSLink() ).thenReturn( false );
-        when( parameter.getEventType() ).thenReturn( OrganizationalUnitEventType.NEW_ORGANIZATIONAL_UNIT.name() );
-        command.execute( parameter );
+        final LinkCommandParams parameter = mock(LinkCommandParams.class);
+        when(parameter.isVFSLink()).thenReturn(false);
+        when(parameter.getEventType()).thenReturn(OrganizationalUnitEventType.NEW_ORGANIZATIONAL_UNIT.name());
+        command.execute(parameter);
 
-        verify( placeManager, never() ).goTo( PerspectiveIds.ADMINISTRATION);
-        verify( placeManager, never() ).goTo( "org.kie.workbench.common.screens.organizationalunit.manager.OrganizationalUnitManager" );
-
+        verify(placeManager,
+               never()).goTo(PerspectiveIds.ADMINISTRATION);
+        verify(placeManager,
+               never()).goTo("org.kie.workbench.common.screens.organizationalunit.manager.OrganizationalUnitManager");
     }
 
     @Test
-    public void setHasAccessRightsForAuthoringPerspectiveFeatureProjectEvent() throws Exception {
+    public void setHasAccessRightsForAuthoringPerspectiveFeatureModuleEvent() throws Exception {
         hasAccessToPerspective = true;
 
-        final LinkCommandParams parameter = mock( LinkCommandParams.class );
-        when( parameter.isVFSLink() ).thenReturn( false );
-        when( parameter.getEventType() ).thenReturn( ProjectEventType.NEW_PROJECT.name() );
-        command.execute( parameter );
+        final LinkCommandParams parameter = mock(LinkCommandParams.class);
+        when(parameter.isVFSLink()).thenReturn(false);
+        when(parameter.getEventType()).thenReturn(ModuleEventType.NEW_MODULE.name());
+        command.execute(parameter);
 
-        verify( eventSourceMock ).fire( any( SocialFileSelectedEvent.class ) );
-
+        verify(eventSourceMock).fire(any(SocialFileSelectedEvent.class));
     }
 
     @Test
-    public void setHasNoAccessRightsForAuthoringPerspectiveFeatureProjectEvent() throws Exception {
+    public void setHasNoAccessRightsForAuthoringPerspectiveFeatureModuleEvent() throws Exception {
         hasAccessToPerspective = false;
 
-        final LinkCommandParams parameter = mock( LinkCommandParams.class );
-        when( parameter.isVFSLink() ).thenReturn( false );
-        when( parameter.getEventType() ).thenReturn( ProjectEventType.NEW_PROJECT.name() );
-        command.execute( parameter );
+        final LinkCommandParams parameter = mock(LinkCommandParams.class);
+        when(parameter.isVFSLink()).thenReturn(false);
+        when(parameter.getEventType()).thenReturn(ModuleEventType.NEW_MODULE.name());
+        command.execute(parameter);
 
-        verify( placeManager, never() ).goTo( PerspectiveIds.ADMINISTRATION );
-        verify( placeManager, never() ).goTo( "org.kie.workbench.common.screens.organizationalunit.manager.OrganizationalUnitManager" );
-
+        verify(placeManager,
+               never()).goTo(PerspectiveIds.ADMINISTRATION);
+        verify(placeManager,
+               never()).goTo("org.kie.workbench.common.screens.organizationalunit.manager.OrganizationalUnitManager");
     }
-
-
 }

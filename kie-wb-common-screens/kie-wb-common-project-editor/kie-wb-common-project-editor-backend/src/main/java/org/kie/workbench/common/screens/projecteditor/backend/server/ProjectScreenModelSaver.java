@@ -23,17 +23,17 @@ import javax.inject.Named;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
-import org.guvnor.common.services.project.model.ProjectRepositories;
+import org.guvnor.common.services.project.model.ModuleRepositories;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
+import org.guvnor.common.services.project.service.ModuleRepositoriesService;
+import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.project.service.POMService;
-import org.guvnor.common.services.project.service.ProjectRepositoriesService;
-import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.services.backend.builder.core.LRUPomModelCache;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
 import org.uberfire.backend.server.util.Paths;
@@ -45,12 +45,12 @@ public class ProjectScreenModelSaver {
     private POMService pomService;
     private KModuleService kModuleService;
     private ProjectImportsService importsService;
-    private ProjectRepositoriesService repositoriesService;
+    private ModuleRepositoriesService repositoriesService;
     private PackageNameWhiteListService whiteListService;
 
     private IOService ioService;
-    private KieProjectService projectService;
-    private ProjectRepositoryResolver repositoryResolver;
+    private KieModuleService moduleService;
+    private ModuleRepositoryResolver repositoryResolver;
     private CommentedOptionFactory commentedOptionFactory;
 
     private LRUPomModelCache pomModelCache;
@@ -62,11 +62,11 @@ public class ProjectScreenModelSaver {
     public ProjectScreenModelSaver(final POMService pomService,
                                    final KModuleService kModuleService,
                                    final ProjectImportsService importsService,
-                                   final ProjectRepositoriesService repositoriesService,
+                                   final ModuleRepositoriesService repositoriesService,
                                    final PackageNameWhiteListService whiteListService,
                                    final @Named("ioStrategy") IOService ioService,
-                                   final KieProjectService projectService,
-                                   final ProjectRepositoryResolver repositoryResolver,
+                                   final KieModuleService moduleService,
+                                   final ModuleRepositoryResolver repositoryResolver,
                                    final CommentedOptionFactory commentedOptionFactory,
                                    final LRUPomModelCache pomModelCache) {
         this.pomService = pomService;
@@ -76,7 +76,7 @@ public class ProjectScreenModelSaver {
         this.whiteListService = whiteListService;
 
         this.ioService = ioService;
-        this.projectService = projectService;
+        this.moduleService = moduleService;
         this.repositoryResolver = repositoryResolver;
         this.commentedOptionFactory = commentedOptionFactory;
 
@@ -93,8 +93,8 @@ public class ProjectScreenModelSaver {
         }
 
         try {
-            final KieProject project = projectService.resolveProject(pathToPomXML);
-            pomModelCache.invalidateCache(project);
+            final KieModule module = moduleService.resolveModule(pathToPomXML);
+            pomModelCache.invalidateCache(module);
 
             ioService.startBatch(Paths.convert(pathToPomXML).getFileSystem(),
                                  commentedOptionFactory.makeCommentedOption(comment));
@@ -128,17 +128,17 @@ public class ProjectScreenModelSaver {
                                    final ProjectScreenModel model) {
         // Check is the POM's GAV has been changed.
         final GAV gav = model.getPOM().getGav();
-        final KieProject project = projectService.resolveProject(pathToPomXML);
+        final KieModule project = moduleService.resolveModule(pathToPomXML);
         if (gav.equals(project.getPom().getGav())) {
             return;
         }
 
-        // Check is the Project's "proposed" GAV resolves to any pre-existing artifacts.
+        // Check is the Module's "proposed" GAV resolves to any pre-existing artifacts.
         // Use the Repositories in the model since the User may update the Repositories filter and save.
-        final ProjectRepositories projectRepositories = model.getRepositories();
+        final ModuleRepositories moduleRepositories = model.getRepositories();
         final Set<MavenRepositoryMetadata> repositories = repositoryResolver.getRepositoriesResolvingArtifact(gav,
                                                                                                               project,
-                                                                                                              projectRepositories.filterByIncluded());
+                                                                                                              moduleRepositories.filterByIncluded());
         if (repositories.size() > 0) {
             throw new GAVAlreadyExistsException(gav,
                                                 repositories);

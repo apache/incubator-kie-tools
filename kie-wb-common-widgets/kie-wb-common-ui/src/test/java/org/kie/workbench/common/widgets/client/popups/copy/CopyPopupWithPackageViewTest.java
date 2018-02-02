@@ -18,7 +18,6 @@ package org.kie.workbench.common.widgets.client.popups.copy;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
-import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.Package;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
@@ -44,20 +43,22 @@ public class CopyPopupWithPackageViewTest {
 
     @Before
     public void setup() {
-        final CopyPopUpPresenter presenter = mock( CopyPopUpPresenter.class );
-        doReturn( PathFactory.newPath( "my-file.txt", "my-project/src/main/resources/my-file.txt" ) ).when( presenter ).getPath();
+        final CopyPopUpPresenter presenter = mock(CopyPopUpPresenter.class);
+        doReturn(PathFactory.newPath("my-file.txt",
+                                     "my-project/src/main/resources/my-file.txt")).when(presenter).getPath();
 
-        copyView = spy( new CopyPopupWithPackageView() );
+        copyView = spy(new CopyPopupWithPackageView());
         copyView.presenter = presenter;
-        copyView.packageListBox = mock( PackageListBox.class );
-        copyView.translationService = mock( TranslationService.class );
-        doReturn( mock( Package.class ) ).when( copyView.packageListBox ).getSelectedPackage();
-        doReturn( mock( Button.class ) ).when( copyView ).button( anyString(), any( Command.class ), any( ButtonType.class ) );
+        copyView.packageListBox = mock(PackageListBox.class);
+        copyView.translationService = mock(TranslationService.class);
+        doReturn(mock(Package.class)).when(copyView.packageListBox).getSelectedPackage();
+        doReturn(mock(Button.class)).when(copyView).button(anyString(),
+                                                           any(Command.class),
+                                                           any(ButtonType.class));
 
-        packageLoadedCommandCaptor = ArgumentCaptor.forClass( Command.class );
-        doNothing().when( copyView.packageListBox ).setContext( any( ProjectContext.class ),
-                                                                eq( true ),
-                                                                packageLoadedCommandCaptor.capture() );
+        packageLoadedCommandCaptor = ArgumentCaptor.forClass(Command.class);
+        doNothing().when(copyView.packageListBox).setUp(eq(true),
+                                                        packageLoadedCommandCaptor.capture());
     }
 
     @Test
@@ -67,16 +68,17 @@ public class CopyPopupWithPackageViewTest {
 
         copyView.packageListBoxSetup();
 
-        verify( copyView.copyButton() ).setEnabled( false );
-        verify( copyView.packageListBox ).setContext( any( ProjectContext.class ), eq( true ), any( Command.class ) );
+        verify(copyView.copyButton()).setEnabled(false);
+        verify(copyView.packageListBox).setUp(eq(true),
+                                              any(Command.class));
 
         packageLoadedCommandCaptor.getValue().execute();
 
-        verify( copyView.copyButton() ).setEnabled( true );
+        verify(copyView.copyButton()).setEnabled(true);
 
         copyView.getTargetPath();
 
-        verify( copyView.packageListBox.getSelectedPackage() ).getPackageMainResourcesPath();
+        verify(copyView.packageListBox.getSelectedPackage()).getPackageMainResourcesPath();
     }
 
     @Test
@@ -86,12 +88,16 @@ public class CopyPopupWithPackageViewTest {
 
         copyView.packageListBoxSetup();
 
-        verify( copyView.copyButton(), never() ).setEnabled( false );
-        verify( copyView.packageListBox, never() ).setContext( any( ProjectContext.class ), eq( true ), any( Command.class ) );
+        verify(copyView.copyButton(),
+               never()).setEnabled(false);
+        verify(copyView.packageListBox,
+               never()).setUp(eq(true),
+                              any(Command.class));
 
         copyView.getTargetPath();
 
-        verify( copyView.packageListBox.getSelectedPackage(), never() ).getPackageMainResourcesPath();
+        verify(copyView.packageListBox.getSelectedPackage(),
+               never()).getPackageMainResourcesPath();
     }
 
     @Test
@@ -101,12 +107,15 @@ public class CopyPopupWithPackageViewTest {
 
         copyView.packageListBoxSetup();
 
-        verify( copyView.copyButton(), never() ).setEnabled( false );
-        verify( copyView.packageListBox, never() ).setContext( any( ProjectContext.class ), eq( true ), any( Command.class ) );
+        verify(copyView.copyButton(),
+               never()).setEnabled(false);
+        verify(copyView.packageListBox,
+               never()).setUp(eq(true),
+                              any(Command.class));
 
         copyView.getTargetPath();
 
-        verify( copyView.packageListBox.getSelectedPackage() ).getPackageMainResourcesPath();
+        verify(copyView.packageListBox.getSelectedPackage()).getPackageMainResourcesPath();
     }
 
     @Test
@@ -116,35 +125,39 @@ public class CopyPopupWithPackageViewTest {
 
         copyView.packageListBoxSetup();
 
-        verify( copyView.copyButton(), never() ).setEnabled( false );
-        verify( copyView.packageListBox, never() ).setContext( any( ProjectContext.class ), eq( true ), any( Command.class ) );
+        verify(copyView.copyButton(),
+               never()).setEnabled(false);
+        verify(copyView.packageListBox,
+               never()).setUp(eq(true),
+                              any(Command.class));
 
         copyView.getTargetPath();
 
-        verify( copyView.packageListBox.getSelectedPackage(), never() ).getPackageMainResourcesPath();
+        verify(copyView.packageListBox.getSelectedPackage(),
+               never()).getPackageMainResourcesPath();
     }
 
     private void givenThatThereIsNotAnActiveProject() {
-        changeActiveProjectStatus( false );
+        changeActiveProjectStatus(false);
     }
 
     private void givenThatThereIsAnActiveProject() {
-        changeActiveProjectStatus( true );
+        changeActiveProjectStatus(true);
     }
 
-    private void changeActiveProjectStatus( boolean thereIsAnActiveProject ) {
-        doReturn( thereIsAnActiveProject ).when( copyView ).thereIsAnActiveProject();
+    private void changeActiveProjectStatus(boolean thereIsAnActiveProject) {
+        doReturn(thereIsAnActiveProject).when(copyView).thereIsAnActiveProject();
     }
 
     private void givenThatNotAProjectResourceIsBeingCopied() {
-        changeProjectResourceStatus( false );
+        changeProjectResourceStatus(false);
     }
 
     private void givenThatAProjectResourceIsBeingCopied() {
-        changeProjectResourceStatus( true );
+        changeProjectResourceStatus(true);
     }
 
-    private void changeProjectResourceStatus( boolean isAProjectResource ) {
-        doReturn( isAProjectResource ).when( copyView ).isAProjectResource( anyString() );
+    private void changeProjectResourceStatus(boolean isAProjectResource) {
+        doReturn(isAProjectResource).when(copyView).isAProjectResource(anyString());
     }
 }

@@ -18,9 +18,8 @@ package org.kie.workbench.common.screens.library.client.widgets.project;
 
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
-import org.guvnor.common.services.project.context.ProjectContext;
-import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.projecteditor.client.build.BuildExecutor;
 import org.uberfire.client.mvp.UberElement;
@@ -41,7 +40,7 @@ public class ProjectActionsWidget {
 
     private Command showSettingsCommand;
 
-    private ProjectContext projectContext;
+    private WorkspaceProjectContext projectContext;
 
     private ProjectController projectController;
 
@@ -49,7 +48,7 @@ public class ProjectActionsWidget {
     public ProjectActionsWidget(final View view,
                                 final BuildExecutor buildExecutor,
                                 final LibraryPlaces libraryPlaces,
-                                final ProjectContext projectContext,
+                                final WorkspaceProjectContext projectContext,
                                 final ProjectController projectController) {
         this.view = view;
         this.buildExecutor = buildExecutor;
@@ -72,14 +71,14 @@ public class ProjectActionsWidget {
         libraryPlaces.goToPreferences();
     }
 
-    public void compileProject() {
-        if (userCanBuildProject()) {
+    public void compileModule() {
+        if (userCanBuildModule()) {
             buildExecutor.triggerBuild();
         }
     }
 
     public void buildAndDeployProject() {
-        if (userCanBuildProject()) {
+        if (userCanBuildModule()) {
             buildExecutor.triggerBuildAndDeploy();
         }
     }
@@ -88,9 +87,9 @@ public class ProjectActionsWidget {
         libraryPlaces.goToMessages();
     }
 
-    public boolean userCanBuildProject() {
-        final Project activeProject = projectContext.getActiveProject();
-        return projectController.canBuildProjects() && projectController.canBuildProject(activeProject);
+    public boolean userCanBuildModule() {
+        return projectController.canBuildProjects() && projectController.canBuildProject(projectContext.getActiveWorkspaceProject()
+                                                                                                       .orElseThrow(() -> new IllegalStateException("Cannot query if project is buildable without an active project.")));
     }
 
     public View getView() {

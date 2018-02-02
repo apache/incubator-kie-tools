@@ -15,10 +15,9 @@
  */
 package org.kie.workbench.common.screens.library.api;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
@@ -27,22 +26,14 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 @Portable
 public class LibraryInfo {
 
-    private String selectedBranch;
-    private List<Project> projects = new ArrayList<>();
+    private Collection<WorkspaceProject> projects;
 
-    public LibraryInfo(@MapsTo("selectedBranch") final String selectedBranch,
-                       @MapsTo("projects") final List<Project> projects) {
-        this.selectedBranch = checkNotNull("selectedBranch",
-                                           selectedBranch);
+    public LibraryInfo(@MapsTo("projects") final Collection<WorkspaceProject> projects) {
         this.projects = checkNotNull("projects",
                                      projects);
     }
 
-    public String getSelectedBranch() {
-        return selectedBranch;
-    }
-
-    public List<Project> getProjects() {
+    public Collection<WorkspaceProject> getProjects() {
         return projects;
     }
 
@@ -57,17 +48,12 @@ public class LibraryInfo {
 
         final LibraryInfo that = (LibraryInfo) o;
 
-        if (getSelectedBranch() != null ? !getSelectedBranch().equals(that.getSelectedBranch()) : that.getSelectedBranch() != null) {
-            return false;
-        }
         return !(getProjects() != null ? !getProjects().equals(that.getProjects()) : that.getProjects() != null);
     }
 
     @Override
     public int hashCode() {
-        int result = getSelectedBranch() != null ? getSelectedBranch().hashCode() : 0;
-        result = ~~result;
-        result = 31 * result + (getProjects() != null ? getProjects().hashCode() : 0);
+        int result = getProjects() != null ? getProjects().hashCode() : 0;
         result = ~~result;
         return result;
     }

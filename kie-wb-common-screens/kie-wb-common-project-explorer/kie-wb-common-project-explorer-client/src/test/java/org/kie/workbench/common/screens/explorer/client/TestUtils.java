@@ -16,23 +16,23 @@
 
 package org.kie.workbench.common.screens.explorer.client;
 
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.uberfire.backend.vfs.Path;
 
 import static org.mockito.Mockito.*;
 
 public class TestUtils {
 
-    public static Project getProjectMock( final String uri ) {
-        final Project project = mock( Project.class );
-        final Path path = getPathMock( uri );
-        when( project.getRootPath() ).thenReturn( path );
-        return project;
+    public static Module getModuleMock(final String uri) {
+        final Module module = mock(Module.class);
+        final Path path = getPathMock(uri);
+        when(module.getRootPath()).thenReturn(path);
+        return module;
     }
 
-    public static Path getPathMock( final String uri ) {
-        final Path path = mock( Path.class );
-        when( path.toURI() ).thenReturn( uri );
+    public static Path getPathMock(final String uri) {
+        final Path path = mock(Path.class);
+        when(path.toURI()).thenReturn(uri);
         return path;
     }
 }

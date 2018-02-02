@@ -23,7 +23,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceSuccessEvent;
 import org.mockito.ArgumentCaptor;
@@ -85,7 +85,7 @@ public class NewFileUploaderTest {
     };
 
     @Mock
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     private NewFileUploader uploader;
 
@@ -95,7 +95,7 @@ public class NewFileUploaderTest {
                                        options,
                                        resourceType,
                                        busyIndicatorView,
-                                       new CallerMock<>(projectService)) {
+                                       new CallerMock<>(moduleService)) {
             {
                 super.notificationEvent = mockNotificationEvent;
                 super.newResourceSuccessEvent = newResourceSuccessEventMock;
@@ -107,7 +107,7 @@ public class NewFileUploaderTest {
                 return uri;
             }
         };
-        when(projectService.resolveDefaultPath(pkg, "txt")).thenReturn(pkgResourcesPath);
+        when(moduleService.resolveDefaultPath(pkg, "txt")).thenReturn(pkgResourcesPath);
         when(pkgResourcesPath.toURI()).thenReturn("default://p0/src/main/resources");
         when(options.getFormFileName()).thenReturn("file.txt");
     }
@@ -118,7 +118,7 @@ public class NewFileUploaderTest {
                         "file.txt",
                         presenter);
 
-        verify(projectService,
+        verify(moduleService,
                times(1)).resolveDefaultPath(pkg, "txt");
         verify(busyIndicatorView,
                times(1)).showBusyIndicator(any(String.class));
@@ -135,7 +135,7 @@ public class NewFileUploaderTest {
                         "file",
                         presenter);
 
-        verify(projectService,
+        verify(moduleService,
                times(1)).resolveDefaultPath(pkg, "txt");
         verify(busyIndicatorView,
                times(1)).showBusyIndicator(any(String.class));
@@ -155,7 +155,7 @@ public class NewFileUploaderTest {
                         "file",
                         presenter);
 
-        verify(projectService,
+        verify(moduleService,
                times(1)).resolveDefaultPath(pkg, "txt");
         verify(busyIndicatorView,
                times(1)).showBusyIndicator(any(String.class));
@@ -192,7 +192,7 @@ public class NewFileUploaderTest {
                         "file",
                         presenter);
 
-        verify(projectService,
+        verify(moduleService,
                times(1)).resolveDefaultPath(pkg, "txt");
         verify(busyIndicatorView,
                times(1)).showBusyIndicator(any(String.class));

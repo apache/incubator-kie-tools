@@ -24,7 +24,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -59,11 +59,11 @@ public class DataSourceDefEditorHelper {
 
     private DataSourceDefMainPanel mainPanel;
 
-    private Map<String, DriverDefInfo> driverDefMap = new HashMap<>(  );
+    private Map<String, DriverDefInfo> driverDefMap = new HashMap<>();
 
     private DataSourceDefMainPanelView.Handler handler;
 
-    private Project project;
+    private Module module;
 
     private boolean nameValid = false;
     private boolean connectionURLValid = false;
@@ -72,11 +72,11 @@ public class DataSourceDefEditorHelper {
     private boolean driverValid = false;
 
     @Inject
-    public DataSourceDefEditorHelper( final TranslationService translationService,
-            final Caller<DataSourceDefEditorService> editorService,
-            final Caller<DataSourceDefQueryService> queryService,
-            final ClientValidationService validationService,
-            final PopupsUtil popupsUtil ) {
+    public DataSourceDefEditorHelper(final TranslationService translationService,
+                                     final Caller<DataSourceDefEditorService> editorService,
+                                     final Caller<DataSourceDefQueryService> queryService,
+                                     final ClientValidationService validationService,
+                                     final PopupsUtil popupsUtil) {
         this.translationService = translationService;
         this.editorService = editorService;
         this.queryService = queryService;
@@ -84,10 +84,10 @@ public class DataSourceDefEditorHelper {
         this.popupsUtil = popupsUtil;
     }
 
-    public void init( final DataSourceDefMainPanel mainPanel ) {
+    public void init(final DataSourceDefMainPanel mainPanel) {
         this.mainPanel = mainPanel;
 
-        mainPanel.setHandler( new DataSourceDefMainPanelView.Handler() {
+        mainPanel.setHandler(new DataSourceDefMainPanelView.Handler() {
             @Override
             public void onNameChange() {
                 DataSourceDefEditorHelper.this.onNameChange();
@@ -117,255 +117,279 @@ public class DataSourceDefEditorHelper {
             public void onTestConnection() {
                 DataSourceDefEditorHelper.this.onTestConnection();
             }
-        } );
+        });
     }
 
-    public void setDataSourceDef( final DataSourceDef dataSourceDef ) {
+    public void setDataSourceDef(final DataSourceDef dataSourceDef) {
         this.dataSourceDef = dataSourceDef;
         mainPanel.clear();
-        mainPanel.setName( dataSourceDef.getName() );
-        mainPanel.setConnectionURL( dataSourceDef.getConnectionURL() );
-        mainPanel.setUser( dataSourceDef.getUser() );
-        mainPanel.setPassword( dataSourceDef.getPassword() );
-        mainPanel.setDriver( dataSourceDef.getDriverUuid() );
+        mainPanel.setName(dataSourceDef.getName());
+        mainPanel.setConnectionURL(dataSourceDef.getConnectionURL());
+        mainPanel.setUser(dataSourceDef.getUser());
+        mainPanel.setPassword(dataSourceDef.getPassword());
+        mainPanel.setDriver(dataSourceDef.getDriverUuid());
     }
 
-    public void setProject( Project project ) {
-        this.project = project;
+    public void setModule(final Module module) {
+        this.module = module;
     }
 
-    public void setHandler( final DataSourceDefMainPanelView.Handler handler ) {
+    public void setHandler(final DataSourceDefMainPanelView.Handler handler) {
         this.handler = handler;
     }
 
-    public void loadDrivers( final Command onSuccessCommand,
-            final ParameterizedCommand<Throwable> onErrorCommand ) {
-        if ( project == null ) {
+    public void loadDrivers(final Command onSuccessCommand,
+                            final ParameterizedCommand<Throwable> onErrorCommand) {
+        if (module == null) {
             queryService.call(
-                    getLoadDriversSuccessCallback( onSuccessCommand ),
-                    getLoadDriversErrorCallback( onErrorCommand ) ).findGlobalDrivers();
+                    getLoadDriversSuccessCallback(onSuccessCommand),
+                    getLoadDriversErrorCallback(onErrorCommand)).findGlobalDrivers();
         } else {
             queryService.call(
-                    getLoadDriversSuccessCallback( onSuccessCommand ),
-                    getLoadDriversErrorCallback( onErrorCommand ) ).findProjectDrivers( project.getRootPath() );
+                    getLoadDriversSuccessCallback(onSuccessCommand),
+                    getLoadDriversErrorCallback(onErrorCommand)).findModuleDrivers(module.getRootPath());
         }
     }
 
-    private RemoteCallback<List<DriverDefInfo>> getLoadDriversSuccessCallback( final Command onSuccessCommand ) {
+    private RemoteCallback<List<DriverDefInfo>> getLoadDriversSuccessCallback(final Command onSuccessCommand) {
         return new RemoteCallback<List<DriverDefInfo>>() {
             @Override
-            public void callback( List<DriverDefInfo> response ) {
-                mainPanel.loadDriverOptions( buildDriverOptions( response ), true );
+            public void callback(List<DriverDefInfo> response) {
+                mainPanel.loadDriverOptions(buildDriverOptions(response),
+                                            true);
                 onSuccessCommand.execute();
             }
         };
     }
 
-    private ErrorCallback<?> getLoadDriversErrorCallback( final ParameterizedCommand<Throwable> onErrorCommand ) {
+    private ErrorCallback<?> getLoadDriversErrorCallback(final ParameterizedCommand<Throwable> onErrorCommand) {
         return new ErrorCallback<Object>() {
             @Override
-            public boolean error( Object o, Throwable throwable ) {
-                onErrorCommand.execute( throwable );
+            public boolean error(Object o,
+                                 Throwable throwable) {
+                onErrorCommand.execute(throwable);
                 return false;
             }
         };
     }
 
-    private List<Pair<String, String>> buildDriverOptions( final List<DriverDefInfo> driverDefs ) {
-        List<Pair<String, String>> options = new ArrayList<>(  );
+    private List<Pair<String, String>> buildDriverOptions(final List<DriverDefInfo> driverDefs) {
+        List<Pair<String, String>> options = new ArrayList<>();
         driverDefMap.clear();
-        for ( DriverDefInfo driverDef : driverDefs ) {
-            options.add( new Pair<>( driverDef.getName(), driverDef.getUuid() ) );
-            driverDefMap.put( driverDef.getUuid(), driverDef );
+        for (DriverDefInfo driverDef : driverDefs) {
+            options.add(new Pair<>(driverDef.getName(),
+                                   driverDef.getUuid()));
+            driverDefMap.put(driverDef.getUuid(),
+                             driverDef);
         }
         return options;
     }
 
     public void onNameChange() {
         final String newValue = mainPanel.getName().trim();
-        validationService.isValidDataSourceName( newValue, new ValidatorCallback() {
-            @Override
-            public void onSuccess() {
-                onNameChange( newValue, true );
-            }
+        validationService.isValidDataSourceName(newValue,
+                                                new ValidatorCallback() {
+                                                    @Override
+                                                    public void onSuccess() {
+                                                        onNameChange(newValue,
+                                                                     true);
+                                                    }
 
-            @Override
-            public void onFailure() {
-                onNameChange( newValue, false );
-            }
-        } );
+                                                    @Override
+                                                    public void onFailure() {
+                                                        onNameChange(newValue,
+                                                                     false);
+                                                    }
+                                                });
     }
 
-    private void onNameChange( String newValue, boolean isValid ) {
-        dataSourceDef.setName( newValue );
+    private void onNameChange(String newValue,
+                              boolean isValid) {
+        dataSourceDef.setName(newValue);
         nameValid = isValid;
-        if ( !nameValid ) {
+        if (!nameValid) {
             mainPanel.setNameErrorMessage(
-                    getMessage( DataSourceManagementConstants.DataSourceDefEditor_InvalidNameMessage ) );
+                    getMessage(DataSourceManagementConstants.DataSourceDefEditor_InvalidNameMessage));
         } else {
             mainPanel.clearNameErrorMessage();
         }
-        if ( handler != null ) {
+        if (handler != null) {
             handler.onNameChange();
         }
     }
 
     public void onConnectionURLChange() {
         final String newValue = mainPanel.getConnectionURL().trim();
-        validationService.isValidConnectionURL( newValue, new ValidatorCallback() {
-            @Override
-            public void onSuccess() {
-                onConnectionURLChange( newValue, true );
-            }
+        validationService.isValidConnectionURL(newValue,
+                                               new ValidatorCallback() {
+                                                   @Override
+                                                   public void onSuccess() {
+                                                       onConnectionURLChange(newValue,
+                                                                             true);
+                                                   }
 
-            @Override
-            public void onFailure() {
-                onConnectionURLChange( newValue, false );
-            }
-        } );
+                                                   @Override
+                                                   public void onFailure() {
+                                                       onConnectionURLChange(newValue,
+                                                                             false);
+                                                   }
+                                               });
     }
 
-    private void onConnectionURLChange( String newValue, boolean isValid ) {
-        dataSourceDef.setConnectionURL( newValue );
+    private void onConnectionURLChange(String newValue,
+                                       boolean isValid) {
+        dataSourceDef.setConnectionURL(newValue);
         connectionURLValid = isValid;
-        if ( !connectionURLValid ) {
+        if (!connectionURLValid) {
             mainPanel.setConnectionURLErrorMessage(
-                    getMessage( DataSourceManagementConstants.DataSourceDefEditor_InvalidConnectionURLMessage ) );
+                    getMessage(DataSourceManagementConstants.DataSourceDefEditor_InvalidConnectionURLMessage));
         } else {
             mainPanel.clearConnectionURLErrorMessage();
         }
-        if ( handler != null ) {
+        if (handler != null) {
             handler.onConnectionURLChange();
         }
     }
 
     public void onUserChange() {
         final String newValue = mainPanel.getUser().trim();
-        validationService.isNotEmpty( newValue, new ValidatorCallback() {
-            @Override
-            public void onSuccess() {
-                onUserChange( newValue, true );
-            }
+        validationService.isNotEmpty(newValue,
+                                     new ValidatorCallback() {
+                                         @Override
+                                         public void onSuccess() {
+                                             onUserChange(newValue,
+                                                          true);
+                                         }
 
-            @Override
-            public void onFailure() {
-                onUserChange( newValue, false );
-            }
-        } );
+                                         @Override
+                                         public void onFailure() {
+                                             onUserChange(newValue,
+                                                          false);
+                                         }
+                                     });
     }
 
-    private void onUserChange( String newValue, boolean isValid ) {
-        dataSourceDef.setUser( newValue );
+    private void onUserChange(String newValue,
+                              boolean isValid) {
+        dataSourceDef.setUser(newValue);
         userValid = isValid;
-        if ( !userValid ) {
+        if (!userValid) {
             mainPanel.setUserErrorMessage(
-                    getMessage( DataSourceManagementConstants.DataSourceDefEditor_InvalidUserMessage ) );
+                    getMessage(DataSourceManagementConstants.DataSourceDefEditor_InvalidUserMessage));
         } else {
             mainPanel.clearUserErrorMessage();
         }
-        if ( handler != null ) {
+        if (handler != null) {
             handler.onUserChange();
         }
     }
 
     public void onPasswordChange() {
         final String newValue = mainPanel.getPassword().trim();
-        validationService.isNotEmpty( newValue, new ValidatorCallback() {
-            @Override
-            public void onSuccess() {
-                onPasswordChange( newValue, true );
-            }
+        validationService.isNotEmpty(newValue,
+                                     new ValidatorCallback() {
+                                         @Override
+                                         public void onSuccess() {
+                                             onPasswordChange(newValue,
+                                                              true);
+                                         }
 
-            @Override
-            public void onFailure() {
-                onPasswordChange( newValue, false );
-            }
-        } );
+                                         @Override
+                                         public void onFailure() {
+                                             onPasswordChange(newValue,
+                                                              false);
+                                         }
+                                     });
     }
 
-    private void onPasswordChange( String newValue, boolean isValid ) {
-        dataSourceDef.setPassword( newValue );
+    private void onPasswordChange(String newValue,
+                                  boolean isValid) {
+        dataSourceDef.setPassword(newValue);
         passwordValid = isValid;
-        if ( !passwordValid ) {
+        if (!passwordValid) {
             mainPanel.setPasswordErrorMessage(
-                    getMessage( DataSourceManagementConstants.DataSourceDefEditor_InvalidPasswordMessage ) );
+                    getMessage(DataSourceManagementConstants.DataSourceDefEditor_InvalidPasswordMessage));
         } else {
             mainPanel.clearPasswordErrorMessage();
         }
-        if ( handler != null ) {
+        if (handler != null) {
             handler.onPasswordChange();
         }
     }
 
     public void onDriverChange() {
-        DriverDefInfo driverDef = driverDefMap.get( mainPanel.getDriver() );
+        DriverDefInfo driverDef = driverDefMap.get(mainPanel.getDriver());
         driverValid = driverDef != null;
-        if ( !driverValid ) {
+        if (!driverValid) {
             mainPanel.setDriverErrorMessage(
-                    getMessage( DataSourceManagementConstants.DataSourceDefEditor_DriverRequiredMessage ) );
-            dataSourceDef.setDriverUuid( null );
+                    getMessage(DataSourceManagementConstants.DataSourceDefEditor_DriverRequiredMessage));
+            dataSourceDef.setDriverUuid(null);
         } else {
             mainPanel.clearDriverErrorMessage();
-            dataSourceDef.setDriverUuid( driverDef.getUuid() );
+            dataSourceDef.setDriverUuid(driverDef.getUuid());
         }
-        if ( handler != null ) {
+        if (handler != null) {
             handler.onDriverChange();
         }
     }
 
     public void onTestConnection() {
-        if ( project != null ) {
+        if (module != null) {
             editorService.call(
                     getTestConnectionSuccessCallback(),
-                    getTestConnectionErrorCallback() ).testConnection( dataSourceDef, project );
+                    getTestConnectionErrorCallback()).testConnection(dataSourceDef,
+                                                                     module);
         } else {
             editorService.call(
                     getTestConnectionSuccessCallback(),
-                    getTestConnectionErrorCallback() ).testConnection( dataSourceDef );
+                    getTestConnectionErrorCallback()).testConnection(dataSourceDef);
         }
     }
 
     private RemoteCallback<TestResult> getTestConnectionSuccessCallback() {
         return new RemoteCallback<TestResult>() {
             @Override
-            public void callback( TestResult response ) {
-                onTestConnectionSuccess( response );
+            public void callback(TestResult response) {
+                onTestConnectionSuccess(response);
             }
         };
     }
 
-    public void onTestConnectionSuccess( TestResult response ) {
+    public void onTestConnectionSuccess(TestResult response) {
         SafeHtmlBuilder builder = new SafeHtmlBuilder();
-        if ( response.isTestPassed() ) {
+        if (response.isTestPassed()) {
             builder.appendEscapedLines(
-                    getMessage( DataSourceManagementConstants.DataSourceDefEditor_ConnectionTestSuccessfulMessage ) + "\n" );
+                    getMessage(DataSourceManagementConstants.DataSourceDefEditor_ConnectionTestSuccessfulMessage) + "\n");
         } else {
             builder.appendEscapedLines(
-                    getMessage( DataSourceManagementConstants.DataSourceDefEditor_ConnectionTestFailedMessage ) + "\n" );
+                    getMessage(DataSourceManagementConstants.DataSourceDefEditor_ConnectionTestFailedMessage) + "\n");
         }
-        builder.appendEscapedLines( response.getMessage() );
-        popupsUtil.showInformationPopup( builder.toSafeHtml().asString() );
+        builder.appendEscapedLines(response.getMessage());
+        popupsUtil.showInformationPopup(builder.toSafeHtml().asString());
     }
 
     private ErrorCallback<?> getTestConnectionErrorCallback() {
         return new ErrorCallback<Object>() {
             @Override
-            public boolean error( Object message, Throwable throwable ) {
-                onTestConnectionError( message, throwable );
+            public boolean error(Object message,
+                                 Throwable throwable) {
+                onTestConnectionError(message,
+                                      throwable);
                 return false;
             }
         };
     }
 
-    public void onTestConnectionError( Object message, Throwable throwable ) {
+    public void onTestConnectionError(Object message,
+                                      Throwable throwable) {
         SafeHtmlBuilder builder = new SafeHtmlBuilder();
         builder.appendEscapedLines(
-                getMessage( DataSourceManagementConstants.DataSourceDefEditor_ConnectionTestFailedMessage ) + "\n" );
-        builder.appendEscapedLines( throwable.getMessage() );
-        popupsUtil.showErrorPopup( builder.toSafeHtml().asString() );
+                getMessage(DataSourceManagementConstants.DataSourceDefEditor_ConnectionTestFailedMessage) + "\n");
+        builder.appendEscapedLines(throwable.getMessage());
+        popupsUtil.showErrorPopup(builder.toSafeHtml().asString());
     }
 
-    public void setValid( boolean valid ) {
+    public void setValid(boolean valid) {
         this.nameValid = valid;
         this.connectionURLValid = valid;
         this.userValid = valid;
@@ -393,11 +417,13 @@ public class DataSourceDefEditorHelper {
         return passwordValid;
     }
 
-    public String getMessage( String messageKey ) {
-        return translationService.getTranslation( messageKey );
+    public String getMessage(String messageKey) {
+        return translationService.getTranslation(messageKey);
     }
 
-    public String getMessage( String messageKey, Object... args ) {
-        return translationService.format( messageKey, args );
+    public String getMessage(String messageKey,
+                             Object... args) {
+        return translationService.format(messageKey,
+                                         args);
     }
 }

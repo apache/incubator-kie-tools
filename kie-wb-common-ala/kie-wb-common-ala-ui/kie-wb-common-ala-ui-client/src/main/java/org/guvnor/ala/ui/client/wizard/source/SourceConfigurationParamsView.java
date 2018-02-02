@@ -79,12 +79,12 @@ public class SourceConfigurationParamsView
     private Select branches;
 
     @Inject
-    @DataField("project-form")
-    private Div projectForm;
+    @DataField("module-form")
+    private Div moduleForm;
 
     @Inject
     @DataField
-    private Select projects;
+    private Select modules;
 
     @Inject
     private TranslationService translationService;
@@ -122,8 +122,8 @@ public class SourceConfigurationParamsView
     }
 
     @Override
-    public String getProject() {
-        return projects.getValue();
+    public String getModule() {
+        return modules.getValue();
     }
 
     @Override
@@ -174,7 +174,7 @@ public class SourceConfigurationParamsView
     public void setProjectStatus(final FormStatus status) {
         checkNotNull("status",
                      status);
-        setFormStatus(projectForm,
+        setFormStatus(moduleForm,
                       status);
     }
 
@@ -184,12 +184,12 @@ public class SourceConfigurationParamsView
         clearOrganizationUnits();
         clearRepositories();
         clearBranches();
-        clearProjects();
+        clearModules();
         this.runtimeName.setValue(EMPTY_STRING);
         this.ous.setValue(EMPTY_STRING);
         this.repos.setValue(EMPTY_STRING);
         this.branches.setValue(EMPTY_STRING);
-        this.projects.setValue(EMPTY_STRING);
+        this.modules.setValue(EMPTY_STRING);
     }
 
     @Override
@@ -211,9 +211,9 @@ public class SourceConfigurationParamsView
     }
 
     @Override
-    public void addProject(String projectName) {
-        projects.add(newOption(projectName,
-                               projectName));
+    public void addModule(String moduleName) {
+        modules.add(newOption(moduleName,
+                              moduleName));
     }
 
     @Override
@@ -232,8 +232,8 @@ public class SourceConfigurationParamsView
     }
 
     @Override
-    public void clearProjects() {
-        clear(projects);
+    public void clearModules() {
+        clear(modules);
     }
 
     @EventHandler("runtime-name")
@@ -256,9 +256,9 @@ public class SourceConfigurationParamsView
         presenter.onBranchChange();
     }
 
-    @EventHandler("projects")
+    @EventHandler("modules")
     private void onProjectChange(@ForEvent("change") final Event event) {
-        presenter.onProjectChange();
+        presenter.onModuleChange();
     }
 
     private void enable(boolean enabled) {
@@ -266,7 +266,7 @@ public class SourceConfigurationParamsView
         this.ous.setDisabled(!enabled);
         this.repos.setDisabled(!enabled);
         this.branches.setDisabled(!enabled);
-        this.projects.setDisabled(!enabled);
+        this.modules.setDisabled(!enabled);
     }
 
     private void resetFormState() {
@@ -278,7 +278,7 @@ public class SourceConfigurationParamsView
                       FormStatus.VALID);
         setFormStatus(branchForm,
                       FormStatus.VALID);
-        setFormStatus(projectForm,
+        setFormStatus(moduleForm,
                       FormStatus.VALID);
     }
 

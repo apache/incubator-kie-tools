@@ -43,14 +43,13 @@ import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
 import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.KieModule;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
@@ -61,8 +60,8 @@ import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.scanner.KieModuleMetaData;
 import org.kie.soup.project.datamodel.imports.Import;
 import org.kie.soup.project.datamodel.imports.Imports;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
 import org.kie.workbench.common.services.shared.whitelist.WhiteList;
@@ -94,37 +93,32 @@ public class Builder implements Serializable {
     private final KieServices kieServices;
     private final KieFileSystem kieFileSystem;
 
-    private final Project project;
+    private final Module project;
     private final Path projectRoot;
     private final IOService ioService;
     private final String projectPrefix;
 
     private final Handles handles = new Handles();
-    private final KieProjectService projectService;
-    private KieBuilder kieBuilder;
+    private final KieModuleService moduleService;
     private final ProjectImportsService importsService;
     private final List<BuildValidationHelper> buildValidationHelpers;
-
     private final Map<Path, BuildValidationHelper> nonKieResourceValidationHelpers = new HashMap<Path, BuildValidationHelper>();
     private final Map<Path, List<ValidationMessage>> nonKieResourceValidationHelperMessages = new HashMap<Path, List<ValidationMessage>>();
-
     private final DirectoryStream.Filter<Path> javaResourceFilter = new JavaFileFilter();
     private final DirectoryStream.Filter<Path> dotFileFilter = new DotFileFilter();
-
     private final Set<String> javaResources = new HashSet<String>();
-
-    private LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache;
+    private final Predicate<String> classFilter;
+    private KieBuilder kieBuilder;
+    private LRUModuleDependenciesClassLoaderCache dependenciesClassLoaderCache;
     private LRUPomModelCache pomModelCache;
     private PackageNameWhiteListService packageNameWhiteListService;
 
-    private final Predicate<String> classFilter;
-
-    public Builder(final Project project,
+    public Builder(final Module project,
                    final IOService ioService,
-                   final KieProjectService projectService,
+                   final KieModuleService moduleService,
                    final ProjectImportsService importsService,
                    final List<BuildValidationHelper> buildValidationHelpers,
-                   final LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache,
+                   final LRUModuleDependenciesClassLoaderCache dependenciesClassLoaderCache,
                    final LRUPomModelCache pomModelCache,
                    final PackageNameWhiteListService packageNameWhiteListService,
                    final Predicate<String> classFilter,
@@ -132,7 +126,7 @@ public class Builder implements Serializable {
                    final KieFileSystem kieFileSystem) {
         this.project = project;
         this.ioService = ioService;
-        this.projectService = projectService;
+        this.moduleService = moduleService;
         this.importsService = importsService;
         this.buildValidationHelpers = buildValidationHelpers;
         this.packageNameWhiteListService = packageNameWhiteListService;
@@ -151,18 +145,18 @@ public class Builder implements Serializable {
         visitPaths(directoryStream);
     }
 
-    public Builder(final Project project,
+    public Builder(final Module project,
                    final IOService ioService,
-                   final KieProjectService projectService,
+                   final KieModuleService moduleService,
                    final ProjectImportsService importsService,
                    final List<BuildValidationHelper> buildValidationHelpers,
-                   final LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache,
+                   final LRUModuleDependenciesClassLoaderCache dependenciesClassLoaderCache,
                    final LRUPomModelCache pomModelCache,
                    final PackageNameWhiteListService packageNameWhiteListService,
                    final Predicate<String> classFilter) {
         this(project,
              ioService,
-             projectService,
+             moduleService,
              importsService,
              buildValidationHelpers,
              dependenciesClassLoaderCache,
@@ -179,7 +173,7 @@ public class Builder implements Serializable {
 
         return new Builder(project,
                            ioService,
-                           projectService,
+                           moduleService,
                            importsService,
                            buildValidationHelpers,
                            dependenciesClassLoaderCache,
@@ -310,13 +304,13 @@ public class Builder implements Serializable {
         return kieBuilder;
     }
 
-    private void updateDependenciesClassLoader(final Project project,
+    private void updateDependenciesClassLoader(final Module project,
                                                final KieModuleMetaData kieModuleMetaData) {
-        KieProject kieProject = projectService.resolveProject(project.getPomXMLPath());
-        if (kieProject != null) {
-            dependenciesClassLoaderCache.setDependenciesClassLoader(kieProject,
-                                                                    LRUProjectDependenciesClassLoaderCache.buildClassLoader(kieProject,
-                                                                                                                            kieModuleMetaData));
+        KieModule kieModule = moduleService.resolveModule(project.getPomXMLPath());
+        if (kieModule != null) {
+            dependenciesClassLoaderCache.setDependenciesClassLoader(kieModule,
+                                                                    LRUModuleDependenciesClassLoaderCache.buildClassLoader(kieModule,
+                                                                                                                           kieModuleMetaData));
         }
     }
 
@@ -403,7 +397,15 @@ public class Builder implements Serializable {
     }
 
     private String destinationPath(final Path resource) {
-        return resource.toUri().toString().substring(projectPrefix.length() + 1);
+        final String destinationPath = resource.toUri().toString().substring(projectPrefix.length());
+
+        if (destinationPath.startsWith("/")) {
+            // File in sub module
+            return destinationPath.substring(1);
+        } else {
+            // File in main module
+            return destinationPath;
+        }
     }
 
     public IncrementalBuildResults updateResource(final Path resource) {
@@ -436,7 +438,7 @@ public class Builder implements Serializable {
 
                     checkNotNull("type",
                                  type);
-                    checkNotNull("resource",
+                    checkNotNull("Builder.resource§",
                                  resource);
 
                     final String destinationPath = destinationPath(resource);
@@ -555,7 +557,7 @@ public class Builder implements Serializable {
         }
     }
 
-    public KieModule getKieModule() {
+    public org.kie.api.builder.KieModule getKieModule() {
         //Kie classes are only available once built
         if (!isBuilt()) {
             build();
@@ -565,7 +567,7 @@ public class Builder implements Serializable {
         }
     }
 
-    public KieModule getKieModuleIgnoringErrors() {
+    public org.kie.api.builder.KieModule getKieModuleIgnoringErrors() {
         //Kie classes are only available once built
         if (!isBuilt()) {
             build();
@@ -602,7 +604,7 @@ public class Builder implements Serializable {
             // create the KieContainer from KieRepository. This holds the most recent KieModule (for the ReleaseId) that was built with
             // kieBuilder.buildAll() which *may* be a KieModule created during asset validation and hence will lack many assets.
             // See https://bugzilla.redhat.com/show_bug.cgi?id=1202551
-            final KieModule kieModule = kieBuilder.getKieModule();
+            final org.kie.api.builder.KieModule kieModule = kieBuilder.getKieModule();
             final ReleaseId releaseId = kieModule.getReleaseId();
             final org.drools.compiler.kie.builder.impl.KieProject kieProject = new KieModuleKieProject((InternalKieModule) kieBuilder.getKieModule(),
                                                                                                        null);
@@ -662,7 +664,7 @@ public class Builder implements Serializable {
     }
 
     private String getFullyQualifiedClassName(final Path path) {
-        final Package pkg = projectService.resolvePackage(Paths.convert(path));
+        final Package pkg = moduleService.resolvePackage(Paths.convert(path));
         final String packageName = pkg.getPackageName();
         if (packageName == null) {
             return null;

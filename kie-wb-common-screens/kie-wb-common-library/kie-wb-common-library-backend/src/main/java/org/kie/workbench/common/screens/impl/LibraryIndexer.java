@@ -23,15 +23,15 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.Package;
 import org.kie.workbench.common.screens.library.api.index.LibraryFileNameIndexTerm;
-import org.kie.workbench.common.screens.library.api.index.LibraryProjectRootPathIndexTerm;
+import org.kie.workbench.common.screens.library.api.index.LibraryModuleRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.KPropertyImpl;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.AbstractFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.util.KObjectUtil;
+import org.kie.workbench.common.services.refactoring.model.index.terms.ModuleNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.PackageNameIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectNameIndexTerm;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -60,8 +60,8 @@ public class LibraryIndexer extends AbstractFileIndexer {
         this.ioService = ioService;
     }
 
-    void setProjectService(final KieProjectService projectService) {
-        this.projectService = projectService;
+    void setModuleService(final KieModuleService moduleService) {
+        this.moduleService = moduleService;
     }
 
     @Override
@@ -71,9 +71,9 @@ public class LibraryIndexer extends AbstractFileIndexer {
 
     @Override
     protected DefaultIndexBuilder fillIndexBuilder(final Path path) throws Exception {
-        final KieProject project = getProject(path);
-        if (project == null) {
-            logger.debug("Unable to index " + path.toUri().toString() + ": project could not be resolved.");
+        final KieModule module = getModule(path);
+        if (module == null) {
+            logger.debug("Unable to index " + path.toUri().toString() + ": module could not be resolved.");
             return null;
         }
 
@@ -83,9 +83,9 @@ public class LibraryIndexer extends AbstractFileIndexer {
             return null;
         }
 
-        // responsible for basic index info: project name, branch, etc
+        // responsible for basic index info: module name, branch, etc
         final DefaultIndexBuilder builder = new DefaultIndexBuilder(Paths.convert(path).getFileName(),
-                                                                    project,
+                                                                    module,
                                                                     pkg) {
             @Override
             public Set<KProperty<?>> build() {
@@ -98,15 +98,15 @@ public class LibraryIndexer extends AbstractFileIndexer {
                                                       false,
                                                       true));
 
-                if (project.getRootPath() != null) {
-                    final String projectRootUri = project.getRootPath().toURI();
-                    indexElements.add(new KPropertyImpl<>(LibraryProjectRootPathIndexTerm.TERM,
-                                                          projectRootUri));
+                if (module.getRootPath() != null) {
+                    final String moduleRootUri = module.getRootPath().toURI();
+                    indexElements.add(new KPropertyImpl<>(LibraryModuleRootPathIndexTerm.TERM,
+                                                          moduleRootUri));
                 }
-                if (project.getProjectName() != null) {
-                    final String projectName = project.getProjectName();
-                    indexElements.add(new KPropertyImpl<>(ProjectNameIndexTerm.TERM,
-                                                          projectName));
+                if (module.getModuleName() != null) {
+                    final String moduleName = module.getModuleName();
+                    indexElements.add(new KPropertyImpl<>(ModuleNameIndexTerm.TERM,
+                                                          moduleName));
                 }
 
                 if (pkgName == null) {
@@ -157,12 +157,12 @@ public class LibraryIndexer extends AbstractFileIndexer {
                                         LIBRARY_CLASSIFIER);
     }
 
-    protected KieProject getProject(final Path path) {
-        return projectService.resolveProject(Paths.convert(path));
+    protected KieModule getModule(final Path path) {
+        return moduleService.resolveModule(Paths.convert(path));
     }
 
     protected Package getPackage(final Path path) {
-        return projectService.resolvePackage(Paths.convert(path));
+        return moduleService.resolvePackage(Paths.convert(path));
     }
 }
 

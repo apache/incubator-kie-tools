@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.screens.datasource.management.backend.core.DataSourceRuntimeManager;
 import org.kie.workbench.common.screens.datasource.management.backend.core.DeploymentOptions;
@@ -46,12 +46,11 @@ import org.kie.workbench.common.screens.datasource.management.service.DriverDefE
 import org.kie.workbench.common.screens.datasource.management.util.DataSourceDefSerializer;
 import org.kie.workbench.common.screens.datasource.management.util.MavenArtifactResolver;
 import org.kie.workbench.common.screens.datasource.management.util.URLConnectionFactory;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.ext.editor.commons.service.PathNamingService;
-import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 
-import static org.kie.workbench.common.screens.datasource.management.util.ServiceUtil.*;
+import static org.kie.workbench.common.screens.datasource.management.util.ServiceUtil.isEmpty;
 
 @Service
 @ApplicationScoped
@@ -73,19 +72,25 @@ public class DataSourceDefEditorServiceImpl
     }
 
     @Inject
-    public DataSourceDefEditorServiceImpl( DataSourceRuntimeManager runtimeManager,
-            DataSourceServicesHelper serviceHelper,
-            @Named("ioStrategy") IOService ioService,
-            KieProjectService projectService,
-            CommentedOptionFactory optionsFactory,
-            PathNamingService pathNamingService,
-            MavenArtifactResolver artifactResolver,
-            DataSourceDefQueryService dataSourceDefQueryService,
-            DriverDefEditorService driverDefService,
-            Event<NewDataSourceEvent> newDataSourceEvent,
-            Event<UpdateDataSourceEvent> updateDataSourceEvent,
-            Event<DeleteDataSourceEvent> deleteDataSourceEvent ) {
-        super( runtimeManager, serviceHelper, ioService, projectService, optionsFactory, pathNamingService, artifactResolver );
+    public DataSourceDefEditorServiceImpl(DataSourceRuntimeManager runtimeManager,
+                                          DataSourceServicesHelper serviceHelper,
+                                          @Named("ioStrategy") IOService ioService,
+                                          KieModuleService moduleService,
+                                          CommentedOptionFactory optionsFactory,
+                                          PathNamingService pathNamingService,
+                                          MavenArtifactResolver artifactResolver,
+                                          DataSourceDefQueryService dataSourceDefQueryService,
+                                          DriverDefEditorService driverDefService,
+                                          Event<NewDataSourceEvent> newDataSourceEvent,
+                                          Event<UpdateDataSourceEvent> updateDataSourceEvent,
+                                          Event<DeleteDataSourceEvent> deleteDataSourceEvent) {
+        super(runtimeManager,
+              serviceHelper,
+              ioService,
+              moduleService,
+              optionsFactory,
+              pathNamingService,
+              artifactResolver);
         this.dataSourceDefQueryService = dataSourceDefQueryService;
         this.driverDefService = driverDefService;
         this.newDataSourceEvent = newDataSourceEvent;
@@ -99,154 +104,172 @@ public class DataSourceDefEditorServiceImpl
     }
 
     @Override
-    protected String serializeDef( DataSourceDef def ) {
-        return DataSourceDefSerializer.serialize( def );
+    protected String serializeDef(DataSourceDef def) {
+        return DataSourceDefSerializer.serialize(def);
     }
 
     @Override
-    protected DataSourceDef deserializeDef( String source ) {
-        return DataSourceDefSerializer.deserialize( source );
+    protected DataSourceDef deserializeDef(String source) {
+        return DataSourceDefSerializer.deserialize(source);
     }
 
     @Override
-    protected DataSourceDeploymentInfo readDeploymentInfo( String uuid ) throws Exception {
-        return runtimeManager.getDataSourceDeploymentInfo( uuid );
+    protected DataSourceDeploymentInfo readDeploymentInfo(String uuid) throws Exception {
+        return runtimeManager.getDataSourceDeploymentInfo(uuid);
     }
 
     @Override
-    protected void deploy( DataSourceDef def, DeploymentOptions options ) throws Exception {
-        runtimeManager.deployDataSource( def, options );
+    protected void deploy(DataSourceDef def,
+                          DeploymentOptions options) throws Exception {
+        runtimeManager.deployDataSource(def,
+                                        options);
     }
 
     @Override
-    protected void unDeploy( DataSourceDeploymentInfo deploymentInfo, UnDeploymentOptions options ) throws Exception {
-        runtimeManager.unDeployDataSource( deploymentInfo, options );
+    protected void unDeploy(DataSourceDeploymentInfo deploymentInfo,
+                            UnDeploymentOptions options) throws Exception {
+        runtimeManager.unDeployDataSource(deploymentInfo,
+                                          options);
     }
 
     @Override
-    protected void fireCreateEvent( DataSourceDef def, Project project ) {
-        newDataSourceEvent.fire( new NewDataSourceEvent( def,
-                project,
-                optionsFactory.getSafeSessionId(),
-                optionsFactory.getSafeIdentityName() ) );
+    protected void fireCreateEvent(final DataSourceDef def,
+                                   final Module module) {
+        newDataSourceEvent.fire(new NewDataSourceEvent(def,
+                                                       module,
+                                                       optionsFactory.getSafeSessionId(),
+                                                       optionsFactory.getSafeIdentityName()));
     }
 
     @Override
-    protected void fireCreateEvent( DataSourceDef def ) {
-        newDataSourceEvent.fire( new NewDataSourceEvent( def,
-                optionsFactory.getSafeSessionId(),
-                optionsFactory.getSafeIdentityName() ) );
+    protected void fireCreateEvent(DataSourceDef def) {
+        newDataSourceEvent.fire(new NewDataSourceEvent(def,
+                                                       optionsFactory.getSafeSessionId(),
+                                                       optionsFactory.getSafeIdentityName()));
     }
 
     @Override
-    protected void fireUpdateEvent( DataSourceDef def, Project project, DataSourceDef originalDef ) {
-        updateDataSourceEvent.fire( new UpdateDataSourceEvent( def,
-                project,
-                optionsFactory.getSafeSessionId(),
-                optionsFactory.getSafeIdentityName(),
-                originalDef ) );
+    protected void fireUpdateEvent(DataSourceDef def,
+                                   Module module,
+                                   DataSourceDef originalDef) {
+        updateDataSourceEvent.fire(new UpdateDataSourceEvent(def,
+                                                             module,
+                                                             optionsFactory.getSafeSessionId(),
+                                                             optionsFactory.getSafeIdentityName(),
+                                                             originalDef));
     }
 
     @Override
-    protected void fireDeleteEvent( DataSourceDef def, Project project ) {
-        deleteDataSourceEvent.fire( new DeleteDataSourceEvent( def,
-                project, optionsFactory.getSafeSessionId(), optionsFactory.getSafeIdentityName() ) );
+    protected void fireDeleteEvent(DataSourceDef def,
+                                   Module module) {
+        deleteDataSourceEvent.fire(new DeleteDataSourceEvent(def,
+                                                             module,
+                                                             optionsFactory.getSafeSessionId(),
+                                                             optionsFactory.getSafeIdentityName()));
     }
 
     @Override
-    protected String buildFileName( DataSourceDef def ) {
+    protected String buildFileName(DataSourceDef def) {
         return def.getName() + ".datasource";
     }
 
     @Override
-    public TestResult testConnection( DataSourceDef dataSourceDef ) {
-        return testConnection( dataSourceDef, null );
+    public TestResult testConnection(DataSourceDef dataSourceDef) {
+        return testConnection(dataSourceDef,
+                              null);
     }
 
     @Override
-    public TestResult testConnection( DataSourceDef dataSourceDef, Project project ) {
+    public TestResult testConnection(DataSourceDef dataSourceDef,
+                                     Module module) {
 
-        TestResult result = new TestResult( false );
+        TestResult result = new TestResult(false);
 
-        if ( isEmpty( dataSourceDef.getConnectionURL() ) ) {
-            result.setMessage( "A valid connection url is required" );
+        if (isEmpty(dataSourceDef.getConnectionURL())) {
+            result.setMessage("A valid connection url is required");
             return result;
         }
 
-        if ( isEmpty( dataSourceDef.getUser() ) || isEmpty( dataSourceDef.getPassword() ) ) {
-            result.setMessage( "A valid user and password are required" );
+        if (isEmpty(dataSourceDef.getUser()) || isEmpty(dataSourceDef.getPassword())) {
+            result.setMessage("A valid user and password are required");
             return result;
         }
 
         DriverDefInfo driverDefInfo = null;
-        if ( isEmpty( dataSourceDef.getDriverUuid() ) ) {
-            result.setMessage( "A valid driver is required" );
+        if (isEmpty(dataSourceDef.getDriverUuid())) {
+            result.setMessage("A valid driver is required");
             return result;
         }
-        if ( project != null ) {
-            driverDefInfo = dataSourceDefQueryService.findProjectDriver( dataSourceDef.getDriverUuid(), project.getRootPath() );
+        if (module != null) {
+            driverDefInfo = dataSourceDefQueryService.findModuleDriver(dataSourceDef.getDriverUuid(),
+                                                                       module.getRootPath());
         } else {
-            driverDefInfo = dataSourceDefQueryService.findGlobalDriver( dataSourceDef.getDriverUuid() );
+            driverDefInfo = dataSourceDefQueryService.findGlobalDriver(dataSourceDef.getDriverUuid());
         }
 
-        if ( driverDefInfo == null ) {
-            result.setMessage( "Data source driver: " + dataSourceDef.getUuid() + " was not found" );
+        if (driverDefInfo == null) {
+            result.setMessage("Data source driver: " + dataSourceDef.getUuid() + " was not found");
             return result;
         }
 
-        DriverDefEditorContent driverDefEditorContent = driverDefService.loadContent( driverDefInfo.getPath() );
+        DriverDefEditorContent driverDefEditorContent = driverDefService.loadContent(driverDefInfo.getPath());
         DriverDef driverDef = driverDefEditorContent.getDef();
         URI uri;
 
         try {
-            uri = artifactResolver.resolve( driverDef.getGroupId(), driverDef.getArtifactId(), driverDef.getVersion() );
-        } catch ( Exception e ) {
-            result.setMessage( "Connection could not be tested due to the following error: " + e.getMessage() );
+            uri = artifactResolver.resolve(driverDef.getGroupId(),
+                                           driverDef.getArtifactId(),
+                                           driverDef.getVersion());
+        } catch (Exception e) {
+            result.setMessage("Connection could not be tested due to the following error: " + e.getMessage());
             return result;
         }
 
-        if ( uri == null ) {
-            result.setMessage( "Driver artifact: " + driverDef.getGroupId() + ":"
-                    + driverDef.getArtifactId() + ":" + driverDef.getVersion() + " was not found" );
+        if (uri == null) {
+            result.setMessage("Driver artifact: " + driverDef.getGroupId() + ":"
+                                      + driverDef.getArtifactId() + ":" + driverDef.getVersion() + " was not found");
             return result;
         }
 
         try {
-            Properties properties = new Properties(  );
-            properties.put( "user", dataSourceDef.getUser() );
-            properties.put("password", dataSourceDef.getPassword() );
+            Properties properties = new Properties();
+            properties.put("user",
+                           dataSourceDef.getUser());
+            properties.put("password",
+                           dataSourceDef.getPassword());
 
-            URLConnectionFactory connectionFactory = new URLConnectionFactory( uri.toURL(), driverDef.getDriverClass(),
-                    dataSourceDef.getConnectionURL(), properties );
+            URLConnectionFactory connectionFactory = new URLConnectionFactory(uri.toURL(),
+                                                                              driverDef.getDriverClass(),
+                                                                              dataSourceDef.getConnectionURL(),
+                                                                              properties);
 
             Connection conn = connectionFactory.createConnection();
 
-            if ( conn == null ) {
-                result.setMessage( "It was not possible to open connection" );
+            if (conn == null) {
+                result.setMessage("It was not possible to open connection");
             } else {
-                StringBuilder stringBuilder = new StringBuilder(  );
-                stringBuilder.append( "Connection was successfully obtained: " + conn );
-                stringBuilder.append( "\n" );
-                stringBuilder.append( "*** DatabaseProductName: " + conn.getMetaData().getDatabaseProductName() );
-                stringBuilder.append( "\n" );
-                stringBuilder.append( "*** DatabaseProductVersion: " + conn.getMetaData().getDatabaseProductVersion() );
-                stringBuilder.append( "\n" );
-                stringBuilder.append( "*** DriverName: " + conn.getMetaData().getDriverName() );
-                stringBuilder.append( "\n" );
-                stringBuilder.append( "*** DriverVersion: " + conn.getMetaData().getDriverVersion() );
-                stringBuilder.append( "\n" );
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("Connection was successfully obtained: " + conn);
+                stringBuilder.append("\n");
+                stringBuilder.append("*** DatabaseProductName: " + conn.getMetaData().getDatabaseProductName());
+                stringBuilder.append("\n");
+                stringBuilder.append("*** DatabaseProductVersion: " + conn.getMetaData().getDatabaseProductVersion());
+                stringBuilder.append("\n");
+                stringBuilder.append("*** DriverName: " + conn.getMetaData().getDriverName());
+                stringBuilder.append("\n");
+                stringBuilder.append("*** DriverVersion: " + conn.getMetaData().getDriverVersion());
+                stringBuilder.append("\n");
                 conn.close();
-                stringBuilder.append( "Connection was successfully released." );
-                stringBuilder.append( "\n" );
+                stringBuilder.append("Connection was successfully released.");
+                stringBuilder.append("\n");
 
-                result.setTestPassed( true );
-                result.setMessage( stringBuilder.toString() );
+                result.setTestPassed(true);
+                result.setMessage(stringBuilder.toString());
             }
 
             return result;
-
-        } catch ( Exception e ) {
-            result.setMessage( e.getMessage() );
+        } catch (Exception e) {
+            result.setMessage(e.getMessage());
             return result;
         }
     }

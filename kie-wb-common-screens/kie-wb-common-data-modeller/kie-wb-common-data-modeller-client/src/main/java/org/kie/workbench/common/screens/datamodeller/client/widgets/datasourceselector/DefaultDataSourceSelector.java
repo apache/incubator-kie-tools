@@ -19,7 +19,7 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.datasources
 import javax.enterprise.context.ApplicationScoped;
 
 import com.google.gwt.user.client.Window;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.uberfire.annotations.FallbackImplementation;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -29,13 +29,14 @@ import org.uberfire.mvp.ParameterizedCommand;
  */
 @ApplicationScoped
 @FallbackImplementation
-public class DefaultDataSourceSelector implements DataSourceSelector {
+public class DefaultDataSourceSelector
+        implements DataSourceSelector {
 
     public DefaultDataSourceSelector() {
     }
 
     @Override
-    public void setProjectSelection( Project project ) {
+    public void setModuleSelection(final Module module) {
 
     }
 
@@ -45,7 +46,7 @@ public class DefaultDataSourceSelector implements DataSourceSelector {
     }
 
     @Override
-    public void show( ParameterizedCommand<DataSourceInfo> onSelectCommand, Command onCloseCommand ) {
-        Window.alert( "Data sources selection is currently only available for the LiveSpark platform." );
+    public void show(ParameterizedCommand<DataSourceInfo> onSelectCommand, Command onCloseCommand) {
+        Window.alert("Data sources selection is currently only available for the LiveSpark platform.");
     }
 }

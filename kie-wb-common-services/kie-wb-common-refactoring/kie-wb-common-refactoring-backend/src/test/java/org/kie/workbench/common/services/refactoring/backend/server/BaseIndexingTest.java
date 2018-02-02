@@ -34,7 +34,7 @@ import org.junit.rules.TestName;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQueries;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
 import org.kie.workbench.common.services.refactoring.backend.server.query.RefactoringQueryServiceImpl;
-import org.kie.workbench.common.services.refactoring.model.index.terms.ProjectRootPathIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.ModuleRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringRuleNamePageRow.RuleName;
 import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
@@ -123,7 +123,7 @@ public abstract class BaseIndexingTest<T extends ResourceTypeDefinition> extends
     @Override
     public Map<String, Analyzer> getAnalyzers() {
         return new HashMap<String, Analyzer>() {{
-            put(ProjectRootPathIndexTerm.TERM,
+            put(ModuleRootPathIndexTerm.TERM,
                 new FilenameAnalyzer());
         }};
     }

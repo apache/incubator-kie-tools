@@ -19,7 +19,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
@@ -30,8 +29,8 @@ import org.jboss.errai.validation.client.dynamic.DynamicValidator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
@@ -41,7 +40,7 @@ import org.uberfire.client.callbacks.Callback;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
 import static org.junit.Assert.*;
-import static org.kie.workbench.common.widgets.client.datamodel.PackageDataModelOracleTestUtils.*;
+import static org.kie.workbench.common.widgets.client.datamodel.PackageDataModelOracleTestUtils.assertContains;
 import static org.mockito.Mockito.*;
 
 @RunWith(WeldJUnitRunner.class)
@@ -82,18 +81,22 @@ public class PackageDataModelSuperTypesTest {
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName("t2p1");
-        dataModel.setModelFields(packageLoader.getProjectModelFields());
+        dataModel.setModelFields(packageLoader.getModuleModelFields());
         dataModel.setSuperTypes(new HashMap<String, List<String>>() {{
-            put("t2p1.Bean1", null);
-            put("t2p1.Bean2", new ArrayList<String>() {{
-                add("t2p1.Bean1");
-            }});
-            put("t2p2.Bean3", new ArrayList<String>() {{
-                add("t2p1.Bean1");
-            }});
-            put("t2p1.Bean4", new ArrayList<String>() {{
-                add("t2p2.Bean3");
-            }});
+            put("t2p1.Bean1",
+                null);
+            put("t2p1.Bean2",
+                new ArrayList<String>() {{
+                    add("t2p1.Bean1");
+                }});
+            put("t2p2.Bean3",
+                new ArrayList<String>() {{
+                    add("t2p1.Bean1");
+                }});
+            put("t2p1.Bean4",
+                new ArrayList<String>() {{
+                    add("t2p2.Bean3");
+                }});
         }});
         PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),
                                                                 new MockHasImports(),
@@ -138,13 +141,13 @@ public class PackageDataModelSuperTypesTest {
     }
 
     @Test
-    public void testProjectSuperTypes() throws Exception {
+    public void testModuleSuperTypes() throws Exception {
         final URL packageUrl = this.getClass().getResource("/DataModelBackendSuperTypesTest1/src/main/java/t2p1");
         final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath(packageUrl.toURI());
         final Path packagePath = paths.convert(nioPackagePath);
 
         final PackageDataModelOracle packageLoader = dataModelService.getDataModel(packagePath);
-        final ProjectDataModelOracle projectLoader = dataModelService.getProjectDataModel(packagePath);
+        final ModuleDataModelOracle moduleLoader = dataModelService.getModuleDataModel(packagePath);
 
         //Emulate server-to-client conversions
         final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller(packageLoader);
@@ -153,18 +156,22 @@ public class PackageDataModelSuperTypesTest {
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName("t2p1");
-        dataModel.setModelFields(projectLoader.getProjectModelFields());
+        dataModel.setModelFields(moduleLoader.getModuleModelFields());
         dataModel.setSuperTypes(new HashMap<String, List<String>>() {{
-            put("t2p1.Bean1", null);
-            put("t2p1.Bean2", new ArrayList<String>() {{
-                add("t2p1.Bean1");
-            }});
-            put("t2p2.Bean3", new ArrayList<String>() {{
-                add("t2p1.Bean1");
-            }});
-            put("t2p1.Bean4", new ArrayList<String>() {{
-                add("t2p2.Bean3");
-            }});
+            put("t2p1.Bean1",
+                null);
+            put("t2p1.Bean2",
+                new ArrayList<String>() {{
+                    add("t2p1.Bean1");
+                }});
+            put("t2p2.Bean3",
+                new ArrayList<String>() {{
+                    add("t2p1.Bean1");
+                }});
+            put("t2p1.Bean4",
+                new ArrayList<String>() {{
+                    add("t2p2.Bean3");
+                }});
         }});
         PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),
                                                                 new MockHasImports(),

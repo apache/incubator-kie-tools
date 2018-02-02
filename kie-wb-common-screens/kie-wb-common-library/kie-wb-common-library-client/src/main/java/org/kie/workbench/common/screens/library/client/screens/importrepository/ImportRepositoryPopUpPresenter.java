@@ -18,12 +18,14 @@ package org.kie.workbench.common.screens.library.client.screens.importrepository
 
 import java.util.Set;
 import javax.annotation.PostConstruct;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.screens.examples.model.ExampleProject;
 import org.kie.workbench.common.screens.library.api.LibraryService;
+import org.kie.workbench.common.screens.library.client.screens.samples.ImportProjectsSetupEvent;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
@@ -35,6 +37,10 @@ public class ImportRepositoryPopUpPresenter {
                                   HasBusyIndicator {
 
         String getRepositoryURL();
+
+        String getUserName();
+
+        String getPassword();
 
         void show();
 
@@ -55,13 +61,17 @@ public class ImportRepositoryPopUpPresenter {
 
     private Caller<LibraryService> libraryService;
 
+    private Event<ImportProjectsSetupEvent> importProjectsSetupEvent;
+
     @Inject
     public ImportRepositoryPopUpPresenter(final View view,
                                           final LibraryPlaces libraryPlaces,
-                                          final Caller<LibraryService> libraryService) {
+                                          final Caller<LibraryService> libraryService,
+                                          final Event<ImportProjectsSetupEvent> importProjectsSetupEvent) {
         this.view = view;
         this.libraryPlaces = libraryPlaces;
         this.libraryService = libraryService;
+        this.importProjectsSetupEvent = importProjectsSetupEvent;
     }
 
     @PostConstruct
@@ -84,7 +94,8 @@ public class ImportRepositoryPopUpPresenter {
         libraryService.call((Set<ExampleProject> projects) -> {
                                 view.hideBusyIndicator();
                                 view.hide();
-                                libraryPlaces.goToImportProjects(repositoryUrl);
+                                libraryPlaces.goToImportProjects(null);
+                                importProjectsSetupEvent.fire(new ImportProjectsSetupEvent(projects));
                             },
                             new DefaultErrorCallback() {
                                 @Override
@@ -94,7 +105,9 @@ public class ImportRepositoryPopUpPresenter {
                                     view.showError(view.getNoProjectsToImportMessage());
                                     return false;
                                 }
-                            }).getProjects(repositoryUrl);
+                            }).getProjects(repositoryUrl,
+                                           view.getUserName(),
+                                           view.getPassword());
     }
 
     public void cancel() {

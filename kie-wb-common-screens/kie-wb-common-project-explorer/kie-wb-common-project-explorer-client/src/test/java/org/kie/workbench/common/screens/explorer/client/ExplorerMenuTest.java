@@ -15,8 +15,13 @@
  */
 package org.kie.workbench.common.screens.explorer.client;
 
-import org.guvnor.common.services.project.context.ProjectContext;
-import org.guvnor.common.services.project.model.Project;
+import java.util.Optional;
+
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
+import org.guvnor.common.services.project.model.Module;
+import org.guvnor.common.services.project.model.POM;
+import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,128 +50,138 @@ public class ExplorerMenuTest {
     private Command updateCommand;
 
     @Mock
-    private ProjectContext context;
+    private WorkspaceProjectContext context;
 
     private ExplorerMenu menu;
 
     @Before
     public void setUp() throws Exception {
-        menu = new ExplorerMenu( view,
-                                 activeOptions,
-                                 context );
+        menu = new ExplorerMenu(view,
+                                activeOptions,
+                                context);
 
-        menu.addRefreshCommand( refreshCommand );
-        menu.addUpdateCommand( updateCommand );
-
+        menu.addRefreshCommand(refreshCommand);
+        menu.addUpdateCommand(updateCommand);
     }
 
     @Test
     public void testOnRefresh() throws Exception {
         menu.onRefresh();
 
-        verify( refreshCommand ).execute();
+        verify(refreshCommand).execute();
     }
 
     @Test
     public void testRefreshVersion1() throws Exception {
 
-        when( activeOptions.isTechnicalViewActive() ).thenReturn( true );
-        when( activeOptions.isTreeNavigatorVisible() ).thenReturn( true );
-        when( activeOptions.canShowTag() ).thenReturn( true );
+        when(activeOptions.isTechnicalViewActive()).thenReturn(true);
+        when(activeOptions.isTreeNavigatorVisible()).thenReturn(true);
+        when(activeOptions.canShowTag()).thenReturn(true);
 
         menu.refresh();
 
-        verify( view ).showTreeNav();
-        verify( view ).showTechViewIcon();
-        verify( view ).hideBusinessViewIcon();
-        verify( view ).showTagFilterIcon();
+        verify(view).showTreeNav();
+        verify(view).showTechViewIcon();
+        verify(view).hideBusinessViewIcon();
+        verify(view).showTagFilterIcon();
 
-        verify( view, never() ).showBreadcrumbNav();
-        verify( view, never() ).showBusinessViewIcon();
-        verify( view, never() ).hideTechViewIcon();
-        verify( view, never() ).hideTagFilterIcon();
+        verify(view,
+               never()).showBreadcrumbNav();
+        verify(view,
+               never()).showBusinessViewIcon();
+        verify(view,
+               never()).hideTechViewIcon();
+        verify(view,
+               never()).hideTagFilterIcon();
     }
 
     @Test
     public void testRefreshVersion2() throws Exception {
 
-        when( activeOptions.isTechnicalViewActive() ).thenReturn( false );
-        when( activeOptions.isTreeNavigatorVisible() ).thenReturn( false );
-        when( activeOptions.canShowTag() ).thenReturn( false );
+        when(activeOptions.isTechnicalViewActive()).thenReturn(false);
+        when(activeOptions.isTreeNavigatorVisible()).thenReturn(false);
+        when(activeOptions.canShowTag()).thenReturn(false);
 
         menu.refresh();
 
-        verify( view, never() ).showTreeNav();
-        verify( view, never() ).showTechViewIcon();
-        verify( view, never() ).hideBusinessViewIcon();
-        verify( view, never() ).showTagFilterIcon();
+        verify(view,
+               never()).showTreeNav();
+        verify(view,
+               never()).showTechViewIcon();
+        verify(view,
+               never()).hideBusinessViewIcon();
+        verify(view,
+               never()).showTagFilterIcon();
 
-        verify( view ).showBreadcrumbNav();
-        verify( view ).showBusinessViewIcon();
-        verify( view ).hideTechViewIcon();
-        verify( view ).hideTagFilterIcon();
+        verify(view).showBreadcrumbNav();
+        verify(view).showBusinessViewIcon();
+        verify(view).hideTechViewIcon();
+        verify(view).hideTagFilterIcon();
     }
 
     @Test
     public void testOnBreadCrumbExplorerSelected() throws Exception {
         menu.onBreadCrumbExplorerSelected();
 
-        verify( activeOptions ).activateBreadCrumbNavigation();
-        verify( updateCommand ).execute();
+        verify(activeOptions).activateBreadCrumbNavigation();
+        verify(updateCommand).execute();
     }
 
     @Test
     public void testOnTreeExplorerSelected() throws Exception {
         menu.onTreeExplorerSelected();
 
-        verify( activeOptions ).activateTreeViewNavigation();
-        verify( updateCommand ).execute();
+        verify(activeOptions).activateTreeViewNavigation();
+        verify(updateCommand).execute();
     }
-
 
     @Test
     public void testOnShowTagFilterSelectedOn() throws Exception {
-        when( activeOptions.canShowTag() ).thenReturn( false );
+        when(activeOptions.canShowTag()).thenReturn(false);
 
         menu.onShowTagFilterSelected();
 
-        verify( activeOptions ).activateTagFiltering();
-        verify( updateCommand ).execute();
+        verify(activeOptions).activateTagFiltering();
+        verify(updateCommand).execute();
     }
 
     @Test
     public void testOnShowTagFilterSelectedOff() throws Exception {
-        when( activeOptions.canShowTag() ).thenReturn( true );
+        when(activeOptions.canShowTag()).thenReturn(true);
 
         menu.onShowTagFilterSelected();
 
-        verify( activeOptions ).disableTagFiltering();
-        verify( updateCommand ).execute();
+        verify(activeOptions).disableTagFiltering();
+        verify(updateCommand).execute();
     }
 
-
     @Test
-    public void testOnArchiveActiveProject() throws Exception {
-        Path rootProjectPath = mock( Path.class );
-        Project project = new Project( rootProjectPath,
-                                       mock( Path.class ),
-                                       "my project" );
-        when( context.getActiveProject() ).thenReturn( project );
+    public void testOnArchiveActiveModule() throws Exception {
+        final Path rootModulePath = mock(Path.class);
+        final POM pom = mock(POM.class);
+        when(pom.getName()).thenReturn("my module");
+
+        final Module module = new Module(rootModulePath,
+                                         mock(Path.class),
+                                         pom);
+        when(context.getActiveModule()).thenReturn(Optional.of(module));
 
         menu.onArchiveActiveProject();
 
-        verify( view ).archive( rootProjectPath );
+        verify(view).archive(rootModulePath);
     }
 
     @Test
     public void testOnArchiveActiveRepo() throws Exception {
-        Path rootRepoPath = mock( Path.class );
-        Repository repository = mock( Repository.class );
-        when( repository.getRoot() ).thenReturn( rootRepoPath );
-        when( context.getActiveRepository() ).thenReturn( repository );
+        final Path rootRepoPath = mock(Path.class);
+        final Repository repository = mock(Repository.class);
+        when(repository.getDefaultBranch()).thenReturn(Optional.of(new Branch("master", rootRepoPath)));
+        final WorkspaceProject project = mock(WorkspaceProject.class);
+        when(project.getRepository()).thenReturn(repository);
+        when(context.getActiveWorkspaceProject()).thenReturn(Optional.of(project));
 
         menu.onArchiveActiveRepository();
 
-        verify( view ).archive( rootRepoPath );
+        verify(view).archive(rootRepoPath);
     }
 }

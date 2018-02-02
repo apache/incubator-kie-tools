@@ -33,7 +33,7 @@ import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemOperation;
 import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.explorer.service.Option;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.server.UserServicesImpl;
@@ -54,58 +54,40 @@ import static org.mockito.Mockito.*;
 public class ExplorerServiceHelperTest {
 
     private SimpleFileSystemProvider fileSystemProvider;
-
     @Mock
-    private KieProjectService projectService;
-
+    private KieModuleService moduleService;
     @Mock
     private FolderListingResolver folderListingResolver;
-
     @Mock
     private IOService ioService;
-
     @Mock
     private IOService ioServiceConfig;
-
     @Mock
     private OtherMetaView otherMetaView;
-
     @Mock
     private VFSLockServiceImpl lockService;
-
     @Mock
     private MetadataService metadataService;
-
     @Mock
     private UserServicesImpl userServices;
-
     @Mock
     private DeleteService deleteService;
-
     @Mock
     private RenameService renameService;
-
     @Mock
     private CopyService copyService;
-
     @Mock
     private Package pkg;
-
     @Mock
     private Package childPkg;
-
     @Mock
     private Path srcPath;
-
     @Mock
     private Path srcTestPath;
-
     @Mock
     private Path srcResourcesPath;
-
     @Mock
     private Path testResourcesPath;
-
     private org.uberfire.java.nio.file.Path path;
     private ExplorerServiceHelper helper;
 
@@ -149,7 +131,7 @@ public class ExplorerServiceHelperTest {
 
         ExecutorService executorService = Executors.newCachedThreadPool(new DescriptiveThreadFactory());
 
-        helper = spy(new ExplorerServiceHelper(projectService,
+        helper = spy(new ExplorerServiceHelper(moduleService,
                                                folderListingResolver,
                                                ioService,
                                                ioServiceConfig,
@@ -292,7 +274,7 @@ public class ExplorerServiceHelperTest {
         doReturn(false).when(helper).hasAssets(testResourcesPath);
         doReturn(new HashSet<Package>() {{
             add(childPkg);
-        }}).when(projectService).resolvePackages(pkg);
+        }}).when(moduleService).resolvePackages(pkg);
         doReturn(false).when(helper).hasAssets(childPkg);
 
         assertFalse(helper.hasAssets(pkg));
@@ -306,7 +288,7 @@ public class ExplorerServiceHelperTest {
         doReturn(false).when(helper).hasAssets(testResourcesPath);
         doReturn(new HashSet<Package>() {{
             add(childPkg);
-        }}).when(projectService).resolvePackages(pkg);
+        }}).when(moduleService).resolvePackages(pkg);
         doReturn(false).when(helper).hasAssets(childPkg);
 
         assertTrue(helper.hasAssets(pkg));
@@ -320,7 +302,7 @@ public class ExplorerServiceHelperTest {
         doReturn(false).when(helper).hasAssets(testResourcesPath);
         doReturn(new HashSet<Package>() {{
             add(childPkg);
-        }}).when(projectService).resolvePackages(pkg);
+        }}).when(moduleService).resolvePackages(pkg);
         doReturn(false).when(helper).hasAssets(childPkg);
 
         assertTrue(helper.hasAssets(pkg));
@@ -334,7 +316,7 @@ public class ExplorerServiceHelperTest {
         doReturn(false).when(helper).hasAssets(testResourcesPath);
         doReturn(new HashSet<Package>() {{
             add(childPkg);
-        }}).when(projectService).resolvePackages(pkg);
+        }}).when(moduleService).resolvePackages(pkg);
         doReturn(false).when(helper).hasAssets(childPkg);
 
         assertTrue(helper.hasAssets(pkg));
@@ -348,7 +330,7 @@ public class ExplorerServiceHelperTest {
         doReturn(true).when(helper).hasAssets(testResourcesPath);
         doReturn(new HashSet<Package>() {{
             add(childPkg);
-        }}).when(projectService).resolvePackages(pkg);
+        }}).when(moduleService).resolvePackages(pkg);
         doReturn(false).when(helper).hasAssets(childPkg);
 
         assertTrue(helper.hasAssets(pkg));
@@ -362,7 +344,7 @@ public class ExplorerServiceHelperTest {
         doReturn(false).when(helper).hasAssets(testResourcesPath);
         doReturn(new HashSet<Package>() {{
             add(childPkg);
-        }}).when(projectService).resolvePackages(pkg);
+        }}).when(moduleService).resolvePackages(pkg);
         doReturn(true).when(helper).hasAssets(childPkg);
 
         assertTrue(helper.hasAssets(pkg));

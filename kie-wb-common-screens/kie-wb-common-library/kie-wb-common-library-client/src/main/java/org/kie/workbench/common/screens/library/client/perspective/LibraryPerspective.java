@@ -38,7 +38,6 @@ public class LibraryPerspective {
     private LibraryPlaces libraryPlaces;
 
     private PerspectiveDefinition perspectiveDefinition;
-
     private boolean refresh = true;
 
     public LibraryPerspective() {
@@ -47,12 +46,15 @@ public class LibraryPerspective {
     @Inject
     public LibraryPerspective(final LibraryPlaces libraryPlaces) {
         this.libraryPlaces = libraryPlaces;
+        this.libraryPlaces.init(this);
     }
 
     @Perspective
     public PerspectiveDefinition buildPerspective() {
-        perspectiveDefinition = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
-        perspectiveDefinition.setName("Library Perspective");
+        if (perspectiveDefinition == null) {
+            perspectiveDefinition = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+            perspectiveDefinition.setName("Library Perspective");
+        }
 
         return perspectiveDefinition;
     }
@@ -66,15 +68,20 @@ public class LibraryPerspective {
 
     @OnOpen
     public void onOpen() {
-        Command callback = null;
+
+        libraryPlaces.refresh(getRefreshCallBack());
+    }
+
+    private Command getRefreshCallBack() {
         if (refresh) {
-            callback = () -> {
+            return () -> {
                 if (getRootPanel() != null) {
                     libraryPlaces.goToLibrary();
                 }
             };
+        } else {
+            return null;
         }
-        libraryPlaces.refresh(callback);
     }
 
     @OnClose
@@ -83,10 +90,6 @@ public class LibraryPerspective {
     }
 
     public PanelDefinition getRootPanel() {
-        if (perspectiveDefinition == null) {
-            return null;
-        }
-
-        return perspectiveDefinition.getRoot();
+        return buildPerspective().getRoot();
     }
 }

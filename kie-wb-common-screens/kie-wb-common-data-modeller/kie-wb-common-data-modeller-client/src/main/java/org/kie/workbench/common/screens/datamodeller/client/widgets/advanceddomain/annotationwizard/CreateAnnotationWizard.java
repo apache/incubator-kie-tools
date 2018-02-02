@@ -35,7 +35,7 @@ import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 import org.kie.workbench.common.services.datamodeller.core.ElementType;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieModule;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.core.client.wizards.AbstractWizard;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
@@ -51,7 +51,7 @@ public class CreateAnnotationWizard extends AbstractWizard {
 
     private Callback<Annotation> onCloseCallback;
 
-    private KieProject project;
+    private KieModule module;
 
     private AnnotationDefinition annotationDefinition = null;
 
@@ -80,11 +80,10 @@ public class CreateAnnotationWizard extends AbstractWizard {
         });
     }
 
-    public void init(KieProject project,
-                     ElementType target) {
-        this.project = project;
+    public void init(KieModule module, ElementType target) {
+        this.module = module;
         this.target = target;
-        searchAnnotationPage.init(project,
+        searchAnnotationPage.init(module,
                                   target);
         clearCurrentValuePairEditorPages();
     }
@@ -194,7 +193,7 @@ public class CreateAnnotationWizard extends AbstractWizard {
         valuePairEditorPage.init(annotationDefinition,
                                  valuePairDefinition,
                                  target,
-                                 project);
+                                 module);
         return valuePairEditorPage;
     }
 

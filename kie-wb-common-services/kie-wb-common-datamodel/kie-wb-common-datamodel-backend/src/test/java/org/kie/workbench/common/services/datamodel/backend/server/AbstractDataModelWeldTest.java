@@ -22,7 +22,7 @@ import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.junit.After;
 import org.junit.Before;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -55,13 +55,13 @@ abstract public class AbstractDataModelWeldTest {
         }
     }
 
-    protected ProjectDataModelOracle initializeProjectDataModelOracle(String projectResourceDirectoryPath) throws URISyntaxException {
+    protected ModuleDataModelOracle initializeModuleDataModelOracle(String projectResourceDirectoryPath) throws URISyntaxException {
         DataModelService dataModelService = weldContainer.instance().select(DataModelService.class).get();
 
         final URL packageUrl = getClass().getResource(projectResourceDirectoryPath);
         final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath(packageUrl.toURI());
         final Path packagePath = Paths.convert(nioPackagePath);
 
-        return dataModelService.getProjectDataModel(packagePath);
+        return dataModelService.getModuleDataModel(packagePath);
     }
 }

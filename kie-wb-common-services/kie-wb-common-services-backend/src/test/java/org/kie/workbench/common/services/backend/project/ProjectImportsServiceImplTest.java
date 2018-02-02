@@ -48,7 +48,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ProjectImportsServiceImplTest extends WeldProjectTestBase {
+public class ProjectImportsServiceImplTest extends WeldModuleTestBase {
 
     private final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
     private ProjectImportsServiceImpl projectImportsService;
@@ -76,7 +76,7 @@ public class ProjectImportsServiceImplTest extends WeldProjectTestBase {
         //Ensure URLs use the default:// scheme
         fs.forceAsDefault();
 
-        final URL packageUrl = this.getClass().getResource("/ProjectBackendTestProjectStructureValid/package-names-white-list");
+        final URL packageUrl = this.getClass().getResource("/ModuleBackendTestModuleStructureValid/package-names-white-list");
         final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath(packageUrl.toURI());
         pathToImports = paths.convert(nioPackagePath);
 

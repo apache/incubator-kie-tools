@@ -36,7 +36,7 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.LinkedGroup;
 import org.gwtbootstrap3.client.ui.LinkedGroupItem;
@@ -72,6 +72,12 @@ import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 @ApplicationScoped
 public class BusinessViewWidget extends BaseViewImpl implements View {
 
+    interface BusinessViewImplBinder
+            extends
+            UiBinder<Widget, BusinessViewWidget> {
+
+    }
+
     private static final String ID_CLEANUP_PATTERN = "[^a-zA-Z0-9]";
     private static BusinessViewImplBinder uiBinder = GWT.create(BusinessViewImplBinder.class);
     //TreeSet sorts members upon insertion
@@ -85,26 +91,19 @@ public class BusinessViewWidget extends BaseViewImpl implements View {
         showItemMessage(false);
         showItemLastUpdater(false);
     }};
-
     @UiField
     Explorer explorer;
-
     @UiField
     PanelGroup itemsContainer;
-
     @UiField(provided = true)
     @Inject
     TagSelector tagSelector;
-
     @Inject
     Classifier classifier;
-
     @Inject
     PlaceManager placeManager;
-
     @Inject
     User user;
-
     private Map<String, PanelCollapse> collapses = new HashMap<>();
     private BaseViewPresenter presenter;
 
@@ -124,10 +123,10 @@ public class BusinessViewWidget extends BaseViewImpl implements View {
     }
 
     @Override
-    public void setContent(final Project project,
+    public void setContent(final Module module,
                            final FolderListing folderListing,
                            final Map<FolderItem, List<FolderItem>> siblings) {
-        explorer.setupHeader(project);
+        explorer.setupHeader(module);
         explorer.loadContent(folderListing,
                              siblings);
 
@@ -308,11 +307,5 @@ public class BusinessViewWidget extends BaseViewImpl implements View {
     @Override
     public void hideBusyIndicator() {
         BusyPopup.close();
-    }
-
-    interface BusinessViewImplBinder
-            extends
-            UiBinder<Widget, BusinessViewWidget> {
-
     }
 }

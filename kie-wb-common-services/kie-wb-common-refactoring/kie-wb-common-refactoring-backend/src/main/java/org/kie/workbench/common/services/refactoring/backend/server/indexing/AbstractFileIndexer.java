@@ -21,15 +21,15 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.services.refactoring.Resource;
 import org.kie.workbench.common.services.refactoring.ResourceReference;
 import org.kie.workbench.common.services.refactoring.SharedPart;
 import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
 import org.kie.workbench.common.services.refactoring.backend.server.util.KObjectUtil;
 import org.kie.workbench.common.services.refactoring.model.index.terms.IndexTerm;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -52,7 +52,7 @@ public abstract class AbstractFileIndexer implements Indexer {
     protected IOService ioService;
 
     @Inject
-    protected KieProjectService projectService;
+    protected KieModuleService moduleService;
 
     /**
      * This method fills a {@link DefaultIndexBuilder} instance with the default information.
@@ -99,21 +99,21 @@ public abstract class AbstractFileIndexer implements Indexer {
     }
 
     protected DefaultIndexBuilder getIndexBuilder(Path path) {
-        final Project project = projectService.resolveProject(Paths.convert(path));
-        if (project == null) {
-            logger.error("Unable to index " + path.toUri().toString() + ": project could not be resolved.");
+        final Module module = moduleService.resolveModule(Paths.convert(path));
+        if (module == null) {
+            logger.error("Unable to index " + path.toUri().toString() + ": module could not be resolved.");
             return null;
         }
 
-        final Package pkg = projectService.resolvePackage(Paths.convert(path));
+        final Package pkg = moduleService.resolvePackage(Paths.convert(path));
         if (pkg == null) {
             logger.error("Unable to index " + path.toUri().toString() + ": package could not be resolved.");
             return null;
         }
 
-        // responsible for basic index info: project name, branch, etc
+        // responsible for basic index info: module name, branch, etc
         return new DefaultIndexBuilder(Paths.convert(path).getFileName(),
-                                       project,
+                                       module,
                                        pkg);
     }
 

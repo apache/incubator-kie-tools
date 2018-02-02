@@ -25,7 +25,6 @@
   <inherits name='org.uberfire.ext.widgets.core.UberfireWidgetsCore'/>
   <inherits name='org.uberfire.ext.editor.commons.UberfireCommonsEditorClient'/>
 
-  <inherits name="org.guvnor.asset.management.GuvnorAssetMgmtAPI"/>
   <inherits name='org.guvnor.structure.GuvnorStructureClient'/>
 
   <source path="client"/>

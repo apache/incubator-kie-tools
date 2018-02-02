@@ -1,12 +1,12 @@
 /**
  * Copyright 2014 Red Hat, Inc. and/or its affiliates.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,7 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.Package;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.backend.validation.FileNameValidator;
 import org.uberfire.ext.editor.commons.backend.validation.ValidationUtils;
@@ -33,7 +33,7 @@ import org.uberfire.ext.editor.commons.backend.validation.ValidationUtils;
 public class PackageNameValidator implements FileNameValidator {
 
     @Inject
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     @Override
     public int getPriority() {
@@ -41,37 +41,38 @@ public class PackageNameValidator implements FileNameValidator {
     }
 
     @Override
-    public boolean accept( final String fileName ) {
+    public boolean accept(final String fileName) {
         return false;
     }
 
     @Override
-    public boolean accept( final Path path ) {
-        final Package pkg = projectService.resolvePackage( path );
-        if ( pkg == null ) {
+    public boolean accept(final Path path) {
+        final Package pkg = moduleService.resolvePackage(path);
+        if (pkg == null) {
             return false;
         }
-        return pkg.getPackageMainSrcPath().equals( path ) ||
-                pkg.getPackageMainResourcesPath().equals( path ) ||
-                pkg.getPackageTestSrcPath().equals( path ) ||
-                pkg.getPackageTestResourcesPath().equals( path );
+        return pkg.getPackageMainSrcPath().equals(path) ||
+                pkg.getPackageMainResourcesPath().equals(path) ||
+                pkg.getPackageTestSrcPath().equals(path) ||
+                pkg.getPackageTestResourcesPath().equals(path);
     }
 
     @Override
-    public boolean isValid( final String value ) {
-        if ( value == null ) {
+    public boolean isValid(final String value) {
+        if (value == null) {
             return false;
         }
-        final Map<String, Boolean> results = evaluateIdentifiers( value.split( "\\.",
-                                                                               -1 ) );
-        return !results.containsValue( Boolean.FALSE );
+        final Map<String, Boolean> results = evaluateIdentifiers(value.split("\\.",
+                                                                             -1));
+        return !results.containsValue(Boolean.FALSE);
     }
 
-    private Map<String, Boolean> evaluateIdentifiers( final String[] identifiers ) {
-        final Map<String, Boolean> result = new HashMap<String, Boolean>( identifiers.length );
-        if ( identifiers != null && identifiers.length > 0 ) {
-            for ( String s : identifiers ) {
-                result.put( s, ValidationUtils.isJavaIdentifier( s ) );
+    private Map<String, Boolean> evaluateIdentifiers(final String[] identifiers) {
+        final Map<String, Boolean> result = new HashMap<String, Boolean>(identifiers.length);
+        if (identifiers != null && identifiers.length > 0) {
+            for (String s : identifiers) {
+                result.put(s,
+                           ValidationUtils.isJavaIdentifier(s));
             }
         }
         return result;

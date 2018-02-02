@@ -5,7 +5,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
+import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
@@ -22,25 +22,25 @@ public class ProjectScreenMenuItem
     }
 
     @Inject
-    public ProjectScreenMenuItem( final PlaceManager placeManager ) {
+    public ProjectScreenMenuItem(final PlaceManager placeManager) {
         this.placeManager = placeManager;
     }
 
-    public void onProjectContextChanged( @Observes final ProjectContextChangeEvent event ) {
-        this.setEnabled( (event.getProject() != null) );
+    public void onWorkspaceProjectContextChanged(@Observes final WorkspaceProjectContextChangeEvent event) {
+        this.setEnabled((event.getModule() != null));
     }
 
     @Override
     public Object build() {
         view = new Button();
-        view.setSize( ButtonSize.SMALL );
-        view.setText( ProjectExplorerConstants.INSTANCE.openProjectEditor() );
-        view.addClickHandler( new ClickHandler() {
+        view.setSize(ButtonSize.SMALL);
+        view.setText(ProjectExplorerConstants.INSTANCE.openProjectEditor());
+        view.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( ClickEvent event ) {
-                placeManager.goTo( "projectScreen" );
+            public void onClick(ClickEvent event) {
+                placeManager.goTo("projectScreen");
             }
-        } );
+        });
 
         return view;
     }
@@ -49,5 +49,4 @@ public class ProjectScreenMenuItem
     public boolean isEnabled() {
         return view.isEnabled();
     }
-
 }

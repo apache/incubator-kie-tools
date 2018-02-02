@@ -31,15 +31,15 @@ import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.PostBuildHandler;
 import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
-import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -49,7 +49,7 @@ import org.uberfire.workbench.events.ResourceChange;
 @ApplicationScoped
 public class BuildHelper {
 
-    private static final Logger logger = LoggerFactory.getLogger( BuildHelper.class );
+    private static final Logger logger = LoggerFactory.getLogger(BuildHelper.class);
 
     private POMService pomService;
 
@@ -57,159 +57,154 @@ public class BuildHelper {
 
     private LRUBuilderCache cache;
 
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     private DeploymentVerifier deploymentVerifier;
 
-    private Instance< User > identity;
+    private Instance<User> identity;
 
-    private Instance< PostBuildHandler > handlers;
+    private Instance<PostBuildHandler> handlers;
 
-    public BuildHelper( ) {
+    public BuildHelper() {
     }
 
     @Inject
-    public BuildHelper( final POMService pomService,
-                        final ExtendedM2RepoService m2RepoService,
-                        final KieProjectService projectService,
-                        final DeploymentVerifier deploymentVerifier,
-                        final LRUBuilderCache cache,
-                        final Instance< PostBuildHandler > handlers,
-                        final Instance< User > identity ) {
+    public BuildHelper(final POMService pomService,
+                       final ExtendedM2RepoService m2RepoService,
+                       final KieModuleService moduleService,
+                       final DeploymentVerifier deploymentVerifier,
+                       final LRUBuilderCache cache,
+                       final Instance<PostBuildHandler> handlers,
+                       final Instance<User> identity) {
         this.pomService = pomService;
         this.m2RepoService = m2RepoService;
-        this.projectService = projectService;
+        this.moduleService = moduleService;
         this.deploymentVerifier = deploymentVerifier;
         this.cache = cache;
         this.handlers = handlers;
         this.identity = identity;
     }
 
-    public BuildResult build( final Project project ) {
+    public BuildResult build(final Module module) {
         try {
-            cache.invalidateCache( project );
-            Builder builder = cache.assertBuilder( project );
-            final BuildResults results = builder.build( );
+            cache.invalidateCache(module);
+            Builder builder = cache.assertBuilder(module);
+            final BuildResults results = builder.build();
 
-            BuildMessage infoMsg = new BuildMessage( );
+            BuildMessage infoMsg = new BuildMessage();
 
-            infoMsg.setLevel( Level.INFO );
-            infoMsg.setText( buildResultMessage( project, results ).toString( ) );
+            infoMsg.setLevel(Level.INFO);
+            infoMsg.setText(buildResultMessage(module, results).toString());
 
-            results.addBuildMessage( 0, infoMsg );
+            results.addBuildMessage(0, infoMsg);
 
-            return new BuildResult( builder, results );
-
-        } catch ( Exception e ) {
-            logger.error( e.getMessage( ),
-                    e );
-            return new BuildResult( null, buildExceptionResults( e, project.getPom( ).getGav( ) ) );
+            return new BuildResult(builder, results);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),
+                         e);
+            return new BuildResult(null, buildExceptionResults(e, module.getPom().getGav()));
         }
     }
 
-    public IncrementalBuildResults addPackageResource( final Path resource ) {
+    public IncrementalBuildResults addPackageResource(final Path resource) {
         try {
-            IncrementalBuildResults results = new IncrementalBuildResults( );
-            final KieProject project = projectService.resolveProject( resource );
-            if ( project == null ) {
+            IncrementalBuildResults results = new IncrementalBuildResults();
+            final KieModule module = moduleService.resolveModule(resource);
+            if (module == null) {
                 return results;
             }
-            final Builder builder = cache.assertBuilder( project );
-            if ( !builder.isBuilt( ) ) {
-                throw new IllegalStateException( "Incremental Build requires a full build be completed first." );
+            final Builder builder = cache.assertBuilder(module);
+            if (!builder.isBuilt()) {
+                throw new IllegalStateException("Incremental Build requires a full build be completed first.");
             } else {
-                results = builder.addResource( Paths.convert( resource ) );
+                results = builder.addResource(Paths.convert(resource));
             }
 
             return results;
-
-        } catch ( Exception e ) {
-            logger.error( e.getMessage( ),
-                    e );
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            logger.error(e.getMessage(),
+                         e);
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
-    public IncrementalBuildResults deletePackageResource( final Path resource ) {
+    public IncrementalBuildResults deletePackageResource(final Path resource) {
         try {
-            IncrementalBuildResults results = new IncrementalBuildResults( );
-            final KieProject project = projectService.resolveProject( resource );
-            if ( project == null ) {
+            IncrementalBuildResults results = new IncrementalBuildResults();
+            final KieModule module = moduleService.resolveModule(resource);
+            if (module == null) {
                 return results;
             }
-            final Builder builder = cache.assertBuilder( project );
-            if ( !builder.isBuilt( ) ) {
-                throw new IllegalStateException( "Incremental Build requires a full build be completed first." );
+            final Builder builder = cache.assertBuilder(module);
+            if (!builder.isBuilt()) {
+                throw new IllegalStateException("Incremental Build requires a full build be completed first.");
             } else {
-                results = builder.deleteResource( Paths.convert( resource ) );
+                results = builder.deleteResource(Paths.convert(resource));
             }
 
             return results;
-
-        } catch ( Exception e ) {
-            logger.error( e.getMessage( ),
-                    e );
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            logger.error(e.getMessage(),
+                         e);
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
-    public IncrementalBuildResults updatePackageResource( final Path resource ) {
+    public IncrementalBuildResults updatePackageResource(final Path resource) {
         try {
-            final Project project = projectService.resolveProject( resource );
+            final Module module = moduleService.resolveModule(resource);
 
-            if ( project == null ) {
-                return new IncrementalBuildResults( );
+            if (module == null) {
+                return new IncrementalBuildResults();
             }
 
-            final Builder builder = cache.assertBuilder( project );
+            final Builder builder = cache.assertBuilder(module);
 
-            if ( !builder.isBuilt( ) ) {
-                throw new IllegalStateException( "Incremental Build requires a full build be completed first." );
+            if (!builder.isBuilt()) {
+                throw new IllegalStateException("Incremental Build requires a full build be completed first.");
             }
 
-            return builder.updateResource( Paths.convert( resource ) );
-
-        } catch ( Exception e ) {
-            logger.error( e.getMessage( ),
-                    e );
-            throw ExceptionUtilities.handleException( e );
+            return builder.updateResource(Paths.convert(resource));
+        } catch (Exception e) {
+            logger.error(e.getMessage(),
+                         e);
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
-    public IncrementalBuildResults applyBatchResourceChanges( final Project project,
-                                                              final Map< Path, Collection< ResourceChange > > changes ) {
-        IncrementalBuildResults results = new IncrementalBuildResults( );
+    public IncrementalBuildResults applyBatchResourceChanges(final Module module,
+                                                             final Map<Path, Collection<ResourceChange>> changes) {
+        IncrementalBuildResults results = new IncrementalBuildResults();
         try {
-            if ( project == null ) {
+            if (module == null) {
                 return results;
             }
-            final Builder builder = cache.assertBuilder( project );
-            if ( !builder.isBuilt( ) ) {
-                throw new IllegalStateException( "Incremental Build requires a full build be completed first." );
+            final Builder builder = cache.assertBuilder(module);
+            if (!builder.isBuilt()) {
+                throw new IllegalStateException("Incremental Build requires a full build be completed first.");
             } else {
-                results = builder.applyBatchResourceChanges( changes );
+                results = builder.applyBatchResourceChanges(changes);
             }
 
             return results;
-
-        } catch ( Exception e ) {
-            logger.error( e.getMessage( ),
-                    e );
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            logger.error(e.getMessage(),
+                         e);
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
-    private StringBuffer buildResultMessage( final Project project,
-                                             final BuildResults results ) {
-        StringBuffer message = new StringBuffer( );
+    private StringBuffer buildResultMessage(final Module module,
+                                            final BuildResults results) {
+        StringBuffer message = new StringBuffer();
 
-        message.append( "Build of project '" );
-        message.append( project.getProjectName( ) );
-        message.append( "' (requested by " );
-        message.append( getIdentifier( ) );
-        message.append( ") completed.\n" );
-        message.append( " Build: " );
-        message.append( results.getErrorMessages( ).isEmpty( ) ? "SUCCESSFUL" : "FAILURE" );
+        message.append("Build of module '");
+        message.append(module.getModuleName());
+        message.append("' (requested by ");
+        message.append(getIdentifier());
+        message.append(") completed.\n");
+        message.append(" Build: ");
+        message.append(results.getErrorMessages().isEmpty() ? "SUCCESSFUL" : "FAILURE");
 
         return message;
     }
@@ -221,42 +216,42 @@ public class BuildHelper {
      * @param gav
      * @return An instance of BuildResults with the exception details.
      */
-    public BuildResults buildExceptionResults( Exception e,
-                                               GAV gav ) {
-        BuildResults exceptionResults = new BuildResults( gav );
-        BuildMessage exceptionMessage = new BuildMessage( );
-        exceptionMessage.setLevel( Level.ERROR );
-        exceptionMessage.setText( e.getMessage( ) );
-        exceptionResults.addBuildMessage( exceptionMessage );
+    public BuildResults buildExceptionResults(Exception e,
+                                              GAV gav) {
+        BuildResults exceptionResults = new BuildResults(gav);
+        BuildMessage exceptionMessage = new BuildMessage();
+        exceptionMessage.setLevel(Level.ERROR);
+        exceptionMessage.setText(e.getMessage());
+        exceptionResults.addBuildMessage(exceptionMessage);
 
         return exceptionResults;
     }
 
-    public BuildResults buildAndDeploy( final Project project ) {
-        return buildAndDeploy( project,
-                DeploymentMode.VALIDATED );
+    public BuildResults buildAndDeploy(final Module module) {
+        return buildAndDeploy(module,
+                              DeploymentMode.VALIDATED);
     }
 
-    public BuildResults buildAndDeploy( final Project project,
-                                        final DeploymentMode mode ) {
-        deploymentVerifier.verifyWithException( project, mode );
-        return doBuildAndDeploy( project,
-                false );
+    public BuildResults buildAndDeploy(final Module module,
+                                       final DeploymentMode mode) {
+        deploymentVerifier.verifyWithException(module, mode);
+        return doBuildAndDeploy(module,
+                                false);
     }
 
-    public BuildResults buildAndDeploy( final Project project,
-                                        final boolean suppressHandlers ) {
-        return buildAndDeploy( project,
-                suppressHandlers,
-                DeploymentMode.VALIDATED );
+    public BuildResults buildAndDeploy(final Module module,
+                                       final boolean suppressHandlers) {
+        return buildAndDeploy(module,
+                              suppressHandlers,
+                              DeploymentMode.VALIDATED);
     }
 
-    public BuildResults buildAndDeploy( final Project project,
-                                        final boolean suppressHandlers,
-                                        final DeploymentMode mode ) {
-        deploymentVerifier.verifyWithException( project, mode );
-        return doBuildAndDeploy( project,
-                suppressHandlers );
+    public BuildResults buildAndDeploy(final Module module,
+                                       final boolean suppressHandlers,
+                                       final DeploymentMode mode) {
+        deploymentVerifier.verifyWithException(module, mode);
+        return doBuildAndDeploy(module,
+                                suppressHandlers);
     }
 
     public class BuildResult {
@@ -267,79 +262,78 @@ public class BuildHelper {
 
         private IncrementalBuildResults incrementalBuildResults;
 
-        public BuildResult( Builder builder, BuildResults buildResults ) {
+        public BuildResult(Builder builder, BuildResults buildResults) {
             this.builder = builder;
             this.buildResults = buildResults;
         }
 
-        public BuildResult( Builder builder, IncrementalBuildResults incrementalBuildResults ) {
+        public BuildResult(Builder builder, IncrementalBuildResults incrementalBuildResults) {
             this.builder = builder;
             this.incrementalBuildResults = incrementalBuildResults;
         }
 
-        public Builder getBuilder( ) {
+        public Builder getBuilder() {
             return builder;
         }
 
-        public BuildResults getBuildResults( ) {
+        public BuildResults getBuildResults() {
             return buildResults;
         }
 
-        public IncrementalBuildResults getIncrementalBuildResults( ) {
+        public IncrementalBuildResults getIncrementalBuildResults() {
             return incrementalBuildResults;
         }
     }
 
-    private BuildResults doBuildAndDeploy( final Project project,
-                                           final boolean suppressHandlers ) {
+    private BuildResults doBuildAndDeploy(final Module module,
+                                          final boolean suppressHandlers) {
         try {
             //Build
-            final BuildResults results = build( project ).getBuildResults();
-            StringBuffer message = new StringBuffer( );
-            message.append( "Build of project '" + project.getProjectName( ) + "' (requested by " + getIdentifier( ) + ") completed.\n" );
-            message.append( " Build: " + ( results.getErrorMessages( ).isEmpty( ) ? "SUCCESSFUL" : "FAILURE" ) );
+            final BuildResults results = build(module).getBuildResults();
+            StringBuffer message = new StringBuffer();
+            message.append("Build of module '" + module.getModuleName() + "' (requested by " + getIdentifier() + ") completed.\n");
+            message.append(" Build: " + (results.getErrorMessages().isEmpty() ? "SUCCESSFUL" : "FAILURE"));
 
             //Deploy, if no errors
-            final POM pom = pomService.load( project.getPomXMLPath( ) );
-            if ( results.getErrorMessages( ).isEmpty( ) ) {
-                final Builder builder = cache.assertBuilder( project );
-                final InternalKieModule kieModule = ( InternalKieModule ) builder.getKieModule( );
-                final ByteArrayInputStream input = new ByteArrayInputStream( kieModule.getBytes( ) );
-                m2RepoService.deployJar( input,
-                        pom.getGav( ) );
-                message.append( " Maven: SUCCESSFUL" );
-                if ( !suppressHandlers ) {
-                	
-                	results.addParameter("RootPath", project.getRootPath().toURI());
-                    for ( PostBuildHandler handler : handlers ) {
+            final POM pom = pomService.load(module.getPomXMLPath());
+            if (results.getErrorMessages().isEmpty()) {
+                final Builder builder = cache.assertBuilder(module);
+                final InternalKieModule kieModule = (InternalKieModule) builder.getKieModule();
+                final ByteArrayInputStream input = new ByteArrayInputStream(kieModule.getBytes());
+                m2RepoService.deployJar(input,
+                                        pom.getGav());
+                message.append(" Maven: SUCCESSFUL");
+                if (!suppressHandlers) {
+
+                    results.addParameter("RootPath", module.getRootPath().toURI());
+                    for (PostBuildHandler handler : handlers) {
                         try {
-                            handler.process( results );
-                        } catch ( Exception e ) {
-                            logger.warn( "PostBuildHandler {} failed due to {}", handler, e.getMessage( ) );
+                            handler.process(results);
+                        } catch (Exception e) {
+                            logger.warn("PostBuildHandler {} failed due to {}", handler, e.getMessage());
                         }
                     }
-                    message.append( " Deploy: " + ( results.getErrorMessages( ).isEmpty( ) ? "SUCCESSFUL" : "FAILURE" ) );
+                    message.append(" Deploy: " + (results.getErrorMessages().isEmpty() ? "SUCCESSFUL" : "FAILURE"));
                 }
             }
 
             return results;
-
-        } catch ( Exception e ) {
-            logger.error( e.getMessage( ), e );
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
 
             // BZ-1007894: If throwing the exception, an error popup will be displayed, but it's not the expected behavior. The excepted one is to show the errors in problems widget.
             // So, instead of throwing the exception, a BuildResults instance is produced on the fly to simulate the error in the problems widget.
-            return buildExceptionResults( e, project.getPom( ).getGav( ) );
+            return buildExceptionResults(e, module.getPom().getGav());
         }
     }
 
-    private String getIdentifier( ) {
-        if ( identity.isUnsatisfied( ) ) {
+    private String getIdentifier() {
+        if (identity.isUnsatisfied()) {
             return "system";
         }
         try {
-            return identity.get( ).getIdentifier( );
-        } catch ( ContextNotActiveException e ) {
+            return identity.get().getIdentifier();
+        } catch (ContextNotActiveException e) {
             return "system";
         }
     }

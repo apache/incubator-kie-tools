@@ -24,7 +24,7 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -44,77 +44,77 @@ public class KModuleServiceImplTest {
 
     @Before
     public void setUp() throws Exception {
-        ioService = mock( IOService.class );
-        paths = mock( Paths.class );
-        kProjectContentHandler = mock( KModuleContentHandler.class );
-        POMContentHandler = mock( POMContentHandler.class );
-        invalidateDMOProjectCache = mock( Event.class );
+        ioService = mock(IOService.class);
+        paths = mock(Paths.class);
+        kProjectContentHandler = mock(KModuleContentHandler.class);
+        POMContentHandler = mock(POMContentHandler.class);
+        invalidateDMOProjectCache = mock(Event.class);
 
         setUpWrite();
-        serviceImpl = new KModuleServiceImpl( ioService,
+        serviceImpl = new KModuleServiceImpl(ioService,
 //                                              paths,
-                                              mock( KieProjectService.class ),
-                                              mock( MetadataService.class ),
-                                              kProjectContentHandler );
+                                             mock(KieModuleService.class),
+                                             mock(MetadataService.class),
+                                             kProjectContentHandler);
     }
 
     private void setUpWrite() {
-        org.uberfire.java.nio.file.Path writtenPath = mock( org.uberfire.java.nio.file.Path.class );
+        org.uberfire.java.nio.file.Path writtenPath = mock(org.uberfire.java.nio.file.Path.class);
         when(
-                ioService.write( any( org.uberfire.java.nio.file.Path.class ), anyString() )
-            ).thenReturn(
+                ioService.write(any(org.uberfire.java.nio.file.Path.class), anyString())
+        ).thenReturn(
                 writtenPath
-                        );
-        Path path = mock( Path.class );
+        );
+        Path path = mock(Path.class);
         when(
-                paths.convert( writtenPath )
-            ).thenReturn(
+                paths.convert(writtenPath)
+        ).thenReturn(
                 path
-                        );
+        );
     }
 
     @Test
     public void testSetUpProjectStructure() throws Exception {
 
-        Path pathToProjectRoot = mock( Path.class );
-        org.uberfire.java.nio.file.Path directory = setUpPathToProjectRoot( pathToProjectRoot );
+        Path pathToProjectRoot = mock(Path.class);
+        org.uberfire.java.nio.file.Path directory = setUpPathToProjectRoot(pathToProjectRoot);
 
-        org.uberfire.java.nio.file.Path mainJava = mock( org.uberfire.java.nio.file.Path.class );
-        setUpDirectory( directory, "src/main/java", mainJava );
-        org.uberfire.java.nio.file.Path mainResources = mock( org.uberfire.java.nio.file.Path.class );
-        setUpDirectory( directory, "src/main/resources", mainResources );
-        org.uberfire.java.nio.file.Path testJava = mock( org.uberfire.java.nio.file.Path.class );
-        setUpDirectory( directory, "src/test/java", testJava );
-        org.uberfire.java.nio.file.Path testResources = mock( org.uberfire.java.nio.file.Path.class );
-        setUpDirectory( directory, "src/test/resources", testResources );
+        org.uberfire.java.nio.file.Path mainJava = mock(org.uberfire.java.nio.file.Path.class);
+        setUpDirectory(directory, "src/main/java", mainJava);
+        org.uberfire.java.nio.file.Path mainResources = mock(org.uberfire.java.nio.file.Path.class);
+        setUpDirectory(directory, "src/main/resources", mainResources);
+        org.uberfire.java.nio.file.Path testJava = mock(org.uberfire.java.nio.file.Path.class);
+        setUpDirectory(directory, "src/test/java", testJava);
+        org.uberfire.java.nio.file.Path testResources = mock(org.uberfire.java.nio.file.Path.class);
+        setUpDirectory(directory, "src/test/resources", testResources);
 
-        org.uberfire.java.nio.file.Path kmodule = mock( org.uberfire.java.nio.file.Path.class );
-        setUpDirectory( directory, "src/main/resources/META-INF/kmodule.xml", kmodule );
+        org.uberfire.java.nio.file.Path kmodule = mock(org.uberfire.java.nio.file.Path.class);
+        setUpDirectory(directory, "src/main/resources/META-INF/kmodule.xml", kmodule);
 
-        serviceImpl.setUpKModule( pathToProjectRoot );
+        serviceImpl.setUpKModule(pathToProjectRoot);
 
-        verify( ioService ).write( eq( kmodule ), anyString() );
+        verify(ioService).write(eq(kmodule), anyString());
     }
 
-    private org.uberfire.java.nio.file.Path setUpPathToProjectRoot( Path pathToProjectRoot ) {
-        org.uberfire.java.nio.file.Path nioPath = mock( org.uberfire.java.nio.file.Path.class );
+    private org.uberfire.java.nio.file.Path setUpPathToProjectRoot(Path pathToProjectRoot) {
+        org.uberfire.java.nio.file.Path nioPath = mock(org.uberfire.java.nio.file.Path.class);
         when(
-                paths.convert( pathToProjectRoot )
-            ).thenReturn(
+                paths.convert(pathToProjectRoot)
+        ).thenReturn(
                 nioPath
-                        );
+        );
 
         return nioPath;
     }
 
-    private void setUpDirectory( org.uberfire.java.nio.file.Path directory,
-                                 String pathAsText,
-                                 org.uberfire.java.nio.file.Path path ) {
+    private void setUpDirectory(org.uberfire.java.nio.file.Path directory,
+                                String pathAsText,
+                                org.uberfire.java.nio.file.Path path) {
         when(
-                directory.resolve( pathAsText )
-            ).thenReturn(
+                directory.resolve(pathAsText)
+        ).thenReturn(
                 path
-                        );
+        );
     }
 
     //
@@ -227,17 +227,17 @@ public class KModuleServiceImplTest {
 //        assertNull( service.pathToRelatedKProjectFileIfAny( path ) );
 //    }
 //
-    private void assertContains( String uri,
-                                 List<org.uberfire.java.nio.file.Path> allValues ) {
+    private void assertContains(String uri,
+                                List<org.uberfire.java.nio.file.Path> allValues) {
         boolean contains = false;
-        for ( org.uberfire.java.nio.file.Path path : allValues ) {
-            if ( uri.equals( path.toUri() ) ) {
+        for (org.uberfire.java.nio.file.Path path : allValues) {
+            if (uri.equals(path.toUri())) {
                 contains = true;
                 break;
             }
         }
 
-        assertTrue( "Values should contain " + uri, contains );
+        assertTrue("Values should contain " + uri, contains);
     }
 //
 //    class PathMatcher extends ArgumentMatcher<Path> {

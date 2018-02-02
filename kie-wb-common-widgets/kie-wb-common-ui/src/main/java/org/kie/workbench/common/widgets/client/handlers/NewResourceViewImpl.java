@@ -25,17 +25,12 @@ import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
 import org.guvnor.common.services.project.model.Package;
-import org.gwtbootstrap3.client.ui.Column;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.HelpBlock;
-import org.gwtbootstrap3.client.ui.Row;
 import org.gwtbootstrap3.client.ui.TextBox;
-import org.gwtbootstrap3.client.ui.constants.ColumnSize;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ui.client.local.api.IsElement;
@@ -50,46 +45,41 @@ import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterO
 
 @Templated
 @ApplicationScoped
-public class NewResourceViewImpl implements NewResourceView, IsElement {
+public class NewResourceViewImpl implements NewResourceView,
+                                            IsElement {
 
     @DataField
     DivElement fileNameGroup = Document.get().createDivElement();
-
     @DataField
     FormLabel fileTypeLabel = new FormLabel();
-
     @Inject
     @DataField
     TextBox fileNameTextBox;
-
     @Inject
     @DataField
     HelpBlock fileNameHelpInline;
-
     @Inject
     @DataField
     PackageListBox packageListBox;
-
     @DataField
     DivElement packageGroup = Document.get().createDivElement();
-
     @Inject
     @DataField
     HelpBlock packageHelpInline;
-
     @DataField
     DivElement handlerExtensionsGroup = Document.get().createDivElement();
-
     @Inject
     @DataField
     FlowPanel handlerExtensions;
-
     TranslationService translationService;
-
     BaseModal modal;
-
+    private final Command cancelCommand = new Command() {
+        @Override
+        public void execute() {
+            hide();
+        }
+    };
     private NewResourcePresenter presenter;
-
     private final Command okCommand = new Command() {
         @Override
         public void execute() {
@@ -97,43 +87,36 @@ public class NewResourceViewImpl implements NewResourceView, IsElement {
         }
     };
 
-    private final Command cancelCommand = new Command() {
-        @Override
-        public void execute() {
-            hide();
-        }
-    };
-
-    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( okCommand,
-                                                                                      cancelCommand );
+    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons(okCommand,
+                                                                                     cancelCommand);
 
     @Inject
-    public NewResourceViewImpl( TranslationService translationService ) {
+    public NewResourceViewImpl(TranslationService translationService) {
         this.translationService = translationService;
-        footer.enableOkButton( true );
+        footer.enableOkButton(true);
     }
 
     @PostConstruct
     public void init() {
         modal = new BaseModal();
 
-        modal.setBody( ElementWrapperWidget.getWidget( this.getElement() ) );
+        modal.setBody(ElementWrapperWidget.getWidget(this.getElement()));
 
-        modal.add( footer );
+        modal.add(footer);
 
-        fileNameTextBox.setPlaceholder( translationService.getTranslation( KieWorkbenchWidgetsConstants.NewResourceViewResourceNamePlaceholder ) );
-        fileTypeLabel.setShowRequiredIndicator( true );
+        fileNameTextBox.setPlaceholder(translationService.getTranslation(KieWorkbenchWidgetsConstants.NewResourceViewResourceNamePlaceholder));
+        fileTypeLabel.setShowRequiredIndicator(true);
     }
 
     @Override
-    public void init( final NewResourcePresenter presenter ) {
+    public void init(final NewResourcePresenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
     public void show() {
         //Clear previous resource name
-        fileNameTextBox.setText( "" );
+        fileNameTextBox.setText("");
 
         clearErrors();
 
@@ -146,19 +129,19 @@ public class NewResourceViewImpl implements NewResourceView, IsElement {
     }
 
     @Override
-    public void setActiveHandler( final NewResourceHandler handler ) {
+    public void setActiveHandler(final NewResourceHandler handler) {
         final List<Pair<String, ? extends IsWidget>> extensions = handler.getExtensions();
-        final boolean showExtensions = !( extensions == null || extensions.isEmpty() );
-        fileTypeLabel.setText( handler.getDescription() );
+        final boolean showExtensions = !(extensions == null || extensions.isEmpty());
+        fileTypeLabel.setText(handler.getDescription());
 
-        packageListBox.setContext( handler.getProjectContext(), handler.supportsDefaultPackage() );
+        packageListBox.setUp(handler.supportsDefaultPackage());
 
         handlerExtensions.clear();
-        handlerExtensionsGroup.getStyle().setDisplay( showExtensions ? Style.Display.BLOCK : Style.Display.NONE );
-        if ( showExtensions ) {
-            extensions.forEach( pair -> {
-                handlerExtensions.add( pair.getK2() );
-            } );
+        handlerExtensionsGroup.getStyle().setDisplay(showExtensions ? Style.Display.BLOCK : Style.Display.NONE);
+        if (showExtensions) {
+            extensions.forEach(pair -> {
+                handlerExtensions.add(pair.getK2());
+            });
         }
     }
 
@@ -168,39 +151,38 @@ public class NewResourceViewImpl implements NewResourceView, IsElement {
 
         //Generic validation
         final String fileName = fileNameTextBox.getText();
-        if ( fileName == null || fileName.trim().isEmpty() ) {
-            fileNameGroup.addClassName( ValidationState.ERROR.getCssName() );
-            fileNameHelpInline.setText( translationService.getTranslation( KieWorkbenchWidgetsConstants.NewResourceViewFileNameIsMandatory ) );
+        if (fileName == null || fileName.trim().isEmpty()) {
+            fileNameGroup.addClassName(ValidationState.ERROR.getCssName());
+            fileNameHelpInline.setText(translationService.getTranslation(KieWorkbenchWidgetsConstants.NewResourceViewFileNameIsMandatory));
             return;
         }
 
-        if ( packageListBox.getSelectedPackage() == null ) {
-            packageGroup.addClassName( ValidationState.ERROR.getCssName() );
-            packageHelpInline.setText( translationService.getTranslation( KieWorkbenchWidgetsConstants.NewResourceViewMissingPath ) );
+        if (packageListBox.getSelectedPackage() == null) {
+            packageGroup.addClassName(ValidationState.ERROR.getCssName());
+            packageHelpInline.setText(translationService.getTranslation(KieWorkbenchWidgetsConstants.NewResourceViewMissingPath));
             return;
         }
 
         //Specialized validation
-        presenter.validate( fileName,
-                            new ValidatorWithReasonCallback() {
+        presenter.validate(fileName,
+                           new ValidatorWithReasonCallback() {
 
-                                @Override
-                                public void onSuccess() {
-                                    presenter.makeItem( fileName );
-                                }
+                               @Override
+                               public void onSuccess() {
+                                   presenter.makeItem(fileName);
+                               }
 
-                                @Override
-                                public void onFailure() {
+                               @Override
+                               public void onFailure() {
 
-                                }
+                               }
 
-                                @Override
-                                public void onFailure( final String reason ) {
-                                    fileNameGroup.addClassName( ValidationState.ERROR.getCssName() );
-                                    fileNameHelpInline.setText( reason );
-                                }
-
-                            } );
+                               @Override
+                               public void onFailure(final String reason) {
+                                   fileNameGroup.addClassName(ValidationState.ERROR.getCssName());
+                                   fileNameHelpInline.setText(reason);
+                               }
+                           });
     }
 
     @Override
@@ -209,19 +191,19 @@ public class NewResourceViewImpl implements NewResourceView, IsElement {
     }
 
     @Override
-    public void setTitle( String title ) {
-        modal.setTitle( title );
+    public void setTitle(String title) {
+        modal.setTitle(title);
     }
 
     @Override
-    public void setResourceName( String resourceName ) {
-        fileNameTextBox.setText( resourceName );
+    public void setResourceName(String resourceName) {
+        fileNameTextBox.setText(resourceName);
     }
 
     protected void clearErrors() {
-        fileNameGroup.removeClassName( ValidationState.ERROR.getCssName() );
+        fileNameGroup.removeClassName(ValidationState.ERROR.getCssName());
         fileNameHelpInline.clearError();
-        packageGroup.removeClassName( ValidationState.ERROR.getCssName() );
+        packageGroup.removeClassName(ValidationState.ERROR.getCssName());
         packageHelpInline.clearError();
     }
 }

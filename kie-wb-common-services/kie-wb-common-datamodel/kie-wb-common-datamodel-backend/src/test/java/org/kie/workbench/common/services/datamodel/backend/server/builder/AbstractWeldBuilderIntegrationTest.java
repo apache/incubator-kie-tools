@@ -15,6 +15,10 @@
 
 package org.kie.workbench.common.services.datamodel.backend.server.builder;
 
+import java.util.List;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigType;
@@ -24,17 +28,14 @@ import org.guvnor.test.WeldJUnitRunner;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.backend.builder.core.LRUBuilderCache;
-import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUProjectDataModelOracleCache;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUModuleDataModelOracleCache;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
-import java.util.List;
-
 @RunWith(WeldJUnitRunner.class)
 public abstract class AbstractWeldBuilderIntegrationTest {
+
     protected static final String GLOBAL_SETTINGS = "settings";
 
     protected final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
@@ -50,36 +51,35 @@ public abstract class AbstractWeldBuilderIntegrationTest {
     @Inject
     protected BuildService buildService;
     @Inject
-    protected KieProjectService projectService;
+    protected KieModuleService moduleService;
     @Inject
     protected LRUBuilderCache builderCache;
     @Inject
-    protected LRUProjectDataModelOracleCache projectDMOCache;
+    protected LRUModuleDataModelOracleCache moduleDMOCache;
 
     @Before
     public void setUp() throws Exception {
         //Define mandatory properties
-        List<ConfigGroup> globalConfigGroups = configurationService.getConfiguration( ConfigType.GLOBAL );
+        List<ConfigGroup> globalConfigGroups = configurationService.getConfiguration(ConfigType.GLOBAL);
         boolean globalSettingsDefined = false;
-        for ( ConfigGroup globalConfigGroup : globalConfigGroups ) {
-            if ( GLOBAL_SETTINGS.equals( globalConfigGroup.getName() ) ) {
+        for (ConfigGroup globalConfigGroup : globalConfigGroups) {
+            if (GLOBAL_SETTINGS.equals(globalConfigGroup.getName())) {
                 globalSettingsDefined = true;
                 break;
             }
         }
-        if ( !globalSettingsDefined ) {
-            configurationService.addConfiguration( getGlobalConfiguration() );
+        if (!globalSettingsDefined) {
+            configurationService.addConfiguration(getGlobalConfiguration());
         }
     }
 
     private ConfigGroup getGlobalConfiguration() {
         //Global Configurations used by many of Drools Workbench editors
-        final ConfigGroup group = configurationFactory.newConfigGroup( ConfigType.GLOBAL,
-                                                                       GLOBAL_SETTINGS,
-                                                                       "" );
-        group.addConfigItem( configurationFactory.newConfigItem( "build.enable-incremental",
-                                                                 "true" ) );
+        final ConfigGroup group = configurationFactory.newConfigGroup(ConfigType.GLOBAL,
+                                                                      GLOBAL_SETTINGS,
+                                                                      "");
+        group.addConfigItem(configurationFactory.newConfigItem("build.enable-incremental",
+                                                               "true"));
         return group;
     }
-
 }

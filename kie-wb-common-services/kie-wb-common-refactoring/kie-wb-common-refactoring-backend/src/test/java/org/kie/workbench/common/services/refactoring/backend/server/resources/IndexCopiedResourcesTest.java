@@ -30,7 +30,7 @@ import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexing
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.TestPropertiesFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.TestPropertiesFileTypeDefinition;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.ext.metadata.io.KObjectUtil;
 
 import static org.mockito.Mockito.*;
@@ -91,7 +91,7 @@ public class IndexCopiedResourcesTest extends BaseIndexingTest {
     }
 
     @Override
-    protected KieProjectService getProjectService() {
-        return mock(KieProjectService.class);
+    protected KieModuleService getModuleService() {
+        return mock(KieModuleService.class);
     }
 }

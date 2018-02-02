@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.screens.datasource.management.service;
 
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -28,26 +28,26 @@ public class DefExplorerQuery {
 
     private OrganizationalUnit organizationalUnit;
 
-    private Project project;
+    private Module module;
 
-    private String branch;
+    private String branchName;
 
     private boolean globalQuery = false;
 
     public DefExplorerQuery() {
     }
 
-    public DefExplorerQuery( OrganizationalUnit organizationalUnit,
-            Repository repository,
-            Project project,
-            String branch ) {
+    public DefExplorerQuery(final OrganizationalUnit organizationalUnit,
+                            final Repository repository,
+                            final Module module,
+                            final String branchName) {
         this.organizationalUnit = organizationalUnit;
         this.repository = repository;
-        this.project = project;
-        this.branch = branch;
+        this.module = module;
+        this.branchName = branchName;
     }
 
-    public DefExplorerQuery( boolean globalQuery ) {
+    public DefExplorerQuery(boolean globalQuery) {
         this.globalQuery = globalQuery;
     }
 
@@ -55,7 +55,7 @@ public class DefExplorerQuery {
         return repository;
     }
 
-    public void setRepository( Repository repository ) {
+    public void setRepository(Repository repository) {
         this.repository = repository;
     }
 
@@ -63,24 +63,24 @@ public class DefExplorerQuery {
         return organizationalUnit;
     }
 
-    public void setOrganizationalUnit( OrganizationalUnit organizationalUnit ) {
+    public void setOrganizationalUnit(OrganizationalUnit organizationalUnit) {
         this.organizationalUnit = organizationalUnit;
     }
 
-    public Project getProject() {
-        return project;
+    public Module getModule() {
+        return module;
     }
 
-    public void setProject( Project project ) {
-        this.project = project;
+    public void setModule(final Module module) {
+        this.module = module;
     }
 
-    public String getBranch() {
-        return branch;
+    public String getBranchName() {
+        return branchName;
     }
 
-    public void setBranch( String branch ) {
-        this.branch = branch;
+    public void setBranchName(final String branchName) {
+        this.branchName = branchName;
     }
 
     public boolean isGlobalQuery() {
@@ -88,43 +88,42 @@ public class DefExplorerQuery {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null || getClass() != o.getClass() ) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
-        DefExplorerQuery that = ( DefExplorerQuery ) o;
+        DefExplorerQuery that = (DefExplorerQuery) o;
 
-        if ( globalQuery != that.globalQuery ) {
+        if (globalQuery != that.globalQuery) {
             return false;
         }
-        if ( repository != null ? !repository.equals( that.repository ) : that.repository != null ) {
+        if (repository != null ? !repository.equals(that.repository) : that.repository != null) {
             return false;
         }
-        if ( organizationalUnit != null ? !organizationalUnit.equals( that.organizationalUnit ) : that.organizationalUnit != null ) {
+        if (organizationalUnit != null ? !organizationalUnit.equals(that.organizationalUnit) : that.organizationalUnit != null) {
             return false;
         }
-        if ( project != null ? !project.equals( that.project ) : that.project != null ) {
+        if (module != null ? !module.equals(that.module) : that.module != null) {
             return false;
         }
-        return !( branch != null ? !branch.equals( that.branch ) : that.branch != null );
-
+        return !(branchName != null ? !branchName.equals(that.branchName) : that.branchName != null);
     }
 
     @Override
     public int hashCode() {
         int result = repository != null ? repository.hashCode() : 0;
         result = ~~result;
-        result = 31 * result + ( organizationalUnit != null ? organizationalUnit.hashCode() : 0 );
+        result = 31 * result + (organizationalUnit != null ? organizationalUnit.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( project != null ? project.hashCode() : 0 );
+        result = 31 * result + (module != null ? module.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( branch != null ? branch.hashCode() : 0 );
+        result = 31 * result + (branchName != null ? branchName.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( globalQuery ? 1 : 0 );
+        result = 31 * result + (globalQuery ? 1 : 0);
         result = ~~result;
         return result;
     }

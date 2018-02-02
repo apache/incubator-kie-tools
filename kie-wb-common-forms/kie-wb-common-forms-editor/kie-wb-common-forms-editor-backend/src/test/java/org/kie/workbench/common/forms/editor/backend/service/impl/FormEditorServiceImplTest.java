@@ -33,8 +33,8 @@ import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
 import org.kie.workbench.common.forms.serialization.FormDefinitionSerializer;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -94,10 +94,10 @@ public class FormEditorServiceImplTest {
     private FormModelHandlerManager modelHandlerManager;
 
     @Mock
-    private KieProjectService projectService;
+    KieModuleService moduleService;
 
     @Mock
-    private KieProject project;
+    private KieModule module;
 
     @Mock
     private FormDefinitionSerializer formDefinitionSerializer;
@@ -123,7 +123,7 @@ public class FormEditorServiceImplTest {
                                                           resourceOpenedEvent,
                                                           fieldManager,
                                                           modelHandlerManager,
-                                                          projectService,
+                                                          moduleService,
                                                           formDefinitionSerializer,
                                                           vfsFormFinderService,
                                                           deleteService,
@@ -131,7 +131,7 @@ public class FormEditorServiceImplTest {
                                                           renameService));
 
         when(path.toURI()).thenReturn("default:///src/main/resources/test.frm");
-        when(projectService.resolveProject(any())).thenReturn(project);
+        when(moduleService.resolveModule(any())).thenReturn(module);
     }
 
     @Test
@@ -148,29 +148,29 @@ public class FormEditorServiceImplTest {
     public void testDeleteForm() {
         formEditorService.delete(path, COMMIT_MESSAGE);
 
-        verify(projectService).resolveProject(path);
+        verify(moduleService).resolveModule(path);
 
         verify(deleteService).delete(path, COMMIT_MESSAGE);
     }
 
     @Test
     public void testDeleteFormWrongProject() {
-        when(projectService.resolveProject(any())).thenReturn(null);
+        when(moduleService.resolveModule(any())).thenReturn(null);
 
         formEditorService.delete(path, COMMIT_MESSAGE);
 
-        verify(projectService).resolveProject(path);
+        verify(moduleService).resolveModule(path);
 
         verify(deleteService, never()).delete(path, COMMIT_MESSAGE);
     }
 
     @Test
     public void testDeleteFormWithException() {
-        when(projectService.resolveProject(any())).thenThrow(new IllegalStateException("Testing exception handling"));
+        when(moduleService.resolveModule(any())).thenThrow(new IllegalStateException("Testing exception handling"));
 
         formEditorService.delete(path, COMMIT_MESSAGE);
 
-        verify(projectService).resolveProject(path);
+        verify(moduleService).resolveModule(path);
 
         verify(deleteService, never()).delete(path, COMMIT_MESSAGE);
     }

@@ -35,9 +35,9 @@ import org.kie.workbench.common.forms.serialization.impl.FieldSerializer;
 import org.kie.workbench.common.forms.serialization.impl.FormDefinitionSerializerImpl;
 import org.kie.workbench.common.forms.serialization.impl.FormModelSerializer;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
-import org.kie.workbench.common.services.backend.project.ProjectClassLoaderHelper;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -71,19 +71,19 @@ public abstract class BPMNVFSFormDefinitionGeneratorServiceTest extends Abstract
     protected CommentedOptionFactory commentedOptionFactory;
 
     @Mock
-    private KieProjectService projectService;
+    private KieModuleService projectService;
 
     @Mock
-    private KieProject project;
+    private KieModule module;
 
     @Mock
-    private ProjectClassLoaderHelper projectClassLoaderHelper;
+    private ModuleClassLoaderHelper projectClassLoaderHelper;
 
     @Before
     public void setup() throws IOException {
 
-        when(projectService.resolveProject(any())).thenReturn(project);
-        when(projectClassLoaderHelper.getProjectClassLoader(project)).thenReturn(this.getClass().getClassLoader());
+        when(projectService.resolveModule(any())).thenReturn(module);
+        when(projectClassLoaderHelper.getModuleClassLoader(module)).thenReturn(this.getClass().getClassLoader());
 
         source = mock(Path.class);
 
@@ -106,6 +106,7 @@ public abstract class BPMNVFSFormDefinitionGeneratorServiceTest extends Abstract
                                                             formSerializer,
                                                             ioService,
                                                             commentedOptionFactory,
-                                                            new FormModelSynchronizationUtilImpl(fieldManager, templateGenerator));
+                                                            new FormModelSynchronizationUtilImpl(fieldManager,
+                                                                                                 templateGenerator));
     }
 }

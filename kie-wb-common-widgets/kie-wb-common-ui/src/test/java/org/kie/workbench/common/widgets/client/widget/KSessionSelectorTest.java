@@ -25,8 +25,8 @@ import org.kie.workbench.common.services.shared.kmodule.KBaseModel;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 import org.kie.workbench.common.services.shared.kmodule.KSessionModel;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -46,10 +46,10 @@ public class KSessionSelectorTest {
     @Mock
     private Path kmodulePath;
 
-    private KieProject kieProject;
+    private KieModule kieModule;
 
     @Mock
-    private KieProjectService kieProjectService;
+    private KieModuleService kieModuleService;
 
     @Mock
     private KModuleService kModuleService;
@@ -61,9 +61,9 @@ public class KSessionSelectorTest {
     @Before
     public void setUp() throws Exception {
 
-        kieProject = spy(new KieProject());
+        kieModule = spy(new KieModule());
 
-        when(kieProject.getKModuleXMLPath()).thenReturn(kmodulePath);
+        when(kieModule.getKModuleXMLPath()).thenReturn(kmodulePath);
 
         kModule = new KModuleModel();
 
@@ -79,13 +79,13 @@ public class KSessionSelectorTest {
 
         view = mock(KSessionSelectorView.class);
 
-        when(kieProjectService.resolveProject(path)).thenReturn(kieProject);
+        when(kieModuleService.resolveModule(path)).thenReturn(kieModule);
 
         when(kModuleService.load(kmodulePath)).thenReturn(kModule);
 
         selector = new KSessionSelector(
                 view,
-                new CallerMock<>(kieProjectService),
+                new CallerMock<>(kieModuleService),
                 new CallerMock<>(kModuleService));
     }
 

@@ -19,66 +19,65 @@ package org.kie.workbench.common.screens.explorer.client.utils;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.*;
-import static org.kie.workbench.common.screens.explorer.client.TestUtils.*;
+import static org.kie.workbench.common.screens.explorer.client.TestUtils.getModuleMock;
+import static org.kie.workbench.common.screens.explorer.client.TestUtils.getPathMock;
 import static org.mockito.Mockito.*;
 
-@RunWith( Parameterized.class )
+@RunWith(Parameterized.class)
 public class UtilsIsInBranchTest {
 
     private final Path branchRootPath;
 
-    private final Project project;
+    private final Module module;
 
     private final boolean isInBranch;
 
-
-    public UtilsIsInBranchTest( final boolean isInBranch,
-                                final Path branchRootPath,
-                                final Project project ) {
+    public UtilsIsInBranchTest(final boolean isInBranch,
+                               final Path branchRootPath,
+                               final Module module) {
         this.branchRootPath = branchRootPath;
-        this.project = project;
+        this.module = module;
         this.isInBranch = isInBranch;
     }
 
     @Parameterized.Parameters
     public static Collection<Object[]> testData() {
-        return Arrays.asList( new Object[][]{
+        return Arrays.asList(new Object[][]{
                 {false, null, null},
-                {false, null, mock( Project.class )},
-                {false, mock( Path.class ), null},
+                {false, null, mock(Module.class)},
+                {false, mock(Path.class), null},
                 sameRoots(),
                 differentRoots(),
-        } );
+        });
     }
 
     private static Object[] sameRoots() {
-        final Path branchRootPath = getPathMock( "default://master@uf-playground/" );
+        final Path branchRootPath = getPathMock("default://master@uf-playground/");
 
-        final Project project = getProjectMock( "default://master@uf-playground/project1" );
+        final Module module = getModuleMock("default://master@uf-playground/module1");
 
-        return new Object[]{true, branchRootPath, project};
+        return new Object[]{true, branchRootPath, module};
     }
 
     private static Object[] differentRoots() {
-        final Path branchRootPath = getPathMock( "default://master@uf-playground/" );
+        final Path branchRootPath = getPathMock("default://master@uf-playground/");
 
-        final Project project = getProjectMock( "default://debBranch@uf-playground/project1" );
+        final Module module = getModuleMock("default://debBranch@uf-playground/module1");
 
-        return new Object[]{false, branchRootPath, project};
+        return new Object[]{false, branchRootPath, module};
     }
 
     @Test
     public void testIsInBranch() throws Exception {
-        assertEquals( isInBranch, Utils.isInBranch( branchRootPath,
-                                                    project ) );
-
+        assertEquals(isInBranch,
+                     Utils.isInBranch(branchRootPath,
+                                      module));
     }
-
 }

@@ -22,7 +22,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.screens.datasource.management.client.editor.datasource.DataSourceDefEditorHelper;
 import org.kie.workbench.common.screens.datasource.management.client.editor.datasource.DataSourceDefMainPanel;
@@ -101,8 +101,8 @@ public class DataSourceDefPage
         editorHelper.setDataSourceDef(dataSourceDef);
     }
 
-    public void setProject(Project project) {
-        editorHelper.setProject(project);
+    public void setModule(final Module module) {
+        editorHelper.setModule(module);
     }
 
     @Override

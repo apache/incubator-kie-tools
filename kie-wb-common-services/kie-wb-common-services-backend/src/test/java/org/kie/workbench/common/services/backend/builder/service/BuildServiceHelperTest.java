@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +43,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class BuildServiceHelperTest {
 
     @Mock
@@ -55,7 +55,7 @@ public class BuildServiceHelperTest {
     private BuildServiceHelper serviceHelper;
 
     @Mock
-    private Project project;
+    private Module module;
 
     @Mock
     private LocalBinaryConfig localBinaryConfig;
@@ -67,7 +67,7 @@ public class BuildServiceHelperTest {
     private IncrementalBuildResults incrementalBuildResults;
 
     @Mock
-    private Map< Path, Collection< ResourceChange > > resourceChanges;
+    private Map<Path, Collection<ResourceChange>> resourceChanges;
 
     @Mock
     private Path resource;
@@ -75,106 +75,150 @@ public class BuildServiceHelperTest {
     private BuildPipelineInvoker.LocalBuildRequest expectedRequest;
 
     @Before
-    public void setUp( ) {
-        serviceHelper = new BuildServiceHelper( pipelineInvoker, deploymentVerifier );
+    public void setUp() {
+        serviceHelper = new BuildServiceHelper(pipelineInvoker,
+                                               deploymentVerifier);
     }
 
     @Test
-    public void testLocalBuild( ) {
-        prepareLocalFullBuild( );
-        when( localBinaryConfig.getBuildResults( ) ).thenReturn( buildResults );
-        BuildResults result = serviceHelper.localBuild( project );
-        assertEquals( buildResults, result );
-        verify( pipelineInvoker, times( 1 ) ).invokeLocalBuildPipeLine( eq( expectedRequest ), any( Consumer.class ) );
+    public void testLocalBuild() {
+        prepareLocalFullBuild();
+        when(localBinaryConfig.getBuildResults()).thenReturn(buildResults);
+        BuildResults result = serviceHelper.localBuild(module);
+        assertEquals(buildResults,
+                     result);
+        verify(pipelineInvoker,
+               times(1)).invokeLocalBuildPipeLine(eq(expectedRequest),
+                                                  any(Consumer.class));
     }
 
     @Test
-    public void testLocalBuildWithConsumer( ) {
-        prepareLocalFullBuild( );
-        serviceHelper.localBuild( project, new Consumer< LocalBinaryConfig >( ) {
-            @Override
-            public void accept( LocalBinaryConfig result ) {
-                // the returned result should the same as the localBinaryConfig produced by the PipelineInvoker.
-                assertEquals( localBinaryConfig, result );
-            }
-        } );
-        verify( pipelineInvoker, times( 1 ) ).invokeLocalBuildPipeLine( eq( expectedRequest ), any( Consumer.class ) );
+    public void testLocalBuildWithConsumer() {
+        prepareLocalFullBuild();
+        serviceHelper.localBuild(module,
+                                 new Consumer<LocalBinaryConfig>() {
+                                     @Override
+                                     public void accept(LocalBinaryConfig result) {
+                                         // the returned result should the same as the localBinaryConfig produced by the PipelineInvoker.
+                                         assertEquals(localBinaryConfig,
+                                                      result);
+                                     }
+                                 });
+        verify(pipelineInvoker,
+               times(1)).invokeLocalBuildPipeLine(eq(expectedRequest),
+                                                  any(Consumer.class));
     }
 
-    private void prepareLocalFullBuild( ) {
-        expectedRequest = BuildPipelineInvoker.LocalBuildRequest.newFullBuildRequest( project );
-        preparePipelineInvocation( expectedRequest );
-    }
-
-    @Test
-    public void testLocalBuildAndDeployForced( ) {
-        prepareBuildAndDeploy( project, LocalBuildConfig.DeploymentType.FORCED, false );
-        BuildResults result = serviceHelper.localBuildAndDeploy( project, DeploymentMode.FORCED, false );
-        verifyBuildAndDeploy( result );
+    private void prepareLocalFullBuild() {
+        expectedRequest = BuildPipelineInvoker.LocalBuildRequest.newFullBuildRequest(module);
+        preparePipelineInvocation(expectedRequest);
     }
 
     @Test
-    public void testLocalBuildAndDeployValidated( ) {
-        prepareBuildAndDeploy( project, LocalBuildConfig.DeploymentType.VALIDATED, false );
-        BuildResults result = serviceHelper.localBuildAndDeploy( project, DeploymentMode.VALIDATED, false );
-        verifyBuildAndDeploy( result );
-    }
-
-    private void prepareBuildAndDeploy( Project project, LocalBuildConfig.DeploymentType deploymentType, boolean suppressHandlers ) {
-        expectedRequest = BuildPipelineInvoker.LocalBuildRequest.newFullBuildAndDeployRequest( project, deploymentType, suppressHandlers );
-        preparePipelineInvocation( expectedRequest );
-        when( localBinaryConfig.getBuildResults( ) ).thenReturn( buildResults );
-    }
-
-    private void verifyBuildAndDeploy( BuildResults result ) {
-        assertEquals( buildResults, result );
-        verify( pipelineInvoker, times( 1 ) ).invokeLocalBuildPipeLine( eq( expectedRequest ), any( Consumer.class ) );
+    public void testLocalBuildAndDeployForced() {
+        prepareBuildAndDeploy(module,
+                              LocalBuildConfig.DeploymentType.FORCED,
+                              false);
+        BuildResults result = serviceHelper.localBuildAndDeploy(module,
+                                                                DeploymentMode.FORCED,
+                                                                false);
+        verifyBuildAndDeploy(result);
     }
 
     @Test
-    public void testLocalBuildWithAddResource( ) {
-        testLocalBuildWithResource( project, LocalBuildConfig.BuildType.INCREMENTAL_ADD_RESOURCE, resource );
+    public void testLocalBuildAndDeployValidated() {
+        prepareBuildAndDeploy(module,
+                              LocalBuildConfig.DeploymentType.VALIDATED,
+                              false);
+        BuildResults result = serviceHelper.localBuildAndDeploy(module,
+                                                                DeploymentMode.VALIDATED,
+                                                                false);
+        verifyBuildAndDeploy(result);
+    }
+
+    private void prepareBuildAndDeploy(Module module,
+                                       LocalBuildConfig.DeploymentType deploymentType,
+                                       boolean suppressHandlers) {
+        expectedRequest = BuildPipelineInvoker.LocalBuildRequest.newFullBuildAndDeployRequest(module,
+                                                                                              deploymentType,
+                                                                                              suppressHandlers);
+        preparePipelineInvocation(expectedRequest);
+        when(localBinaryConfig.getBuildResults()).thenReturn(buildResults);
+    }
+
+    private void verifyBuildAndDeploy(BuildResults result) {
+        assertEquals(buildResults,
+                     result);
+        verify(pipelineInvoker,
+               times(1)).invokeLocalBuildPipeLine(eq(expectedRequest),
+                                                  any(Consumer.class));
     }
 
     @Test
-    public void testLocalBuildWithDeleteResource( ) {
-        testLocalBuildWithResource( project, LocalBuildConfig.BuildType.INCREMENTAL_DELETE_RESOURCE, resource );
+    public void testLocalBuildWithAddResource() {
+        testLocalBuildWithResource(module,
+                                   LocalBuildConfig.BuildType.INCREMENTAL_ADD_RESOURCE,
+                                   resource);
     }
 
     @Test
-    public void testLocalBuildWithUpdateResource( ) {
-        testLocalBuildWithResource( project, LocalBuildConfig.BuildType.INCREMENTAL_UPDATE_RESOURCE, resource );
+    public void testLocalBuildWithDeleteResource() {
+        testLocalBuildWithResource(module,
+                                   LocalBuildConfig.BuildType.INCREMENTAL_DELETE_RESOURCE,
+                                   resource);
     }
 
-    private void testLocalBuildWithResource( Project project, LocalBuildConfig.BuildType buildType, Path resource ) {
+    @Test
+    public void testLocalBuildWithUpdateResource() {
+        testLocalBuildWithResource(module,
+                                   LocalBuildConfig.BuildType.INCREMENTAL_UPDATE_RESOURCE,
+                                   resource);
+    }
+
+    private void testLocalBuildWithResource(Module module,
+                                            LocalBuildConfig.BuildType buildType,
+                                            Path resource) {
         BuildPipelineInvoker.LocalBuildRequest buildRequest =
-                BuildPipelineInvoker.LocalBuildRequest.newIncrementalBuildRequest( project, buildType, resource );
-        preparePipelineInvocation( buildRequest );
-        when( localBinaryConfig.getIncrementalBuildResults( ) ).thenReturn( incrementalBuildResults );
-        IncrementalBuildResults result = serviceHelper.localBuild( project, buildType, resource );
-        assertEquals( incrementalBuildResults, result );
-        verify( pipelineInvoker, times( 1 ) ).invokeLocalBuildPipeLine( eq( buildRequest ), any( Consumer.class ) );
+                BuildPipelineInvoker.LocalBuildRequest.newIncrementalBuildRequest(module,
+                                                                                  buildType,
+                                                                                  resource);
+        preparePipelineInvocation(buildRequest);
+        when(localBinaryConfig.getIncrementalBuildResults()).thenReturn(incrementalBuildResults);
+        IncrementalBuildResults result = serviceHelper.localBuild(module,
+                                                                  buildType,
+                                                                  resource);
+        assertEquals(incrementalBuildResults,
+                     result);
+        verify(pipelineInvoker,
+               times(1)).invokeLocalBuildPipeLine(eq(buildRequest),
+                                                  any(Consumer.class));
     }
 
     @Test
-    public void testLocalBuildWithResourceChanges( ) {
+    public void testLocalBuildWithResourceChanges() {
         BuildPipelineInvoker.LocalBuildRequest buildRequest =
-                BuildPipelineInvoker.LocalBuildRequest.newIncrementalBuildRequest( project, resourceChanges );
-        preparePipelineInvocation( buildRequest );
-        when( localBinaryConfig.getIncrementalBuildResults( ) ).thenReturn( incrementalBuildResults );
-        IncrementalBuildResults result = serviceHelper.localBuild( project, resourceChanges );
-        assertEquals( incrementalBuildResults, result );
-        verify( pipelineInvoker, times( 1 ) ).invokeLocalBuildPipeLine( eq( buildRequest ), any( Consumer.class ) );
+                BuildPipelineInvoker.LocalBuildRequest.newIncrementalBuildRequest(module,
+                                                                                  resourceChanges);
+        preparePipelineInvocation(buildRequest);
+        when(localBinaryConfig.getIncrementalBuildResults()).thenReturn(incrementalBuildResults);
+        IncrementalBuildResults result = serviceHelper.localBuild(module,
+                                                                  resourceChanges);
+        assertEquals(incrementalBuildResults,
+                     result);
+        verify(pipelineInvoker,
+               times(1)).invokeLocalBuildPipeLine(eq(buildRequest),
+                                                  any(Consumer.class));
     }
 
-    private void preparePipelineInvocation( BuildPipelineInvoker.LocalBuildRequest buildRequest ) {
+    private void preparePipelineInvocation(BuildPipelineInvoker.LocalBuildRequest buildRequest) {
         //emulate the pipeline invocation with the desired params.
-        doAnswer( new Answer< Void >( ) {
-            public Void answer( InvocationOnMock invocation ) {
-                Consumer consumer = ( Consumer ) invocation.getArguments( )[ 1 ];
-                consumer.accept( localBinaryConfig );
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Consumer consumer = (Consumer) invocation.getArguments()[1];
+                consumer.accept(localBinaryConfig);
                 return null;
             }
-        } ).when( pipelineInvoker ).invokeLocalBuildPipeLine( eq( buildRequest ), any( Consumer.class ) );
+        }).when(pipelineInvoker).invokeLocalBuildPipeLine(eq(buildRequest),
+                                                          any(Consumer.class));
     }
 }

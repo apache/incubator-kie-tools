@@ -29,19 +29,19 @@ import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.backend.server.utils.POMContentHandler;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
+import org.guvnor.common.services.project.model.ModuleRepositories;
 import org.guvnor.common.services.project.model.POM;
-import org.guvnor.common.services.project.model.ProjectRepositories;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
-import org.guvnor.common.services.project.service.ProjectRepositoriesService;
-import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
+import org.guvnor.common.services.project.service.ModuleRepositoriesService;
+import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorContent;
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorService;
 import org.kie.workbench.common.screens.projecteditor.service.PomEditorService;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -53,109 +53,105 @@ import org.uberfire.io.IOService;
 public class PomEditorServiceImpl implements PomEditorService {
 
     private static final String UNDETERMINED = "<undetermined>";
-    private static final GAV GAV_UNDETERMINED = new GAV( UNDETERMINED,
-                                                         UNDETERMINED,
-                                                         UNDETERMINED );
+    private static final GAV GAV_UNDETERMINED = new GAV(UNDETERMINED,
+                                                        UNDETERMINED,
+                                                        UNDETERMINED);
 
-    private static final Logger logger = LoggerFactory.getLogger( PomEditorServiceImpl.class );
+    private static final Logger logger = LoggerFactory.getLogger(PomEditorServiceImpl.class);
 
     private IOService ioService;
     private DefaultEditorService defaultEditorService;
     private MetadataServerSideService metadataService;
     private CommentedOptionFactory commentedOptionFactory;
 
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
     private POMContentHandler pomContentHandler;
-    private ProjectRepositoryResolver repositoryResolver;
-    private ProjectRepositoriesService projectRepositoriesService;
+    private ModuleRepositoryResolver repositoryResolver;
+    private ModuleRepositoriesService moduleRepositoriesService;
 
     public PomEditorServiceImpl() {
         //Zero-parameter constructor for WELD proxies
     }
 
     @Inject
-    public PomEditorServiceImpl( final @Named("ioStrategy") IOService ioService,
-                                 final DefaultEditorService defaultEditorService,
-                                 final MetadataServerSideService metadataService,
-                                 final CommentedOptionFactory commentedOptionFactory,
-                                 final KieProjectService projectService,
-                                 final POMContentHandler pomContentHandler,
-                                 final ProjectRepositoryResolver repositoryResolver,
-                                 final ProjectRepositoriesService projectRepositoriesService ) {
+    public PomEditorServiceImpl(final @Named("ioStrategy") IOService ioService,
+                                final DefaultEditorService defaultEditorService,
+                                final MetadataServerSideService metadataService,
+                                final CommentedOptionFactory commentedOptionFactory,
+                                final KieModuleService moduleService,
+                                final POMContentHandler pomContentHandler,
+                                final ModuleRepositoryResolver repositoryResolver,
+                                final ModuleRepositoriesService moduleRepositoriesService) {
         this.ioService = ioService;
         this.defaultEditorService = defaultEditorService;
         this.metadataService = metadataService;
         this.commentedOptionFactory = commentedOptionFactory;
 
-        this.projectService = projectService;
+        this.moduleService = moduleService;
         this.pomContentHandler = pomContentHandler;
         this.repositoryResolver = repositoryResolver;
-        this.projectRepositoriesService = projectRepositoriesService;
+        this.moduleRepositoriesService = moduleRepositoriesService;
     }
 
     @Override
-    public DefaultEditorContent loadContent( final Path path ) {
-        return defaultEditorService.loadContent( path );
+    public DefaultEditorContent loadContent(final Path path) {
+        return defaultEditorService.loadContent(path);
     }
 
     @Override
-    public Path save( final Path pomPath,
-                      final String pomXml,
-                      final Metadata metadata,
-                      final String comment,
-                      final DeploymentMode mode ) {
-        if ( DeploymentMode.VALIDATED.equals( mode ) ) {
-            checkRepositories( pomPath,
-                               pomXml );
+    public Path save(final Path pomPath,
+                     final String pomXml,
+                     final Metadata metadata,
+                     final String comment,
+                     final DeploymentMode mode) {
+        if (DeploymentMode.VALIDATED.equals(mode)) {
+            checkRepositories(pomPath,
+                              pomXml);
         }
 
         try {
-            final org.uberfire.java.nio.file.Path nioPomPath = Paths.convert( pomPath );
-            ioService.startBatch( nioPomPath.getFileSystem() );
-            ioService.write( nioPomPath,
-                             pomXml,
-                             metadataService.setUpAttributes( pomPath,
-                                                              metadata ),
-                             commentedOptionFactory.makeCommentedOption( comment ) );
+            final org.uberfire.java.nio.file.Path nioPomPath = Paths.convert(pomPath);
+            ioService.startBatch(nioPomPath.getFileSystem());
+            ioService.write(nioPomPath,
+                            pomXml,
+                            metadataService.setUpAttributes(pomPath,
+                                                            metadata),
+                            commentedOptionFactory.makeCommentedOption(comment));
 
             return pomPath;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         } finally {
             ioService.endBatch();
         }
     }
 
-    private void checkRepositories( final Path pomPath,
-                                    final String pomXml ) {
+    private void checkRepositories(final Path pomPath,
+                                   final String pomXml) {
         // Check is the POM's GAV has been changed.
-        final KieProject project = projectService.resolveProject( pomPath );
-        POM pom = new POM( GAV_UNDETERMINED );
+        final KieModule module = moduleService.resolveModule(pomPath);
+        POM pom = new POM(GAV_UNDETERMINED);
         try {
-            pom = pomContentHandler.toModel( pomXml );
-            if ( pom.getGav().equals( project.getPom().getGav() ) ) {
+            pom = pomContentHandler.toModel(pomXml);
+            if (pom.getGav().equals(module.getPom().getGav())) {
                 return;
             }
-
-        } catch ( IOException ioe ) {
-            logger.warn( "Unable to load pom.xml. It is therefore impossible to ascertain GAV.",
-                         ioe );
-
-        } catch ( XmlPullParserException pe ) {
-            logger.warn( "Unable to load pom.xml. It is therefore impossible to ascertain GAV.",
-                         pe );
+        } catch (IOException ioe) {
+            logger.warn("Unable to load pom.xml. It is therefore impossible to ascertain GAV.",
+                        ioe);
+        } catch (XmlPullParserException pe) {
+            logger.warn("Unable to load pom.xml. It is therefore impossible to ascertain GAV.",
+                        pe);
         }
 
         // Check is the POM's GAV resolves to any pre-existing artifacts.
-        // Filter resolved Repositories by those enabled for the Project.
-        final ProjectRepositories projectRepositories = projectRepositoriesService.load( project.getRepositoriesPath() );
-        final Set<MavenRepositoryMetadata> repositories = repositoryResolver.getRepositoriesResolvingArtifact( pomXml,
-                                                                                                               projectRepositories.filterByIncluded() );
-        if ( repositories.size() > 0 ) {
-            throw new GAVAlreadyExistsException( pom.getGav(),
-                                                 repositories );
+        // Filter resolved Repositories by those enabled for the Module.
+        final ModuleRepositories moduleRepositories = moduleRepositoriesService.load(module.getRepositoriesPath());
+        final Set<MavenRepositoryMetadata> repositories = repositoryResolver.getRepositoriesResolvingArtifact(pomXml,
+                                                                                                              moduleRepositories.filterByIncluded());
+        if (repositories.size() > 0) {
+            throw new GAVAlreadyExistsException(pom.getGav(),
+                                                repositories);
         }
     }
-
 }

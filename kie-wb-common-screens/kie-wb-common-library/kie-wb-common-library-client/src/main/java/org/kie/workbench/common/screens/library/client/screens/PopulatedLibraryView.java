@@ -27,6 +27,7 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 
 @Templated
 public class PopulatedLibraryView implements PopulatedLibraryScreen.View,
@@ -85,8 +86,23 @@ public class PopulatedLibraryView implements PopulatedLibraryScreen.View,
                          numberOfAssets);
     }
 
+    @Override
+    public String getLoadingAssetsMessage() {
+        return ts.format(LibraryConstants.LoadingAssets);
+    }
+
     @EventHandler("filter-text")
     public void filterTextChange(final KeyUpEvent event) {
         presenter.filterProjects(filterText.getValue());
+    }
+
+    @Override
+    public void showBusyIndicator(final String message) {
+        BusyPopup.showMessage(message);
+    }
+
+    @Override
+    public void hideBusyIndicator() {
+        BusyPopup.close();
     }
 }

@@ -21,7 +21,6 @@ import org.kie.workbench.common.services.refactoring.service.ResourceType;
 
 /**
  * This class is the input into the the {@link ImpactAnalysisService#getImpactedFiles(RefactorOperation)} operation.
- *
  */
 @Portable
 public class RefactorOperationRequest extends AbstractOperationRequest {
@@ -30,15 +29,15 @@ public class RefactorOperationRequest extends AbstractOperationRequest {
         super();
     }
 
-    public static RefactorOperationBuilder<RefactorOperationRequest>.RequiresProject refactorReferences(
-            String fullyQualifiedResourceName, ResourceType type, String newFQN ) {
+    public static RefactorOperationBuilder<RefactorOperationRequest>.RequiresModule refactorReferences(
+            String fullyQualifiedResourceName, ResourceType type, String newFQN) {
 
         RefactorOperationBuilder<RefactorOperationRequest> builder = RefactorOperationBuilderFactory.newResourceBasedInstance(
                 fullyQualifiedResourceName, type, OperationType.REFACTOR);
-        return builder.requiresProject(builder);
+        return builder.requiresModule(builder);
     }
 
-    public static RefactorOperationBuilder<RefactorOperationRequest>.RequiresProject refactorPartReferences(
+    public static RefactorOperationBuilder<RefactorOperationRequest>.RequiresModule refactorPartReferences(
             String fullyQualifiedResourceName,
             String partName,
             PartType partType,
@@ -49,6 +48,6 @@ public class RefactorOperationRequest extends AbstractOperationRequest {
                 partName, partType,
                 partNewName,
                 OperationType.REFACTOR);
-        return builder.requiresProject(builder);
+        return builder.requiresModule(builder);
     }
 }

@@ -23,7 +23,7 @@ import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.AbstractFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
@@ -34,8 +34,8 @@ public class TestJavaIndexer extends AbstractFileIndexer implements TestIndexer<
 
     private TestJavaResourceTypeDefinition javaResourceTypeDefinition;
 
-    public TestJavaIndexer(KieProjectService projectService) {
-        this.projectService = projectService;
+    public TestJavaIndexer(KieModuleService moduleService) {
+        this.moduleService = moduleService;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class TestJavaIndexer extends AbstractFileIndexer implements TestIndexer<
     }
 
     @Override
-    public void setProjectService(KieProjectService projectService) {
+    public void setModuleService(KieModuleService moduleService) {
     }
 
     @Override

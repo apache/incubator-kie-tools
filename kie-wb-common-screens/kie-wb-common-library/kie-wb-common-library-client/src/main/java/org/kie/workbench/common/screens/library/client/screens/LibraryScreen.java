@@ -16,12 +16,15 @@
 
 package org.kie.workbench.common.screens.library.client.screens;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
-import org.guvnor.common.services.project.context.ProjectContext;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.events.AfterEditOrganizationalUnitEvent;
 import org.jboss.errai.common.client.api.Caller;
@@ -29,7 +32,6 @@ import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
-import org.kie.workbench.common.screens.library.client.screens.importrepository.ImportRepositoryPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.edit.EditContributorsPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.ContributorsListPresenter;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.delete.DeleteOrganizationalUnitPopUpPresenter;
@@ -55,18 +57,16 @@ public class LibraryScreen {
         void updateContent(HTMLElement content);
     }
 
+    protected List<WorkspaceProject> projects;
     private View view;
 
     private ManagedInstance<EditContributorsPopUpPresenter> editContributorsPopUpPresenters;
 
     private ManagedInstance<DeleteOrganizationalUnitPopUpPresenter> deleteOrganizationalUnitPopUpPresenters;
 
-    private ManagedInstance<ImportRepositoryPopUpPresenter> importRepositoryPopUpPresenters;
-
-    private ProjectContext projectContext;
-
     private OrganizationalUnitController organizationalUnitController;
 
+    private WorkspaceProjectContext projectContext;
     private ProjectController projectController;
 
     private EmptyLibraryScreen emptyLibraryScreen;
@@ -85,8 +85,7 @@ public class LibraryScreen {
     public LibraryScreen(final View view,
                          final ManagedInstance<DeleteOrganizationalUnitPopUpPresenter> deleteOrganizationalUnitPopUpPresenters,
                          final ManagedInstance<EditContributorsPopUpPresenter> editContributorsPopUpPresenters,
-                         final ManagedInstance<ImportRepositoryPopUpPresenter> importRepositoryPopUpPresenters,
-                         final ProjectContext projectContext,
+                         final WorkspaceProjectContext projectContext,
                          final OrganizationalUnitController organizationalUnitController,
                          final ProjectController projectController,
                          final EmptyLibraryScreen emptyLibraryScreen,
@@ -98,7 +97,6 @@ public class LibraryScreen {
         this.view = view;
         this.deleteOrganizationalUnitPopUpPresenters = deleteOrganizationalUnitPopUpPresenters;
         this.editContributorsPopUpPresenters = editContributorsPopUpPresenters;
-        this.importRepositoryPopUpPresenters = importRepositoryPopUpPresenters;
         this.projectContext = projectContext;
         this.organizationalUnitController = organizationalUnitController;
         this.projectController = projectController;
@@ -113,7 +111,8 @@ public class LibraryScreen {
     @PostConstruct
     public void init() {
         view.init(this);
-        view.setTitle(libraryPlaces.getSelectedOrganizationalUnit().getName());
+        view.setTitle(projectContext.getActiveOrganizationalUnit()
+                                    .orElseThrow(() -> new IllegalStateException("Cannot initialize library screen without an active organizational unit.")).getName());
         showProjects();
         view.setContributorsCount(contributorsListPresenter.getContributorsCount());
     }
@@ -126,26 +125,28 @@ public class LibraryScreen {
 
     public void importProject() {
         if (userCanCreateProjects()) {
-            final ImportRepositoryPopUpPresenter importRepositoryPopUpPresenter = importRepositoryPopUpPresenters.get();
-            importRepositoryPopUpPresenter.show();
+            libraryPlaces.goToImportRepositoryPopUp();
         }
     }
 
     public void editContributors() {
         if (userCanUpdateOrganizationalUnit()) {
             final EditContributorsPopUpPresenter editContributorsPopUpPresenter = editContributorsPopUpPresenters.get();
-            editContributorsPopUpPresenter.show(projectContext.getActiveOrganizationalUnit());
+            // Can call get here because condition passed.
+            editContributorsPopUpPresenter.show(projectContext.getActiveOrganizationalUnit().get());
         }
     }
 
     public void delete() {
         if (userCanDeleteOrganizationalUnit()) {
             final DeleteOrganizationalUnitPopUpPresenter deleteOrganizationalUnitPopUpPresenter = deleteOrganizationalUnitPopUpPresenters.get();
-            deleteOrganizationalUnitPopUpPresenter.show(projectContext.getActiveOrganizationalUnit());
+            deleteOrganizationalUnitPopUpPresenter.show(projectContext.getActiveOrganizationalUnit()
+                                                                      .orElseThrow(() -> new IllegalStateException("Cannot delete organizational unit if none is active.")));
         }
     }
 
     public void showProjects() {
+
         libraryService.call((Boolean hasProjects) -> {
             if (hasProjects) {
                 view.updateContent(populatedLibraryScreen.getView().getElement());
@@ -154,8 +155,8 @@ public class LibraryScreen {
                 view.updateContent(emptyLibraryScreen.getView().getElement());
                 view.setProjectsCount(0);
             }
-        }).hasProjects(libraryPlaces.getSelectedRepository(),
-                       libraryPlaces.getSelectedBranch());
+        }).hasProjects(projectContext.getActiveOrganizationalUnit()
+                                     .orElseThrow(() -> new IllegalStateException("Cannot try to query library projects without an active organizational unit.")));
     }
 
     public void showContributors() {
@@ -172,11 +173,13 @@ public class LibraryScreen {
     }
 
     public boolean userCanUpdateOrganizationalUnit() {
-        return organizationalUnitController.canUpdateOrgUnit(projectContext.getActiveOrganizationalUnit());
+        return organizationalUnitController.canUpdateOrgUnit(projectContext.getActiveOrganizationalUnit()
+                                                                           .orElseThrow(() -> new IllegalStateException("Cannot try to update an organizational unit when none is active.")));
     }
 
     public boolean userCanDeleteOrganizationalUnit() {
-        return organizationalUnitController.canDeleteOrgUnit(projectContext.getActiveOrganizationalUnit());
+        return organizationalUnitController.canDeleteOrgUnit(projectContext.getActiveOrganizationalUnit()
+                                                                           .orElseThrow(() -> new IllegalStateException("Cannot try to delete an organizational unit when none is active.")));
     }
 
     public void organizationalUnitEdited(@Observes final AfterEditOrganizationalUnitEvent afterEditOrganizationalUnitEvent) {

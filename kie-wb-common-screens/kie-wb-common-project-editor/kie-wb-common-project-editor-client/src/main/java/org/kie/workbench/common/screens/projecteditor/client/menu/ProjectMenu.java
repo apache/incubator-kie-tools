@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -21,9 +21,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.context.ProjectContext;
-import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
+import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
+import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.widgets.client.resources.i18n.ToolsMenuConstants;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.Command;
@@ -34,53 +34,50 @@ import org.uberfire.workbench.model.menu.MenuItem;
 public class ProjectMenu {
 
     private PlaceManager placeManager;
-    private ProjectContext context;
+    private WorkspaceProjectContext context;
+    private MenuItem projectScreen = MenuFactory.newSimpleItem(ToolsMenuConstants.INSTANCE.ProjectEditor()).respondsWith(
+            new Command() {
+                @Override
+                public void execute() {
+                    placeManager.goTo("projectScreen");
+                }
+            }).endMenu().build().getItems().get(0);
+    private MenuItem projectStructureScreen = MenuFactory.newSimpleItem(ToolsMenuConstants.INSTANCE.RepositoryStructure()).respondsWith(
+            new Command() {
+                @Override
+                public void execute() {
+                    placeManager.goTo("repositoryStructureScreen");
+                }
+            }).endMenu().build().getItems().get(0);
 
     public ProjectMenu() {
         //Zero argument constructor for CDI proxies
     }
 
     @Inject
-    public ProjectMenu( final PlaceManager placeManager,
-                        final ProjectContext context ) {
+    public ProjectMenu(final PlaceManager placeManager,
+                       final WorkspaceProjectContext context) {
         this.placeManager = placeManager;
         this.context = context;
     }
 
-    private MenuItem projectScreen = MenuFactory.newSimpleItem( ToolsMenuConstants.INSTANCE.ProjectEditor() ).respondsWith(
-            new Command() {
-                @Override
-                public void execute() {
-                    placeManager.goTo( "projectScreen" );
-                }
-            } ).endMenu().build().getItems().get( 0 );
-
-    private MenuItem projectStructureScreen = MenuFactory.newSimpleItem( ToolsMenuConstants.INSTANCE.RepositoryStructure() ).respondsWith(
-            new Command() {
-                @Override
-                public void execute() {
-                    placeManager.goTo( "repositoryStructureScreen" );
-                }
-            } ).endMenu().build().getItems().get( 0 );
-
     public List<MenuItem> getMenuItems() {
-        enableToolsMenuItems( (KieProject) context.getActiveProject() );
+        enableToolsMenuItems((KieModule) context.getActiveModule().orElse(null));
 
-        ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
+        ArrayList<MenuItem> menuItems = new ArrayList<>();
 
-        menuItems.add( projectScreen );
-        menuItems.add( projectStructureScreen );
+        menuItems.add(projectScreen);
+        menuItems.add(projectStructureScreen);
 
         return menuItems;
     }
 
-    public void onProjectContextChanged( @Observes final ProjectContextChangeEvent event ) {
-        enableToolsMenuItems( (KieProject) event.getProject() );
+    public void onWorkspaceProjectContextChanged(@Observes final WorkspaceProjectContextChangeEvent event) {
+        enableToolsMenuItems((KieModule) event.getModule());
     }
 
-    private void enableToolsMenuItems( final KieProject project ) {
-        final boolean enabled = ( project != null );
-        projectScreen.setEnabled( enabled );
+    private void enableToolsMenuItems(final KieModule project) {
+        final boolean enabled = (project != null);
+        projectScreen.setEnabled(enabled);
     }
-
 }

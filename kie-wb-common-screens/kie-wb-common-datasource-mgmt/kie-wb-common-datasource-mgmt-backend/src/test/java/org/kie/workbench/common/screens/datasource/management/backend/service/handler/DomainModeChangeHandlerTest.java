@@ -27,32 +27,42 @@ import org.uberfire.backend.vfs.Path;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class DomainModeChangeHandlerTest
         extends AbstractDefChangeHandlerTest {
 
     @Override
-    protected void setupChangeHandler( ) {
-        changeHandler = new DomainModeChangeHandler( runtimeManager,
-                serviceHelper, ioService, projectService, eventHelper );
+    protected void setupChangeHandler() {
+        changeHandler = new DomainModeChangeHandler(runtimeManager,
+                                                    serviceHelper,
+                                                    ioService,
+                                                    moduleService,
+                                                    eventHelper);
     }
 
     @Override
-    protected void verifyUnDeployed( Def def ) throws Exception {
+    protected void verifyUnDeployed(Def def) throws Exception {
         // the domain mode implementation don't do deployments.
         verifyNoUnDeployments();
     }
 
     @Override
-    protected void verifyRegisteredAndDeployed( Path path, Def def ) throws Exception {
+    protected void verifyRegisteredAndDeployed(Path path,
+                                               Def def) throws Exception {
         // the definition should have been registered
-        verify( defRegistry, times( 1 ) ).setEntry( path, def );
+        verify(defRegistry,
+               times(1)).setEntry(path,
+                                  def);
         // but the domain mode implementation don't do un-deployments.
-        verifyNoDeployments( );
+        verifyNoDeployments();
     }
 
-    protected void verifyNoUnDeployments( ) throws Exception {
-        verify( runtimeManager, never( ) ).unDeployDataSource( any( DataSourceDeploymentInfo.class ), any( UnDeploymentOptions.class ) );
-        verify( runtimeManager, never( ) ).unDeployDriver( any( DriverDeploymentInfo.class ), any( UnDeploymentOptions.class ) );
+    protected void verifyNoUnDeployments() throws Exception {
+        verify(runtimeManager,
+               never()).unDeployDataSource(any(DataSourceDeploymentInfo.class),
+                                           any(UnDeploymentOptions.class));
+        verify(runtimeManager,
+               never()).unDeployDriver(any(DriverDeploymentInfo.class),
+                                       any(UnDeploymentOptions.class));
     }
 }

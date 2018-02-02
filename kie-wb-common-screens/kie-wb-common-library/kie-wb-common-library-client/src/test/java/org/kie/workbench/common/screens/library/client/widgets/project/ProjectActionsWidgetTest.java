@@ -38,18 +38,18 @@ public class ProjectActionsWidgetTest {
 
     @Test
     public void canCompileProject() {
-        doReturn(true).when(projectActionsWidget).userCanBuildProject();
+        doReturn(true).when(projectActionsWidget).userCanBuildModule();
 
-        projectActionsWidget.compileProject();
+        projectActionsWidget.compileModule();
 
         verify(buildExecutor).triggerBuild();
     }
 
     @Test
     public void cannotCompileProject() {
-        doReturn(false).when(projectActionsWidget).userCanBuildProject();
+        doReturn(false).when(projectActionsWidget).userCanBuildModule();
 
-        projectActionsWidget.compileProject();
+        projectActionsWidget.compileModule();
 
         verify(buildExecutor,
                never()).triggerBuild();
@@ -57,7 +57,7 @@ public class ProjectActionsWidgetTest {
 
     @Test
     public void canBuildAndDeploy() {
-        doReturn(true).when(projectActionsWidget).userCanBuildProject();
+        doReturn(true).when(projectActionsWidget).userCanBuildModule();
 
         projectActionsWidget.buildAndDeployProject();
 
@@ -66,7 +66,7 @@ public class ProjectActionsWidgetTest {
 
     @Test
     public void cannotBuildAndDeploy() {
-        doReturn(false).when(projectActionsWidget).userCanBuildProject();
+        doReturn(false).when(projectActionsWidget).userCanBuildModule();
 
         projectActionsWidget.buildAndDeployProject();
 

@@ -17,7 +17,6 @@ package org.kie.workbench.common.widgets.client.datamodel;
 
 import java.net.URL;
 import java.util.HashMap;
-
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Bean;
@@ -92,14 +91,19 @@ public class PackageDataModelDeclaredTypesTest {
 
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
         dataModel.setPackageName("t1p1");
-        dataModel.setModelFields(packageLoader.getProjectModelFields());
+        dataModel.setModelFields(packageLoader.getModuleModelFields());
         dataModel.setTypeSources(new HashMap<String, TypeSource>() {
             {
-                put("t1p1.Bean1", TypeSource.JAVA_PROJECT);
-                put("t1p1.DRLBean", TypeSource.DECLARED);
-                put("t1p2.Bean2", TypeSource.JAVA_PROJECT);
-                put("java.lang.String", TypeSource.JAVA_PROJECT);
-                put("int", TypeSource.JAVA_PROJECT);
+                put("t1p1.Bean1",
+                    TypeSource.JAVA_PROJECT);
+                put("t1p1.DRLBean",
+                    TypeSource.DECLARED);
+                put("t1p2.Bean2",
+                    TypeSource.JAVA_PROJECT);
+                put("java.lang.String",
+                    TypeSource.JAVA_PROJECT);
+                put("int",
+                    TypeSource.JAVA_PROJECT);
             }
         });
         PackageDataModelOracleTestUtils.populateDataModelOracle(mock(Path.class),

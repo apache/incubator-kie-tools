@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.backend.builder.core.BuildHelper;
 import org.kie.workbench.common.services.backend.builder.core.Builder;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieModule;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
@@ -34,7 +34,7 @@ import org.uberfire.backend.vfs.Path;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class LocalBuildExecConfigExecutorTest {
 
     @Mock
@@ -47,7 +47,7 @@ public class LocalBuildExecConfigExecutorTest {
     private LocalBuildExecConfig buildExecConfig;
 
     @Mock
-    private KieProject project;
+    private KieModule module;
 
     @Mock
     private BuildHelper.BuildResult buildResult;
@@ -68,110 +68,139 @@ public class LocalBuildExecConfigExecutorTest {
 
     @Before
     public void setUp() {
-        executor = new LocalBuildExecConfigExecutor( buildHelper );
-        when( buildResult.getBuilder() ).thenReturn( builder );
-        when( buildResult.getBuildResults() ).thenReturn( buildResults );
-        when( buildResult.getIncrementalBuildResults() ).thenReturn( incrementalBuildResults );
+        executor = new LocalBuildExecConfigExecutor(buildHelper);
+        when(buildResult.getBuilder()).thenReturn(builder);
+        when(buildResult.getBuildResults()).thenReturn(buildResults);
+        when(buildResult.getIncrementalBuildResults()).thenReturn(incrementalBuildResults);
     }
 
     @Test
-    public void testApplyForProjectFullBuild( ) {
-        when( internalBuildConfig.getBuildType() ).thenReturn( LocalBuildConfig.BuildType.FULL_BUILD );
-        when( internalBuildConfig.getProject() ).thenReturn( project );
-        when ( buildHelper.build( project ) ).thenReturn( buildResult );
+    public void testApplyForModuleFullBuild() {
+        when(internalBuildConfig.getBuildType()).thenReturn(LocalBuildConfig.BuildType.FULL_BUILD);
+        when(internalBuildConfig.getModule()).thenReturn(module);
+        when(buildHelper.build(module)).thenReturn(buildResult);
 
-        Optional< LocalBinaryConfig > result = executor.apply( internalBuildConfig, buildExecConfig );
+        Optional<LocalBinaryConfig> result = executor.apply(internalBuildConfig,
+                                                            buildExecConfig);
 
-        assertTrue( result.isPresent() );
-        assertEquals( builder, result.get().getBuilder() );
-        assertEquals( buildResults, result.get().getBuildResults() );
-        verify( buildHelper, times( 1 ) ).build( project );
+        assertTrue(result.isPresent());
+        assertEquals(builder,
+                     result.get().getBuilder());
+        assertEquals(buildResults,
+                     result.get().getBuildResults());
+        verify(buildHelper,
+               times(1)).build(module);
     }
 
     @Test
-    public void testApplyForIncrementalResourceAddBuild( ) {
-        when( internalBuildConfig.getBuildType() ).thenReturn( LocalBuildConfig.BuildType.INCREMENTAL_ADD_RESOURCE );
-        when( internalBuildConfig.getResource() ).thenReturn( path );
-        when ( buildHelper.addPackageResource( path ) ).thenReturn( incrementalBuildResults );
+    public void testApplyForIncrementalResourceAddBuild() {
+        when(internalBuildConfig.getBuildType()).thenReturn(LocalBuildConfig.BuildType.INCREMENTAL_ADD_RESOURCE);
+        when(internalBuildConfig.getResource()).thenReturn(path);
+        when(buildHelper.addPackageResource(path)).thenReturn(incrementalBuildResults);
 
-        Optional< LocalBinaryConfig > result = executor.apply( internalBuildConfig, buildExecConfig );
+        Optional<LocalBinaryConfig> result = executor.apply(internalBuildConfig,
+                                                            buildExecConfig);
 
-        assertTrue( result.isPresent() );
-        assertEquals( incrementalBuildResults, result.get().getIncrementalBuildResults() );
-        verify( buildHelper, times( 1 ) ).addPackageResource( path );
+        assertTrue(result.isPresent());
+        assertEquals(incrementalBuildResults,
+                     result.get().getIncrementalBuildResults());
+        verify(buildHelper,
+               times(1)).addPackageResource(path);
     }
 
     @Test
-    public void testApplyForIncrementalResourceUpdateBuild( ) {
-        when( internalBuildConfig.getBuildType() ).thenReturn( LocalBuildConfig.BuildType.INCREMENTAL_UPDATE_RESOURCE );
-        when( internalBuildConfig.getResource() ).thenReturn( path );
-        when ( buildHelper.updatePackageResource( path ) ).thenReturn( incrementalBuildResults );
+    public void testApplyForIncrementalResourceUpdateBuild() {
+        when(internalBuildConfig.getBuildType()).thenReturn(LocalBuildConfig.BuildType.INCREMENTAL_UPDATE_RESOURCE);
+        when(internalBuildConfig.getResource()).thenReturn(path);
+        when(buildHelper.updatePackageResource(path)).thenReturn(incrementalBuildResults);
 
-        Optional< LocalBinaryConfig > result = executor.apply( internalBuildConfig, buildExecConfig );
+        Optional<LocalBinaryConfig> result = executor.apply(internalBuildConfig,
+                                                            buildExecConfig);
 
-        assertTrue( result.isPresent() );
-        assertEquals( incrementalBuildResults, result.get().getIncrementalBuildResults() );
-        verify( buildHelper, times( 1 ) ).updatePackageResource( path );
+        assertTrue(result.isPresent());
+        assertEquals(incrementalBuildResults,
+                     result.get().getIncrementalBuildResults());
+        verify(buildHelper,
+               times(1)).updatePackageResource(path);
     }
 
     @Test
-    public void testApplyForIncrementalResourceDeleteBuild( ) {
-        when( internalBuildConfig.getBuildType() ).thenReturn( LocalBuildConfig.BuildType.INCREMENTAL_DELETE_RESOURCE );
-        when( internalBuildConfig.getResource() ).thenReturn( path );
-        when ( buildHelper.deletePackageResource( path ) ).thenReturn( incrementalBuildResults );
+    public void testApplyForIncrementalResourceDeleteBuild() {
+        when(internalBuildConfig.getBuildType()).thenReturn(LocalBuildConfig.BuildType.INCREMENTAL_DELETE_RESOURCE);
+        when(internalBuildConfig.getResource()).thenReturn(path);
+        when(buildHelper.deletePackageResource(path)).thenReturn(incrementalBuildResults);
 
-        Optional< LocalBinaryConfig > result = executor.apply( internalBuildConfig, buildExecConfig );
+        Optional<LocalBinaryConfig> result = executor.apply(internalBuildConfig,
+                                                            buildExecConfig);
 
-        assertTrue( result.isPresent() );
-        assertEquals( incrementalBuildResults, result.get().getIncrementalBuildResults() );
-        verify( buildHelper, times( 1 ) ).deletePackageResource( path );
+        assertTrue(result.isPresent());
+        assertEquals(incrementalBuildResults,
+                     result.get().getIncrementalBuildResults());
+        verify(buildHelper,
+               times(1)).deletePackageResource(path);
     }
 
     @Test
-    public void testApplyForIncrementalBatchChangesBuild( ) {
-        when( internalBuildConfig.getBuildType() ).thenReturn( LocalBuildConfig.BuildType.INCREMENTAL_BATCH_CHANGES );
-        when( internalBuildConfig.getProject() ).thenReturn( project );
-        when ( buildHelper.applyBatchResourceChanges( eq( project ), anyMap() ) ).thenReturn( incrementalBuildResults );
+    public void testApplyForIncrementalBatchChangesBuild() {
+        when(internalBuildConfig.getBuildType()).thenReturn(LocalBuildConfig.BuildType.INCREMENTAL_BATCH_CHANGES);
+        when(internalBuildConfig.getModule()).thenReturn(module);
+        when(buildHelper.applyBatchResourceChanges(eq(module),
+                                                   anyMap())).thenReturn(incrementalBuildResults);
 
-        Optional< LocalBinaryConfig > result = executor.apply( internalBuildConfig, buildExecConfig );
+        Optional<LocalBinaryConfig> result = executor.apply(internalBuildConfig,
+                                                            buildExecConfig);
 
-        assertTrue( result.isPresent() );
-        assertEquals( incrementalBuildResults, result.get().getIncrementalBuildResults() );
-        verify( buildHelper, times( 1 ) ).applyBatchResourceChanges( eq( project ), anyMap() );
+        assertTrue(result.isPresent());
+        assertEquals(incrementalBuildResults,
+                     result.get().getIncrementalBuildResults());
+        verify(buildHelper,
+               times(1)).applyBatchResourceChanges(eq(module),
+                                                   anyMap());
     }
 
     @Test
-    public void testApplyForProjectFullBuildAndDeployForcedNotSuppressHandlers( ) {
-        testApplyForProjectFullBuildAndDeploy( LocalBuildConfig.DeploymentType.FORCED, false );
+    public void testApplyForModuleFullBuildAndDeployForcedNotSuppressHandlers() {
+        testApplyForModuleFullBuildAndDeploy(LocalBuildConfig.DeploymentType.FORCED,
+                                             false);
     }
 
     @Test
-    public void testApplyForProjectFullBuildAndDeployForcedSuppressHandlers( ) {
-        testApplyForProjectFullBuildAndDeploy( LocalBuildConfig.DeploymentType.FORCED, true );
+    public void testApplyForModuleFullBuildAndDeployForcedSuppressHandlers() {
+        testApplyForModuleFullBuildAndDeploy(LocalBuildConfig.DeploymentType.FORCED,
+                                             true);
     }
 
     @Test
-    public void testApplyForProjectFullBuildAndDeployValidatedNotSuppressHandlers( ) {
-        testApplyForProjectFullBuildAndDeploy( LocalBuildConfig.DeploymentType.VALIDATED, false );
+    public void testApplyForModuleFullBuildAndDeployValidatedNotSuppressHandlers() {
+        testApplyForModuleFullBuildAndDeploy(LocalBuildConfig.DeploymentType.VALIDATED,
+                                             false);
     }
 
     @Test
-    public void testApplyForProjectFullBuildAndDeployValidatedSuppressHandlers( ) {
-        testApplyForProjectFullBuildAndDeploy( LocalBuildConfig.DeploymentType.VALIDATED, true );
+    public void testApplyForModuleFullBuildAndDeployValidatedSuppressHandlers() {
+        testApplyForModuleFullBuildAndDeploy(LocalBuildConfig.DeploymentType.VALIDATED,
+                                             true);
     }
 
-    private void testApplyForProjectFullBuildAndDeploy( LocalBuildConfig.DeploymentType deploymentType,
-                                                        boolean suppressHandlers ) {
-        when( internalBuildConfig.getBuildType() ).thenReturn( LocalBuildConfig.BuildType.FULL_BUILD_AND_DEPLOY );
-        when( internalBuildConfig.getProject() ).thenReturn( project );
-        when( internalBuildConfig.getDeploymentType() ).thenReturn( deploymentType );
-        when( internalBuildConfig.isSuppressHandlers() ).thenReturn( suppressHandlers );
-        when( buildHelper.buildAndDeploy( project, suppressHandlers, DeploymentMode.valueOf( deploymentType.name() ) ) ).thenReturn( buildResults );
+    private void testApplyForModuleFullBuildAndDeploy(LocalBuildConfig.DeploymentType deploymentType,
+                                                      boolean suppressHandlers) {
+        when(internalBuildConfig.getBuildType()).thenReturn(LocalBuildConfig.BuildType.FULL_BUILD_AND_DEPLOY);
+        when(internalBuildConfig.getModule()).thenReturn(module);
+        when(internalBuildConfig.getDeploymentType()).thenReturn(deploymentType);
+        when(internalBuildConfig.isSuppressHandlers()).thenReturn(suppressHandlers);
+        when(buildHelper.buildAndDeploy(module,
+                                        suppressHandlers,
+                                        DeploymentMode.valueOf(deploymentType.name()))).thenReturn(buildResults);
 
-        Optional< LocalBinaryConfig > result = executor.apply( internalBuildConfig, buildExecConfig );
+        Optional<LocalBinaryConfig> result = executor.apply(internalBuildConfig,
+                                                            buildExecConfig);
 
-        assertTrue( result.isPresent() );
-        assertEquals( buildResults, result.get().getBuildResults() );
-        verify( buildHelper, times( 1 ) ).buildAndDeploy( project, suppressHandlers, DeploymentMode.valueOf( deploymentType.name() ) );
+        assertTrue(result.isPresent());
+        assertEquals(buildResults,
+                     result.get().getBuildResults());
+        verify(buildHelper,
+               times(1)).buildAndDeploy(module,
+                                        suppressHandlers,
+                                        DeploymentMode.valueOf(deploymentType.name()));
     }
 }

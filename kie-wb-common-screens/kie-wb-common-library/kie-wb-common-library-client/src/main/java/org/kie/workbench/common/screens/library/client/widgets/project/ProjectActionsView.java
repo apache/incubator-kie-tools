@@ -66,7 +66,7 @@ public class ProjectActionsView implements ProjectActionsWidget.View,
     public void init(final ProjectActionsWidget presenter) {
         this.presenter = presenter;
 
-        if (!presenter.userCanBuildProject()) {
+        if (!presenter.userCanBuildModule()) {
             compile.setHidden(true);
             buildAndDeploy.setHidden(true);
         }
@@ -84,7 +84,7 @@ public class ProjectActionsView implements ProjectActionsWidget.View,
 
     @EventHandler("compile")
     public void compileProject(final ClickEvent clickEvent) {
-        presenter.compileProject();
+        presenter.compileModule();
     }
 
     @EventHandler("build-and-deploy")

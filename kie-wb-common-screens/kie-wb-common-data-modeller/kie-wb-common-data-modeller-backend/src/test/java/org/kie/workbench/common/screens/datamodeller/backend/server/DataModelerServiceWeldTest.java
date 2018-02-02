@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieModule;
 import t1p1.Pojo1;
 import t1p2.Pojo2;
 
@@ -36,13 +36,13 @@ public class DataModelerServiceWeldTest extends AbstractDataModelerServiceWeldTe
 
     @Test
     public void testDataModelerService() throws Exception {
-        KieProject project = loadProjectFromResources("/DataModelerTest1");
+        KieModule module = loadProjectFromResources("/DataModelerTest1");
 
         final Map<String, AnnotationDefinition> systemAnnotations = dataModelService.getAnnotationDefinitions();
         DataModel dataModelOriginal = new DataModelTestUtil(systemAnnotations).createModel(Pojo1.class,
                                                                                            Pojo2.class);
 
-        org.kie.workbench.common.services.datamodeller.core.DataModel dataModel = dataModelService.loadModel(project);
+        org.kie.workbench.common.services.datamodeller.core.DataModel dataModel = dataModelService.loadModel(module);
         Map<String, DataObject> objectsMap = new HashMap<>();
 
         assertNotNull(dataModel);

@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.soup.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
+import org.kie.soup.project.datamodel.commons.oracle.ModuleDataModelOracleImpl;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
 import org.kie.soup.project.datamodel.oracle.ModelField;
@@ -32,7 +32,7 @@ import org.kie.soup.project.datamodel.oracle.TypeSource;
  */
 public abstract class BaseFactBuilder implements FactBuilder {
 
-    protected final ProjectDataModelOracleBuilder builder;
+    protected final ModuleDataModelOracleBuilder builder;
 
     private final String type;
     private final List<ModelField> fields = new ArrayList<ModelField>();
@@ -41,7 +41,7 @@ public abstract class BaseFactBuilder implements FactBuilder {
     private final boolean isEvent;
     protected final TypeSource typeSource;
 
-    public BaseFactBuilder(final ProjectDataModelOracleBuilder builder,
+    public BaseFactBuilder(final ModuleDataModelOracleBuilder builder,
                            final Class<?> clazz,
                            final boolean isEvent,
                            final TypeSource typeSource) {
@@ -59,7 +59,7 @@ public abstract class BaseFactBuilder implements FactBuilder {
                                 DataType.TYPE_THIS));
     }
 
-    public BaseFactBuilder(final ProjectDataModelOracleBuilder builder,
+    public BaseFactBuilder(final ModuleDataModelOracleBuilder builder,
                            final String type,
                            final boolean isCollection,
                            final boolean isEvent,
@@ -96,19 +96,19 @@ public abstract class BaseFactBuilder implements FactBuilder {
     }
 
     @Override
-    public ProjectDataModelOracleBuilder end() {
+    public ModuleDataModelOracleBuilder end() {
         return builder;
     }
 
     @Override
-    public void build(final ProjectDataModelOracleImpl oracle) {
-        oracle.addProjectModelFields(buildModelFields());
-        oracle.addProjectCollectionTypes(buildCollectionTypes());
-        oracle.addProjectEventTypes(buildEventTypes());
-        oracle.addProjectTypeSources(buildTypeSources());
+    public void build(final ModuleDataModelOracleImpl oracle) {
+        oracle.addModuleModelFields(buildModelFields());
+        oracle.addModuleCollectionTypes(buildCollectionTypes());
+        oracle.addModuleEventTypes(buildEventTypes());
+        oracle.addModuleTypeSources(buildTypeSources());
     }
 
-    public ProjectDataModelOracleBuilder getDataModelBuilder() {
+    public ModuleDataModelOracleBuilder getDataModelBuilder() {
         return this.builder;
     }
 

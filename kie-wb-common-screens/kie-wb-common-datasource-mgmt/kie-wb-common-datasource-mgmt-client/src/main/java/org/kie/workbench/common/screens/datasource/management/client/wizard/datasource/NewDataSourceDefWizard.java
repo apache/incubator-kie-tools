@@ -24,7 +24,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -48,7 +48,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 public class NewDataSourceDefWizard
         extends AbstractWizard {
 
-    private final List<WizardPage> pages = new ArrayList<>(  );
+    private final List<WizardPage> pages = new ArrayList<>();
 
     private DataSourceDefPage dataSourceDefPage;
 
@@ -62,14 +62,14 @@ public class NewDataSourceDefWizard
 
     private Event<NotificationEvent> notification;
 
-    private Project project;
+    private Module module;
 
     @Inject
-    public NewDataSourceDefWizard( final DataSourceDefPage dataSourceDefPage,
-            final Caller<DataSourceDefEditorService> dataSourceDefService,
-            final TranslationService translationService,
-            final PopupsUtil popupsUtil,
-            final Event<NotificationEvent> notification ) {
+    public NewDataSourceDefWizard(final DataSourceDefPage dataSourceDefPage,
+                                  final Caller<DataSourceDefEditorService> dataSourceDefService,
+                                  final TranslationService translationService,
+                                  final PopupsUtil popupsUtil,
+                                  final Event<NotificationEvent> notification) {
         this.dataSourceDefPage = dataSourceDefPage;
         this.dataSourceDefService = dataSourceDefService;
         this.translationService = translationService;
@@ -79,17 +79,18 @@ public class NewDataSourceDefWizard
 
     @PostConstruct
     public void init() {
-        pages.add( dataSourceDefPage );
+        pages.add(dataSourceDefPage);
     }
 
     @Override
     public void start() {
         dataSourceDefPage.clear();
-        dataSourceDefPage.setComplete( false );
+        dataSourceDefPage.setComplete(false);
         dataSourceDef = new DataSourceDef();
-        dataSourceDefPage.setDataSourceDef( dataSourceDef );
-        dataSourceDefPage.setProject( project );
-        dataSourceDefPage.loadDrivers( getLoadDriversSuccessCommand(), getLoadDriversFailureCommand() );
+        dataSourceDefPage.setDataSourceDef(dataSourceDef);
+        dataSourceDefPage.setModule(module);
+        dataSourceDefPage.loadDrivers(getLoadDriversSuccessCommand(),
+                                      getLoadDriversFailureCommand());
     }
 
     @Override
@@ -98,13 +99,13 @@ public class NewDataSourceDefWizard
     }
 
     @Override
-    public Widget getPageWidget( int pageNumber ) {
-        return pages.get( pageNumber ).asWidget();
+    public Widget getPageWidget(int pageNumber) {
+        return pages.get(pageNumber).asWidget();
     }
 
     @Override
     public String getTitle() {
-        return translationService.getTranslation( DataSourceManagementConstants.NewDataSourceDefWizard_title );
+        return translationService.getTranslation(DataSourceManagementConstants.NewDataSourceDefWizard_title);
     }
 
     @Override
@@ -118,8 +119,8 @@ public class NewDataSourceDefWizard
     }
 
     @Override
-    public void isComplete( Callback<Boolean> callback ) {
-        dataSourceDefPage.isComplete( callback );
+    public void isComplete(Callback<Boolean> callback) {
+        dataSourceDefPage.isComplete(callback);
     }
 
     @Override
@@ -127,32 +128,35 @@ public class NewDataSourceDefWizard
         doComplete();
     }
 
-    public void setProject( final Project project ) {
-        this.project = project;
+    public void setModule(final Module module) {
+        this.module = module;
     }
 
     public void setGlobal() {
-        this.project = null;
+        this.module = null;
     }
 
     private void doComplete() {
-        if ( isGlobal() ) {
-            dataSourceDefService.call( getCreateSuccessCallback(), getCreateErrorCallback() ).createGlobal(
-                    dataSourceDef );
+        if (isGlobal()) {
+            dataSourceDefService.call(getCreateSuccessCallback(),
+                                      getCreateErrorCallback()).createGlobal(
+                    dataSourceDef);
         } else {
-            dataSourceDefService.call( getCreateSuccessCallback(), getCreateErrorCallback() ).create(
-                    dataSourceDef, project );
+            dataSourceDefService.call(getCreateSuccessCallback(),
+                                      getCreateErrorCallback()).create(
+                    dataSourceDef,
+                    module);
         }
     }
 
     private RemoteCallback<Path> getCreateSuccessCallback() {
         return new RemoteCallback<Path>() {
             @Override
-            public void callback( Path path ) {
-                notification.fire( new NotificationEvent(
+            public void callback(Path path) {
+                notification.fire(new NotificationEvent(
                         translationService.format(
                                 DataSourceManagementConstants.NewDataSourceDefWizard_DataSourceCreatedMessage,
-                                path.toString() ) ) );
+                                path.toString())));
                 NewDataSourceDefWizard.super.complete();
             }
         };
@@ -161,10 +165,11 @@ public class NewDataSourceDefWizard
     private ErrorCallback<?> getCreateErrorCallback() {
         return new DefaultErrorCallback() {
             @Override
-            public boolean error( Message message, Throwable throwable ) {
-                popupsUtil.showErrorPopup( translationService.format(
+            public boolean error(Message message,
+                                 Throwable throwable) {
+                popupsUtil.showErrorPopup(translationService.format(
                         DataSourceManagementConstants.NewDataSourceDefWizard_DataSourceCreateErrorMessage,
-                        buildOnCreateErrorMessage( throwable ) ) );
+                        buildOnCreateErrorMessage(throwable)));
                 return false;
             }
         };
@@ -182,27 +187,26 @@ public class NewDataSourceDefWizard
     private ParameterizedCommand<Throwable> getLoadDriversFailureCommand() {
         return new ParameterizedCommand<Throwable>() {
             @Override
-            public void execute( Throwable parameter ) {
+            public void execute(Throwable parameter) {
                 popupsUtil.showErrorPopup(
                         translationService.format(
                                 DataSourceManagementConstants.NewDataSourceDefWizard_WizardStartErrorMessage,
-                                parameter.getMessage() ) );
+                                parameter.getMessage()));
             }
         };
     }
 
-    private String buildOnCreateErrorMessage( Throwable t ) {
-        if ( t instanceof FileAlreadyExistsException ) {
+    private String buildOnCreateErrorMessage(Throwable t) {
+        if (t instanceof FileAlreadyExistsException) {
             return translationService.format(
                     DataSourceManagementConstants.NewDataSourceDefWizard_FileExistsErrorMessage,
-                    ((FileAlreadyExistsException )t).getFile() );
+                    ((FileAlreadyExistsException) t).getFile());
         } else {
             return t.getMessage();
         }
     }
 
     private boolean isGlobal() {
-        return project == null;
+        return module == null;
     }
-
 }

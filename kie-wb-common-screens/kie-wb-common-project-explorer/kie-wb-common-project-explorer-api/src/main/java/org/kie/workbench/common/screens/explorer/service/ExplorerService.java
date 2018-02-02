@@ -18,15 +18,13 @@ package org.kie.workbench.common.screens.explorer.service;
 
 import java.util.Set;
 
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.guvnor.structure.repositories.Repository;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
-import org.kie.workbench.common.screens.explorer.model.URIStructureExplorerModel;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -37,33 +35,29 @@ public interface ExplorerService {
 
     String BUILD_PROJECT_PROPERTY_NAME = "org.kie.build.disable-project-explorer";
 
-    ProjectExplorerContent getContent( final String path,
-                                       final ActiveOptions activeOptions );
+    ProjectExplorerContent getContent(final String path,
+                                      final ActiveOptions activeOptions);
 
-    ProjectExplorerContent getContent( final ProjectExplorerContentQuery query );
+    ProjectExplorerContent getContent(final ProjectExplorerContentQuery query);
 
-    URIStructureExplorerModel getURIStructureExplorerModel( Path uri );
+    FolderListing getFolderListing(final WorkspaceProject project,
+                                   final Module module,
+                                   final FolderItem item,
+                                   final ActiveOptions options);
 
-    FolderListing getFolderListing( final OrganizationalUnit organizationalUnit,
-                                    final Repository repository,
-                                    final String branch,
-                                    final Project project,
-                                    final FolderItem item,
-                                    final ActiveOptions options );
-
-    Package resolvePackage( final FolderItem item );
+    Package resolvePackage(final FolderItem item);
 
     Set<Option> getLastUserOptions();
 
-    void deleteItem( final FolderItem folderItem,
-                     final String comment );
+    void deleteItem(final FolderItem folderItem,
+                    final String comment);
 
-    void renameItem( final FolderItem folderItem,
-                     final String newFileName,
-                     final String commitMessage );
+    void renameItem(final FolderItem folderItem,
+                    final String newFileName,
+                    final String commitMessage);
 
-    void copyItem( final FolderItem folderItem,
-                   final String newFileName,
-                   final Path targetDirectory,
-                   final String commitMessage );
+    void copyItem(final FolderItem folderItem,
+                  final String newFileName,
+                  final Path targetDirectory,
+                  final String commitMessage);
 }

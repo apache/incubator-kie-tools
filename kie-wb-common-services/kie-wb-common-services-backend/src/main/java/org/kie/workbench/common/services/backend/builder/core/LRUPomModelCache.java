@@ -23,35 +23,36 @@ import javax.inject.Named;
 
 import org.appformer.maven.support.PomModel;
 import org.guvnor.common.services.backend.cache.LRUCache;
-import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.builder.events.InvalidateDMOModuleCacheEvent;
+import org.guvnor.common.services.project.model.Module;
 import org.kie.soup.commons.validation.PortablePreconditions;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.vfs.Path;
 
 @ApplicationScoped
 @Named("LRUPomModelCache")
-public class LRUPomModelCache extends LRUCache<Project, PomModel> {
+public class LRUPomModelCache
+        extends LRUCache<Module, PomModel> {
 
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     public LRUPomModelCache() {
         //CDI proxy
     }
 
     @Inject
-    public LRUPomModelCache(final KieProjectService projectService) {
-        this.projectService = projectService;
+    public LRUPomModelCache(final KieModuleService moduleService) {
+        this.moduleService = moduleService;
     }
 
-    public void invalidateProjectCache(@Observes final InvalidateDMOProjectCacheEvent event) {
+    public void invalidateProjectCache(@Observes final InvalidateDMOModuleCacheEvent event) {
         PortablePreconditions.checkNotNull("event",
                                            event);
         final Path resourcePath = event.getResourcePath();
-        final KieProject project = projectService.resolveProject(resourcePath);
-        if (project != null) {
-            invalidateCache(project);
+        final KieModule module = moduleService.resolveModule(resourcePath);
+        if (module != null) {
+            invalidateCache(module);
         }
     }
 }

@@ -20,19 +20,17 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.api.builder.KieModule;
 import org.kie.scanner.KieModuleMetaData;
 import org.kie.soup.project.datamodel.commons.util.MVELEvaluator;
 import org.kie.workbench.common.services.backend.builder.service.BuildInfoService;
 import org.kie.workbench.common.services.shared.enums.EnumDropdownService;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
@@ -51,7 +49,7 @@ public class EnumDropdownServiceImpl implements EnumDropdownService {
     private BuildInfoService buildInfoService;
 
     @Inject
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     @Inject
     private MVELEvaluator mvelEvaluator;
@@ -61,18 +59,18 @@ public class EnumDropdownServiceImpl implements EnumDropdownService {
                                            final String[] valuePairs,
                                            final String expression) {
 
-        //Lookup class-loader for Project (as the helper class can be a project dependency)
-        final KieProject project = projectService.resolveProject(resource);
-        if (project == null) {
-            logger.error("A Project could not be resolved for path '" + resource.toURI() + "'. No enums will be returned.");
+        //Lookup class-loader for Module (as the helper class can be a module dependency)
+        final KieModule module = moduleService.resolveModule(resource);
+        if (module == null) {
+            logger.error("A Module could not be resolved for path '" + resource.toURI() + "'. No enums will be returned.");
             return null;
         }
-        final KieModule module = buildInfoService.getBuildInfo(project).getKieModuleIgnoringErrors();
-        if (module == null) {
+        final org.kie.api.builder.KieModule kieModule = buildInfoService.getBuildInfo(module).getKieModuleIgnoringErrors();
+        if (kieModule == null) {
             logger.error("A KieModule could not be resolved for path '" + resource.toURI() + "'. No enums will be returned.");
             return null;
         }
-        final ClassLoader classLoader = KieModuleMetaData.Factory.newKieModuleMetaData(module).getClassLoader();
+        final ClassLoader classLoader = KieModuleMetaData.Factory.newKieModuleMetaData(kieModule).getClassLoader();
 
         return loadDropDownExpression(classLoader,
                                       mvelEvaluator,
@@ -85,7 +83,7 @@ public class EnumDropdownServiceImpl implements EnumDropdownService {
                                               final String[] valuePairs,
                                               String expression) {
         try {
-            final Map<String, String> context = new HashMap<>();
+            final Map<String, String> context = new HashMap<String, String>();
             for (final String valuePair : valuePairs) {
                 if (valuePair == null) {
                     return new String[0];

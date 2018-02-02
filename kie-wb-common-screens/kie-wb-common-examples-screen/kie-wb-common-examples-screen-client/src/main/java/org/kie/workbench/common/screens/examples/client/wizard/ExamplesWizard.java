@@ -23,19 +23,17 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
+import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.examples.client.resources.i18n.ExamplesScreenConstants;
 import org.kie.workbench.common.screens.examples.client.wizard.model.ExamplesWizardModel;
 import org.kie.workbench.common.screens.examples.client.wizard.pages.ExamplesWizardPage;
-import org.kie.workbench.common.screens.examples.client.wizard.pages.targetrepository.TargetRepositoryPage;
 import org.kie.workbench.common.screens.examples.client.wizard.pages.project.ProjectPage;
 import org.kie.workbench.common.screens.examples.client.wizard.pages.sourcerepository.SourceRepositoryPage;
 import org.kie.workbench.common.screens.examples.model.ExampleOrganizationalUnit;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
-import org.kie.workbench.common.screens.examples.model.ExampleTargetRepository;
 import org.kie.workbench.common.screens.examples.model.ExamplesMetaData;
 import org.kie.workbench.common.screens.examples.service.ExamplesService;
 import org.uberfire.client.callbacks.Callback;
@@ -56,10 +54,9 @@ public class ExamplesWizard extends AbstractWizard {
     private ExamplesWizardModel model;
     private List<WizardPage> pages = new ArrayList<WizardPage>();
     private SourceRepositoryPage sourceRepositoryPage;
-    private TargetRepositoryPage organizationalUnitPage;
     private BusyIndicatorView busyIndicatorView;
     private Caller<ExamplesService> examplesService;
-    private Event<ProjectContextChangeEvent> event;
+    private Event<WorkspaceProjectContextChangeEvent> projectContextChangeEvent;
     private TranslationService translator;
 
     public ExamplesWizard() {
@@ -69,21 +66,18 @@ public class ExamplesWizard extends AbstractWizard {
     @Inject
     public ExamplesWizard(final SourceRepositoryPage sourceRepositoryPage,
                           final ProjectPage projectPage,
-                          final TargetRepositoryPage organizationalUnitPage,
                           final BusyIndicatorView busyIndicatorView,
                           final Caller<ExamplesService> examplesService,
-                          final Event<ProjectContextChangeEvent> event,
+                          final Event<WorkspaceProjectContextChangeEvent> projectContextChangeEvent,
                           final TranslationService translator) {
-        pages.add(sourceRepositoryPage);
-        pages.add(projectPage);
-        pages.add(organizationalUnitPage);
+        this.pages.add(sourceRepositoryPage);
+        this.pages.add(projectPage);
         this.sourceRepositoryPage = sourceRepositoryPage;
-        this.organizationalUnitPage = organizationalUnitPage;
         this.busyIndicatorView = busyIndicatorView;
         this.examplesService = examplesService;
-        this.event = event;
+        this.projectContextChangeEvent = projectContextChangeEvent;
         this.translator = translator;
-        model = new ExamplesWizardModel();
+        this.model = new ExamplesWizardModel();
     }
 
     @Override
@@ -162,28 +156,21 @@ public class ExamplesWizard extends AbstractWizard {
     @Override
     public void complete() {
         busyIndicatorView.showBusyIndicator(translator.format(ExamplesScreenConstants.ExamplesWizard_SettingUpExamples));
-        examplesService.call(new RemoteCallback<ProjectContextChangeEvent>() {
+        examplesService.call(new RemoteCallback<WorkspaceProjectContextChangeEvent>() {
 
                                  @Override
-                                 public void callback(final ProjectContextChangeEvent context) {
+                                 public void callback(final WorkspaceProjectContextChangeEvent context) {
                                      busyIndicatorView.hideBusyIndicator();
                                      ExamplesWizard.super.complete();
-                                     event.fire(context);
+                                     projectContextChangeEvent.fire(context);
                                  }
                              },
                              new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).setupExamples(model.getTargetOrganizationalUnit(),
-                                                                                                        model.getTargetRepository(),
-                                                                                                        model.getSelectedBranch(),
                                                                                                         model.getProjects());
     }
 
     public void setDefaultTargetOrganizationalUnit(final String ouName) {
         final ExampleOrganizationalUnit targetOrganizationalUnit = new ExampleOrganizationalUnit(ouName);
         this.model.setTargetOrganizationalUnit(targetOrganizationalUnit);
-    }
-
-    public void setDefaultTargetRepository(final String repositoryAlias) {
-        final ExampleTargetRepository targetRepository = new ExampleTargetRepository(repositoryAlias);
-        this.organizationalUnitPage.setTargetRepository(targetRepository);
     }
 }

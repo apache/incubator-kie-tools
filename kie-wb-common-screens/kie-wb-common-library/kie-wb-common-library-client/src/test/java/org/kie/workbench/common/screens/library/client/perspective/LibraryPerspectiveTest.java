@@ -45,6 +45,11 @@ public class LibraryPerspectiveTest {
     }
 
     @Test
+    public void testLibraryPlacesIsInitialized() throws Exception {
+        verify(libraryPlaces).init(any(LibraryPerspective.class));
+    }
+
+    @Test
     public void libraryRefreshesPlacesOnOpenWithRootPanelTest() {
         doReturn(mock(PanelDefinition.class)).when(perspective).getRootPanel();
 

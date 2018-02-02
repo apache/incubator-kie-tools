@@ -17,16 +17,16 @@ package org.kie.workbench.common.services.datamodel.backend.server.builder.proje
 
 import java.util.Map;
 
-import org.kie.soup.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
+import org.kie.soup.project.datamodel.commons.oracle.ModuleDataModelOracleImpl;
 
 /**
  * Builder for Fact Types
  */
 public interface FactBuilder {
 
-    public ProjectDataModelOracleBuilder end();
+    public ModuleDataModelOracleBuilder end();
 
     public Map<String, FactBuilder> getInternalBuilders();
 
-    public void build(final ProjectDataModelOracleImpl oracle);
+    public void build(final ModuleDataModelOracleImpl oracle);
 }

@@ -49,24 +49,23 @@ public class KModuleServiceImplIntegrationTest {
 
     @Test
     public void testIsKModuleFileWithKModuleFile() throws Exception {
-        final URL testUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid/src/main/resources/META-INF/kmodule.xml" );
-        final org.uberfire.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
-        final Path testPath = paths.convert( nioTestPath );
+        final URL testUrl = this.getClass().getResource("/ModuleBackendTestModuleStructureValid/src/main/resources/META-INF/kmodule.xml");
+        final org.uberfire.java.nio.file.Path nioTestPath = fs.getPath(testUrl.toURI());
+        final Path testPath = paths.convert(nioTestPath);
 
         //Test a kModule.xml file resolves to a null package
-        final boolean result = kModuleService.isKModule( testPath );
-        assertTrue( result );
+        final boolean result = kModuleService.isKModule(testPath);
+        assertTrue(result);
     }
 
     @Test
     public void testIsKModuleFileWithNonKModuleFile() throws Exception {
-        final URL testUrl = this.getClass().getResource( "/ProjectBackendTestProjectStructureValid/src/main/resources/META-INF" );
-        final org.uberfire.java.nio.file.Path nioTestPath = fs.getPath( testUrl.toURI() );
-        final Path testPath = paths.convert( nioTestPath );
+        final URL testUrl = this.getClass().getResource("/ModuleBackendTestModuleStructureValid/src/main/resources/META-INF");
+        final org.uberfire.java.nio.file.Path nioTestPath = fs.getPath(testUrl.toURI());
+        final Path testPath = paths.convert(nioTestPath);
 
         //Test a kModule.xml file resolves to a null package
-        final boolean result = kModuleService.isKModule( testPath );
-        assertFalse( result );
+        final boolean result = kModuleService.isKModule(testPath);
+        assertFalse(result);
     }
-
 }

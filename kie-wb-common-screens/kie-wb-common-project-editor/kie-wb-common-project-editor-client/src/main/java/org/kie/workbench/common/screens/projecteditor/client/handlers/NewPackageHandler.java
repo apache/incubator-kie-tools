@@ -18,19 +18,17 @@ package org.kie.workbench.common.screens.projecteditor.client.handlers;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.model.Package;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
-import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 import org.uberfire.workbench.type.AnyResourceTypeDefinition;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
@@ -41,7 +39,7 @@ import org.uberfire.workbench.type.ResourceTypeDefinition;
 public class NewPackageHandler
         extends DefaultNewResourceHandler {
 
-    private Caller<KieProjectService> projectService;
+    private Caller<KieModuleService> moduleService;
     private Caller<ValidationService> validationService;
     //We don't really need this for Packages but it's required by DefaultNewResourceHandler
     private AnyResourceTypeDefinition resourceType;
@@ -50,10 +48,10 @@ public class NewPackageHandler
     }
 
     @Inject
-    public NewPackageHandler( Caller<KieProjectService> projectService,
-                              Caller<ValidationService> validationService,
-                              AnyResourceTypeDefinition resourceType ) {
-        this.projectService = projectService;
+    public NewPackageHandler(Caller<KieModuleService> moduleService,
+                             Caller<ValidationService> validationService,
+                             AnyResourceTypeDefinition resourceType) {
+        this.moduleService = moduleService;
         this.validationService = validationService;
         this.resourceType = resourceType;
     }
@@ -65,7 +63,7 @@ public class NewPackageHandler
 
     @Override
     public IsWidget getIcon() {
-        return new Image( ProjectEditorResources.INSTANCE.newFolderIcon() );
+        return new Image(ProjectEditorResources.INSTANCE.newFolderIcon());
     }
 
     @Override
@@ -74,39 +72,38 @@ public class NewPackageHandler
     }
 
     @Override
-    public void validate( final String packageName,
-                          final ValidatorWithReasonCallback callback ) {
+    public void validate(final String packageName,
+                         final ValidatorWithReasonCallback callback) {
 
-        validationService.call( new RemoteCallback<Boolean>() {
+        validationService.call(new RemoteCallback<Boolean>() {
             @Override
-            public void callback( final Boolean response ) {
-                if ( Boolean.TRUE.equals( response ) ) {
+            public void callback(final Boolean response) {
+                if (Boolean.TRUE.equals(response)) {
                     callback.onSuccess();
                 } else {
-                    callback.onFailure( ProjectEditorResources.CONSTANTS.InvalidPackageName( packageName ) );
+                    callback.onFailure(ProjectEditorResources.CONSTANTS.InvalidPackageName(packageName));
                 }
             }
-        } ).isPackageNameValid( packageName );
+        }).isPackageNameValid(packageName);
     }
 
     @Override
-    public void create( final Package pkg,
-                        final String baseFileName,
-                        final NewResourcePresenter presenter ) {
-        projectService.call( getPackageSuccessCallback( presenter ),
-                             new NewPackageErrorCallback() ).newPackage( pkg,
-                                                                         baseFileName );
+    public void create(final Package pkg,
+                       final String baseFileName,
+                       final NewResourcePresenter presenter) {
+        moduleService.call(getPackageSuccessCallback(presenter),
+                           new NewPackageErrorCallback()).newPackage(pkg,
+                                                                     baseFileName);
     }
 
-    private RemoteCallback<Package> getPackageSuccessCallback( final NewResourcePresenter presenter ) {
+    private RemoteCallback<Package> getPackageSuccessCallback(final NewResourcePresenter presenter) {
         return new RemoteCallback<Package>() {
 
             @Override
-            public void callback( final Package pkg ) {
+            public void callback(final Package pkg) {
                 presenter.complete();
                 notifySuccess();
             }
         };
     }
-
 }

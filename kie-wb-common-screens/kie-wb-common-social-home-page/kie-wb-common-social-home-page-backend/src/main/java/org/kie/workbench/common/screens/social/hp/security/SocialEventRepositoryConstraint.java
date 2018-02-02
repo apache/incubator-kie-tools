@@ -24,7 +24,7 @@ import javax.inject.Inject;
 
 import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.ext.uberfire.social.activities.service.SocialSecurityConstraint;
-import org.guvnor.common.services.project.social.ProjectEventType;
+import org.guvnor.common.services.project.social.ModuleEventType;
 import org.guvnor.structure.backend.repositories.ConfiguredRepositories;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
@@ -75,7 +75,7 @@ public class SocialEventRepositoryConstraint implements SocialSecurityConstraint
             if (!userCDIContextHelper.thereIsALoggedUserInScope()) {
                 return false;
             }
-            if (event.isVFSLink() || isAProjectEvent(event)) {
+            if (event.isVFSLink() || isAModuleEvent(event)) {
                 Repository repository = getEventRepository(event);
                 final boolean userHasAccessToRepo = authorizedRepos.contains(repository);
                 return !userHasAccessToRepo;
@@ -93,9 +93,9 @@ public class SocialEventRepositoryConstraint implements SocialSecurityConstraint
         return configuredRepositories.getRepositoryByRepositoryFileSystem(fileSystem);
     }
 
-    private boolean isAProjectEvent(SocialActivitiesEvent event) {
+    private boolean isAModuleEvent(SocialActivitiesEvent event) {
         return event.getLinkType().equals(SocialActivitiesEvent.LINK_TYPE.CUSTOM)
-                && event.getType().equals(ProjectEventType.NEW_PROJECT.name());
+                && event.getType().equals(ModuleEventType.NEW_MODULE.name());
     }
 
     public Set<Repository> getAuthorizedRepositories() {

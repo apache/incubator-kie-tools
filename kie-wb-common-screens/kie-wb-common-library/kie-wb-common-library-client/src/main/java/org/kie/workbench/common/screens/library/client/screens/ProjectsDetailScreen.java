@@ -21,9 +21,9 @@ import javax.inject.Inject;
 
 import org.dashbuilder.dataset.events.DataSetModifiedEvent;
 import org.dashbuilder.displayer.client.Displayer;
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.model.POM;
 import org.kie.workbench.common.screens.contributors.model.ContributorsDataSets;
-import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.util.ProjectMetricsFactory;
@@ -48,31 +48,31 @@ public class ProjectsDetailScreen {
     private View view;
     private ProjectMetricsFactory projectMetricsFactory;
     private LibraryPlaces libraryPlaces;
-    private ProjectInfo projectInfo;
+    private WorkspaceProjectContext projectContext;
     private Displayer commitsDisplayer;
 
     @Inject
     public ProjectsDetailScreen(final View view,
                                 final ProjectMetricsFactory projectMetricsFactory,
-                                final LibraryPlaces libraryPlaces) {
+                                final LibraryPlaces libraryPlaces,
+                                final WorkspaceProjectContext projectContext) {
         this.view = view;
         this.projectMetricsFactory = projectMetricsFactory;
         this.libraryPlaces = libraryPlaces;
+        this.projectContext = projectContext;
         this.view.init(this);
     }
 
     public void update(@Observes final ProjectDetailEvent event) {
-        this.projectInfo = event.getProjectInfo();
+        final POM pom = event.getProject().getMainModule().getPom();
 
-        // Update the description
-        final POM pom = projectInfo.getProject().getPom();
         if (pom != null && pom.getDescription() != null) {
             view.updateDescription(pom.getDescription());
         } else {
             view.updateDescription("");
         }
         // Update the metrics card
-        commitsDisplayer = projectMetricsFactory.lookupCommitsOverTimeDisplayer_small(projectInfo);
+        commitsDisplayer = projectMetricsFactory.lookupCommitsOverTimeDisplayer_small(event.getProject());
         commitsDisplayer.draw();
         view.updateContributionsMetric(commitsDisplayer);
     }
@@ -106,8 +106,8 @@ public class ProjectsDetailScreen {
     }
 
     public void gotoProjectMetrics() {
-        if (projectInfo != null) {
-            libraryPlaces.goToProjectMetrics(projectInfo);
+        if (projectContext.getActiveWorkspaceProject() != null) {
+            libraryPlaces.goToProjectMetrics();
         }
     }
 }

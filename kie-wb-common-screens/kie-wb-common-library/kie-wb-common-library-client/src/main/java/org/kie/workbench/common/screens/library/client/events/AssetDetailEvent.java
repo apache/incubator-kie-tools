@@ -15,29 +15,29 @@
  */
 package org.kie.workbench.common.screens.library.client.events;
 
-import org.kie.workbench.common.screens.library.api.ProjectInfo;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.uberfire.backend.vfs.Path;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.*;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public class AssetDetailEvent {
 
-    private ProjectInfo projectInfo;
+    private WorkspaceProject project;
 
     private Path path;
 
     public AssetDetailEvent() {
     }
 
-    public AssetDetailEvent(final ProjectInfo projectInfo,
+    public AssetDetailEvent(final WorkspaceProject project,
                             final Path path) {
-        this.projectInfo = checkNotNull("projectInfo",
-                                        projectInfo);
+        this.project = checkNotNull("project",
+                                    project);
         this.path = path;
     }
 
-    public ProjectInfo getProjectInfo() {
-        return projectInfo;
+    public WorkspaceProject getProject() {
+        return project;
     }
 
     public Path getPath() {
@@ -55,7 +55,7 @@ public class AssetDetailEvent {
 
         final AssetDetailEvent that = (AssetDetailEvent) o;
 
-        if (getProjectInfo() != null ? !getProjectInfo().equals(that.getProjectInfo()) : that.getProjectInfo() != null) {
+        if (getProject() != null ? !getProject().equals(that.getProject()) : that.getProject() != null) {
             return false;
         }
         return !(getPath() != null ? !getPath().equals(that.getPath()) : that.getPath() != null);
@@ -63,7 +63,7 @@ public class AssetDetailEvent {
 
     @Override
     public int hashCode() {
-        int result = getProjectInfo() != null ? getProjectInfo().hashCode() : 0;
+        int result = getProject() != null ? getProject().hashCode() : 0;
         result = ~~result;
         result = 31 * result + (getPath() != null ? getPath().hashCode() : 0);
         result = ~~result;

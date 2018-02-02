@@ -34,7 +34,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import org.guvnor.common.services.project.client.resources.ProjectResources;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
-import org.guvnor.common.services.project.model.ProjectRepositories;
+import org.guvnor.common.services.project.model.ModuleRepositories;
 import org.gwtbootstrap3.client.ui.gwt.CellTable;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 
@@ -47,58 +47,58 @@ public class RepositoriesWidgetViewImpl
 
     }
 
-    private static Binder uiBinder = GWT.create( Binder.class );
+    private static Binder uiBinder = GWT.create(Binder.class);
 
     @UiField(provided = true)
-    CellTable<ProjectRepositories.ProjectRepository> table = new CellTable<ProjectRepositories.ProjectRepository>();
+    CellTable<ModuleRepositories.ModuleRepository> table = new CellTable<ModuleRepositories.ModuleRepository>();
 
-    private List<ProjectRepositories.ProjectRepository> repositories = new ArrayList<ProjectRepositories.ProjectRepository>();
-    private ListDataProvider<ProjectRepositories.ProjectRepository> dataProvider = new ListDataProvider<ProjectRepositories.ProjectRepository>();
+    private List<ModuleRepositories.ModuleRepository> repositories = new ArrayList<ModuleRepositories.ModuleRepository>();
+    private ListDataProvider<ModuleRepositories.ModuleRepository> dataProvider = new ListDataProvider<ModuleRepositories.ModuleRepository>();
 
-    Column<ProjectRepositories.ProjectRepository, Boolean> repositoryIncludeColumn;
-    TextColumn<ProjectRepositories.ProjectRepository> repositoryIdColumn;
-    TextColumn<ProjectRepositories.ProjectRepository> repositoryUrlColumn;
-    TextColumn<ProjectRepositories.ProjectRepository> repositorySourceColumn;
+    Column<ModuleRepositories.ModuleRepository, Boolean> repositoryIncludeColumn;
+    TextColumn<ModuleRepositories.ModuleRepository> repositoryIdColumn;
+    TextColumn<ModuleRepositories.ModuleRepository> repositoryUrlColumn;
+    TextColumn<ModuleRepositories.ModuleRepository> repositorySourceColumn;
 
     public RepositoriesWidgetViewImpl() {
         setup();
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     private void setup() {
         //Setup table
-        table.setStriped( true );
-        table.setCondensed( true );
-        table.setBordered( true );
+        table.setStriped(true);
+        table.setCondensed(true);
+        table.setBordered(true);
 
         //Columns
         final CheckboxCell cbCell = new CheckboxCell();
-        repositoryIncludeColumn = new Column<ProjectRepositories.ProjectRepository, Boolean>( cbCell ) {
+        repositoryIncludeColumn = new Column<ModuleRepositories.ModuleRepository, Boolean>(cbCell) {
             @Override
-            public Boolean getValue( final ProjectRepositories.ProjectRepository repository ) {
+            public Boolean getValue(final ModuleRepositories.ModuleRepository repository) {
                 return repository.isIncluded();
             }
         };
 
-        repositoryIdColumn = new TextColumn<ProjectRepositories.ProjectRepository>() {
+        repositoryIdColumn = new TextColumn<ModuleRepositories.ModuleRepository>() {
 
             @Override
-            public String getValue( final ProjectRepositories.ProjectRepository repository ) {
+            public String getValue(final ModuleRepositories.ModuleRepository repository) {
                 return repository.getMetadata().getId();
             }
         };
-        repositoryUrlColumn = new TextColumn<ProjectRepositories.ProjectRepository>() {
+        repositoryUrlColumn = new TextColumn<ModuleRepositories.ModuleRepository>() {
 
             @Override
-            public String getValue( final ProjectRepositories.ProjectRepository repository ) {
+            public String getValue(final ModuleRepositories.ModuleRepository repository) {
                 return repository.getMetadata().getUrl();
             }
         };
-        repositorySourceColumn = new TextColumn<ProjectRepositories.ProjectRepository>() {
+        repositorySourceColumn = new TextColumn<ModuleRepositories.ModuleRepository>() {
 
             @Override
-            public String getValue( final ProjectRepositories.ProjectRepository repository ) {
-                switch ( repository.getMetadata().getSource() ) {
+            public String getValue(final ModuleRepositories.ModuleRepository repository) {
+                switch (repository.getMetadata().getSource()) {
                     case LOCAL:
                         return ProjectResources.CONSTANTS.RepositorySourceLocal();
                     case PROJECT:
@@ -112,58 +112,57 @@ public class RepositoriesWidgetViewImpl
             }
         };
 
-        table.addColumn( repositoryIncludeColumn,
-                         new TextHeader( ProjectEditorResources.CONSTANTS.RepositoryInclude() ) );
-        table.addColumn( repositoryIdColumn,
-                         new TextHeader( ProjectResources.CONSTANTS.RepositoryId() ) );
-        table.addColumn( repositoryUrlColumn,
-                         new TextHeader( ProjectResources.CONSTANTS.RepositoryUrl() ) );
-        table.addColumn( repositorySourceColumn,
-                         new TextHeader( ProjectResources.CONSTANTS.RepositorySource() ) );
+        table.addColumn(repositoryIncludeColumn,
+                        new TextHeader(ProjectEditorResources.CONSTANTS.RepositoryInclude()));
+        table.addColumn(repositoryIdColumn,
+                        new TextHeader(ProjectResources.CONSTANTS.RepositoryId()));
+        table.addColumn(repositoryUrlColumn,
+                        new TextHeader(ProjectResources.CONSTANTS.RepositoryUrl()));
+        table.addColumn(repositorySourceColumn,
+                        new TextHeader(ProjectResources.CONSTANTS.RepositorySource()));
 
         //Link data
-        dataProvider.addDataDisplay( table );
-        dataProvider.setList( repositories );
+        dataProvider.addDataDisplay(table);
+        dataProvider.setList(repositories);
     }
 
     @Override
-    public void init( final Presenter presenter ) {
-        repositoryIncludeColumn.setFieldUpdater( new FieldUpdater<ProjectRepositories.ProjectRepository, Boolean>() {
+    public void init(final Presenter presenter) {
+        repositoryIncludeColumn.setFieldUpdater(new FieldUpdater<ModuleRepositories.ModuleRepository, Boolean>() {
             @Override
-            public void update( final int index,
-                                final ProjectRepositories.ProjectRepository repository,
-                                final Boolean value ) {
-                presenter.setIncludeRepository( repository,
-                                                Boolean.TRUE.equals( value ) );
+            public void update(final int index,
+                               final ModuleRepositories.ModuleRepository repository,
+                               final Boolean value) {
+                presenter.setIncludeRepository(repository,
+                                               Boolean.TRUE.equals(value));
             }
-        } );
+        });
     }
 
     @Override
-    public void setContent( final Set<ProjectRepositories.ProjectRepository> repositories,
-                            final boolean isReadOnly ) {
-        this.repositories = sortRepositories( repositories );
-        this.dataProvider.setList( this.repositories );
-        ( (CheckboxCell) this.repositoryIncludeColumn.getCell() ).setEnabled( !isReadOnly );
+    public void setContent(final Set<ModuleRepositories.ModuleRepository> repositories,
+                           final boolean isReadOnly) {
+        this.repositories = sortRepositories(repositories);
+        this.dataProvider.setList(this.repositories);
+        ((CheckboxCell) this.repositoryIncludeColumn.getCell()).setEnabled(!isReadOnly);
     }
 
-    private List<ProjectRepositories.ProjectRepository> sortRepositories( final Set<ProjectRepositories.ProjectRepository> repositories ) {
-        final List<ProjectRepositories.ProjectRepository> sortedRepositories = new ArrayList<ProjectRepositories.ProjectRepository>();
-        sortedRepositories.addAll( repositories );
-        Collections.sort( sortedRepositories,
-                          new Comparator<ProjectRepositories.ProjectRepository>() {
-                              @Override
-                              public int compare( final ProjectRepositories.ProjectRepository pr1,
-                                                  final ProjectRepositories.ProjectRepository pr2 ) {
-                                  final MavenRepositoryMetadata md1 = pr1.getMetadata();
-                                  final MavenRepositoryMetadata md2 = pr2.getMetadata();
-                                  if ( md1.getSource().equals( md2.getSource() ) ) {
-                                      return md1.getId().compareToIgnoreCase( md2.getId() );
-                                  }
-                                  return md1.getSource().ordinal() - md2.getSource().ordinal();
-                              }
-                          } );
+    private List<ModuleRepositories.ModuleRepository> sortRepositories(final Set<ModuleRepositories.ModuleRepository> repositories) {
+        final List<ModuleRepositories.ModuleRepository> sortedRepositories = new ArrayList<ModuleRepositories.ModuleRepository>();
+        sortedRepositories.addAll(repositories);
+        Collections.sort(sortedRepositories,
+                         new Comparator<ModuleRepositories.ModuleRepository>() {
+                             @Override
+                             public int compare(final ModuleRepositories.ModuleRepository pr1,
+                                                final ModuleRepositories.ModuleRepository pr2) {
+                                 final MavenRepositoryMetadata md1 = pr1.getMetadata();
+                                 final MavenRepositoryMetadata md2 = pr2.getMetadata();
+                                 if (md1.getSource().equals(md2.getSource())) {
+                                     return md1.getId().compareToIgnoreCase(md2.getId());
+                                 }
+                                 return md1.getSource().ordinal() - md2.getSource().ordinal();
+                             }
+                         });
         return sortedRepositories;
     }
-
 }

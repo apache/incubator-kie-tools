@@ -36,7 +36,7 @@ import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationDefinitionRequest;
 import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationDefinitionResponse;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieModule;
 import org.mockito.Mock;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 import org.uberfire.ext.widgets.core.client.wizards.WizardView;
@@ -70,7 +70,7 @@ public class CreateAnnotationWizardTest {
     protected Event<WizardPageStatusChangeEvent> wizardPageStatusChangeEvent = mock(EventSourceMock.class);
 
     @Mock
-    protected KieProject kieProject;
+    protected KieModule kieModule;
 
     @Mock
     protected ValuePairEditorProvider valuePairEditorProvider;
@@ -108,7 +108,7 @@ public class CreateAnnotationWizardTest {
                                                                     iocManager,
                                                                     view);
 
-        createAnnotationWizard.init(kieProject,
+        createAnnotationWizard.init(kieModule,
                                     ElementType.TYPE);
         createAnnotationWizard.onCloseCallback(result -> {
             //collect the created annotation when the wizard is finished
@@ -128,7 +128,7 @@ public class CreateAnnotationWizardTest {
 
         when(searchView.getClassName()).thenReturn(Entity.class.getName());
         when(modelerService.resolveDefinitionRequest(request,
-                                                     kieProject)).thenReturn(response);
+                                                     kieModule)).thenReturn(response);
 
         //when the search is performed the ValuePairEditor pages will be automatically created
         //so we also emulate the corresponding ValuePairEditors for the given value pairs.

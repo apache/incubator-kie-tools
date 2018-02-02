@@ -16,34 +16,38 @@
 
 package org.kie.workbench.common.screens.library.client.screens;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.model.POM;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.structure.repositories.Repository;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
-import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
+import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.common.TileWidget;
 import org.kie.workbench.common.screens.library.client.widgets.library.AddProjectButtonPresenter;
 import org.uberfire.client.mvp.UberElement;
+import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 import org.uberfire.mvp.Command;
 
 public class PopulatedLibraryScreen {
 
-    public interface View extends UberElement<PopulatedLibraryScreen> {
+    public interface View extends UberElement<PopulatedLibraryScreen>,
+                                  HasBusyIndicator {
 
         void clearProjects();
 
@@ -54,6 +58,8 @@ public class PopulatedLibraryScreen {
         void clearFilterText();
 
         String getNumberOfAssetsMessage(int numberOfAssets);
+
+        String getLoadingAssetsMessage();
     }
 
     private View view;
@@ -65,12 +71,13 @@ public class PopulatedLibraryScreen {
     private Caller<LibraryService> libraryService;
 
     private ProjectController projectController;
+    private WorkspaceProjectContext projectContext;
 
     private ManagedInstance<TileWidget> tileWidgets;
 
     private AddProjectButtonPresenter addProjectButtonPresenter;
 
-    List<Project> projects;
+    List<WorkspaceProject> projects;
 
     @Inject
     public PopulatedLibraryScreen(final View view,
@@ -78,6 +85,7 @@ public class PopulatedLibraryScreen {
                                   final Event<ProjectDetailEvent> projectDetailEvent,
                                   final Caller<LibraryService> libraryService,
                                   final ProjectController projectController,
+                                  final WorkspaceProjectContext projectContext,
                                   final ManagedInstance<TileWidget> tileWidgets,
                                   final AddProjectButtonPresenter addProjectButtonPresenter) {
         this.view = view;
@@ -85,6 +93,7 @@ public class PopulatedLibraryScreen {
         this.projectDetailEvent = projectDetailEvent;
         this.libraryService = libraryService;
         this.projectController = projectController;
+        this.projectContext = projectContext;
         this.projects = Collections.emptyList();
         this.tileWidgets = tileWidgets;
         this.addProjectButtonPresenter = addProjectButtonPresenter;
@@ -97,34 +106,25 @@ public class PopulatedLibraryScreen {
             view.addAction(addProjectButtonPresenter.getView().getElement());
         }
 
-        final Repository selectedRepository = libraryPlaces.getSelectedRepository();
-        final String selectedBranch = libraryPlaces.getSelectedBranch();
-
         libraryService.call((RemoteCallback<LibraryInfo>) this::updateLibrary)
-                .getLibraryInfo(selectedRepository,
-                                selectedBranch);
+                .getLibraryInfo(projectContext.getActiveOrganizationalUnit()
+                                              .orElseThrow(() -> new IllegalStateException("Cannot get library info without an active organizational unit.")));
     }
 
     private void updateLibrary(final LibraryInfo libraryInfo) {
-        projects = libraryInfo.getProjects();
+        projects = new ArrayList<>(libraryInfo.getProjects());
         view.clearFilterText();
         setupProjects();
     }
 
     private void setupProjects() {
-        if (projectController.canReadProjects()) {
-            projects = projects.stream()
-                    .filter(p -> projectController.canReadProject(p))
-                    .collect(Collectors.toList());
-            projects.sort((p1, p2) -> p1.getProjectName().toUpperCase().compareTo(p2.getProjectName().toUpperCase()));
-
-            updateView(projects);
-        }
+        projects.sort((p1, p2) -> p1.getName().toUpperCase().compareTo(p2.getName().toUpperCase()));
+        updateView(projects);
     }
 
-    public List<Project> filterProjects(final String filter) {
-        List<Project> filteredProjects = projects.stream()
-                .filter(p -> p.getProjectName().toUpperCase().contains(filter.toUpperCase()))
+    public List<WorkspaceProject> filterProjects(final String filter) {
+        List<WorkspaceProject> filteredProjects = projects.stream()
+                .filter(p -> p.getName().toUpperCase().contains(filter.toUpperCase()))
                 .collect(Collectors.toList());
 
         updateView(filteredProjects);
@@ -132,22 +132,32 @@ public class PopulatedLibraryScreen {
         return filteredProjects;
     }
 
-    private void updateView(final List<Project> projects) {
+    private void updateView(final List<WorkspaceProject> projects) {
         view.clearProjects();
         projects.stream().forEach(project -> {
+
             final TileWidget tileWidget = createProjectWidget(project);
             view.addProject(tileWidget.getView().getElement());
         });
     }
 
-    private TileWidget createProjectWidget(final Project project) {
+    private TileWidget createProjectWidget(final WorkspaceProject project) {
         final TileWidget tileWidget = tileWidgets.get();
-        final POM pom = project.getPom();
-        tileWidget.init(project.getProjectName(),
-                        pom != null ? pom.getDescription() : "",
-                        String.valueOf(project.getNumberOfAssets()),
-                        view.getNumberOfAssetsMessage(project.getNumberOfAssets()),
-                        selectCommand(project));
+
+        if (project.getMainModule() != null) {
+            final POM pom = project.getMainModule().getPom();
+            tileWidget.init(project.getName(),
+                            pom != null ? pom.getDescription() : "",
+                            String.valueOf(project.getMainModule().getNumberOfAssets()),
+                            view.getNumberOfAssetsMessage(project.getMainModule().getNumberOfAssets()),
+                            selectCommand(project));
+        } else {
+            tileWidget.init(project.getName(),
+                            "",
+                            "0",
+                            "0",
+                            selectCommand(project));
+        }
         return tileWidget;
     }
 
@@ -159,18 +169,11 @@ public class PopulatedLibraryScreen {
         return projects.size();
     }
 
-    Command selectCommand(final Project project) {
+    Command selectCommand(final WorkspaceProject project) {
         return () -> {
-            final ProjectInfo projectInfo = getProjectInfo(project);
-            libraryPlaces.goToProject(projectInfo);
+            view.showBusyIndicator(view.getLoadingAssetsMessage());
+            libraryPlaces.goToProject(project);
         };
-    }
-
-    private ProjectInfo getProjectInfo(final Project project) {
-        return new ProjectInfo(libraryPlaces.getSelectedOrganizationalUnit(),
-                               libraryPlaces.getSelectedRepository(),
-                               libraryPlaces.getSelectedBranch(),
-                               project);
     }
 
     public View getView() {

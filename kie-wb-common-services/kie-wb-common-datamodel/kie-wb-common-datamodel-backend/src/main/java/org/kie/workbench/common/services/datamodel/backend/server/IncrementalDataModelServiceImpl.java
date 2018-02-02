@@ -29,8 +29,8 @@ import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUDataModelOracleCache;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleIncrementalPayload;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -42,15 +42,15 @@ public class IncrementalDataModelServiceImpl implements IncrementalDataModelServ
 
     private LRUDataModelOracleCache cachePackages;
 
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     @Inject
     public IncrementalDataModelServiceImpl(@Named("PackageDataModelOracleCache") final LRUDataModelOracleCache cachePackages,
-                                           final KieProjectService projectService) {
+                                           final KieModuleService moduleService) {
         this.cachePackages = PortablePreconditions.checkNotNull("cachePackages",
                                                                 cachePackages);
-        this.projectService = PortablePreconditions.checkNotNull("projectService",
-                                                                 projectService);
+        this.moduleService = PortablePreconditions.checkNotNull("moduleService",
+                                                                moduleService);
     }
 
     public IncrementalDataModelServiceImpl() {
@@ -70,8 +70,8 @@ public class IncrementalDataModelServiceImpl implements IncrementalDataModelServ
         final PackageDataModelOracleIncrementalPayload dataModel = new PackageDataModelOracleIncrementalPayload();
 
         try {
-            //Check resource was within a Project structure
-            final KieProject project = resolveProject(resourcePath);
+            //Check resource was within a Module structure
+            final KieModule project = resolveModule(resourcePath);
             if (project == null) {
                 return dataModel;
             }
@@ -89,7 +89,7 @@ public class IncrementalDataModelServiceImpl implements IncrementalDataModelServ
                                                                                              pkg);
 
             // Check if the FactType is already known to the DataModelOracle, otherwise we need to find the FQCN
-            if (oracle.getProjectModelFields().get(fullyQualifiedClassName) == null) {
+            if (oracle.getModuleModelFields().get(fullyQualifiedClassName) == null) {
                 for (Import imp : imports.getImports()) {
                     if (imp.getType().endsWith(factType)) {
                         fullyQualifiedClassName = imp.getType();
@@ -99,12 +99,12 @@ public class IncrementalDataModelServiceImpl implements IncrementalDataModelServ
             }
 
             //If the FactType isn't recognised try using the Package Name
-            if (oracle.getProjectModelFields().get(fullyQualifiedClassName) == null) {
+            if (oracle.getModuleModelFields().get(fullyQualifiedClassName) == null) {
                 fullyQualifiedClassName = pkg.getPackageName() + "." + factType;
             }
 
             //If the FactType still isn't recognised return an empty payload
-            if (oracle.getProjectModelFields().get(fullyQualifiedClassName) == null) {
+            if (oracle.getModuleModelFields().get(fullyQualifiedClassName) == null) {
                 return dataModel;
             }
 
@@ -117,11 +117,11 @@ public class IncrementalDataModelServiceImpl implements IncrementalDataModelServ
         }
     }
 
-    private KieProject resolveProject(final Path resourcePath) {
-        return projectService.resolveProject(resourcePath);
+    private KieModule resolveModule(final Path resourcePath) {
+        return moduleService.resolveModule(resourcePath);
     }
 
     private Package resolvePackage(final Path resourcePath) {
-        return projectService.resolvePackage(resourcePath);
+        return moduleService.resolvePackage(resourcePath);
     }
 }

@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.kie.soup.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
+import org.kie.soup.project.datamodel.commons.oracle.ModuleDataModelOracleImpl;
 import org.kie.soup.project.datamodel.oracle.Annotation;
 import org.kie.soup.project.datamodel.oracle.MethodInfo;
 import org.kie.soup.project.datamodel.oracle.ModelField;
@@ -50,7 +50,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
 
     private final Map<String, FactBuilder> fieldFactBuilders = new HashMap<String, FactBuilder>();
 
-    public ClassFactBuilder(final ProjectDataModelOracleBuilder builder,
+    public ClassFactBuilder(final ModuleDataModelOracleBuilder builder,
                             final Class<?> clazz,
                             final boolean isEvent,
                             final TypeSource typeSource) throws IOException {
@@ -61,7 +61,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
              typeSource);
     }
 
-    public ClassFactBuilder(final ProjectDataModelOracleBuilder builder,
+    public ClassFactBuilder(final ModuleDataModelOracleBuilder builder,
                             final Map<String, FactBuilder> discoveredFieldFactBuilders,
                             final Class<?> clazz,
                             final boolean isEvent,
@@ -77,13 +77,13 @@ public class ClassFactBuilder extends BaseFactBuilder {
     }
 
     @Override
-    public void build(final ProjectDataModelOracleImpl oracle) {
+    public void build(final ModuleDataModelOracleImpl oracle) {
         super.build(oracle);
-        oracle.addProjectMethodInformation(methodInformation);
-        oracle.addProjectFieldParametersType(fieldParametersType);
-        oracle.addProjectSuperTypes(buildSuperTypes());
-        oracle.addProjectTypeAnnotations(buildTypeAnnotations());
-        oracle.addProjectTypeFieldsAnnotations(buildTypeFieldsAnnotations());
+        oracle.addModuleMethodInformation(methodInformation);
+        oracle.addModuleFieldParametersType(fieldParametersType);
+        oracle.addModuleSuperTypes(buildSuperTypes());
+        oracle.addModuleTypeAnnotations(buildTypeAnnotations());
+        oracle.addModuleTypeFieldsAnnotations(buildTypeFieldsAnnotations());
     }
 
     private List<String> getSuperTypes(final Class<?> clazz) {

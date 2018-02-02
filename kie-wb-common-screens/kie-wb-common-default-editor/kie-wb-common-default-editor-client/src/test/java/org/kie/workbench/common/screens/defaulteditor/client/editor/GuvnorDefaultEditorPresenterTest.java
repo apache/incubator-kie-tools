@@ -17,9 +17,11 @@
 package org.kie.workbench.common.screens.defaulteditor.client.editor;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import java.util.Optional;
+
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
-import org.guvnor.common.services.project.context.ProjectContext;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,7 +54,7 @@ public class GuvnorDefaultEditorPresenterTest {
     protected ProjectController projectController;
 
     @Mock
-    protected ProjectContext workbenchContext;
+    protected WorkspaceProjectContext workbenchContext;
 
     protected GuvnorDefaultEditorPresenter presenter;
 
@@ -70,7 +72,7 @@ public class GuvnorDefaultEditorPresenterTest {
 
     @Test
     public void testMakeMenuBar() {
-        doReturn(mock(Project.class)).when(workbenchContext).getActiveProject();
+        doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
         doReturn(true).when(projectController).canUpdateProject(any());
 
         presenter.makeMenuBar();
@@ -85,7 +87,7 @@ public class GuvnorDefaultEditorPresenterTest {
 
     @Test
     public void testMakeMenuBarWithoutUpdateProjectPermission() {
-        doReturn(mock(Project.class)).when(workbenchContext).getActiveProject();
+        doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
         doReturn(false).when(projectController).canUpdateProject(any());
 
         presenter.makeMenuBar();

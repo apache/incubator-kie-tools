@@ -17,13 +17,13 @@
 package org.kie.workbench.common.screens.projecteditor.backend.server;
 
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
+import org.guvnor.common.services.project.model.ModuleRepositories;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
-import org.guvnor.common.services.project.model.ProjectRepositories;
 import org.guvnor.common.services.project.service.DeploymentMode;
+import org.guvnor.common.services.project.service.ModuleRepositoriesService;
+import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.project.service.POMService;
-import org.guvnor.common.services.project.service.ProjectRepositoriesService;
-import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.test.TestFileSystem;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -36,8 +36,8 @@ import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.services.backend.builder.core.LRUPomModelCache;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
 import org.kie.workbench.common.services.shared.whitelist.WhiteList;
@@ -65,16 +65,16 @@ public class ProjectScreenModelSaverTest {
     private ProjectImportsService importsService;
 
     @Mock
-    private ProjectRepositoriesService repositoriesService;
+    private ModuleRepositoriesService repositoriesService;
 
     @Mock
     private PackageNameWhiteListService whiteListService;
 
     @Mock
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     @Mock
-    private ProjectRepositoryResolver repositoryResolver;
+    private ModuleRepositoryResolver repositoryResolver;
 
     @Mock
     private User identity;
@@ -87,9 +87,6 @@ public class ProjectScreenModelSaverTest {
 
     @Mock
     private LRUPomModelCache pomModelCache;
-
-    @Mock
-    private KieProject project;
 
     @Mock
     private IOService ioService;
@@ -121,7 +118,7 @@ public class ProjectScreenModelSaverTest {
                                             repositoriesService,
                                             whiteListService,
                                             ioService,
-                                            projectService,
+                                            moduleService,
                                             repositoryResolver,
                                             commentedOptionFactory,
                                             pomModelCache);
@@ -183,14 +180,16 @@ public class ProjectScreenModelSaverTest {
         model.setPOM(pom);
         model.setPOMMetaData(pomMetaData);
 
-        when(projectService.resolveProject(pathToPom)).thenReturn(project);
+        KieModule module = mock(KieModule.class);
+
+        when(moduleService.resolveModule(pathToPom)).thenReturn(module);
 
         saver.save(pathToPom,
                    model,
                    DeploymentMode.FORCED,
                    "message");
 
-        verify(pomModelCache).invalidateCache(project);
+        verify(pomModelCache).invalidateCache(module);
     }
 
     @Test
@@ -238,8 +237,8 @@ public class ProjectScreenModelSaverTest {
     @Test
     public void testRepositoriesSave() throws Exception {
         final ProjectScreenModel model = new ProjectScreenModel();
-        final ProjectRepositories projectRepositories = new ProjectRepositories();
-        model.setRepositories(projectRepositories);
+        final ModuleRepositories moduleRepositories = new ModuleRepositories();
+        model.setRepositories(moduleRepositories);
         final Path pathToRepositories = mock(Path.class);
         model.setPathToRepositories(pathToRepositories);
 
@@ -249,7 +248,7 @@ public class ProjectScreenModelSaverTest {
                    "message repositories");
 
         verify(repositoriesService).save(eq(pathToRepositories),
-                                         eq(projectRepositories),
+                                         eq(moduleRepositories),
                                          eq("message repositories"));
     }
 

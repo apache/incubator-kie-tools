@@ -26,7 +26,7 @@ import java.util.StringTokenizer;
 
 import org.kie.soup.project.datamodel.oracle.Annotation;
 import org.kie.soup.project.datamodel.oracle.ModelField;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.soup.project.datamodel.oracle.TypeSource;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationContext;
@@ -61,22 +61,22 @@ public class DataModelOracleModelDriver implements ModelDriver {
 
     private Map<String, AnnotationDriver> annotationDrivers = new HashMap<String, AnnotationDriver>();
 
-    private ProjectDataModelOracle oracleDataModel;
+    private ModuleDataModelOracle oracleDataModel;
 
-    private ClassLoader projectClassLoader;
+    private ClassLoader moduleClassLoader;
 
     public static DataModelOracleModelDriver getInstance() {
         return new DataModelOracleModelDriver();
     }
 
-    public static DataModelOracleModelDriver getInstance(ProjectDataModelOracle oracleDataModel, ClassLoader projectClassLoader) {
-        return new DataModelOracleModelDriver(oracleDataModel, projectClassLoader);
+    public static DataModelOracleModelDriver getInstance(ModuleDataModelOracle oracleDataModel, ClassLoader moduleClassLoader) {
+        return new DataModelOracleModelDriver(oracleDataModel, moduleClassLoader);
     }
 
-    protected DataModelOracleModelDriver(ProjectDataModelOracle oracleDataModel, ClassLoader projectClassLoader) {
+    protected DataModelOracleModelDriver(ModuleDataModelOracle oracleDataModel, ClassLoader moduleClassLoader) {
         this();
         this.oracleDataModel = oracleDataModel;
-        this.projectClassLoader = projectClassLoader;
+        this.moduleClassLoader = moduleClassLoader;
     }
 
     protected DataModelOracleModelDriver() {
@@ -123,11 +123,11 @@ public class DataModelOracleModelDriver implements ModelDriver {
     @Override
     public ModelDriverResult loadModel() throws ModelDriverException {
         ModelDriverResult result = new ModelDriverResult();
-        result.setDataModel(loadModel(oracleDataModel, projectClassLoader));
+        result.setDataModel(loadModel(oracleDataModel, moduleClassLoader));
         return result;
     }
 
-    public DataModel loadModel(ProjectDataModelOracle oracleDataModel, ClassLoader projectClassLoader) throws ModelDriverException {
+    public DataModel loadModel(ModuleDataModelOracle oracleDataModel, ClassLoader moduleClassLoader) throws ModelDriverException {
 
         DataModel dataModel = createModel();
 
@@ -141,7 +141,7 @@ public class DataModelOracleModelDriver implements ModelDriver {
                 //skip .drl declared fact types.
                 source = factSource(oracleDataModel, factTypes[i]);
                 if (source != null && (ObjectSource.INTERNAL.equals(source) || ObjectSource.DEPENDENCY.equals(source))) {
-                    addFactType(dataModel, oracleDataModel, factTypes[i], source, projectClassLoader);
+                    addFactType(dataModel, oracleDataModel, factTypes[i], source, moduleClassLoader);
                 }
             }
         } else {
@@ -151,7 +151,7 @@ public class DataModelOracleModelDriver implements ModelDriver {
     }
 
     private void addFactType(DataModel dataModel,
-                             ProjectDataModelOracle oracleDataModel,
+                             ModuleDataModelOracle oracleDataModel,
                              String factType,
                              ObjectSource source,
                              ClassLoader classLoader) throws ModelDriverException {
@@ -179,7 +179,7 @@ public class DataModelOracleModelDriver implements ModelDriver {
                 }
             }
 
-            Map<String, ModelField[]> fields = oracleDataModel.getProjectModelFields();
+            Map<String, ModelField[]> fields = oracleDataModel.getModuleModelFields();
             if (fields != null) {
                 ModelField[] factFields = fields.get(factType);
                 ModelField field;
@@ -272,7 +272,7 @@ public class DataModelOracleModelDriver implements ModelDriver {
         return annotation;
     }
 
-    private String getFieldType(ProjectDataModelOracle oracleDataModel,
+    private String getFieldType(ModuleDataModelOracle oracleDataModel,
                                 String packageName,
                                 String fieldType) {
         return fieldType;
@@ -281,7 +281,7 @@ public class DataModelOracleModelDriver implements ModelDriver {
     /**
      * True if the given fact type is a DataObject.
      */
-    private ObjectSource factSource(ProjectDataModelOracle oracleDataModel,
+    private ObjectSource factSource(ModuleDataModelOracle oracleDataModel,
                                     String factType) {
         TypeSource oracleType = DataModelOracleUtilities.getTypeSource(oracleDataModel,
                                                                        factType);

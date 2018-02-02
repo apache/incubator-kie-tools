@@ -70,15 +70,15 @@ import org.kie.workbench.common.forms.serialization.impl.FormModelSerializer;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.datamodeller.service.ServiceException;
-import org.kie.workbench.common.services.backend.project.ProjectClassLoaderHelper;
+import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.driver.FilterHolder;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriver;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverException;
 import org.kie.workbench.common.services.datamodeller.driver.impl.JavaRoasterModelDriver;
 import org.kie.workbench.common.services.datamodeller.driver.model.ModelDriverResult;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.server.util.Paths;
@@ -130,10 +130,10 @@ public class FormGenerationIntegrationTest {
     private static FormModelSynchronizationUtil formModelSynchronizationUtil;
 
     @Mock
-    private static KieProjectService projectService;
+    private static KieModuleService moduleService;
 
     @Mock
-    private static ProjectClassLoaderHelper projectClassLoaderHelper;
+    private static ModuleClassLoaderHelper moduleClassLoaderHelper;
     private static FormLayoutTemplateGenerator templateGenerator;
     private static BPMNFormModelGeneratorImpl generator;
     private static Path rootPathWithNestedForms;
@@ -141,8 +141,8 @@ public class FormGenerationIntegrationTest {
     private static Definitions formGenerationProcessDefinitions;
 
     @Mock
-    private static KieProject project;
-    private static ClassLoader projectClassLoader;
+    private static KieModule module;
+    private static ClassLoader moduleClassLoader;
     private static FormEditorHelper formEditorHelper;
     private static FormModelerContent formModelerContent;
     private static BusinessProcessFormModel processFormModel;
@@ -174,7 +174,7 @@ public class FormGenerationIntegrationTest {
         templateGenerator = new StaticFormLayoutTemplateGenerator();
         formModelSynchronizationUtil = new FormModelSynchronizationUtilImpl(fieldManager, templateGenerator);
 
-        projectClassLoader = FormGenerationIntegrationTest.class.getClassLoader();
+        moduleClassLoader = FormGenerationIntegrationTest.class.getClassLoader();
 
         formGenerationProcessDefinitions = BPMN2Utils.getDefinitions(
                 FormGenerationIntegrationTest.class.getResourceAsStream(PROCESS_DEFINITION)
@@ -192,15 +192,15 @@ public class FormGenerationIntegrationTest {
         rootPathWithNestedForms = PathFactory.newPath(DATA_OBJECTS_FOLDER, nestedformsUri);
         rootPathWithoutNestedForms = PathFactory.newPath(DATA_OBJECTS_FOLDER, modelUri);
 
-        finderService = new DataObjectFinderServiceImpl(projectService, dataModelerService);
+        finderService = new DataObjectFinderServiceImpl(moduleService, dataModelerService);
 
-        formModelHandlerManager = new TestFormModelHandlerManager(projectService,
-                                                                  projectClassLoaderHelper,
+        formModelHandlerManager = new TestFormModelHandlerManager(moduleService,
+                                                                  moduleClassLoaderHelper,
                                                                   fieldManager,
                                                                   finderService);
 
         formFinderService = new VFSFormFinderServiceImpl(ioService,
-                                                         projectService,
+                                                         moduleService,
                                                          formSerializer);
 
         service = new BPMNVFSFormDefinitionGeneratorService(fieldManager,
@@ -211,11 +211,11 @@ public class FormGenerationIntegrationTest {
                                                             commentedOptionFactory,
                                                             formModelSynchronizationUtil);
 
-        when(projectService.resolveProject(any())).thenReturn(project);
-        when(projectClassLoaderHelper.getProjectClassLoader(any())).thenReturn(projectClassLoader);
+        when(moduleService.resolveModule(any())).thenReturn(module);
+        when(moduleClassLoaderHelper.getModuleClassLoader(any())).thenReturn(moduleClassLoader);
 
-        generator = new BPMNFormModelGeneratorImpl(projectService,
-                                                   projectClassLoaderHelper);
+        generator = new BPMNFormModelGeneratorImpl(moduleService,
+                                                   moduleClassLoaderHelper);
         processFormModel = generator.generateProcessFormModel(formGenerationProcessDefinitions,
                                                               rootPathWithNestedForms);
         taskFormModels = generator.generateTaskFormModels(formGenerationProcessDefinitions, rootPathWithNestedForms);
@@ -227,7 +227,7 @@ public class FormGenerationIntegrationTest {
 
     @Test
     public void ProcessFormIsCorrectlyGenerated() {
-        when(project.getRootPath()).thenReturn(rootPathWithNestedForms);
+        when(module.getRootPath()).thenReturn(rootPathWithNestedForms);
 
         final FormGenerationResult formGenerationResult = generateForm("new_formmodeler.FormGenerationTest_Process-taskform.frm", processFormModel);
 
@@ -249,7 +249,7 @@ public class FormGenerationIntegrationTest {
 
     @Test
     public void inputTaskFormIsCorrectlyGenerated() {
-        when(project.getRootPath()).thenReturn(rootPathWithNestedForms);
+        when(module.getRootPath()).thenReturn(rootPathWithNestedForms);
 
         final FormGenerationResult formGenerationResult = generateForm("FormGenerationTest_TaskOnlyWithInputs-taskform.frm", taskFormModels.get(2));
 
@@ -280,7 +280,7 @@ public class FormGenerationIntegrationTest {
 
     @Test
     public void differentIOTaskFormIsCorrectlyGenerated() {
-        when(project.getRootPath()).thenReturn(rootPathWithNestedForms);
+        when(module.getRootPath()).thenReturn(rootPathWithNestedForms);
 
         final FormGenerationResult formGenerationResult = generateForm("FormGenerationTest_TaskWithDifferentInputsAndOutputs-taskform.frm", taskFormModels.get(0));
 
@@ -312,7 +312,7 @@ public class FormGenerationIntegrationTest {
 
     @Test
     public void sameIOTaskFormIsCorrectlyGenerated() {
-        when(project.getRootPath()).thenReturn(rootPathWithNestedForms);
+        when(module.getRootPath()).thenReturn(rootPathWithNestedForms);
 
         final FormGenerationResult formGenerationResult = generateForm("FormGenerationTest_TaskWithTheSameInputsAndOutputs-taskform.frm", taskFormModels.get(3));
 
@@ -334,7 +334,7 @@ public class FormGenerationIntegrationTest {
 
     @Test
     public void twinTaskFormIsCorrectlyGenerated() {
-        when(project.getRootPath()).thenReturn(rootPathWithNestedForms);
+        when(module.getRootPath()).thenReturn(rootPathWithNestedForms);
 
         final FormGenerationResult formGenerationResult = generateForm("FormGenerationTest_TwinTasks-taskform.frm", taskFormModels.get(4));
 
@@ -359,11 +359,11 @@ public class FormGenerationIntegrationTest {
 
     @Test
     public void testNestedFormsGeneration() {
-        when(project.getRootPath()).thenReturn(rootPathWithoutNestedForms);
+        when(module.getRootPath()).thenReturn(rootPathWithoutNestedForms);
 
         ModelDriver modelDriver = new JavaRoasterModelDriver(ioService,
                                                              Paths.convert(rootPathWithoutNestedForms),
-                                                             projectClassLoader,
+                                                             moduleClassLoader,
                                                              filterHolder);
         try {
             ModelDriverResult result = modelDriver.loadModel();
@@ -371,7 +371,7 @@ public class FormGenerationIntegrationTest {
         } catch (ModelDriverException e) {
             throw new ServiceException("It was not possible to load model for URI: " + rootPathWithoutNestedForms.toURI(), e);
         }
-        when(dataModelerService.loadModel(project)).thenReturn(dataModel);
+        when(dataModelerService.loadModel(module)).thenReturn(dataModel);
         when(commentedOptionFactory.makeCommentedOption(any())).thenReturn(commentedOption);
 
         final FormGenerationResult formGenerationResult = generateForm("FormGenerationTest_TwinTasks-taskform.frm", taskFormModels.get(4));

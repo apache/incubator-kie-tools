@@ -28,8 +28,8 @@ import org.kie.soup.project.datamodel.oracle.Annotation;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.MethodInfo;
 import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.soup.project.datamodel.oracle.TypeSource;
 import org.kie.workbench.common.services.datamodel.model.LazyModelField;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
@@ -37,22 +37,21 @@ import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleI
 import org.kie.workbench.common.services.datamodel.util.SortHelper;
 
 /**
- * Utilities to query ProjectDMO content
+ * Utilities to query ModuleDMO content
  */
 public class DataModelOracleUtilities {
 
     /**
-     * Convenience method to get an array of all fully qualified class names available in a project
-     *
-     * @param oracle The DMO representing a project
+     * Convenience method to get an array of all fully qualified class names available in a module
+     * @param oracle The DMO representing a module
      * @return
      */
-    public static String[] getFactTypes(final ProjectDataModelOracle oracle) {
+    public static String[] getFactTypes(final ModuleDataModelOracle oracle) {
 
-        List<String> packageNames = oracle.getProjectPackageNames();
+        List<String> packageNames = oracle.getModulePackageNames();
 
-        final Map<String, ModelField[]> modelFields = oracle.getProjectModelFields();
-        final List<String> types = new ArrayList<>();
+        final Map<String, ModelField[]> modelFields = oracle.getModuleModelFields();
+        final List<String> types = new ArrayList<String>();
         for (String type : modelFields.keySet()) {
             int beginIndex = type.lastIndexOf('.');
 
@@ -71,15 +70,14 @@ public class DataModelOracleUtilities {
     }
 
     /**
-     * Convenience method to get an array of field names for a type in a project
-     *
-     * @param oracle                  The DMO representing a project
+     * Convenience method to get an array of field names for a type in a module
+     * @param oracle The DMO representing a module
      * @param fullyQualifiedClassName The FQCN of the type
      * @return
      */
-    public static String[] getFieldNames(final ProjectDataModelOracle oracle,
+    public static String[] getFieldNames(final ModuleDataModelOracle oracle,
                                          final String fullyQualifiedClassName) {
-        final ModelField[] modelFields = oracle.getProjectModelFields().get(fullyQualifiedClassName);
+        final ModelField[] modelFields = oracle.getModuleModelFields().get(fullyQualifiedClassName);
         if (modelFields == null) {
             return new String[0];
         }
@@ -94,15 +92,14 @@ public class DataModelOracleUtilities {
     }
 
     /**
-     * Convenience method to get the fully qualified class name of the super type of another type in a project
-     *
-     * @param oracle                  The DMO representing a project
+     * Convenience method to get the fully qualified class name of the super type of another type in a module
+     * @param oracle The DMO representing a module
      * @param fullyQualifiedClassName The FQCN of the type
      * @return
      */
-    public static String getSuperType(final ProjectDataModelOracle oracle,
+    public static String getSuperType(final ModuleDataModelOracle oracle,
                                       final String fullyQualifiedClassName) {
-        List<String> superTypes = oracle.getProjectSuperTypes().get(fullyQualifiedClassName);
+        List<String> superTypes = oracle.getModuleSuperTypes().get(fullyQualifiedClassName);
         if (superTypes != null && superTypes.size() > 0) {
             return superTypes.get(0);
         } else {
@@ -111,15 +108,14 @@ public class DataModelOracleUtilities {
     }
 
     /**
-     * Convenience method to get a set of annotations on a type in a project
-     *
-     * @param oracle                  The DMO representing a project
+     * Convenience method to get a set of annotations on a type in a module
+     * @param oracle The DMO representing a module
      * @param fullyQualifiedClassName The FQCN of the type
      * @return
      */
-    public static Set<Annotation> getTypeAnnotations(final ProjectDataModelOracle oracle,
+    public static Set<Annotation> getTypeAnnotations(final ModuleDataModelOracle oracle,
                                                      final String fullyQualifiedClassName) {
-        final Map<String, Set<Annotation>> typeAnnotations = oracle.getProjectTypeAnnotations();
+        final Map<String, Set<Annotation>> typeAnnotations = oracle.getModuleTypeAnnotations();
         if (!typeAnnotations.containsKey(fullyQualifiedClassName)) {
             return Collections.emptySet();
         }
@@ -127,15 +123,14 @@ public class DataModelOracleUtilities {
     }
 
     /**
-     * Convenience method to get all field annotations on a type in a project
-     *
-     * @param oracle                  The DMO representing a project
+     * Convenience method to get all field annotations on a type in a module
+     * @param oracle The DMO representing a module
      * @param fullyQualifiedClassName The FQCN of the type
      * @return
      */
-    public static Map<String, Set<Annotation>> getTypeFieldsAnnotations(final ProjectDataModelOracle oracle,
+    public static Map<String, Set<Annotation>> getTypeFieldsAnnotations(final ModuleDataModelOracle oracle,
                                                                         final String fullyQualifiedClassName) {
-        final Map<String, Map<String, Set<Annotation>>> typeFieldsAnnotations = oracle.getProjectTypeFieldsAnnotations();
+        final Map<String, Map<String, Set<Annotation>>> typeFieldsAnnotations = oracle.getModuleTypeFieldsAnnotations();
         if (!typeFieldsAnnotations.containsKey(fullyQualifiedClassName)) {
             return Collections.emptyMap();
         }
@@ -143,14 +138,13 @@ public class DataModelOracleUtilities {
     }
 
     /**
-     * Convenience method to get the fully qualified class name of a field on a type in a project
-     *
-     * @param oracle                  The DMO representing a project
+     * Convenience method to get the fully qualified class name of a field on a type in a module
+     * @param oracle The DMO representing a module
      * @param fullyQualifiedClassName The FQCN of the type
-     * @param fieldName               The field Name
+     * @param fieldName The field Name
      * @return
      */
-    public static String getFieldClassName(final ProjectDataModelOracle oracle,
+    public static String getFieldClassName(final ModuleDataModelOracle oracle,
                                            final String fullyQualifiedClassName,
                                            final String fieldName) {
         final ModelField field = getField(oracle,
@@ -159,12 +153,12 @@ public class DataModelOracleUtilities {
         return field == null ? null : field.getClassName();
     }
 
-    private static ModelField getField(final ProjectDataModelOracle oracle,
+    private static ModelField getField(final ModuleDataModelOracle oracle,
                                        final String fullyQualifiedClassName,
                                        final String fieldName) {
         final String shortName = getFactNameFromType(oracle,
                                                      fullyQualifiedClassName);
-        final ModelField[] fields = oracle.getProjectModelFields().get(shortName);
+        final ModelField[] fields = oracle.getModuleModelFields().get(shortName);
         if (fields == null) {
             return null;
         }
@@ -176,15 +170,15 @@ public class DataModelOracleUtilities {
         return null;
     }
 
-    private static String getFactNameFromType(final ProjectDataModelOracle oracle,
+    private static String getFactNameFromType(final ModuleDataModelOracle oracle,
                                               final String fullyQualifiedClassName) {
         if (fullyQualifiedClassName == null) {
             return null;
         }
-        if (oracle.getProjectModelFields().containsKey(fullyQualifiedClassName)) {
+        if (oracle.getModuleModelFields().containsKey(fullyQualifiedClassName)) {
             return fullyQualifiedClassName;
         }
-        for (Map.Entry<String, ModelField[]> entry : oracle.getProjectModelFields().entrySet()) {
+        for (Map.Entry<String, ModelField[]> entry : oracle.getModuleModelFields().entrySet()) {
             for (ModelField mf : entry.getValue()) {
                 if (DataType.TYPE_THIS.equals(mf.getName()) && fullyQualifiedClassName.equals(mf.getClassName())) {
                     return entry.getKey();
@@ -195,94 +189,92 @@ public class DataModelOracleUtilities {
     }
 
     /**
-     * Convenience method to get the generic type of a field on a type in a project
-     *
-     * @param oracle                  The DMO representing a project
+     * Convenience method to get the generic type of a field on a type in a module
+     * @param oracle The DMO representing a module
      * @param fullyQualifiedClassName The FQCN of the type
-     * @param fieldName               The field Name
+     * @param fieldName The field Name
      * @return
      */
-    public static String getParametricFieldType(final ProjectDataModelOracle oracle,
+    public static String getParametricFieldType(final ModuleDataModelOracle oracle,
                                                 final String fullyQualifiedClassName,
                                                 final String fieldName) {
         final String qualifiedFactFieldName = fullyQualifiedClassName + "#" + fieldName;
-        return oracle.getProjectFieldParametersType().get(qualifiedFactFieldName);
+        return oracle.getModuleFieldParametersType().get(qualifiedFactFieldName);
     }
 
     /**
-     * Convenience method to get the source of a type in a project
-     *
-     * @param oracle                  The DMO representing a project
+     * Convenience method to get the source of a type in a module
+     * @param oracle The DMO representing a module
      * @param fullyQualifiedClassName The FQCN of the type
      * @return
      */
-    public static TypeSource getTypeSource(final ProjectDataModelOracle oracle,
+    public static TypeSource getTypeSource(final ModuleDataModelOracle oracle,
                                            final String fullyQualifiedClassName) {
-        return oracle.getProjectTypeSources().get(fullyQualifiedClassName);
+        return oracle.getModuleTypeSources().get(fullyQualifiedClassName);
     }
 
     public static void populateDataModel(final PackageDataModelOracle oracle,
                                          final PackageDataModelOracleBaselinePayload dataModel,
                                          final Set<String> usedFullyQualifiedClassNames) {
-        dataModel.setProjectName(oracle.getProjectName());
+        dataModel.setModuleName(oracle.getModuleName());
         dataModel.setPackageName(oracle.getPackageName());
         dataModel.setModelFields(setupModelFields(usedFullyQualifiedClassNames,
-                                                  oracle.getProjectModelFields(),
+                                                  oracle.getModuleModelFields(),
                                                   oracle.getPackageGlobals()));
         dataModel.setFieldParametersType(filterFieldParametersTypes(usedFullyQualifiedClassNames,
-                                                                    oracle.getProjectFieldParametersType()));
+                                                                    oracle.getModuleFieldParametersType()));
         dataModel.setEventTypes(filterEventTypes(usedFullyQualifiedClassNames,
-                                                 oracle.getProjectEventTypes()));
+                                                 oracle.getModuleEventTypes()));
         dataModel.setTypeSources(filterTypeSources(usedFullyQualifiedClassNames,
-                                                   oracle.getProjectTypeSources()));
+                                                   oracle.getModuleTypeSources()));
         dataModel.setSuperTypes(filterSuperTypes(usedFullyQualifiedClassNames,
-                                                 oracle.getProjectSuperTypes()));
+                                                 oracle.getModuleSuperTypes()));
         dataModel.setTypeAnnotations(filterTypeAnnotations(usedFullyQualifiedClassNames,
-                                                           oracle.getProjectTypeAnnotations()));
+                                                           oracle.getModuleTypeAnnotations()));
         dataModel.setTypeFieldsAnnotations(filterTypeFieldsAnnotations(usedFullyQualifiedClassNames,
-                                                                       oracle.getProjectTypeFieldsAnnotations()));
-        dataModel.setJavaEnumDefinitions(oracle.getProjectJavaEnumDefinitions());
+                                                                       oracle.getModuleTypeFieldsAnnotations()));
+        dataModel.setJavaEnumDefinitions(oracle.getModuleJavaEnumDefinitions());
         dataModel.setWorkbenchEnumDefinitions(oracle.getPackageWorkbenchDefinitions());
         dataModel.setMethodInformation(filterMethodInformation(usedFullyQualifiedClassNames,
-                                                               oracle.getProjectMethodInformation()));
+                                                               oracle.getModuleMethodInformation()));
         dataModel.setCollectionTypes(filterCollectionTypes(usedFullyQualifiedClassNames,
-                                                           oracle.getProjectCollectionTypes()));
+                                                           oracle.getModuleCollectionTypes()));
         dataModel.setAllPackageElements(oracle.getAllExtensions());
         dataModel.setGlobalTypes(oracle.getPackageGlobals());
-        dataModel.setPackageNames(oracle.getProjectPackageNames());
+        dataModel.setPackageNames(oracle.getModulePackageNames());
     }
 
     public static void populateDataModel(final PackageDataModelOracle oracle,
                                          final PackageDataModelOracleIncrementalPayload dataModel,
                                          final String usedFullyQualifiedClassName) {
-        final Set<String> usedFullyQualifiedClassNames = new HashSet<>();
+        final Set<String> usedFullyQualifiedClassNames = new HashSet<String>();
         usedFullyQualifiedClassNames.add(usedFullyQualifiedClassName);
         dataModel.setModelFields(filterModelFields(usedFullyQualifiedClassNames,
-                                                   oracle.getProjectModelFields()));
+                                                   oracle.getModuleModelFields()));
         dataModel.setFieldParametersType(filterFieldParametersTypes(usedFullyQualifiedClassNames,
-                                                                    oracle.getProjectFieldParametersType()));
+                                                                    oracle.getModuleFieldParametersType()));
         dataModel.setEventTypes(filterEventTypes(usedFullyQualifiedClassNames,
-                                                 oracle.getProjectEventTypes()));
+                                                 oracle.getModuleEventTypes()));
         dataModel.setTypeSources(filterTypeSources(usedFullyQualifiedClassNames,
-                                                   oracle.getProjectTypeSources()));
+                                                   oracle.getModuleTypeSources()));
         dataModel.setSuperTypes(filterSuperTypes(usedFullyQualifiedClassNames,
-                                                 oracle.getProjectSuperTypes()));
+                                                 oracle.getModuleSuperTypes()));
         dataModel.setTypeAnnotations(filterTypeAnnotations(usedFullyQualifiedClassNames,
-                                                           oracle.getProjectTypeAnnotations()));
+                                                           oracle.getModuleTypeAnnotations()));
         dataModel.setTypeFieldsAnnotations(filterTypeFieldsAnnotations(usedFullyQualifiedClassNames,
-                                                                       oracle.getProjectTypeFieldsAnnotations()));
+                                                                       oracle.getModuleTypeFieldsAnnotations()));
         dataModel.setMethodInformation(filterMethodInformation(usedFullyQualifiedClassNames,
-                                                               oracle.getProjectMethodInformation()));
+                                                               oracle.getModuleMethodInformation()));
         dataModel.setCollectionTypes(filterCollectionTypes(usedFullyQualifiedClassNames,
-                                                           oracle.getProjectCollectionTypes()));
+                                                           oracle.getModuleCollectionTypes()));
     }
 
     //Setup Model Fields for lazy loading client-side
     private static Map<String, ModelField[]> setupModelFields(final Set<String> usedFullyQualifiedClassNames,
-                                                              final Map<String, ModelField[]> projectModelFields,
+                                                              final Map<String, ModelField[]> moduleModelFields,
                                                               final Map<String, String> packageGlobals) {
-        final Map<String, ModelField[]> scopedModelFields = new HashMap<>();
-        for (Map.Entry<String, ModelField[]> e : projectModelFields.entrySet()) {
+        final Map<String, ModelField[]> scopedModelFields = new HashMap<String, ModelField[]>();
+        for (Map.Entry<String, ModelField[]> e : moduleModelFields.entrySet()) {
             final String mfQualifiedType = e.getKey();
             if (usedFullyQualifiedClassNames.contains(mfQualifiedType)) {
                 scopedModelFields.put(mfQualifiedType,
@@ -320,9 +312,9 @@ public class DataModelOracleUtilities {
 
     //Filter Model Fields by the types used
     private static Map<String, ModelField[]> filterModelFields(final Set<String> usedFullyQualifiedClassNames,
-                                                               final Map<String, ModelField[]> projectModelFields) {
-        final Map<String, ModelField[]> scopedModelFields = new HashMap<>();
-        for (Map.Entry<String, ModelField[]> e : projectModelFields.entrySet()) {
+                                                               final Map<String, ModelField[]> moduleModelFields) {
+        final Map<String, ModelField[]> scopedModelFields = new HashMap<String, ModelField[]>();
+        for (Map.Entry<String, ModelField[]> e : moduleModelFields.entrySet()) {
             final String mfQualifiedType = e.getKey();
             final ModelField[] mfModelFields = e.getValue();
             if (isTypeUsed(mfQualifiedType,
@@ -336,9 +328,9 @@ public class DataModelOracleUtilities {
 
     //Filter Collection Types by the types used
     private static Map<String, Boolean> filterCollectionTypes(final Set<String> usedFullyQualifiedClassNames,
-                                                              final Map<String, Boolean> projectCollectionTypes) {
-        final Map<String, Boolean> scopedCollectionTypes = new HashMap<>();
-        for (Map.Entry<String, Boolean> e : projectCollectionTypes.entrySet()) {
+                                                              final Map<String, Boolean> moduleCollectionTypes) {
+        final Map<String, Boolean> scopedCollectionTypes = new HashMap<String, Boolean>();
+        for (Map.Entry<String, Boolean> e : moduleCollectionTypes.entrySet()) {
             final String collectionQualifiedType = e.getKey();
             if (isTypeUsed(collectionQualifiedType,
                            usedFullyQualifiedClassNames)) {
@@ -351,9 +343,9 @@ public class DataModelOracleUtilities {
 
     //Filter Event Types by the types used
     private static Map<String, Boolean> filterEventTypes(final Set<String> usedFullyQualifiedClassNames,
-                                                         final Map<String, Boolean> projectEventTypes) {
-        final Map<String, Boolean> scopedEventTypes = new HashMap<>();
-        for (Map.Entry<String, Boolean> e : projectEventTypes.entrySet()) {
+                                                         final Map<String, Boolean> moduleEventTypes) {
+        final Map<String, Boolean> scopedEventTypes = new HashMap<String, Boolean>();
+        for (Map.Entry<String, Boolean> e : moduleEventTypes.entrySet()) {
             final String eventQualifiedType = e.getKey();
             if (isTypeUsed(eventQualifiedType,
                            usedFullyQualifiedClassNames)) {
@@ -366,9 +358,9 @@ public class DataModelOracleUtilities {
 
     //Filter TypeSource by the types used
     private static Map<String, TypeSource> filterTypeSources(final Set<String> usedFullyQualifiedClassNames,
-                                                             final Map<String, TypeSource> projectTypeSources) {
-        final Map<String, TypeSource> scopedTypeSources = new HashMap<>();
-        for (Map.Entry<String, TypeSource> e : projectTypeSources.entrySet()) {
+                                                             final Map<String, TypeSource> moduleTypeSources) {
+        final Map<String, TypeSource> scopedTypeSources = new HashMap<String, TypeSource>();
+        for (Map.Entry<String, TypeSource> e : moduleTypeSources.entrySet()) {
             final String typeQualifiedType = e.getKey();
             if (isTypeUsed(typeQualifiedType,
                            usedFullyQualifiedClassNames)) {
@@ -381,9 +373,9 @@ public class DataModelOracleUtilities {
 
     //Filter Super Types by the types used
     private static Map<String, List<String>> filterSuperTypes(final Set<String> usedFullyQualifiedClassNames,
-                                                              final Map<String, List<String>> projectSuperTypes) {
-        final Map<String, List<String>> scopedSuperTypes = new HashMap<>();
-        for (Map.Entry<String, List<String>> e : projectSuperTypes.entrySet()) {
+                                                              final Map<String, List<String>> moduleSuperTypes) {
+        final Map<String, List<String>> scopedSuperTypes = new HashMap<String, List<String>>();
+        for (Map.Entry<String, List<String>> e : moduleSuperTypes.entrySet()) {
             final String typeQualifiedType = e.getKey();
             final List<String> superTypeQualifiedTypes = e.getValue();
             if (isTypeUsed(typeQualifiedType,
@@ -397,9 +389,9 @@ public class DataModelOracleUtilities {
 
     //Filter Type Annotations by the types used
     private static Map<String, Set<Annotation>> filterTypeAnnotations(final Set<String> usedFullyQualifiedClassNames,
-                                                                      final Map<String, Set<Annotation>> projectTypeAnnotations) {
-        final Map<String, Set<Annotation>> scopedTypeAnnotations = new HashMap<>();
-        for (Map.Entry<String, Set<Annotation>> e : projectTypeAnnotations.entrySet()) {
+                                                                      final Map<String, Set<Annotation>> moduleTypeAnnotations) {
+        final Map<String, Set<Annotation>> scopedTypeAnnotations = new HashMap<String, Set<Annotation>>();
+        for (Map.Entry<String, Set<Annotation>> e : moduleTypeAnnotations.entrySet()) {
             final String typeAnnotationQualifiedType = e.getKey();
             if (isTypeUsed(typeAnnotationQualifiedType,
                            usedFullyQualifiedClassNames)) {
@@ -412,9 +404,9 @@ public class DataModelOracleUtilities {
 
     //Filter Type Fields Annotations by the types used
     private static Map<String, Map<String, Set<Annotation>>> filterTypeFieldsAnnotations(final Set<String> usedFullyQualifiedClassNames,
-                                                                                         final Map<String, Map<String, Set<Annotation>>> projectTypeFieldsAnnotations) {
-        final Map<String, Map<String, Set<Annotation>>> scopedTypeFieldsAnnotations = new HashMap<>();
-        for (Map.Entry<String, Map<String, Set<Annotation>>> e : projectTypeFieldsAnnotations.entrySet()) {
+                                                                                         final Map<String, Map<String, Set<Annotation>>> moduleTypeFieldsAnnotations) {
+        final Map<String, Map<String, Set<Annotation>>> scopedTypeFieldsAnnotations = new HashMap<String, Map<String, Set<Annotation>>>();
+        for (Map.Entry<String, Map<String, Set<Annotation>>> e : moduleTypeFieldsAnnotations.entrySet()) {
             final String typeAnnotationQualifiedType = e.getKey();
             if (isTypeUsed(typeAnnotationQualifiedType,
                            usedFullyQualifiedClassNames)) {
@@ -427,9 +419,9 @@ public class DataModelOracleUtilities {
 
     //Filter Method Information (used by ActionCallXXX and ExpressionBuilder) by the types used
     private static Map<String, List<MethodInfo>> filterMethodInformation(final Set<String> usedFullyQualifiedClassNames,
-                                                                         final Map<String, List<MethodInfo>> projectMethodInformation) {
-        final Map<String, List<MethodInfo>> scopedMethodInformation = new HashMap<>();
-        for (Map.Entry<String, List<MethodInfo>> e : projectMethodInformation.entrySet()) {
+                                                                         final Map<String, List<MethodInfo>> moduleMethodInformation) {
+        final Map<String, List<MethodInfo>> scopedMethodInformation = new HashMap<String, List<MethodInfo>>();
+        for (Map.Entry<String, List<MethodInfo>> e : moduleMethodInformation.entrySet()) {
             final String miQualifiedType = e.getKey();
             if (isTypeUsed(miQualifiedType,
                            usedFullyQualifiedClassNames)) {
@@ -442,9 +434,9 @@ public class DataModelOracleUtilities {
 
     //Filter Field Parameter Types by the types used
     private static Map<String, String> filterFieldParametersTypes(final Set<String> usedFullyQualifiedClassNames,
-                                                                  final Map<String, String> projectFieldParametersTypes) {
-        final Map<String, String> scopedFieldParametersType = new HashMap<>();
-        for (Map.Entry<String, String> e : projectFieldParametersTypes.entrySet()) {
+                                                                  final Map<String, String> moduleFieldParametersTypes) {
+        final Map<String, String> scopedFieldParametersType = new HashMap<String, String>();
+        for (Map.Entry<String, String> e : moduleFieldParametersTypes.entrySet()) {
             final String fieldName = e.getKey();
             final String fieldType = e.getValue();
             final String fFieldName_QualifiedType = getQualifiedTypeFromEncodedFieldName(fieldName);

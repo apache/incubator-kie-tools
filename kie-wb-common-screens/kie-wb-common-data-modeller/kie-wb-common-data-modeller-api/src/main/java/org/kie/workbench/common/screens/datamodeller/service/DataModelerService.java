@@ -1,12 +1,12 @@
 /**
  * Copyright 2012 Red Hat, Inc. and/or its affiliates.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,7 +36,7 @@ import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationPar
 import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationParseResponse;
 import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationSourceRequest;
 import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationSourceResponse;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieModule;
 import org.uberfire.backend.vfs.Path;
 
 @Remote
@@ -56,15 +56,15 @@ public interface DataModelerService {
     EditorModelContent loadContent(final Path path,
                                    boolean includeTypesInfo);
 
-    DataModel loadModel(final KieProject project);
+    DataModel loadModel(final KieModule project);
 
     GenerationResult saveModel(final DataModel dataModel,
-                               final KieProject project,
+                               final KieModule module,
                                final boolean overwrite,
                                final String commitMessage);
 
     GenerationResult saveModel(final DataModel dataModel,
-                               final KieProject project);
+                               final KieModule module);
 
     GenerationResult saveSource(final String source,
                                 final Path path,
@@ -145,8 +145,8 @@ public interface DataModelerService {
                                               String literalValue);
 
     AnnotationParseResponse resolveParseRequest(AnnotationParseRequest parseRequest,
-                                                KieProject project);
+                                                KieModule module);
 
     AnnotationDefinitionResponse resolveDefinitionRequest(AnnotationDefinitionRequest definitionRequest,
-                                                          KieProject kieProject);
+                                                          KieModule kiemodule);
 }

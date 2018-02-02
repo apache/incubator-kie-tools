@@ -31,28 +31,28 @@ import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.vfs.Path;
 
 @Service
 @Dependent
 public class DataObjectFinderServiceImpl implements DataObjectFinderService {
 
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     private DataModelerService dataModelerService;
 
     @Inject
-    public DataObjectFinderServiceImpl(KieProjectService projectService,
+    public DataObjectFinderServiceImpl(KieModuleService moduleService,
                                        DataModelerService dataModelerService) {
-        this.projectService = projectService;
+        this.moduleService = moduleService;
         this.dataModelerService = dataModelerService;
     }
 
     @Override
     public DataObject getDataObject(String typeName,
                                     Path path) {
-        DataModel dataModel = dataModelerService.loadModel(projectService.resolveProject(path));
+        DataModel dataModel = dataModelerService.loadModel(moduleService.resolveModule(path));
 
         return dataModel.getDataObject(typeName);
     }
@@ -66,13 +66,13 @@ public class DataObjectFinderServiceImpl implements DataObjectFinderService {
 
     @Override
     public Collection<DataObject> getProjectDataObjects(Path path) {
-        DataModel dataModel = dataModelerService.loadModel(projectService.resolveProject(path));
+        DataModel dataModel = dataModelerService.loadModel(moduleService.resolveModule(path));
         return dataModel.getDataObjects();
     }
 
     @Override
     public List<DataObjectFormModel> getAvailableDataObjects(Path path) {
-        DataModel dataModel = dataModelerService.loadModel(projectService.resolveProject(path));
+        DataModel dataModel = dataModelerService.loadModel(moduleService.resolveModule(path));
 
         List<DataObjectFormModel> formModels = new ArrayList<>();
 

@@ -18,7 +18,7 @@ package org.kie.workbench.common.screens.datasource.management.client.wizard.dat
 
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +35,7 @@ import static org.mockito.Matchers.anyVararg;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class NewDataSourceWizardTest
         extends DataSourceWizardTestBase {
 
@@ -45,7 +45,7 @@ public class NewDataSourceWizardTest
     private EventSourceMock<NotificationEvent> notificationEvent;
 
     @Mock
-    private Project project;
+    private Module module;
 
     @GwtMock
     private WizardView wizardView;
@@ -56,21 +56,24 @@ public class NewDataSourceWizardTest
     @Before
     public void setup() {
         super.setup();
-        dataSourceDefWizard = new NewDataSourceDefWizard( defPage,
-                editorServiceCaller, translationService, popupsUtil, notificationEvent ) {
+        dataSourceDefWizard = new NewDataSourceDefWizard(defPage,
+                                                         editorServiceCaller,
+                                                         translationService,
+                                                         popupsUtil,
+                                                         notificationEvent) {
             {
                 this.view = wizardView;
             }
         };
-        when ( project.getRootPath() ).thenReturn( path );
+        when(module.getRootPath()).thenReturn(path);
     }
 
     /**
-     * Emulates the wizard completion and creation of a DataSource related to a project.
+     * Emulates the wizard completion and creation of a DataSource related to a module.
      */
     @Test
-    public void testCreateProjectDataSource() {
-        testCreate( project );
+    public void testCreateModuleDataSource() {
+        testCreate(module);
     }
 
     /**
@@ -78,23 +81,24 @@ public class NewDataSourceWizardTest
      */
     @Test
     public void testCreateGlobalDataSource() {
-        testCreate( null );
+        testCreate(null);
     }
 
     /**
      * Emulates a sequence of valid data entering and the wizard completion.
      */
-    private void testCreate( final Project project ) {
+    private void testCreate(final Module module) {
 
-        when( path.toString() ).thenReturn( "target_data_source_path" );
-        when( translationService.format( eq( DataSourceManagementConstants.NewDataSourceDefWizard_DataSourceCreatedMessage ),
-                anyVararg() ) ).thenReturn( "OkMessage" );
+        when(path.toString()).thenReturn("target_data_source_path");
+        when(translationService.format(eq(DataSourceManagementConstants.NewDataSourceDefWizard_DataSourceCreatedMessage),
+                                       anyVararg())).thenReturn("OkMessage");
 
-        if ( project != null ) {
-            when( editorService.create( any( DataSourceDef.class ), eq( project ) ) ).thenReturn( path );
-            dataSourceDefWizard.setProject( project );
+        if (module != null) {
+            when(editorService.create(any(DataSourceDef.class),
+                                      eq(module))).thenReturn(path);
+            dataSourceDefWizard.setModule(module);
         } else {
-            when( editorService.createGlobal( any( DataSourceDef.class ) ) ).thenReturn( path );
+            when(editorService.createGlobal(any(DataSourceDef.class))).thenReturn(path);
         }
 
         dataSourceDefWizard.start();
@@ -106,19 +110,22 @@ public class NewDataSourceWizardTest
         dataSourceDefWizard.complete();
 
         DataSourceDef expectedDataSourceDef = new DataSourceDef();
-        expectedDataSourceDef.setName( NAME );
-        expectedDataSourceDef.setConnectionURL( CONNECTION_URL );
-        expectedDataSourceDef.setUser( USER );
-        expectedDataSourceDef.setPassword( PASSWORD );
-        expectedDataSourceDef.setDriverUuid( DRIVER_UUID );
+        expectedDataSourceDef.setName(NAME);
+        expectedDataSourceDef.setConnectionURL(CONNECTION_URL);
+        expectedDataSourceDef.setUser(USER);
+        expectedDataSourceDef.setPassword(PASSWORD);
+        expectedDataSourceDef.setDriverUuid(DRIVER_UUID);
 
-        if ( project != null ) {
-            verify( editorService, times( 1 ) ).create( expectedDataSourceDef, project );
+        if (module != null) {
+            verify(editorService,
+                   times(1)).create(expectedDataSourceDef,
+                                    module);
         } else {
-            verify( editorService, times( 1 ) ).createGlobal( expectedDataSourceDef );
+            verify(editorService,
+                   times(1)).createGlobal(expectedDataSourceDef);
         }
-        verify( notificationEvent, times( 1 ) ).fire(
-                new NotificationEvent( "OkMessage" ) );
-
+        verify(notificationEvent,
+               times(1)).fire(
+                new NotificationEvent("OkMessage"));
     }
 }

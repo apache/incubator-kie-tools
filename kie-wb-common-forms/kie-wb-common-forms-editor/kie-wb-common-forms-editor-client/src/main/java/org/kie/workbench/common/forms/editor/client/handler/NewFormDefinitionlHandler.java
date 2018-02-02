@@ -96,7 +96,9 @@ public class NewFormDefinitionlHandler extends DefaultNewResourceHandler {
 
     @Override
     public List<Pair<String, ? extends IsWidget>> getExtensions() {
-        formModelsPresenter.initialize(context.getActiveProject().getRootPath());
+        formModelsPresenter.initialize(context.getActiveModule()
+                                              .orElseThrow(() -> new IllegalStateException("Cannot get module root path without an active module."))
+                                              .getRootPath());
 
         return super.getExtensions();
     }

@@ -26,7 +26,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.explorer.client.utils.Classifier;
 import org.kie.workbench.common.screens.explorer.client.utils.Utils;
-import org.kie.workbench.common.widgets.client.handlers.NewProjectHandler;
+import org.kie.workbench.common.widgets.client.handlers.NewWorkspaceProjectHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
@@ -54,11 +54,11 @@ public class ResourceUtils {
     }
 
     public static boolean isProjectHandler(final NewResourceHandler handler) {
-        return handler instanceof NewProjectHandler;
+        return handler instanceof NewWorkspaceProjectHandler;
     }
 
     public static boolean isDefaultProjectHandler(final NewResourceHandler handler) {
-        return handler.getClass().getName().contains("org.kie.workbench.common.screens.projecteditor.client.handlers.NewProjectHandler");
+        return handler.getClass().getName().contains("org.kie.workbench.common.screens.projecteditor.client.handlers.NewWorkspaceProjectHandler");
     }
 
     public static boolean isPackageHandler(final NewResourceHandler handler) {

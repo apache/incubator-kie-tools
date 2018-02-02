@@ -40,8 +40,8 @@ import org.kie.workbench.common.screens.datasource.management.model.DriverDeploy
 import org.kie.workbench.common.screens.datasource.management.util.DataSourceDefSerializer;
 import org.kie.workbench.common.screens.datasource.management.util.DataSourceEventHelper;
 import org.kie.workbench.common.screens.datasource.management.util.DriverDefSerializer;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -69,7 +69,7 @@ public abstract class AbstractDefChangeHandlerTest {
     protected IOService ioService;
 
     @Mock
-    protected KieProjectService projectService;
+    protected KieModuleService moduleService;
 
     @Mock
     protected DataSourceEventHelper eventHelper;
@@ -90,7 +90,7 @@ public abstract class AbstractDefChangeHandlerTest {
     protected User identity;
 
     @Mock
-    protected KieProject project;
+    protected KieModule module;
 
     protected DataSourceDef dataSourceDef;
 
@@ -123,39 +123,39 @@ public abstract class AbstractDefChangeHandlerTest {
     protected AbstractDefChangeHandler changeHandler;
 
     @Before
-    public void setup( ) {
+    public void setup() {
         setupChangeHandler();
-        when( serviceHelper.getDefRegistry( ) ).thenReturn( defRegistry );
-        when( projectService.resolveProject( path ) ).thenReturn( project );
+        when(serviceHelper.getDefRegistry()).thenReturn(defRegistry);
+        when(moduleService.resolveModule(path)).thenReturn(module);
 
-        when( sessionInfo.getId( ) ).thenReturn( SESSION_ID );
-        when( sessionInfo.getIdentity( ) ).thenReturn( identity );
-        when( identity.getIdentifier( ) ).thenReturn( IDENTIFIER );
+        when(sessionInfo.getId()).thenReturn(SESSION_ID);
+        when(sessionInfo.getIdentity()).thenReturn(identity);
+        when(identity.getIdentifier()).thenReturn(IDENTIFIER);
 
-        dataSourceDef = new DataSourceDef( );
-        dataSourceDef.setUuid( "uuid" );
-        dataSourceDef.setName( "dataSourceName" );
-        dataSourceDef.setConnectionURL( "connectionURL" );
-        dataSourceDef.setUser( "user" );
-        dataSourceDef.setPassword( "password" );
+        dataSourceDef = new DataSourceDef();
+        dataSourceDef.setUuid("uuid");
+        dataSourceDef.setName("dataSourceName");
+        dataSourceDef.setConnectionURL("connectionURL");
+        dataSourceDef.setUser("user");
+        dataSourceDef.setPassword("password");
 
-        driverDef = new DriverDef( );
-        driverDef.setUuid( "uuid" );
-        driverDef.setName( "driverName" );
-        driverDef.setDriverClass( TestDriver.class.getName( ) );
-        driverDef.setGroupId( "groupId" );
-        driverDef.setArtifactId( "artifactId" );
-        driverDef.setVersion( "version" );
+        driverDef = new DriverDef();
+        driverDef.setUuid("uuid");
+        driverDef.setName("driverName");
+        driverDef.setDriverClass(TestDriver.class.getName());
+        driverDef.setGroupId("groupId");
+        driverDef.setArtifactId("artifactId");
+        driverDef.setVersion("version");
 
-        when( registeredDataSourceDef.getUuid( ) ).thenReturn( "registeredDataSourceUuid" );
-        when( registeredDataSourceDeploymentInfo.getUuid( ) ).thenReturn( "registeredDataSourceUuid" );
-        when( originalDataSourceDef.getUuid( ) ).thenReturn( "originalDataSourceUuid" );
-        when( originalDatasourceDeploymentInfo.getUuid( ) ).thenReturn( "originalDataSourceUuid" );
+        when(registeredDataSourceDef.getUuid()).thenReturn("registeredDataSourceUuid");
+        when(registeredDataSourceDeploymentInfo.getUuid()).thenReturn("registeredDataSourceUuid");
+        when(originalDataSourceDef.getUuid()).thenReturn("originalDataSourceUuid");
+        when(originalDatasourceDeploymentInfo.getUuid()).thenReturn("originalDataSourceUuid");
 
-        when( registeredDriverDef.getUuid( ) ).thenReturn( "registeredDriverDefUuid" );
-        when( registeredDriverDeploymentInfo.getUuid( ) ).thenReturn( "registeredDriverDefUuid" );
-        when( originalDriverDef.getUuid( ) ).thenReturn( "originalDriverDefUuid" );
-        when( originalDriverDeploymentInfo.getUuid( ) ).thenReturn( "originalDriverDefUuid" );
+        when(registeredDriverDef.getUuid()).thenReturn("registeredDriverDefUuid");
+        when(registeredDriverDeploymentInfo.getUuid()).thenReturn("registeredDriverDefUuid");
+        when(originalDriverDef.getUuid()).thenReturn("originalDriverDefUuid");
+        when(originalDriverDeploymentInfo.getUuid()).thenReturn("originalDriverDefUuid");
     }
 
     protected abstract void setupChangeHandler();
@@ -164,47 +164,53 @@ public abstract class AbstractDefChangeHandlerTest {
      * Tests the case when the file added is a datasource that wasn't previously registered.
      */
     @Test
-    public void testAddDataSourceNotRegistered( ) throws Exception {
-        testAddResourceNotRegistered( dataSourceDef );
+    public void testAddDataSourceNotRegistered() throws Exception {
+        testAddResourceNotRegistered(dataSourceDef);
     }
 
     /**
      * Tests the case when the file added is a driver that wasn't previously registered.
      */
     @Test
-    public void testAddDriverNotRegistered( ) throws Exception {
-        testAddResourceNotRegistered( driverDef );
+    public void testAddDriverNotRegistered() throws Exception {
+        testAddResourceNotRegistered(driverDef);
     }
 
-    protected void testAddResourceNotRegistered( Def def ) throws Exception {
-        prepareDef( def );
-        changeHandler.processResourceAdd( path, sessionInfo );
-        verifyRegisteredAndDeployed( path, def );
-        verifyAddEvent( path, def );
+    protected void testAddResourceNotRegistered(Def def) throws Exception {
+        prepareDef(def);
+        changeHandler.processResourceAdd(path,
+                                         sessionInfo);
+        verifyRegisteredAndDeployed(path,
+                                    def);
+        verifyAddEvent(path,
+                       def);
     }
 
     /**
      * Tests the case when the file added is a datasource that was already registered and the definition didn't change.
      */
     @Test
-    public void testAddDataSourceRegisteredNotChanged( ) throws Exception {
-        testAddResourceRegisteredNotChanged( dataSourceDef );
+    public void testAddDataSourceRegisteredNotChanged() throws Exception {
+        testAddResourceRegisteredNotChanged(dataSourceDef);
     }
 
     /**
      * Tests the case when the file added is a driver that was already registered and the definition didn't change.
      */
     @Test
-    public void testAddDriverRegisteredNotChanged( ) throws Exception {
-        testAddResourceRegisteredNotChanged( driverDef );
+    public void testAddDriverRegisteredNotChanged() throws Exception {
+        testAddResourceRegisteredNotChanged(driverDef);
     }
 
-    protected void testAddResourceRegisteredNotChanged( Def def ) throws Exception {
-        prepareDef( def );
+    protected void testAddResourceRegisteredNotChanged(Def def) throws Exception {
+        prepareDef(def);
         //emulates that the definition was already registered.
-        prepareRegisteredResource( path, def, null );
-        changeHandler.processResourceAdd( path, sessionInfo );
-        verifyNoActions( );
+        prepareRegisteredResource(path,
+                                  def,
+                                  null);
+        changeHandler.processResourceAdd(path,
+                                         sessionInfo);
+        verifyNoActions();
     }
 
     /**
@@ -212,8 +218,9 @@ public abstract class AbstractDefChangeHandlerTest {
      * and the previous definition was not deployed.
      */
     @Test
-    public void testAddDataSourceRegisteredChangedNotDeployed( ) throws Exception {
-        testAddResourceRegisteredChangedNotDeployed( dataSourceDef, registeredDataSourceDef );
+    public void testAddDataSourceRegisteredChangedNotDeployed() throws Exception {
+        testAddResourceRegisteredChangedNotDeployed(dataSourceDef,
+                                                    registeredDataSourceDef);
     }
 
     /**
@@ -221,17 +228,24 @@ public abstract class AbstractDefChangeHandlerTest {
      * and the previous definition was not deployed.
      */
     @Test
-    public void testAddDriverRegisteredChangedNotDeployed( ) throws Exception {
-        testAddResourceRegisteredChangedNotDeployed( driverDef, registeredDriverDef );
+    public void testAddDriverRegisteredChangedNotDeployed() throws Exception {
+        testAddResourceRegisteredChangedNotDeployed(driverDef,
+                                                    registeredDriverDef);
     }
 
-    protected void testAddResourceRegisteredChangedNotDeployed( Def def, Def registeredDef ) throws Exception {
-        prepareDef( def );
+    protected void testAddResourceRegisteredChangedNotDeployed(Def def,
+                                                               Def registeredDef) throws Exception {
+        prepareDef(def);
         //emulates that a different definition is registered.
-        prepareRegisteredResource( path, registeredDef, null );
-        changeHandler.processResourceAdd( path, sessionInfo );
-        verifyRegisteredAndDeployed( path, def );
-        verifyAddEvent( path, def );
+        prepareRegisteredResource(path,
+                                  registeredDef,
+                                  null);
+        changeHandler.processResourceAdd(path,
+                                         sessionInfo);
+        verifyRegisteredAndDeployed(path,
+                                    def);
+        verifyAddEvent(path,
+                       def);
     }
 
     /**
@@ -239,9 +253,10 @@ public abstract class AbstractDefChangeHandlerTest {
      * and the previous definition was deployed.
      */
     @Test
-    public void testAddDataSourceRegisteredChangedDeployed( ) throws Exception {
-        testAddResourceRegisteredChangedDeployed( dataSourceDef,
-                registeredDataSourceDef, registeredDataSourceDeploymentInfo );
+    public void testAddDataSourceRegisteredChangedDeployed() throws Exception {
+        testAddResourceRegisteredChangedDeployed(dataSourceDef,
+                                                 registeredDataSourceDef,
+                                                 registeredDataSourceDeploymentInfo);
     }
 
     /**
@@ -249,67 +264,81 @@ public abstract class AbstractDefChangeHandlerTest {
      * and the previous definition was deployed.
      */
     @Test
-    public void testAddDriverRegisteredChangedDeployed( ) throws Exception {
-        testAddResourceRegisteredChangedDeployed( driverDef, registeredDriverDef, registeredDriverDeploymentInfo );
+    public void testAddDriverRegisteredChangedDeployed() throws Exception {
+        testAddResourceRegisteredChangedDeployed(driverDef,
+                                                 registeredDriverDef,
+                                                 registeredDriverDeploymentInfo);
     }
 
-    protected void testAddResourceRegisteredChangedDeployed( Def def,
-                                                           Def registeredDef,
-                                                           DeploymentInfo registeredDefDeploymentInfo ) throws Exception {
-        prepareDef( def );
+    protected void testAddResourceRegisteredChangedDeployed(Def def,
+                                                            Def registeredDef,
+                                                            DeploymentInfo registeredDefDeploymentInfo) throws Exception {
+        prepareDef(def);
         //emulates that a different definition is registered and also was deployed.
-        prepareRegisteredResource( path, registeredDef, registeredDefDeploymentInfo );
-        changeHandler.processResourceAdd( path, sessionInfo );
-        verifyUnDeployed( registeredDef );
-        verifyRegisteredAndDeployed( path, def );
-        verifyAddEvent( path, def );
+        prepareRegisteredResource(path,
+                                  registeredDef,
+                                  registeredDefDeploymentInfo);
+        changeHandler.processResourceAdd(path,
+                                         sessionInfo);
+        verifyUnDeployed(registeredDef);
+        verifyRegisteredAndDeployed(path,
+                                    def);
+        verifyAddEvent(path,
+                       def);
     }
 
     /**
      * Tests the case when the file updated is a datasource that wasn't previously registered.
      */
     @Test
-    public void testUpdateDataSourceNotRegistered( ) throws Exception {
-        testUpdateResourceNotRegistered( dataSourceDef );
+    public void testUpdateDataSourceNotRegistered() throws Exception {
+        testUpdateResourceNotRegistered(dataSourceDef);
     }
 
     /**
      * Tests the case when the file updated is a driver that wasn't previously registered.
      */
     @Test
-    public void testUpdateDriverNotRegistered( ) throws Exception {
-        testUpdateResourceNotRegistered( driverDef );
+    public void testUpdateDriverNotRegistered() throws Exception {
+        testUpdateResourceNotRegistered(driverDef);
     }
 
-    protected void testUpdateResourceNotRegistered( Def def ) throws Exception {
-        prepareDef( def );
-        changeHandler.processResourceUpdate( path, sessionInfo );
-        verifyRegisteredAndDeployed( path, def );
-        verifyUpdateEvent( path, def, null );
+    protected void testUpdateResourceNotRegistered(Def def) throws Exception {
+        prepareDef(def);
+        changeHandler.processResourceUpdate(path,
+                                            sessionInfo);
+        verifyRegisteredAndDeployed(path,
+                                    def);
+        verifyUpdateEvent(path,
+                          def,
+                          null);
     }
 
     /**
      * Tests the case when the file updated is a datasource that was already registered and the definition didn't change.
      */
     @Test
-    public void testUpdateDataSourceRegisteredNotChanged( ) throws Exception {
-        testUpdateResourceRegisteredNotChanged( dataSourceDef );
+    public void testUpdateDataSourceRegisteredNotChanged() throws Exception {
+        testUpdateResourceRegisteredNotChanged(dataSourceDef);
     }
 
     /**
      * Tests the case when the file updated is a driver that was already registered and the definition didn't change.
      */
     @Test
-    public void testUpdateDriverRegisteredNotChanged( ) throws Exception {
-        testUpdateResourceRegisteredNotChanged( driverDef );
+    public void testUpdateDriverRegisteredNotChanged() throws Exception {
+        testUpdateResourceRegisteredNotChanged(driverDef);
     }
 
-    protected void testUpdateResourceRegisteredNotChanged( Def def ) throws Exception {
-        prepareDef( def );
+    protected void testUpdateResourceRegisteredNotChanged(Def def) throws Exception {
+        prepareDef(def);
         //emulates that the definition was already registered.
-        prepareRegisteredResource( path, def, null );
-        changeHandler.processResourceUpdate( path, sessionInfo );
-        verifyNoActions( );
+        prepareRegisteredResource(path,
+                                  def,
+                                  null);
+        changeHandler.processResourceUpdate(path,
+                                            sessionInfo);
+        verifyNoActions();
     }
 
     /**
@@ -317,8 +346,9 @@ public abstract class AbstractDefChangeHandlerTest {
      * and the previous definition was not deployed.
      */
     @Test
-    public void testUpdateDataSourceRegisteredChangedNotDeployed( ) throws Exception {
-        testUpdateResourceRegisteredChangedNotDeployed( dataSourceDef, registeredDataSourceDef );
+    public void testUpdateDataSourceRegisteredChangedNotDeployed() throws Exception {
+        testUpdateResourceRegisteredChangedNotDeployed(dataSourceDef,
+                                                       registeredDataSourceDef);
     }
 
     /**
@@ -326,17 +356,25 @@ public abstract class AbstractDefChangeHandlerTest {
      * and the previous definition was not deployed.
      */
     @Test
-    public void testUpdateDriverRegisteredChangedNotDeployed( ) throws Exception {
-        testUpdateResourceRegisteredChangedNotDeployed( driverDef, registeredDriverDef );
+    public void testUpdateDriverRegisteredChangedNotDeployed() throws Exception {
+        testUpdateResourceRegisteredChangedNotDeployed(driverDef,
+                                                       registeredDriverDef);
     }
 
-    protected void testUpdateResourceRegisteredChangedNotDeployed( Def def, Def registeredDef ) throws Exception {
-        prepareDef( def );
+    protected void testUpdateResourceRegisteredChangedNotDeployed(Def def,
+                                                                  Def registeredDef) throws Exception {
+        prepareDef(def);
         //emulates that a different definition is registered, but not deployed.
-        prepareRegisteredResource( path, registeredDef, null );
-        changeHandler.processResourceUpdate( path, sessionInfo );
-        verifyRegisteredAndDeployed( path, def );
-        verifyUpdateEvent( path, def, registeredDef );
+        prepareRegisteredResource(path,
+                                  registeredDef,
+                                  null);
+        changeHandler.processResourceUpdate(path,
+                                            sessionInfo);
+        verifyRegisteredAndDeployed(path,
+                                    def);
+        verifyUpdateEvent(path,
+                          def,
+                          registeredDef);
     }
 
     /**
@@ -344,9 +382,10 @@ public abstract class AbstractDefChangeHandlerTest {
      * and the previous definition was deployed.
      */
     @Test
-    public void testUpdateDataSourceRegisteredChangedDeployed( ) throws Exception {
-        testUpdateResourceRegisteredChangedDeployed( dataSourceDef, registeredDataSourceDef,
-                registeredDataSourceDeploymentInfo );
+    public void testUpdateDataSourceRegisteredChangedDeployed() throws Exception {
+        testUpdateResourceRegisteredChangedDeployed(dataSourceDef,
+                                                    registeredDataSourceDef,
+                                                    registeredDataSourceDeploymentInfo);
     }
 
     /**
@@ -354,72 +393,94 @@ public abstract class AbstractDefChangeHandlerTest {
      * and the previous definition was deployed.
      */
     @Test
-    public void testUpdateDriverRegisteredChangedDeployed( ) throws Exception {
-        testUpdateResourceRegisteredChangedDeployed( driverDef, registeredDriverDef, registeredDriverDeploymentInfo );
+    public void testUpdateDriverRegisteredChangedDeployed() throws Exception {
+        testUpdateResourceRegisteredChangedDeployed(driverDef,
+                                                    registeredDriverDef,
+                                                    registeredDriverDeploymentInfo);
     }
 
-    protected void testUpdateResourceRegisteredChangedDeployed( Def def,
-                                                              Def registeredDef,
-                                                              DeploymentInfo registeredDefDeploymentInfo ) throws Exception {
-        prepareDef( def );
+    protected void testUpdateResourceRegisteredChangedDeployed(Def def,
+                                                               Def registeredDef,
+                                                               DeploymentInfo registeredDefDeploymentInfo) throws Exception {
+        prepareDef(def);
         //emulates that a different definition is registered and also was deployed.
-        prepareRegisteredResource( path, registeredDef, registeredDefDeploymentInfo );
-        changeHandler.processResourceUpdate( path, sessionInfo );
-        verifyUnDeployed( registeredDef );
-        verifyRegisteredAndDeployed( path, def );
-        verifyUpdateEvent( path, def, registeredDef );
+        prepareRegisteredResource(path,
+                                  registeredDef,
+                                  registeredDefDeploymentInfo);
+        changeHandler.processResourceUpdate(path,
+                                            sessionInfo);
+        verifyUnDeployed(registeredDef);
+        verifyRegisteredAndDeployed(path,
+                                    def);
+        verifyUpdateEvent(path,
+                          def,
+                          registeredDef);
     }
 
     /**
      * Tests the case where the file in the original path wasn't registered, and the target path is not registered.
      */
     @Test
-    public void testRenameDataSourceOriginalPathNotRegisteredTargetPathNotRegistered( ) throws Exception {
-        testRenameResourceOriginalPathNotRegisteredTargetPathNotRegistered( dataSourceDef );
+    public void testRenameDataSourceOriginalPathNotRegisteredTargetPathNotRegistered() throws Exception {
+        testRenameResourceOriginalPathNotRegisteredTargetPathNotRegistered(dataSourceDef);
     }
 
     /**
      * Tests the case where the file in the original path wasn't registered, and the target path is not registered.
      */
     @Test
-    public void testRenameDriverOriginalPathNotRegisteredTargetPathNotRegistered( ) throws Exception {
-        testRenameResourceOriginalPathNotRegisteredTargetPathNotRegistered( driverDef );
+    public void testRenameDriverOriginalPathNotRegisteredTargetPathNotRegistered() throws Exception {
+        testRenameResourceOriginalPathNotRegisteredTargetPathNotRegistered(driverDef);
     }
 
-    protected void testRenameResourceOriginalPathNotRegisteredTargetPathNotRegistered( Def def ) throws Exception {
-        prepareDef( def );
-        changeHandler.processResourceRename( originalPath, path, sessionInfo );
-        verifyRegisteredAndDeployed( path, def );
-        verifyUpdateEvent( path, def, null );
-    }
-
-    /**
-     * Tests the case where the file in the original path was registered, and the target path is not registered.
-     */
-    @Test
-    public void testRenameDataSourceOriginalPathRegisteredTargetPathNotRegistered( ) throws Exception {
-        testRenameResourceOriginalPathRegisteredTargetPathNotRegistered( dataSourceDef,
-                originalDataSourceDef, originalDatasourceDeploymentInfo );
+    protected void testRenameResourceOriginalPathNotRegisteredTargetPathNotRegistered(Def def) throws Exception {
+        prepareDef(def);
+        changeHandler.processResourceRename(originalPath,
+                                            path,
+                                            sessionInfo);
+        verifyRegisteredAndDeployed(path,
+                                    def);
+        verifyUpdateEvent(path,
+                          def,
+                          null);
     }
 
     /**
      * Tests the case where the file in the original path was registered, and the target path is not registered.
      */
     @Test
-    public void testRenameDriverOriginalPathRegisteredTargetPathNotRegistered( ) throws Exception {
-        testRenameResourceOriginalPathRegisteredTargetPathNotRegistered( driverDef,
-                originalDriverDef, originalDriverDeploymentInfo );
+    public void testRenameDataSourceOriginalPathRegisteredTargetPathNotRegistered() throws Exception {
+        testRenameResourceOriginalPathRegisteredTargetPathNotRegistered(dataSourceDef,
+                                                                        originalDataSourceDef,
+                                                                        originalDatasourceDeploymentInfo);
     }
 
-    protected void testRenameResourceOriginalPathRegisteredTargetPathNotRegistered( Def def,
-                                                                                  Def originalDef,
-                                                                                  DeploymentInfo originalDeploymentInfo ) throws Exception {
-        prepareDef( def );
-        prepareRegisteredResource( originalPath, originalDef, originalDeploymentInfo );
-        changeHandler.processResourceRename( originalPath, path, sessionInfo );
-        verifyUnDeployed( originalDef );
-        verifyRegisteredAndDeployed( path, def );
-        verifyUpdateEvent( path, def, null );
+    /**
+     * Tests the case where the file in the original path was registered, and the target path is not registered.
+     */
+    @Test
+    public void testRenameDriverOriginalPathRegisteredTargetPathNotRegistered() throws Exception {
+        testRenameResourceOriginalPathRegisteredTargetPathNotRegistered(driverDef,
+                                                                        originalDriverDef,
+                                                                        originalDriverDeploymentInfo);
+    }
+
+    protected void testRenameResourceOriginalPathRegisteredTargetPathNotRegistered(Def def,
+                                                                                   Def originalDef,
+                                                                                   DeploymentInfo originalDeploymentInfo) throws Exception {
+        prepareDef(def);
+        prepareRegisteredResource(originalPath,
+                                  originalDef,
+                                  originalDeploymentInfo);
+        changeHandler.processResourceRename(originalPath,
+                                            path,
+                                            sessionInfo);
+        verifyUnDeployed(originalDef);
+        verifyRegisteredAndDeployed(path,
+                                    def);
+        verifyUpdateEvent(path,
+                          def,
+                          null);
     }
 
     /**
@@ -427,9 +488,10 @@ public abstract class AbstractDefChangeHandlerTest {
      * the definition didn't change
      */
     @Test
-    public void testRenameDataSourceOriginalPathRegisteredTargetPathRegisteredNotChanged( ) throws Exception {
-        testRenameResourceSourceOriginalPathRegisteredTargetPathRegisteredNotChanged( dataSourceDef,
-                originalDataSourceDef, originalDatasourceDeploymentInfo );
+    public void testRenameDataSourceOriginalPathRegisteredTargetPathRegisteredNotChanged() throws Exception {
+        testRenameResourceSourceOriginalPathRegisteredTargetPathRegisteredNotChanged(dataSourceDef,
+                                                                                     originalDataSourceDef,
+                                                                                     originalDatasourceDeploymentInfo);
     }
 
     /**
@@ -437,278 +499,388 @@ public abstract class AbstractDefChangeHandlerTest {
      * the definition didn't change
      */
     @Test
-    public void testRenameDriverOriginalPathRegisteredTargetPathRegisteredNotChanged( ) throws Exception {
-        testRenameResourceSourceOriginalPathRegisteredTargetPathRegisteredNotChanged( driverDef,
-                originalDriverDef, originalDriverDeploymentInfo );
+    public void testRenameDriverOriginalPathRegisteredTargetPathRegisteredNotChanged() throws Exception {
+        testRenameResourceSourceOriginalPathRegisteredTargetPathRegisteredNotChanged(driverDef,
+                                                                                     originalDriverDef,
+                                                                                     originalDriverDeploymentInfo);
     }
 
-    protected void testRenameResourceSourceOriginalPathRegisteredTargetPathRegisteredNotChanged( Def def,
+    protected void testRenameResourceSourceOriginalPathRegisteredTargetPathRegisteredNotChanged(Def def,
+                                                                                                Def originalDef,
+                                                                                                DeploymentInfo originalDeploymentInfo) throws Exception {
+        prepareDef(def);
+        prepareRegisteredResource(originalPath,
+                                  originalDef,
+                                  originalDeploymentInfo);
+        prepareRegisteredResource(path,
+                                  def,
+                                  null);
+        changeHandler.processResourceRename(originalPath,
+                                            path,
+                                            sessionInfo);
+        verifyUnDeployed(originalDef);
+        verify(defRegistry,
+               never()).setEntry(path,
+                                 def);
+        verifyNoEvents();
+        verifyNoDeployments();
+    }
+
+    /**
+     * Tests the case where the file in the original path was registered, the target path is also registered and the
+     * definition has changed, and the original definition was not deployed.
+     */
+    @Test
+    public void testRenameDataSourceOriginalPathRegisteredTargetPathRegisteredChangedNotDeployed() throws Exception {
+        testRenameResourceOriginalPathRegisteredTargetPathRegisteredChangedNotDeployed(dataSourceDef,
+                                                                                       originalDataSourceDef,
+                                                                                       originalDatasourceDeploymentInfo,
+                                                                                       registeredDataSourceDef);
+    }
+
+    /**
+     * Tests the case where the file in the original path was registered, the target path is also registered and the
+     * definition has changed, and the original definition was not deployed.
+     */
+    @Test
+    public void testRenameDriverOriginalPathRegisteredTargetPathRegisteredChangedNotDeployed() throws Exception {
+        testRenameResourceOriginalPathRegisteredTargetPathRegisteredChangedNotDeployed(driverDef,
+                                                                                       originalDriverDef,
+                                                                                       originalDriverDeploymentInfo,
+                                                                                       registeredDriverDef);
+    }
+
+    protected void testRenameResourceOriginalPathRegisteredTargetPathRegisteredChangedNotDeployed(Def def,
+                                                                                                  Def originalDef,
+                                                                                                  DeploymentInfo originalDeploymentInfo,
+                                                                                                  Def registeredDef) throws Exception {
+        prepareDef(def);
+        prepareRegisteredResource(originalPath,
+                                  originalDef,
+                                  originalDeploymentInfo);
+        prepareRegisteredResource(path,
+                                  registeredDef,
+                                  null);
+        changeHandler.processResourceRename(originalPath,
+                                            path,
+                                            sessionInfo);
+        verifyUnDeployed(originalDef);
+        verifyRegisteredAndDeployed(path,
+                                    def);
+        verifyUpdateEvent(path,
+                          def,
+                          registeredDef);
+    }
+
+    /**
+     * Tests the case where the file in the original path was registered, the target path is also registered and the
+     * definition has changed, and the original definition was deployed.
+     */
+    @Test
+    public void testRenameDataSourceOriginalPathRegisteredTargetPathRegisteredChangedDeployed() throws Exception {
+        testRenameResourceOriginalPathRegisteredTargetPathRegisteredChangedDeployed(dataSourceDef,
+                                                                                    originalDataSourceDef,
+                                                                                    originalDatasourceDeploymentInfo,
+                                                                                    registeredDataSourceDef,
+                                                                                    registeredDataSourceDeploymentInfo);
+    }
+
+    /**
+     * Tests the case where the file in the original path was registered, the target path is also registered and the
+     * definition has changed, and the original definition was deployed.
+     */
+    @Test
+    public void testRenameDriverOriginalPathRegisteredTargetPathRegisteredChangedDeployed() throws Exception {
+        testRenameResourceOriginalPathRegisteredTargetPathRegisteredChangedDeployed(driverDef,
+                                                                                    originalDriverDef,
+                                                                                    originalDriverDeploymentInfo,
+                                                                                    registeredDriverDef,
+                                                                                    registeredDriverDeploymentInfo);
+    }
+
+    protected void testRenameResourceOriginalPathRegisteredTargetPathRegisteredChangedDeployed(Def def,
                                                                                                Def originalDef,
-                                                                                               DeploymentInfo originalDeploymentInfo ) throws Exception {
-        prepareDef( def );
-        prepareRegisteredResource( originalPath, originalDef, originalDeploymentInfo );
-        prepareRegisteredResource( path, def, null );
-        changeHandler.processResourceRename( originalPath, path, sessionInfo );
-        verifyUnDeployed( originalDef );
-        verify( defRegistry, never( ) ).setEntry( path, def );
-        verifyNoEvents( );
-        verifyNoDeployments( );
-    }
-
-    /**
-     * Tests the case where the file in the original path was registered, the target path is also registered and the
-     * definition has changed, and the original definition was not deployed.
-     */
-    @Test
-    public void testRenameDataSourceOriginalPathRegisteredTargetPathRegisteredChangedNotDeployed( ) throws Exception {
-        testRenameResourceOriginalPathRegisteredTargetPathRegisteredChangedNotDeployed( dataSourceDef,
-                originalDataSourceDef, originalDatasourceDeploymentInfo, registeredDataSourceDef );
-    }
-
-    /**
-     * Tests the case where the file in the original path was registered, the target path is also registered and the
-     * definition has changed, and the original definition was not deployed.
-     */
-    @Test
-    public void testRenameDriverOriginalPathRegisteredTargetPathRegisteredChangedNotDeployed( ) throws Exception {
-        testRenameResourceOriginalPathRegisteredTargetPathRegisteredChangedNotDeployed( driverDef,
-                originalDriverDef, originalDriverDeploymentInfo, registeredDriverDef );
-    }
-
-    protected void testRenameResourceOriginalPathRegisteredTargetPathRegisteredChangedNotDeployed( Def def,
-                                                                                                 Def originalDef,
-                                                                                                 DeploymentInfo originalDeploymentInfo,
-                                                                                                 Def registeredDef ) throws Exception {
-        prepareDef( def );
-        prepareRegisteredResource( originalPath, originalDef, originalDeploymentInfo );
-        prepareRegisteredResource( path, registeredDef, null );
-        changeHandler.processResourceRename( originalPath, path, sessionInfo );
-        verifyUnDeployed( originalDef );
-        verifyRegisteredAndDeployed( path, def );
-        verifyUpdateEvent( path, def, registeredDef );
-    }
-
-    /**
-     * Tests the case where the file in the original path was registered, the target path is also registered and the
-     * definition has changed, and the original definition was deployed.
-     */
-    @Test
-    public void testRenameDataSourceOriginalPathRegisteredTargetPathRegisteredChangedDeployed( ) throws Exception {
-        testRenameResourceOriginalPathRegisteredTargetPathRegisteredChangedDeployed( dataSourceDef,
-                originalDataSourceDef, originalDatasourceDeploymentInfo, registeredDataSourceDef, registeredDataSourceDeploymentInfo );
-    }
-
-    /**
-     * Tests the case where the file in the original path was registered, the target path is also registered and the
-     * definition has changed, and the original definition was deployed.
-     */
-    @Test
-    public void testRenameDriverOriginalPathRegisteredTargetPathRegisteredChangedDeployed( ) throws Exception {
-        testRenameResourceOriginalPathRegisteredTargetPathRegisteredChangedDeployed( driverDef,
-                originalDriverDef, originalDriverDeploymentInfo, registeredDriverDef, registeredDriverDeploymentInfo );
-    }
-
-    protected void testRenameResourceOriginalPathRegisteredTargetPathRegisteredChangedDeployed( Def def,
-                                                                                              Def originalDef,
-                                                                                              DeploymentInfo originalDeploymentInfo,
-                                                                                              Def registeredDef,
-                                                                                              DeploymentInfo registeredDeploymentInfo ) throws Exception {
-        prepareDef( def );
-        prepareRegisteredResource( originalPath, originalDef, originalDeploymentInfo );
-        prepareRegisteredResource( path, registeredDef, registeredDeploymentInfo );
-        changeHandler.processResourceRename( originalPath, path, sessionInfo );
-        verifyUnDeployed( originalDef );
-        verifyUnDeployed( registeredDef );
-        verifyRegisteredAndDeployed( path, def );
-        verifyUpdateEvent( path, def, registeredDef );
+                                                                                               DeploymentInfo originalDeploymentInfo,
+                                                                                               Def registeredDef,
+                                                                                               DeploymentInfo registeredDeploymentInfo) throws Exception {
+        prepareDef(def);
+        prepareRegisteredResource(originalPath,
+                                  originalDef,
+                                  originalDeploymentInfo);
+        prepareRegisteredResource(path,
+                                  registeredDef,
+                                  registeredDeploymentInfo);
+        changeHandler.processResourceRename(originalPath,
+                                            path,
+                                            sessionInfo);
+        verifyUnDeployed(originalDef);
+        verifyUnDeployed(registeredDef);
+        verifyRegisteredAndDeployed(path,
+                                    def);
+        verifyUpdateEvent(path,
+                          def,
+                          registeredDef);
     }
 
     /**
      * Tests the case where the deleted file is not registered.
      */
     @Test
-    public void testDeleteDataSourceNotRegistered( ) throws Exception {
-        testDeleteResourceNotRegistered( );
+    public void testDeleteDataSourceNotRegistered() throws Exception {
+        testDeleteResourceNotRegistered();
     }
 
     /**
      * Tests the case where the deleted file is not registered.
      */
     @Test
-    public void testDeleteDriverNotRegistered( ) throws Exception {
-        testDeleteResourceNotRegistered( );
+    public void testDeleteDriverNotRegistered() throws Exception {
+        testDeleteResourceNotRegistered();
     }
 
-    protected void testDeleteResourceNotRegistered( ) throws Exception {
-        changeHandler.processResourceDelete( path, sessionInfo );
-        verify( defRegistry, times( 1 ) ).getEntry( path );
-        verifyNoActions( );
-    }
-
-    /**
-     * Tests the case where the deleted file is registered but not deployed.
-     */
-    @Test
-    public void testDeleteDataSourceRegisteredNotDeployed( ) throws Exception {
-        testDeleteResourceRegisteredNotDeployed( registeredDataSourceDef );
+    protected void testDeleteResourceNotRegistered() throws Exception {
+        changeHandler.processResourceDelete(path,
+                                            sessionInfo);
+        verify(defRegistry,
+               times(1)).getEntry(path);
+        verifyNoActions();
     }
 
     /**
      * Tests the case where the deleted file is registered but not deployed.
      */
     @Test
-    public void testDeleteDriverRegisteredNotDeployed( ) throws Exception {
-        testDeleteResourceRegisteredNotDeployed( registeredDriverDef );
+    public void testDeleteDataSourceRegisteredNotDeployed() throws Exception {
+        testDeleteResourceRegisteredNotDeployed(registeredDataSourceDef);
     }
 
-    protected void testDeleteResourceRegisteredNotDeployed( Def registeredDef ) throws Exception {
-        prepareRegisteredResource( path, registeredDef, null );
-        changeHandler.processResourceDelete( path, sessionInfo );
-        verify( defRegistry, times( 1 ) ).getEntry( path );
-        verify( defRegistry, times( 1 ) ).invalidateCache( path );
-        verifyDeleteEvent( path, registeredDef );
+    /**
+     * Tests the case where the deleted file is registered but not deployed.
+     */
+    @Test
+    public void testDeleteDriverRegisteredNotDeployed() throws Exception {
+        testDeleteResourceRegisteredNotDeployed(registeredDriverDef);
+    }
+
+    protected void testDeleteResourceRegisteredNotDeployed(Def registeredDef) throws Exception {
+        prepareRegisteredResource(path,
+                                  registeredDef,
+                                  null);
+        changeHandler.processResourceDelete(path,
+                                            sessionInfo);
+        verify(defRegistry,
+               times(1)).getEntry(path);
+        verify(defRegistry,
+               times(1)).invalidateCache(path);
+        verifyDeleteEvent(path,
+                          registeredDef);
     }
 
     /**
      * Tests the case where the deleted file is registered and deployed deployed.
      */
     @Test
-    public void testDeleteDataSourceRegisteredDeployed( ) throws Exception {
-        testDeleteResourceRegisteredDeployed( registeredDataSourceDef, registeredDataSourceDeploymentInfo );
+    public void testDeleteDataSourceRegisteredDeployed() throws Exception {
+        testDeleteResourceRegisteredDeployed(registeredDataSourceDef,
+                                             registeredDataSourceDeploymentInfo);
     }
 
     /**
      * Tests the case where the deleted file is registered and deployed deployed.
      */
     @Test
-    public void testDeleteDriverRegisteredDeployed( ) throws Exception {
-        testDeleteResourceRegisteredDeployed( registeredDriverDef, registeredDriverDeploymentInfo );
+    public void testDeleteDriverRegisteredDeployed() throws Exception {
+        testDeleteResourceRegisteredDeployed(registeredDriverDef,
+                                             registeredDriverDeploymentInfo);
     }
 
-    protected void testDeleteResourceRegisteredDeployed( Def registeredDef, DeploymentInfo registeredDeploymentInfo ) throws Exception {
-        prepareRegisteredResource( path, registeredDef, registeredDeploymentInfo );
-        changeHandler.processResourceDelete( path, sessionInfo );
-        verify( defRegistry, times( 1 ) ).getEntry( path );
-        verify( defRegistry, times( 1 ) ).invalidateCache( path );
-        verifyUnDeployed( registeredDef );
-        verifyDeleteEvent( path, registeredDef );
+    protected void testDeleteResourceRegisteredDeployed(Def registeredDef,
+                                                        DeploymentInfo registeredDeploymentInfo) throws Exception {
+        prepareRegisteredResource(path,
+                                  registeredDef,
+                                  registeredDeploymentInfo);
+        changeHandler.processResourceDelete(path,
+                                            sessionInfo);
+        verify(defRegistry,
+               times(1)).getEntry(path);
+        verify(defRegistry,
+               times(1)).invalidateCache(path);
+        verifyUnDeployed(registeredDef);
+        verifyDeleteEvent(path,
+                          registeredDef);
     }
 
     /**
      * Verifies that the given definition has been properly registered and deployed.
      */
-    protected void verifyRegisteredAndDeployed( Path path, Def def ) throws Exception {
+    protected void verifyRegisteredAndDeployed(Path path,
+                                               Def def) throws Exception {
         // the definition should have been registered and deployed
-        verify( defRegistry, times( 1 ) ).setEntry( path, def );
-        if ( def instanceof DataSourceDef ) {
-            verify( runtimeManager, times( 1 ) ).deployDataSource( ( DataSourceDef ) def, DeploymentOptions.create( ) );
+        verify(defRegistry,
+               times(1)).setEntry(path,
+                                  def);
+        if (def instanceof DataSourceDef) {
+            verify(runtimeManager,
+                   times(1)).deployDataSource((DataSourceDef) def,
+                                              DeploymentOptions.create());
         } else {
-            verify( runtimeManager, times( 1 ) ).deployDriver( ( DriverDef ) def, DeploymentOptions.create( ) );
+            verify(runtimeManager,
+                   times(1)).deployDriver((DriverDef) def,
+                                          DeploymentOptions.create());
         }
     }
 
     /**
      * Verifies that the given definition has been un-deployed.
      */
-    protected void verifyUnDeployed( Def def ) throws Exception {
+    protected void verifyUnDeployed(Def def) throws Exception {
         // the definition should have been un-deployed.
-        if ( def instanceof DataSourceDef ) {
-            DataSourceDeploymentInfo deploymentInfo = runtimeManager.getDataSourceDeploymentInfo( def.getUuid( ) );
+        if (def instanceof DataSourceDef) {
+            DataSourceDeploymentInfo deploymentInfo = runtimeManager.getDataSourceDeploymentInfo(def.getUuid());
             // is deployed by construction
-            assertNotNull( deploymentInfo );
-            verify( runtimeManager, times( 1 ) ).unDeployDataSource( deploymentInfo,
-                    UnDeploymentOptions.forcedUnDeployment( ) );
+            assertNotNull(deploymentInfo);
+            verify(runtimeManager,
+                   times(1)).unDeployDataSource(deploymentInfo,
+                                                UnDeploymentOptions.forcedUnDeployment());
         } else {
-            DriverDeploymentInfo deploymentInfo = runtimeManager.getDriverDeploymentInfo( def.getUuid( ) );
+            DriverDeploymentInfo deploymentInfo = runtimeManager.getDriverDeploymentInfo(def.getUuid());
             // is deployed by construction
-            assertNotNull( deploymentInfo );
-            verify( runtimeManager, times( 1 ) ).unDeployDriver( deploymentInfo,
-                    UnDeploymentOptions.forcedUnDeployment( ) );
+            assertNotNull(deploymentInfo);
+            verify(runtimeManager,
+                   times(1)).unDeployDriver(deploymentInfo,
+                                            UnDeploymentOptions.forcedUnDeployment());
         }
     }
 
     /**
      * verifies that no actions has been invoked on the main components.
      */
-    protected void verifyNoActions( ) throws Exception {
-        verify( defRegistry, never( ) ).setEntry( any( Path.class ), any( Def.class ) );
-        verify( defRegistry, never( ) ).invalidateCache( any( Path.class ) );
+    protected void verifyNoActions() throws Exception {
+        verify(defRegistry,
+               never()).setEntry(any(Path.class),
+                                 any(Def.class));
+        verify(defRegistry,
+               never()).invalidateCache(any(Path.class));
 
-        verify( runtimeManager, never( ) ).unDeployDataSource( any( DataSourceDeploymentInfo.class ), any( UnDeploymentOptions.class ) );
-        verify( runtimeManager, never( ) ).deployDataSource( any( DataSourceDef.class ), any( DeploymentOptions.class ) );
-        verify( runtimeManager, never( ) ).unDeployDriver( any( DriverDeploymentInfo.class ), any( UnDeploymentOptions.class ) );
-        verify( runtimeManager, never( ) ).deployDriver( any( DriverDef.class ), any( DeploymentOptions.class ) );
+        verify(runtimeManager,
+               never()).unDeployDataSource(any(DataSourceDeploymentInfo.class),
+                                           any(UnDeploymentOptions.class));
+        verify(runtimeManager,
+               never()).deployDataSource(any(DataSourceDef.class),
+                                         any(DeploymentOptions.class));
+        verify(runtimeManager,
+               never()).unDeployDriver(any(DriverDeploymentInfo.class),
+                                       any(UnDeploymentOptions.class));
+        verify(runtimeManager,
+               never()).deployDriver(any(DriverDef.class),
+                                     any(DeploymentOptions.class));
 
-        verifyNoEvents( );
+        verifyNoEvents();
     }
 
-    protected void verifyNoDeployments( ) throws Exception {
-        verify( runtimeManager, never( ) ).deployDataSource( any( DataSourceDef.class ), any( DeploymentOptions.class ) );
-        verify( runtimeManager, never( ) ).deployDriver( any( DriverDef.class ), any( DeploymentOptions.class ) );
+    protected void verifyNoDeployments() throws Exception {
+        verify(runtimeManager,
+               never()).deployDataSource(any(DataSourceDef.class),
+                                         any(DeploymentOptions.class));
+        verify(runtimeManager,
+               never()).deployDriver(any(DriverDef.class),
+                                     any(DeploymentOptions.class));
     }
 
-    protected void verifyNoEvents( ) {
-        verify( eventHelper, never( ) ).fireCreateEvent( any( NewDriverEvent.class ) );
-        verify( eventHelper, never( ) ).fireUpdateEvent( any( UpdateDriverEvent.class ) );
-        verify( eventHelper, never( ) ).fireDeleteEvent( any( DeleteDriverEvent.class ) );
-        verify( eventHelper, never( ) ).fireCreateEvent( any( NewDataSourceEvent.class ) );
-        verify( eventHelper, never( ) ).fireUpdateEvent( any( UpdateDataSourceEvent.class ) );
-        verify( eventHelper, never( ) ).fireDeleteEvent( any( DeleteDataSourceEvent.class ) );
+    protected void verifyNoEvents() {
+        verify(eventHelper,
+               never()).fireCreateEvent(any(NewDriverEvent.class));
+        verify(eventHelper,
+               never()).fireUpdateEvent(any(UpdateDriverEvent.class));
+        verify(eventHelper,
+               never()).fireDeleteEvent(any(DeleteDriverEvent.class));
+        verify(eventHelper,
+               never()).fireCreateEvent(any(NewDataSourceEvent.class));
+        verify(eventHelper,
+               never()).fireUpdateEvent(any(UpdateDataSourceEvent.class));
+        verify(eventHelper,
+               never()).fireDeleteEvent(any(DeleteDataSourceEvent.class));
     }
 
-    protected void verifyAddEvent( Path path, Def addedDef ) {
-        if ( addedDef instanceof DataSourceDef ) {
-            verify( eventHelper, times( 1 ) ).fireCreateEvent( new NewDataSourceEvent( ( DataSourceDef ) addedDef,
-                    projectService.resolveProject( path ), SESSION_ID, IDENTIFIER ) );
+    protected void verifyAddEvent(Path path,
+                                  Def addedDef) {
+        if (addedDef instanceof DataSourceDef) {
+            verify(eventHelper,
+                   times(1)).fireCreateEvent(new NewDataSourceEvent((DataSourceDef) addedDef,
+                                                                    moduleService.resolveModule(path),
+                                                                    SESSION_ID,
+                                                                    IDENTIFIER));
         } else {
-            verify( eventHelper, times( 1 ) ).fireCreateEvent( new NewDriverEvent( ( DriverDef ) addedDef,
-                    projectService.resolveProject( path ), SESSION_ID, IDENTIFIER ) );
+            verify(eventHelper,
+                   times(1)).fireCreateEvent(new NewDriverEvent((DriverDef) addedDef,
+                                                                moduleService.resolveModule(path),
+                                                                SESSION_ID,
+                                                                IDENTIFIER));
         }
     }
 
-    protected void verifyUpdateEvent( Path path, Def def, Def originalDef ) {
-        if ( def instanceof DataSourceDef ) {
-            verify( eventHelper, times( 1 ) ).fireUpdateEvent( new UpdateDataSourceEvent( ( DataSourceDef ) def,
-                    projectService.resolveProject( path ), SESSION_ID, IDENTIFIER, ( DataSourceDef ) originalDef ) );
+    protected void verifyUpdateEvent(Path path,
+                                     Def def,
+                                     Def originalDef) {
+        if (def instanceof DataSourceDef) {
+            verify(eventHelper,
+                   times(1)).fireUpdateEvent(new UpdateDataSourceEvent((DataSourceDef) def,
+                                                                       moduleService.resolveModule(path),
+                                                                       SESSION_ID,
+                                                                       IDENTIFIER,
+                                                                       (DataSourceDef) originalDef));
         } else {
-            verify( eventHelper, times( 1 ) ).fireUpdateEvent( new UpdateDriverEvent( ( DriverDef ) def,
-                    projectService.resolveProject( path ), SESSION_ID, IDENTIFIER, ( DriverDef ) originalDef ) );
+            verify(eventHelper,
+                   times(1)).fireUpdateEvent(new UpdateDriverEvent((DriverDef) def,
+                                                                   moduleService.resolveModule(path),
+                                                                   SESSION_ID,
+                                                                   IDENTIFIER,
+                                                                   (DriverDef) originalDef));
         }
     }
 
-    protected void verifyDeleteEvent( Path path, Def def ) {
-        if ( def instanceof DataSourceDef ) {
-            verify( eventHelper, times( 1 ) ).fireDeleteEvent( new DeleteDataSourceEvent( ( DataSourceDef ) def,
-                    projectService.resolveProject( path ), SESSION_ID, IDENTIFIER ) );
+    protected void verifyDeleteEvent(Path path,
+                                     Def def) {
+        if (def instanceof DataSourceDef) {
+            verify(eventHelper,
+                   times(1)).fireDeleteEvent(new DeleteDataSourceEvent((DataSourceDef) def,
+                                                                       moduleService.resolveModule(path),
+                                                                       SESSION_ID,
+                                                                       IDENTIFIER));
         } else {
-            verify( eventHelper, times( 1 ) ).fireDeleteEvent( new DeleteDriverEvent( ( DriverDef ) def,
-                    projectService.resolveProject( path ), SESSION_ID, IDENTIFIER ) );
+            verify(eventHelper,
+                   times(1)).fireDeleteEvent(new DeleteDriverEvent((DriverDef) def,
+                                                                   moduleService.resolveModule(path),
+                                                                   SESSION_ID,
+                                                                   IDENTIFIER));
         }
     }
 
-    protected void prepareRegisteredResource( Path path, Def registeredDef, DeploymentInfo deploymentInfo ) throws Exception {
-        when( defRegistry.getEntry( path ) ).thenReturn( registeredDef );
-        if ( registeredDef != null && deploymentInfo != null ) {
-            if ( registeredDef instanceof DataSourceDef ) {
-                when( runtimeManager.getDataSourceDeploymentInfo( registeredDef.getUuid( ) ) ).thenReturn( ( DataSourceDeploymentInfo ) deploymentInfo );
+    protected void prepareRegisteredResource(Path path,
+                                             Def registeredDef,
+                                             DeploymentInfo deploymentInfo) throws Exception {
+        when(defRegistry.getEntry(path)).thenReturn(registeredDef);
+        if (registeredDef != null && deploymentInfo != null) {
+            if (registeredDef instanceof DataSourceDef) {
+                when(runtimeManager.getDataSourceDeploymentInfo(registeredDef.getUuid())).thenReturn((DataSourceDeploymentInfo) deploymentInfo);
             } else {
-                when( runtimeManager.getDriverDeploymentInfo( registeredDef.getUuid( ) ) ).thenReturn( ( DriverDeploymentInfo ) deploymentInfo );
+                when(runtimeManager.getDriverDeploymentInfo(registeredDef.getUuid())).thenReturn((DriverDeploymentInfo) deploymentInfo);
             }
         }
     }
 
-    protected void prepareDef( Def def ) {
-        when( path.toURI( ) ).thenReturn( FILE_URI );
+    protected void prepareDef(Def def) {
+        when(path.toURI()).thenReturn(FILE_URI);
         String content;
-        if ( def instanceof DataSourceDef ) {
-            when( path.getFileName( ) ).thenReturn( "File.datasource" );
-            when( serviceHelper.isDataSourceFile( path ) ).thenReturn( true );
-            content = DataSourceDefSerializer.serialize( ( DataSourceDef ) def );
+        if (def instanceof DataSourceDef) {
+            when(path.getFileName()).thenReturn("File.datasource");
+            when(serviceHelper.isDataSourceFile(path)).thenReturn(true);
+            content = DataSourceDefSerializer.serialize((DataSourceDef) def);
         } else {
-            when( path.getFileName( ) ).thenReturn( "File.driver" );
-            when( serviceHelper.isDriverFile( path ) ).thenReturn( true );
-            content = DriverDefSerializer.serialize( ( DriverDef ) def );
+            when(path.getFileName()).thenReturn("File.driver");
+            when(serviceHelper.isDriverFile(path)).thenReturn(true);
+            content = DriverDefSerializer.serialize((DriverDef) def);
         }
-        when( ioService.readAllString( Paths.convert( path ) ) ).thenReturn( content );
+        when(ioService.readAllString(Paths.convert(path))).thenReturn(content);
     }
 }

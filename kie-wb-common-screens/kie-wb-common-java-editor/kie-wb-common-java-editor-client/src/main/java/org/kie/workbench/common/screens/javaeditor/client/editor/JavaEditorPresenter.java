@@ -84,7 +84,7 @@ public class JavaEditorPresenter
 
     @Override
     protected void makeMenuBar() {
-        menuBuilder.addNewTopLevelMenu(versionRecordManager.buildMenu());
+        fileMenuBuilder.addNewTopLevelMenu(versionRecordManager.buildMenu());
     }
 
     @WorkbenchPartView

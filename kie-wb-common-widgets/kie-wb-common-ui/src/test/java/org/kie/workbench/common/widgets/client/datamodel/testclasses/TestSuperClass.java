@@ -18,7 +18,7 @@ package org.kie.workbench.common.widgets.client.datamodel.testclasses;
 import java.util.List;
 
 /**
- * Test class to check data-types are extracted correctly by ProjectDataModelOracleBuilder for subclasses and delegated classes
+ * Test class to check data-types are extracted correctly by ModuleDataModelOracleBuilder for subclasses and delegated classes
  */
 public class TestSuperClass {
 
@@ -28,7 +28,7 @@ public class TestSuperClass {
         return field1;
     }
 
-    public void setField1( final String field1 ) {
+    public void setField1(final String field1) {
         this.field1 = field1;
     }
 
@@ -44,7 +44,7 @@ public class TestSuperClass {
             return nestedField1;
         }
 
-        public void setNestedField1( final String nestedField1 ) {
+        public void setNestedField1(final String nestedField1) {
             this.nestedField1 = nestedField1;
         }
 
@@ -59,7 +59,5 @@ public class TestSuperClass {
         public Product methodDoingSomethingThatReturnsAnOuterClass() {
             return null;
         }
-
     }
-
 }

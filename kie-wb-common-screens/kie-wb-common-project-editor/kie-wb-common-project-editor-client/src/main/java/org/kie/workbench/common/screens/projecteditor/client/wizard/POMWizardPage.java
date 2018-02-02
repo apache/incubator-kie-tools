@@ -29,7 +29,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
-import org.kie.workbench.common.screens.projecteditor.util.NewProjectUtils;
+import org.kie.workbench.common.screens.projecteditor.util.NewWorkspaceProjectUtils;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
@@ -74,7 +74,7 @@ public class POMWizardPage
                 }
 
                 // TODO Move to PomBuilder
-                final String sanitizedProjectName = NewProjectUtils.sanitizeProjectName(pomEditor.getPom().getName());
+                final String sanitizedProjectName = NewWorkspaceProjectUtils.sanitizeProjectName(pomEditor.getPom().getName());
                 if (!userModifiedArtifactId) {
                     pomEditor.setArtifactID(sanitizedProjectName);
                     validateArtifactId(sanitizedProjectName);

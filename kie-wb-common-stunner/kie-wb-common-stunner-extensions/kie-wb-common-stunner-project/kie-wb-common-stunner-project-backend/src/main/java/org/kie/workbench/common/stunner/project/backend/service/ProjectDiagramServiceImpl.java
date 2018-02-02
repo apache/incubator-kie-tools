@@ -27,9 +27,7 @@ import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.services.backend.service.KieService;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.service.DefinitionSetService;
@@ -52,17 +50,13 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
     private static final Logger LOG =
             LoggerFactory.getLogger(ProjectDiagramServiceImpl.class.getName());
 
-    private final User identity;
     private final SessionInfo sessionInfo;
     private final Event<ResourceOpenedEvent> resourceOpenedEvent;
-    private final KieProjectService projectService;
     private final CommentedOptionFactory commentedOptionFactory;
     private final ProjectDiagramServiceController controller;
 
     protected ProjectDiagramServiceImpl() {
         this(null,
-             null,
-             null,
              null,
              null,
              null,
@@ -78,16 +72,12 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
                                      final Instance<DefinitionSetService> definitionSetServiceInstances,
                                      final BackendRegistryFactory registryFactory,
                                      final @Named("ioStrategy") IOService ioService,
-                                     final User identity,
                                      final SessionInfo sessionInfo,
                                      final Event<ResourceOpenedEvent> resourceOpenedEvent,
-                                     final KieProjectService projectService,
                                      final CommentedOptionFactory commentedOptionFactory) {
         this.ioService = ioService;
-        this.identity = identity;
         this.sessionInfo = sessionInfo;
         this.resourceOpenedEvent = resourceOpenedEvent;
-        this.projectService = projectService;
         this.commentedOptionFactory = commentedOptionFactory;
         this.controller =
                 new ProjectDiagramServiceController(definitionManager,

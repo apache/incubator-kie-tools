@@ -26,8 +26,8 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -39,7 +39,7 @@ public class KModuleServiceImpl
         implements KModuleService {
 
     private IOService ioService;
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
     private MetadataService metadataService;
     private KModuleContentHandler moduleContentHandler;
 
@@ -49,38 +49,38 @@ public class KModuleServiceImpl
 
     @Inject
     public KModuleServiceImpl(final @Named("ioStrategy") IOService ioService,
-                              final KieProjectService projectService,
+                              final KieModuleService moduleService,
                               final MetadataService metadataService,
                               final KModuleContentHandler moduleContentHandler) {
         this.ioService = ioService;
-        this.projectService = projectService;
+        this.moduleService = moduleService;
         this.metadataService = metadataService;
         this.moduleContentHandler = moduleContentHandler;
     }
 
-    protected void setProjectService(final KieProjectService projectService) {
-        this.projectService = projectService;
+    protected void setModuleService(final KieModuleService moduleService) {
+        this.moduleService = moduleService;
     }
 
     @Override
     public boolean isKModule(final Path resource) {
         try {
-            //Null resource paths cannot resolve to a Project
+            //Null resource paths cannot resolve to a Module
             if (resource == null) {
                 return false;
             }
 
             //Check if path equals kmodule.xml
-            final KieProject project = projectService.resolveProject(resource);
-            //It's possible that the Incremental Build attempts to act on a Project file before the project has been fully created.
-            //This should be a short-term issue that will be resolved when saving a project batches pom.xml, kmodule.xml and project.imports
+            final KieModule module = moduleService.resolveModule(resource);
+            //It's possible that the Incremental Build attempts to act on a Module file before the module has been fully created.
+            //This should be a short-term issue that will be resolved when saving a module batches pom.xml, kmodule.xml and project.imports
             //etc into a single git-batch. At present they are saved individually leading to multiple Incremental Build requests.
-            if (project == null) {
+            if (module == null) {
                 return false;
             }
 
             final org.uberfire.java.nio.file.Path path = Paths.convert(resource).normalize();
-            final org.uberfire.java.nio.file.Path kmoduleFilePath = Paths.convert(project.getKModuleXMLPath());
+            final org.uberfire.java.nio.file.Path kmoduleFilePath = Paths.convert(module.getKModuleXMLPath());
             return path.startsWith(kmoduleFilePath);
         } catch (Exception e) {
             throw ExceptionUtilities.handleException(e);
@@ -97,7 +97,7 @@ public class KModuleServiceImpl
                 ioService.write(pathToKModuleXML,
                                 moduleContentHandler.toString(new KModuleModel()));
 
-                //Don't raise a NewResourceAdded event as this is handled at the Project level in ProjectServices
+                //Don't raise a NewResourceAdded event as this is handled at the Module level in ModuleServices
 
                 return Paths.convert(pathToKModuleXML);
             }
@@ -135,8 +135,8 @@ public class KModuleServiceImpl
                                                         metadata));
             }
 
-            //The pom.xml, kmodule.xml and project.imports are all saved from ProjectScreenPresenter
-            //We only raise InvalidateDMOProjectCacheEvent and ResourceUpdatedEvent(pom.xml) events once
+            //The pom.xml, kmodule.xml and project.imports are all saved from ModuleScreenPresenter
+            //We only raise InvalidateDMOModuleCacheEvent and ResourceUpdatedEvent(pom.xml) events once
             //in POMService.save to avoid duplicating events (and re-construction of DMO).
 
             return path;

@@ -34,14 +34,16 @@ import javax.inject.Named;
 
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.TopFieldDocs;
+import org.apache.lucene.search.TotalHitCountCollector;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindAllChangeImpactQuery;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueBranchNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueProjectNameIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueProjectRootPathIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueModuleNameIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueModuleRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
 import org.kie.workbench.common.services.refactoring.service.RefactoringQueryService;
@@ -274,17 +276,17 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
         request.getQueryTerms().addAll(refOpRequest.getQueryTerms());
 
         // add project info
-        String projectName = refOpRequest.getProjectName();
+        String projectName = refOpRequest.getModuleName();
         if (projectName != null && projectName != QueryOperationRequest.ALL) {
-            ValueProjectNameIndexTerm valueIndexTerm = new ValueProjectNameIndexTerm(projectName);
+            ValueModuleNameIndexTerm valueIndexTerm = new ValueModuleNameIndexTerm(projectName);
             Set<ValueIndexTerm> queryTerms = new HashSet<ValueIndexTerm>(1);
             queryTerms.add(valueIndexTerm);
             request.getQueryTerms().addAll(queryTerms);
         }
 
-        String projectRootPathURI = refOpRequest.getProjectRootPathURI();
+        String projectRootPathURI = refOpRequest.getModuleRootPathURI();
         if (projectRootPathURI != null && projectRootPathURI != QueryOperationRequest.ALL) {
-            ValueProjectRootPathIndexTerm valueIndexTerm = new ValueProjectRootPathIndexTerm(projectRootPathURI);
+            ValueModuleRootPathIndexTerm valueIndexTerm = new ValueModuleRootPathIndexTerm(projectRootPathURI);
             Set<ValueIndexTerm> queryTerms = new HashSet<ValueIndexTerm>(1);
             queryTerms.add(valueIndexTerm);
             request.getQueryTerms().addAll(queryTerms);

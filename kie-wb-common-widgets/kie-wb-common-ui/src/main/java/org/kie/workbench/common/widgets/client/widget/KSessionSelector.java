@@ -18,13 +18,10 @@ package org.kie.workbench.common.widgets.client.widget;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Inject;
 
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.SelectionChangeEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
@@ -33,8 +30,8 @@ import org.kie.workbench.common.services.shared.kmodule.KBaseModel;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 import org.kie.workbench.common.services.shared.kmodule.KSessionModel;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
 
@@ -46,7 +43,7 @@ public class KSessionSelector
     private static String NON_EXISTING_KBASE = "---";
 
     private KSessionSelectorView view;
-    private Caller<KieProjectService> projectService;
+    private Caller<KieModuleService> moduleService;
 
     private Caller<KModuleService> kModuleService;
     private KModuleModel kmodule;
@@ -55,10 +52,10 @@ public class KSessionSelector
 
     @Inject
     public KSessionSelector(final KSessionSelectorView view,
-                            final Caller<KieProjectService> projectService,
+                            final Caller<KieModuleService> moduleService,
                             final Caller<KModuleService> kModuleService) {
         this.view = view;
-        this.projectService = projectService;
+        this.moduleService = moduleService;
         this.kModuleService = kModuleService;
 
         view.setPresenter(this);
@@ -66,14 +63,14 @@ public class KSessionSelector
 
     public void init(final Path path,
                      final String ksession) {
-        projectService.call(getSuccessfulResolveProjectCallback(ksession)).resolveProject(path);
+        moduleService.call(getSuccessfulResolveModuleCallback(ksession)).resolveModule(path);
     }
 
-    private RemoteCallback<KieProject> getSuccessfulResolveProjectCallback(final String currentKSession) {
-        return new RemoteCallback<KieProject>() {
+    private RemoteCallback<KieModule> getSuccessfulResolveModuleCallback(final String currentKSession) {
+        return new RemoteCallback<KieModule>() {
             @Override
-            public void callback(KieProject project) {
-                kModuleService.call(getSuccessfulLoadKModuleCallback(currentKSession)).load(project.getKModuleXMLPath());
+            public void callback(KieModule module) {
+                kModuleService.call(getSuccessfulLoadKModuleCallback(currentKSession)).load(module.getKModuleXMLPath());
             }
         };
     }

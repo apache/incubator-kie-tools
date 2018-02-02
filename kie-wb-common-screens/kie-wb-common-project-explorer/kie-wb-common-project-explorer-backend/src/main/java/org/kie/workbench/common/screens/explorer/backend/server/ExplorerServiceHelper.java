@@ -30,11 +30,10 @@ import com.google.common.collect.Lists;
 import com.thoughtworks.xstream.XStream;
 import org.guvnor.common.services.backend.file.LinkedDotFileFilter;
 import org.guvnor.common.services.backend.file.LinkedRegularFileFilter;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.metadata.MetadataService;
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.guvnor.structure.repositories.Repository;
 import org.kie.soup.commons.xstream.XStreamUtils;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemOperation;
@@ -43,7 +42,7 @@ import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.screens.explorer.utils.Sorters;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.UserServicesImpl;
@@ -70,7 +69,7 @@ public class ExplorerServiceHelper {
     private LinkedRegularFileFilter regularFileFilter = new LinkedRegularFileFilter(dotFileFilter);
     private XStream xs;
 
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
     private FolderListingResolver folderListingResolver;
     private IOService ioService;
     private IOService ioServiceConfig;
@@ -88,7 +87,7 @@ public class ExplorerServiceHelper {
     }
 
     @Inject
-    public ExplorerServiceHelper(final KieProjectService projectService,
+    public ExplorerServiceHelper(final KieModuleService moduleService,
                                  final FolderListingResolver folderListingResolver,
                                  @Named("ioStrategy") final IOService ioService,
                                  @Named("configIO") final IOService ioServiceConfig,
@@ -100,7 +99,7 @@ public class ExplorerServiceHelper {
                                  final CopyService copyService,
                                  @Managed final ExecutorService executorService) {
         this();
-        this.projectService = projectService;
+        this.moduleService = moduleService;
         this.folderListingResolver = folderListingResolver;
         this.ioService = ioService;
         this.ioServiceConfig = ioServiceConfig;
@@ -146,7 +145,7 @@ public class ExplorerServiceHelper {
         List<FolderItem> result = new ArrayList<FolderItem>();
         Package pkg = _pkg;
         while (pkg != null) {
-            final Package parent = projectService.resolveParentPackage(pkg);
+            final Package parent = moduleService.resolveParentPackage(pkg);
             if (parent != null) {
                 result.add(toFolderItem(parent));
             }
@@ -157,11 +156,11 @@ public class ExplorerServiceHelper {
     }
 
     public FolderListing getFolderListing(final FolderItem selectedItem,
-                                          final Project selectedProject,
+                                          final Module selectedModule,
                                           final Package selectedPackage,
                                           final ActiveOptions options) {
         return folderListingResolver.resolve(selectedItem,
-                                             selectedProject,
+                                             selectedModule,
                                              selectedPackage,
                                              this,
                                              options);
@@ -252,9 +251,10 @@ public class ExplorerServiceHelper {
             return true;
         }
 
-        final Set<Package> childPackages = projectService.resolvePackages(pkg);
+        final Set<Package> childPackages = moduleService.resolvePackages(pkg);
         for (final Package childPackage : childPackages) {
-            if (hasAssets(childPackage)) {
+
+            if (!childPackage.equals(pkg) && hasAssets(childPackage)) {
                 return true;
             }
         }
@@ -283,7 +283,7 @@ public class ExplorerServiceHelper {
             return emptyList();
         }
 
-        final Set<Package> childPackages = projectService.resolvePackages(pkg);
+        final Set<Package> childPackages = moduleService.resolvePackages(pkg);
         for (final Package childPackage : childPackages) {
             folderItems.add(toFolderItem(childPackage));
         }
@@ -305,7 +305,7 @@ public class ExplorerServiceHelper {
 
     private List<FolderItem> getPathSegments(final Path path) {
         org.uberfire.java.nio.file.Path nioSegmentPath = Paths.convert(path).getParent();
-        //We're not interested in the terminal segment prior to root (i.e. the Project name)
+        //We're not interested in the terminal segment prior to root (i.e. the Module name)
         final int segmentCount = nioSegmentPath.getNameCount();
         if (segmentCount < 1) {
             return new ArrayList<FolderItem>();
@@ -348,10 +348,8 @@ public class ExplorerServiceHelper {
         return folderItems;
     }
 
-    public void store(final OrganizationalUnit selectedOrganizationalUnit,
-                      final Repository selectedRepository,
-                      final String branch,
-                      final Project selectedProject,
+    public void store(final WorkspaceProject project,
+                      final Module selectedModule,
                       final FolderListing folderListing,
                       final Package selectedPackage,
                       final ActiveOptions options) {
@@ -360,11 +358,7 @@ public class ExplorerServiceHelper {
                                                                                    "user.nav");
         final org.uberfire.java.nio.file.Path lastUserNavPath = userServices.buildPath("explorer",
                                                                                        "last.user.nav");
-
-        final OrganizationalUnit _selectedOrganizationalUnit = selectedOrganizationalUnit;
-        final Repository _selectedRepository = selectedRepository;
-        final String _branch = branch;
-        final Project _selectedProject = selectedProject;
+        final Module _selectedModule = selectedModule;
         final FolderItem _selectedItem = folderListing.getItem();
         final org.guvnor.common.services.project.model.Package _selectedPackage;
         if (selectedPackage != null) {
@@ -386,10 +380,8 @@ public class ExplorerServiceHelper {
                 try {
                     store(userNavPath,
                           lastUserNavPath,
-                          _selectedOrganizationalUnit,
-                          _selectedRepository,
-                          _branch,
-                          _selectedProject,
+                          project,
+                          _selectedModule,
                           _selectedPackage,
                           _selectedItem,
                           options);
@@ -403,10 +395,8 @@ public class ExplorerServiceHelper {
 
     public void store(final org.uberfire.java.nio.file.Path userNav,
                       final org.uberfire.java.nio.file.Path lastUserNav,
-                      final OrganizationalUnit organizationalUnit,
-                      final Repository repository,
-                      final String branch,
-                      final Project project,
+                      final WorkspaceProject project,
+                      final Module module,
                       final Package pkg,
                       final FolderItem item,
                       final ActiveOptions options) {
@@ -418,38 +408,33 @@ public class ExplorerServiceHelper {
             content = _content;
         }
         final UserExplorerLastData lastContent = new UserExplorerLastData();
-        if (organizationalUnit != null) {
-            content.setOrganizationalUnit(organizationalUnit);
+        if (project != null) {
+            content.addRepository(project.getOrganizationalUnit(),
+                                  project.getRepository());
         }
-        if (repository != null && organizationalUnit != null) {
-            content.addRepository(organizationalUnit,
-                                  repository);
+        if (module != null && project != null) {
+            content.addModule(project.getOrganizationalUnit(),
+                              project.getRepository(),
+                              module);
         }
-        if (project != null && organizationalUnit != null && repository != null) {
-            content.addProject(organizationalUnit,
-                               repository,
-                               project);
-        }
-        if (item != null && organizationalUnit != null && repository != null && branch != null && project != null) {
-            lastContent.setFolderItem(organizationalUnit,
-                                      repository,
-                                      branch,
-                                      project,
+        if (item != null && project != null && project.getBranch() != null && module != null) {
+            lastContent.setFolderItem(project.getRepository(),
+                                      project.getBranch().getName(),
+                                      module,
                                       item);
-            content.addFolderItem(organizationalUnit,
-                                  repository,
-                                  project,
+            content.addFolderItem(project.getOrganizationalUnit(),
+                                  project.getRepository(),
+                                  module,
                                   item);
         }
-        if (pkg != null && organizationalUnit != null && repository != null && branch != null && project != null) {
-            lastContent.setPackage(organizationalUnit,
-                                   repository,
-                                   branch,
-                                   project,
+        if (pkg != null && project != null && project.getBranch() != null && module != null) {
+            lastContent.setPackage(project.getRepository(),
+                                   project.getBranch().getName(),
+                                   module,
                                    pkg);
-            content.addPackage(organizationalUnit,
-                               repository,
-                               project,
+            content.addPackage(project.getOrganizationalUnit(),
+                               project.getRepository(),
+                               module,
                                pkg);
         }
         if (options != null && !options.isEmpty()) {

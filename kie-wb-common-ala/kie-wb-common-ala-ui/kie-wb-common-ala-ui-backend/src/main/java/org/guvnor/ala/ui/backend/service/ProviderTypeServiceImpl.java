@@ -16,6 +16,10 @@
 
 package org.guvnor.ala.ui.backend.service;
 
+import static org.guvnor.ala.registry.RuntimeRegistry.PROVIDER_TYPE_NAME_SORT;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,12 +36,9 @@ import org.guvnor.ala.ui.model.ProviderTypeKey;
 import org.guvnor.ala.ui.model.ProviderTypeStatus;
 import org.guvnor.ala.ui.preferences.ProvisioningPreferences;
 import org.guvnor.ala.ui.service.ProviderTypeService;
-import org.guvnor.common.services.project.preferences.scope.GlobalPreferenceScope;
+import org.guvnor.common.services.shared.preferences.GuvnorPreferenceScopes;
 import org.jboss.errai.bus.server.annotations.Service;
-
-import static org.guvnor.ala.registry.RuntimeRegistry.PROVIDER_TYPE_NAME_SORT;
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+import org.uberfire.preferences.shared.PreferenceScopeFactory;
 
 @Service
 @ApplicationScoped
@@ -48,7 +49,7 @@ public class ProviderTypeServiceImpl
 
     private ProvisioningPreferences provisioningPreferences;
 
-    private GlobalPreferenceScope globalPreferenceScope;
+    private PreferenceScopeFactory scopeFactory;
 
     public ProviderTypeServiceImpl() {
         //Empty constructor for Weld proxying
@@ -57,10 +58,10 @@ public class ProviderTypeServiceImpl
     @Inject
     public ProviderTypeServiceImpl(final RuntimeProvisioningServiceBackend runtimeProvisioningService,
                                    final ProvisioningPreferences provisioningPreferences,
-                                   final GlobalPreferenceScope globalPreferenceScope) {
+                                   final PreferenceScopeFactory scopeFactory) {
         this.runtimeProvisioningService = runtimeProvisioningService;
         this.provisioningPreferences = provisioningPreferences;
-        this.globalPreferenceScope = globalPreferenceScope;
+        this.scopeFactory = scopeFactory;
     }
 
     @Override
@@ -151,6 +152,6 @@ public class ProviderTypeServiceImpl
     private void saveProviderTypeEnablements(final Map<ProviderType, Boolean> providerTypeEnablements) {
         provisioningPreferences.load();
         provisioningPreferences.setProviderTypeEnablements(providerTypeEnablements);
-        provisioningPreferences.save(globalPreferenceScope.resolve());
+        provisioningPreferences.save(scopeFactory.createScope(GuvnorPreferenceScopes.GLOBAL));
     }
 }

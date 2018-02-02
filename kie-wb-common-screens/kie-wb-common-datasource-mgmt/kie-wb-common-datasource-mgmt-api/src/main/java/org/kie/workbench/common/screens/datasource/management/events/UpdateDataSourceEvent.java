@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.screens.datasource.management.events;
 
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.screens.datasource.management.model.DataSourceDef;
@@ -26,62 +26,75 @@ public class UpdateDataSourceEvent extends BaseDataSourceEvent {
 
     private DataSourceDef originalDataSourceDef;
 
-    public UpdateDataSourceEvent( @MapsTo( "dataSourceDef" ) final DataSourceDef dataSourceDef,
-                                  @MapsTo( "project" ) final Project project,
-                                  @MapsTo( "sessionId" ) final String sessionId,
-                                  @MapsTo( "identity" ) final String identity,
-                                  @MapsTo( "originalDataSourceDef" ) final DataSourceDef originalDataSourceDef ) {
-        super( dataSourceDef, project, sessionId, identity );
+    public UpdateDataSourceEvent(@MapsTo("dataSourceDef") final DataSourceDef dataSourceDef,
+                                 @MapsTo("module") final Module module,
+                                 @MapsTo("sessionId") final String sessionId,
+                                 @MapsTo("identity") final String identity,
+                                 @MapsTo("originalDataSourceDef") final DataSourceDef originalDataSourceDef) {
+        super(dataSourceDef,
+              module,
+              sessionId,
+              identity);
         this.originalDataSourceDef = originalDataSourceDef;
     }
 
-    public UpdateDataSourceEvent( final DataSourceDef dataSourceDef,
-                                  final String sessionId,
-                                  final String identity,
-                                  final DataSourceDef originalDataSourceDef ) {
-        this( dataSourceDef, null, sessionId, identity, originalDataSourceDef );
+    public UpdateDataSourceEvent(final DataSourceDef dataSourceDef,
+                                 final String sessionId,
+                                 final String identity,
+                                 final DataSourceDef originalDataSourceDef) {
+        this(dataSourceDef,
+             null,
+             sessionId,
+             identity,
+             originalDataSourceDef);
     }
 
-    public UpdateDataSourceEvent( final DataSourceDef dataSourceDef,
-                                  final String sessionId,
-                                  final String identity ) {
-        this( dataSourceDef, sessionId, identity, null );
+    public UpdateDataSourceEvent(final DataSourceDef dataSourceDef,
+                                 final String sessionId,
+                                 final String identity) {
+        this(dataSourceDef,
+             sessionId,
+             identity,
+             null);
     }
 
-    public UpdateDataSourceEvent( final DataSourceDef dataSourceDef,
-                                  final Project project,
-                                  final String sessionId,
-                                  final String identity ) {
-        this( dataSourceDef, project, sessionId, identity, null );
+    public UpdateDataSourceEvent(final DataSourceDef dataSourceDef,
+                                 final Module module,
+                                 final String sessionId,
+                                 final String identity) {
+        this(dataSourceDef,
+             module,
+             sessionId,
+             identity,
+             null);
     }
 
-    public DataSourceDef getOriginalDataSourceDef( ) {
+    public DataSourceDef getOriginalDataSourceDef() {
         return originalDataSourceDef;
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null || getClass( ) != o.getClass( ) ) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        if ( !super.equals( o ) ) {
+        if (!super.equals(o)) {
             return false;
         }
 
-        UpdateDataSourceEvent that = ( UpdateDataSourceEvent ) o;
+        UpdateDataSourceEvent that = (UpdateDataSourceEvent) o;
 
-        return originalDataSourceDef != null ? originalDataSourceDef.equals( that.originalDataSourceDef ) : that.originalDataSourceDef == null;
-
+        return originalDataSourceDef != null ? originalDataSourceDef.equals(that.originalDataSourceDef) : that.originalDataSourceDef == null;
     }
 
     @Override
-    public int hashCode( ) {
-        int result = super.hashCode( );
+    public int hashCode() {
+        int result = super.hashCode();
         result = ~~result;
-        result = 31 * result + ( originalDataSourceDef != null ? originalDataSourceDef.hashCode( ) : 0 );
+        result = 31 * result + (originalDataSourceDef != null ? originalDataSourceDef.hashCode() : 0);
         result = ~~result;
         return result;
     }

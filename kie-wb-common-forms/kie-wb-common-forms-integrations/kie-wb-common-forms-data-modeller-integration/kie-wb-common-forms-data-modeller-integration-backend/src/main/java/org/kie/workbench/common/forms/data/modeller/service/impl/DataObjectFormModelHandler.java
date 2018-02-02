@@ -33,11 +33,11 @@ import org.kie.workbench.common.forms.model.ModelProperty;
 import org.kie.workbench.common.forms.model.impl.meta.entries.FieldLabelEntry;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.kie.workbench.common.screens.datamodeller.model.maindomain.MainDomainAnnotations;
-import org.kie.workbench.common.services.backend.project.ProjectClassLoaderHelper;
+import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.vfs.Path;
@@ -60,15 +60,29 @@ public class DataObjectFormModelHandler extends AbstractFormModelHandler<DataObj
     protected FieldManager fieldManager;
 
     @Inject
-    public DataObjectFormModelHandler(KieProjectService projectService,
-                                      ProjectClassLoaderHelper classLoaderHelper,
+    public DataObjectFormModelHandler(KieModuleService moduleService,
+                                      ModuleClassLoaderHelper classLoaderHelper,
                                       DataObjectFinderService finderService,
                                       FieldManager fieldManager) {
-        super(projectService,
+        super(moduleService,
               classLoaderHelper);
 
         this.finderService = finderService;
         this.fieldManager = fieldManager;
+    }
+
+    public static boolean isValidDataObjectProperty(final ObjectProperty property) {
+        if (ArrayUtils.contains(RESTRICTED_PROPERTY_NAMES,
+                                property.getName())) {
+            return false;
+        }
+
+        for (String annotation : RESTRICTED_ANNOTATIONS) {
+            if (property.getAnnotation(annotation) != null) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -135,7 +149,7 @@ public class DataObjectFormModelHandler extends AbstractFormModelHandler<DataObj
 
     @Override
     public FormModelHandler<DataObjectFormModel> newInstance() {
-        return new DataObjectFormModelHandler(projectService,
+        return new DataObjectFormModelHandler(moduleService,
                                               classLoaderHelper,
                                               finderService,
                                               fieldManager);
@@ -149,19 +163,5 @@ public class DataObjectFormModelHandler extends AbstractFormModelHandler<DataObj
             modelProperty.getMetaData().addEntry(new FieldLabelEntry(label));
             modelProperty.getMetaData().addEntry(new FieldPlaceHolderEntry(label));
         }
-    }
-
-    public static boolean isValidDataObjectProperty(ObjectProperty property) {
-        if (ArrayUtils.contains(RESTRICTED_PROPERTY_NAMES,
-                                property.getName())) {
-            return false;
-        }
-
-        for (String annotation : RESTRICTED_ANNOTATIONS) {
-            if (property.getAnnotation(annotation) != null) {
-                return false;
-            }
-        }
-        return true;
     }
 }

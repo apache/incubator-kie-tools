@@ -21,8 +21,6 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.screens.library.client.screens.importrepository.ImportRepositoryPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.library.AddProjectButtonPresenter;
 import org.uberfire.client.mvp.UberElement;
@@ -42,19 +40,15 @@ public class EmptyLibraryScreen {
 
     private LibraryPlaces libraryPlaces;
 
-    private ManagedInstance<ImportRepositoryPopUpPresenter> importRepositoryPopUpPresenters;
-
     @Inject
     public EmptyLibraryScreen(final View view,
                               final AddProjectButtonPresenter addProjectButtonPresenter,
                               final ProjectController projectController,
-                              final LibraryPlaces libraryPlaces,
-                              final ManagedInstance<ImportRepositoryPopUpPresenter> importRepositoryPopUpPresenters) {
+                              final LibraryPlaces libraryPlaces) {
         this.view = view;
         this.addProjectButtonPresenter = addProjectButtonPresenter;
         this.projectController = projectController;
         this.libraryPlaces = libraryPlaces;
-        this.importRepositoryPopUpPresenters = importRepositoryPopUpPresenters;
     }
 
     @PostConstruct
@@ -74,8 +68,7 @@ public class EmptyLibraryScreen {
 
     public void importProject() {
         if (userCanCreateProjects()) {
-            final ImportRepositoryPopUpPresenter importRepositoryPopUpPresenter = importRepositoryPopUpPresenters.get();
-            importRepositoryPopUpPresenter.show();
+            libraryPlaces.goToImportRepositoryPopUp();
         }
     }
 

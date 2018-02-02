@@ -21,7 +21,7 @@ import java.math.BigInteger;
 import java.util.Date;
 
 /**
- * Test class to check data-types are extracted correctly by ProjectDataModelOracleBuilder
+ * Test class to check data-types are extracted correctly by ModuleDataModelOracleBuilder
  */
 public class TestDataTypes {
 
@@ -49,7 +49,7 @@ public class TestDataTypes {
         return fieldString;
     }
 
-    public void setFieldString( String fieldString ) {
+    public void setFieldString(String fieldString) {
         this.fieldString = fieldString;
     }
 
@@ -57,7 +57,7 @@ public class TestDataTypes {
         return fieldBooleanObject;
     }
 
-    public void setFieldBooleanObject( Boolean fieldBooleanObject ) {
+    public void setFieldBooleanObject(Boolean fieldBooleanObject) {
         this.fieldBooleanObject = fieldBooleanObject;
     }
 
@@ -65,7 +65,7 @@ public class TestDataTypes {
         return fieldBooleanPrimitive;
     }
 
-    public void setFieldBooleanPrimitive( boolean fieldBooleanPrimitive ) {
+    public void setFieldBooleanPrimitive(boolean fieldBooleanPrimitive) {
         this.fieldBooleanPrimitive = fieldBooleanPrimitive;
     }
 
@@ -73,7 +73,7 @@ public class TestDataTypes {
         return fieldDate;
     }
 
-    public void setFieldDate( Date fieldDate ) {
+    public void setFieldDate(Date fieldDate) {
         this.fieldDate = fieldDate;
     }
 
@@ -81,7 +81,7 @@ public class TestDataTypes {
         return fieldNumeric;
     }
 
-    public void setFieldNumeric( BigDecimal fieldNumeric ) {
+    public void setFieldNumeric(BigDecimal fieldNumeric) {
         this.fieldNumeric = fieldNumeric;
     }
 
@@ -89,7 +89,7 @@ public class TestDataTypes {
         return fieldBigDecimal;
     }
 
-    public void setFieldBigDecimal( BigDecimal fieldBigDecimal ) {
+    public void setFieldBigDecimal(BigDecimal fieldBigDecimal) {
         this.fieldBigDecimal = fieldBigDecimal;
     }
 
@@ -97,7 +97,7 @@ public class TestDataTypes {
         return fieldBigInteger;
     }
 
-    public void setFieldBigInteger( BigInteger fieldBigInteger ) {
+    public void setFieldBigInteger(BigInteger fieldBigInteger) {
         this.fieldBigInteger = fieldBigInteger;
     }
 
@@ -105,7 +105,7 @@ public class TestDataTypes {
         return fieldByteObject;
     }
 
-    public void setFieldByteObject( Byte fieldByteObject ) {
+    public void setFieldByteObject(Byte fieldByteObject) {
         this.fieldByteObject = fieldByteObject;
     }
 
@@ -113,7 +113,7 @@ public class TestDataTypes {
         return fieldDoubleObject;
     }
 
-    public void setFieldDoubleObject( Double fieldDoubleObject ) {
+    public void setFieldDoubleObject(Double fieldDoubleObject) {
         this.fieldDoubleObject = fieldDoubleObject;
     }
 
@@ -121,7 +121,7 @@ public class TestDataTypes {
         return fieldFloatObject;
     }
 
-    public void setFieldFloatObject( Float fieldFloatObject ) {
+    public void setFieldFloatObject(Float fieldFloatObject) {
         this.fieldFloatObject = fieldFloatObject;
     }
 
@@ -129,7 +129,7 @@ public class TestDataTypes {
         return fieldIntegerObject;
     }
 
-    public void setFieldIntegerObject( Integer fieldIntegerObject ) {
+    public void setFieldIntegerObject(Integer fieldIntegerObject) {
         this.fieldIntegerObject = fieldIntegerObject;
     }
 
@@ -137,7 +137,7 @@ public class TestDataTypes {
         return fieldLongObject;
     }
 
-    public void setFieldLongObject( Long fieldLongObject ) {
+    public void setFieldLongObject(Long fieldLongObject) {
         this.fieldLongObject = fieldLongObject;
     }
 
@@ -145,7 +145,7 @@ public class TestDataTypes {
         return fieldShortObject;
     }
 
-    public void setFieldShortObject( Short fieldShortObject ) {
+    public void setFieldShortObject(Short fieldShortObject) {
         this.fieldShortObject = fieldShortObject;
     }
 
@@ -153,7 +153,7 @@ public class TestDataTypes {
         return fieldBytePrimitive;
     }
 
-    public void setFieldBytePrimitive( byte fieldBytePrimitive ) {
+    public void setFieldBytePrimitive(byte fieldBytePrimitive) {
         this.fieldBytePrimitive = fieldBytePrimitive;
     }
 
@@ -161,7 +161,7 @@ public class TestDataTypes {
         return fieldDoublePrimitive;
     }
 
-    public void setFieldDoublePrimitive( double fieldDoublePrimitive ) {
+    public void setFieldDoublePrimitive(double fieldDoublePrimitive) {
         this.fieldDoublePrimitive = fieldDoublePrimitive;
     }
 
@@ -169,7 +169,7 @@ public class TestDataTypes {
         return fieldFloatPrimitive;
     }
 
-    public void setFieldFloatPrimitive( float fieldFloatPrimitive ) {
+    public void setFieldFloatPrimitive(float fieldFloatPrimitive) {
         this.fieldFloatPrimitive = fieldFloatPrimitive;
     }
 
@@ -177,7 +177,7 @@ public class TestDataTypes {
         return fieldIntegerPrimitive;
     }
 
-    public void setFieldIntegerPrimitive( int fieldIntegerPrimitive ) {
+    public void setFieldIntegerPrimitive(int fieldIntegerPrimitive) {
         this.fieldIntegerPrimitive = fieldIntegerPrimitive;
     }
 
@@ -185,7 +185,7 @@ public class TestDataTypes {
         return fieldLongPrimitive;
     }
 
-    public void setFieldLongPrimitive( long fieldLongPrimitive ) {
+    public void setFieldLongPrimitive(long fieldLongPrimitive) {
         this.fieldLongPrimitive = fieldLongPrimitive;
     }
 
@@ -193,8 +193,7 @@ public class TestDataTypes {
         return fieldShortPrimitive;
     }
 
-    public void setFieldShortPrimitive( short fieldShortPrimitive ) {
+    public void setFieldShortPrimitive(short fieldShortPrimitive) {
         this.fieldShortPrimitive = fieldShortPrimitive;
     }
-
 }

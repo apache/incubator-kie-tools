@@ -21,7 +21,7 @@ import java.net.URL;
 
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.junit.Test;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieModule;
 import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.*;
@@ -31,18 +31,17 @@ public class BuilderKieScannerWarningIntegrationTest extends AbstractWeldBuilder
     @Test
     //https://bugzilla.redhat.com/show_bug.cgi?id=1161577
     public void testBuilderKieScannerWarning() throws URISyntaxException {
-        final URL resourceUrl = this.getClass().getResource( "/BuilderKieScannerRepo/src/main/resources/update.drl" );
-        final org.uberfire.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
-        final Path resourcePath = paths.convert( nioResourcePath );
+        final URL resourceUrl = this.getClass().getResource("/BuilderKieScannerRepo/src/main/resources/update.drl");
+        final org.uberfire.java.nio.file.Path nioResourcePath = fs.getPath(resourceUrl.toURI());
+        final Path resourcePath = paths.convert(nioResourcePath);
 
         //Build and look for warnings..
-        final KieProject project = projectService.resolveProject( resourcePath );
-        final BuildResults buildResults = buildService.build( project );
-        assertNotNull( buildResults );
-        assertEquals( 0,
-                      buildResults.getErrorMessages().size() );
-        assertEquals( 1,
-                      buildResults.getInformationMessages().size() );
+        final KieModule module = moduleService.resolveModule(resourcePath);
+        final BuildResults buildResults = buildService.build(module);
+        assertNotNull(buildResults);
+        assertEquals(0,
+                     buildResults.getErrorMessages().size());
+        assertEquals(1,
+                     buildResults.getInformationMessages().size());
     }
-
 }

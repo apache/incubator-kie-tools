@@ -23,7 +23,7 @@ import javax.inject.Named;
 import org.kie.workbench.common.screens.datasource.management.backend.core.DataSourceRuntimeManager;
 import org.kie.workbench.common.screens.datasource.management.backend.service.DataSourceServicesHelper;
 import org.kie.workbench.common.screens.datasource.management.util.DataSourceEventHelper;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.io.IOService;
 
 /**
@@ -32,18 +32,22 @@ import org.uberfire.io.IOService;
  * DBCPDataSourceProvider and DBCPDriverProvider implementations.
  */
 @ApplicationScoped
-@Named( value = "StandaloneModeChangeHandler" )
+@Named(value = "StandaloneModeChangeHandler")
 public class StandaloneModeChangeHandler extends AbstractDefChangeHandler {
 
-    public StandaloneModeChangeHandler( ) {
+    public StandaloneModeChangeHandler() {
     }
 
     @Inject
-    public StandaloneModeChangeHandler( DataSourceRuntimeManager runtimeManager,
-                                        DataSourceServicesHelper serviceHelper,
-                                        @Named( "ioStrategy" ) IOService ioService,
-                                        KieProjectService projectService,
-                                        DataSourceEventHelper eventHelper ) {
-        super( runtimeManager, serviceHelper, ioService, projectService, eventHelper );
+    public StandaloneModeChangeHandler(DataSourceRuntimeManager runtimeManager,
+                                       DataSourceServicesHelper serviceHelper,
+                                       @Named("ioStrategy") IOService ioService,
+                                       KieModuleService moduleService,
+                                       DataSourceEventHelper eventHelper) {
+        super(runtimeManager,
+              serviceHelper,
+              ioService,
+              moduleService,
+              eventHelper);
     }
 }

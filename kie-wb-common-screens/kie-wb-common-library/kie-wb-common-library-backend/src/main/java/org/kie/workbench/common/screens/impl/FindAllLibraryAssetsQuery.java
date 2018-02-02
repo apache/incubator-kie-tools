@@ -23,7 +23,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.kie.workbench.common.screens.library.api.index.LibraryValueFileNameIndexTerm;
-import org.kie.workbench.common.screens.library.api.index.LibraryValueProjectRootPathIndexTerm;
+import org.kie.workbench.common.screens.library.api.index.LibraryValueModuleRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.FileDetailsResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
@@ -76,10 +76,10 @@ public class FindAllLibraryAssetsQuery
         checkInvalidAndRequiredTerms(queryTerms,
                                      NAME,
                                      new String[]{
-                                             LibraryValueProjectRootPathIndexTerm.TERM,
+                                             LibraryValueModuleRootPathIndexTerm.TERM,
                                              null // not required
                                      },
-                                     (t) -> (t instanceof LibraryValueProjectRootPathIndexTerm),
+                                     (t) -> (t instanceof LibraryValueModuleRootPathIndexTerm),
                                      (t) -> (t instanceof LibraryValueFileNameIndexTerm)
         );
 

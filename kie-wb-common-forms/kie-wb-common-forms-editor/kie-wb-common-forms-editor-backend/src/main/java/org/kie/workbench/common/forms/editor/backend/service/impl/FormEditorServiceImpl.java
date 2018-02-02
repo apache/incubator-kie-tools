@@ -42,8 +42,8 @@ import org.kie.workbench.common.forms.model.FormModel;
 import org.kie.workbench.common.forms.serialization.FormDefinitionSerializer;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.kie.workbench.common.services.backend.service.KieService;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -78,7 +78,7 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
                                  Event<ResourceOpenedEvent> resourceOpenedEvent,
                                  FieldManager fieldManager,
                                  FormModelHandlerManager modelHandlerManager,
-                                 KieProjectService projectService,
+                                 KieModuleService moduleService,
                                  FormDefinitionSerializer formDefinitionSerializer,
                                  VFSFormFinderService vfsFormFinderService,
                                  DeleteService deleteService,
@@ -89,7 +89,7 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
         this.resourceOpenedEvent = resourceOpenedEvent;
         this.fieldManager = fieldManager;
         this.modelHandlerManager = modelHandlerManager;
-        this.projectService = projectService;
+        this.moduleService = moduleService;
         this.formDefinitionSerializer = formDefinitionSerializer;
         this.vfsFormFinderService = vfsFormFinderService;
         this.commentedOptionFactory = commentedOptionFactory;
@@ -134,9 +134,9 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
     public void delete(Path path,
                        String comment) {
         try {
-            KieProject project = projectService.resolveProject(path);
-            if (project == null) {
-                logger.warn("Form : " + path.toURI() + " does not belong to a valid project");
+            KieModule module = moduleService.resolveModule(path);
+            if (module == null) {
+                logger.warn("Form : " + path.toURI() + " does not belong to a valid module");
                 return;
             }
 
@@ -213,7 +213,7 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
                 FormModel formModel = form.getModel();
 
                 Optional<FormModelHandler> modelHandlerOptional = getHandlerForForm(form,
-                                                                             path);
+                                                                                    path);
                 if (modelHandlerOptional.isPresent()) {
 
                     FormModelHandler formModelHandler = modelHandlerOptional.get();

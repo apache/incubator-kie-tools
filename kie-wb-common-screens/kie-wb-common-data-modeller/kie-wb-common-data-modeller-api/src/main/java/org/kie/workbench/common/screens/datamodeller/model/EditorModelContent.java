@@ -28,14 +28,14 @@ import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.PropertyType;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieModule;
 import org.uberfire.backend.vfs.Path;
 
 @Portable
 public class EditorModelContent extends DataModelerResult {
 
     /**
-     * Data model for current project at the time the DataObject was loaded.
+     * Data model for current module at the time the DataObject was loaded.
      */
     DataModel dataModel;
 
@@ -62,11 +62,11 @@ public class EditorModelContent extends DataModelerResult {
 
     private long elapsedTime;
 
-    private KieProject currentProject;
+    private KieModule currentModule;
 
-    private Set<String> currentProjectPackages = new HashSet<String>(  );
+    private Set<String> currentModulePackages = new HashSet<String>();
 
-    private Map<String, Path> dataObjectPaths = new HashMap<String, Path>(  );
+    private Map<String, Path> dataObjectPaths = new HashMap<String, Path>();
 
     private Map<String, AnnotationDefinition> annotationDefinitions = null;
 
@@ -79,7 +79,7 @@ public class EditorModelContent extends DataModelerResult {
         return dataModel;
     }
 
-    public void setDataModel( DataModel dataModel ) {
+    public void setDataModel(DataModel dataModel) {
         this.dataModel = dataModel;
     }
 
@@ -87,7 +87,7 @@ public class EditorModelContent extends DataModelerResult {
         return dataObject;
     }
 
-    public void setDataObject( DataObject dataObject ) {
+    public void setDataObject(DataObject dataObject) {
         this.dataObject = dataObject;
     }
 
@@ -95,7 +95,7 @@ public class EditorModelContent extends DataModelerResult {
         return originalClassName;
     }
 
-    public void setOriginalClassName( String originalClassName ) {
+    public void setOriginalClassName(String originalClassName) {
         this.originalClassName = originalClassName;
     }
 
@@ -103,7 +103,7 @@ public class EditorModelContent extends DataModelerResult {
         return originalPackageName;
     }
 
-    public void setOriginalPackageName( String originalPackageName ) {
+    public void setOriginalPackageName(String originalPackageName) {
         this.originalPackageName = originalPackageName;
     }
 
@@ -111,7 +111,7 @@ public class EditorModelContent extends DataModelerResult {
         return path;
     }
 
-    public void setPath( Path path ) {
+    public void setPath(Path path) {
         this.path = path;
     }
 
@@ -119,7 +119,7 @@ public class EditorModelContent extends DataModelerResult {
         return source;
     }
 
-    public void setSource( String source ) {
+    public void setSource(String source) {
         this.source = source;
     }
 
@@ -127,31 +127,31 @@ public class EditorModelContent extends DataModelerResult {
         return elapsedTime;
     }
 
-    public void setElapsedTime( long elapsedTime ) {
+    public void setElapsedTime(long elapsedTime) {
         this.elapsedTime = elapsedTime;
     }
 
-    public KieProject getCurrentProject() {
-        return currentProject;
+    public KieModule getCurrentModule() {
+        return currentModule;
     }
 
-    public void setCurrentProject( KieProject currentProject ) {
-        this.currentProject = currentProject;
+    public void setCurrentModule(KieModule currentModule) {
+        this.currentModule = currentModule;
     }
 
-    public Set<String> getCurrentProjectPackages() {
-        return currentProjectPackages;
+    public Set<String> getCurrentModulePackages() {
+        return currentModulePackages;
     }
 
-    public void setCurrentProjectPackages( Set<String> currentProjectPackages ) {
-        this.currentProjectPackages = currentProjectPackages;
+    public void setCurrentModulePackages(Set<String> currentModulePackages) {
+        this.currentModulePackages = currentModulePackages;
     }
 
     public Overview getOverview() {
         return overview;
     }
 
-    public void setOverview( Overview overview ) {
+    public void setOverview(Overview overview) {
         this.overview = overview;
     }
 
@@ -159,7 +159,7 @@ public class EditorModelContent extends DataModelerResult {
         return dataObjectPaths;
     }
 
-    public void setDataObjectPaths( Map<String, Path> dataObjectPaths ) {
+    public void setDataObjectPaths(Map<String, Path> dataObjectPaths) {
         this.dataObjectPaths = dataObjectPaths;
     }
 
@@ -167,7 +167,7 @@ public class EditorModelContent extends DataModelerResult {
         return annotationDefinitions;
     }
 
-    public void setAnnotationDefinitions( Map<String, AnnotationDefinition> annotationDefinitions ) {
+    public void setAnnotationDefinitions(Map<String, AnnotationDefinition> annotationDefinitions) {
         this.annotationDefinitions = annotationDefinitions;
     }
 
@@ -175,7 +175,7 @@ public class EditorModelContent extends DataModelerResult {
         return propertyTypes;
     }
 
-    public void setPropertyTypes( List<PropertyType> propertyTypes ) {
+    public void setPropertyTypes(List<PropertyType> propertyTypes) {
         this.propertyTypes = propertyTypes;
     }
 }

@@ -30,8 +30,8 @@ import org.kie.workbench.common.services.backend.builder.ala.LocalBinaryConfig;
 import org.kie.workbench.common.services.backend.builder.ala.LocalBuildConfig;
 import org.kie.workbench.common.services.backend.builder.core.Builder;
 import org.kie.workbench.common.services.backend.builder.core.LRUBuilderCache;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -42,14 +42,14 @@ import org.uberfire.workbench.events.ResourceChange;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class BuildServiceImplTest {
 
     @Mock
     private LRUBuilderCache cache;
 
     @Mock
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     @Mock
     private BuildServiceHelper buildServiceHelper;
@@ -57,7 +57,7 @@ public class BuildServiceImplTest {
     private BuildServiceImpl buildService;
 
     @Mock
-    private KieProject project;
+    private KieModule module;
 
     @Mock
     private Path path;
@@ -72,138 +72,199 @@ public class BuildServiceImplTest {
     private IncrementalBuildResults incrementalBuildResults;
 
     @Mock
-    private Map< Path, Collection< ResourceChange > > resourceChanges;
+    private Map<Path, Collection<ResourceChange>> resourceChanges;
 
     @Mock
     private LocalBinaryConfig localBinaryConfig;
 
     @Before
-    public void setUp( ) {
-        buildService = new BuildServiceImpl( projectService, buildServiceHelper, cache );
+    public void setUp() {
+        buildService = new BuildServiceImpl(moduleService,
+                                            buildServiceHelper,
+                                            cache);
     }
 
     @Test
-    public void testBuild( ) {
-        when( buildServiceHelper.localBuild( project ) ).thenReturn( buildResults );
-        BuildResults result = buildService.build( project );
-        assertEquals( buildResults, result );
-
+    public void testBuild() {
+        when(buildServiceHelper.localBuild(module)).thenReturn(buildResults);
+        BuildResults result = buildService.build(module);
+        assertEquals(buildResults,
+                     result);
     }
 
     @Test
-    public void testBuildWithConsumer( ) {
+    public void testBuildWithConsumer() {
         // emulate the buildServiceHelper response
-        when( localBinaryConfig.getBuilder( ) ).thenReturn( builder );
-        doAnswer( new Answer< Void >( ) {
-            public Void answer( InvocationOnMock invocation ) {
-                Consumer consumer = ( Consumer ) invocation.getArguments( )[ 1 ];
-                consumer.accept( localBinaryConfig );
+        when(localBinaryConfig.getBuilder()).thenReturn(builder);
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Consumer consumer = (Consumer) invocation.getArguments()[1];
+                consumer.accept(localBinaryConfig);
                 return null;
             }
-        } ).when( buildServiceHelper ).localBuild( eq( project ), any( Consumer.class ) );
+        }).when(buildServiceHelper).localBuild(eq(module),
+                                               any(Consumer.class));
 
-        buildService.build( project, new Consumer< Builder >( ) {
-            @Override
-            public void accept( Builder result ) {
-                // the resulting builder must the returned by the buildServiceHelper
-                assertEquals( builder, result );
-            }
-        } );
-        verify( buildServiceHelper, times( 1 ) ).localBuild( eq( project ), any( Consumer.class ) );
+        buildService.build(module,
+                           new Consumer<Builder>() {
+                               @Override
+                               public void accept(Builder result) {
+                                   // the resulting builder must the returned by the buildServiceHelper
+                                   assertEquals(builder,
+                                                result);
+                               }
+                           });
+        verify(buildServiceHelper,
+               times(1)).localBuild(eq(module),
+                                    any(Consumer.class));
     }
 
     @Test
-    public void testIsBuiltTrue( ) {
-        when( cache.assertBuilder( project ) ).thenReturn( builder );
-        when( builder.isBuilt( ) ).thenReturn( true );
-        assertTrue( buildService.isBuilt( project ) );
+    public void testIsBuiltTrue() {
+        when(cache.assertBuilder(module)).thenReturn(builder);
+        when(builder.isBuilt()).thenReturn(true);
+        assertTrue(buildService.isBuilt(module));
     }
 
     @Test
-    public void testIsBuiltFalse( ) {
-        when( cache.assertBuilder( project ) ).thenReturn( builder );
-        when( builder.isBuilt( ) ).thenReturn( false );
-        assertFalse( buildService.isBuilt( project ) );
+    public void testIsBuiltFalse() {
+        when(cache.assertBuilder(module)).thenReturn(builder);
+        when(builder.isBuilt()).thenReturn(false);
+        assertFalse(buildService.isBuilt(module));
     }
 
     @Test
-    public void testBuildAndDeploy( ) {
-        prepareBuildAndDeploy( project, DeploymentMode.VALIDATED, false );
-        BuildResults result = buildService.buildAndDeploy( project );
-        assertEquals( buildResults, result );
-        verifyBuildAndDeploy( project, DeploymentMode.VALIDATED, false );
+    public void testBuildAndDeploy() {
+        prepareBuildAndDeploy(module,
+                              DeploymentMode.VALIDATED,
+                              false);
+        BuildResults result = buildService.buildAndDeploy(module);
+        assertEquals(buildResults,
+                     result);
+        verifyBuildAndDeploy(module,
+                             DeploymentMode.VALIDATED,
+                             false);
     }
 
     @Test
-    public void testBuildAndDeployWithDeploymentMode( ) {
-        prepareBuildAndDeploy( project, DeploymentMode.VALIDATED, false );
-        BuildResults result = buildService.buildAndDeploy( project, DeploymentMode.VALIDATED );
-        assertEquals( buildResults, result );
-        verifyBuildAndDeploy( project, DeploymentMode.VALIDATED, false );
+    public void testBuildAndDeployWithDeploymentMode() {
+        prepareBuildAndDeploy(module,
+                              DeploymentMode.VALIDATED,
+                              false);
+        BuildResults result = buildService.buildAndDeploy(module,
+                                                          DeploymentMode.VALIDATED);
+        assertEquals(buildResults,
+                     result);
+        verifyBuildAndDeploy(module,
+                             DeploymentMode.VALIDATED,
+                             false);
     }
 
     @Test
-    public void testBuildAndDeployWithSuppressHandlers( ) {
-        prepareBuildAndDeploy( project, DeploymentMode.VALIDATED, false );
-        BuildResults result = buildService.buildAndDeploy( project, false );
-        assertEquals( buildResults, result );
-        verifyBuildAndDeploy( project, DeploymentMode.VALIDATED, false );
+    public void testBuildAndDeployWithSuppressHandlers() {
+        prepareBuildAndDeploy(module,
+                              DeploymentMode.VALIDATED,
+                              false);
+        BuildResults result = buildService.buildAndDeploy(module,
+                                                          false);
+        assertEquals(buildResults,
+                     result);
+        verifyBuildAndDeploy(module,
+                             DeploymentMode.VALIDATED,
+                             false);
     }
 
     @Test
-    public void testBuildAndDeployWithDeploymentModeAndSuppressHandlers( ) {
-        prepareBuildAndDeploy( project, DeploymentMode.VALIDATED, false );
-        BuildResults result = buildService.buildAndDeploy( project, false, DeploymentMode.VALIDATED );
-        assertEquals( buildResults, result );
-        verifyBuildAndDeploy( project, DeploymentMode.VALIDATED, false );
+    public void testBuildAndDeployWithDeploymentModeAndSuppressHandlers() {
+        prepareBuildAndDeploy(module,
+                              DeploymentMode.VALIDATED,
+                              false);
+        BuildResults result = buildService.buildAndDeploy(module,
+                                                          false,
+                                                          DeploymentMode.VALIDATED);
+        assertEquals(buildResults,
+                     result);
+        verifyBuildAndDeploy(module,
+                             DeploymentMode.VALIDATED,
+                             false);
     }
 
-    private void prepareBuildAndDeploy( KieProject project, DeploymentMode deploymentMode, boolean suppressHandlers ) {
-        when( buildServiceHelper.localBuildAndDeploy( project, deploymentMode, suppressHandlers ) ).thenReturn( buildResults );
+    private void prepareBuildAndDeploy(KieModule module,
+                                       DeploymentMode deploymentMode,
+                                       boolean suppressHandlers) {
+        when(buildServiceHelper.localBuildAndDeploy(module,
+                                                    deploymentMode,
+                                                    suppressHandlers)).thenReturn(buildResults);
     }
 
-    private void verifyBuildAndDeploy( KieProject project, DeploymentMode deploymentMode, boolean suppressHandlers ) {
-        verify( buildServiceHelper, times( 1 ) ).localBuildAndDeploy( project, deploymentMode, suppressHandlers );
-    }
-
-    @Test
-    public void testAddPackageResource( ) {
-        prepareIncrementalBuild( path, LocalBuildConfig.BuildType.INCREMENTAL_ADD_RESOURCE );
-        IncrementalBuildResults result = buildService.addPackageResource( path );
-        assertEquals( incrementalBuildResults, result );
-        verifyIncrementalBuild( path, LocalBuildConfig.BuildType.INCREMENTAL_ADD_RESOURCE );
-    }
-
-    @Test
-    public void testDeletePackageResource( ) {
-        prepareIncrementalBuild( path, LocalBuildConfig.BuildType.INCREMENTAL_DELETE_RESOURCE );
-        IncrementalBuildResults result = buildService.deletePackageResource( path );
-        assertEquals( incrementalBuildResults, result );
-        verifyIncrementalBuild( path, LocalBuildConfig.BuildType.INCREMENTAL_DELETE_RESOURCE );
-    }
-
-    @Test
-    public void testUpdatePackageResource( ) {
-        prepareIncrementalBuild( path, LocalBuildConfig.BuildType.INCREMENTAL_UPDATE_RESOURCE );
-        IncrementalBuildResults result = buildService.updatePackageResource( path );
-        assertEquals( incrementalBuildResults, result );
-        verifyIncrementalBuild( path, LocalBuildConfig.BuildType.INCREMENTAL_UPDATE_RESOURCE );
-    }
-
-    private void prepareIncrementalBuild( Path path, LocalBuildConfig.BuildType buildType ) {
-        when( projectService.resolveProject( path ) ).thenReturn( project );
-        when( buildServiceHelper.localBuild( project, buildType, path ) ).thenReturn( incrementalBuildResults );
-    }
-
-    private void verifyIncrementalBuild( Path path, LocalBuildConfig.BuildType buildType ) {
-        verify( buildServiceHelper, times( 1 ) ).localBuild( project, buildType, path );
+    private void verifyBuildAndDeploy(KieModule module,
+                                      DeploymentMode deploymentMode,
+                                      boolean suppressHandlers) {
+        verify(buildServiceHelper,
+               times(1)).localBuildAndDeploy(module,
+                                             deploymentMode,
+                                             suppressHandlers);
     }
 
     @Test
-    public void testApplyBatchResourceChanges( ) {
-        when( buildServiceHelper.localBuild( project, resourceChanges ) ).thenReturn( incrementalBuildResults );
-        IncrementalBuildResults result = buildService.applyBatchResourceChanges( project, resourceChanges );
-        assertEquals( incrementalBuildResults, result );
-        verify( buildServiceHelper, times( 1 ) ).localBuild( project, resourceChanges );
+    public void testAddPackageResource() {
+        prepareIncrementalBuild(path,
+                                LocalBuildConfig.BuildType.INCREMENTAL_ADD_RESOURCE);
+        IncrementalBuildResults result = buildService.addPackageResource(path);
+        assertEquals(incrementalBuildResults,
+                     result);
+        verifyIncrementalBuild(path,
+                               LocalBuildConfig.BuildType.INCREMENTAL_ADD_RESOURCE);
+    }
+
+    @Test
+    public void testDeletePackageResource() {
+        prepareIncrementalBuild(path,
+                                LocalBuildConfig.BuildType.INCREMENTAL_DELETE_RESOURCE);
+        IncrementalBuildResults result = buildService.deletePackageResource(path);
+        assertEquals(incrementalBuildResults,
+                     result);
+        verifyIncrementalBuild(path,
+                               LocalBuildConfig.BuildType.INCREMENTAL_DELETE_RESOURCE);
+    }
+
+    @Test
+    public void testUpdatePackageResource() {
+        prepareIncrementalBuild(path,
+                                LocalBuildConfig.BuildType.INCREMENTAL_UPDATE_RESOURCE);
+        IncrementalBuildResults result = buildService.updatePackageResource(path);
+        assertEquals(incrementalBuildResults,
+                     result);
+        verifyIncrementalBuild(path,
+                               LocalBuildConfig.BuildType.INCREMENTAL_UPDATE_RESOURCE);
+    }
+
+    private void prepareIncrementalBuild(Path path,
+                                         LocalBuildConfig.BuildType buildType) {
+        when(moduleService.resolveModule(path)).thenReturn(module);
+        when(buildServiceHelper.localBuild(module,
+                                           buildType,
+                                           path)).thenReturn(incrementalBuildResults);
+    }
+
+    private void verifyIncrementalBuild(Path path,
+                                        LocalBuildConfig.BuildType buildType) {
+        verify(buildServiceHelper,
+               times(1)).localBuild(module,
+                                    buildType,
+                                    path);
+    }
+
+    @Test
+    public void testApplyBatchResourceChanges() {
+        when(buildServiceHelper.localBuild(module,
+                                           resourceChanges)).thenReturn(incrementalBuildResults);
+        IncrementalBuildResults result = buildService.applyBatchResourceChanges(module,
+                                                                                resourceChanges);
+        assertEquals(incrementalBuildResults,
+                     result);
+        verify(buildServiceHelper,
+               times(1)).localBuild(module,
+                                    resourceChanges);
     }
 }

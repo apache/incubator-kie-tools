@@ -24,12 +24,12 @@ import org.guvnor.common.services.project.model.Package;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.source.JavaSource;
 import org.kie.workbench.common.screens.javaeditor.type.JavaResourceTypeDefinition;
-import org.kie.workbench.common.services.backend.project.ProjectClassLoaderHelper;
+import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
+import org.kie.workbench.common.services.refactoring.Resource;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.AbstractFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
-import org.kie.workbench.common.services.refactoring.Resource;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -68,68 +68,76 @@ import org.uberfire.java.nio.file.Path;
 @ApplicationScoped
 public class JavaFileIndexer extends AbstractFileIndexer {
 
-    private static final Logger logger = LoggerFactory.getLogger( JavaFileIndexer.class );
+    private static final Logger logger = LoggerFactory.getLogger(JavaFileIndexer.class);
 
     @Inject
     protected JavaResourceTypeDefinition javaResourceTypeDefinition;
 
-    @Inject @Any
+    @Inject
+    @Any
     protected Instance<JavaFileIndexerExtension> javaFileIndexerExtensions;
 
     @Inject
-    ProjectClassLoaderHelper classLoaderHelper;
+    ModuleClassLoaderHelper classLoaderHelper;
 
     @Override
-    public boolean supportsPath( final Path path ) {
-        return javaResourceTypeDefinition.accept( Paths.convert( path ) );
-   }
+    public boolean supportsPath(final Path path) {
+        return javaResourceTypeDefinition.accept(Paths.convert(path));
+    }
 
     @Override
-    public DefaultIndexBuilder fillIndexBuilder( final Path path ) throws Exception {
+    public DefaultIndexBuilder fillIndexBuilder(final Path path) throws Exception {
         // create indexbuilder
-        final KieProject project = getProject(path);
+        final KieModule module = getModule(path);
 
-        if ( project == null ) {
-            logger.error( "Unable to index " + path.toUri().toString() + ": project could not be resolved." );
+        if (module == null) {
+            logger.error("Unable to index " + path.toUri().toString() + ": module could not be resolved.");
             return null;
         }
 
         final Package pkg = getPackage(path);
-        if ( pkg == null ) {
-            logger.error( "Unable to index " + path.toUri().toString() + ": package could not be resolved." );
+        if (pkg == null) {
+            logger.error("Unable to index " + path.toUri().toString() + ": package could not be resolved.");
             return null;
         }
 
-        // responsible for basic index info: project name, branch, etc
-        final DefaultIndexBuilder builder = new DefaultIndexBuilder(Paths.convert(path).getFileName(), project, pkg);
+        // responsible for basic index info: module name, branch, etc
+        final DefaultIndexBuilder builder = new DefaultIndexBuilder(Paths.convert(path).getFileName(),
+                                                                    module,
+                                                                    pkg);
 
         // visit/index java source
-        final String javaSource = ioService.readAllString( path );
-        org.jboss.forge.roaster.model.JavaType<?> javaType = Roaster.parse( javaSource );
-        if ( javaType.getSyntaxErrors() == null || javaType.getSyntaxErrors().isEmpty() ) {
+        final String javaSource = ioService.readAllString(path);
+        org.jboss.forge.roaster.model.JavaType<?> javaType = Roaster.parse(javaSource);
+        if (javaType.getSyntaxErrors() == null || javaType.getSyntaxErrors().isEmpty()) {
 
-            if ( javaFileIndexerExtensions != null ) {
-                for ( JavaFileIndexerExtension javaFileIndexerExtension : javaFileIndexerExtensions ) {
-                    javaFileIndexerExtension.process( builder, javaType );
+            if (javaFileIndexerExtensions != null) {
+                for (JavaFileIndexerExtension javaFileIndexerExtension : javaFileIndexerExtensions) {
+                    javaFileIndexerExtension.process(builder,
+                                                     javaType);
                 }
             }
 
             String pkgName = pkg.getPackageName();
             pkgName = javaType.getPackage();
-            if( pkgName == null ) {
+            if (pkgName == null) {
                 pkgName = "";
             }
             // use Java class package name, not Package name
             builder.setPackageName(pkgName);
 
             String javaTypeName = javaType.getQualifiedName();
-            Resource resParts = new Resource(javaTypeName, ResourceType.JAVA);
+            Resource resParts = new Resource(javaTypeName,
+                                             ResourceType.JAVA);
 
-            if( javaType instanceof JavaSource ) {
-                ClassLoader projectClassLoader = getProjectClassLoader(project);
-                JavaSourceVisitor visitor = new JavaSourceVisitor((JavaSource) javaType, projectClassLoader, resParts);
+            if (javaType instanceof JavaSource) {
+                ClassLoader moduleClassLoader = getModuleClassLoader(module);
+                JavaSourceVisitor visitor = new JavaSourceVisitor((JavaSource) javaType,
+                                                                  moduleClassLoader,
+                                                                  resParts);
                 visitor.visit((JavaSource) javaType);
-                addReferencedResourcesToIndexBuilder( builder, visitor );
+                addReferencedResourcesToIndexBuilder(builder,
+                                                     visitor);
             }
 
             builder.addGenerator(resParts);
@@ -141,21 +149,21 @@ public class JavaFileIndexer extends AbstractFileIndexer {
     /*
      * Present in order to be overridden in tests
      */
-    protected ClassLoader getProjectClassLoader( final KieProject project ) {
-        return classLoaderHelper.getProjectClassLoader(project);
+    protected ClassLoader getModuleClassLoader(final KieModule module) {
+        return classLoaderHelper.getModuleClassLoader(module);
     }
 
     /*
      * Present in order to be overridden in tests
      */
-    protected KieProject getProject( final Path path ) {
-        return projectService.resolveProject( Paths.convert( path ) );
+    protected KieModule getModule(final Path path) {
+        return moduleService.resolveModule(Paths.convert(path));
     }
 
     /*
      * Present in order to be overridden in tests
      */
-    protected Package getPackage( final Path path ) {
-        return projectService.resolvePackage( Paths.convert( path ) );
+    protected Package getPackage(final Path path) {
+        return moduleService.resolvePackage(Paths.convert(path));
     }
 }

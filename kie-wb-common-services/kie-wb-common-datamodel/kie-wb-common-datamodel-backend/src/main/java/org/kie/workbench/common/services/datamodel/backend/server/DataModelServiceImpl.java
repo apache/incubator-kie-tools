@@ -23,15 +23,15 @@ import javax.inject.Named;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.Package;
 import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.soup.project.datamodel.commons.oracle.ModuleDataModelOracleImpl;
 import org.kie.soup.project.datamodel.commons.oracle.PackageDataModelOracleImpl;
-import org.kie.soup.project.datamodel.commons.oracle.ProjectDataModelOracleImpl;
+import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
-import org.kie.soup.project.datamodel.oracle.ProjectDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUDataModelOracleCache;
-import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUProjectDataModelOracleCache;
+import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUModuleDataModelOracleCache;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.vfs.Path;
 
 @ApplicationScoped
@@ -40,17 +40,17 @@ public class DataModelServiceImpl
 
     private LRUDataModelOracleCache cachePackages;
 
-    private LRUProjectDataModelOracleCache cacheProjects;
+    private LRUModuleDataModelOracleCache cacheModules;
 
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     @Inject
     public DataModelServiceImpl(final @Named("PackageDataModelOracleCache") LRUDataModelOracleCache cachePackages,
-                                final @Named("ProjectDataModelOracleCache") LRUProjectDataModelOracleCache cacheProjects,
-                                final KieProjectService projectService) {
+                                final @Named("ModuleDataModelOracleCache") LRUModuleDataModelOracleCache cacheModules,
+                                final KieModuleService moduleService) {
         this.cachePackages = cachePackages;
-        this.cacheProjects = cacheProjects;
-        this.projectService = projectService;
+        this.cacheModules = cacheModules;
+        this.moduleService = moduleService;
     }
 
     @Override
@@ -58,16 +58,16 @@ public class DataModelServiceImpl
         try {
             PortablePreconditions.checkNotNull("resourcePath",
                                                resourcePath);
-            final KieProject project = resolveProject(resourcePath);
+            final KieModule module = resolveModule(resourcePath);
             final Package pkg = resolvePackage(resourcePath);
 
-            //Resource was not within a Project structure
-            if (project == null) {
+            //Resource was not within a Module structure
+            if (module == null) {
                 return new PackageDataModelOracleImpl();
             }
 
             //Retrieve (or build) oracle
-            final PackageDataModelOracle oracle = cachePackages.assertPackageDataModelOracle(project,
+            final PackageDataModelOracle oracle = cachePackages.assertPackageDataModelOracle(module,
                                                                                              pkg);
             return oracle;
         } catch (Exception e) {
@@ -76,19 +76,19 @@ public class DataModelServiceImpl
     }
 
     @Override
-    public ProjectDataModelOracle getProjectDataModel(final Path resourcePath) {
+    public ModuleDataModelOracle getModuleDataModel(final Path resourcePath) {
         try {
             PortablePreconditions.checkNotNull("resourcePath",
                                                resourcePath);
-            final KieProject project = resolveProject(resourcePath);
+            final KieModule module = resolveModule(resourcePath);
 
-            //Resource was not within a Project structure
-            if (project == null) {
-                return new ProjectDataModelOracleImpl();
+            //Resource was not within a Module structure
+            if (module == null) {
+                return new ModuleDataModelOracleImpl();
             }
 
             //Retrieve (or build) oracle
-            final ProjectDataModelOracle oracle = cacheProjects.assertProjectDataModelOracle(project);
+            final ModuleDataModelOracle oracle = cacheModules.assertModuleDataModelOracle(module);
             return oracle;
         } catch (Exception e) {
             e.printStackTrace();
@@ -96,11 +96,11 @@ public class DataModelServiceImpl
         }
     }
 
-    private KieProject resolveProject(final Path resourcePath) {
-        return projectService.resolveProject(resourcePath);
+    private KieModule resolveModule(final Path resourcePath) {
+        return moduleService.resolveModule(resourcePath);
     }
 
     private Package resolvePackage(final Path resourcePath) {
-        return projectService.resolvePackage(resourcePath);
+        return moduleService.resolvePackage(resourcePath);
     }
 }

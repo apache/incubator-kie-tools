@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.screens.datamodeller.events;
 
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.Method;
@@ -27,7 +27,7 @@ import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyIm
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class DataModelerEventTest {
 
@@ -36,28 +36,26 @@ public class DataModelerEventTest {
         DataObject currentDataObject = new DataObjectImpl();
         ObjectProperty currentField = new ObjectPropertyImpl();
         Method currentMethod = new MethodImpl();
-        Project currentProject = new Project();
+        Module currentModule = new Module();
         String source = "testSource";
         String contextId = "testContextId";
         Path path = new PathFactory.PathImpl();
 
-
         DataModelerEvent event = new DataModelerEvent()
-                .withCurrentDataObject( currentDataObject )
-                .withCurrentField( currentField )
-                .withCurrentMethod( currentMethod )
-                .withCurrentProject( currentProject )
-                .withSource( source )
-                .withContextId( contextId )
-                .withPath( path );
+                .withCurrentDataObject(currentDataObject)
+                .withCurrentField(currentField)
+                .withCurrentMethod(currentMethod)
+                .withCurrentProject(currentModule)
+                .withSource(source)
+                .withContextId(contextId)
+                .withPath(path);
 
-        assertEquals( currentDataObject, event.getCurrentDataObject() );
-        assertEquals( currentField, event.getCurrentField() );
-        assertEquals( currentMethod, event.getCurrentMethod() );
-        assertEquals( currentProject, event.getCurrentProject() );
-        assertEquals( source, event.getSource() );
-        assertEquals( contextId, event.getContextId() );
-        assertEquals( path, event.getPath() );
+        assertEquals(currentDataObject, event.getCurrentDataObject());
+        assertEquals(currentField, event.getCurrentField());
+        assertEquals(currentMethod, event.getCurrentMethod());
+        assertEquals(currentModule, event.getCurrentModule());
+        assertEquals(source, event.getSource());
+        assertEquals(contextId, event.getContextId());
+        assertEquals(path, event.getPath());
     }
-
 }

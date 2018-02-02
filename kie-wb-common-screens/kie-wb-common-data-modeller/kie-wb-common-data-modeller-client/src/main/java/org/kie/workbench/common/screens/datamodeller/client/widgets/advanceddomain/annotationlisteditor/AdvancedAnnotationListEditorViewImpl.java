@@ -34,7 +34,7 @@ import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddoma
 import org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddomain.annotationwizard.CreateAnnotationWizard;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.ElementType;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieModule;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
@@ -47,11 +47,11 @@ public class AdvancedAnnotationListEditorViewImpl
 
     interface AdvancedAnnotationListEditorViewImplUiBinder
             extends
-            UiBinder< Widget, AdvancedAnnotationListEditorViewImpl > {
+            UiBinder<Widget, AdvancedAnnotationListEditorViewImpl> {
 
     }
 
-    private static AdvancedAnnotationListEditorViewImplUiBinder uiBinder = GWT.create( AdvancedAnnotationListEditorViewImplUiBinder.class );
+    private static AdvancedAnnotationListEditorViewImplUiBinder uiBinder = GWT.create(AdvancedAnnotationListEditorViewImplUiBinder.class);
 
     @UiField
     Button addAnnotationButton;
@@ -64,71 +64,70 @@ public class AdvancedAnnotationListEditorViewImpl
     private CreateAnnotationWizard createAnnotationWizard;
 
     @Inject
-    public AdvancedAnnotationListEditorViewImpl( CreateAnnotationWizard createAnnotationWizard ) {
-        initWidget( uiBinder.createAndBindUi( this ) );
+    public AdvancedAnnotationListEditorViewImpl(CreateAnnotationWizard createAnnotationWizard) {
+        initWidget(uiBinder.createAndBindUi(this));
         this.createAnnotationWizard = createAnnotationWizard;
     }
 
     @PostConstruct
-    protected void init( ) {
-        accordionsContainer.setId( DOM.createUniqueId( ) );
+    protected void init() {
+        accordionsContainer.setId(DOM.createUniqueId());
     }
 
     @Override
-    public void init( Presenter presenter ) {
+    public void init(Presenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void clear( ) {
-        accordionsContainer.clear( );
+    public void clear() {
+        accordionsContainer.clear();
     }
 
     @Override
-    public void addItem( AnnotationListItem listItem ) {
-        accordionsContainer.add( listItem );
+    public void addItem(AnnotationListItem listItem) {
+        accordionsContainer.add(listItem);
     }
 
     @Override
-    public void removeItem( AnnotationListItem listItem ) {
-        accordionsContainer.remove( listItem );
+    public void removeItem(AnnotationListItem listItem) {
+        accordionsContainer.remove(listItem);
     }
 
     @Override
-    public void showYesNoDialog( String message,
-                                 Command yesCommand,
-                                 Command noCommand,
-                                 Command cancelCommand ) {
+    public void showYesNoDialog(String message,
+                                Command yesCommand,
+                                Command noCommand,
+                                Command cancelCommand) {
 
         YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup(
-                CommonConstants.INSTANCE.Information( ), message, yesCommand, noCommand, cancelCommand );
+                CommonConstants.INSTANCE.Information(), message, yesCommand, noCommand, cancelCommand);
 
-        yesNoCancelPopup.setClosable( false );
-        yesNoCancelPopup.show( );
+        yesNoCancelPopup.setClosable(false);
+        yesNoCancelPopup.show();
     }
 
     @Override
-    public void showYesNoDialog( String message, Command cancelCommand ) {
-        showYesNoDialog( message, null, null, cancelCommand );
+    public void showYesNoDialog(String message, Command cancelCommand) {
+        showYesNoDialog(message, null, null, cancelCommand);
     }
 
     @Override
-    public void invokeCreateAnnotationWizard( final Callback< Annotation > callback,
-                                              final KieProject kieProject,
-                                              final ElementType elementType ) {
-        createAnnotationWizard.init( kieProject, elementType );
-        createAnnotationWizard.onCloseCallback( callback );
-        createAnnotationWizard.start( );
+    public void invokeCreateAnnotationWizard(final Callback<Annotation> callback,
+                                             final KieModule kieModule,
+                                             final ElementType elementType) {
+        createAnnotationWizard.init(kieModule, elementType);
+        createAnnotationWizard.onCloseCallback(callback);
+        createAnnotationWizard.start();
     }
 
     @Override
-    public void setReadonly( boolean readonly ) {
-        addAnnotationButton.setEnabled( !readonly );
+    public void setReadonly(boolean readonly) {
+        addAnnotationButton.setEnabled(!readonly);
     }
 
-    @UiHandler( "addAnnotationButton" )
-    void onAddAnnotation( ClickEvent event ) {
-        presenter.onAddAnnotation( );
+    @UiHandler("addAnnotationButton")
+    void onAddAnnotation(ClickEvent event) {
+        presenter.onAddAnnotation();
     }
-
 }

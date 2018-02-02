@@ -154,7 +154,7 @@ public class KieMetadataTest {
 
             CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
                                                                    info,
-                                                                   new String[]{MavenCLIArgs.INSTALL, MavenCLIArgs.ALTERNATE_USER_SETTINGS +alternateSettingsAbsPath},
+                                                                   new String[]{MavenCLIArgs.INSTALL, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                    new HashMap<>(),
                                                                    Boolean.TRUE);
             KieCompilationResponse res = (KieCompilationResponse) compiler.compileSync(req);
@@ -210,7 +210,7 @@ public class KieMetadataTest {
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(Paths.get(tmp.toUri()));
         CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
                                                                info,
-                                                               new String[]{MavenCLIArgs.INSTALL, MavenCLIArgs.ALTERNATE_USER_SETTINGS +alternateSettingsAbsPath},
+                                                               new String[]{MavenCLIArgs.INSTALL, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                new HashMap<>(),
                                                                Boolean.FALSE);
         KieCompilationResponse res = (KieCompilationResponse) compiler.compileSync(req);

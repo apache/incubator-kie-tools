@@ -18,15 +18,17 @@ package org.kie.workbench.common.screens.datasource.management.backend.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Optional;
 
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
+import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
+import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.PublicURI;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -38,24 +40,29 @@ import org.kie.workbench.common.screens.datasource.management.model.DriverDefInf
 import org.kie.workbench.common.screens.datasource.management.service.DataSourceDefQueryService;
 import org.kie.workbench.common.screens.datasource.management.service.DefExplorerQuery;
 import org.kie.workbench.common.screens.datasource.management.service.DefExplorerQueryResult;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.spaces.Space;
+import org.uberfire.spaces.SpacesAPI;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class DefExplorerQueryServiceTest {
+
+    @Mock
+    private WorkspaceProjectService projectService;
 
     @Mock
     private DataSourceDefQueryService dataSourceDefQueryService;
 
     @Mock
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     @Mock
     private OrganizationalUnitService organizationalUnitService;
@@ -80,19 +87,19 @@ public class DefExplorerQueryServiceTest {
     private Repository repo_o3_1, repo_o3_2, repo_o3_3;
 
     @Mock
-    private Project project1;
+    private Module module1;
 
     @Mock
     private Path rootPath1;
 
     @Mock
-    private Project project2;
+    private Module module2;
 
     @Mock
     private Path rootPath2;
 
     @Mock
-    private Project project3;
+    private Module module3;
 
     @Mock
     private Path rootPath3;
@@ -118,67 +125,76 @@ public class DefExplorerQueryServiceTest {
         createOrganizationalUnits();
 
         //setup current organizational units
-        when( organizationalUnitService.getOrganizationalUnits() ).thenReturn( organizationalUnits );
+        when(organizationalUnitService.getOrganizationalUnits()).thenReturn(organizationalUnits);
 
-        when( organizationalUnitService.getOrganizationalUnit( o1.getName() ) ).thenReturn( o1 );
-        when( organizationalUnitService.getOrganizationalUnit( o2.getName() ) ).thenReturn( o2 );
-        when( organizationalUnitService.getOrganizationalUnit( o3.getName() ) ).thenReturn( o3 );
+        when(organizationalUnitService.getOrganizationalUnit(o1.getName())).thenReturn(o1);
+        when(organizationalUnitService.getOrganizationalUnit(o2.getName())).thenReturn(o2);
+        when(organizationalUnitService.getOrganizationalUnit(o3.getName())).thenReturn(o3);
 
         //emulates the authorizations for current identity.
         //o1 is not authorized
-        when( authorizationManager.authorize( o1, identity ) ).thenReturn( false );
+        when(authorizationManager.authorize(o1,
+                                            identity)).thenReturn(false);
 
         //o2 is authorized
-        when( authorizationManager.authorize( o2, identity ) ).thenReturn( true );
+        when(authorizationManager.authorize(o2,
+                                            identity)).thenReturn(true);
         //repo_o2_1 is authorized
-        when( authorizationManager.authorize( repo_o2_1, identity ) ).thenReturn( true );
+        when(authorizationManager.authorize(repo_o2_1,
+                                            identity)).thenReturn(true);
         //repo_o2_2 is authorized
-        when( authorizationManager.authorize( repo_o2_2, identity ) ).thenReturn( true );
+        when(authorizationManager.authorize(repo_o2_2,
+                                            identity)).thenReturn(true);
 
         //o3 is authorized
-        when( authorizationManager.authorize( o3, identity ) ).thenReturn( true );
+        when(authorizationManager.authorize(o3,
+                                            identity)).thenReturn(true);
         //repo_o3_1 is authorized
-        when( authorizationManager.authorize( repo_o3_1, identity ) ).thenReturn( true );
+        when(authorizationManager.authorize(repo_o3_1,
+                                            identity)).thenReturn(true);
         //repo_o3_2 is not authorized
-        when( authorizationManager.authorize( repo_o3_2, identity ) ).thenReturn( false );
+        when(authorizationManager.authorize(repo_o3_2,
+                                            identity)).thenReturn(false);
         //repo_o3_3 is authorized
-        when( authorizationManager.authorize( repo_o3_3, identity ) ).thenReturn( true );
+        when(authorizationManager.authorize(repo_o3_3,
+                                            identity)).thenReturn(true);
 
-        //prepare the projects
-        when ( project1.getProjectName() ).thenReturn( "project1" );
-        when ( project1.getRootPath() ).thenReturn( rootPath1 );
-        when ( project2.getProjectName() ).thenReturn( "project2" );
-        when ( project2.getRootPath() ).thenReturn( rootPath2 );
-        when ( project3.getProjectName() ).thenReturn( "project3" );
-        when ( project3.getRootPath() ).thenReturn( rootPath3 );
+        //prepare the modules
+        when(module1.getModuleName()).thenReturn("module1");
+        when(module1.getRootPath()).thenReturn(rootPath1);
+        when(module2.getModuleName()).thenReturn("module2");
+        when(module2.getRootPath()).thenReturn(rootPath2);
+        when(module3.getModuleName()).thenReturn("module3");
+        when(module3.getRootPath()).thenReturn(rootPath3);
 
-        Set<Project> projects = new HashSet<>( );
-        projects.add( project1 );
-        projects.add( project2 );
-        projects.add( project3 );
+        doReturn(new WorkspaceProject(o3,
+                                      repo_o3_1,
+                                      new Branch("master",
+                                                 mock(Path.class)),
+                                      module1)).when(projectService).resolveProject(repo_o3_1);
+        doReturn(new WorkspaceProject(o3,
+                                      repo_o3_2,
+                                      new Branch("master",
+                                                 mock(Path.class)),
+                                      module2)).when(projectService).resolveProject(repo_o3_2);
+        doReturn(new WorkspaceProject(o3,
+                                      repo_o3_3,
+                                      new Branch("master",
+                                                 mock(Path.class)),
+                                      module3)).when(projectService).resolveProject(repo_o3_3);
 
-        //repo_o3_3 has -> project1, project2 and project3
-        when ( projectService.getProjects( eq( repo_o3_3 ), anyString() ) ).thenReturn( projects );
+        //module1 has data sources ds1 and ds2, and drivers driver1, driver2 and driver3
+        ArrayList<DataSourceDefInfo> module2DSs = new ArrayList<>();
+        module2DSs.add(ds1);
+        module2DSs.add(ds2);
 
-        //project1 is authorized
-        when( authorizationManager.authorize( project1, identity ) ).thenReturn( true );
-        //project2 is authorized
-        when( authorizationManager.authorize( project2, identity ) ).thenReturn( true );
-        //project3 is not authorized.
-        when( authorizationManager.authorize( project3, identity ) ).thenReturn( false );
+        ArrayList<DriverDefInfo> module2Drivers = new ArrayList<>();
+        module2Drivers.add(driver1);
+        module2Drivers.add(driver2);
+        module2Drivers.add(driver3);
 
-        //project1 has data sources ds1 and ds2, and drivers driver1, driver2 and driver3
-        ArrayList<DataSourceDefInfo> project2DSs = new ArrayList<>( );
-        project2DSs.add( ds1 );
-        project2DSs.add( ds2 );
-
-        ArrayList<DriverDefInfo> project2Drivers = new ArrayList<>( );
-        project2Drivers.add( driver1 );
-        project2Drivers.add( driver2 );
-        project2Drivers.add( driver3 );
-
-        when( dataSourceDefQueryService.findProjectDataSources( project2 ) ).thenReturn( project2DSs );
-        when( dataSourceDefQueryService.findProjectDrivers( project2 ) ).thenReturn( project2Drivers );
+        when(dataSourceDefQueryService.findModuleDataSources(module1)).thenReturn(module2DSs);
+        when(dataSourceDefQueryService.findModuleDrivers(module1)).thenReturn(module2Drivers);
     }
 
     /**
@@ -186,21 +202,21 @@ public class DefExplorerQueryServiceTest {
      */
     @Test
     public void testEmptyQuery() {
-        DefExplorerQuery query = new DefExplorerQuery( );
-        DefExplorerQueryResult result  = explorerQueryService.executeQuery( query );
+        DefExplorerQuery query = new DefExplorerQuery();
+        DefExplorerQueryResult result = explorerQueryService.executeQuery(query);
 
         //o1 should not be included in the result.
-        assertFalse( result.getOrganizationalUnits().contains( o1 ) );
+        assertFalse(result.getOrganizationalUnits().contains(o1));
         //o2 must be included in the result.
-        assertTrue( result.getOrganizationalUnits().contains( o2 ) );
+        assertTrue(result.getOrganizationalUnits().contains(o2));
         //o3 must be included in the result.
-        assertTrue( result.getOrganizationalUnits().contains( o3 ) );
+        assertTrue(result.getOrganizationalUnits().contains(o3));
 
-        //repositories, projects, data sources and drivers should be empty since no organizational unit was selected
-        assertTrue( result.getRepositories().isEmpty() );
-        assertTrue( result.getProjects().isEmpty() );
-        assertTrue( result.getDataSourceDefs().isEmpty() );
-        assertTrue( result.getProjects().isEmpty() );
+        //repositories, modules, data sources and drivers should be empty since no organizational unit was selected
+        assertTrue(result.getRepositories().isEmpty());
+        assertTrue(result.getModules().isEmpty());
+        assertTrue(result.getDataSourceDefs().isEmpty());
+        assertTrue(result.getModules().isEmpty());
     }
 
     /**
@@ -209,191 +225,237 @@ public class DefExplorerQueryServiceTest {
      */
     @Test
     public void testQueryForOrganizationalUnit() {
-        DefExplorerQuery query = new DefExplorerQuery(  );
-        query.setOrganizationalUnit( o2 );
+        DefExplorerQuery query = new DefExplorerQuery();
+        query.setOrganizationalUnit(o2);
 
-        DefExplorerQueryResult result = explorerQueryService.executeQuery( query );
+        DefExplorerQueryResult result = explorerQueryService.executeQuery(query);
 
         //o1 should not be included in the result since it's not authorized.
-        assertFalse( result.getOrganizationalUnits().contains( o1 ) );
+        assertFalse(result.getOrganizationalUnits().contains(o1));
         //o2 must be included in the result.
-        assertTrue( result.getOrganizationalUnits().contains( o2 ) );
+        assertTrue(result.getOrganizationalUnits().contains(o2));
         //o3 is still included in the result since organizational units are piggybacked to let the UI be refreshed
-        assertTrue( result.getOrganizationalUnits().contains( o3 ) );
+        assertTrue(result.getOrganizationalUnits().contains(o3));
 
         //authorized repositories for organizational unit o2 must be in the result.
-        assertTrue( result.getRepositories().contains( repo_o2_1 ) );
-        assertTrue( result.getRepositories().contains( repo_o2_2 ) );
-        assertEquals( 2, result.getRepositories().size() );
+        assertTrue(result.getRepositories().contains(repo_o2_1));
+        assertTrue(result.getRepositories().contains(repo_o2_2));
+        assertEquals(2,
+                     result.getRepositories().size());
     }
 
     /**
      * Tests a query for a given Organizational Unit and a given repository. In this case the list of available
-     * authorized projects for the given repository should be returned.
+     * authorized modules for the given repository should be returned.
      */
     @Test
     public void testQueryForOrganizationalUnitRepository() {
-        DefExplorerQuery query = new DefExplorerQuery(  );
-        query.setOrganizationalUnit( o3 );
-        query.setRepository( repo_o3_3 );
+        DefExplorerQuery query = new DefExplorerQuery();
+        query.setOrganizationalUnit(o3);
+        query.setRepository(repo_o3_3);
+        query.setBranchName("master");
 
-        DefExplorerQueryResult result = explorerQueryService.executeQuery( query );
-        verifyResultForQueryForOrganizationalUnitRepository( result );
-    }
-
-    private void verifyResultForQueryForOrganizationalUnitRepository( DefExplorerQueryResult result ) {
-        //o1 should not be included in the result.
-        assertFalse( result.getOrganizationalUnits().contains( o1 ) );
-        //o2 is still included in the result since organizational units are piggybacked to let the UI be refreshed
-        assertTrue( result.getOrganizationalUnits().contains( o2 ) );
-        //o3 must be included in the result
-        assertTrue( result.getOrganizationalUnits().contains( o3 ) );
-
-        //the authorized repositories for organizational unit o3 must be in the result, since they are piggybacked.
-        assertTrue( result.getRepositories().contains( repo_o3_1 ) );
-        //repo_o3_2 is not authorized
-        assertFalse( result.getRepositories().contains( repo_o3_2 ) );
-        assertTrue( result.getRepositories().contains( repo_o3_3 ) );
-        assertEquals( 2, result.getRepositories().size() );
-
-        //and the authorized projects in repo_o3_2 should be also returned, i.e. project1 and project2
-        //project1 is authorized and thus must be in the result.
-        assertTrue( result.getProjects().contains( project1 ) );
-        //project2 is authorized and thus must be in the result.
-        assertTrue( result.getProjects().contains( project2 ) );
-        //project3 is not authorized, and can't be in the result.
-        assertFalse( result.getProjects().contains( project3 ) );
-        assertEquals( 2, result.getProjects().size() );
+        DefExplorerQueryResult result = explorerQueryService.executeQuery(query);
+        verifyResultForQueryForOrganizationalUnitRepository(result);
     }
 
     /**
-     * Tests a query for a given Organizational Unit, a Repository, and a selected Project.
+     * Tests a query for a given Organizational Unit, a Repository, and a selected Module.
      * In this case the list of available data sources and drivers for the given repository should be returned.
      */
     @Test
-    public void testQueryForOrganizationalUnitRepositoryProject() {
-        DefExplorerQuery query = new DefExplorerQuery(  );
-        query.setOrganizationalUnit( o3 );
-        query.setRepository( repo_o3_3 );
-        query.setProject( project2 );
+    public void testQueryForOrganizationalUnitRepositoryModule() {
+        DefExplorerQuery query = new DefExplorerQuery();
+        query.setOrganizationalUnit(o3);
+        query.setRepository(repo_o3_1);
+        query.setBranchName("master");
+        query.setModule(module1);
 
-        DefExplorerQueryResult result = explorerQueryService.executeQuery( query );
+        DefExplorerQueryResult result = explorerQueryService.executeQuery(query);
 
-        //organizational units, repositories and projects are piggybacked, so the result should include
+        //organizational units, repositories and modules are piggybacked, so the result should include
         //the same structure information as testQueryForOrganizationalUnitRepository
-        verifyResultForQueryForOrganizationalUnitRepository( result );
+        verifyResultForQueryForOrganizationalUnitRepository(result);
 
-        //additionally all data sources and drivers from project2 should be in the result.
-        assertTrue( result.getDataSourceDefs().contains( ds1 ) );
-        assertTrue( result.getDataSourceDefs().contains( ds2 ) );
+        //additionally all data sources and drivers from module2 should be in the result.
+        assertTrue(result.getDataSourceDefs().contains(ds1));
+        assertTrue(result.getDataSourceDefs().contains(ds2));
 
-        assertTrue( result.getDriverDefs().contains( driver1 ) );
-        assertTrue( result.getDriverDefs().contains( driver2 ) );
-        assertTrue( result.getDriverDefs().contains( driver3 ) );
+        assertTrue(result.getDriverDefs().contains(driver1));
+        assertTrue(result.getDriverDefs().contains(driver2));
+        assertTrue(result.getDriverDefs().contains(driver3));
     }
 
     private void createOrganizationalUnits() {
-        organizationalUnits = new ArrayList<>(  );
-        o1 = new OrganizationalUnitImpl( "o1", "owner1", "group1" );
-        repo_o1_1 = new RepositoryMock( "repo_o1_1", "repo_o1_1" );
-        repo_o1_2 = new RepositoryMock( "repo_o1_2", "repo_o1_2" );
-        repo_o1_3 = new RepositoryMock( "repo_o1_3", "repo_o1_3" );
-        o1.getRepositories().add( repo_o1_1 );
-        o1.getRepositories().add( repo_o1_2 );
-        o1.getRepositories().add( repo_o1_3 );
-        organizationalUnits.add( o1 );
+        organizationalUnits = new ArrayList<>();
+        o1 = new OrganizationalUnitImpl("o1",
+                                        "owner1",
+                                        "group1");
+        repo_o1_1 = new RepositoryMock("repo_o1_1",
+                                       "repo_o1_1");
+        repo_o1_2 = new RepositoryMock("repo_o1_2",
+                                       "repo_o1_2");
+        repo_o1_3 = new RepositoryMock("repo_o1_3",
+                                       "repo_o1_3");
+        o1.getRepositories().add(repo_o1_1);
+        o1.getRepositories().add(repo_o1_2);
+        o1.getRepositories().add(repo_o1_3);
+        organizationalUnits.add(o1);
 
-        o2 = new OrganizationalUnitImpl( "o2", "owner2", "group2" );
-        repo_o2_1 = new RepositoryMock( "repo_o2_1", "repo_o2_1" );
-        repo_o2_2 = new RepositoryMock( "repo_o2_2", "repo_o2_2" );
-        o2.getRepositories().add( repo_o2_1 );
-        o2.getRepositories().add( repo_o2_2 );
-        organizationalUnits.add( o2 );
+        o2 = new OrganizationalUnitImpl("o2",
+                                        "owner2",
+                                        "group2");
+        repo_o2_1 = new RepositoryMock("repo_o2_1",
+                                       "repo_o2_1");
+        repo_o2_2 = new RepositoryMock("repo_o2_2",
+                                       "repo_o2_2");
+        o2.getRepositories().add(repo_o2_1);
+        o2.getRepositories().add(repo_o2_2);
+        organizationalUnits.add(o2);
 
-        o3 = new OrganizationalUnitImpl( "o3", "owner3", "group3" );
-        repo_o3_1 = new RepositoryMock( "repo_o3_1", "repo_o3_1" );
-        repo_o3_2 = new RepositoryMock( "repo_o3_2", "repo_o3_2" );
-        repo_o3_3 =  new RepositoryMock( "repo_o3_3", "repo_o3_3" );
-        o3.getRepositories().add( repo_o3_1 );
-        o3.getRepositories().add( repo_o3_2 );
-        o3.getRepositories().add( repo_o3_3 );
-        organizationalUnits.add( o3 );
+        o3 = new OrganizationalUnitImpl("o3",
+                                        "owner3",
+                                        "group3");
+        repo_o3_1 = new RepositoryMock("repo_o3_1",
+                                       "repo_o3_1");
+        repo_o3_2 = new RepositoryMock("repo_o3_2",
+                                       "repo_o3_2");
+        repo_o3_3 = new RepositoryMock("repo_o3_3",
+                                       "repo_o3_3");
+        o3.getRepositories().add(repo_o3_1);
+        o3.getRepositories().add(repo_o3_2);
+        o3.getRepositories().add(repo_o3_3);
+        organizationalUnits.add(o3);
     }
 
-    private class RepositoryMock implements Repository {
+    private void verifyResultForQueryForOrganizationalUnitRepository(final DefExplorerQueryResult result) {
+        //o1 should not be included in the result.
+        assertFalse(result.getOrganizationalUnits().contains(o1));
+        //o2 is still included in the result since organizational units are piggybacked to let the UI be refreshed
+        assertTrue(result.getOrganizationalUnits().contains(o2));
+        //o3 must be included in the result
+        assertTrue(result.getOrganizationalUnits().contains(o3));
+
+        //and the authorized modules in repo_o3_2 should be also returned, i.e. module1 and module2
+        //module1 is authorized and thus must be in the result.
+        assertTrue(result.getModules().contains(module1));
+        //module2 is authorized and thus must be in the result.
+        assertFalse(result.getModules().contains(module2));
+        //module3 is authorized and thus must be in the result.
+        assertTrue(result.getModules().contains(module3));
+        assertEquals(2,
+                     result.getModules().size());
+
+        //the authorized repositories for organizational unit o3 must be in the result, since they are piggybacked.
+        assertTrue(result.getRepositories().contains(repo_o3_1));
+        //repo_o3_2 is not authorized
+        assertFalse(result.getRepositories().contains(repo_o3_2));
+        assertTrue(result.getRepositories().contains(repo_o3_3));
+        assertEquals(2,
+                     result.getRepositories().size());
+    }
+
+    private class RepositoryMock
+            implements Repository {
 
         String alias;
 
         String identifier;
 
-        public RepositoryMock( String alias, String identifier ) {
+        Branch masterBranch = new Branch("master",
+                                         mock(Path.class));
+
+        public RepositoryMock(String alias,
+                              String identifier) {
             this.alias = alias;
             this.identifier = identifier;
         }
 
-        @Override public String getAlias() {
+        @Override
+        public String getAlias() {
             return alias;
         }
 
-        @Override public String getScheme() {
+        @Override
+        public SpacesAPI.Scheme getScheme() {
+            return SpacesAPI.Scheme.DEFAULT;
+        }
+
+        @Override
+        public Space getSpace() {
+            return new Space("space");
+        }
+
+        @Override
+        public Map<String, Object> getEnvironment() {
             return null;
         }
 
-        @Override public Map<String, Object> getEnvironment() {
-            return null;
-        }
-
-        @Override public void addEnvironmentParameter( String key, Object value ) {
+        @Override
+        public void addEnvironmentParameter(String key,
+                                            Object value) {
 
         }
 
-        @Override public boolean isValid() {
+        @Override
+        public boolean isValid() {
             return true;
         }
 
-        @Override public String getUri() {
+        @Override
+        public String getUri() {
             return null;
         }
 
-        @Override public List<PublicURI> getPublicURIs() {
+        @Override
+        public List<PublicURI> getPublicURIs() {
             return null;
         }
 
-        @Override public Path getRoot() {
+        @Override
+        public Optional<Branch> getBranch(String branch) {
+            if ("master".equals(branch)) {
+                return Optional.of(masterBranch);
+            } else {
+                return Optional.empty();
+            }
+        }
+
+        @Override
+        public Optional<Branch> getBranch(final Path branchRoot) {
+            return Optional.empty();
+        }
+
+        @Override
+        public Collection<String> getGroups() {
             return null;
         }
 
-        @Override public Path getBranchRoot( String branch ) {
-            return null;
+        @Override
+        public Collection<Branch> getBranches() {
+            final ArrayList<Branch> branches = new ArrayList<>();
+            branches.add(masterBranch);
+            return branches;
         }
 
-        @Override public void setRoot( Path root ) {
-
+        @Override
+        public Optional<Branch> getDefaultBranch() {
+            return Optional.of(masterBranch);
         }
 
-        @Override public Collection<String> getGroups() {
-            return null;
-        }
-
-        @Override public Collection<String> getBranches() {
-            return null;
-        }
-
-        @Override public String getDefaultBranch() {
-            return null;
-        }
-
-        @Override public boolean requiresRefresh() {
+        @Override
+        public boolean requiresRefresh() {
             return false;
         }
 
-        @Override public void markAsCached() {
+        @Override
+        public void markAsCached() {
 
         }
 
-        @Override public String getIdentifier() {
+        @Override
+        public String getIdentifier() {
             return identifier;
         }
     }
-
 }

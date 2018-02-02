@@ -16,6 +16,20 @@
 
 package org.guvnor.ala.ui.backend.service;
 
+import static org.guvnor.ala.AlaSPITestCommons.mockProviderTypeListSPI;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -28,20 +42,14 @@ import org.guvnor.ala.ui.model.ProviderType;
 import org.guvnor.ala.ui.model.ProviderTypeKey;
 import org.guvnor.ala.ui.model.ProviderTypeStatus;
 import org.guvnor.ala.ui.preferences.ProvisioningPreferences;
-import org.guvnor.common.services.project.preferences.scope.GlobalPreferenceScope;
+import org.guvnor.common.services.shared.preferences.GuvnorPreferenceScopes;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.preferences.shared.PreferenceScope;
-
-import static org.guvnor.ala.AlaSPITestCommons.mockProviderTypeListSPI;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import org.uberfire.preferences.shared.PreferenceScopeFactory;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProviderTypeServiceImplTest {
@@ -52,7 +60,7 @@ public class ProviderTypeServiceImplTest {
     private RuntimeProvisioningServiceBackend runtimeProvisioningService;
 
     @Mock
-    private GlobalPreferenceScope globalPreferenceScope;
+    private PreferenceScopeFactory scopeFactory;
 
     @Mock
     private PreferenceScope preferenceScope;
@@ -71,7 +79,7 @@ public class ProviderTypeServiceImplTest {
     public void setUp() {
         providerTypesSpi = mockProviderTypeListSPI(PROVIDER_TYPES_COUNT);
 
-        when(globalPreferenceScope.resolve()).thenReturn(preferenceScope);
+        when(scopeFactory.createScope(GuvnorPreferenceScopes.GLOBAL)).thenReturn(preferenceScope);
         provisioningPreferences = spy(new ProvisioningPreferences() {
             {
                 setProviderTypeEnablements(new HashMap<>());
@@ -94,7 +102,7 @@ public class ProviderTypeServiceImplTest {
                                                          anyBoolean())).thenReturn(providerTypesSpi);
         service = new ProviderTypeServiceImpl(runtimeProvisioningService,
                                               provisioningPreferences,
-                                              globalPreferenceScope);
+                                              scopeFactory);
     }
 
     @Test

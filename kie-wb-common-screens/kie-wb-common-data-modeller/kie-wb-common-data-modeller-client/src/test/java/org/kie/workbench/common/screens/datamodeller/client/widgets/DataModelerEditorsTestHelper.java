@@ -44,7 +44,7 @@ import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.PropertyTypeFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.CommonAnnotations;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
-import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieModule;
 import org.uberfire.commons.data.Pair;
 
 public class DataModelerEditorsTestHelper {
@@ -66,90 +66,87 @@ public class DataModelerEditorsTestHelper {
     public static DataObject createTestObject1() {
 
         //set general properties and annotations.
-        DataObject dataObject = new DataObjectImpl( "org.test", "TestObject1" );
-        dataObject.setSuperClassName( "java.lang.Object" );
-        dataObject.addAnnotation( createAnnotation( Label.class, new Pair<String, Object>( "value", "TestObject1Label" ) ) );
-        dataObject.addAnnotation( createAnnotation( Description.class, new Pair<String, Object>( "value", "TestObject1Description" ) ) );
-
+        DataObject dataObject = new DataObjectImpl("org.test", "TestObject1");
+        dataObject.setSuperClassName("java.lang.Object");
+        dataObject.addAnnotation(createAnnotation(Label.class, new Pair<String, Object>("value", "TestObject1Label")));
+        dataObject.addAnnotation(createAnnotation(Description.class, new Pair<String, Object>("value", "TestObject1Description")));
 
         //set annotations for drools & jbpm domain tests.
-        dataObject.addAnnotation( createAnnotation( TypeSafe.class, new Pair<String, Object>( "value", true ) ) );
-        dataObject.addAnnotation( createAnnotation( PropertyReactive.class  ) );
-        dataObject.addAnnotation( createAnnotation( Role.class, new Pair<String, Object>( "value", Role.Type.EVENT.name() ) ) );
-        dataObject.addAnnotation( createAnnotation( Timestamp.class, new Pair<String, Object>( "value" , "field2" ) ) );
-        dataObject.addAnnotation( createAnnotation( Duration.class, new Pair<String, Object>( "value", "field3" ) ) );
-        dataObject.addAnnotation( createAnnotation( Expires.class, new Pair<String, Object>( "value", "1h" ) ) );
-        dataObject.addAnnotation( createAnnotation( XmlRootElement.class ) );
-
+        dataObject.addAnnotation(createAnnotation(TypeSafe.class, new Pair<String, Object>("value", true)));
+        dataObject.addAnnotation(createAnnotation(PropertyReactive.class));
+        dataObject.addAnnotation(createAnnotation(Role.class, new Pair<String, Object>("value", Role.Type.EVENT.name())));
+        dataObject.addAnnotation(createAnnotation(Timestamp.class, new Pair<String, Object>("value", "field2")));
+        dataObject.addAnnotation(createAnnotation(Duration.class, new Pair<String, Object>("value", "field3")));
+        dataObject.addAnnotation(createAnnotation(Expires.class, new Pair<String, Object>("value", "1h")));
+        dataObject.addAnnotation(createAnnotation(XmlRootElement.class));
 
         //add fields
-        ObjectProperty field1 = dataObject.addProperty( "field1", Integer.class.getName() );
-        field1.addAnnotation( createAnnotation( Label.class, new Pair<String, Object>( "value", "Field1Label" ) ) );
-        field1.addAnnotation( createAnnotation( Description.class, new Pair<String, Object>( "value", "Field1Description" ) ) );
+        ObjectProperty field1 = dataObject.addProperty("field1", Integer.class.getName());
+        field1.addAnnotation(createAnnotation(Label.class, new Pair<String, Object>("value", "Field1Label")));
+        field1.addAnnotation(createAnnotation(Description.class, new Pair<String, Object>("value", "Field1Description")));
 
         //set annotations for drools & jbpm domain tests
-        field1.addAnnotation( createAnnotation( Position.class, new Pair<String, Object>( "value", 0 ) ) );
-        field1.addAnnotation( createAnnotation( Key.class ) );
+        field1.addAnnotation(createAnnotation(Position.class, new Pair<String, Object>("value", 0)));
+        field1.addAnnotation(createAnnotation(Key.class));
 
-        ObjectProperty field2 = dataObject.addProperty( "field2", Integer.class.getName() );
-        field2.addAnnotation( createAnnotation( Label.class, new Pair<String, Object>( "value", "Field2Label" ) ) );
-        field2.addAnnotation( createAnnotation( Description.class, new Pair<String, Object>( "value", "Field2Description" ) ) );
+        ObjectProperty field2 = dataObject.addProperty("field2", Integer.class.getName());
+        field2.addAnnotation(createAnnotation(Label.class, new Pair<String, Object>("value", "Field2Label")));
+        field2.addAnnotation(createAnnotation(Description.class, new Pair<String, Object>("value", "Field2Description")));
 
-        ObjectProperty field3 = dataObject.addProperty( "field3", Long.class.getName() );
-        field1.addAnnotation( createAnnotation( Label.class, new Pair<String, Object>( "value", "Field3Label" ) ) );
-        field1.addAnnotation( createAnnotation( Description.class, new Pair<String, Object>( "value", "Field3Description" ) ) );
+        ObjectProperty field3 = dataObject.addProperty("field3", Long.class.getName());
+        field1.addAnnotation(createAnnotation(Label.class, new Pair<String, Object>("value", "Field3Label")));
+        field1.addAnnotation(createAnnotation(Description.class, new Pair<String, Object>("value", "Field3Description")));
 
         return dataObject;
     }
 
-    public static DataModel createTestModel( DataObject... dataObjects) {
+    public static DataModel createTestModel(DataObject... dataObjects) {
         DataModel dataModel = new DataModelImpl();
-        for ( DataObject dataObject : dataObjects ) {
-            dataModel.addDataObject( dataObject );
+        for (DataObject dataObject : dataObjects) {
+            dataModel.addDataObject(dataObject);
         }
         return dataModel;
     }
 
     public static DataModelerContext createTestContext() {
-        DataModelerContext context = new DataModelerContext( "123456789" );
-        context.init( PropertyTypeFactoryImpl.getInstance().getBasePropertyTypes() );
+        DataModelerContext context = new DataModelerContext("123456789");
+        context.init(PropertyTypeFactoryImpl.getInstance().getBasePropertyTypes());
 
         List<AnnotationDefinition> commonAnnotations = CommonAnnotations.getCommonAnnotations();
-        Map<String, AnnotationDefinition> annotationDefinitions = new HashMap<String, AnnotationDefinition>( );
-        for ( AnnotationDefinition annotationDefinition : commonAnnotations ) {
-            annotationDefinitions.put( annotationDefinition.getClassName(), annotationDefinition );
+        Map<String, AnnotationDefinition> annotationDefinitions = new HashMap<String, AnnotationDefinition>();
+        for (AnnotationDefinition annotationDefinition : commonAnnotations) {
+            annotationDefinitions.put(annotationDefinition.getClassName(), annotationDefinition);
         }
-        context.setAnnotationDefinitions( annotationDefinitions );
+        context.setAnnotationDefinitions(annotationDefinitions);
 
         EditorModelContent content = new EditorModelContent();
-        content.setDataModel( createTestModel() );
-        content.setCurrentProject( new KieProject() );
-        context.setEditorModelContent( content );
+        content.setDataModel(createTestModel());
+        content.setCurrentModule(new KieModule());
+        context.setEditorModelContent(content);
 
         return context;
     }
 
-    public static Annotation createAnnotation( Class cls, String memberName, Object value ) {
+    public static Annotation createAnnotation(Class cls, String memberName, Object value) {
 
-        AnnotationDefinition annotationDefinition = DriverUtils.buildAnnotationDefinition( cls );
-        Annotation annotation = new AnnotationImpl( annotationDefinition );
+        AnnotationDefinition annotationDefinition = DriverUtils.buildAnnotationDefinition(cls);
+        Annotation annotation = new AnnotationImpl(annotationDefinition);
 
-        if ( memberName != null ) {
-            annotation.setValue( memberName, value );
+        if (memberName != null) {
+            annotation.setValue(memberName, value);
         }
 
         return annotation;
     }
 
-    public static Annotation createAnnotation( Class cls, Pair<String, Object>... valuePairs ) {
+    public static Annotation createAnnotation(Class cls, Pair<String, Object>... valuePairs) {
 
-        AnnotationDefinition annotationDefinition = DriverUtils.buildAnnotationDefinition( cls );
-        Annotation annotation = new AnnotationImpl( annotationDefinition );
+        AnnotationDefinition annotationDefinition = DriverUtils.buildAnnotationDefinition(cls);
+        Annotation annotation = new AnnotationImpl(annotationDefinition);
 
-        for ( Pair<String, Object> valuePair : valuePairs ) {
-            annotation.setValue( valuePair.getK1(), valuePair.getK2() );
+        for (Pair<String, Object> valuePair : valuePairs) {
+            annotation.setValue(valuePair.getK1(), valuePair.getK2());
         }
         return annotation;
     }
-
 }

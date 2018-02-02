@@ -18,9 +18,8 @@ package org.kie.workbench.common.screens.explorer.backend.server;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
@@ -42,25 +41,29 @@ public class UserExplorerLastData {
         return isDataEmpty() && options.isEmpty();
     }
 
-    public void setFolderItem( final OrganizationalUnit organizationalUnit,
-                               final Repository repository,
-                               final String branch,
-                               final Project project,
-                               final FolderItem item ) {
-        lastFolderItem = new LastFolderItem( organizationalUnit, repository, branch, project, item );
+    public void setFolderItem(final Repository repository,
+                              final String branch,
+                              final Module module,
+                              final FolderItem item) {
+        lastFolderItem = new LastFolderItem(repository,
+                                            branch,
+                                            module,
+                                            item);
     }
 
-    public void setPackage( final OrganizationalUnit organizationalUnit,
-                            final Repository repository,
-                            final String branch,
-                            final Project project,
-                            final Package pkg ) {
-        lastPackage = new LastPackage( organizationalUnit, repository, branch, project, pkg );
+    public void setPackage(final Repository repository,
+                           final String branch,
+                           final Module module,
+                           final Package pkg) {
+        lastPackage = new LastPackage(repository,
+                                      branch,
+                                      module,
+                                      pkg);
     }
 
-    public void setOptions( final ActiveOptions options ) {
+    public void setOptions(final ActiveOptions options) {
         this.options.clear();
-        this.options.addAll( options.getValues() );
+        this.options.addAll(options.getValues());
     }
 
     public LastPackage getLastPackage() {
@@ -75,13 +78,13 @@ public class UserExplorerLastData {
         return options;
     }
 
-    public boolean deleteProject( final Project project ) {
+    public boolean deleteModule(final Module module) {
         boolean changed = false;
-        if ( lastPackage != null && lastPackage.getProject().equals( project ) ) {
+        if (lastPackage != null && lastPackage.getModule().equals(module)) {
             lastPackage = null;
             changed = true;
         }
-        if ( lastFolderItem != null && lastFolderItem.getProject().equals( project ) ) {
+        if (lastFolderItem != null && lastFolderItem.getModule().equals(module)) {
             lastFolderItem = null;
             changed = true;
         }
@@ -90,30 +93,23 @@ public class UserExplorerLastData {
 
     static class LastPackage {
 
-        OrganizationalUnit organizationalUnit;
         Repository repository;
         String branch;
-        Project project;
+        Module module;
         org.guvnor.common.services.project.model.Package pkg;
 
         LastPackage() {
 
         }
 
-        LastPackage( final OrganizationalUnit organizationalUnit,
-                     final Repository repository,
-                     final String branch,
-                     final Project project,
-                     final Package pkg ) {
-            this.organizationalUnit = organizationalUnit;
+        LastPackage(final Repository repository,
+                    final String branch,
+                    final Module module,
+                    final Package pkg) {
             this.repository = repository;
             this.branch = branch;
-            this.project = project;
+            this.module = module;
             this.pkg = pkg;
-        }
-
-        OrganizationalUnit getOrganizationalUnit() {
-            return organizationalUnit;
         }
 
         Repository getRepository() {
@@ -124,8 +120,8 @@ public class UserExplorerLastData {
             return branch;
         }
 
-        Project getProject() {
-            return project;
+        Module getModule() {
+            return module;
         }
 
         Package getPkg() {
@@ -135,30 +131,23 @@ public class UserExplorerLastData {
 
     static class LastFolderItem {
 
-        OrganizationalUnit organizationalUnit;
         Repository repository;
         String branch;
-        Project project;
+        Module module;
         FolderItem item;
 
         LastFolderItem() {
 
         }
 
-        LastFolderItem( final OrganizationalUnit organizationalUnit,
-                        final Repository repository,
-                        final String branch,
-                        final Project project,
-                        final FolderItem item ) {
-            this.organizationalUnit = organizationalUnit;
+        LastFolderItem(final Repository repository,
+                       final String branch,
+                       final Module module,
+                       final FolderItem item) {
             this.repository = repository;
             this.branch = branch;
-            this.project = project;
+            this.module = module;
             this.item = item;
-        }
-
-        OrganizationalUnit getOrganizationalUnit() {
-            return organizationalUnit;
         }
 
         Repository getRepository() {
@@ -169,8 +158,8 @@ public class UserExplorerLastData {
             return branch;
         }
 
-        Project getProject() {
-            return project;
+        Module getModule() {
+            return module;
         }
 
         FolderItem getItem() {

@@ -32,7 +32,6 @@ public class LibraryPreferencesTest {
     public void setup() {
         libraryPreferences = new LibraryPreferences();
         libraryPreferences.organizationalUnitPreferences = new LibraryOrganizationalUnitPreferences();
-        libraryPreferences.repositoryPreferences = new LibraryRepositoryPreferences();
         libraryPreferences.projectPreferences = new LibraryProjectPreferences();
 
         packageNameValidator = new PackageNameValidator();

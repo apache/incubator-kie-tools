@@ -21,7 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.view.client.ListDataProvider;
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -39,7 +39,7 @@ import org.uberfire.mvp.ParameterizedCommand;
 @ApplicationScoped
 public class DataSourceSelector
         implements DataSourceSelectorView.Presenter,
-        org.kie.workbench.common.screens.datamodeller.client.widgets.datasourceselector.DataSourceSelector {
+                   org.kie.workbench.common.screens.datamodeller.client.widgets.datasourceselector.DataSourceSelector {
 
     private DataSourceSelectorView view;
 
@@ -47,11 +47,11 @@ public class DataSourceSelector
 
     private TranslationService translationService;
 
-    private ListDataProvider<DataSourceSelectorPageRow> dataProvider = new ListDataProvider<> ( );
+    private ListDataProvider<DataSourceSelectorPageRow> dataProvider = new ListDataProvider<>();
 
     private ParameterizedCommand<DataSourceInfo> onSelectCommand;
 
-    private Project project;
+    private Module module;
 
     private Command onCloseCommand;
 
@@ -61,55 +61,58 @@ public class DataSourceSelector
     }
 
     @Inject
-    public DataSourceSelector( DataSourceSelectorView view,
-            PopupsUtil popupsUtil,
-            TranslationService translationService,
-            Caller<DataSourceDefQueryService> queryService ) {
+    public DataSourceSelector(DataSourceSelectorView view,
+                              PopupsUtil popupsUtil,
+                              TranslationService translationService,
+                              Caller<DataSourceDefQueryService> queryService) {
         this.view = view;
         this.queryService = queryService;
         this.popupsUtil = popupsUtil;
         this.translationService = translationService;
-        view.init( this );
-        dataProvider.addDataDisplay( view.getDisplay() );
+        view.init(this);
+        dataProvider.addDataDisplay(view.getDisplay());
     }
 
     @Override
-    public void setProjectSelection( Project project ) {
-        this.project = project;
+    public void setModuleSelection(final Module module) {
+        this.module = module;
     }
 
     @Override
     public void setGlobalSelection() {
-        this.project = null;
+        this.module = null;
     }
 
     public boolean isGlobalSelection() {
-        return project == null;
+        return module == null;
     }
 
-    public void show(ParameterizedCommand<DataSourceInfo> onSelectCommand, Command onCloseCommand ) {
+    public void show(ParameterizedCommand<DataSourceInfo> onSelectCommand,
+                     Command onCloseCommand) {
         this.onSelectCommand = onSelectCommand;
         this.onCloseCommand = onCloseCommand;
 
-        if ( isGlobalSelection() ) {
-            queryService.call( getLoadSuccessCallback(), getLoadErrorCallback() ).findGlobalDataSources( true );
+        if (isGlobalSelection()) {
+            queryService.call(getLoadSuccessCallback(),
+                              getLoadErrorCallback()).findGlobalDataSources(true);
         } else {
-            queryService.call( getLoadSuccessCallback(), getLoadErrorCallback() ).findProjectDataSources( project );
+            queryService.call(getLoadSuccessCallback(),
+                              getLoadErrorCallback()).findModuleDataSources(module);
         }
     }
 
     @Override
     public void onClose() {
         dataProvider.getList().clear();
-        if ( onCloseCommand != null ) {
+        if (onCloseCommand != null) {
             onCloseCommand.execute();
         }
     }
 
     @Override
     public void onSelect() {
-        if ( onSelectCommand != null ) {
-            onSelectCommand.execute( new DataSourceInfo() {
+        if (onSelectCommand != null) {
+            onSelectCommand.execute(new DataSourceInfo() {
                 @Override
                 public boolean isDeployed() {
                     return view.getSelectedRow().getDataSourceDefInfo().isDeployed();
@@ -117,7 +120,7 @@ public class DataSourceSelector
 
                 @Override
                 public String getJndi() {
-                    if ( view.getSelectedRow().getDataSourceDefInfo().getDeploymentInfo() != null ) {
+                    if (view.getSelectedRow().getDataSourceDefInfo().getDeploymentInfo() != null) {
                         return view.getSelectedRow().getDataSourceDefInfo().getDeploymentInfo().getJndi();
                     }
                     return null;
@@ -127,15 +130,15 @@ public class DataSourceSelector
                 public String getUuid() {
                     return view.getSelectedRow().getDataSourceDefInfo().getUuid();
                 }
-            } );
+            });
         }
     }
 
     private RemoteCallback<Collection<DataSourceDefInfo>> getLoadSuccessCallback() {
         return new RemoteCallback<Collection<DataSourceDefInfo>>() {
             @Override
-            public void callback( Collection<DataSourceDefInfo> dataSourceDefInfos ) {
-                loadDataSources( dataSourceDefInfos );
+            public void callback(Collection<DataSourceDefInfo> dataSourceDefInfos) {
+                loadDataSources(dataSourceDefInfos);
             }
         };
     }
@@ -143,20 +146,21 @@ public class DataSourceSelector
     private ErrorCallback<?> getLoadErrorCallback() {
         return new DefaultErrorCallback() {
             @Override
-            public boolean error( Message message, Throwable throwable ) {
+            public boolean error(Message message,
+                                 Throwable throwable) {
                 popupsUtil.showErrorPopup(
                         translationService.format(
-                                DataSourceManagementConstants.DataSourceSelector_DataSourcesLoadError ) );
+                                DataSourceManagementConstants.DataSourceSelector_DataSourcesLoadError));
                 onClose();
                 return false;
             }
         };
     }
 
-    private void loadDataSources( Collection<DataSourceDefInfo> dataSourceDefInfos ) {
+    private void loadDataSources(Collection<DataSourceDefInfo> dataSourceDefInfos) {
         dataProvider.getList().clear();
-        for ( DataSourceDefInfo defInfo : dataSourceDefInfos ) {
-            dataProvider.getList().add( new DataSourceSelectorPageRow( defInfo ) );
+        for (DataSourceDefInfo defInfo : dataSourceDefInfos) {
+            dataProvider.getList().add(new DataSourceSelectorPageRow(defInfo));
         }
         dataProvider.flush();
         view.show();

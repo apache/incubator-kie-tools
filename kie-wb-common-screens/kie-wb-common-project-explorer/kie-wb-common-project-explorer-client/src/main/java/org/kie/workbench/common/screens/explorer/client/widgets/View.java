@@ -17,17 +17,12 @@ package org.kie.workbench.common.screens.explorer.client.widgets;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.google.gwt.user.client.ui.HasVisibility;
-import org.guvnor.common.services.project.model.Project;
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.guvnor.structure.repositories.Repository;
-import org.kie.workbench.common.screens.explorer.client.widgets.branches.BranchChangeHandler;
+import org.guvnor.common.services.project.model.Module;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explorer;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
-import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
@@ -39,29 +34,29 @@ public interface View extends HasBusyIndicator,
                               HasVisibility,
                               UberView<BaseViewPresenter> {
 
-    void setContent(final Project activeProject,
-                     final FolderListing folderListing,
-                     final Map<FolderItem, List<FolderItem>> siblings );
+    void setContent(final Module activeModule,
+                    final FolderListing folderListing,
+                    final Map<FolderItem, List<FolderItem>> siblings);
 
-    void setItems( final FolderListing folderListing );
+    void setItems(final FolderListing folderListing);
 
-    void showHiddenFiles( final boolean show );
+    void showHiddenFiles(final boolean show);
 
     Explorer getExplorer();
 
-    void deleteItem( final ParameterizedCommand<String> command );
+    void deleteItem(final ParameterizedCommand<String> command);
 
-    void renameItem( final Path path,
-                     final Validator validator,
-                     final CommandWithFileNameAndCommitMessage command );
+    void renameItem(final Path path,
+                    final Validator validator,
+                    final CommandWithFileNameAndCommitMessage command);
 
-    void copyItem( final Path path,
-                   final Validator validator,
-                   final CommandWithFileNameAndCommitMessage command );
+    void copyItem(final Path path,
+                  final Validator validator,
+                  final CommandWithFileNameAndCommitMessage command);
 
-    void renderItems( FolderListing filteredContent );
+    void renderItems(FolderListing filteredContent);
 
-    void setNavType( Explorer.NavType tree );
+    void setNavType(Explorer.NavType tree);
 
     void hideTagFilter();
 

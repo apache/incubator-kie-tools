@@ -19,10 +19,12 @@ package org.kie.workbench.common.screens.examples.backend.server;
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.events.NewProjectEvent;
+import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.structure.backend.config.ConfigurationFactoryImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.EnvironmentParameters;
+import org.guvnor.structure.repositories.RepositoryCopier;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
@@ -33,20 +35,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.io.IOService;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.rpc.SessionInfo;
+import org.uberfire.spaces.SpacesAPI;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ExamplesServiceImplCheckNoIndexConfigTest {
@@ -60,7 +60,7 @@ public class ExamplesServiceImplCheckNoIndexConfigTest {
     private RepositoryFactory repositoryFactory;
 
     @Mock
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     @Mock
     private RepositoryService repositoryService;
@@ -70,6 +70,18 @@ public class ExamplesServiceImplCheckNoIndexConfigTest {
 
     @Mock
     private MetadataService metadataService;
+
+    @Mock
+    private RepositoryCopier repositoryCopier;
+
+    @Mock
+    private WorkspaceProjectService projectService;
+
+    @Mock
+    private SpacesAPI spaces;
+
+    @Mock
+    private ProjectScreenService projectScreenService;
 
     @Spy
     private Event<NewProjectEvent> newProjectEvent = new EventSourceMock<NewProjectEvent>() {
@@ -89,12 +101,15 @@ public class ExamplesServiceImplCheckNoIndexConfigTest {
         service = spy(new ExamplesServiceImpl(ioService,
                                               configurationFactory,
                                               repositoryFactory,
-                                              projectService,
+                                              moduleService,
                                               repositoryService,
+                                              repositoryCopier,
                                               ouService,
+                                              projectService,
                                               metadataService,
+                                              spaces,
                                               newProjectEvent,
-                                              sessionInfo));
+                                              projectScreenService));
     }
 
     @Test

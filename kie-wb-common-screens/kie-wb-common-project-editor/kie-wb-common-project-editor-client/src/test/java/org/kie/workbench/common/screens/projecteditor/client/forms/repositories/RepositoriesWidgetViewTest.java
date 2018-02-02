@@ -21,7 +21,7 @@ import java.util.Set;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.MavenRepositorySource;
-import org.guvnor.common.services.project.model.ProjectRepositories;
+import org.guvnor.common.services.project.model.ModuleRepositories;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,39 +39,38 @@ public class RepositoriesWidgetViewTest {
     private RepositoriesWidgetViewImpl view;
     private RepositoriesWidgetPresenter presenter;
 
-    private ProjectRepositories.ProjectRepository repository = new ProjectRepositories.ProjectRepository( true,
-                                                                                                          new MavenRepositoryMetadata( "id",
-                                                                                                                                       "url",
-                                                                                                                                       MavenRepositorySource.LOCAL ) );
-    private Set<ProjectRepositories.ProjectRepository> repositories;
+    private ModuleRepositories.ModuleRepository repository = new ModuleRepositories.ModuleRepository(true,
+                                                                                                     new MavenRepositoryMetadata("id",
+                                                                                                                                 "url",
+                                                                                                                                 MavenRepositorySource.LOCAL));
+    private Set<ModuleRepositories.ModuleRepository> repositories;
 
     @Before
     public void setup() {
         view = new RepositoriesWidgetViewImpl();
-        presenter = new RepositoriesWidgetPresenter( identity,
-                                                     view );
-        repositories = new HashSet<ProjectRepositories.ProjectRepository>();
-        repositories.add( repository );
+        presenter = new RepositoriesWidgetPresenter(identity,
+                                                    view);
+        repositories = new HashSet<ModuleRepositories.ModuleRepository>();
+        repositories.add(repository);
     }
 
     @Test
     public void testRepositoryInclusion() {
-        view.repositoryIncludeColumn.getFieldUpdater().update( 0,
-                                                               repository,
-                                                               true );
+        view.repositoryIncludeColumn.getFieldUpdater().update(0,
+                                                              repository,
+                                                              true);
 
-        assertEquals( true,
-                      repository.isIncluded() );
+        assertEquals(true,
+                     repository.isIncluded());
     }
 
     @Test
     public void testRepositoryExclusion() {
-        view.repositoryIncludeColumn.getFieldUpdater().update( 0,
-                                                               repository,
-                                                               false );
+        view.repositoryIncludeColumn.getFieldUpdater().update(0,
+                                                              repository,
+                                                              false);
 
-        assertEquals( false,
-                      repository.isIncluded() );
+        assertEquals(false,
+                     repository.isIncluded());
     }
-
 }

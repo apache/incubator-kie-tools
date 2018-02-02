@@ -16,8 +16,18 @@
 
 package org.kie.workbench.common.workbench.client.admin;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.RETURNS_DEFAULTS;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.guvnor.common.services.project.preferences.scope.GlobalPreferenceScope;
+import org.guvnor.common.services.shared.preferences.GuvnorPreferenceScopes;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
@@ -31,11 +41,10 @@ import org.mockito.stubbing.Answer;
 import org.uberfire.ext.preferences.client.admin.page.AdminPage;
 import org.uberfire.ext.preferences.client.admin.page.AdminPageOptions;
 import org.uberfire.preferences.shared.PreferenceScope;
+import org.uberfire.preferences.shared.PreferenceScopeFactory;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.ResourceRef;
 import org.uberfire.security.authz.AuthorizationManager;
-
-import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DefaultAdminPageHelperTest {
@@ -53,7 +62,7 @@ public class DefaultAdminPageHelperTest {
     private SessionInfo sessionInfo;
 
     @Mock
-    private GlobalPreferenceScope globalPreferenceScope;
+    private PreferenceScopeFactory scopeFactory;
 
     @InjectMocks
     private DefaultAdminPageHelper defaultAdminPageHelper;
@@ -206,7 +215,7 @@ public class DefaultAdminPageHelperTest {
     @Test
     public void preferencesShouldBeSavedOnGlobalScopeWhenUserHasPermissionTest() {
         final PreferenceScope globalScope = mock(PreferenceScope.class);
-        doReturn(globalScope).when(globalPreferenceScope).resolve();
+        doReturn(globalScope).when(scopeFactory).createScope(GuvnorPreferenceScopes.GLOBAL);
 
         doReturn(true).when(authorizationManager).authorize(eq(WorkbenchFeatures.EDIT_GLOBAL_PREFERENCES),
                                                             any());
@@ -235,7 +244,7 @@ public class DefaultAdminPageHelperTest {
     @Test
     public void preferencesShouldBeSavedOnGlobalScopeWhenUserHasPermissionAndEnabledTest() {
         final PreferenceScope globalScope = mock(PreferenceScope.class);
-        doReturn(globalScope).when(globalPreferenceScope).resolve();
+        doReturn(globalScope).when(scopeFactory).createScope(GuvnorPreferenceScopes.GLOBAL);
 
         doReturn(true).when(authorizationManager).authorize(eq(WorkbenchFeatures.EDIT_GLOBAL_PREFERENCES),
                                                             any());

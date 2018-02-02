@@ -16,7 +16,6 @@
 package org.kie.workbench.common.workbench.client.authz;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.guvnor.common.services.project.client.security.ProjectTreeProvider;
 import org.guvnor.structure.client.security.OrganizationalUnitTreeProvider;
 import org.guvnor.structure.client.security.RepositoryTreeProvider;
 import org.junit.Before;
@@ -33,9 +32,7 @@ import static org.kie.workbench.common.workbench.client.EditorIds.STUNNER_DESIGN
 import static org.kie.workbench.common.workbench.client.EditorIds.XLS_SCORE_CARD;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.*;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class PermissionTreeSetupTest {
@@ -55,23 +52,18 @@ public class PermissionTreeSetupTest {
     @Mock
     private MockInstanceImpl<RepositoryTreeProvider> repositoryTreeProvider;
 
-    @Mock
-    private MockInstanceImpl<ProjectTreeProvider> projectTreeProvider;
-
     private PermissionTreeSetup tree;
 
     @Before
     public void setup() {
         when(orgUnitTreeProvider.isUnsatisfied()).thenReturn(true);
         when(repositoryTreeProvider.isUnsatisfied()).thenReturn(true);
-        when(projectTreeProvider.isUnsatisfied()).thenReturn(true);
 
         this.tree = new PermissionTreeSetup(workbenchTreeProvider,
                                             perspectiveTreeProvider,
                                             editorTreeProvider,
                                             orgUnitTreeProvider,
-                                            repositoryTreeProvider,
-                                            projectTreeProvider);
+                                            repositoryTreeProvider);
     }
 
     @Test
@@ -133,7 +125,6 @@ public class PermissionTreeSetupTest {
         verify(perspectiveTreeProvider).excludePerspectiveId(eq(PLUGIN_AUTHORING));
         verify(perspectiveTreeProvider).excludePerspectiveId(eq(SOCIAL_HOME));
         verify(perspectiveTreeProvider).excludePerspectiveId(eq(SOCIAL_USER_HOME));
-        verify(perspectiveTreeProvider).excludePerspectiveId(eq("Asset Management"));
     }
 
     @Test
@@ -154,13 +145,10 @@ public class PermissionTreeSetupTest {
     public void testConfigureTree_ProviderOrders() {
         final OrganizationalUnitTreeProvider orgUnitTree = mock(OrganizationalUnitTreeProvider.class);
         final RepositoryTreeProvider repositoryTree = mock(RepositoryTreeProvider.class);
-        final ProjectTreeProvider projectTree = mock(ProjectTreeProvider.class);
         when(orgUnitTreeProvider.isUnsatisfied()).thenReturn(false);
         when(repositoryTreeProvider.isUnsatisfied()).thenReturn(false);
-        when(projectTreeProvider.isUnsatisfied()).thenReturn(false);
         when(orgUnitTreeProvider.get()).thenReturn(orgUnitTree);
         when(repositoryTreeProvider.get()).thenReturn(repositoryTree);
-        when(projectTreeProvider.get()).thenReturn(projectTree);
 
         tree.configureTree();
 
@@ -169,6 +157,5 @@ public class PermissionTreeSetupTest {
         verify(editorTreeProvider).setRootNodePosition(eq(2));
         verify(orgUnitTree).setRootNodePosition(eq(3));
         verify(repositoryTree).setRootNodePosition(eq(4));
-        verify(projectTree).setRootNodePosition(eq(5));
     }
 }

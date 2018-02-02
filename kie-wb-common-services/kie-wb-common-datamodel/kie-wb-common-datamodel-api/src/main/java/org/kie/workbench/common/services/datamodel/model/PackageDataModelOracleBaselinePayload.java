@@ -34,8 +34,8 @@ import org.kie.soup.project.datamodel.oracle.TypeSource;
 @Portable
 public class PackageDataModelOracleBaselinePayload {
 
-    //Project name
-    private String projectName;
+    //Module name
+    private String moduleName;
 
     //Package for which this DMO relates
     private String packageName = "";
@@ -83,12 +83,12 @@ public class PackageDataModelOracleBaselinePayload {
     // Map of arbitray objects associated with this model. Mostly used to store DSLSentence lists
     private Map<ExtensionKind<?>, List<?>> packageElements = new HashMap<>();
 
-    public String getProjectName() {
-        return projectName;
+    public String getModuleName() {
+        return moduleName;
     }
 
-    public void setProjectName(final String projectName) {
-        this.projectName = projectName;
+    public void setModuleName(final String moduleName) {
+        this.moduleName = moduleName;
     }
 
     public String getPackageName() {

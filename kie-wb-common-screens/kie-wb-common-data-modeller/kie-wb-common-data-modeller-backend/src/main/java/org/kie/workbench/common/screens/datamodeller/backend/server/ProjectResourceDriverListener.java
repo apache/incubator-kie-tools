@@ -23,12 +23,12 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.services.datamodeller.driver.FileChangeDescriptor;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverListener;
 import org.kie.workbench.common.services.datamodeller.util.FileHashingUtils;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -38,41 +38,35 @@ import org.uberfire.java.nio.base.options.CommentedOption;
 @RequestScoped
 public class ProjectResourceDriverListener implements ModelDriverListener {
 
-    private static final Logger logger = LoggerFactory.getLogger( ProjectResourceDriverListener.class );
-
-    @Inject
-    private KieProjectService projectService;
-
+    private static final Logger logger = LoggerFactory.getLogger(ProjectResourceDriverListener.class);
     @Inject
     @Named("ioStrategy")
     IOService ioService;
-
-    private CommentedOption option;
-
-    private Project currentProject;
-
-    private Package defaultPackage;
-
     List<FileChangeDescriptor> fileChanges = new ArrayList<FileChangeDescriptor>();
+    @Inject
+    private KieModuleService moduleService;
+    private CommentedOption option;
+    private Module currentModule;
+    private Package defaultPackage;
 
     public ProjectResourceDriverListener() {
     }
 
-    public void setCurrentProject( Project currentProject ) {
-        this.currentProject = currentProject;
+    public void setCurrentModule(final Module currentModule) {
+        this.currentModule = currentModule;
     }
 
-    public void setOption( CommentedOption option ) {
+    public void setOption(final CommentedOption option) {
         this.option = option;
     }
 
     public void init() throws Exception {
-        defaultPackage = projectService.resolveDefaultPackage( currentProject );
+        defaultPackage = moduleService.resolveDefaultPackage(currentModule);
     }
 
     @Override
-    public void assetGenerated( String fileName,
-                                String content ) {
+    public void assetGenerated(String fileName,
+                               String content) {
 
         String subDirName;
         org.uberfire.java.nio.file.Path subDirPath;
@@ -80,51 +74,58 @@ public class ProjectResourceDriverListener implements ModelDriverListener {
         StringTokenizer dirNames;
         Package subPackage;
 
-        subDirPath = Paths.convert( defaultPackage.getPackageMainSrcPath() );
+        subDirPath = Paths.convert(defaultPackage.getPackageMainSrcPath());
         subPackage = defaultPackage;
 
-        int index = fileName.lastIndexOf( "/" );
-        if ( index == 0 ) {
+        int index = fileName.lastIndexOf("/");
+        if (index == 0) {
             //the file names was provided in the form /SomeFile.java
-            fileName = fileName.substring( 1, fileName.length() );
-        } else if ( index > 0 ) {
+            fileName = fileName.substring(1,
+                                          fileName.length());
+        } else if (index > 0) {
             //the file name was provided in the most common form /dir1/dir2/SomeFile.java
-            String dirNamesPath = fileName.substring( 0, index );
-            fileName = fileName.substring( index + 1, fileName.length() );
-            dirNames = new StringTokenizer( dirNamesPath, "/" );
-            while ( dirNames.hasMoreElements() ) {
+            String dirNamesPath = fileName.substring(0,
+                                                     index);
+            fileName = fileName.substring(index + 1,
+                                          fileName.length());
+            dirNames = new StringTokenizer(dirNamesPath,
+                                           "/");
+            while (dirNames.hasMoreElements()) {
                 subDirName = dirNames.nextToken();
-                subDirPath = subDirPath.resolve( subDirName );
-                if ( !ioService.exists( subDirPath ) ) {
-                    //create the package using the projectService.
-                    subPackage = projectService.newPackage( subPackage, subDirName );
+                subDirPath = subDirPath.resolve(subDirName);
+                if (!ioService.exists(subDirPath)) {
+                    //create the package using the moduleService.
+                    subPackage = moduleService.newPackage(subPackage,
+                                                          subDirName);
                     //ioService.createDirectory( subDirPath );
                 } else {
-                    subPackage = projectService.resolvePackage( Paths.convert( subDirPath ) );
+                    subPackage = moduleService.resolvePackage(Paths.convert(subDirPath));
                 }
             }
         }
 
         //the last subDirPath is the directory to crate the file.
-        destFilePath = subDirPath.resolve( fileName );
-        boolean exists = ioService.exists( destFilePath );
+        destFilePath = subDirPath.resolve(fileName);
+        boolean exists = ioService.exists(destFilePath);
         content = content != null ? content.trim() : null;
-        String hashedContent = FileHashingUtils.setFileHashValue( content );
+        String hashedContent = FileHashingUtils.setFileHashValue(content);
 
-        ioService.write( destFilePath,
-                         hashedContent,
-                         option );
+        ioService.write(destFilePath,
+                        hashedContent,
+                        option);
 
-        if ( !exists ) {
-            if ( logger.isDebugEnabled() ) {
-                logger.debug( "Genertion listener created a new file: " + destFilePath );
+        if (!exists) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Genertion listener created a new file: " + destFilePath);
             }
-            fileChanges.add( new FileChangeDescriptor( destFilePath, FileChangeDescriptor.ADD ) );
+            fileChanges.add(new FileChangeDescriptor(destFilePath,
+                                                     FileChangeDescriptor.ADD));
         } else {
-            if ( logger.isDebugEnabled() ) {
-                logger.debug( "Generation listener modified file: " + destFilePath );
+            if (logger.isDebugEnabled()) {
+                logger.debug("Generation listener modified file: " + destFilePath);
             }
-            fileChanges.add( new FileChangeDescriptor( destFilePath, FileChangeDescriptor.UPDATE ) );
+            fileChanges.add(new FileChangeDescriptor(destFilePath,
+                                                     FileChangeDescriptor.UPDATE));
         }
     }
 

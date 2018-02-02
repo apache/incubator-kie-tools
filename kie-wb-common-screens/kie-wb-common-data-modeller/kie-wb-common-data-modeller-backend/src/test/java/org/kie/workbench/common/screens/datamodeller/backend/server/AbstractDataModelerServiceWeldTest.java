@@ -23,8 +23,8 @@ import org.jboss.weld.environment.se.WeldContainer;
 import org.junit.After;
 import org.junit.Before;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
@@ -33,7 +33,7 @@ public abstract class AbstractDataModelerServiceWeldTest {
 
     private final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
     private WeldContainer weldContainer;
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
     protected DataModelerService dataModelService;
 
     @Before
@@ -46,7 +46,7 @@ public abstract class AbstractDataModelerServiceWeldTest {
         //Bootstrap WELD container
         weldContainer = new Weld().initialize();
         dataModelService = weldContainer.select(DataModelerService.class).get();
-        projectService = weldContainer.select(KieProjectService.class).get();
+        moduleService = weldContainer.select(KieModuleService.class).get();
 
         //Ensure URLs use the default:// scheme
         fs.forceAsDefault();
@@ -59,11 +59,11 @@ public abstract class AbstractDataModelerServiceWeldTest {
         }
     }
 
-    protected KieProject loadProjectFromResources(String resourcesDir) throws URISyntaxException {
+    protected KieModule loadProjectFromResources(String resourcesDir) throws URISyntaxException {
         final URL packageUrl = getClass().getResource(resourcesDir);
         final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath(packageUrl.toURI());
         final Path packagePath = Paths.convert(nioPackagePath);
 
-        return projectService.resolveProject(packagePath);
+        return moduleService.resolveModule(packagePath);
     }
 }

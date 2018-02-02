@@ -22,19 +22,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
-import org.kie.workbench.common.screens.explorer.client.widgets.branches.BranchSelector;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explorer;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.NavigatorOptions;
 
 import static org.mockito.Mockito.*;
-
 
 @RunWith(GwtMockitoTestRunner.class)
 public class TechnicalViewWidgetTest {
 
     @GwtMock
     Explorer explorer;
-
 
     private TechnicalViewWidget technicalViewWidget;
 
@@ -45,34 +42,34 @@ public class TechnicalViewWidgetTest {
                 explorer = TechnicalViewWidgetTest.this.explorer;
             }
         };
-
     }
 
     @Test
     public void testInit() throws Exception {
-        final BaseViewPresenter presenter = mock( BaseViewPresenter.class );
-        technicalViewWidget.init( presenter );
+        final BaseViewPresenter presenter = mock(BaseViewPresenter.class);
+        technicalViewWidget.init(presenter);
 
-        verify( explorer ).init(
-                any( NavigatorOptions.class ),
-                eq( Explorer.NavType.BREADCRUMB ),
-                eq( presenter ) );
-
+        verify(explorer).init(
+                any(NavigatorOptions.class),
+                eq(Explorer.NavType.BREADCRUMB),
+                eq(presenter));
     }
 
     @Test
     public void showHeaderNavigation() throws Exception {
         technicalViewWidget.showHeaderNavigator();
 
-        verify( explorer ).showHeaderNavigator();
-        verify( explorer, never() ).hideHeaderNavigator();
+        verify(explorer).showHeaderNavigator();
+        verify(explorer,
+               never()).hideHeaderNavigator();
     }
 
     @Test
     public void hideHeaderNavigation() throws Exception {
         technicalViewWidget.hideHeaderNavigator();
 
-        verify( explorer ).hideHeaderNavigator();
-        verify( explorer, never() ).showHeaderNavigator();
+        verify(explorer).hideHeaderNavigator();
+        verify(explorer,
+               never()).showHeaderNavigator();
     }
 }

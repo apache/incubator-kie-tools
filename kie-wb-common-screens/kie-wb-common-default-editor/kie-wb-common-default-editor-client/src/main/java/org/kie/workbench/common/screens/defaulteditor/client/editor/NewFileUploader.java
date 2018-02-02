@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.defaulteditor.client.editor.resources.i18n.GuvnorDefaultEditorConstants;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceSuccessEvent;
@@ -48,7 +48,7 @@ public class NewFileUploader
     private DefaultEditorNewFileUpload options;
     private AnyResourceTypeDefinition resourceType;
     private BusyIndicatorView busyIndicatorView;
-    private Caller<KieProjectService> projectService;
+    private Caller<KieModuleService> moduleService;
 
     public NewFileUploader() {
         //Zero-argument constructor for CDI proxies
@@ -59,12 +59,12 @@ public class NewFileUploader
                            final DefaultEditorNewFileUpload options,
                            final AnyResourceTypeDefinition resourceType,
                            final BusyIndicatorView busyIndicatorView,
-                           final Caller<KieProjectService> projectService) {
+                           final Caller<KieModuleService> moduleService) {
         this.placeManager = placeManager;
         this.options = options;
         this.resourceType = resourceType;
         this.busyIndicatorView = busyIndicatorView;
-        this.projectService = projectService;
+        this.moduleService = moduleService;
     }
 
     @PostConstruct
@@ -115,7 +115,7 @@ public class NewFileUploader
 
         busyIndicatorView.showBusyIndicator(GuvnorDefaultEditorConstants.INSTANCE.Uploading());
 
-        projectService.call(getResolvePathSuccessCallback(targetFileName, presenter),
+        moduleService.call(getResolvePathSuccessCallback(targetFileName, presenter),
                             new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).resolveDefaultPath(pkg, extension);
     }
 

@@ -169,10 +169,6 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-asset-mgmt-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-structure-client</artifactId>
     </dependency>
     <dependency>

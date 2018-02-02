@@ -28,8 +28,8 @@ import org.kie.workbench.common.services.refactoring.service.RefactoringQuerySer
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.kie.workbench.common.services.refactoring.service.impact.QueryOperationRequest;
 import org.kie.workbench.common.services.refactoring.service.impact.RefactorOperationBuilder;
-import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.base.SegmentedPath;
@@ -38,14 +38,14 @@ import org.uberfire.java.nio.base.SegmentedPath;
 @ApplicationScoped
 public class AssetsUsageServiceImpl implements AssetsUsageService {
 
-    private KieProjectService projectService;
+    private KieModuleService moduleService;
 
     private RefactoringQueryService refactoringQueryService;
 
     @Inject
-    public AssetsUsageServiceImpl(KieProjectService projectService,
+    public AssetsUsageServiceImpl(KieModuleService moduleService,
                                   RefactoringQueryService refactoringQueryService) {
-        this.projectService = projectService;
+        this.moduleService = moduleService;
         this.refactoringQueryService = refactoringQueryService;
     }
 
@@ -73,8 +73,8 @@ public class AssetsUsageServiceImpl implements AssetsUsageService {
     }
 
     protected List<Path> getQueryList(Path assetPath,
-                                      RefactorOperationBuilder<QueryOperationRequest>.RequiresProject builder) {
-        KieProject project = projectService.resolveProject(assetPath);
+                                      RefactorOperationBuilder<QueryOperationRequest>.RequiresModule builder) {
+        KieModule project = moduleService.resolveModule(assetPath);
 
         String branch = "master";
 
@@ -84,7 +84,7 @@ public class AssetsUsageServiceImpl implements AssetsUsageService {
             branch = ((SegmentedPath) nioPath).getSegmentId();
         }
 
-        QueryOperationRequest request = builder.inProjectRootPathURI(project.getRootPath().toURI()).onBranch(branch);
+        QueryOperationRequest request = builder.inModuleRootPathURI(project.getRootPath().toURI()).onBranch(branch);
 
         return refactoringQueryService.queryToList(request).stream().map(row -> (Path) row.getValue()).collect(Collectors.toList());
     }

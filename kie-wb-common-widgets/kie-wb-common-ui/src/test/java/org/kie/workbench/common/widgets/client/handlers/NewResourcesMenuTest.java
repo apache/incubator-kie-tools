@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.Callback;
-import org.guvnor.common.services.project.context.ProjectContext;
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
@@ -59,7 +59,7 @@ public class NewResourcesMenuTest {
     private Command command;
 
     @Mock
-    private ProjectContext projectContext;
+    private WorkspaceProjectContext projectContext;
 
     @Before
     public void setup() {
@@ -123,7 +123,7 @@ public class NewResourcesMenuTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testOnProjectContextChangedEnabled() {
+    public void testOnWorkspaceProjectContextChangedEnabled() {
         doAnswer( new Answer() {
             public Object answer( final InvocationOnMock invocation ) {
                 final Object[] args = invocation.getArguments();
@@ -147,7 +147,7 @@ public class NewResourcesMenuTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testOnProjectContextChangedDisabled() {
+    public void testOnWorkspaceProjectContextChangedDisabled() {
         doAnswer( new Answer() {
             public Object answer( final InvocationOnMock invocation ) {
                 final Object[] args = invocation.getArguments();

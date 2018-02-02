@@ -29,7 +29,9 @@ import org.kie.workbench.common.services.refactoring.backend.server.MultipleRepo
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.TestPropertiesFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.TestPropertiesFileTypeDefinition;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
+
+import static org.mockito.Mockito.*;
 
 import static org.mockito.Mockito.*;
 
@@ -38,23 +40,23 @@ public class MultipleRepositoryUpdatedResourcesTest extends MultipleRepositoryBa
     @Test
     public void testIndexingUpdatedResources() throws IOException, InterruptedException {
         //Add test files
-        loadProperties( "file1.properties",
-                        getBasePath( this.getClass().getSimpleName() + "_1" ) );
-        loadProperties( "file1.properties",
-                        getBasePath( this.getClass().getSimpleName() + "_2" ) );
+        loadProperties("file1.properties",
+                       getBasePath(this.getClass().getSimpleName() + "_1"));
+        loadProperties("file1.properties",
+                       getBasePath(this.getClass().getSimpleName() + "_2"));
 
-        Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+        Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        searchFor(new TermQuery( new Term( "title", "lucene" ) ), 2);
+        searchFor(new TermQuery(new Term("title", "lucene")), 2);
 
         //Update one of the files returned by the previous search, removing the "lucene" title
         final Properties properties = new Properties();
-        ioService().write( getBasePath( this.getClass().getSimpleName() + "_2" ).resolve( "file1.properties" ),
-                           propertiesToString( properties ) );
+        ioService().write(getBasePath(this.getClass().getSimpleName() + "_2").resolve("file1.properties"),
+                          propertiesToString(properties));
 
-        Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+        Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        searchFor(new TermQuery( new Term( "title", "lucene" ) ), 1);
+        searchFor(new TermQuery(new Term("title", "lucene")), 1);
     }
 
     @Override
@@ -74,12 +76,11 @@ public class MultipleRepositoryUpdatedResourcesTest extends MultipleRepositoryBa
 
     @Override
     protected String[] getRepositoryNames() {
-        return new String[]{ this.getClass().getSimpleName() + "_1", this.getClass().getSimpleName() + "_2" };
+        return new String[]{this.getClass().getSimpleName() + "_1", this.getClass().getSimpleName() + "_2"};
     }
 
     @Override
-    protected KieProjectService getProjectService() {
-        return mock( KieProjectService.class );
+    protected KieModuleService getModuleService() {
+        return mock(KieModuleService.class);
     }
-
 }

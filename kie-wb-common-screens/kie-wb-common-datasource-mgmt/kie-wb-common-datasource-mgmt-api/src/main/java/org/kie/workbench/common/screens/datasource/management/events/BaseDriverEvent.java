@@ -16,32 +16,32 @@
 
 package org.kie.workbench.common.screens.datasource.management.events;
 
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Module;
 import org.kie.workbench.common.screens.datasource.management.model.DriverDef;
 
 public abstract class BaseDriverEvent {
 
     private DriverDef driverDef;
 
-    private Project project;
+    private Module module;
 
     private String sessionId;
 
     private String identity;
 
-    protected BaseDriverEvent( final DriverDef driverDef,
-            final Project project,
-            final String sessionId,
-            final String identity ) {
+    protected BaseDriverEvent(final DriverDef driverDef,
+                              final Module module,
+                              final String sessionId,
+                              final String identity) {
         this.driverDef = driverDef;
-        this.project = project;
+        this.module = module;
         this.sessionId = sessionId;
         this.identity = identity;
     }
 
-    protected BaseDriverEvent( final DriverDef driverDef,
-            final String sessionId,
-            final String identity ) {
+    protected BaseDriverEvent(final DriverDef driverDef,
+                              final String sessionId,
+                              final String identity) {
         this.driverDef = driverDef;
         this.sessionId = sessionId;
         this.identity = identity;
@@ -51,8 +51,8 @@ public abstract class BaseDriverEvent {
         return driverDef;
     }
 
-    public Project getProject() {
-        return project;
+    public Module getModule() {
+        return module;
     }
 
     public String getSessionId() {
@@ -64,42 +64,41 @@ public abstract class BaseDriverEvent {
     }
 
     public boolean isGlobal() {
-        return project == null;
+        return module == null;
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null || getClass() != o.getClass() ) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
-        BaseDriverEvent that = ( BaseDriverEvent ) o;
+        BaseDriverEvent that = (BaseDriverEvent) o;
 
-        if ( driverDef != null ? !driverDef.equals( that.driverDef ) : that.driverDef != null ) {
+        if (driverDef != null ? !driverDef.equals(that.driverDef) : that.driverDef != null) {
             return false;
         }
-        if ( project != null ? !project.equals( that.project ) : that.project != null ) {
+        if (module != null ? !module.equals(that.module) : that.module != null) {
             return false;
         }
-        if ( sessionId != null ? !sessionId.equals( that.sessionId ) : that.sessionId != null ) {
+        if (sessionId != null ? !sessionId.equals(that.sessionId) : that.sessionId != null) {
             return false;
         }
-        return identity != null ? identity.equals( that.identity ) : that.identity == null;
-
+        return identity != null ? identity.equals(that.identity) : that.identity == null;
     }
 
     @Override
     public int hashCode() {
         int result = driverDef != null ? driverDef.hashCode() : 0;
         result = ~~result;
-        result = 31 * result + ( project != null ? project.hashCode() : 0 );
+        result = 31 * result + (module != null ? module.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( sessionId != null ? sessionId.hashCode() : 0 );
+        result = 31 * result + (sessionId != null ? sessionId.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( identity != null ? identity.hashCode() : 0 );
+        result = 31 * result + (identity != null ? identity.hashCode() : 0);
         result = ~~result;
         return result;
     }
