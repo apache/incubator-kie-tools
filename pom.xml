@@ -6,6 +6,8 @@
 	<groupId>org.kie</groupId>
 	<artifactId>lienzo-core</artifactId>
 	<version>7.7.0-SNAPSHOT</version>
+	<name>[KIE] Lienzo - Core Framework</name>
+	<description>[KIE] Lienzo - Core Framework</description>
 	<dependencies>
 		<dependency>
 			<groupId>com.ahome-it</groupId>
@@ -32,25 +34,24 @@
 	</properties>
 
 	<repositories>
-		    <repository>
-		      <id>jboss-public-repository-group</id>
-		      <name>JBoss Public Repository Group</name>
-		      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-		      <layout>default</layout>
-		      <releases>
-			<enabled>true</enabled>
-			<updatePolicy>never</updatePolicy>
-		      </releases>
-		      <snapshots>
-			<enabled>true</enabled>
-			<updatePolicy>daily</updatePolicy>
-		      </snapshots>
-		    </repository>
+		<repository>
+			<id>jboss-public-repository-group</id>
+			<name>JBoss Public Repository Group</name>
+			<url>https://repository.jboss.org/nexus/content/groups/public/</url>
+			<layout>default</layout>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+			</snapshots>
+		</repository>
 		<repository>
 			<id>sonatype</id>
 			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
 		</repository>
-
 		<repository>
 			<id>google-snapshots</id>
 			<name>Google Snapshots</name>
