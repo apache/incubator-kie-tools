@@ -22,15 +22,33 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class Space
-        extends UpdateOrganizationalUnit {
+        extends Entity {
 
-    private List<String> projects;
+    private List<ProjectResponse> projects;
+    private String owner;
+    private String defaultGroupId;
 
-    public List<String> getProjects() {
+    public List<ProjectResponse> getProjects() {
         return projects;
     }
 
-    public void setProjects(List<String> projects) {
+    public void setProjects(List<ProjectResponse> projects) {
         this.projects = projects;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public String getDefaultGroupId() {
+        return defaultGroupId;
+    }
+
+    public void setDefaultGroupId(String defaultGroupId) {
+        this.defaultGroupId = defaultGroupId;
     }
 }

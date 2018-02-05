@@ -19,7 +19,7 @@ import java.util.Map;
 
 import org.guvnor.rest.backend.JobRequestHelper;
 import org.guvnor.rest.backend.JobResultManager;
-import org.guvnor.rest.client.CreateProjectRequest;
+import org.guvnor.rest.client.CreateProjectJobRequest;
 import org.guvnor.rest.client.JobRequest;
 import org.guvnor.rest.client.JobResult;
 import org.guvnor.rest.client.JobStatus;
@@ -37,12 +37,12 @@ public class CreateProjectCmd extends AbstractJobCommand {
     @Override
     public JobResult internalExecute(final JobRequest request) throws Exception {
         JobRequestHelper helper = getHelper();
-        CreateProjectRequest jobRequest = (CreateProjectRequest) request;
+        CreateProjectJobRequest jobRequest = (CreateProjectJobRequest) request;
 
         JobResult result = null;
         try {
             result = helper.createProject(jobRequest.getJobId(),
-                                          jobRequest.getOrganizationalUnitName(),
+                                          jobRequest.getSpaceName(),
                                           jobRequest.getProjectName(),
                                           jobRequest.getProjectGroupId(),
                                           jobRequest.getProjectVersion(),
@@ -51,8 +51,8 @@ public class CreateProjectCmd extends AbstractJobCommand {
             JobStatus status = result != null ? result.getStatus() : JobStatus.SERVER_ERROR;
             String groupId = jobRequest.getProjectGroupId() == null ? jobRequest.getProjectName() : jobRequest.getProjectGroupId();
             String version = jobRequest.getProjectVersion() == null ? "1.0" : jobRequest.getProjectVersion();
-            logger.debug("-----createProject--- , ouName: {}, project : {}:{}:{} [{}]",
-                         jobRequest.getOrganizationalUnitName(),
+            logger.debug("-----createProject--- , SpaceName: {}, project : {}:{}:{} [{}]",
+                         jobRequest.getSpaceName(),
                          jobRequest.getProjectName(),
                          groupId,
                          version,

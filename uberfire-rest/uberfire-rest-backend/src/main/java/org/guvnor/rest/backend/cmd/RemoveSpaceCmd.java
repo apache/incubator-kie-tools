@@ -19,16 +19,16 @@ import java.util.Map;
 
 import org.guvnor.rest.backend.JobRequestHelper;
 import org.guvnor.rest.backend.JobResultManager;
-import org.guvnor.rest.client.SpaceRequest;
 import org.guvnor.rest.client.JobRequest;
 import org.guvnor.rest.client.JobResult;
 import org.guvnor.rest.client.JobStatus;
+import org.guvnor.rest.client.RemoveSpaceRequest;
 
-public class CreateOrgUnitCmd extends AbstractJobCommand {
+public class RemoveSpaceCmd extends AbstractJobCommand {
 
-    public CreateOrgUnitCmd(final JobRequestHelper jobRequestHelper,
-                            final JobResultManager jobResultManager,
-                            final Map<String, Object> context) {
+    public RemoveSpaceCmd(final JobRequestHelper jobRequestHelper,
+                          final JobResultManager jobResultManager,
+                          final Map<String, Object> context) {
         super(jobRequestHelper,
               jobResultManager,
               context);
@@ -37,20 +37,16 @@ public class CreateOrgUnitCmd extends AbstractJobCommand {
     @Override
     public JobResult internalExecute(JobRequest request) throws Exception {
         JobRequestHelper helper = getHelper();
-        SpaceRequest jobRequest = (SpaceRequest) request;
+        RemoveSpaceRequest jobRequest = (RemoveSpaceRequest) request;
 
         JobResult result = null;
         try {
-            result = helper.createOrganizationalUnit(jobRequest.getJobId(),
-                                                     jobRequest.getSpaceName(),
-                                                     jobRequest.getOwner(),
-                                                     jobRequest.getDefaultGroupId(),
-                                                     jobRequest.getProjects());
+            result = helper.removeSpace(jobRequest.getJobId(),
+                                        jobRequest.getSpaceName());
         } finally {
             JobStatus status = result != null ? result.getStatus() : JobStatus.SERVER_ERROR;
-            logger.debug("-----createOrganizationalUnit--- , OrganizationalUnit name: {}, OrganizationalUnit owner: {} [{}]",
+            logger.debug("-----removeSpace--- , Space name: {}",
                          jobRequest.getSpaceName(),
-                         jobRequest.getOwner(),
                          status);
         }
         return result;

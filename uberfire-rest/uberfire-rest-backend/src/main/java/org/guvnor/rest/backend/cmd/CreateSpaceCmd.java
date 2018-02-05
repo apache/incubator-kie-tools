@@ -19,36 +19,37 @@ import java.util.Map;
 
 import org.guvnor.rest.backend.JobRequestHelper;
 import org.guvnor.rest.backend.JobResultManager;
-import org.guvnor.rest.client.AddProjectToSpaceRequest;
+import org.guvnor.rest.client.SpaceRequest;
 import org.guvnor.rest.client.JobRequest;
 import org.guvnor.rest.client.JobResult;
 import org.guvnor.rest.client.JobStatus;
 
-public class AddProjectToOrgUnitCmd extends AbstractJobCommand {
+public class CreateSpaceCmd extends AbstractJobCommand {
 
-    public AddProjectToOrgUnitCmd(final JobRequestHelper jobRequestHelper,
-                                  final JobResultManager jobResultManager,
-                                  final Map<String, Object> context) {
+    public CreateSpaceCmd(final JobRequestHelper jobRequestHelper,
+                          final JobResultManager jobResultManager,
+                          final Map<String, Object> context) {
         super(jobRequestHelper,
               jobResultManager,
               context);
     }
 
     @Override
-    public JobResult internalExecute(final JobRequest request) throws Exception {
+    public JobResult internalExecute(JobRequest request) throws Exception {
         JobRequestHelper helper = getHelper();
-        AddProjectToSpaceRequest jobRequest = (AddProjectToSpaceRequest) request;
+        SpaceRequest jobRequest = (SpaceRequest) request;
 
         JobResult result = null;
         try {
-            result = helper.addRepositoryToOrganizationalUnit(jobRequest.getJobId(),
-                                                              jobRequest.getSpaceName(),
-                                                              jobRequest.getProjectName());
+            result = helper.createSpace(jobRequest.getJobId(),
+                                        jobRequest.getSpaceName(),
+                                        jobRequest.getOwner(),
+                                        jobRequest.getDefaultGroupId());
         } finally {
             JobStatus status = result != null ? result.getStatus() : JobStatus.SERVER_ERROR;
-            logger.debug("-----addProjectToOrganizationalUnit--- , OrganizationalUnit name: {}, project name: {} [{}]",
+            logger.debug("-----createSpace--- , Space name: {}, Space owner: {} [{}]",
                          jobRequest.getSpaceName(),
-                         jobRequest.getProjectName(),
+                         jobRequest.getOwner(),
                          status);
         }
         return result;

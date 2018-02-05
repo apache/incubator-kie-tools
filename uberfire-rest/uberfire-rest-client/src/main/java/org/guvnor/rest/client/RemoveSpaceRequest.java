@@ -58,4 +58,14 @@ public class RemoveSpaceRequest extends JobRequest {
     public void setRepositories(List<String> repositories) {
         this.repositories = repositories;
     }
+
+    @Override
+    public String toString() {
+        return "RemoveSpaceRequest{" +
+                "spaceName='" + spaceName + '\'' +
+                ", owner='" + owner + '\'' +
+                ", description='" + description + '\'' +
+                ", repositories=" + repositories +
+                '}';
+    }
 }

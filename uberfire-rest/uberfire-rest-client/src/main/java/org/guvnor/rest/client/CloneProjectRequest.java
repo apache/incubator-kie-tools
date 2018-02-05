@@ -23,7 +23,6 @@ public class CloneProjectRequest extends Entity {
 
     private String userName;
     private String password;
-    private String requestType;
     private String gitURL;
 
     public String getUserName() {
@@ -40,14 +39,6 @@ public class CloneProjectRequest extends Entity {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getRequestType() {
-        return requestType;
-    }
-
-    public void setRequestType(String requestType) {
-        this.requestType = requestType;
     }
 
     public String getGitURL() {

@@ -18,36 +18,33 @@ package org.guvnor.rest.backend;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.guvnor.rest.backend.cmd.AbstractJobCommand;
-import org.guvnor.rest.backend.cmd.AddProjectToOrgUnitCmd;
+import org.guvnor.rest.backend.cmd.AddProjectToSpaceCmd;
 import org.guvnor.rest.backend.cmd.CloneRepositoryCmd;
 import org.guvnor.rest.backend.cmd.CompileProjectCmd;
-import org.guvnor.rest.backend.cmd.CreateOrgUnitCmd;
+import org.guvnor.rest.backend.cmd.CreateSpaceCmd;
 import org.guvnor.rest.backend.cmd.CreateProjectCmd;
 import org.guvnor.rest.backend.cmd.DeleteProjectCmd;
 import org.guvnor.rest.backend.cmd.DeployProjectCmd;
 import org.guvnor.rest.backend.cmd.InstallProjectCmd;
-import org.guvnor.rest.backend.cmd.RemoveOrgUnitCmd;
-import org.guvnor.rest.backend.cmd.RemoveProjectFromOrgUnitCmd;
+import org.guvnor.rest.backend.cmd.RemoveSpaceCmd;
 import org.guvnor.rest.backend.cmd.TestProjectCmd;
-import org.guvnor.rest.backend.cmd.UpdateOrgUnitCmd;
 import org.guvnor.rest.client.AddProjectToSpaceRequest;
 import org.guvnor.rest.client.CloneProjectJobRequest;
 import org.guvnor.rest.client.CompileProjectRequest;
-import org.guvnor.rest.client.SpaceRequest;
-import org.guvnor.rest.client.CreateProjectRequest;
+import org.guvnor.rest.client.CreateProjectJobRequest;
 import org.guvnor.rest.client.DeleteProjectRequest;
 import org.guvnor.rest.client.DeployProjectRequest;
 import org.guvnor.rest.client.InstallProjectRequest;
 import org.guvnor.rest.client.JobRequest;
 import org.guvnor.rest.client.JobStatus;
 import org.guvnor.rest.client.RemoveSpaceRequest;
-import org.guvnor.rest.client.RemoveProjectFromOrganizationalUnitRequest;
+import org.guvnor.rest.client.SpaceRequest;
 import org.guvnor.rest.client.TestProjectRequest;
-import org.guvnor.rest.client.UpdateOrganizationalUnitRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.concurrent.Managed;
@@ -83,7 +80,7 @@ public class JobRequestScheduler {
 
     public void cloneProjectRequest(final CloneProjectJobRequest jobRequest) {
         final Map<String, Object> params = getContext(jobRequest);
-        params.put("Repository",
+        params.put("Space",
                    jobRequest.getCloneProjectRequest().getName());
         params.put("Operation",
                    "cloneProject");
@@ -94,10 +91,10 @@ public class JobRequestScheduler {
                                            params));
     }
 
-    public void createProjectRequest(final CreateProjectRequest jobRequest) {
+    public void createProjectRequest(final CreateProjectJobRequest jobRequest) {
         final Map<String, Object> params = getContext(jobRequest);
-        params.put("Repository",
-                   jobRequest.getOrganizationalUnitName());
+        params.put("Space",
+                   jobRequest.getSpaceName());
         params.put("Project",
                    jobRequest.getProjectName());
         params.put("Operation",
@@ -174,26 +171,15 @@ public class JobRequestScheduler {
                                          params));
     }
 
-    public void createOrganizationalUnitRequest(final SpaceRequest jobRequest) {
+    public void createSpaceRequest(final SpaceRequest jobRequest) {
         final Map<String, Object> params = getContext(jobRequest);
         params.put("Operation",
                    "createOrgUnit");
 
         scheduleJob(jobRequest,
-                    new CreateOrgUnitCmd(jobRequestHelper,
-                                         jobResultManager,
-                                         params));
-    }
-
-    public void updateOrganizationalUnitRequest(final UpdateOrganizationalUnitRequest jobRequest) {
-        final Map<String, Object> params = getContext(jobRequest);
-        params.put("Operation",
-                   "updateOrgUnit");
-
-        scheduleJob(jobRequest,
-                    new UpdateOrgUnitCmd(jobRequestHelper,
-                                         jobResultManager,
-                                         params));
+                    new CreateSpaceCmd(jobRequestHelper,
+                                       jobResultManager,
+                                       params));
     }
 
     public void addProjectToSpace(final AddProjectToSpaceRequest jobRequest) {
@@ -204,22 +190,9 @@ public class JobRequestScheduler {
                    "addRepositoryToOrgUnit");
 
         scheduleJob(jobRequest,
-                    new AddProjectToOrgUnitCmd(jobRequestHelper,
-                                               jobResultManager,
-                                               params));
-    }
-
-    public void removeProjectFromOrganizationalUnitRequest(final RemoveProjectFromOrganizationalUnitRequest jobRequest) {
-        final Map<String, Object> params = getContext(jobRequest);
-        params.put("Project",
-                   jobRequest.getProjectName());
-        params.put("Operation",
-                   "removeRepositoryFromOrgUnit");
-
-        scheduleJob(jobRequest,
-                    new RemoveProjectFromOrgUnitCmd(jobRequestHelper,
-                                                    jobResultManager,
-                                                    params));
+                    new AddProjectToSpaceCmd(jobRequestHelper,
+                                             jobResultManager,
+                                             params));
     }
 
     public void removeSpaceRequest(final RemoveSpaceRequest jobRequest) {
@@ -228,9 +201,9 @@ public class JobRequestScheduler {
                    "removeOrgUnit");
 
         scheduleJob(jobRequest,
-                    new RemoveOrgUnitCmd(jobRequestHelper,
-                                         jobResultManager,
-                                         params));
+                    new RemoveSpaceCmd(jobRequestHelper,
+                                       jobResultManager,
+                                       params));
     }
 
     protected Map<String, Object> getContext(JobRequest jobRequest) {

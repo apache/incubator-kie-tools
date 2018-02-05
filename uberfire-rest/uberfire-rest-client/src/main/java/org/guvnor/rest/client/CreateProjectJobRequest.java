@@ -18,11 +18,12 @@ package org.guvnor.rest.client;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class SpaceRequest extends JobRequest {
+public class CreateProjectJobRequest extends JobRequest {
 
     private String spaceName;
-    private String owner;
-    private String defaultGroupId;
+    private String projectName;
+    private String projectGroupId;
+    private String projectVersion;
     private String description;
 
     public String getSpaceName() {
@@ -33,20 +34,28 @@ public class SpaceRequest extends JobRequest {
         this.spaceName = spaceName;
     }
 
-    public String getOwner() {
-        return owner;
+    public String getProjectName() {
+        return projectName;
     }
 
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
     }
 
-    public String getDefaultGroupId() {
-        return defaultGroupId;
+    public String getProjectGroupId() {
+        return projectGroupId;
     }
 
-    public void setDefaultGroupId(String defaultGroupId) {
-        this.defaultGroupId = defaultGroupId;
+    public void setProjectGroupId(String projectGroupId) {
+        this.projectGroupId = projectGroupId;
+    }
+
+    public String getProjectVersion() {
+        return projectVersion;
+    }
+
+    public void setProjectVersion(String projectVersion) {
+        this.projectVersion = projectVersion;
     }
 
     public String getDescription() {

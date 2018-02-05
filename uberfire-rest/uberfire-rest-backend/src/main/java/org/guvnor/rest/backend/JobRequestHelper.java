@@ -94,15 +94,9 @@ public class JobRequestHelper {
 
     public JobResult cloneProject(final String jobId,
                                   final String spaceName,
-                                  final CloneProjectRequest repository) {
+                                  final CloneProjectRequest cloneProjectRequest) {
         JobResult result = new JobResult();
         result.setJobId(jobId);
-
-        if (!("clone".equals(repository.getRequestType()))) {
-            result.setStatus(JobStatus.BAD_REQUEST);
-            result.setResult("Repository request type can only be clone.");
-            return result;
-        }
 
         final String scheme = "git";
 
@@ -114,41 +108,39 @@ public class JobRequestHelper {
             return result;
         }
 
-        if ("clone".equals(repository.getRequestType())) {
-            if (repository.getName() == null || "".equals(repository.getName()) || repository.getGitURL() == null
-                    || "".equals(repository.getGitURL())) {
-                result.setStatus(JobStatus.BAD_REQUEST);
-                result.setResult("Repository name and GitURL must be provided");
-            }
+        if (cloneProjectRequest.getName() == null || "".equals(cloneProjectRequest.getName()) || cloneProjectRequest.getGitURL() == null
+                || "".equals(cloneProjectRequest.getGitURL())) {
+            result.setStatus(JobStatus.BAD_REQUEST);
+            result.setResult("Repository name and GitURL must be provided");
+        }
 
-            // username and password are optional
-            final RepositoryEnvironmentConfigurations configuration = new RepositoryEnvironmentConfigurations();
-            if (repository.getUserName() != null && !"".equals(repository.getUserName())) {
-                configuration.setUserName(repository.getUserName());
-            }
-            if (repository.getPassword() != null && !"".equals(repository.getPassword())) {
-                configuration.setPassword(repository.getPassword());
-            }
-            configuration.setOrigin(repository.getGitURL());
+        // username and password are optional
+        final RepositoryEnvironmentConfigurations configuration = new RepositoryEnvironmentConfigurations();
+        if (cloneProjectRequest.getUserName() != null && !"".equals(cloneProjectRequest.getUserName())) {
+            configuration.setUserName(cloneProjectRequest.getUserName());
+        }
+        if (cloneProjectRequest.getPassword() != null && !"".equals(cloneProjectRequest.getPassword())) {
+            configuration.setPassword(cloneProjectRequest.getPassword());
+        }
+        configuration.setOrigin(cloneProjectRequest.getGitURL());
 
-            org.guvnor.structure.repositories.Repository newlyCreatedRepo = repositoryService.createRepository(
-                    orgUnit,
-                    scheme,
-                    repository.getName(),
-                    configuration);
-            if (newlyCreatedRepo != null) {
-                result.setStatus(JobStatus.SUCCESS);
-                result.setResult("Alias: " + newlyCreatedRepo.getAlias() + ", Scheme: " + newlyCreatedRepo.getScheme() + ", Uri: " + newlyCreatedRepo.getUri());
-            } else {
-                result.setStatus(JobStatus.FAIL);
-            }
+        org.guvnor.structure.repositories.Repository newlyCreatedRepo = repositoryService.createRepository(
+                orgUnit,
+                scheme,
+                cloneProjectRequest.getName(),
+                configuration);
+        if (newlyCreatedRepo != null) {
+            result.setStatus(JobStatus.SUCCESS);
+            result.setResult("Alias: " + newlyCreatedRepo.getAlias() + ", Scheme: " + newlyCreatedRepo.getScheme() + ", Uri: " + newlyCreatedRepo.getUri());
+        } else {
+            result.setStatus(JobStatus.FAIL);
         }
 
         return result;
     }
 
     public JobResult createProject(final String jobId,
-                                   final String organizationalUnitName,
+                                   final String spaceName,
                                    final String projectName,
                                    String projectGroupId,
                                    String projectVersion,
@@ -157,10 +149,10 @@ public class JobRequestHelper {
         final JobResult result = new JobResult();
         result.setJobId(jobId);
 
-        final OrganizationalUnit organizationalUnit = organizationalUnitService.getOrganizationalUnit(organizationalUnitName);
+        final OrganizationalUnit organizationalUnit = organizationalUnitService.getOrganizationalUnit(spaceName);
         if (organizationalUnit == null) {
             result.setStatus(JobStatus.RESOURCE_NOT_EXIST);
-            result.setResult("OrganizationalUnit [" + organizationalUnitName + "] does not exist");
+            result.setResult("Space [" + spaceName + "] does not exist");
         } else {
 
             if (projectGroupId == null || projectGroupId.trim().isEmpty()) {
@@ -240,8 +232,7 @@ public class JobRequestHelper {
         JobResult result = new JobResult();
         result.setJobId(jobId);
 
-        final Space space = spacesAPI.getSpace(spaceName);
-        final WorkspaceProject workspaceProject = workspaceProjectService.resolveProject(space, projectName);
+        final WorkspaceProject workspaceProject = workspaceProjectService.resolveProject(spacesAPI.getSpace(spaceName), projectName);
 
         if (workspaceProject == null) {
             result.setStatus(JobStatus.RESOURCE_NOT_EXIST);
@@ -286,21 +277,21 @@ public class JobRequestHelper {
         JobResult result = new JobResult();
         result.setJobId(jobId);
 
-        final Space space = spacesAPI.getSpace(spaceName);
+        final OrganizationalUnit organizationalUnit = organizationalUnitService.getOrganizationalUnit(spaceName);
 
-        if (space == null) {
+        if (organizationalUnit == null) {
             result.setStatus(JobStatus.RESOURCE_NOT_EXIST);
             result.setResult("Space [" + spaceName + "] does not exist");
             return result;
         } else {
-            final WorkspaceProject workspaceProject = workspaceProjectService.resolveProject(space,
+            final WorkspaceProject workspaceProject = workspaceProjectService.resolveProject(spacesAPI.getSpace(spaceName),
                                                                                              projectName);
             if (workspaceProject == null) {
                 result.setStatus(JobStatus.RESOURCE_NOT_EXIST);
                 result.setResult("Project [" + projectName + "] does not exist");
                 return result;
             }
-            
+
             final Module module = workspaceProject.getMainModule();
 
             if (module == null) {
@@ -349,8 +340,7 @@ public class JobRequestHelper {
         final JobResult result = new JobResult();
         result.setJobId(jobId);
 
-        Space space = spacesAPI.getSpace(spaceName);
-        final WorkspaceProject workspaceProject = workspaceProjectService.resolveProject(space, projectName);
+        final WorkspaceProject workspaceProject = workspaceProjectService.resolveProject(spacesAPI.getSpace(spaceName), projectName);
 
         if (workspaceProject == null) {
             result.setStatus(JobStatus.RESOURCE_NOT_EXIST);
@@ -403,8 +393,7 @@ public class JobRequestHelper {
         JobResult result = new JobResult();
         result.setJobId(jobId);
 
-        Space space = spacesAPI.getSpace(spaceName);
-        final WorkspaceProject workspaceProject = workspaceProjectService.resolveProject(space, projectName);
+        final WorkspaceProject workspaceProject = workspaceProjectService.resolveProject(spacesAPI.getSpace(spaceName), projectName);
 
         if (workspaceProject == null) {
             result.setStatus(JobStatus.RESOURCE_NOT_EXIST);
@@ -436,23 +425,23 @@ public class JobRequestHelper {
         }
     }
 
-    public JobResult removeOrganizationalUnit(final String jobId,
-                                              final String organizationalUnitName) {
+    public JobResult removeSpace(final String jobId,
+                                 final String spaceName) {
         JobResult result = new JobResult();
         result.setJobId(jobId);
 
-        if (organizationalUnitName == null) {
+        if (spaceName == null) {
             result.setStatus(JobStatus.BAD_REQUEST);
-            result.setResult("OrganizationalUnit name must be provided");
+            result.setResult("Space name must be provided");
             return result;
         }
 
         try {
-            organizationalUnitService.removeOrganizationalUnit(organizationalUnitName);
+            organizationalUnitService.removeOrganizationalUnit(spaceName);
             result.setStatus(JobStatus.SUCCESS);
         } catch (Exception e) {
             result.setStatus(JobStatus.FAIL);
-            String errMsg = e.getClass().getSimpleName() + " thrown when trying to remove '" + organizationalUnitName + "': " + e.getMessage();
+            String errMsg = e.getClass().getSimpleName() + " thrown when trying to remove '" + spaceName + "': " + e.getMessage();
             result.setResult(errMsg);
             logger.error(errMsg,
                          e);
@@ -461,23 +450,22 @@ public class JobRequestHelper {
         return result;
     }
 
-    public JobResult createOrganizationalUnit(final String jobId,
-                                              final String organizationalUnitName,
-                                              final String organizationalUnitOwner,
-                                              final String defaultGroupId,
-                                              final List<String> repositoryNameList) {
+    public JobResult createSpace(final String jobId,
+                                 final String spaceName,
+                                 final String spaceOwner,
+                                 final String defaultGroupId) {
         JobResult result = new JobResult();
         result.setJobId(jobId);
 
-        if (organizationalUnitName == null || organizationalUnitOwner == null) {
+        if (spaceName == null || spaceOwner == null) {
             result.setStatus(JobStatus.BAD_REQUEST);
-            result.setResult("OrganizationalUnit name and owner must be provided");
+            result.setResult("Space name and owner must be provided");
             return result;
         }
 
         String _defaultGroupId = null;
         if (defaultGroupId == null || defaultGroupId.trim().isEmpty()) {
-            _defaultGroupId = organizationalUnitService.getSanitizedDefaultGroupId(organizationalUnitName);
+            _defaultGroupId = organizationalUnitService.getSanitizedDefaultGroupId(spaceName);
             logger.warn("No default group id was provided, reverting to the space unit name");
         } else {
             if (!organizationalUnitService.isValidGroupId(defaultGroupId)) {
@@ -490,40 +478,19 @@ public class JobRequestHelper {
             }
         }
 
-        OrganizationalUnit organizationalUnit = organizationalUnitService.getOrganizationalUnit(organizationalUnitName);
+        OrganizationalUnit organizationalUnit = organizationalUnitService.getOrganizationalUnit(spaceName);
         if (organizationalUnit != null) {
             result.setStatus(JobStatus.BAD_REQUEST);
-            result.setResult("OrganizationalUnit with name " + organizationalUnitName + " already exists");
+            result.setResult("Space with name " + spaceName + " already exists");
             return result;
         }
-        Space space = spacesAPI.getSpace(organizationalUnitName);
 
-        List<org.guvnor.structure.repositories.Repository> repositories = new ArrayList<>();
-        if (repositoryNameList != null && repositoryNameList.size() > 0) {
-            for (String repositoryAlias : repositoryNameList) {
-                org.uberfire.java.nio.file.Path repositoryPath = getRepositoryRootPath(space, repositoryAlias);
-
-                if (repositoryPath == null) {
-                    result.setStatus(JobStatus.RESOURCE_NOT_EXIST);
-                    result.setResult("Repository [" + repositoryAlias + "] does not exist");
-                    return result;
-                }
-                GitRepository repo = new GitRepository(repositoryAlias,
-                                                       spacesAPI.getSpace(organizationalUnitName));
-                repositories.add(repo);
-            }
-            organizationalUnit = organizationalUnitService.createOrganizationalUnit(organizationalUnitName,
-                                                                                    organizationalUnitOwner,
-                                                                                    _defaultGroupId,
-                                                                                    repositories);
-        } else {
-            organizationalUnit = organizationalUnitService.createOrganizationalUnit(organizationalUnitName,
-                                                                                    organizationalUnitOwner,
-                                                                                    _defaultGroupId);
-        }
+        organizationalUnit = organizationalUnitService.createOrganizationalUnit(spaceName,
+                                                                                spaceOwner,
+                                                                                _defaultGroupId);
 
         if (organizationalUnit != null) {
-            result.setResult("OrganizationalUnit " + organizationalUnit.getName() + " is created successfully.");
+            result.setResult("Space " + organizationalUnit.getName() + " is created successfully.");
             result.setStatus(JobStatus.SUCCESS);
         } else {
             result.setStatus(JobStatus.FAIL);
@@ -531,79 +498,37 @@ public class JobRequestHelper {
         return result;
     }
 
-    public JobResult updateOrganizationalUnit(final String jobId,
-                                              final String organizationalUnitName,
-                                              final String organizationalUnitOwner,
-                                              final String defaultGroupId) {
+    public JobResult addProjectToSpace(final String jobId,
+                                       final String spaceName,
+                                       final String projectName) {
         JobResult result = new JobResult();
         result.setJobId(jobId);
 
-        if (organizationalUnitName == null || organizationalUnitOwner == null) {
+        if (spaceName == null || projectName == null) {
             result.setStatus(JobStatus.BAD_REQUEST);
-            result.setResult("OrganizationalUnit name and owner must be provided");
+            result.setResult("Space name and Project name must be provided");
             return result;
         }
 
-        String _defaultGroupId = null;
-        if (defaultGroupId == null || defaultGroupId.trim().isEmpty()) {
-            _defaultGroupId = organizationalUnitService.getSanitizedDefaultGroupId(organizationalUnitName);
-            logger.warn("No default group id was provided, reverting to the space unit name");
-        } else {
-            if (!organizationalUnitService.isValidGroupId(defaultGroupId)) {
-                result.setStatus(JobStatus.BAD_REQUEST);
-                result.setResult("Invalid default group id, only alphanumerical characters are admitted, " +
-                                         "as well as '\"_\"', '\"-\"' or '\".\"'.");
-                return result;
-            } else {
-                _defaultGroupId = defaultGroupId;
-            }
-        }
-
-        OrganizationalUnit organizationalUnit = organizationalUnitService.updateOrganizationalUnit(organizationalUnitName,
-                                                                                                   organizationalUnitOwner,
-                                                                                                   _defaultGroupId);
-
-        if (organizationalUnit != null) {
-            result.setResult("OrganizationalUnit " + organizationalUnit.getName() + " was successfully updated.");
-            result.setStatus(JobStatus.SUCCESS);
-        } else {
-            result.setStatus(JobStatus.FAIL);
-        }
-        return result;
-    }
-
-    public JobResult addRepositoryToOrganizationalUnit(final String jobId,
-                                                       final String organizationalUnitName,
-                                                       final String repositoryAlias) {
-        JobResult result = new JobResult();
-        result.setJobId(jobId);
-
-        if (organizationalUnitName == null || repositoryAlias == null) {
-            result.setStatus(JobStatus.BAD_REQUEST);
-            result.setResult("OrganizationalUnit name and Repository name must be provided");
-            return result;
-        }
-        Space space = spacesAPI.getSpace(organizationalUnitName);
-
-        org.uberfire.java.nio.file.Path repositoryPath = getRepositoryRootPath(space, repositoryAlias);
-        if (repositoryPath == null) {
+        org.uberfire.java.nio.file.Path projectRootPath = getProjectRootPath(spacesAPI.getSpace(spaceName), projectName);
+        if (projectRootPath == null) {
             result.setStatus(JobStatus.RESOURCE_NOT_EXIST);
-            result.setResult("Repository [" + repositoryAlias + "] does not exist");
+            result.setResult("Project [" + projectName + "] does not exist");
             return result;
         }
 
-        OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl(organizationalUnitName,
+        OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl(spaceName,
                                                                            null,
                                                                            null);
 
-        GitRepository repo = new GitRepository(repositoryAlias,
+        GitRepository repo = new GitRepository(projectName,
                                                spacesAPI.getSpace(organizationalUnit.getName()));
         try {
             organizationalUnitService.addRepository(organizationalUnit,
                                                     repo);
         } catch (IllegalArgumentException e) {
             result.setStatus(JobStatus.BAD_REQUEST);
-            result.setResult("OrganizationalUnit " + organizationalUnit.getName() + " not found");
+            result.setResult("Space " + organizationalUnit.getName() + " not found");
             return result;
         }
 
@@ -611,49 +536,9 @@ public class JobRequestHelper {
         return result;
     }
 
-    public JobResult removeRepositoryFromOrganizationalUnit(final String jobId,
-                                                            final String organizationalUnitName,
-                                                            final String repositoryAlias) {
-        JobResult result = new JobResult();
-        result.setJobId(jobId);
+    private org.uberfire.java.nio.file.Path getProjectRootPath(final Space space, final String projectName) {
 
-        if (organizationalUnitName == null || repositoryAlias == null) {
-            result.setStatus(JobStatus.BAD_REQUEST);
-            result.setResult("OrganizationalUnit name and Repository name must be provided");
-
-            return result;
-        }
-
-        Space space = spacesAPI.getSpace(organizationalUnitName);
-
-        org.uberfire.java.nio.file.Path repositoryPath = getRepositoryRootPath(space, repositoryAlias);
-        if (repositoryPath == null) {
-            result.setStatus(JobStatus.RESOURCE_NOT_EXIST);
-            result.setResult("Repository [" + repositoryAlias + "] does not exist");
-            return result;
-        }
-
-        OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl(organizationalUnitName,
-                                                                           null,
-                                                                           null);
-        GitRepository repo = new GitRepository(repositoryAlias,
-                                               spacesAPI.getSpace(organizationalUnit.getName()));
-        try {
-            organizationalUnitService.removeRepository(organizationalUnit,
-                                                       repo);
-        } catch (IllegalArgumentException e) {
-            result.setStatus(JobStatus.BAD_REQUEST);
-            result.setResult("OrganizationalUnit " + organizationalUnit.getName() + " not found");
-            return result;
-        }
-
-        result.setStatus(JobStatus.SUCCESS);
-        return result;
-    }
-
-    private org.uberfire.java.nio.file.Path getRepositoryRootPath(final Space space, final String repositoryAlias) {
-
-        final org.guvnor.structure.repositories.Repository repository = repositoryService.getRepositoryFromSpace(space, repositoryAlias);
+        final org.guvnor.structure.repositories.Repository repository = repositoryService.getRepositoryFromSpace(space, projectName);
         if (repository == null || !repository.getDefaultBranch().isPresent()) {
             return null;
         } else {

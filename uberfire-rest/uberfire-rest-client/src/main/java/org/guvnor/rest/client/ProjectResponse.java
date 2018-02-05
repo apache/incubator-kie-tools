@@ -16,9 +16,84 @@
 
 package org.guvnor.rest.client;
 
+import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class ProjectResponse extends ProjectRequest {
+public class ProjectResponse implements Serializable {
 
+    private String name;
+    private String spaceName;
+    private String groupId;
+    private String version;
+    private String description;
+    private List<PublicURI> publicURIs;
+
+    public ProjectResponse() {
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getSpaceName() {
+        return spaceName;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSpaceName(String spaceName) {
+        this.spaceName = spaceName;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "ProjectResponse{" +
+                "name='" + name + '\'' +
+                ", spaceName='" + spaceName + '\'' +
+                ", groupId='" + groupId + '\'' +
+                ", version='" + version + '\'' +
+                ", description='" + description + '\'' +
+                ", publicURIs= [" + publicURIs.stream()
+                .map(c -> c.toString())
+                .collect(Collectors.joining(",")) +
+                "]}";
+    }
+
+    public void setPublicURIs(List<PublicURI> publicURIs) {
+        this.publicURIs = publicURIs;
+    }
+
+    public List<PublicURI> getPublicURIs() {
+        return publicURIs;
+    }
 }

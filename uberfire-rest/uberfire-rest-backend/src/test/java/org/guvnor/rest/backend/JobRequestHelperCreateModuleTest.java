@@ -89,10 +89,10 @@ public class JobRequestHelperCreateModuleTest {
     @Test
     public void testOrganizationalUnitDoesNotExist() throws Exception {
 
-        when(organizationalUnitService.getOrganizationalUnit("organizationalUnitName")).thenReturn(null);
+        when(organizationalUnitService.getOrganizationalUnit("spaceName")).thenReturn(null);
 
         final JobResult jobResult = jobRequestHelper.createProject("jobId",
-                                                                   "organizationalUnitName",
+                                                                   "spaceName",
                                                                    "projectName",
                                                                    "projectGroupId",
                                                                    "projectVersion",
@@ -102,14 +102,14 @@ public class JobRequestHelperCreateModuleTest {
                      jobResult.getJobId());
         assertEquals(JobStatus.RESOURCE_NOT_EXIST,
                      jobResult.getStatus());
-        assertEquals("OrganizationalUnit [organizationalUnitName] does not exist",
+        assertEquals("Space [spaceName] does not exist",
                      jobResult.getResult());
     }
 
     @Test
     public void testRepositoryDoesExist() throws Exception {
         final JobResult jobResult = jobRequestHelper.createProject("jobId",
-                                                                   "organizationalUnitName",
+                                                                   "spaceName",
                                                                    "projectName",
                                                                    "projectGroupId",
                                                                    "projectVersion",
