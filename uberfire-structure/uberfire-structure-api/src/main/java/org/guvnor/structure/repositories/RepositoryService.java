@@ -88,5 +88,9 @@ public interface RepositoryService {
 
     void removeRepository(final Space space, final String alias);
 
+    /**
+     * Unlike {@link #removeRepository(Space, String)}, this method does not fire CDI events, since it is meant to be invoked
+     * by other services while removing other constructs (such as an entire space).
+     */
     void removeRepositories(final Space space, final Set<String> aliases);
 }

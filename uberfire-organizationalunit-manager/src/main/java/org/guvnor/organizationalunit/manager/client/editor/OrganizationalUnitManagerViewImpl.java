@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -95,9 +95,9 @@ public class OrganizationalUnitManagerViewImpl extends Composite implements Orga
 
     private OrganizationalUnitManagerPresenter presenter;
 
-    private List<OrganizationalUnit> sortedOrganizationalUnits = new ArrayList<OrganizationalUnit>();
-    private List<Repository> sortedOrganizationalUnitRepositories = new ArrayList<Repository>();
-    private List<Repository> sortedAvailableRepositories = new ArrayList<Repository>();
+    private List<OrganizationalUnit> sortedOrganizationalUnits = new ArrayList<>();
+    private List<Repository> sortedOrganizationalUnitRepositories = new ArrayList<>();
+    private List<Repository> sortedAvailableRepositories = new ArrayList<>();
 
     public OrganizationalUnitManagerViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -196,7 +196,7 @@ public class OrganizationalUnitManagerViewImpl extends Composite implements Orga
     }
 
     private List<OrganizationalUnit> sortOrganizationalUnits(final Collection<OrganizationalUnit> organizationalUnits) {
-        final List<OrganizationalUnit> sortedOrganizationalUnits = new ArrayList<OrganizationalUnit>();
+        final List<OrganizationalUnit> sortedOrganizationalUnits = new ArrayList<>();
         sortedOrganizationalUnits.addAll(organizationalUnits);
         Collections.sort(sortedOrganizationalUnits,
                          ORGANIZATIONAL_UNIT_COMPARATOR);
@@ -235,7 +235,7 @@ public class OrganizationalUnitManagerViewImpl extends Composite implements Orga
     }
 
     private List<Repository> sortRepositories(final Collection<Repository> repositories) {
-        final List<Repository> sortedRepositories = new ArrayList<Repository>();
+        final List<Repository> sortedRepositories = new ArrayList<>();
         sortedRepositories.addAll(repositories);
         Collections.sort(sortedRepositories,
                          REPOSITORY_COMPARATOR);
@@ -244,7 +244,7 @@ public class OrganizationalUnitManagerViewImpl extends Composite implements Orga
 
     @Override
     public void addOrganizationalUnit(final OrganizationalUnit newOrganizationalUnit) {
-        final Collection<OrganizationalUnit> existingOrganizationalUnits = new ArrayList<OrganizationalUnit>(sortedOrganizationalUnits);
+        final Collection<OrganizationalUnit> existingOrganizationalUnits = new ArrayList<>(sortedOrganizationalUnits);
         existingOrganizationalUnits.add(newOrganizationalUnit);
         setOrganizationalUnits(existingOrganizationalUnits);
     }
@@ -257,7 +257,7 @@ public class OrganizationalUnitManagerViewImpl extends Composite implements Orga
             lstOrganizationalUnits.setItemSelected(i,
                                                    false);
         }
-        final Collection<OrganizationalUnit> existingOrganizationalUnits = new ArrayList<OrganizationalUnit>(sortedOrganizationalUnits);
+        final Collection<OrganizationalUnit> existingOrganizationalUnits = new ArrayList<>(sortedOrganizationalUnits);
         existingOrganizationalUnits.remove(organizationalUnit);
         setOrganizationalUnits(existingOrganizationalUnits);
     }

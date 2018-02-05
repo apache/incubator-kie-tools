@@ -179,6 +179,8 @@ public class OrganizationalUnitManagerPresenterImpl implements OrganizationalUni
                                            public void callback(final Collection<OrganizationalUnit> organizationalUnits) {
                                                OrganizationalUnitManagerPresenterImpl.this.allOrganizationalUnits = organizationalUnits;
                                                view.setOrganizationalUnits(organizationalUnits);
+                                               context.getActiveOrganizationalUnit()
+                                                      .ifPresent(activeOrgUnit -> organizationalUnitSelected(activeOrgUnit));
                                            }
                                        },
                                        new HasBusyIndicatorDefaultErrorCallback(view)).getOrganizationalUnits();

@@ -16,9 +16,17 @@
 
 package org.guvnor.common.services.project.client.context;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+
 import java.util.Optional;
 
-import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeHandle;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeHandler;
@@ -28,8 +36,6 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryRemovedEvent;
-import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,16 +45,12 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mocks.EventSourceMock;
-import org.uberfire.spaces.Space;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WorkspaceWorkspaceProjectContextTest {
 
     @Spy
-    private EventSourceMock<WorkspaceProjectContextChangeEvent> changeEvent = new EventSourceMock<WorkspaceProjectContextChangeEvent>();
+    private EventSourceMock<WorkspaceProjectContextChangeEvent> changeEvent = new EventSourceMock<>();
 
     private WorkspaceProjectContext context;
 
@@ -81,64 +83,6 @@ public class WorkspaceWorkspaceProjectContextTest {
     }
 
     @Test
-    public void testRepositoryDeleted() throws Exception {
-        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
-        final Repository repository = mock(Repository.class);
-
-        doReturn("myrepo").when(repository).getAlias();
-
-        context.setActiveOrganizationalUnit(organizationalUnit);
-        context.setActiveWorkspaceProject(new WorkspaceProject(organizationalUnit,
-                                                               repository,
-                                                               mock(Branch.class),
-                                                               mock(Module.class)));
-
-        assertNotNull(context.getActiveWorkspaceProject());
-
-        final RepositoryRemovedEvent repositoryRemovedEvent = new RepositoryRemovedEvent(repository);
-        context.onRepositoryRemoved(repositoryRemovedEvent);
-
-        assertEquals(Optional.of(organizationalUnit),
-                     context.getActiveOrganizationalUnit());
-        assertFalse(context.getActiveWorkspaceProject().isPresent());
-    }
-
-    @Test
-    public void testRepositoryDeletedNoActiveProject() throws Exception {
-        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
-
-        context.setActiveOrganizationalUnit(organizationalUnit);
-        context.setActiveWorkspaceProject(null);
-
-        context.onRepositoryRemoved(new RepositoryRemovedEvent(new GitRepository()));
-
-        assertEquals(Optional.of(organizationalUnit),
-                     context.getActiveOrganizationalUnit());
-        assertFalse(context.getActiveWorkspaceProject().isPresent());
-    }
-
-    @Test
-    public void testIgnoreRepositoryDeletedEventIfTheActiveRepositoryWasNotDeleted() throws Exception {
-
-        GitRepository deletedRepository = new GitRepository("deleted repo",
-                                                            new Space("space"));
-
-        final WorkspaceProject activeWorkspaceProject = new WorkspaceProject(mock(OrganizationalUnit.class),
-                                                                             new GitRepository("active repo",
-                                                                                               new Space("space")),
-                                                                             mock(Branch.class),
-                                                                             mock(Module.class));
-        context.setActiveWorkspaceProject(activeWorkspaceProject);
-
-        final RepositoryRemovedEvent repositoryRemovedEvent = new RepositoryRemovedEvent(deletedRepository);
-
-        context.onRepositoryRemoved(repositoryRemovedEvent);
-
-        assertEquals(Optional.of(activeWorkspaceProject),
-                     context.getActiveWorkspaceProject());
-    }
-
-    @Test
     public void testContextChanged() throws Exception {
         final OrganizationalUnit oldOrganizationalUnit = mock(OrganizationalUnit.class);
         final Repository oldRepository = mock(Repository.class);
@@ -146,10 +90,11 @@ public class WorkspaceWorkspaceProjectContextTest {
         final Module oldModule = new Module();
 
         context.setActiveOrganizationalUnit(oldOrganizationalUnit);
-        context.setActiveWorkspaceProject(new WorkspaceProject(oldOrganizationalUnit,
-                                                               oldRepository,
-                                                               mock(Branch.class),
-                                                               mock(Module.class)));
+        WorkspaceProject oldProject = new WorkspaceProject(oldOrganizationalUnit,
+                                                           oldRepository,
+                                                           mock(Branch.class),
+                                                           mock(Module.class));
+        context.setActiveWorkspaceProject(oldProject);
         context.setActivePackage(oldPackage);
         context.setActiveModule(oldModule);
 
@@ -166,9 +111,10 @@ public class WorkspaceWorkspaceProjectContextTest {
                                                                           mock(Repository.class),
                                                                           newBranch,
                                                                           mock(Module.class));
-        context.onProjectContextChanged(new WorkspaceProjectContextChangeEvent(newWorkspaceProject,
+        WorkspaceProjectContextChangeEvent event = new WorkspaceProjectContextChangeEvent(newWorkspaceProject,
                                                                                newModule,
-                                                                               newPackage));
+                                                                               newPackage);
+        context.onProjectContextChanged(event);
 
         assertEquals(Optional.of(newOrganizationalUnit),
                      context.getActiveOrganizationalUnit());
@@ -178,7 +124,7 @@ public class WorkspaceWorkspaceProjectContextTest {
                      context.getActiveModule());
         assertEquals(Optional.of(newPackage),
                      context.getActivePackage());
-        verify(changeHandler).onChange();
+        verify(changeHandler).onChange(eq(new WorkspaceProjectContextChangeEvent(oldProject, oldModule, oldPackage)), eq(event));
     }
 
     @Test
@@ -188,7 +134,7 @@ public class WorkspaceWorkspaceProjectContextTest {
 
         context.onProjectContextChanged(new WorkspaceProjectContextChangeEvent());
 
-        verify(changeHandler).onChange();
+        verify(changeHandler).onChange(any(), eq(new WorkspaceProjectContextChangeEvent()));
 
         context.removeChangeHandler(handle);
 
@@ -197,6 +143,6 @@ public class WorkspaceWorkspaceProjectContextTest {
         context.onProjectContextChanged(new WorkspaceProjectContextChangeEvent());
 
         verify(changeHandler,
-               never()).onChange();
+               never()).onChange(any(), any());
     }
 }

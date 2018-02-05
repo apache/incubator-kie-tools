@@ -18,5 +18,5 @@ package org.guvnor.common.services.project.context;
 
 public interface WorkspaceProjectContextChangeHandler {
 
-    void onChange();
+    void onChange(WorkspaceProjectContextChangeEvent previous, WorkspaceProjectContextChangeEvent current);
 }

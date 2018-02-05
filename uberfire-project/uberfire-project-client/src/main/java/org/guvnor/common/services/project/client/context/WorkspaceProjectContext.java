@@ -32,14 +32,19 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.UpdatedOrganizationalUnitEvent;
-import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.uberfire.backend.vfs.Path;
 
 /**
- * Project context contains the active organizational unit, project, module and package.
+ * <p>
+ * Project context contains the active organizational unit, project, module, and package (referred to as the "active unit" henceforth).
+ * This context represents the active unit currently displayed in the UI by this workbench instance. If a screen or perspective that displays
+ * an active unit is shown or hidden, it is that screen's responsibility (or that of a related component) to fire a WorkspaceProjectContextChangeEvent
+ * to alter the context. This context should NOT directly observe deletion events. Instead it should be the relevant UI components job to observe such
+ * events and react (likely by closing themselves, and changing the active unit in this context).
+ * <p>
  * Each field can be null, then there is nothing active.
  * <p>
- * Only the ProjectContextChangeEvent can change this and after each change we need to alert the change handlers.
+ * Only the WorkspaceProjectContextChangeEvent can change this and after each change we need to alert the change handlers.
  */
 @ApplicationScoped
 public class WorkspaceProjectContext {
@@ -61,25 +66,20 @@ public class WorkspaceProjectContext {
         this.contextChangeEvent = contextChangeEvent;
     }
 
-    public void onRepositoryRemoved(final @Observes RepositoryRemovedEvent event) {
-
-        if (activeWorkspaceProject != null && event.getRepository().getAlias().equals(activeWorkspaceProject.getRepository().getAlias())) {
-            contextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(activeOrganizationalUnit));
-        }
-    }
-
     public void onOrganizationalUnitUpdated(@Observes final UpdatedOrganizationalUnitEvent event) {
         contextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(event.getOrganizationalUnit()));
     }
 
     public void onProjectContextChanged(@Observes final WorkspaceProjectContextChangeEvent event) {
+        WorkspaceProjectContextChangeEvent previous = new WorkspaceProjectContextChangeEvent(activeWorkspaceProject, activeModule, activePackage);
+
         this.setActiveOrganizationalUnit(event.getOrganizationalUnit());
         this.setActiveWorkspaceProject(event.getWorkspaceProject());
         this.setActiveModule(event.getModule());
         this.setActivePackage(event.getPackage());
 
         for (WorkspaceProjectContextChangeHandler handler : changeHandlers.values()) {
-            handler.onChange();
+            handler.onChange(previous, event);
         }
     }
 

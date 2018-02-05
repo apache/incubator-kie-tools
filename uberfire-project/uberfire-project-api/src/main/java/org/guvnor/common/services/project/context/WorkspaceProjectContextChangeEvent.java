@@ -15,6 +15,8 @@
  */
 package org.guvnor.common.services.project.context;
 
+import java.util.Objects;
+
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.WorkspaceProject;
@@ -67,7 +69,7 @@ public class WorkspaceProjectContextChangeEvent {
     public WorkspaceProjectContextChangeEvent(final WorkspaceProject workspaceProject,
                                               final Module module,
                                               final Package pkg) {
-        this.ou = workspaceProject.getOrganizationalUnit();
+        this.ou = workspaceProject != null ? workspaceProject.getOrganizationalUnit() : null;
         this.workspaceProject = workspaceProject;
         this.module = module;
         this.pkg = pkg;
@@ -87,5 +89,36 @@ public class WorkspaceProjectContextChangeEvent {
 
     public Package getPackage() {
         return pkg;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((module == null) ? 0 : module.hashCode());
+        result = prime * result + ((ou == null) ? 0 : ou.hashCode());
+        result = prime * result + ((pkg == null) ? 0 : pkg.hashCode());
+        result = prime * result + ((workspaceProject == null) ? 0 : workspaceProject.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        } else if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        } else {
+            WorkspaceProjectContextChangeEvent other = (WorkspaceProjectContextChangeEvent) obj;
+            return Objects.equals(module, other.module)
+                    && Objects.equals(ou, other.ou)
+                    && Objects.equals(pkg, other.pkg)
+                    && Objects.equals(workspaceProject, other.workspaceProject);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "WorkspaceProjectContextChangeEvent [ou=" + ou + ", workspaceProject=" + workspaceProject + ", module=" + module + ", pkg=" + pkg + "]";
     }
 }

@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -302,7 +303,7 @@ public class RepositoryServiceImpl implements RepositoryService {
                                                  .orElseThrow(() -> new IllegalArgumentException(String
                                                                                                        .format("The given space [%s] does not correspond to any known organizational unit.",
                                                                                                                space.getName())));
-            doRemoveRepository(orgUnit, alias, thisRepositoryConfig);
+            doRemoveRepository(orgUnit, alias, thisRepositoryConfig, repo -> repositoryRemovedEvent.fire(new RepositoryRemovedEvent(repo)));
         } catch (final Exception e) {
             logger.error("Error during remove repository",
                          e);
@@ -323,7 +324,7 @@ public class RepositoryServiceImpl implements RepositoryService {
                                                                             space.getName())));
 
             for (final String alias : aliases) {
-                doRemoveRepository(orgUnit, alias, findRepositoryConfig(alias));
+                doRemoveRepository(orgUnit, alias, findRepositoryConfig(alias), repo -> {});
             }
         } catch (final Exception e) {
             logger.error("Error while removing repositories",
@@ -334,7 +335,10 @@ public class RepositoryServiceImpl implements RepositoryService {
         }
     }
 
-    private void doRemoveRepository(OrganizationalUnit orgUnit, String alias, final ConfigGroup thisRepositoryConfig) throws Exception {
+    private void doRemoveRepository(final OrganizationalUnit orgUnit,
+                                    final String alias,
+                                    final ConfigGroup thisRepositoryConfig,
+                                    final Consumer<Repository> notification) throws Exception {
         if (thisRepositoryConfig != null) {
             configurationService.removeConfiguration(thisRepositoryConfig);
         }
@@ -342,7 +346,7 @@ public class RepositoryServiceImpl implements RepositoryService {
         final Repository repo = configuredRepositories.remove(orgUnit.getSpace(),
                                                               alias);
         if (repo != null) {
-            repositoryRemovedEvent.fire(new RepositoryRemovedEvent(repo));
+            notification.accept(repo);
 
             Branch defaultBranch = repo.getDefaultBranch().orElseThrow(() -> new IllegalStateException("Repository should have at least one branch."));
             ioService.delete(convert(defaultBranch.getPath()).getFileSystem().getPath(null));

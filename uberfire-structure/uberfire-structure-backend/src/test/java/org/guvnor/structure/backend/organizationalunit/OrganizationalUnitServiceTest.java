@@ -16,9 +16,24 @@
 
 package org.guvnor.structure.backend.organizationalunit;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+
 import javax.enterprise.event.Event;
 
 import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
@@ -29,14 +44,18 @@ import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.RepoAddedToOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.RepoRemovedFromOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.UpdatedOrganizationalUnitEvent;
+import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.security.OrganizationalUnitAction;
+import org.guvnor.structure.server.config.ConfigGroup;
+import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.guvnor.structure.server.organizationalunit.OrganizationalUnitFactory;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -44,10 +63,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Resource;
 import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.spaces.Space;
 import org.uberfire.spaces.SpacesAPI;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class OrganizationalUnitServiceTest {
@@ -93,6 +110,9 @@ public class OrganizationalUnitServiceTest {
     @Mock
     private RepositoryService repoService;
 
+    @Mock
+    private OrganizationalUnit orgUnit;
+
     private OrganizationalUnitServiceImpl organizationalUnitService;
 
     @Before
@@ -115,8 +135,7 @@ public class OrganizationalUnitServiceTest {
                                                                       spacesAPI,
                                                                       sessionInfo);
 
-        organizationalUnitService.registeredOrganizationalUnits.put("A",
-                                                                    mock(OrganizationalUnit.class));
+        organizationalUnitService.registeredOrganizationalUnits.put("A", orgUnit);
         when(authorizationManager.authorize(any(Resource.class),
                                             any(User.class))).thenReturn(false);
     }
@@ -172,6 +191,32 @@ public class OrganizationalUnitServiceTest {
                      ou.getDefaultGroupId());
         assertEquals(contributors,
                      ou.getContributors());
+    }
+
+    @Test
+    public void removeOrganizationalUnitRemovesRepositories() throws Exception {
+        Repository repoA = mock(Repository.class);
+        Repository repoB = mock(Repository.class);
+        List<Repository> repos = Arrays.asList(repoA, repoB);
+        when(repoA.getAlias()).thenReturn("A");
+        when(repoB.getAlias()).thenReturn("B");
+
+        Space space = new Space("A");
+        when(orgUnit.getRepositories()).thenReturn(repos);
+        when(orgUnit.getSpace()).thenReturn(space);
+
+        ConfigGroup configGroup = new ConfigGroup();
+        configGroup.setName("A");
+        when(configurationService.getConfiguration(ConfigType.ORGANIZATIONAL_UNIT)).thenReturn(Collections.singletonList(configGroup));
+
+        organizationalUnitService.removeOrganizationalUnit("A");
+
+        verify(repoService).removeRepositories(eq(space), eq(new HashSet<>(Arrays.asList("A", "B"))));
+        ArgumentCaptor<RemoveOrganizationalUnitEvent> eventCaptor = ArgumentCaptor.forClass(RemoveOrganizationalUnitEvent.class);
+        verify(removeOrganizationalUnitEvent).fire(eventCaptor.capture());
+        RemoveOrganizationalUnitEvent event = eventCaptor.getValue();
+        assertEquals(repos, event.getOrganizationalUnit().getRepositories());
+
     }
 
     private void setOUCreationPermission(final boolean hasPermission) {

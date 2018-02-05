@@ -108,30 +108,35 @@ public class OrganizationalUnitManagerPresenterTest {
         when(organizationalUnitA.getRepositories()).thenReturn(Collections.EMPTY_LIST);
 
         when(projContext.getActiveOrganizationalUnit()).thenReturn(Optional.of(mockOU));
-
-        presenter.loadOrganizationalUnits();
     }
 
     @Test
     public void testOnStartup() {
         presenter.onStartup();
 
+        // Called directly on startup
         verify(view).setAddOrganizationalUnitEnabled(false);
         verify(view).setDeleteOrganizationalUnitEnabled(false);
-        verify(view).setDeleteOrganizationalUnitEnabled(false);
+        verify(view).setEditOrganizationalUnitEnabled(false);
+
+        // Called in remote callback after loading repos
+        verify(view).setDeleteOrganizationalUnitEnabled(true);
+        verify(view).setEditOrganizationalUnitEnabled(true);
     }
 
     @Test
     public void testSelectOrgUnit() {
-        presenter.onStartup();
+        assertPrecondition("startup", () -> testOnStartup());
         presenter.organizationalUnitSelected(organizationalUnitA);
 
-        verify(view).setDeleteOrganizationalUnitEnabled(true);
-        verify(view).setDeleteOrganizationalUnitEnabled(true);
+        // Called once in startup
+        verify(view, times(2)).setDeleteOrganizationalUnitEnabled(true);
+        verify(view, times(2)).setEditOrganizationalUnitEnabled(true);
     }
 
     @Test
     public void testCreateOUEvent() {
+        assertPrecondition("startup", () -> testOnStartup());
         presenter.createNewOrganizationalUnit(mockOU.getName(),
                                               mockOU.getOwner(),
                                               mockOU.getDefaultGroupId());
@@ -142,9 +147,20 @@ public class OrganizationalUnitManagerPresenterTest {
 
     @Test
     public void testDeleteOUEvent() {
+        assertPrecondition("startup", () -> testOnStartup());
+
         presenter.deleteOrganizationalUnit(mockOU);
 
         verify(deleteOUEvent,
                times(1)).fire(any(AfterDeleteOrganizationalUnitEvent.class));
+    }
+
+    private void assertPrecondition(String name, Runnable assertions) {
+        try {
+            assertions.run();
+        }
+        catch (AssertionError ae) {
+            throw new AssertionError("Precondition failed: " + name, ae);
+        }
     }
 }
