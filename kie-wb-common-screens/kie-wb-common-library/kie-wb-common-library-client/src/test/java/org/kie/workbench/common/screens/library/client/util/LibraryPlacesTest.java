@@ -156,6 +156,12 @@ public class LibraryPlacesTest {
     @Mock
     private KieModuleService moduleService;
 
+    @Mock
+    private WorkspaceProjectContextChangeEvent previous;
+
+    @Mock
+    private WorkspaceProjectContextChangeEvent current;
+
     @Captor
     private ArgumentCaptor<WorkspaceProjectContextChangeEvent> projectContextChangeEventArgumentCaptor;
 
@@ -216,6 +222,10 @@ public class LibraryPlacesTest {
         doReturn(Optional.empty()).when(projectContext).getActiveRepositoryRoot();
         doReturn(Optional.empty()).when(projectContext).getActivePackage();
 
+        when(current.getOrganizationalUnit()).thenReturn(activeOrganizationalUnit);
+        when(current.getWorkspaceProject()).thenReturn(activeProject);
+        when(current.getModule()).thenReturn(activeModule);
+
         final URIStructureExplorerModel model = mock(URIStructureExplorerModel.class);
         doReturn(mock(Repository.class)).when(model).getRepository();
         doReturn(mock(Module.class)).when(model).getModule();
@@ -241,7 +251,8 @@ public class LibraryPlacesTest {
     @Test
     public void onChange() {
 
-        libraryPlaces.onChange();
+        when(current.getModule()).thenReturn(null);
+        libraryPlaces.onChange(previous, current);
 
         verify(libraryPlaces).goToProject();
     }
@@ -250,8 +261,9 @@ public class LibraryPlacesTest {
     public void onChangeNoActiveProject() {
 
         doReturn(Optional.empty()).when(projectContext).getActiveWorkspaceProject();
+        when(current.getWorkspaceProject()).thenReturn(null);
 
-        libraryPlaces.onChange();
+        libraryPlaces.onChange(previous, current);
 
         verify(libraryPlaces, never()).goToProject();
     }
@@ -260,8 +272,9 @@ public class LibraryPlacesTest {
     public void onNoChangeWhenThereIsActivePackage() {
 
         doReturn(Optional.of(new Package())).when(projectContext).getActivePackage();
+        when(current.getPackage()).thenReturn(new Package());
 
-        libraryPlaces.onChange();
+        libraryPlaces.onChange(previous, current);
 
         verify(libraryPlaces, never()).goToProject();
     }
@@ -568,7 +581,7 @@ public class LibraryPlacesTest {
                                   any(PanelDefinition.class));
         verify(projectContextChangeEvent,
                never()).fire(any(WorkspaceProjectContextChangeEvent.class));
-        verify(libraryPlaces).setupLibraryBreadCrumbs();
+        verify(libraryPlaces).setupLibraryBreadCrumbs(activeProject);
     }
 
     @Test

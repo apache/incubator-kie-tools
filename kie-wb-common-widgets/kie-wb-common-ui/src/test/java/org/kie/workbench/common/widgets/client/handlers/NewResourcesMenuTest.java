@@ -125,6 +125,7 @@ public class NewResourcesMenuTest {
     @SuppressWarnings("unchecked")
     public void testOnWorkspaceProjectContextChangedEnabled() {
         doAnswer( new Answer() {
+            @Override
             public Object answer( final InvocationOnMock invocation ) {
                 final Object[] args = invocation.getArguments();
                 final Callback callback = (Callback) args[ 0 ];
@@ -133,7 +134,8 @@ public class NewResourcesMenuTest {
             }
         } ).when( handler ).acceptContext( any( Callback.class ) );
 
-        menu.onChange();
+        // Arguments aren't actually used
+        menu.onChange(null, null);
         verify( handler,
                 times( 1 ) ).acceptContext( any( Callback.class ) );
 
@@ -149,6 +151,7 @@ public class NewResourcesMenuTest {
     @SuppressWarnings("unchecked")
     public void testOnWorkspaceProjectContextChangedDisabled() {
         doAnswer( new Answer() {
+            @Override
             public Object answer( final InvocationOnMock invocation ) {
                 final Object[] args = invocation.getArguments();
                 final Callback callback = (Callback) args[ 0 ];
@@ -157,7 +160,8 @@ public class NewResourcesMenuTest {
             }
         } ).when( handler ).acceptContext( any( Callback.class ) );
 
-        menu.onChange();
+        // Arguments aren't actually used
+        menu.onChange(null, null);
         verify( handler,
                 times( 1 ) ).acceptContext( any( Callback.class ) );
 

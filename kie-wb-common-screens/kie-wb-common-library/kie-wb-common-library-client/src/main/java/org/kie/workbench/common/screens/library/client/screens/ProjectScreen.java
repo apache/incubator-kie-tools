@@ -25,7 +25,6 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;

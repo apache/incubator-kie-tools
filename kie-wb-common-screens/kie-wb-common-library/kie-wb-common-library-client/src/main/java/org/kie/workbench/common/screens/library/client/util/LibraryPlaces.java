@@ -38,6 +38,8 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.project.social.ModuleEventType;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
+import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -145,8 +147,6 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
     private boolean docksReady = false;
 
     private boolean docksHidden = true;
-
-    private WorkspaceProject lastViewedProject = null;
 
     private boolean closingLibraryPlaces = false;
 
@@ -260,6 +260,39 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
             final ObservablePath path = concurrentRenameAcceptedEvent.getPath();
             goToAsset(path);
             setupLibraryBreadCrumbsForAsset(path);
+        }
+    }
+
+    public void onProjectDeleted(@Observes final RepositoryRemovedEvent repositoryRemovedEvent) {
+        if (isLibraryPerspectiveOpen() && isRepoForActiveProject(repositoryRemovedEvent)) {
+            closeAllPlaces();
+            WorkspaceProjectContextChangeEvent contextChangeEvent = projectContext.getActiveOrganizationalUnit()
+                                                                                  .map(ou -> new WorkspaceProjectContextChangeEvent(ou))
+                                                                                  .orElseGet(() -> new WorkspaceProjectContextChangeEvent());
+            projectContextChangeEvent.fire(contextChangeEvent);
+            goToLibrary();
+            notificationEvent.fire(new NotificationEvent(ts.getTranslation(LibraryConstants.ProjectDeleted),
+                                                         NotificationEvent.NotificationType.DEFAULT));
+        }
+    }
+
+    private boolean isRepoForActiveProject(RepositoryRemovedEvent repositoryRemovedEvent) {
+        return projectContext.getActiveWorkspaceProject()
+                             .filter(project -> {
+                                 Repository activeRepo = project.getRepository();
+                                 Repository eventRepo = repositoryRemovedEvent.getRepository();
+                                 return activeRepo.getIdentifier().equals(eventRepo.getIdentifier());
+                             })
+                             .isPresent();
+    }
+
+    public void onOrganizationalUnitRemoved(@Observes final RemoveOrganizationalUnitEvent removedOrganizationalUnitEvent) {
+        if (isLibraryPerspectiveOpen()) {
+            projectContext.getActiveOrganizationalUnit()
+            .filter(active -> active.equals(removedOrganizationalUnitEvent.getOrganizationalUnit()))
+            .ifPresent(active -> {
+                projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent());
+            });
         }
     }
 
@@ -542,9 +575,8 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
     }
 
     private void goToProject(final Command callback) {
-        lastViewedProject = projectContext.getActiveWorkspaceProject()
-                                          .orElseThrow(() -> new IllegalStateException("Cannot go to project when no project is active."));
-        setupLibraryBreadCrumbs();
+        setupLibraryBreadCrumbs(projectContext.getActiveWorkspaceProject()
+                                              .orElseThrow(() -> new IllegalStateException("Cannot go to project when no project is active.")));
 
         final PartDefinitionImpl part = new PartDefinitionImpl(new DefaultPlaceRequest(LibraryPlaces.PROJECT_SCREEN));
         part.setSelectable(false);
@@ -705,9 +737,9 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
     }
 
     @Override
-    public void onChange() {
-        if (projectContext.getActiveWorkspaceProject().isPresent() && !projectContext.getActivePackage().isPresent()) {
-            if (!projectContext.getActiveWorkspaceProject().get().equals(lastViewedProject)) {
+    public void onChange(WorkspaceProjectContextChangeEvent previous, WorkspaceProjectContextChangeEvent current) {
+        if (current.getWorkspaceProject() != null && current.getModule() == null) {
+            if (current.getWorkspaceProject().equals(previous.getWorkspaceProject())) {
                 if (closeAllPlacesOrNothing()) {
                     goToProject();
                 }

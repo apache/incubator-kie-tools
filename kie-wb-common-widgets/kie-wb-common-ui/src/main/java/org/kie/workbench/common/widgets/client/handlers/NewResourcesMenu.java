@@ -28,6 +28,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.Callback;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
+import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeHandler;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -45,8 +46,8 @@ public class NewResourcesMenu
     private SyncBeanManager iocBeanManager;
     private NewResourcePresenter newResourcePresenter;
 
-    private final List<MenuItem> items = new ArrayList<MenuItem>();
-    private final Map<NewResourceHandler, MenuItem> newResourceHandlers = new HashMap<NewResourceHandler, MenuItem>();
+    private final List<MenuItem> items = new ArrayList<>();
+    private final Map<NewResourceHandler, MenuItem> newResourceHandlers = new HashMap<>();
 
     public NewResourcesMenu() {
         //Zero argument constructor for CDI proxies
@@ -152,7 +153,7 @@ public class NewResourcesMenu
     }
 
     @Override
-    public void onChange() {
+    public void onChange(WorkspaceProjectContextChangeEvent previous, WorkspaceProjectContextChangeEvent current) {
         enableMenuItemsForContext();
     }
 
