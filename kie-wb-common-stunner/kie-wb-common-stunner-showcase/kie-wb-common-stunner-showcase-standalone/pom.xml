@@ -353,6 +353,10 @@
       <artifactId>errai-cdi-client</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-cdi-shared</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.jboss.errai</groupId>
