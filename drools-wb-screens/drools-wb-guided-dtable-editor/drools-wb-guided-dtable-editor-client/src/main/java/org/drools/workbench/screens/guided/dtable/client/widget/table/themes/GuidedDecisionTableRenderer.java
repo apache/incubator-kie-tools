@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table.themes;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import com.ait.lienzo.client.core.shape.Group;
@@ -56,53 +58,52 @@ public class GuidedDecisionTableRenderer extends BaseGridRenderer {
     }
 
     @Override
-    public Group renderBody(final GridData model,
-                            final GridBodyRenderContext context,
-                            final BaseGridRendererHelper rendererHelper,
-                            final BaseGridRendererHelper.RenderingInformation renderingInformation) {
-        final Group body = super.renderBody(model,
-                                            context,
-                                            rendererHelper,
-                                            renderingInformation);
+    public List<RendererCommand> renderBody(final GridData model,
+                                            final GridBodyRenderContext context,
+                                            final BaseGridRendererHelper rendererHelper,
+                                            final BaseGridRendererHelper.RenderingInformation renderingInformation) {
+        final List<RendererCommand> commands = super.renderBody(model,
+                                                                context,
+                                                                rendererHelper,
+                                                                renderingInformation);
         if (!(rowHighlightRowIndexes == null || rowHighlightRowIndexes.isEmpty())) {
-            renderRowHighlights(body,
-                                model,
-                                context,
-                                rendererHelper,
-                                renderingInformation);
+            commands.addAll(renderRowHighlights(model,
+                                                context,
+                                                rendererHelper,
+                                                renderingInformation));
         }
-        return body;
+        return commands;
     }
 
     @Override
-    public Group renderSelector(final double width,
-                                final double height,
-                                final BaseGridRendererHelper.RenderingInformation renderingInformation) {
-        final Group g = new Group();
-        final double captionWidth = getHeaderCaptionWidth();
-        final Bounds bounds = getSelectorBounds(width,
-                                                height,
-                                                renderingInformation);
-        final MultiPath selector = theme.getSelector()
-                .M(bounds.getX() + 0.5,
-                   bounds.getY() + 0.5)
-                .L(bounds.getX() + 0.5,
-                   height)
-                .L(width,
-                   height)
-                .L(width,
-                   bounds.getY() + GuidedDecisionTableViewImpl.HEADER_CAPTION_HEIGHT)
-                .L(bounds.getX() + captionWidth,
-                   bounds.getY() + GuidedDecisionTableViewImpl.HEADER_CAPTION_HEIGHT)
-                .L(bounds.getX() + captionWidth,
-                   bounds.getY() + 0.5)
-                .L(bounds.getX() + GuidedDecisionTableViewImpl.HEADER_CAPTION_WIDTH,
-                   bounds.getY() + 0.5)
-                .L(bounds.getX() + 0.5,
-                   bounds.getY() + 0.5)
-                .setListening(false);
-        g.add(selector);
-        return g;
+    public RendererCommand renderSelector(final double width,
+                                          final double height,
+                                          final BaseGridRendererHelper.RenderingInformation renderingInformation) {
+        return (RenderSelectorCommand) (parent) -> {
+            final double captionWidth = getHeaderCaptionWidth();
+            final Bounds bounds = getSelectorBounds(width,
+                                                    height,
+                                                    renderingInformation);
+            final MultiPath selector = theme.getSelector()
+                    .M(bounds.getX() + 0.5,
+                       bounds.getY() + 0.5)
+                    .L(bounds.getX() + 0.5,
+                       height)
+                    .L(width,
+                       height)
+                    .L(width,
+                       bounds.getY() + GuidedDecisionTableViewImpl.HEADER_CAPTION_HEIGHT)
+                    .L(bounds.getX() + captionWidth,
+                       bounds.getY() + GuidedDecisionTableViewImpl.HEADER_CAPTION_HEIGHT)
+                    .L(bounds.getX() + captionWidth,
+                       bounds.getY() + 0.5)
+                    .L(bounds.getX() + GuidedDecisionTableViewImpl.HEADER_CAPTION_WIDTH,
+                       bounds.getY() + 0.5)
+                    .L(bounds.getX() + 0.5,
+                       bounds.getY() + 0.5)
+                    .setListening(false);
+            parent.add(selector);
+        };
     }
 
     private double getHeaderCaptionWidth() {
@@ -134,21 +135,23 @@ public class GuidedDecisionTableRenderer extends BaseGridRenderer {
     }
 
     @Override
-    public Group renderHeaderBodyDivider(final double width) {
-        final Group g = new Group();
-        final Line dividerLine1 = theme.getGridHeaderBodyDivider();
-        final Line dividerLine2 = theme.getGridHeaderBodyDivider();
-        dividerLine1.setPoints(new Point2DArray(new Point2D(0,
-                                                            getHeaderHeight() - 1.5),
-                                                new Point2D(width,
-                                                            getHeaderHeight() - 1.5)));
-        dividerLine2.setPoints(new Point2DArray(new Point2D(0,
-                                                            getHeaderHeight() + 0.5),
-                                                new Point2D(width,
-                                                            getHeaderHeight() + 0.5)));
-        g.add(dividerLine1);
-        g.add(dividerLine2);
-        return g;
+    public RendererCommand renderHeaderBodyDivider(final double width) {
+        return (RenderHeaderGridLinesCommand) (parent) -> {
+            final Group g = new Group();
+            final Line dividerLine1 = theme.getGridHeaderBodyDivider();
+            final Line dividerLine2 = theme.getGridHeaderBodyDivider();
+            dividerLine1.setPoints(new Point2DArray(new Point2D(0,
+                                                                getHeaderHeight() - 1.5),
+                                                    new Point2D(width,
+                                                                getHeaderHeight() - 1.5)));
+            dividerLine2.setPoints(new Point2DArray(new Point2D(0,
+                                                                getHeaderHeight() + 0.5),
+                                                    new Point2D(width,
+                                                                getHeaderHeight() + 0.5)));
+            g.add(dividerLine1);
+            g.add(dividerLine2);
+            parent.add(g);
+        };
     }
 
     public void highlightRows(final Severity rowHighlightSeverity,
@@ -162,24 +165,27 @@ public class GuidedDecisionTableRenderer extends BaseGridRenderer {
         this.rowHighlightRowIndexes = null;
     }
 
-    void renderRowHighlights(final Group body,
-                             final GridData model,
-                             final GridBodyRenderContext context,
-                             final BaseGridRendererHelper rendererHelper,
-                             final BaseGridRendererHelper.RenderingInformation renderingInformation) {
+    List<RendererCommand> renderRowHighlights(final GridData model,
+                                              final GridBodyRenderContext context,
+                                              final BaseGridRendererHelper rendererHelper,
+                                              final BaseGridRendererHelper.RenderingInformation renderingInformation) {
+        final List<RendererCommand> commands = new ArrayList<>();
         rowHighlightRowIndexes.stream().forEach((rowIndex) -> {
             final int _rowIndex = rowIndex - 1;
             final int _visibleRowIndex = _rowIndex - renderingInformation.getMinVisibleRowIndex();
             if (_rowIndex >= 0 && _rowIndex < model.getRowCount()) {
                 if (_visibleRowIndex >= 0 && _visibleRowIndex < model.getRowCount()) {
-                    body.add(makeRowHighlight(_rowIndex,
-                                              _visibleRowIndex,
-                                              model,
-                                              context,
-                                              rendererHelper));
+                    commands.add((RenderSelectedCellsCommand) (parent) -> {
+                        parent.add(makeRowHighlight(_rowIndex,
+                                                    _visibleRowIndex,
+                                                    model,
+                                                    context,
+                                                    rendererHelper));
+                    });
                 }
             }
         });
+        return commands;
     }
 
     Rectangle makeRowHighlight(final int _rowIndex,
