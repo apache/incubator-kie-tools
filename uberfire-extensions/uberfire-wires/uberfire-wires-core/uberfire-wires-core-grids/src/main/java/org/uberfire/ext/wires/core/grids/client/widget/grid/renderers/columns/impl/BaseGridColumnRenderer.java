@@ -35,9 +35,6 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.Gri
 
 public abstract class BaseGridColumnRenderer<T> implements GridColumnRenderer<T> {
 
-    private ColumnRenderingStrategyMerged renderColumnMerged = new ColumnRenderingStrategyMerged();
-    private ColumnRenderingStrategyFlattened renderColumnFlattened = new ColumnRenderingStrategyFlattened();
-
     @Override
     @SuppressWarnings("unchecked")
     public List<GridRenderer.RendererCommand> renderHeader(final List<GridColumn.HeaderMetaData> headerMetaData,
@@ -258,15 +255,15 @@ public abstract class BaseGridColumnRenderer<T> implements GridColumnRenderer<T>
                                                            final BaseGridRendererHelper rendererHelper,
                                                            final BaseGridRendererHelper.RenderingInformation renderingInformation) {
         if (context.getModel().isMerged()) {
-            return renderColumnMerged.render(column,
-                                             context,
-                                             rendererHelper,
-                                             renderingInformation);
+            return ColumnRenderingStrategyMerged.render(column,
+                                                        context,
+                                                        rendererHelper,
+                                                        renderingInformation);
         } else {
-            return renderColumnFlattened.render(column,
-                                                context,
-                                                rendererHelper,
-                                                renderingInformation);
+            return ColumnRenderingStrategyFlattened.render(column,
+                                                           context,
+                                                           rendererHelper,
+                                                           renderingInformation);
         }
     }
 }

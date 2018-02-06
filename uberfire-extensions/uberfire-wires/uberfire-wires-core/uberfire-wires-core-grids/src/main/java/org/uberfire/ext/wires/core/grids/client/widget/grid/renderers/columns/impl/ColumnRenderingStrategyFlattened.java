@@ -37,10 +37,10 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.Gri
 public class ColumnRenderingStrategyFlattened {
 
     @SuppressWarnings({"unused", "unchecked"})
-    public List<GridRenderer.RendererCommand> render(final GridColumn<?> column,
-                                                     final GridBodyColumnRenderContext context,
-                                                     final BaseGridRendererHelper rendererHelper,
-                                                     final BaseGridRendererHelper.RenderingInformation renderingInformation) {
+    public static List<GridRenderer.RendererCommand> render(final GridColumn<?> column,
+                                                            final GridBodyColumnRenderContext context,
+                                                            final BaseGridRendererHelper rendererHelper,
+                                                            final BaseGridRendererHelper.RenderingInformation renderingInformation) {
         final double x = context.getX();
         final double absoluteGridY = context.getAbsoluteGridY();
         final double absoluteColumnX = context.getAbsoluteColumnX();

@@ -18,6 +18,8 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.i
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.IntStream;
 
 import com.ait.lienzo.client.core.shape.BoundingBoxPathClipper;
 import com.ait.lienzo.client.core.shape.Group;
@@ -42,10 +44,10 @@ public class ColumnRenderingStrategyMerged {
 
     private static final int LOOP_THRESHOLD = 1000;
 
-    public List<GridRenderer.RendererCommand> render(final GridColumn<?> column,
-                                                     final GridBodyColumnRenderContext context,
-                                                     final BaseGridRendererHelper rendererHelper,
-                                                     final BaseGridRendererHelper.RenderingInformation renderingInformation) {
+    public static List<GridRenderer.RendererCommand> render(final GridColumn<?> column,
+                                                            final GridBodyColumnRenderContext context,
+                                                            final BaseGridRendererHelper rendererHelper,
+                                                            final BaseGridRendererHelper.RenderingInformation renderingInformation) {
         final double x = context.getX();
         final double absoluteGridY = context.getAbsoluteGridY();
         final double absoluteColumnX = context.getAbsoluteColumnX();
@@ -241,10 +243,10 @@ public class ColumnRenderingStrategyMerged {
         return commands;
     }
 
-    private boolean isCollapsedRowMultiValue(final GridData model,
-                                             final GridColumn<?> column,
-                                             final GridCell<?> cell,
-                                             final int rowIndex) {
+    protected static boolean isCollapsedRowMultiValue(final GridData model,
+                                                      final GridColumn<?> column,
+                                                      final GridCell<?> cell,
+                                                      final int rowIndex) {
         GridRow row;
         int rowOffset = 1;
         final int columnIndex = column.getIndex();
@@ -252,10 +254,7 @@ public class ColumnRenderingStrategyMerged {
         //Iterate collapsed rows checking if the values differ
         while ((row = model.getRow(rowIndex - rowOffset)).isCollapsed()) {
             final GridCell<?> nc = row.getCells().get(columnIndex);
-            if (nc == null) {
-                return true;
-            }
-            if (!cell.getValue().equals(nc.getValue())) {
+            if (!Objects.equals(nc, cell)) {
                 return true;
             }
             rowOffset++;
@@ -263,18 +262,15 @@ public class ColumnRenderingStrategyMerged {
 
         //Check "lead" row as well - since this is not marked as collapsed
         final GridCell<?> nc = row.getCells().get(columnIndex);
-        if (nc == null) {
-            return true;
-        }
-        if (!cell.getValue().equals(nc.getValue())) {
+        if (!Objects.equals(nc, cell)) {
             return true;
         }
         return false;
     }
 
-    private boolean isCollapsedCellMixedValue(final GridData model,
-                                              final int rowIndex,
-                                              final int columnIndex) {
+    protected static boolean isCollapsedCellMixedValue(final GridData model,
+                                                       final int rowIndex,
+                                                       final int columnIndex) {
         int _rowIndex = rowIndex;
         GridCell<?> currentCell = model.getCell(_rowIndex,
                                                 columnIndex);
@@ -293,17 +289,8 @@ public class ColumnRenderingStrategyMerged {
         while (_rowIndex < model.getRowCount() && model.getRow(_rowIndex).isCollapsed()) {
             final GridCell<?> nextCell = model.getCell(_rowIndex,
                                                        columnIndex);
-            if (currentCell == null) {
-                if (nextCell != null) {
-                    return true;
-                }
-            } else {
-                if (nextCell == null) {
-                    return true;
-                }
-                if (!currentCell.getValue().getValue().equals(nextCell.getValue().getValue())) {
-                    return true;
-                }
+            if (!Objects.equals(currentCell, nextCell)) {
+                return true;
             }
             _rowIndex++;
         }
@@ -311,26 +298,24 @@ public class ColumnRenderingStrategyMerged {
         return false;
     }
 
-    private double getCellHeight(final int rowIndex,
-                                 final GridData model,
-                                 final GridCell<?> cell) {
-        double height = 0;
-        for (int i = rowIndex; i < rowIndex + cell.getMergedCellCount(); i++) {
-            height = height + model.getRow(i).getHeight();
-        }
-        return height;
+    protected static double getCellHeight(final int rowIndex,
+                                          final GridData model,
+                                          final GridCell<?> cell) {
+        return IntStream.range(rowIndex, rowIndex + cell.getMergedCellCount())
+                .mapToDouble(index -> model.getRow(index).getHeight())
+                .sum();
     }
 
-    private Group renderGroupedCellToggle(final double cellWidth,
-                                          final double cellHeight,
-                                          final boolean isCollapsed) {
+    private static Group renderGroupedCellToggle(final double cellWidth,
+                                                 final double cellHeight,
+                                                 final boolean isCollapsed) {
         return new GroupingToggle(cellWidth,
                                   cellHeight,
                                   isCollapsed);
     }
 
-    private Group renderMergedCellMixedValueHighlight(final double cellWidth,
-                                                      final double cellHeight) {
+    private static Group renderMergedCellMixedValueHighlight(final double cellWidth,
+                                                             final double cellHeight) {
         final Group g = new Group();
         final Rectangle multiValueHighlight = new Rectangle(cellWidth,
                                                             cellHeight);
