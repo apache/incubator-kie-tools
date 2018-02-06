@@ -60,7 +60,21 @@
 			<snapshots><enabled>true</enabled></snapshots>
 		</repository>
 	</repositories>
-
+	
+	<pluginRepositories>
+          <pluginRepository>
+            <id>jboss-public-repository-group</id>
+            <name>JBoss Public Repository Group</name>
+            <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+            <releases>
+              <enabled>true</enabled>
+            </releases>
+            <snapshots>
+              <enabled>true</enabled>
+            </snapshots>
+          </pluginRepository>
+        </pluginRepositories>
+	
 	<build>
 		<resources>
 			<!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
