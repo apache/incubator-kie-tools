@@ -21,6 +21,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.concurrent.NotThreadSafe;
+
 import org.guvnor.common.services.project.model.Package;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,6 +47,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
+@NotThreadSafe
 @RunWith(MockitoJUnitRunner.class)
 public class AssetsUsageServiceImplTest extends BaseIndexingTest<TestJavaResourceTypeDefinition> {
 

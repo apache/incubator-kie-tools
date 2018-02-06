@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import javax.enterprise.inject.Instance;
 
 import org.junit.Test;
@@ -60,6 +61,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
+@NotThreadSafe
 @RunWith(MockitoJUnitRunner.class)
 public class FormDefinitionIndexerTest extends BaseIndexingTest<FormResourceTypeDefinition> {
 

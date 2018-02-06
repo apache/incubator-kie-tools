@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.concurrent.NotThreadSafe;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.WildcardQuery;
@@ -36,6 +38,7 @@ import org.uberfire.ext.metadata.io.KObjectUtil;
 import static org.mockito.Mockito.*;
 import static org.uberfire.ext.metadata.engine.MetaIndexEngine.FULL_TEXT_FIELD;
 
+@NotThreadSafe
 public class IndexFullTextTest extends BaseIndexingTest<TestPropertiesFileTypeDefinition> {
 
     @Test

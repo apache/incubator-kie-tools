@@ -26,6 +26,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
 
+import javax.annotation.concurrent.NotThreadSafe;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.drools.core.beliefsystem.abductive.Abducible;
 import org.guvnor.structure.backend.config.Removed;
@@ -54,6 +56,7 @@ import static org.junit.Assert.*;
 /**
  * This annotation is used by the {{@link #testReferenceQueryInfrastructure()} method.
  */
+@NotThreadSafe
 @AnnotationValuesAnnotation
 public class ImpactAnalysisJavaFileTest extends BaseIndexingTest<JavaResourceTypeDefinition> {
 

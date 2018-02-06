@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.concurrent.NotThreadSafe;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.search.Query;
 import org.junit.Test;
@@ -53,6 +55,7 @@ import org.uberfire.paging.PageResponse;
 
 import static org.junit.Assert.*;
 
+@NotThreadSafe
 public class FindResourcePartsQueryValidIndexTermsTest extends BaseIndexingTest<JavaResourceTypeDefinition> {
 
     protected Set<NamedQuery> getQueries() {

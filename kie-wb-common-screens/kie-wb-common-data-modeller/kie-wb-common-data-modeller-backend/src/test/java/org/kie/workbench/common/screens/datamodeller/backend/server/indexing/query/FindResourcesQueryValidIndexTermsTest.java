@@ -25,6 +25,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.concurrent.NotThreadSafe;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.junit.Test;
 import org.kie.workbench.common.screens.datamodeller.backend.server.indexing.TestJavaFileIndexer;
@@ -44,6 +46,7 @@ import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.paging.PageResponse;
 
+@NotThreadSafe
 public class FindResourcesQueryValidIndexTermsTest extends BaseIndexingTest<JavaResourceTypeDefinition> {
 
     protected Set<NamedQuery> getQueries() {

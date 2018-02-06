@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.annotation.concurrent.NotThreadSafe;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.TermQuery;
@@ -35,6 +37,7 @@ import static org.mockito.Mockito.*;
 
 import static org.mockito.Mockito.*;
 
+@NotThreadSafe
 public class MultipleRepositoryUpdatedResourcesTest extends MultipleRepositoryBaseIndexingTest<TestPropertiesFileTypeDefinition> {
 
     @Test

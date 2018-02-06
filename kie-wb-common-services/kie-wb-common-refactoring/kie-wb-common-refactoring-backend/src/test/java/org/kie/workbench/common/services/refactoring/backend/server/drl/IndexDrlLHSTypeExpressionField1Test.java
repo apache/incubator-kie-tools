@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.concurrent.NotThreadSafe;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.search.Query;
 import org.junit.Test;
@@ -35,6 +37,7 @@ import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.java.nio.file.Path;
 
+@NotThreadSafe
 public class IndexDrlLHSTypeExpressionField1Test extends BaseIndexingTest<TestDrlFileTypeDefinition> {
 
     @Test
