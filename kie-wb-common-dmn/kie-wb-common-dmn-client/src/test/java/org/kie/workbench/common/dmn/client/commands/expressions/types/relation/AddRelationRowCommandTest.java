@@ -185,7 +185,6 @@ public class AddRelationRowCommandTest {
     public void testCanvasCommandExecuteWithColumns() {
         relation.getColumn().add(new InformationItem());
         uiModel.appendColumn(uiModelColumn);
-        uiModelMapper.fromDMNModel(0, 0);
 
         //Add Graph row first as RelationUIModelMapper relies on the model being first updated
         command.newGraphCommand(handler).execute(gce);
@@ -242,7 +241,9 @@ public class AddRelationRowCommandTest {
     @Test
     public void testCanvasCommandUndoWithColumns() {
         relation.getColumn().add(new InformationItem());
+        relation.getRow().add(new org.kie.workbench.common.dmn.api.definition.v1_1.List());
         uiModel.appendColumn(uiModelColumn);
+        uiModel.appendRow(new DMNGridRow());
         uiModelMapper.fromDMNModel(0, 0);
 
         //Add Graph column first as RelationUIModelMapper relies on the model being first updated
@@ -264,7 +265,7 @@ public class AddRelationRowCommandTest {
                      uiModel.getColumns().get(0));
         assertEquals(uiModelColumn,
                      uiModel.getColumns().get(1));
-        assertEquals(0,
+        assertEquals(1,
                      uiModel.getRowCount());
 
         verify(canvasOperation).execute();

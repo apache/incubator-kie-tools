@@ -20,7 +20,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRender
 
 public class ContextGridRenderer extends BaseExpressionGridRenderer {
 
-    public ContextGridRenderer(final boolean hideHeader) {
-        super(hideHeader);
+    public ContextGridRenderer(final boolean isHeaderHidden) {
+        super(isHeaderHidden);
     }
 }

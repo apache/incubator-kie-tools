@@ -26,6 +26,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionStrategy;
 
 public class RelationUIModelMapper extends BaseUIModelMapper<Relation> {
 
@@ -45,6 +46,8 @@ public class RelationUIModelMapper extends BaseUIModelMapper<Relation> {
                     uiModel.get().setCell(rowIndex,
                                           columnIndex,
                                           new BaseGridCellValue<>(rowIndex + 1));
+                    uiModel.get().getCell(rowIndex,
+                                          columnIndex).setSelectionManager(RowSelectionStrategy.INSTANCE);
                     break;
                 case INFORMATION_ITEM:
                     final org.kie.workbench.common.dmn.api.definition.v1_1.List row = relation.getRow().get(rowIndex);

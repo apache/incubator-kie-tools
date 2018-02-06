@@ -74,7 +74,8 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Conte
               new ContextGridRenderer(true),
               sessionManager,
               sessionCommandManager,
-              editorSelectedEvent);
+              editorSelectedEvent,
+              true);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
 
         setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
@@ -90,9 +91,9 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Conte
 
     @Override
     public ContextUIModelMapper makeUiModelMapper() {
-        return new ContextUIModelMapper(this::getModel,
-                                        () -> expression,
-                                        expressionEditorDefinitionsSupplier);
+        return new FunctionSupplementaryGridUIModelMapper(this::getModel,
+                                                          () -> expression,
+                                                          expressionEditorDefinitionsSupplier);
     }
 
     @Override

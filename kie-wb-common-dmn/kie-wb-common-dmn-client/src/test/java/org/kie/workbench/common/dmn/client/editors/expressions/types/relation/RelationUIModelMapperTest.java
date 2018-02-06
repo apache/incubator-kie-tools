@@ -33,6 +33,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionStrategy;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
@@ -101,8 +102,13 @@ public class RelationUIModelMapperTest {
 
         assertEquals(1,
                      uiModel.getCell(0, 0).getValue().getValue());
+        assertEquals(RowSelectionStrategy.INSTANCE,
+                     uiModel.getCell(0, 0).getSelectionManager());
+
         assertEquals(2,
                      uiModel.getCell(1, 0).getValue().getValue());
+        assertEquals(RowSelectionStrategy.INSTANCE,
+                     uiModel.getCell(1, 0).getSelectionManager());
     }
 
     @Test

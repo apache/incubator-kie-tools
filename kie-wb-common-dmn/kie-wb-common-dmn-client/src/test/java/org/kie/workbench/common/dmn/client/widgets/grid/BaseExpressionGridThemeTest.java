@@ -16,19 +16,59 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.NameColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableRowNumberColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DescriptionColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.InputClauseColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.OutputClauseColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionColumn;
+import org.uberfire.commons.data.Pair;
+import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 import static org.junit.Assert.assertEquals;
+import static org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme.DESCRIPTION_COLUMN_BACKGROUND_FILL_COLOUR;
+import static org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme.EXPRESSION_COLUMN_BACKGROUND_FILL_COLOUR;
+import static org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme.INPUT_CLAUSE_BACKGROUND_FILL_COLOUR;
+import static org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme.LABEL_BACKGROUND_FILL_COLOUR;
+import static org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme.LITERAL_EXPRESSION_COLUMN_BACKGROUND_FILL_COLOUR;
+import static org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme.OUTPUT_CLAUSE_BACKGROUND_FILL_COLOUR;
+import static org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme.RELATION_BACKGROUND_FILL_COLOUR;
+import static org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme.ROW_NUMBER_BACKGROUND_FILL_COLOUR;
+import static org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme.UNDEFINED_EXPRESSION_COLUMN_BACKGROUND_FILL_COLOUR;
 import static org.mockito.Mockito.mock;
 
+/**
+ * Unfortunately this cannot be ran as a Parameterized test
+ */
 @RunWith(LienzoMockitoTestRunner.class)
 public class BaseExpressionGridThemeTest {
+
+    private List<Pair<Class<? extends GridColumn>, String>> tests = new ArrayList<Pair<Class<? extends GridColumn>, String>>() {{
+        add(new Pair<>(NameColumn.class, LABEL_BACKGROUND_FILL_COLOUR));
+        add(new Pair<>(org.kie.workbench.common.dmn.client.editors.expressions.types.invocation.NameColumn.class, LABEL_BACKGROUND_FILL_COLOUR));
+        add(new Pair<>(org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.NameColumn.class, LABEL_BACKGROUND_FILL_COLOUR));
+        add(new Pair<>(RelationColumn.class, RELATION_BACKGROUND_FILL_COLOUR));
+        add(new Pair<>(LiteralExpressionColumn.class, LITERAL_EXPRESSION_COLUMN_BACKGROUND_FILL_COLOUR));
+        add(new Pair<>(RowNumberColumn.class, ROW_NUMBER_BACKGROUND_FILL_COLOUR));
+        add(new Pair<>(DecisionTableRowNumberColumn.class, ROW_NUMBER_BACKGROUND_FILL_COLOUR));
+        add(new Pair<>(InputClauseColumn.class, INPUT_CLAUSE_BACKGROUND_FILL_COLOUR));
+        add(new Pair<>(OutputClauseColumn.class, OUTPUT_CLAUSE_BACKGROUND_FILL_COLOUR));
+        add(new Pair<>(DescriptionColumn.class, DESCRIPTION_COLUMN_BACKGROUND_FILL_COLOUR));
+        add(new Pair<>(ExpressionEditorColumn.class, EXPRESSION_COLUMN_BACKGROUND_FILL_COLOUR));
+        add(new Pair<>(UndefinedExpressionColumn.class, UNDEFINED_EXPRESSION_COLUMN_BACKGROUND_FILL_COLOUR));
+    }};
 
     private BaseExpressionGridTheme theme;
 
@@ -38,16 +78,11 @@ public class BaseExpressionGridThemeTest {
     }
 
     @Test
-    public void testGetBodyBackgroundRowNumberColumn() throws Exception {
-        final RowNumberColumn column = mock(RowNumberColumn.class);
-        final Rectangle rectangle = theme.getBodyBackground(column);
-        assertEquals(BaseExpressionGridTheme.ROW_NUMBER_BACKGROUND_FILL_COLOUR, rectangle.getFillColor());
-    }
-
-    @Test
-    public void testGetBodyBackgroundDecisionTableRowNumberColumn() throws Exception {
-        final RowNumberColumn column = mock(DecisionTableRowNumberColumn.class);
-        final Rectangle rectangle = theme.getBodyBackground(column);
-        assertEquals(BaseExpressionGridTheme.ROW_NUMBER_BACKGROUND_FILL_COLOUR, rectangle.getFillColor());
+    public void testGetBodyBackgroundFillColour() {
+        tests.stream().forEach(test -> {
+            final GridColumn column = mock(test.getK1());
+            final Rectangle rectangle = theme.getBodyBackground(column);
+            assertEquals(test.getK2(), rectangle.getFillColor());
+        });
     }
 }

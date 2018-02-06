@@ -49,7 +49,7 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
     private static final String EXPRESSION_COLUMN_GROUP = "UndefinedExpressionGrid$ExpressionColumn";
 
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
-    private boolean nested;
+    private boolean isNested;
 
     public UndefinedExpressionGrid(final GridCellTuple parent,
                                    final HasExpression hasExpression,
@@ -61,7 +61,7 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
                                    final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                    final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                    final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
-                                   final boolean nested) {
+                                   final boolean isNested) {
         super(parent,
               hasExpression,
               expression,
@@ -71,9 +71,10 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
               new UndefinedExpressionGridRenderer(),
               sessionManager,
               sessionCommandManager,
-              editorSelectedEvent);
+              editorSelectedEvent,
+              true);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
-        this.nested = nested;
+        this.isNested = isNested;
 
         //Render the cell content to Lienzo's SelectionLayer so we can handle Events on child elements
         getRenderer().setColumnRenderConstraint((isSelectionLayer, gridColumn) -> true);
@@ -131,7 +132,7 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
                                                                      hasExpression,
                                                                      expression,
                                                                      hasName,
-                                                                     nested);
+                                                                     isNested);
             final GridCellValueTuple gcv = new GridCellValueTuple<>(parent.getRowIndex(),
                                                                     parent.getColumnIndex(),
                                                                     parent.getGridData(),

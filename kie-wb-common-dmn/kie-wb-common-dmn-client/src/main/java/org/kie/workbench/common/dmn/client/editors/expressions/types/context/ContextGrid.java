@@ -69,7 +69,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
                        final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                        final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                        final ContextGridControls controls,
-                       final boolean nested) {
+                       final boolean isNested) {
         super(parent,
               hasExpression,
               expression,
@@ -81,10 +81,11 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
                                   sessionCommandManager,
                                   expression,
                                   gridLayer::batch),
-              new ContextGridRenderer(nested),
+              new ContextGridRenderer(isNested),
               sessionManager,
               sessionCommandManager,
-              editorSelectedEvent);
+              editorSelectedEvent,
+              isNested);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.controls = controls;
 
@@ -144,13 +145,10 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
     @Override
     public void initialiseUiModel() {
         expression.ifPresent(c -> {
-            final int lastRowIndex = c.getContextEntry().size();
             c.getContextEntry().stream().forEach(ce -> {
                 model.appendRow(new DMNGridRow());
-                if (model.getRowCount() != lastRowIndex) {
-                    uiModelMapper.fromDMNModel(model.getRowCount() - 1,
-                                               0);
-                }
+                uiModelMapper.fromDMNModel(model.getRowCount() - 1,
+                                           0);
                 uiModelMapper.fromDMNModel(model.getRowCount() - 1,
                                            1);
                 uiModelMapper.fromDMNModel(model.getRowCount() - 1,

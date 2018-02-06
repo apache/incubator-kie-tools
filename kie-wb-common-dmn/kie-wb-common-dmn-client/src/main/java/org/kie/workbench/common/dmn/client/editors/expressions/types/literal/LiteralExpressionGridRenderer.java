@@ -20,7 +20,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRender
 
 public class LiteralExpressionGridRenderer extends BaseExpressionGridRenderer {
 
-    public LiteralExpressionGridRenderer(final boolean hideHeader) {
-        super(hideHeader);
+    public LiteralExpressionGridRenderer(final boolean isHeaderHidden) {
+        super(isHeaderHidden);
     }
 }

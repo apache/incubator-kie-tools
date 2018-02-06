@@ -106,7 +106,7 @@ public class ContextEditorDefinition implements ExpressionEditorDefinition<Conte
                                                   final HasExpression hasExpression,
                                                   final Optional<Context> expression,
                                                   final Optional<HasName> hasName,
-                                                  final boolean nested) {
+                                                  final boolean isNested) {
         return Optional.of(new ContextGrid(parent,
                                            hasExpression,
                                            expression,
@@ -118,6 +118,6 @@ public class ContextEditorDefinition implements ExpressionEditorDefinition<Conte
                                            expressionEditorDefinitionsSupplier,
                                            editorSelectedEvent,
                                            controlsProvider.get(),
-                                           nested));
+                                           isNested));
     }
 }

@@ -75,17 +75,18 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
                         final Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier,
                         final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                         final FunctionGridControls controls,
-                        final boolean nested) {
+                        final boolean isNested) {
         super(parent,
               hasExpression,
               expression,
               hasName,
               gridPanel,
               gridLayer,
-              new FunctionGridRenderer(nested),
+              new FunctionGridRenderer(isNested),
               sessionManager,
               sessionCommandManager,
-              editorSelectedEvent);
+              editorSelectedEvent,
+              false);
         this.controls = controls;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.supplementaryEditorDefinitionsSupplier = supplementaryEditorDefinitionsSupplier;

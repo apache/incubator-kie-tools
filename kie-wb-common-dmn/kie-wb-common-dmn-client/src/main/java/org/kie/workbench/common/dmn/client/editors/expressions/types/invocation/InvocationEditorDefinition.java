@@ -104,7 +104,7 @@ public class InvocationEditorDefinition implements ExpressionEditorDefinition<In
                                                   final HasExpression hasExpression,
                                                   final Optional<Invocation> expression,
                                                   final Optional<HasName> hasName,
-                                                  final boolean nested) {
+                                                  final boolean isNested) {
         return Optional.of(new InvocationGrid(parent,
                                               hasExpression,
                                               expression,
@@ -116,6 +116,6 @@ public class InvocationEditorDefinition implements ExpressionEditorDefinition<In
                                               expressionEditorDefinitionsSupplier,
                                               editorSelectedEvent,
                                               controlsProvider.get(),
-                                              nested));
+                                              isNested));
     }
 }

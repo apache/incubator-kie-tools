@@ -21,8 +21,8 @@ import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRender
 public class InvocationGridRenderer extends BaseExpressionGridRenderer {
 
     @SuppressWarnings("unused")
-    public InvocationGridRenderer(final boolean hideHeader) {
-        //TODO {manstis} We need to hide only the first header row when hideHeader is true
+    public InvocationGridRenderer(final boolean isHeaderHidden) {
+        //TODO {manstis} We need to hide only the first header row when header is hidden
         super(false);
     }
 }

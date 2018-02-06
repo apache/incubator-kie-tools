@@ -49,17 +49,18 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
                                  final SessionManager sessionManager,
                                  final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                  final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
-                                 final boolean nested) {
+                                 final boolean isNested) {
         super(parent,
               hasExpression,
               expression,
               hasName,
               gridPanel,
               gridLayer,
-              new LiteralExpressionGridRenderer(nested),
+              new LiteralExpressionGridRenderer(isNested),
               sessionManager,
               sessionCommandManager,
-              editorSelectedEvent);
+              editorSelectedEvent,
+              isNested);
 
         setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
     }

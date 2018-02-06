@@ -16,14 +16,18 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import javax.enterprise.event.Event;
 
 import com.ait.lienzo.client.core.event.INodeXYEvent;
 import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
+import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Viewport;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
@@ -47,6 +51,7 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
@@ -70,6 +75,8 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
 
     protected M uiModelMapper;
 
+    private final Supplier<Boolean> isHeaderHidden;
+
     public BaseExpressionGrid(final GridCellTuple parent,
                               final HasExpression hasExpression,
                               final Optional<E> expression,
@@ -79,18 +86,19 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
                               final GridRenderer gridRenderer,
                               final SessionManager sessionManager,
                               final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                              final Event<ExpressionEditorSelectedEvent> editorSelectedEvent) {
+                              final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
+                              final boolean isHeaderHidden) {
         this(parent,
              hasExpression,
              expression,
              hasName,
              gridPanel,
              gridLayer,
-             new DMNGridData(gridLayer),
              gridRenderer,
              sessionManager,
              sessionCommandManager,
-             editorSelectedEvent);
+             editorSelectedEvent,
+             () -> isHeaderHidden);
     }
 
     public BaseExpressionGrid(final GridCellTuple parent,
@@ -103,7 +111,60 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
                               final GridRenderer gridRenderer,
                               final SessionManager sessionManager,
                               final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                              final Event<ExpressionEditorSelectedEvent> editorSelectedEvent) {
+                              final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
+                              final boolean isHeaderHidden) {
+        this(parent,
+             hasExpression,
+             expression,
+             hasName,
+             gridPanel,
+             gridLayer,
+             gridData,
+             gridRenderer,
+             sessionManager,
+             sessionCommandManager,
+             editorSelectedEvent,
+             () -> isHeaderHidden);
+    }
+
+    // Constructor used for Unit Testing with a Supplier<Boolean> for isHeaderHidden
+    BaseExpressionGrid(final GridCellTuple parent,
+                       final HasExpression hasExpression,
+                       final Optional<E> expression,
+                       final Optional<HasName> hasName,
+                       final DMNGridPanel gridPanel,
+                       final DMNGridLayer gridLayer,
+                       final GridRenderer gridRenderer,
+                       final SessionManager sessionManager,
+                       final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                       final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
+                       final Supplier<Boolean> isHeaderHidden) {
+        this(parent,
+             hasExpression,
+             expression,
+             hasName,
+             gridPanel,
+             gridLayer,
+             new DMNGridData(gridLayer),
+             gridRenderer,
+             sessionManager,
+             sessionCommandManager,
+             editorSelectedEvent,
+             isHeaderHidden);
+    }
+
+    BaseExpressionGrid(final GridCellTuple parent,
+                       final HasExpression hasExpression,
+                       final Optional<E> expression,
+                       final Optional<HasName> hasName,
+                       final DMNGridPanel gridPanel,
+                       final DMNGridLayer gridLayer,
+                       final GridData gridData,
+                       final GridRenderer gridRenderer,
+                       final SessionManager sessionManager,
+                       final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                       final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
+                       final Supplier<Boolean> isHeaderHidden) {
         super(gridData,
               gridLayer,
               gridLayer,
@@ -117,6 +178,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
         this.hasExpression = hasExpression;
         this.expression = expression;
         this.hasName = hasName;
+        this.isHeaderHidden=isHeaderHidden;
 
         doInitialisation();
     }
@@ -215,6 +277,43 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
         editorSelectedEvent.fire(new ExpressionEditorSelectedEvent(sessionManager.getCurrentSession(),
                                                                    Optional.of(this)));
         super.select();
+    }
+
+    @Override
+    protected void executeRenderQueueCommands() {
+        final List<Pair<Group, GridRenderer.RendererCommand>> gridLineCommands = new ArrayList<>();
+        final List<Pair<Group, GridRenderer.RendererCommand>> allOtherCommands = new ArrayList<>();
+        final List<Pair<Group, GridRenderer.RendererCommand>> selectedCellsCommands = new ArrayList<>();
+        for (Pair<Group, List<GridRenderer.RendererCommand>> p : renderQueue) {
+            final Group parent = p.getK1();
+            final List<GridRenderer.RendererCommand> commands = p.getK2();
+            for (GridRenderer.RendererCommand command : commands) {
+                if (command instanceof GridRenderer.RenderSelectedCellsCommand) {
+                    selectedCellsCommands.add(new Pair<>(parent, command));
+                } else if (command instanceof GridRenderer.RenderHeaderGridLinesCommand) {
+                    gridLineCommands.add(new Pair<>(parent, command));
+                } else if (command instanceof GridRenderer.RenderBodyGridLinesCommand) {
+                    gridLineCommands.add(new Pair<>(parent, command));
+                } else {
+                    allOtherCommands.add(new Pair<>(parent, command));
+                }
+            }
+        }
+
+        final Predicate<Pair<Group, GridRenderer.RendererCommand>> renderHeader = (p) -> {
+            final GridRenderer.RendererCommand command = p.getK2();
+            if (command instanceof GridRenderer.RenderGridBoundaryCommand) {
+                return false;
+            } else if (isHeaderHidden.get()) {
+                return !(command instanceof GridRenderer.RendererHeaderCommand);
+            }
+            return true;
+        };
+
+
+        allOtherCommands.stream().filter(renderHeader).forEach(p -> p.getK2().execute(p.getK1()));
+        gridLineCommands.stream().filter(renderHeader).forEach(p -> p.getK2().execute(p.getK1()));
+        selectedCellsCommands.stream().filter(renderHeader).forEach(p -> p.getK2().execute(p.getK1()));
     }
 
     public GridCellTuple getParentInformation() {

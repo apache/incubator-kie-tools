@@ -90,7 +90,8 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
               new DecisionTableGridRenderer(),
               sessionManager,
               sessionCommandManager,
-              editorSelectedEvent);
+              editorSelectedEvent,
+              false);
         this.controls = controls;
 
         this.textBoxFactory = new TextBoxSingletonDOMElementFactory(gridPanel,

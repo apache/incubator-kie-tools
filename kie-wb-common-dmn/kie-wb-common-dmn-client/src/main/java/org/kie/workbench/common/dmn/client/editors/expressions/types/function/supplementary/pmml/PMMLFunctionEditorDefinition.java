@@ -114,7 +114,7 @@ public class PMMLFunctionEditorDefinition implements ExpressionEditorDefinition<
                                                   final HasExpression hasExpression,
                                                   final Optional<Context> expression,
                                                   final Optional<HasName> hasName,
-                                                  final boolean nested) {
+                                                  final boolean isNested) {
         return Optional.of(new FunctionSupplementaryGrid(parent,
                                                          hasExpression,
                                                          expression,

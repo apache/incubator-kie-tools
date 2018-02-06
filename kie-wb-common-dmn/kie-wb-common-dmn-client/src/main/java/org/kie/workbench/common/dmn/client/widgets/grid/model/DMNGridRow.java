@@ -22,7 +22,7 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 
 public class DMNGridRow extends BaseGridRow {
 
-    static final double DEFAULT_HEIGHT = 100.0;
+    static final double DEFAULT_HEIGHT = 48.0;
 
     private final double defaultHeight;
 

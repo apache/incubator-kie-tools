@@ -101,7 +101,7 @@ public class FunctionEditorDefinition implements ExpressionEditorDefinition<Func
                                                   final HasExpression hasExpression,
                                                   final Optional<FunctionDefinition> expression,
                                                   final Optional<HasName> hasName,
-                                                  final boolean nested) {
+                                                  final boolean isNested) {
         return Optional.of(new FunctionGrid(parent,
                                             hasExpression,
                                             expression,
@@ -114,6 +114,6 @@ public class FunctionEditorDefinition implements ExpressionEditorDefinition<Func
                                             supplementaryEditorDefinitionsSupplier,
                                             editorSelectedEvent,
                                             controlsProvider.get(),
-                                            nested));
+                                            isNested));
     }
 }

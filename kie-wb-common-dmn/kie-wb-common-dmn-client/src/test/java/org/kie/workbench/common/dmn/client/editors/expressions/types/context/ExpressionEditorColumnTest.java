@@ -274,7 +274,8 @@ public class ExpressionEditorColumnTest {
                                       renderer,
                                       sessionManager,
                                       sessionCommandManager,
-                                      editorSelectedEvent) {
+                                      editorSelectedEvent,
+                                      false) {
             @Override
             protected BaseUIModelMapper makeUiModelMapper() {
                 return null;

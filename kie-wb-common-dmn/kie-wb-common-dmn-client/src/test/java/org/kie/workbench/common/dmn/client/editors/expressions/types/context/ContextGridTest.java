@@ -51,9 +51,11 @@ import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState;
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState.GridWidgetHandlersOperation;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionStrategy;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -174,7 +176,10 @@ public class ContextGridTest {
                      uiModel.getCell(0, 1).getValue().getValue());
         assertNull(uiModel.getCell(0, 2));
 
-        assertNull(uiModel.getCell(1, 0));
+        assertNotNull(uiModel.getCell(1, 0));
+        assertNull(uiModel.getCell(1, 0).getValue().getValue());
+        assertEquals(RowSelectionStrategy.INSTANCE,
+                     uiModel.getCell(1, 0).getSelectionManager());
         assertEquals(ContextUIModelMapper.DEFAULT_ROW_CAPTION,
                      uiModel.getCell(1, 1).getValue().getValue());
         assertTrue(uiModel.getCell(1, 2).getValue() instanceof ExpressionCellValue);

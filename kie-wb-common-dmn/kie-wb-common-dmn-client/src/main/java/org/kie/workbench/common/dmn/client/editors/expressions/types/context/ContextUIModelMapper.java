@@ -32,6 +32,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionStrategy;
 
 public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
 
@@ -56,7 +57,9 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
                 case ROW_INDEX:
                     uiModel.get().setCell(rowIndex,
                                           columnIndex,
-                                          new BaseGridCellValue<>(rowIndex + 1));
+                                          isLastRow(rowIndex) ? new BaseGridCellValue<>((Integer) null) : new BaseGridCellValue<>(rowIndex + 1));
+                    uiModel.get().getCell(rowIndex,
+                                          columnIndex).setSelectionManager(RowSelectionStrategy.INSTANCE);
                     break;
                 case NAME:
                     final InformationItem variable = context.getContextEntry().get(rowIndex).getVariable();
@@ -84,6 +87,14 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
                     });
             }
         });
+    }
+
+    protected boolean isLastRow(final int rowIndex) {
+        if (dmnModel.get().isPresent()) {
+            final Context context = dmnModel.get().get();
+            return rowIndex == context.getContextEntry().size() - 1;
+        }
+        return false;
     }
 
     @Override

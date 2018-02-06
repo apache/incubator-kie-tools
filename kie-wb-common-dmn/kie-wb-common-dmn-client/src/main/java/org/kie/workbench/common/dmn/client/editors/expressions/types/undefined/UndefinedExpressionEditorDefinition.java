@@ -94,7 +94,7 @@ public class UndefinedExpressionEditorDefinition implements ExpressionEditorDefi
                                                   final HasExpression hasExpression,
                                                   final Optional<Expression> expression,
                                                   final Optional<HasName> hasName,
-                                                  final boolean nested) {
+                                                  final boolean isNested) {
         return Optional.of(new UndefinedExpressionGrid(parent,
                                                        hasExpression,
                                                        expression,
@@ -105,6 +105,6 @@ public class UndefinedExpressionEditorDefinition implements ExpressionEditorDefi
                                                        sessionCommandManager,
                                                        expressionEditorDefinitionsSupplier,
                                                        editorSelectedEvent,
-                                                       nested));
+                                                       isNested));
     }
 }

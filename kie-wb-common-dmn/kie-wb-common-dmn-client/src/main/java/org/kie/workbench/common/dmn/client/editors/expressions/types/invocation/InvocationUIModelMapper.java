@@ -33,6 +33,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionStrategy;
 
 public class InvocationUIModelMapper extends BaseUIModelMapper<Invocation> {
 
@@ -61,6 +62,8 @@ public class InvocationUIModelMapper extends BaseUIModelMapper<Invocation> {
                     uiModel.get().setCell(rowIndex,
                                           columnIndex,
                                           new BaseGridCellValue<>(rowIndex + 1));
+                    uiModel.get().getCell(rowIndex,
+                                          columnIndex).setSelectionManager(RowSelectionStrategy.INSTANCE);
                     break;
                 case BINDING_PARAMETER_COLUMN_INDEX:
                     final InformationItem variable = invocation.getBinding().get(rowIndex).getParameter();

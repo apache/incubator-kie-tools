@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,31 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions;
 
-import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRenderer;
+import org.junit.Before;
+import org.junit.Test;
 
-public class ExpressionContainerRenderer extends BaseGridRenderer {
+import static org.junit.Assert.assertEquals;
 
-    public ExpressionContainerRenderer() {
-        super(new BaseExpressionGridTheme());
+public class ExpressionContainerRendererTest {
+
+    private ExpressionContainerRenderer renderer;
+
+    @Before
+    public void setup() {
+        this.renderer = new ExpressionContainerRenderer();
     }
 
-    @Override
-    public double getHeaderHeight() {
-        return 0.0;
+    @Test
+    public void testHeaderHeight() {
+        assertEquals(0.0,
+                     renderer.getHeaderHeight(),
+                     0.0);
     }
 
-    @Override
-    public double getHeaderRowHeight() {
-        return 0.0;
+    @Test
+    public void testHeaderRowHeight() {
+        assertEquals(0.0,
+                     renderer.getHeaderRowHeight(),
+                     0.0);
     }
 }

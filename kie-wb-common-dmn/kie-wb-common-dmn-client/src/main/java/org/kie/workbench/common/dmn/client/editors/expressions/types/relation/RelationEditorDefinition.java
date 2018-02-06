@@ -92,11 +92,12 @@ public class RelationEditorDefinition implements ExpressionEditorDefinition<Rela
     }
 
     @Override
+    @SuppressWarnings("unused")
     public Optional<BaseExpressionGrid> getEditor(final GridCellTuple parent,
                                                   final HasExpression hasExpression,
                                                   final Optional<Relation> expression,
                                                   final Optional<HasName> hasName,
-                                                  final boolean nested) {
+                                                  final boolean isNested) {
         return Optional.of(new RelationGrid(parent,
                                             hasExpression,
                                             expression,

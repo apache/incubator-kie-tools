@@ -29,16 +29,16 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.function.Fu
 
 @ApplicationScoped
 @FunctionGridSupplementaryEditor
-public class FunctionGridSupplementaryEditorDefinitionsProducer implements Supplier<ExpressionEditorDefinitions> {
+public class FunctionSupplementaryGridEditorDefinitionsProducer implements Supplier<ExpressionEditorDefinitions> {
 
     private ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
 
-    public FunctionGridSupplementaryEditorDefinitionsProducer() {
+    public FunctionSupplementaryGridEditorDefinitionsProducer() {
         //CDI proxy
     }
 
     @Inject
-    public FunctionGridSupplementaryEditorDefinitionsProducer(final @FunctionGridSupplementaryEditor Instance<ExpressionEditorDefinition> expressionEditorDefinitionBeans) {
+    public FunctionSupplementaryGridEditorDefinitionsProducer(final @FunctionGridSupplementaryEditor Instance<ExpressionEditorDefinition> expressionEditorDefinitionBeans) {
         expressionEditorDefinitionBeans.forEach(t -> expressionEditorDefinitions.add(t));
         expressionEditorDefinitions.sort((o1, o2) -> o1.getType().ordinal() - o2.getType().ordinal());
     }

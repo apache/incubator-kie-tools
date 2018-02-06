@@ -67,7 +67,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIM
                           final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                           final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                           final InvocationGridControls controls,
-                          final boolean nested) {
+                          final boolean isNested) {
         super(parent,
               hasExpression,
               expression,
@@ -79,10 +79,11 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIM
                                      sessionCommandManager,
                                      expression,
                                      gridLayer::batch),
-              new InvocationGridRenderer(nested),
+              new InvocationGridRenderer(isNested),
               sessionManager,
               sessionCommandManager,
-              editorSelectedEvent);
+              editorSelectedEvent,
+              false);
         this.controls = controls;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
 

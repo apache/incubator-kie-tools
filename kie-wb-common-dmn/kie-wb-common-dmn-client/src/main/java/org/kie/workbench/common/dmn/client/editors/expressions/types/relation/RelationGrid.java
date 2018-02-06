@@ -76,7 +76,8 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
               new RelationGridRenderer(),
               sessionManager,
               sessionCommandManager,
-              editorSelectedEvent);
+              editorSelectedEvent,
+              false);
         this.controls = controls;
 
         this.factory = new TextAreaSingletonDOMElementFactory(gridPanel,

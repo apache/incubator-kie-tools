@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
+package org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary;
 
 import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.BaseContextUIModelMapperTest;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionStrategy;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ContextUIModelMapperTest extends BaseContextUIModelMapperTest<ContextUIModelMapper> {
+public class FunctionSupplementaryGridUIModelMapperTest extends BaseContextUIModelMapperTest<FunctionSupplementaryGridUIModelMapper> {
 
     @Override
-    protected ContextUIModelMapper getMapper() {
-        return new ContextUIModelMapper(() -> uiModel,
-                                        () -> Optional.of(context),
-                                        expressionEditorDefinitionsSupplier);
+    protected FunctionSupplementaryGridUIModelMapper getMapper() {
+        return new FunctionSupplementaryGridUIModelMapper(() -> uiModel,
+                                                          () -> Optional.of(context),
+                                                          expressionEditorDefinitionsSupplier);
     }
 
     @Test
@@ -46,7 +46,8 @@ public class ContextUIModelMapperTest extends BaseContextUIModelMapperTest<Conte
         assertEquals(RowSelectionStrategy.INSTANCE,
                      uiModel.getCell(0, 0).getSelectionManager());
 
-        assertNull(uiModel.getCell(1, 0).getValue().getValue());
+        assertEquals(2,
+                     uiModel.getCell(1, 0).getValue().getValue());
         assertEquals(RowSelectionStrategy.INSTANCE,
                      uiModel.getCell(1, 0).getSelectionManager());
     }

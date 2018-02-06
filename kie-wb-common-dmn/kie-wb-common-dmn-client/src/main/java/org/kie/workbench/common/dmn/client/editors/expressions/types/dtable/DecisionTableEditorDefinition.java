@@ -126,7 +126,7 @@ public class DecisionTableEditorDefinition implements ExpressionEditorDefinition
                                                   final HasExpression hasExpression,
                                                   final Optional<DecisionTable> expression,
                                                   final Optional<HasName> hasName,
-                                                  final boolean nested) {
+                                                  final boolean isNested) {
         return Optional.of(new DecisionTableGrid(parent,
                                                  hasExpression,
                                                  expression,

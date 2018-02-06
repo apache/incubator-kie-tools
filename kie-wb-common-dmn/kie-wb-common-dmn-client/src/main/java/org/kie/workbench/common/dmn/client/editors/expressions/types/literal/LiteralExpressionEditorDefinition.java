@@ -84,7 +84,7 @@ public class LiteralExpressionEditorDefinition implements ExpressionEditorDefini
                                                   final HasExpression hasExpression,
                                                   final Optional<LiteralExpression> expression,
                                                   final Optional<HasName> hasName,
-                                                  final boolean nested) {
+                                                  final boolean isNested) {
         return Optional.of(new LiteralExpressionGrid(parent,
                                                      hasExpression,
                                                      expression,
@@ -94,6 +94,6 @@ public class LiteralExpressionEditorDefinition implements ExpressionEditorDefini
                                                      sessionManager,
                                                      sessionCommandManager,
                                                      editorSelectedEvent,
-                                                     nested));
+                                                     isNested));
     }
 }
