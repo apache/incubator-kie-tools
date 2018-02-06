@@ -47,21 +47,12 @@
 		<snapshots><enabled>true</enabled></snapshots>
 	</repository>
   </repositories>
-
-  <pluginRepositories>
-    <pluginRepository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
-
+  <scm>
+    <connection>scm:git:https://github.com/kiegroup/lienzo-tests.git</connection>
+    <developerConnection>scm:git:git@github.com:kiegroup/lienzo-tests.git</developerConnection>
+    <url>https://github.com/kiegroup/lienzo-tests</url>
+  </scm>
+  
   <dependencies>
 
     <!-- Lienzo dependencies -->
