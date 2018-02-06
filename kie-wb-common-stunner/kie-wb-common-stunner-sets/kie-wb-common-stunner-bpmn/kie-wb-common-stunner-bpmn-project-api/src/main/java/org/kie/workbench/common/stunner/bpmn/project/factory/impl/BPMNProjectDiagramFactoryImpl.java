@@ -77,13 +77,19 @@ public class BPMNProjectDiagramFactoryImpl
         // Set kie related properties for the current project.
         final BPMNDiagram diagram = diagramNode.getContent().getDefinition();
         final DiagramSet diagramSet = diagram.getDiagramSet();
-        final String projectName = null != metadata.getProjectName() ? metadata.getProjectName() + "." : "";
-        diagramSet.getId().setValue(projectName + name);
-        final String metadataPackage = metadata.getProjectPackage();
-        final String value = metadataPackage == null || metadataPackage.isEmpty() ?
-                org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Package.DEFAULT_PACKAGE :
-                metadata.getProjectPackage();
-        diagramSet.getPackageProperty().setValue(value);
+        final String id = diagramSet.getId().getValue();
+        if (id == null || id.isEmpty()) {
+            final String projectName = null != metadata.getProjectName() ? metadata.getProjectName() + "." : "";
+            diagramSet.getId().setValue(projectName + name);
+        }
+        final String p = diagramSet.getPackageProperty().getValue();
+        if (p == null || p.isEmpty()) {
+            final String metadataPackage = metadata.getProjectPackage();
+            final String value = metadataPackage == null || metadataPackage.isEmpty() ?
+                    org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Package.DEFAULT_PACKAGE :
+                    metadata.getProjectPackage();
+            diagramSet.getPackageProperty().setValue(value);
+        }
         final String diagramName = diagramSet.getName().getValue();
         if (null == diagramName || diagramName.isEmpty()) {
             diagramSet.getName().setValue(name);

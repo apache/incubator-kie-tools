@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition.property.diagram;
 
+import java.util.Objects;
+
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -27,6 +29,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.I18n
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
@@ -43,7 +46,6 @@ public class Package implements BPMNProperty {
     private String value;
 
     public Package() {
-        this(DEFAULT_PACKAGE);
     }
 
     public Package(final String value) {
@@ -60,14 +62,15 @@ public class Package implements BPMNProperty {
 
     @Override
     public int hashCode() {
-        return (null != value) ? value.hashCode() : 0;
+        return HashUtil.combineHashCodes(Objects.hashCode(value));
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof Package) {
             Package other = (Package) o;
-            return (null != value) ? value.equals(other.value) : null == other.value;
+            return Objects.equals(value,
+                                  other.value);
         }
         return false;
     }

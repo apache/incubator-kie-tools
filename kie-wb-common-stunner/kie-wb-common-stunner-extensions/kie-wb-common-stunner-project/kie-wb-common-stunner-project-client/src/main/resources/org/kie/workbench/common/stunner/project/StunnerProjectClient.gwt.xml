@@ -28,6 +28,7 @@
   <inherits name="org.kie.workbench.common.screens.explorer.KieWorkbenchProjectExplorerClient"/>
   <inherits name="org.kie.workbench.common.workbench.KieDefaultWorkbenchClient"/>
   <inherits name="org.guvnor.messageconsole.GuvnorMessageConsoleAPI"/>
+  <inherits name="org.guvnor.common.services.project.GuvnorProjectClient"/>
 
   <source path="client"/>
 

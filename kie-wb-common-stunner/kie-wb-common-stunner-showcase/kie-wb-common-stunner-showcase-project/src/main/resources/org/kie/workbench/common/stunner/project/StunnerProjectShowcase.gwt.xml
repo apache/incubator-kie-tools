@@ -98,5 +98,6 @@
   <!-- Specify the paths for translatable code -->
   <source path='client'/>
   <source path='bpmn'/>
+  <source path='shared' />
 
 </module>

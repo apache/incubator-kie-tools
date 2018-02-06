@@ -72,7 +72,8 @@ public abstract class AbstractProjectDiagramNewResourceHandler<R extends ClientR
         final Class<?> type = getDefinitionSetType();
         final String setId = getId(type);
         final String projPkg = pkg.getPackageName();
-        final String moduleName = pkg.getModuleRootPath().getFileName();
+        final String moduleName = context.getActiveModule().isPresent() ? context.getActiveModule().get().getModuleName() : "";
+
         projectDiagramServices.create(path,
                                       name,
                                       setId,
