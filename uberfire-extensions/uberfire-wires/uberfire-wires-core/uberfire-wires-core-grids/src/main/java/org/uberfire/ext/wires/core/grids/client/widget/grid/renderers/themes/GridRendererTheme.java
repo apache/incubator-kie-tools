@@ -40,11 +40,16 @@ public interface GridRendererTheme {
     MultiPath getSelector();
 
     /**
-     * Delegates construction of the cell "selector" to sub-classes. All implementations
-     * are to provide a Rectangle surrounding the whole cell.
+     * Delegates construction of the cell "selector" border to sub-classes.
      * @return A {@link Rectangle} for the cell "selector"
      */
-    Rectangle getCellSelector();
+    Rectangle getCellSelectorBorder();
+
+    /**
+     * Delegates construction of the cell "selector" background to sub-classes.
+     * @return A {@link Rectangle} for the cell "selector"
+     */
+    Rectangle getCellSelectorBackground();
 
     /**
      * Delegates the Header's background Rectangle to sub-classes.

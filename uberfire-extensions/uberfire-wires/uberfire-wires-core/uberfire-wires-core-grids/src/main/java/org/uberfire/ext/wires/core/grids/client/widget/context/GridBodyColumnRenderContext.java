@@ -24,6 +24,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.Grid
  */
 public class GridBodyColumnRenderContext {
 
+    private final double x;
     private final double absoluteGridX;
     private final double absoluteGridY;
     private final double absoluteColumnX;
@@ -36,7 +37,8 @@ public class GridBodyColumnRenderContext {
     private final Transform transform;
     private final GridRenderer renderer;
 
-    public GridBodyColumnRenderContext(final double absoluteGridX,
+    public GridBodyColumnRenderContext(final double x,
+                                       final double absoluteGridX,
                                        final double absoluteGridY,
                                        final double absoluteColumnX,
                                        final double clipMinY,
@@ -47,6 +49,7 @@ public class GridBodyColumnRenderContext {
                                        final GridData model,
                                        final Transform transform,
                                        final GridRenderer renderer) {
+        this.x = x;
         this.absoluteGridX = absoluteGridX;
         this.absoluteGridY = absoluteGridY;
         this.absoluteColumnX = absoluteColumnX;
@@ -58,6 +61,14 @@ public class GridBodyColumnRenderContext {
         this.model = model;
         this.transform = transform;
         this.renderer = renderer;
+    }
+
+    /**
+     * Returns the columns x-coordinate relative to the grids origin.
+     * @return
+     */
+    public double getX() {
+        return this.x;
     }
 
     /**

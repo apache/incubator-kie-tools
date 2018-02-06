@@ -50,11 +50,19 @@ public class BlueTheme implements GridRendererTheme {
     }
 
     @Override
-    public Rectangle getCellSelector() {
-        final Rectangle selector = new Rectangle(0,
-                                                 0)
-                .setStrokeColor(ColorName.BLUE);
+    public Rectangle getCellSelectorBorder() {
+        final Rectangle selector = new Rectangle(0, 0)
+                .setStrokeColor(ColorName.BLUE)
+                .setStrokeWidth(1.0);
         return selector;
+    }
+
+    @Override
+    public Rectangle getCellSelectorBackground() {
+        final Rectangle background = new Rectangle(0, 0)
+                .setFillColor(ColorName.BLUE)
+                .setAlpha(0.25);
+        return background;
     }
 
     @Override

@@ -23,6 +23,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyColumnRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderColumnRenderContext;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 
 public interface GridColumnRenderer<T> {
@@ -34,9 +35,9 @@ public interface GridColumnRenderer<T> {
      * @param renderingInformation Calculated rendering information supporting rendering.
      * @return
      */
-    Group renderHeader(final List<GridColumn.HeaderMetaData> headerMetaData,
-                       final GridHeaderColumnRenderContext context,
-                       final BaseGridRendererHelper.RenderingInformation renderingInformation);
+    List<GridRenderer.RendererCommand> renderHeader(final List<GridColumn.HeaderMetaData> headerMetaData,
+                                                    final GridHeaderColumnRenderContext context,
+                                                    final BaseGridRendererHelper.RenderingInformation renderingInformation);
 
     /**
      * Renders the column.textual information to support rendering
@@ -46,10 +47,10 @@ public interface GridColumnRenderer<T> {
      * @param renderingInformation Calculated rendering information supporting rendering.
      * @return
      */
-    Group renderColumn(final GridColumn<?> column,
-                       final GridBodyColumnRenderContext context,
-                       final BaseGridRendererHelper rendererHelper,
-                       final BaseGridRendererHelper.RenderingInformation renderingInformation);
+    List<GridRenderer.RendererCommand> renderColumn(final GridColumn<?> column,
+                                                    final GridBodyColumnRenderContext context,
+                                                    final BaseGridRendererHelper rendererHelper,
+                                                    final BaseGridRendererHelper.RenderingInformation renderingInformation);
 
     /**
      * Renders a cell for the column for a row. Normally a column would use its logical index

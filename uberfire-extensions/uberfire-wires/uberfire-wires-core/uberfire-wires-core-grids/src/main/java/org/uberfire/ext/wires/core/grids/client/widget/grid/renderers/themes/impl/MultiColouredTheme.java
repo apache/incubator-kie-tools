@@ -50,11 +50,19 @@ public class MultiColouredTheme implements GridRendererTheme {
     }
 
     @Override
-    public Rectangle getCellSelector() {
-        final Rectangle selector = new Rectangle(0,
-                                                 0)
-                .setStrokeColor(ColorName.GREEN);
+    public Rectangle getCellSelectorBorder() {
+        final Rectangle selector = new Rectangle(0, 0)
+                .setStrokeColor(ColorName.PURPLE)
+                .setStrokeWidth(10.0);
         return selector;
+    }
+
+    @Override
+    public Rectangle getCellSelectorBackground() {
+        final Rectangle background = new Rectangle(0, 0)
+                .setFillColor(ColorName.PURPLE)
+                .setAlpha(0.25);
+        return background;
     }
 
     @Override
@@ -110,7 +118,7 @@ public class MultiColouredTheme implements GridRendererTheme {
     public MultiPath getBodyGridLine() {
         final MultiPath bodyGrid = new MultiPath()
                 .setStrokeColor(ColorName.GREY)
-                .setStrokeWidth(0.5)
+                .setStrokeWidth(1)
                 .setListening(false);
         return bodyGrid;
     }
@@ -131,7 +139,7 @@ public class MultiColouredTheme implements GridRendererTheme {
     public Rectangle getGridBoundary() {
         final Rectangle boundary = new Rectangle(0,
                                                  0)
-                .setStrokeColor(ColorName.SLATEGRAY)
+                .setStrokeColor(ColorName.GREY)
                 .setStrokeWidth(0.5)
                 .setListening(false);
         return boundary;
@@ -140,7 +148,7 @@ public class MultiColouredTheme implements GridRendererTheme {
     @Override
     public Line getGridHeaderBodyDivider() {
         final Line divider = new Line()
-                .setStrokeColor(ColorName.SLATEGRAY)
+                .setStrokeColor(ColorName.GREY)
                 .setStrokeWidth(0.5);
         return divider;
     }

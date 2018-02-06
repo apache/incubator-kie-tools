@@ -26,22 +26,33 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.Grid
  */
 public class GridHeaderColumnRenderContext {
 
+    private final double x;
     private final List<GridColumn<?>> allColumns;
     private final List<GridColumn<?>> blockColumns;
     private final int columnIndex;
     private final GridData model;
     private final GridRenderer renderer;
 
-    public GridHeaderColumnRenderContext(final List<GridColumn<?>> allColumns,
+    public GridHeaderColumnRenderContext(final double x,
+                                         final List<GridColumn<?>> allColumns,
                                          final List<GridColumn<?>> blockColumns,
                                          final int columnIndex,
                                          final GridData model,
                                          final GridRenderer renderer) {
+        this.x = x;
         this.allColumns = allColumns;
         this.blockColumns = blockColumns;
         this.columnIndex = columnIndex;
         this.model = model;
         this.renderer = renderer;
+    }
+
+    /**
+     * Returns the columns x-coordinate relative to the grids origin.
+     * @return
+     */
+    public double getX() {
+        return this.x;
     }
 
     /**

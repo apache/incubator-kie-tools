@@ -27,7 +27,6 @@ import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
-import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLayer;
 
 /**
  * Helper for rendering a grid.
@@ -43,7 +42,6 @@ public class BaseGridRendererHelper {
 
     /**
      * Get the x-offset for a given Column in the model relative to zero.
-     *
      * @param column The GridColumn.
      * @return
      */
@@ -58,7 +56,6 @@ public class BaseGridRendererHelper {
 
     /**
      * Get the x-offset for a given Column index in the model relative to zero.
-     *
      * @param columnIndex The index of the GridColumn.
      * @return
      */
@@ -77,7 +74,6 @@ public class BaseGridRendererHelper {
 
     /**
      * Get the x-offset for a given Column index in a list of Columns relative to zero.
-     *
      * @param columns
      * @param columnIndex
      * @return
@@ -96,7 +92,6 @@ public class BaseGridRendererHelper {
 
     /**
      * Get the y-offset for a given Row.
-     *
      * @param row The GridRow.
      * @return
      */
@@ -108,7 +103,6 @@ public class BaseGridRendererHelper {
 
     /**
      * Get the y-offset for a given Row index.
-     *
      * @param rowIndex The index of the GridRow.
      * @return
      */
@@ -124,7 +118,6 @@ public class BaseGridRendererHelper {
 
     /**
      * Get the width of a set of columns, ignoring hidden columns.
-     *
      * @param columns The columns.
      * @return
      */
@@ -141,7 +134,6 @@ public class BaseGridRendererHelper {
     /**
      * Get rendering information about which columns are floating, which are visible. This method never returns null.
      * It returns a RenderingInformation object representing the columns that are visible and/or floating.
-     *
      * @return A RenderingInformation object or null if the GridWidget is not even partially visible.
      */
     public RenderingInformation getRenderingInformation() {
@@ -310,7 +302,6 @@ public class BaseGridRendererHelper {
      * Get information about a column corresponding to a grid-relative x-coordinate. This method never returns null.
      * It returns a ColumnInformation object representing the column corresponding to the grid-relative x-coordinate;
      * or an empty ColumnInformation object if no corresponding column was found.
-     *
      * @param cx An x-coordinate relative to the GridWidget.
      * @return A non-null ColumnInformation object.
      */
@@ -373,7 +364,6 @@ public class BaseGridRendererHelper {
 
     /**
      * Get the visible bounds (canvas coordinate system) of the given GridWidget.
-     *
      * @return
      */
     private Bounds getVisibleBounds() {
@@ -384,7 +374,6 @@ public class BaseGridRendererHelper {
 
     /**
      * Find the x-offset relative to the GridWidget origin where Floating columns are positioned.
-     *
      * @return
      */
     private double getFloatingColumnOffset() {
@@ -394,7 +383,6 @@ public class BaseGridRendererHelper {
 
     /**
      * Find the y-offset relative to the GridWidget origin where Floating Header is positioned.
-     *
      * @return
      */
     private double getHeaderOffsetY() {
@@ -430,7 +418,6 @@ public class BaseGridRendererHelper {
 
         /**
          * The GridWidget's column corresponding to the grid-relative x-coordinate, or null if none was found.
-         *
          * @return
          */
         public GridColumn<?> getColumn() {
@@ -439,7 +426,6 @@ public class BaseGridRendererHelper {
 
         /**
          * The index of the GridWidget's column. This is equivalent to columns.indexOf(column).
-         *
          * @return
          */
         public int getUiColumnIndex() {
@@ -450,7 +436,6 @@ public class BaseGridRendererHelper {
          * The x-offset of the Column's left-hand edge relative to the GridWidget. i.e. column 0 has an x-offset of 0.
          * Floating columns canvas position is set dynamically depending on the GridWidget's position and the canvas's
          * Viewport. Therefore the x-offset of the first floating column is not zero but subject to the Viewport.
-         *
          * @return
          */
         public double getOffsetX() {

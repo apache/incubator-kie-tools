@@ -27,7 +27,7 @@ public class StringColumnRenderer extends BaseGridColumnRenderer<String> {
     @Override
     public Group renderCell(final GridCell<String> cell,
                             final GridBodyCellRenderContext context) {
-        if (cell == null || cell.getValue() == null) {
+        if (cell == null || cell.getValue() == null || cell.getValue().getValue() == null) {
             return null;
         }
 
@@ -35,11 +35,11 @@ public class StringColumnRenderer extends BaseGridColumnRenderer<String> {
         final GridRendererTheme theme = renderer.getTheme();
 
         final Group g = new Group();
-        final Text t = theme.getBodyText()
-                .setText(cell.getValue().getValue())
-                .setListening(false)
-                .setX(context.getCellWidth() / 2)
-                .setY(context.getCellHeight() / 2);
+        final Text t = theme.getBodyText();
+        t.setText(cell.getValue().getValue());
+        t.setListening(false);
+        t.setX(context.getCellWidth() / 2);
+        t.setY(context.getCellHeight() / 2);
         g.add(t);
         return g;
     }
