@@ -18,14 +18,34 @@ package org.kie.workbench.common.services.datamodel.backend.server.builder.util;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.commons.util.RawMVELEvaluator;
 
-import static org.jgroups.util.Util.*;
-
-import org.kie.soup.project.datamodel.commons.util.RawMVELEvaluator;
+import static org.jgroups.util.Util.assertFalse;
+import static org.jgroups.util.Util.assertTrue;
 
 /**
  * DataEnumLoader tests
  */
 public class DataEnumLoaderTests {
+
+    @Test
+    public void testSimpleEnum() {
+        final String e = "'Fact.field1':[\"A\", \"B\"]";
+        final DataEnumLoader loader = new DataEnumLoader(e, new RawMVELEvaluator());
+        assertFalse(loader.hasErrors());
+    }
+
+    @Test
+    public void testValidEnumMultiLine() {
+        final String e = "'Fact.field1':[\"A\", \"B\"]" + System.lineSeparator() + "'Fact.field2':[1, 2]";
+        final DataEnumLoader loader = new DataEnumLoader(e, new RawMVELEvaluator());
+        assertFalse(loader.hasErrors());
+    }
+
+    @Test
+    public void testSimpleAndDependentEnum() {
+        final String e = "'Fact.field1':[\"A\", \"B\"]" + System.lineSeparator() + "'Fact.field2[field1=A]':[1, 2]";
+        final DataEnumLoader loader = new DataEnumLoader(e, new RawMVELEvaluator());
+        assertFalse(loader.hasErrors());
+    }
 
     @Test
     public void testValidDependentEnum() {
