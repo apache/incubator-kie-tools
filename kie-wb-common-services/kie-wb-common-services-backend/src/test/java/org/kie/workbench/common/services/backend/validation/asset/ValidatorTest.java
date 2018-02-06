@@ -19,8 +19,7 @@ package org.kie.workbench.common.services.backend.validation.asset;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -31,31 +30,39 @@ import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.test.TestFileSystem;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration;
 import org.uberfire.mocks.FileSystemTestingUtils;
 
 import static junit.framework.TestCase.assertFalse;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
-@RunWith(MockitoJUnitRunner.class)
 public class ValidatorTest {
 
     private FileSystemTestingUtils fileSystemTestingUtils = new FileSystemTestingUtils();
-
-    @Mock
-    Path path;
 
     private TestFileSystem testFileSystem;
 
     private DefaultGenericKieValidator validator;
     private ValidatorBuildService validatorBuildService;
+
+    @BeforeClass
+    public static void disableGitDaemonAndSsh() {
+        System.setProperty(JGitFileSystemProviderConfiguration.GIT_DAEMON_ENABLED, "false");
+        System.setProperty(JGitFileSystemProviderConfiguration.GIT_SSH_ENABLED, "false");
+    }
+
+    @AfterClass
+    public static void clearSystemProperties() {
+        System.clearProperty(JGitFileSystemProviderConfiguration.GIT_DAEMON_ENABLED);
+        System.clearProperty(JGitFileSystemProviderConfiguration.GIT_SSH_ENABLED);
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -66,7 +73,7 @@ public class ValidatorTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         testFileSystem.tearDown();
         fileSystemTestingUtils.cleanup();
     }
@@ -146,10 +153,8 @@ public class ValidatorTest {
         final URI originRepo = URI.create("git://repo");
 
         final FileSystem origin = fileSystemTestingUtils.getIoService().newFileSystem(originRepo,
-                                                                                      new HashMap<String, Object>() {{
-                                                                                          put("init",
-                                                                                              Boolean.TRUE);
-                                                                                      }});
+                                                                                      Collections.singletonMap("init", Boolean.TRUE));
+
         Path path = Paths.convert(origin.getPath("/META-INF/beans.xml"));
         URL urlToValidate = this.getClass().getResource("/META-INF/beans.xml");
 
@@ -194,16 +199,10 @@ public class ValidatorTest {
 
     private List<ValidationMessage> applyPredicate(final ValidationMessage errorMessage,
                                                    final Predicate<ValidationMessage> predicate) {
-        return validationMessages(errorMessage)
+        return Collections.singletonList(errorMessage)
                 .stream()
                 .filter(predicate)
                 .collect(Collectors.toList());
-    }
-
-    private ArrayList<ValidationMessage> validationMessages(final ValidationMessage errorMessage) {
-        return new ArrayList<ValidationMessage>() {{
-            add(errorMessage);
-        }};
     }
 
     private ValidationMessage errorMessage(Path path) {
