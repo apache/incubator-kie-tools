@@ -135,8 +135,6 @@
     <version.org.mariadb.jdbc>1.3.6</version.org.mariadb.jdbc>
     <version.org.mysql-driver>5.1.6</version.org.mysql-driver>
     <version.org.postgres-driver>9.1-901.jdbc4</version.org.postgres-driver>
-    <!-- WildFly version used together with the GWT's Super Dev Mode -->
-    <version.org.wildfly.gwt.sdm>10.0.0.Final</version.org.wildfly.gwt.sdm>
 
     <!-- Required since support for ELS 2.x. Keep in sync with kie-parent or remove when those
           two versions are being updated on the IP BOM.-->
