@@ -276,9 +276,13 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
 
     @Override
     public void select() {
+        fireExpressionEditorSelectedEvent();
+        super.select();
+    }
+
+    protected void fireExpressionEditorSelectedEvent() {
         editorSelectedEvent.fire(new ExpressionEditorSelectedEvent(sessionManager.getCurrentSession(),
                                                                    Optional.of(this)));
-        super.select();
     }
 
     @Override

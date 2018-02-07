@@ -37,6 +37,7 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression, LiteralExpressionUIModelMapper> {
 
@@ -108,5 +109,22 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
     @Override
     public Optional<IsElement> getEditorControls() {
         return Optional.empty();
+    }
+
+    @Override
+    protected void fireExpressionEditorSelectedEvent() {
+        final Optional<BaseExpressionGrid> parentGrid = findParentGrid();
+        editorSelectedEvent.fire(new ExpressionEditorSelectedEvent(sessionManager.getCurrentSession(),
+                                                                   parentGrid));
+    }
+
+    private Optional<BaseExpressionGrid> findParentGrid() {
+        final GridData parentUiModel = parent.getGridData();
+        return gridLayer.getGridWidgets()
+                .stream()
+                .filter(gridWidget -> gridWidget instanceof BaseExpressionGrid)
+                .filter(gridWidget -> gridWidget.getModel().equals(parentUiModel))
+                .map(gridWidget -> (BaseExpressionGrid) gridWidget)
+                .findFirst();
     }
 }
