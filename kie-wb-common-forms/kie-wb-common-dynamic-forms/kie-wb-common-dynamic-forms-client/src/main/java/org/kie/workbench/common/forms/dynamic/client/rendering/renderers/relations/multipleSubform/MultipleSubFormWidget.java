@@ -45,6 +45,7 @@ import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContex
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.TableColumnMeta;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
+import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
 import org.kie.workbench.common.forms.processing.engine.handling.IsNestedModel;
 import org.uberfire.ext.widgets.table.client.ColumnMeta;
@@ -78,7 +79,7 @@ public class MultipleSubFormWidget extends Composite implements TakesValue<List<
     private List<Object> values = null;
     private List<HasProperties> tableValues = new ArrayList<>();
 
-    private BindingHelper bindingHelper;
+    protected BindingHelper bindingHelper;
 
     protected boolean isReadOnly;
 
@@ -185,7 +186,9 @@ public class MultipleSubFormWidget extends Composite implements TakesValue<List<
 
             public IsFormView<Object> getCreateInstanceForm() {
                 if (field.getCreationForm() != null) {
+
                     BindableProxy<?> proxy = bindingHelper.getNewProxy();
+
                     formRenderer.render(renderingContext.getCopyFor(field.getCreationForm(),
                                                                     proxy));
                     return formRenderer;
@@ -196,10 +199,12 @@ public class MultipleSubFormWidget extends Composite implements TakesValue<List<
 
             public IsFormView<Object> getEditInstanceForm(int position) {
                 if (field.getEditionForm() != null) {
-                    Object instance = bindingHelper.getProxyForModel(values.get(position));
+                    BindableProxy instanceProxy = bindingHelper.getProxyForModel(values.get(position));
 
-                    formRenderer.render(renderingContext.getCopyFor(field.getCreationForm(),
-                                                                    instance));
+                    BindableProxy editionProxy = bindingHelper.getProxyForModel(instanceProxy.deepUnwrap());
+
+                    formRenderer.render(renderingContext.getCopyFor(field.getEditionForm(),
+                                                                    editionProxy));
                     return formRenderer;
                 }
 
@@ -215,6 +220,7 @@ public class MultipleSubFormWidget extends Composite implements TakesValue<List<
 
                                               @Override
                                               public void onCancel() {
+                                                  formRenderer.unBind();
                                               }
 
                                               @Override
@@ -226,6 +232,7 @@ public class MultipleSubFormWidget extends Composite implements TakesValue<List<
                                                   tableValues.add((HasProperties) formRenderer.getModel());
                                                   refreshCrud();
                                                   fireFieldChange();
+                                                  formRenderer.unBind();
                                               }
                                           });
             }
@@ -239,20 +246,34 @@ public class MultipleSubFormWidget extends Composite implements TakesValue<List<
 
                                               @Override
                                               public void onCancel() {
+                                                  formRenderer.unBind();
                                               }
 
                                               @Override
                                               public void onAccept() {
 
-                                                  bindingHelper.afterEdit((BindableProxy) formRenderer.getModel());
+                                                  BindableProxy editionProxy = (BindableProxy) formRenderer.getModel();
+
+                                                  BindableProxy realProxy = bindingHelper.getProxyForModel(values.get(index));
+
+                                                  FormDefinition editionform = (FormDefinition) renderingContext.getAvailableForms().get(field.getEditionForm());
+
+                                                  editionform.getFields().forEach(fieldDefinition -> {
+                                                      if(fieldDefinition.getBinding() != null) {
+                                                          realProxy.set(fieldDefinition.getBinding(), editionProxy.get(fieldDefinition.getBinding()));
+                                                      }
+                                                  });
+
+                                                  bindingHelper.afterEdit(realProxy);
 
                                                   values.set(index,
-                                                             formRenderer.getModel());
+                                                             realProxy);
                                                   tableValues.set(index,
-                                                                  (HasProperties) formRenderer.getModel());
+                                                                  realProxy);
 
                                                   refreshCrud();
                                                   fireFieldChange();
+                                                  formRenderer.unBind();
                                               }
                                           });
             }

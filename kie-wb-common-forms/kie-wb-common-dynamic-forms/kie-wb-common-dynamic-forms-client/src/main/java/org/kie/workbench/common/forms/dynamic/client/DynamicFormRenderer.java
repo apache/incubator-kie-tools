@@ -114,6 +114,8 @@ public class DynamicFormRenderer implements IsWidget, IsFormView {
     public void render(FormRenderingContext context) {
         Assert.notNull("FormRenderingContext must not be null", context);
 
+        unBind();
+
         this.context = context;
 
         formHandler = formHandlerGenerator.getFormHandler(context);
@@ -177,6 +179,7 @@ public class DynamicFormRenderer implements IsWidget, IsFormView {
             }
             formHandler.clear();
             view.clear();
+            formHandler = null;
         }
     }
 

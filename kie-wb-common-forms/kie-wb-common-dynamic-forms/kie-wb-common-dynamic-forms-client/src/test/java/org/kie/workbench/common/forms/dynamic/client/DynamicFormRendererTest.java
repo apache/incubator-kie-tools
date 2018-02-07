@@ -106,14 +106,14 @@ public class DynamicFormRendererTest extends TestCase {
 
     @Test
     public void testBaseBinding() {
-        doBind();
+        doBind(1);
 
         unBind();
     }
 
     @Test
     public void testBindingAddingFieldChangeHandler() {
-        doBind();
+        doBind(1);
 
         renderer.addFieldChangeHandler(changeHandler);
 
@@ -131,15 +131,25 @@ public class DynamicFormRendererTest extends TestCase {
         unBind();
     }
 
-    protected void doBind() {
+    @Test
+    public void testRenderMultipleTimes() {
+        doBind(1);
+
+        doBind(2);
+
+        verify(formHandler).clear();
+        verify(view).clear();
+    }
+
+    protected void doBind(int times) {
         Command callback = mock(Command.class);
         renderer.renderDefaultForm(employee,
                                    callback);
 
-        verify(callback).execute();
-        verify(view).render(any());
-        verify(view).bind();
-        verify(formHandler).setUp(any(Employee.class));
+        verify(callback, times(1)).execute();
+        verify(view, times(times)).render(any());
+        verify(view, times(times)).bind();
+        verify(formHandler, times(times)).setUp(any(Employee.class));
     }
 
     protected void unBind() {

@@ -103,7 +103,7 @@ public class MultipleSubFormFieldValueProcessor extends NestedFormFieldValueProc
         List fieldValue = new ArrayList();
 
         flatValues.forEach(nestedObjectValues -> {
-            if (nestedObjectValues.containsKey(MapModelRenderingContext.FORM_ENGINE_OBJECT_IDX)) {
+            if (nestedObjectValues.get(MapModelRenderingContext.FORM_ENGINE_OBJECT_IDX) != null) {
                 int originalPosition = (Integer) nestedObjectValues.get(MapModelRenderingContext.FORM_ENGINE_OBJECT_IDX);
                 boolean edited = Boolean.TRUE.equals(nestedObjectValues.get(MapModelRenderingContext.FORM_ENGINE_EDITED_OBJECT));
 
