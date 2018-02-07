@@ -41,11 +41,10 @@ public class TemplateDataCellFactory
 
     /**
      * Construct a Cell Factory for a specific Template Data Widget
-     *
-     * @param oracle          DataModelOracle to assist with drop-downs
+     * @param oracle DataModelOracle to assist with drop-downs
      * @param dropDownManager DropDownManager for dependent cells
-     * @param isReadOnly      Should cells be created for a read-only mode of operation
-     * @param eventBus        EventBus to which cells can send update events
+     * @param isReadOnly Should cells be created for a read-only mode of operation
+     * @param eventBus EventBus to which cells can send update events
      */
     public TemplateDataCellFactory(AsyncPackageDataModelOracle oracle,
                                    TemplateDropDownManager dropDownManager,
@@ -59,7 +58,6 @@ public class TemplateDataCellFactory
 
     /**
      * Create a Cell for the given TemplateDataColumn
-     *
      * @param column The Template Data Table model column
      * @return A Cell
      */
@@ -107,10 +105,11 @@ public class TemplateDataCellFactory
         return cell;
     }
 
-    //Get a cell for a Value List
-    private DecoratedGridCellValueAdaptor<? extends Comparable<?>> makeSingleSelectionEnumCell(String factType,
-                                                                                               String fieldName,
-                                                                                               String dataType) {
+    // Get a cell for a Value List
+    // Package private to be testable
+    DecoratedGridCellValueAdaptor<? extends Comparable<?>> makeSingleSelectionEnumCell(String factType,
+                                                                                       String fieldName,
+                                                                                       String dataType) {
         DecoratedGridCellValueAdaptor<? extends Comparable<?>> cell;
         if (dataType.equals(DataType.TYPE_NUMERIC)) {
             final AbstractProxyPopupDropDownEditCell<BigDecimal, BigDecimal> pudd = new ProxyPopupNumericBigDecimalDropDownEditCell(factType,

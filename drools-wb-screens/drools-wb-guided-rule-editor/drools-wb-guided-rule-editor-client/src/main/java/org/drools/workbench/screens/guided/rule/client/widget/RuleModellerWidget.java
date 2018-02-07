@@ -23,6 +23,8 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
+import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
+import org.drools.workbench.screens.guided.rule.client.editor.ActionValueEditor;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 
 /**
@@ -39,8 +41,8 @@ public abstract class RuleModellerWidget
 
     private List<Command> onModifiedCommands = new ArrayList<Command>();
 
-    public RuleModellerWidget( RuleModeller modeller,
-                               EventBus eventBus ) {
+    public RuleModellerWidget(RuleModeller modeller,
+                              EventBus eventBus) {
         this.modeller = modeller;
         this.eventBus = eventBus;
     }
@@ -62,9 +64,9 @@ public abstract class RuleModellerWidget
      */
     public abstract boolean isFactTypeKnown();
 
-    public HandlerRegistration addFactTypeKnownValueChangeHandler(FactTypeKnownValueChangeHandler changeHandler){
-        return addHandler( changeHandler,
-                FactTypeKnownValueChangeEvent.getType() );
+    public HandlerRegistration addFactTypeKnownValueChangeHandler(FactTypeKnownValueChangeHandler changeHandler) {
+        return addHandler(changeHandler,
+                          FactTypeKnownValueChangeEvent.getType());
     }
 
     public RuleModeller getModeller() {
@@ -75,8 +77,8 @@ public abstract class RuleModellerWidget
         return eventBus;
     }
 
-    public void setModified( boolean modified ) {
-        if ( modified ) {
+    public void setModified(boolean modified) {
+        if (modified) {
             executeOnModifiedCommands();
         }
         this.modified = modified;
@@ -86,14 +88,26 @@ public abstract class RuleModellerWidget
         return modified;
     }
 
-    public void addOnModifiedCommand( Command command ) {
-        this.onModifiedCommands.add( command );
+    public void addOnModifiedCommand(Command command) {
+        this.onModifiedCommands.add(command);
     }
 
     private void executeOnModifiedCommands() {
-        for ( Command command : onModifiedCommands ) {
+        for (Command command : onModifiedCommands) {
             command.execute();
         }
     }
 
+    ActionValueEditor actionValueEditor(final String factType,
+                                        final ActionFieldValue actionFieldValue,
+                                        final ActionFieldValue[] fieldValues,
+                                        final boolean readOnly) {
+        return new ActionValueEditor(factType,
+                                     actionFieldValue,
+                                     fieldValues,
+                                     this.getModeller(),
+                                     this.getEventBus(),
+                                     actionFieldValue.getType(),
+                                     readOnly);
+    }
 }

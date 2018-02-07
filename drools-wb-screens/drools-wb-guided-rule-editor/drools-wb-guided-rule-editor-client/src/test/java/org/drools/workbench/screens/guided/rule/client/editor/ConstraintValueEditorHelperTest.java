@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.enterprise.inject.Instance;
 
+import org.assertj.core.api.Assertions;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
@@ -45,6 +46,7 @@ import org.uberfire.mocks.CallerMock;
 import static org.drools.workbench.screens.guided.rule.client.util.ModelFieldUtil.modelField;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -313,5 +315,47 @@ public class ConstraintValueEditorHelperTest {
                                                    assertFalse(result);
                                                }
                                            });
+    }
+
+    @Test
+    public void isEnumEquivalentBothNull() throws Exception {
+        final DropDownData dropDownData = mock(DropDownData.class);
+        doReturn(null).when(dropDownData).getFixedList();
+        Assertions.assertThat(ConstraintValueEditorHelper.isEnumEquivalent(null, dropDownData)).isTrue();
+    }
+
+    @Test
+    public void isEnumEquivalentFirstNull() throws Exception {
+        final DropDownData dropDownData = mock(DropDownData.class);
+        doReturn(new String[0]).when(dropDownData).getFixedList();
+        Assertions.assertThat(ConstraintValueEditorHelper.isEnumEquivalent(null, dropDownData)).isFalse();
+    }
+
+    @Test
+    public void isEnumEquivalentSecondNull() throws Exception {
+        final DropDownData dropDownData = mock(DropDownData.class);
+        doReturn(null).when(dropDownData).getFixedList();
+        Assertions.assertThat(ConstraintValueEditorHelper.isEnumEquivalent(new String[0], dropDownData)).isFalse();
+    }
+
+    @Test
+    public void isEnumEquivalentDifferentLength() throws Exception {
+        final DropDownData dropDownData = mock(DropDownData.class);
+        doReturn(new String[0]).when(dropDownData).getFixedList();
+        Assertions.assertThat(ConstraintValueEditorHelper.isEnumEquivalent(new String[1], dropDownData)).isFalse();
+    }
+
+    @Test
+    public void isEnumEquivalentDifferentContent() throws Exception {
+        final DropDownData dropDownData = mock(DropDownData.class);
+        doReturn(new String[]{"a"}).when(dropDownData).getFixedList();
+        Assertions.assertThat(ConstraintValueEditorHelper.isEnumEquivalent(new String[]{"b"}, dropDownData)).isFalse();
+    }
+
+    @Test
+    public void isEnumEquivalentSameContent() throws Exception {
+        final DropDownData dropDownData = mock(DropDownData.class);
+        doReturn(new String[]{"a", "b", "c"}).when(dropDownData).getFixedList();
+        Assertions.assertThat(ConstraintValueEditorHelper.isEnumEquivalent(new String[]{"a", "b", "c"}, dropDownData)).isTrue();
     }
 }

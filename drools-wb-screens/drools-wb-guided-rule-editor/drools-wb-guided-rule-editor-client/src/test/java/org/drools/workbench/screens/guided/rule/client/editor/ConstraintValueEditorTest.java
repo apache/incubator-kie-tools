@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
+import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.guvnor.common.services.workingset.client.WorkingSetManager;
@@ -40,11 +41,13 @@ import org.mockito.Mock;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.services.shared.preferences.ApplicationPreferences.DATE_FORMAT;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -84,28 +87,28 @@ public class ConstraintValueEditorTest {
 
     @Test
     public void correctWidgetForStringField() {
-        ConstraintValueEditor editor = createEditor();
+        ConstraintValueEditor editor = createEditor(constraint);
         assertTrue(editor.getConstraintWidget() instanceof LiteralTextBox);
     }
 
     @Test
     public void correctWidgetForStringFieldValueInList() {
         when(constraint.getOperator()).thenReturn("in");
-        ConstraintValueEditor editor = createEditor();
+        ConstraintValueEditor editor = createEditor(constraint);
         assertTrue(editor.getConstraintWidget() instanceof LiteralTextBox);
     }
 
     @Test
     public void correctWidgetForStringFieldValueNotInList() {
         when(constraint.getOperator()).thenReturn("not in");
-        ConstraintValueEditor editor = createEditor();
+        ConstraintValueEditor editor = createEditor(constraint);
         assertTrue(editor.getConstraintWidget() instanceof LiteralTextBox);
     }
 
     @Test
     public void defaultTextBoxHasHandlersAttachedInCorrectOrder() {
         final TextBox defaultTextBox = mock(TextBox.class);
-        final ConstraintValueEditor editor = spy(createEditor());
+        final ConstraintValueEditor editor = spy(createEditor(constraint));
         final InOrder inOrder = inOrder(editor);
 
         doReturn(defaultTextBox).when(editor).getDefaultTextBox(any(String.class));
@@ -121,7 +124,7 @@ public class ConstraintValueEditorTest {
 
     @Test
     public void templateKeyEditorHasHandlersAttachedInCorrectOrder() {
-        final ConstraintValueEditor editor = spy(createEditor());
+        final ConstraintValueEditor editor = spy(createEditor(constraint));
 
         final InOrder inOrder = inOrder(editor);
 
@@ -135,8 +138,25 @@ public class ConstraintValueEditorTest {
         inOrder.verify(editor).attachDisplayLengthHandler(eq(templateKeyTextBox));
     }
 
-    private ConstraintValueEditor createEditor() {
-        return new ConstraintValueEditor(constraint,
+    @Test
+    public void testGetDrowpDown() {
+        final String factType = "Car";
+        final String factField = "color";
+        final SingleFieldConstraint singleFieldConstraint = new SingleFieldConstraint() {{
+            setFactType(factType);
+            setFieldName(factField);
+        }};
+        final ConstraintValueEditor editor = spy(createEditor(singleFieldConstraint));
+
+        // reset oracle due to calls in ConstraintValueEditor constructor
+        reset(oracle);
+        editor.getDropDownData();
+
+        verify(oracle).getEnums(eq(factType), eq(factField), anyMap());
+    }
+
+    private ConstraintValueEditor createEditor(final BaseSingleFieldConstraint baseConstraint) {
+        return new ConstraintValueEditor(baseConstraint,
                                          mock(CompositeFieldConstraint.class),
                                          ruleModeller,
                                          mock(EventBus.class),

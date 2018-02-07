@@ -63,6 +63,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.factPattern.Connec
 import org.drools.workbench.screens.guided.rule.client.editor.factPattern.PopupCreator;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
+import org.drools.workbench.screens.guided.rule.client.util.RefreshUtil;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.ModelField;
@@ -88,18 +89,6 @@ public class FactPatternWidget extends RuleModellerWidget {
     private boolean readOnly;
     private boolean isFactTypeKnown;
     private ConstraintValueEditor constraintValueEditor;
-
-    public FactPatternWidget(RuleModeller mod,
-                             EventBus eventBus,
-                             IPattern p,
-                             boolean canBind) {
-        this(mod,
-             eventBus,
-             p,
-             false,
-             canBind,
-             null);
-    }
 
     /**
      * Creates a new FactPatternWidget
@@ -646,19 +635,16 @@ public class FactPatternWidget extends RuleModellerWidget {
         }
     }
 
-    private Widget createValueEditor(final SingleFieldConstraint constraint) {
+    ConstraintValueEditor createValueEditor(final SingleFieldConstraint constraint) {
 
-        constraintValueEditor = new ConstraintValueEditor(constraint,
-                                                          pattern.getConstraintList(),
-                                                          this.getModeller(),
-                                                          this.getEventBus(),
-                                                          this.readOnly);
+        constraintValueEditor = constraintValueEditor(constraint);
+
         //If any literal value changes set to dirty and refresh dependent enumerations
         constraintValueEditor.setOnValueChangeCommand(new Command() {
             public void execute() {
                 constraintValueEditor.hideError();
                 setModified(true);
-                refreshConstraintValueEditorsDropDownData(constraint);
+                RefreshUtil.refreshConstraintValueEditorsDropDownData(constraintValueEditors, constraint);
             }
         });
         //If a Template Key value changes only set to dirty
@@ -919,17 +905,6 @@ public class FactPatternWidget extends RuleModellerWidget {
         return this.isFactTypeKnown;
     }
 
-    private void refreshConstraintValueEditorsDropDownData(final SingleFieldConstraint modifiedConstraint) {
-        for (Map.Entry<SingleFieldConstraint, ConstraintValueEditor> e : constraintValueEditors.entrySet()) {
-            final SingleFieldConstraint sfc = e.getKey();
-            if (sfc.getConstraintValueType() == SingleFieldConstraint.TYPE_LITERAL || sfc.getConstraintValueType() == SingleFieldConstraint.TYPE_ENUM) {
-                if (!sfc.equals(modifiedConstraint)) {
-                    e.getValue().refreshEditor();
-                }
-            }
-        }
-    }
-
     private String getRuleDialect() {
         final RuleModel model = getModeller().getModel();
         for (int i = 0; i < model.attributes.length; i++) {
@@ -949,5 +924,13 @@ public class FactPatternWidget extends RuleModellerWidget {
                                                 SingleFieldConstraint constraint) {
         return new CEPOperatorsDropdown(operators,
                                         constraint);
+    }
+
+    ConstraintValueEditor constraintValueEditor(final SingleFieldConstraint constraint) {
+        return new ConstraintValueEditor(constraint,
+                                         pattern.getConstraintList(),
+                                         this.getModeller(),
+                                         this.getEventBus(),
+                                         this.readOnly);
     }
 }

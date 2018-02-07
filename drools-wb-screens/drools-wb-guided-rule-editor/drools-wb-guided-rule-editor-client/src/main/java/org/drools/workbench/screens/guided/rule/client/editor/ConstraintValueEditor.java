@@ -82,8 +82,7 @@ import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
  * constraint value type. When the constraint value has no type, it will allow
  * the user to choose the first time.
  */
-public class ConstraintValueEditor
-        extends Composite {
+public class ConstraintValueEditor extends Composite {
 
     private static final String DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
     private static final DateTimeFormat DATE_FORMATTER = DateTimeFormat.getFormat(DATE_FORMAT);
@@ -142,7 +141,7 @@ public class ConstraintValueEditor
                                                  fieldType,
                                                  dropDownData);
 
-        refreshEditor();
+        refresh();
         initWidget(panel);
     }
 
@@ -182,7 +181,7 @@ public class ConstraintValueEditor
         return constraint;
     }
 
-    public void refreshEditor() {
+    public void refresh() {
         panel.clear();
         constraintWidget = null;
 
@@ -702,7 +701,7 @@ public class ConstraintValueEditor
     private void doTypeChosen() {
         executeOnValueChangeCommand();
         executeOnTemplateVariablesChange();
-        refreshEditor();
+        refresh();
     }
 
     private void doTypeChosen(final FormStylePopup form) {
@@ -734,7 +733,7 @@ public class ConstraintValueEditor
         this.onTemplateValueChangeCommand = onTemplateValueChangeCommand;
     }
 
-    private DropDownData getDropDownData() {
+    DropDownData getDropDownData() {
         //Set applicable flags and reference data depending upon type
         if (DataType.TYPE_BOOLEAN.equals(this.fieldType)) {
             this.isDropDownDataEnum = false;

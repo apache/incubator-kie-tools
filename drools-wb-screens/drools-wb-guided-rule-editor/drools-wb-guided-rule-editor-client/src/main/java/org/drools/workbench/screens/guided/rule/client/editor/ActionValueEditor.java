@@ -70,8 +70,7 @@ import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 /**
  * This provides for editing of fields in the RHS of a rule.
  */
-public class ActionValueEditor
-        extends Composite {
+public class ActionValueEditor extends Composite {
 
     private static final String DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
     private static final DateTimeFormat DATE_FORMATTER = DateTimeFormat.getFormat(DATE_FORMAT);
@@ -349,7 +348,6 @@ public class ActionValueEditor
 
     /**
      * An editor for formula
-     *
      * @return
      */
     private Widget formulaEditor() {
@@ -610,7 +608,7 @@ public class ActionValueEditor
         this.onChangeCommand = onChangeCommand;
     }
 
-    private DropDownData getDropDownData() {
+    DropDownData getDropDownData() {
         //Set applicable flags and reference data depending upon type
         if (DataType.TYPE_BOOLEAN.equals(value.getType())) {
             this.dropDownData = DropDownData.create(new String[]{"true", "false"});

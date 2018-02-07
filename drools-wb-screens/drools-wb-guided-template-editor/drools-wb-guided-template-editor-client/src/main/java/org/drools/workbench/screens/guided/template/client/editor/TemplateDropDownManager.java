@@ -43,43 +43,24 @@ public class TemplateDropDownManager
     private final TemplateDataCellValueFactory cellValueFactory;
     private DynamicData data;
 
-    public TemplateDropDownManager( final TemplateModel model,
-                                    final AsyncPackageDataModelOracle oracle ) {
-        if ( model == null ) {
-            throw new IllegalArgumentException( "data cannot be null" );
+    public TemplateDropDownManager(final TemplateModel model,
+                                   final AsyncPackageDataModelOracle oracle) {
+        if (model == null) {
+            throw new IllegalArgumentException("data cannot be null");
         }
-        if ( oracle == null ) {
-            throw new IllegalArgumentException( "oracle cannot be null" );
+        if (oracle == null) {
+            throw new IllegalArgumentException("oracle cannot be null");
         }
-        this.cellValueFactory = new TemplateDataCellValueFactory( model,
-                                                                  oracle );
+        this.cellValueFactory = new TemplateDataCellValueFactory(model,
+                                                                 oracle);
         this.model = model;
         this.oracle = oracle;
-    }
-
-    public TemplateDropDownManager( final TemplateModel model,
-                                    final AsyncPackageDataModelOracle oracle,
-                                    final DynamicData data ) {
-        if ( model == null ) {
-            throw new IllegalArgumentException( "model cannot be null" );
-        }
-        if ( data == null ) {
-            throw new IllegalArgumentException( "data cannot be null" );
-        }
-        if ( oracle == null ) {
-            throw new IllegalArgumentException( "oracle cannot be null" );
-        }
-        this.cellValueFactory = new TemplateDataCellValueFactory( model,
-                                                                  oracle );
-        this.model = model;
-        this.oracle = oracle;
-        this.data = data;
     }
 
     @Override
-    public void setData( DynamicData data ) {
-        if ( data == null ) {
-            throw new IllegalArgumentException( "data cannot be null" );
+    public void setData(DynamicData data) {
+        if (data == null) {
+            throw new IllegalArgumentException("data cannot be null");
         }
         this.data = data;
     }
@@ -92,7 +73,7 @@ public class TemplateDropDownManager
      * coordinate in the data-space.
      */
     @Override
-    public Map<String, String> getCurrentValueMap( Context context ) {
+    public Map<String, String> getCurrentValueMap(Context context) {
         Map<String, String> currentValueMap = new HashMap<String, String>();
 
         final int iBaseRowIndex = context.getIndex();
@@ -100,81 +81,81 @@ public class TemplateDropDownManager
 
         //Get variable for the column being edited
         InterpolationVariable[] allVariables = this.model.getInterpolationVariablesList();
-        InterpolationVariable baseVariable = allVariables[ iBaseColIndex ];
+        InterpolationVariable baseVariable = allVariables[iBaseColIndex];
         final String baseVariableName = baseVariable.getVarName();
 
         //Get other variables (and literals) in the same scope as the base variable
-        final RuleModelPeerVariableVisitor peerVariableVisitor = new RuleModelPeerVariableVisitor( model,
-                                                                                                   baseVariableName );
+        final RuleModelPeerVariableVisitor peerVariableVisitor = new RuleModelPeerVariableVisitor(model,
+                                                                                                  baseVariableName);
         List<RuleModelPeerVariableVisitor.ValueHolder> peerVariables = peerVariableVisitor.getPeerVariables();
 
         //Add other variables values
-        for ( RuleModelPeerVariableVisitor.ValueHolder valueHolder : peerVariables ) {
-            switch ( valueHolder.getType() ) {
+        for (RuleModelPeerVariableVisitor.ValueHolder valueHolder : peerVariables) {
+            switch (valueHolder.getType()) {
                 case TEMPLATE_KEY:
-                    final int iCol = getVariableColumnIndex( valueHolder.getValue() );
-                    final InterpolationVariable variable = allVariables[ iCol ];
+                    final int iCol = getVariableColumnIndex(valueHolder.getValue());
+                    final InterpolationVariable variable = allVariables[iCol];
                     final String field = variable.getFactField();
 
                     //The generic class CellValue can have different data-types so 
                     //we need to convert the cell's value to a String used by the 
                     //dependent enumerations services
-                    final CellValue<?> cv = this.data.get( iBaseRowIndex ).get( iCol );
-                    final TemplateDataColumn column = cellValueFactory.makeModelColumn( variable );
-                    final String value = cellValueFactory.convertToModelCell( column,
-                                                                              cv );
-                    currentValueMap.put( field,
-                                         value );
+                    final CellValue<?> cv = this.data.get(iBaseRowIndex).get(iCol);
+                    final TemplateDataColumn column = cellValueFactory.makeModelColumn(variable);
+                    final String value = cellValueFactory.convertToModelCell(column,
+                                                                             cv);
+                    currentValueMap.put(field,
+                                        value);
                     break;
                 case VALUE:
-                    currentValueMap.put( valueHolder.getFieldName(),
-                                         valueHolder.getValue() );
+                    currentValueMap.put(valueHolder.getFieldName(),
+                                        valueHolder.getValue());
             }
         }
 
         return currentValueMap;
     }
 
-    private int getVariableColumnIndex( final String variableName ) {
+    private int getVariableColumnIndex(final String variableName) {
         final InterpolationVariable[] allVariables = this.model.getInterpolationVariablesList();
-        for ( int iCol = 0; iCol < allVariables.length; iCol++ ) {
-            final InterpolationVariable var = allVariables[ iCol ];
-            if ( var.getVarName().equals( variableName ) ) {
+        for (int iCol = 0; iCol < allVariables.length; iCol++) {
+            final InterpolationVariable var = allVariables[iCol];
+            if (var.getVarName().equals(variableName)) {
                 return iCol;
             }
         }
         //This should never happen
-        throw new IllegalArgumentException( "Variable '" + variableName + "' not found. This suggests an programming error." );
+        throw new IllegalArgumentException("Variable '" + variableName + "' not found. This suggests an programming error.");
     }
 
     @Override
-    public Set<Integer> getDependentColumnIndexes( final Context context ) {
+    public Set<Integer> getDependentColumnIndexes(final Context context) {
 
         final int iBaseColIndex = context.getColumn();
         final Set<Integer> dependentColumnIndexes = new HashSet<Integer>();
 
         //Get variable for the column being edited
         final InterpolationVariable[] allVariables = this.model.getInterpolationVariablesList();
-        final InterpolationVariable baseVariable = allVariables[ iBaseColIndex ];
+        final InterpolationVariable baseVariable = allVariables[iBaseColIndex];
         final String baseVariableName = baseVariable.getVarName();
 
         //Get other variables (and literals) in the same scope as the base variable
-        final RuleModelPeerVariableVisitor peerVariableVisitor = new RuleModelPeerVariableVisitor( model,
-                                                                                                   baseVariableName );
+        final RuleModelPeerVariableVisitor peerVariableVisitor = new RuleModelPeerVariableVisitor(model,
+                                                                                                  baseVariableName);
         List<RuleModelPeerVariableVisitor.ValueHolder> peerVariables = peerVariableVisitor.getPeerVariables();
 
         //Add other variables values
-        for ( RuleModelPeerVariableVisitor.ValueHolder valueHolder : peerVariables ) {
-            switch ( valueHolder.getType() ) {
+        for (RuleModelPeerVariableVisitor.ValueHolder valueHolder : peerVariables) {
+            switch (valueHolder.getType()) {
                 case TEMPLATE_KEY:
-                    final int iCol = getVariableColumnIndex( valueHolder.getValue() );
-                    final InterpolationVariable variable = allVariables[ iCol ];
+                    final int iCol = getVariableColumnIndex(valueHolder.getValue());
+                    final InterpolationVariable variable = allVariables[iCol];
                     final String field = variable.getFactField();
 
-                    if ( oracle.isDependentEnum( baseVariable.getFactType(),
-                                                 baseVariable.getFactField(),
-                                                 field ) ) {
-                        dependentColumnIndexes.add( iCol );
+                    if (oracle.isDependentEnum(baseVariable.getFactType(),
+                                               baseVariable.getFactField(),
+                                               field)) {
+                        dependentColumnIndexes.add(iCol);
                     }
                     break;
             }
@@ -182,5 +163,4 @@ public class TemplateDropDownManager
 
         return dependentColumnIndexes;
     }
-
 }

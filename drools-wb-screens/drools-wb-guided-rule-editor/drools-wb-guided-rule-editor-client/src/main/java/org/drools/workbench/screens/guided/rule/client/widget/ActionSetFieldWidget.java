@@ -34,13 +34,13 @@ import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.ActionSetField;
 import org.drools.workbench.models.datamodel.rule.ActionUpdateField;
-import org.drools.workbench.models.datamodel.rule.FieldNatureType;
 import org.drools.workbench.screens.guided.rule.client.editor.ActionValueEditor;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVariablesChangedEvent;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.util.ModelFieldUtil;
+import org.drools.workbench.screens.guided.rule.client.util.RefreshUtil;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
 import org.kie.soup.project.datamodel.oracle.ModelField;
@@ -271,7 +271,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
         popup.show();
     }
 
-    private Widget valueEditor(final ActionFieldValue val) {
+    ActionValueEditor valueEditor(final ActionFieldValue actionFieldValue) {
         AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
         String type = "";
         if (oracle.isGlobalVariable(this.model.getVariable())) {
@@ -286,37 +286,23 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
             }
         }
 
-        ActionValueEditor actionValueEditor = new ActionValueEditor(type,
-                                                                    val,
-                                                                    model.getFieldValues(),
-                                                                    this.getModeller(),
-                                                                    this.getEventBus(),
-                                                                    val.getType(),
-                                                                    this.readOnly);
+        ActionValueEditor actionValueEditor = actionValueEditor(type,
+                                                                actionFieldValue,
+                                                                model.getFieldValues(),
+                                                                readOnly);
         actionValueEditor.setOnChangeCommand(new Command() {
 
             public void execute() {
-                refreshActionValueEditorsDropDownData(val);
+                RefreshUtil.refreshActionValueEditorsDropDownData(actionValueEditors, actionFieldValue);
                 setModified(true);
             }
         });
 
         //Keep a reference to the value editors so they can be refreshed for dependent enums
-        actionValueEditors.put(val,
+        actionValueEditors.put(actionFieldValue,
                                actionValueEditor);
 
         return actionValueEditor;
-    }
-
-    private void refreshActionValueEditorsDropDownData(final ActionFieldValue modifiedField) {
-        for (Map.Entry<ActionFieldValue, ActionValueEditor> e : actionValueEditors.entrySet()) {
-            final ActionFieldValue afv = e.getKey();
-            if (afv.getNature() == FieldNatureType.TYPE_LITERAL || afv.getNature() == FieldNatureType.TYPE_ENUM) {
-                if (!afv.equals(modifiedField)) {
-                    e.getValue().refresh();
-                }
-            }
-        }
     }
 
     private Widget fieldSelector(final ActionFieldValue val) {

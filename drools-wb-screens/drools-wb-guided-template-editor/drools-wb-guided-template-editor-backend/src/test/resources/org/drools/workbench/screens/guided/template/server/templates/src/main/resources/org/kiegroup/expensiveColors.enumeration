@@ -1,0 +1,1 @@
+'Car.price[color]' : '(new org.kiegroup.PriceHelper()).getPrices("@{color}")'

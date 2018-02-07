@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.guided.rule.client.editor.util;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
@@ -229,7 +230,7 @@ public class ConstraintValueEditorHelper {
             String parentFactTypeForBinding = this.model.getLHSParentFactPatternForBinding(boundVariable).getFactType();
             String[] dd = this.oracle.getEnumValues(parentFactTypeForBinding,
                                                     fieldName);
-            callback.callback(isEnumEquivalent(dd));
+            callback.callback(isEnumEquivalent(dd, dropDownData));
             return;
         }
 
@@ -237,25 +238,8 @@ public class ConstraintValueEditorHelper {
                                              callback);
     }
 
-    private boolean isEnumEquivalent(String[] values) {
-        if (values == null && this.dropDownData.getFixedList() == null) {
-            return true;
-        }
-        if (values == null && this.dropDownData.getFixedList() != null) {
-            return false;
-        }
-        if (values != null && this.dropDownData.getFixedList() == null) {
-            return false;
-        }
-        if (values.length != this.dropDownData.getFixedList().length) {
-            return false;
-        }
-        for (int i = 0; i < values.length; i++) {
-            if (!values[i].equals(this.dropDownData.getFixedList()[i])) {
-                return false;
-            }
-        }
-        return true;
+    public static boolean isEnumEquivalent(final String[] values, final DropDownData dropDownData) {
+        return Arrays.equals(values, dropDownData.getFixedList());
     }
 
     private void isLHSFactTypeEquivalent(final String boundVariable,
@@ -331,7 +315,7 @@ public class ConstraintValueEditorHelper {
             }
             String[] dd = oracle.getEnumValues(boundFactType,
                                                fieldName);
-            callback.callback(isEnumEquivalent(dd));
+            callback.callback(isEnumEquivalent(dd, dropDownData));
         } else {
 
             this.oracle.getSuperTypes(boundFactType, new Callback<List<String>>() {
