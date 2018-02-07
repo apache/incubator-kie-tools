@@ -159,7 +159,7 @@ public class JGitMirrorTest extends AbstractTestInfra {
                       CredentialsProvider.getDefault(),
                       null).execute();
             fail("If got here the test is wrong because the ORIGIN does no exist");
-        } catch (RuntimeException ex) {
+        } catch (Clone.CloneException ex) {
             assertThat(ex).isNotNull();
             logger.info(ex.getMessage(),
                         ex);

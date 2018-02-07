@@ -136,6 +136,7 @@ import org.uberfire.java.nio.fs.jgit.daemon.ssh.GitSSHService;
 import org.uberfire.java.nio.fs.jgit.manager.JGitFileSystemsManager;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.java.nio.fs.jgit.util.ProxyAuthenticator;
+import org.uberfire.java.nio.fs.jgit.util.commands.Clone;
 import org.uberfire.java.nio.fs.jgit.util.commands.PathUtil;
 import org.uberfire.java.nio.fs.jgit.util.model.CommitContent;
 import org.uberfire.java.nio.fs.jgit.util.model.CommitInfo;
@@ -165,9 +166,9 @@ import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.
 import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_ENV_KEY_DEFAULT_REMOTE_NAME;
 import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_ENV_KEY_DEST_PATH;
 import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_ENV_KEY_INIT;
+import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_ENV_KEY_MIRROR;
 import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_ENV_KEY_PASSWORD;
 import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_ENV_KEY_USER_NAME;
-import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_ENV_KEY_MIRROR;
 import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.SCHEME;
 import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.SCHEME_SIZE;
 import static org.uberfire.java.nio.fs.jgit.util.model.PathType.DIRECTORY;
@@ -670,6 +671,9 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                                     credential,
                                     config.isEnableKetch() ? leaders : null);
                 }
+            } catch (Clone.CloneException ce) {
+                fsManager.remove(fsName);
+                throw new RuntimeException(ce);
             } catch (InvalidRemoteException e) {
                 throw new RuntimeException(e);
             }
@@ -1249,6 +1253,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
     }
 
     private boolean deleteFS(final FileSystem fileSystem) {
+
         final File gitDir = ((JGitFileSystemImpl) fileSystem).getGit().getRepository().getDirectory();
         fileSystem.close();
         fileSystem.dispose();
@@ -1260,6 +1265,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
             }
             FileUtils.delete(gitDir,
                              FileUtils.RECURSIVE | FileUtils.RETRY);
+            fsManager.remove(fileSystem.getName());
             return true;
         } catch (java.io.IOException e) {
             throw new IOException("Failed to remove the git repository.",

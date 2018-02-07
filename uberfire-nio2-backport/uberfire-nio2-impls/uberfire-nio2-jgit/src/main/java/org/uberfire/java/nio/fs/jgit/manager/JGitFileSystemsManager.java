@@ -125,6 +125,7 @@ public class JGitFileSystemsManager {
 
     public void remove(String realFSKey) {
         fsCache.remove(realFSKey);
+        fileSystemsRoot.remove(realFSKey);
         closedFileSystems.remove(realFSKey);
     }
 
@@ -150,8 +151,7 @@ public class JGitFileSystemsManager {
     public void addClosedFileSystems(JGitFileSystem fileSystem) {
         String realFSKey = fileSystem.getName();
         closedFileSystems.add(realFSKey);
-        List<String> roots = parseFSRoots(fileSystem.getName());
-        fileSystemsRoot.removeAll(roots);
+        fileSystemsRoot.remove(fileSystem.getName());
     }
 
     public boolean allTheFSAreClosed() {
@@ -182,5 +182,9 @@ public class JGitFileSystemsManager {
         String fsName = fullPath.substring(0,
                                            fullPath.indexOf(DOT_GIT_EXT));
         return fsName;
+    }
+
+    Set<String> getClosedFileSystems() {
+        return closedFileSystems;
     }
 }

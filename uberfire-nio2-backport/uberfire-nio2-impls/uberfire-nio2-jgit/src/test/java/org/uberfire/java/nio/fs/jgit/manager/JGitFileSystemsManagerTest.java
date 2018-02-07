@@ -113,6 +113,40 @@ public class JGitFileSystemsManagerTest {
                                  "a/b/c/d"));
     }
 
+    @Test
+    public void removeFSTest() {
+        JGitFileSystem fs = mock(JGitFileSystem.class);
+        when(fs.getName()).thenReturn("fs");
+
+        JGitFileSystem fs1 = mock(JGitFileSystem.class);
+        when(fs1.getName()).thenReturn("fs1");
+
+        manager = new JGitFileSystemsManager(mock(JGitFileSystemProvider.class),
+                                             config);
+
+        manager.newFileSystem(() -> new HashMap<>(),
+                              () -> mock(Git.class),
+                              () -> fs.getName(),
+                              () -> mock(CredentialsProvider.class),
+                              () -> mock(JGitFileSystemsEventsManager.class));
+
+        manager.newFileSystem(() -> new HashMap<>(),
+                              () -> mock(Git.class),
+                              () -> fs1.getName(),
+                              () -> mock(CredentialsProvider.class),
+                              () -> mock(JGitFileSystemsEventsManager.class));
+
+        assertTrue(manager.containsKey("fs1"));
+        assertTrue(manager.containsRoot("fs1"));
+        manager.addClosedFileSystems(fs1);
+        assertTrue(manager.getClosedFileSystems().contains("fs1"));
+
+        manager.remove("fs1");
+        assertFalse(manager.containsKey("fs1"));
+        assertFalse(manager.containsRoot("fs1"));
+        assertFalse(manager.containsRoot("fs1"));
+    }
+
     private void checkParse(String fsKey,
                             List<String> expected) {
         List<String> actual = manager.parseFSRoots(fsKey);

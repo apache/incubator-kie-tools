@@ -23,9 +23,12 @@ import java.util.Optional;
 
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.internal.ketch.KetchLeaderCache;
+import org.eclipse.jgit.internal.storage.file.WindowCache;
 import org.eclipse.jgit.lib.StoredConfig;
+import org.eclipse.jgit.storage.file.WindowCacheConfig;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.RefSpec;
+import org.eclipse.jgit.util.FileUtils;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 
@@ -61,43 +64,68 @@ public class Clone {
                                              null);
 
         if (git != null) {
-            final Collection<RefSpec> refSpecList;
-            if (isMirror) {
-                refSpecList = singletonList(new RefSpec("+refs/*:refs/*"));
-            } else {
-                refSpecList = emptyList();
-            }
-            final Pair<String, String> remote = Pair.newPair("origin",
-                                                             origin);
-            git.fetch(credentialsProvider,
-                      remote,
-                      refSpecList);
+            try {
 
-            if (isMirror) {
-                final StoredConfig config = git.getRepository().getConfig();
-                config.setBoolean("remote",
-                                  "origin",
-                                  "mirror",
-                                  true);
-                try {
-                    config.save();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                final Collection<RefSpec> refSpecList;
+                if (isMirror) {
+                    refSpecList = singletonList(new RefSpec("+refs/*:refs/*"));
+                } else {
+                    refSpecList = emptyList();
                 }
+                final Pair<String, String> remote = Pair.newPair("origin",
+                                                                 origin);
+                git.fetch(credentialsProvider,
+                          remote,
+                          refSpecList);
+
+                if (isMirror) {
+                    final StoredConfig config = git.getRepository().getConfig();
+                    config.setBoolean("remote",
+                                      "origin",
+                                      "mirror",
+                                      true);
+                    try {
+                        config.save();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                git.syncRemote(remote);
+
+                if (git.isKetchEnabled()) {
+                    git.convertRefTree();
+                    git.updateLeaders(leaders);
+                }
+
+                git.setHeadAsInitialized();
+
+                return Optional.of(git);
+            } catch (Exception e) {
+                cleanupDir(git.getRepository().getDirectory());
+                throw new CloneException();
             }
-
-            git.syncRemote(remote);
-
-            if (git.isKetchEnabled()) {
-                git.convertRefTree();
-                git.updateLeaders(leaders);
-            }
-
-            git.setHeadAsInitialized();
-
-            return Optional.of(git);
         }
 
         return Optional.empty();
+    }
+
+    private void cleanupDir(final File gitDir) {
+
+        try {
+            if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+                //this operation forces a cache clean freeing any lock -> windows only issue!
+                WindowCache.reconfigure(new WindowCacheConfig());
+            }
+            FileUtils.delete(gitDir,
+                             FileUtils.RECURSIVE | FileUtils.RETRY);
+        } catch (java.io.IOException e) {
+            throw new org.uberfire.java.nio.IOException("Failed to remove the git repository.",
+                                                        e);
+        }
+    }
+
+    public class CloneException extends RuntimeException {
+
     }
 }
