@@ -25,7 +25,9 @@ import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.impl.BaseGridColumnRenderer;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 public abstract class BaseGridTest {
 
@@ -35,8 +37,16 @@ public abstract class BaseGridTest {
 
     protected GridColumn<String>[] gridColumns;
 
+    // true by default
+    private boolean isMerged = true;
+
+    protected void constructGridData(final boolean isMerged, final int columnCount, final int rowCount) {
+        this.isMerged = isMerged;
+        constructGridData(columnCount, rowCount);
+    }
+
     protected void constructGridData(final int columnCount, final int rowCount) {
-        gridData = new BaseGridData();
+        gridData = new BaseGridData(isMerged);
 
         gridColumns = new GridColumn[columnCount];
         for (int i = 0; i < columnCount; i++) {

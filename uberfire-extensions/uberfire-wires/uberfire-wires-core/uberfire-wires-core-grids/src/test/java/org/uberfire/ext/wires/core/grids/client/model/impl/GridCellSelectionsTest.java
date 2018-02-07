@@ -16,14 +16,12 @@
 package org.uberfire.ext.wires.core.grids.client.model.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.function.Consumer;
 
 import org.junit.Test;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionStrategy;
 
 import static org.junit.Assert.assertEquals;
@@ -35,27 +33,17 @@ public class GridCellSelectionsTest extends BaseGridTest {
 
     @Test
     public void testSelectCell() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col2",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
+        constructGridData(2, 3);
 
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{false, false, false},
                           new boolean[]{false, false, false},
                           new Expected[][]{
@@ -76,52 +64,42 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                           "(1, 2)")}
                           });
 
-        data.selectCell(0,
-                        0);
+        gridData.selectCell(0,
+                            0);
 
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               1)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               1)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                               0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                               1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                   0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                   1)));
         assertEquals(1,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
     }
 
     @Test
     public void testSelectCellMergedData() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col2",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
+        constructGridData(2, 3);
 
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        data.setCell(1,
-                     0,
-                     new BaseGridCellValue<String>("(0, 0)"));
+        gridData.setCell(1,
+                         0,
+                         new BaseGridCellValue<String>("(0, 0)"));
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true, false},
                           new boolean[]{false, false, false},
                           new Expected[][]{
@@ -142,54 +120,44 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                           "(1, 2)")}
                           });
 
-        data.selectCell(0,
-                        0);
+        gridData.selectCell(0,
+                            0);
 
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               1)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               1)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                               0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                               1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                   0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                   1)));
         assertEquals(2,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
     }
 
     @Test
     public void testSelectCellGroupedDataSelectGroupedCell() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col2",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
+        constructGridData(2, 3);
 
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        data.setCell(1,
-                     0,
-                     new BaseGridCellValue<String>("(0, 0)"));
-        data.collapseCell(0,
-                          0);
+        gridData.setCell(1,
+                         0,
+                         new BaseGridCellValue<String>("(0, 0)"));
+        gridData.collapseCell(0,
+                              0);
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true, false},
                           new boolean[]{false, true, false},
                           new Expected[][]{
@@ -210,54 +178,44 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                           "(1, 2)")}
                           });
 
-        data.selectCell(0,
-                        0);
+        gridData.selectCell(0,
+                            0);
 
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               1)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               1)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                               0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                               1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                   0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                   1)));
         assertEquals(2,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
     }
 
     @Test
     public void testSelectCellGroupedDataSelectMergedCell() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col2",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
+        constructGridData(2, 3);
 
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        data.setCell(1,
-                     0,
-                     new BaseGridCellValue<String>("(0, 0)"));
-        data.collapseCell(0,
-                          0);
+        gridData.setCell(1,
+                         0,
+                         new BaseGridCellValue<String>("(0, 0)"));
+        gridData.collapseCell(0,
+                              0);
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true, false},
                           new boolean[]{false, true, false},
                           new Expected[][]{
@@ -278,48 +236,38 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                           "(1, 2)")}
                           });
 
-        data.selectCell(0,
-                        1);
+        gridData.selectCell(0,
+                            1);
 
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              1)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              1)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                               0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                               1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                   0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                   1)));
         assertEquals(2,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
     }
 
     @Test
     public void testSelectCellMultipleTimes() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col2",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
+        constructGridData(2, 3);
 
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{false, false, false},
                           new boolean[]{false, false, false},
                           new Expected[][]{
@@ -341,67 +289,57 @@ public class GridCellSelectionsTest extends BaseGridTest {
                           });
 
         //Select once
-        data.selectCell(0,
-                        0);
+        gridData.selectCell(0,
+                            0);
 
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               1)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               1)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                               0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                               1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                   0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                   1)));
         assertEquals(1,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
 
         //Select again
-        data.selectCell(0,
-                        0);
+        gridData.selectCell(0,
+                            0);
 
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               1)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               1)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                               0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                               1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                   0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                   1)));
         assertEquals(1,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
     }
 
     @Test
     public void testClearSelections() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col2",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
+        constructGridData(2, 3);
 
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{false, false, false},
                           new boolean[]{false, false, false},
                           new Expected[][]{
@@ -422,64 +360,56 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                           "(1, 2)")}
                           });
 
-        data.selectCell(0,
-                        0);
+        gridData.selectCell(0,
+                            0);
 
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               1)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               1)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                               0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                               1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                   0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                   1)));
         assertEquals(1,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
 
-        data.clearSelections();
+        gridData.clearSelections();
 
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               1)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               1)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                               0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                               1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                   0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                   1)));
         assertEquals(0,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
     }
 
     @Test
     public void testSelectCellMoveColumn() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col2",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
+        constructGridData(2, 2);
+        final GridColumn<String> gc1 = gridColumns[0];
 
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{false, false},
                           new boolean[]{false, false},
                           new Expected[][]{
@@ -496,84 +426,76 @@ public class GridCellSelectionsTest extends BaseGridTest {
                           });
 
         //Select cell
-        data.selectCell(0,
-                        0);
+        gridData.selectCell(0,
+                            0);
 
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               1)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   1)));
         assertEquals(1,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
 
         assertEquals("(0, 0)",
-                     data.getCell(0,
-                                  0).getValue().getValue());
+                     gridData.getCell(0,
+                                      0).getValue().getValue());
         assertEquals("(1, 0)",
-                     data.getCell(0,
-                                  1).getValue().getValue());
+                     gridData.getCell(0,
+                                      1).getValue().getValue());
         assertEquals("(0, 1)",
-                     data.getCell(1,
-                                  0).getValue().getValue());
+                     gridData.getCell(1,
+                                      0).getValue().getValue());
         assertEquals("(1, 1)",
-                     data.getCell(1,
-                                  1).getValue().getValue());
+                     gridData.getCell(1,
+                                      1).getValue().getValue());
 
         //Move column
-        data.moveColumnTo(1,
-                          gc1);
+        gridData.moveColumnTo(1,
+                              gc1);
 
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               1)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   1)));
         assertEquals(1,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
 
         assertEquals("(1, 0)",
-                     data.getCell(0,
-                                  0).getValue().getValue());
+                     gridData.getCell(0,
+                                      0).getValue().getValue());
         assertEquals("(0, 0)",
-                     data.getCell(0,
-                                  1).getValue().getValue());
+                     gridData.getCell(0,
+                                      1).getValue().getValue());
         assertEquals("(1, 1)",
-                     data.getCell(1,
-                                  0).getValue().getValue());
+                     gridData.getCell(1,
+                                      0).getValue().getValue());
         assertEquals("(0, 1)",
-                     data.getCell(1,
-                                  1).getValue().getValue());
+                     gridData.getCell(1,
+                                      1).getValue().getValue());
     }
 
     @Test
     public void testMoveColumnSelectCell() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col2",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
+        constructGridData(2, 2);
+        final GridColumn<String> gc1 = gridColumns[0];
 
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{false, false},
                           new boolean[]{false, false},
                           new Expected[][]{
@@ -590,87 +512,76 @@ public class GridCellSelectionsTest extends BaseGridTest {
                           });
 
         //Move column
-        data.moveColumnTo(1,
-                          gc1);
+        gridData.moveColumnTo(1,
+                              gc1);
 
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               1)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   1)));
         assertEquals(0,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
 
         assertEquals("(1, 0)",
-                     data.getCell(0,
-                                  0).getValue().getValue());
+                     gridData.getCell(0,
+                                      0).getValue().getValue());
         assertEquals("(0, 0)",
-                     data.getCell(0,
-                                  1).getValue().getValue());
+                     gridData.getCell(0,
+                                      1).getValue().getValue());
         assertEquals("(1, 1)",
-                     data.getCell(1,
-                                  0).getValue().getValue());
+                     gridData.getCell(1,
+                                      0).getValue().getValue());
         assertEquals("(0, 1)",
-                     data.getCell(1,
-                                  1).getValue().getValue());
+                     gridData.getCell(1,
+                                      1).getValue().getValue());
 
         //Select cell
-        data.selectCell(0,
-                        0);
+        gridData.selectCell(0,
+                            0);
 
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              1)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   1)));
         assertEquals(1,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
 
         assertEquals("(1, 0)",
-                     data.getCell(0,
-                                  0).getValue().getValue());
+                     gridData.getCell(0,
+                                      0).getValue().getValue());
         assertEquals("(0, 0)",
-                     data.getCell(0,
-                                  1).getValue().getValue());
+                     gridData.getCell(0,
+                                      1).getValue().getValue());
         assertEquals("(1, 1)",
-                     data.getCell(1,
-                                  0).getValue().getValue());
+                     gridData.getCell(1,
+                                      0).getValue().getValue());
         assertEquals("(0, 1)",
-                     data.getCell(1,
-                                  1).getValue().getValue());
+                     gridData.getCell(1,
+                                      1).getValue().getValue());
     }
 
     @Test
     public void testSelectCellsMoveColumn() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col2",
-                                                                          100);
-        final GridColumn<String> gc3 = new MockMergableGridColumn<String>("col3",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
-        data.appendColumn(gc3);
+        constructGridData(3, 2);
+        final GridColumn<String> gc3 = gridColumns[2];
 
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{false, false},
                           new boolean[]{false, false},
                           new Expected[][]{
@@ -691,109 +602,98 @@ public class GridCellSelectionsTest extends BaseGridTest {
                           });
 
         //Select cell
-        data.selectCells(0,
-                         0,
-                         2,
-                         1);
+        gridData.selectCells(0,
+                             0,
+                             2,
+                             1);
 
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              1)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               2)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               1)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               2)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   2)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   2)));
         assertEquals(2,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
 
         assertEquals("(0, 0)",
-                     data.getCell(0,
-                                  0).getValue().getValue());
+                     gridData.getCell(0,
+                                      0).getValue().getValue());
         assertEquals("(1, 0)",
-                     data.getCell(0,
-                                  1).getValue().getValue());
+                     gridData.getCell(0,
+                                      1).getValue().getValue());
         assertEquals("(2, 0)",
-                     data.getCell(0,
-                                  2).getValue().getValue());
+                     gridData.getCell(0,
+                                      2).getValue().getValue());
         assertEquals("(0, 1)",
-                     data.getCell(1,
-                                  0).getValue().getValue());
+                     gridData.getCell(1,
+                                      0).getValue().getValue());
         assertEquals("(1, 1)",
-                     data.getCell(1,
-                                  1).getValue().getValue());
+                     gridData.getCell(1,
+                                      1).getValue().getValue());
         assertEquals("(2, 1)",
-                     data.getCell(1,
-                                  2).getValue().getValue());
+                     gridData.getCell(1,
+                                      2).getValue().getValue());
 
         //Move column
-        data.moveColumnTo(1,
-                          gc3);
+        gridData.moveColumnTo(1,
+                              gc3);
 
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              1)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               2)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               1)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               2)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   2)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   2)));
         assertEquals(2,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
 
         assertEquals("(0, 0)",
-                     data.getCell(0,
-                                  0).getValue().getValue());
+                     gridData.getCell(0,
+                                      0).getValue().getValue());
         assertEquals("(2, 0)",
-                     data.getCell(0,
-                                  1).getValue().getValue());
+                     gridData.getCell(0,
+                                      1).getValue().getValue());
         assertEquals("(1, 0)",
-                     data.getCell(0,
-                                  2).getValue().getValue());
+                     gridData.getCell(0,
+                                      2).getValue().getValue());
         assertEquals("(0, 1)",
-                     data.getCell(1,
-                                  0).getValue().getValue());
+                     gridData.getCell(1,
+                                      0).getValue().getValue());
         assertEquals("(2, 1)",
-                     data.getCell(1,
-                                  1).getValue().getValue());
+                     gridData.getCell(1,
+                                      1).getValue().getValue());
         assertEquals("(1, 1)",
-                     data.getCell(1,
-                                  2).getValue().getValue());
+                     gridData.getCell(1,
+                                      2).getValue().getValue());
     }
 
     @Test
     public void testMoveColumnSelectCells() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col2",
-                                                                          100);
-        final GridColumn<String> gc3 = new MockMergableGridColumn<String>("col3",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
-        data.appendColumn(gc3);
+        constructGridData(3, 2);
+        final GridColumn<String> gc3 = gridColumns[2];
 
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{false, false},
                           new boolean[]{false, false},
                           new Expected[][]{
@@ -814,101 +714,95 @@ public class GridCellSelectionsTest extends BaseGridTest {
                           });
 
         //Move column
-        data.moveColumnTo(1,
-                          gc3);
+        gridData.moveColumnTo(1,
+                              gc3);
 
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               1)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               2)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               1)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               2)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   2)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   2)));
         assertEquals(0,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
 
         assertEquals("(0, 0)",
-                     data.getCell(0,
-                                  0).getValue().getValue());
+                     gridData.getCell(0,
+                                      0).getValue().getValue());
         assertEquals("(2, 0)",
-                     data.getCell(0,
-                                  1).getValue().getValue());
+                     gridData.getCell(0,
+                                      1).getValue().getValue());
         assertEquals("(1, 0)",
-                     data.getCell(0,
-                                  2).getValue().getValue());
+                     gridData.getCell(0,
+                                      2).getValue().getValue());
         assertEquals("(0, 1)",
-                     data.getCell(1,
-                                  0).getValue().getValue());
+                     gridData.getCell(1,
+                                      0).getValue().getValue());
         assertEquals("(2, 1)",
-                     data.getCell(1,
-                                  1).getValue().getValue());
+                     gridData.getCell(1,
+                                      1).getValue().getValue());
         assertEquals("(1, 1)",
-                     data.getCell(1,
-                                  2).getValue().getValue());
+                     gridData.getCell(1,
+                                      2).getValue().getValue());
 
         //Select cell
-        data.selectCells(0,
-                         0,
-                         2,
-                         1);
+        gridData.selectCells(0,
+                             0,
+                             2,
+                             1);
 
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               1)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              2)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               1)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               2)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  2)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   2)));
         assertEquals(2,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
 
         assertEquals("(0, 0)",
-                     data.getCell(0,
-                                  0).getValue().getValue());
+                     gridData.getCell(0,
+                                      0).getValue().getValue());
         assertEquals("(2, 0)",
-                     data.getCell(0,
-                                  1).getValue().getValue());
+                     gridData.getCell(0,
+                                      1).getValue().getValue());
         assertEquals("(1, 0)",
-                     data.getCell(0,
-                                  2).getValue().getValue());
+                     gridData.getCell(0,
+                                      2).getValue().getValue());
         assertEquals("(0, 1)",
-                     data.getCell(1,
-                                  0).getValue().getValue());
+                     gridData.getCell(1,
+                                      0).getValue().getValue());
         assertEquals("(2, 1)",
-                     data.getCell(1,
-                                  1).getValue().getValue());
+                     gridData.getCell(1,
+                                      1).getValue().getValue());
         assertEquals("(1, 1)",
-                     data.getCell(1,
-                                  2).getValue().getValue());
+                     gridData.getCell(1,
+                                      2).getValue().getValue());
     }
 
     @Test
     public void testSelectCellMergedDataInsertRow() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        data.appendColumn(gc1);
+        constructGridData(1, 2);
 
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            data.setCell(rowIndex,
-                         0,
-                         new BaseGridCellValue<String>("(0, 0)"));
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            gridData.setCell(rowIndex,
+                             0,
+                             new BaseGridCellValue<String>("(0, 0)"));
         }
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true},
                           new boolean[]{false, false},
                           new Expected[][]{
@@ -920,41 +814,35 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                          "(0, 0)")}
                           });
 
-        data.selectCell(0,
-                        0);
+        gridData.selectCell(0,
+                            0);
         assertEquals(2,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
 
-        data.insertRow(1,
-                       new BaseGridRow());
+        gridData.insertRow(1,
+                           new BaseGridRow());
 
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  0)));
         assertEquals(2,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
     }
 
     @Test
     public void testSelectCellUnmergedDataInsertRow() {
-        final GridData data = new BaseGridData(false);
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        data.appendColumn(gc1);
+        constructGridData(false, 1, 2);
 
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            data.setCell(rowIndex,
-                         0,
-                         new BaseGridCellValue<String>("(0, 0)"));
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            gridData.setCell(rowIndex,
+                             0,
+                             new BaseGridCellValue<String>("(0, 0)"));
         }
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{false, false},
                           new boolean[]{false, false},
                           new Expected[][]{
@@ -966,43 +854,37 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                          "(0, 0)")}
                           });
 
-        data.selectCell(0,
-                        0);
-        data.selectCell(1,
-                        0);
+        gridData.selectCell(0,
+                            0);
+        gridData.selectCell(1,
+                            0);
         assertEquals(2,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
 
-        data.insertRow(1,
-                       new BaseGridRow());
+        gridData.insertRow(1,
+                           new BaseGridRow());
 
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  0)));
         assertEquals(2,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
     }
 
     @Test
     public void testSelectCellMergedDataDeleteRow() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        data.appendColumn(gc1);
+        constructGridData(1, 2);
 
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            data.setCell(rowIndex,
-                         0,
-                         new BaseGridCellValue<String>("(0, 0)"));
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            gridData.setCell(rowIndex,
+                             0,
+                             new BaseGridCellValue<String>("(0, 0)"));
         }
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true},
                           new boolean[]{false, false},
                           new Expected[][]{
@@ -1014,39 +896,32 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                          "(0, 0)")}
                           });
 
-        data.selectCell(0,
-                        0);
+        gridData.selectCell(0,
+                            0);
         assertEquals(2,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
 
-        data.deleteRow(1);
+        gridData.deleteRow(1);
 
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   0)));
         assertEquals(1,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
     }
 
     @Test
     public void testSelectCellMergedDataDeleteRowWithAdditionalSelections() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        data.appendColumn(gc1);
+        constructGridData(1, 3);
 
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            data.setCell(rowIndex,
-                         0,
-                         new BaseGridCellValue<String>(rowIndex < 2 ? "a" : "b"));
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            gridData.setCell(rowIndex,
+                             0,
+                             new BaseGridCellValue<String>(rowIndex < 2 ? "a" : "b"));
         }
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true, false},
                           new boolean[]{false, false, false},
                           new Expected[][]{
@@ -1061,40 +936,34 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                          "b")}
                           });
 
-        data.selectCell(0,
-                        0);
-        data.selectCell(2,
-                        0);
+        gridData.selectCell(0,
+                            0);
+        gridData.selectCell(2,
+                            0);
         assertEquals(3,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
 
-        data.deleteRow(1);
+        gridData.deleteRow(1);
 
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
         assertEquals(2,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
     }
 
     @Test
     public void testSelectCellGroupedDataDeleteRow() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        data.appendColumn(gc1);
+        constructGridData(1, 2);
 
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            data.setCell(rowIndex,
-                         0,
-                         new BaseGridCellValue<String>("(0, 0)"));
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            gridData.setCell(rowIndex,
+                             0,
+                             new BaseGridCellValue<String>("(0, 0)"));
         }
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true},
                           new boolean[]{false, false},
                           new Expected[][]{
@@ -1106,41 +975,34 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                          "(0, 0)")}
                           });
 
-        data.selectCell(0,
-                        0);
-        data.collapseCell(0,
-                          0);
+        gridData.selectCell(0,
+                            0);
+        gridData.collapseCell(0,
+                              0);
         assertEquals(2,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
 
-        data.deleteRow(0);
+        gridData.deleteRow(0);
 
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   0)));
         assertEquals(0,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
     }
 
     @Test
     public void testSelectCellGroupedDataDeleteRowWithAdditionalSelections() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        data.appendColumn(gc1);
+        constructGridData(1, 3);
 
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            data.setCell(rowIndex,
-                         0,
-                         new BaseGridCellValue<String>(rowIndex < 2 ? "a" : "b"));
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            gridData.setCell(rowIndex,
+                             0,
+                             new BaseGridCellValue<String>(rowIndex < 2 ? "a" : "b"));
         }
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true, false},
                           new boolean[]{false, false, false},
                           new Expected[][]{
@@ -1155,42 +1017,36 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                          "b")}
                           });
 
-        data.selectCell(0,
-                        0);
-        data.selectCell(2,
-                        0);
-        data.collapseCell(0,
-                          0);
+        gridData.selectCell(0,
+                            0);
+        gridData.selectCell(2,
+                            0);
+        gridData.collapseCell(0,
+                              0);
         assertEquals(3,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
 
-        data.deleteRow(0);
+        gridData.deleteRow(0);
 
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
         assertEquals(1,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
     }
 
     @Test
     public void testSelectCellUnmergedDataDeleteRow() {
-        final GridData data = new BaseGridData(false);
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        data.appendColumn(gc1);
+        constructGridData(false, 1, 2);
 
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            data.setCell(rowIndex,
-                         0,
-                         new BaseGridCellValue<String>("(0, 0)"));
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            gridData.setCell(rowIndex,
+                             0,
+                             new BaseGridCellValue<String>("(0, 0)"));
         }
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{false, false},
                           new boolean[]{false, false},
                           new Expected[][]{
@@ -1202,40 +1058,34 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                          "(0, 0)")}
                           });
 
-        data.selectCell(0,
-                        0);
-        data.selectCell(1,
-                        0);
+        gridData.selectCell(0,
+                            0);
+        gridData.selectCell(1,
+                            0);
         assertEquals(2,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
 
-        data.deleteRow(1);
+        gridData.deleteRow(1);
 
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   0)));
         assertEquals(1,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
     }
 
     @Test
-    public void testSelectCellInsertColumn() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        data.appendColumn(gc1);
+    public void testSelectCellThenAppendColumn() {
+        constructGridData(1, 2);
 
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            data.setCell(rowIndex,
-                         0,
-                         new BaseGridCellValue<String>("(0, 0)"));
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            gridData.setCell(rowIndex,
+                             0,
+                             new BaseGridCellValue<String>("(0, 0)"));
         }
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true},
                           new boolean[]{false, false},
                           new Expected[][]{
@@ -1247,25 +1097,67 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                          "(0, 0)")}
                           });
 
-        data.selectCell(0,
-                        0);
+        gridData.selectCell(0,
+                            0);
         assertEquals(2,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
 
-        data.insertColumn(0,
-                          new MockMergableGridColumn<String>("col1",
-                                                             100));
+        gridData.appendColumn(new MockMergableGridColumn<String>("col1",
+                                                                 100));
 
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               1)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   1)));
         assertEquals(2,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
+    }
+
+    @Test
+    public void testSelectCellInsertColumn() {
+        constructGridData(1, 2);
+
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            gridData.setCell(rowIndex,
+                             0,
+                             new BaseGridCellValue<String>("(0, 0)"));
+        }
+
+        assertGridIndexes(gridData,
+                          new boolean[]{true, true},
+                          new boolean[]{false, false},
+                          new Expected[][]{
+                                  {build(true,
+                                         2,
+                                         "(0, 0)")},
+                                  {build(true,
+                                         0,
+                                         "(0, 0)")}
+                          });
+
+        gridData.selectCell(0,
+                            0);
+        assertEquals(2,
+                     gridData.getSelectedCells().size());
+
+        gridData.insertColumn(0,
+                              new MockMergableGridColumn<String>("col1",
+                                                                 100));
+
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   1)));
+        assertEquals(2,
+                     gridData.getSelectedCells().size());
     }
 
     @Test
@@ -1282,23 +1174,17 @@ public class GridCellSelectionsTest extends BaseGridTest {
     }
 
     private void doTestSelectCellWithRowSelected(final Consumer<GridData> mutation) {
-        final GridData data = new BaseGridData();
-        final RowNumberColumn gc1 = new RowNumberColumn(Collections.singletonList(new BaseHeaderMetaData("#")),
-                                                        new MockMergableGridColumnRenderer<>());
-        data.appendColumn(gc1);
+        constructGridData(1, 2);
 
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            data.setCell(rowIndex,
-                         0,
-                         new BaseGridCellValue<>(rowIndex));
-            data.getCell(rowIndex,
-                         0).setSelectionManager(RowSelectionStrategy.INSTANCE);
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            gridData.setCell(rowIndex,
+                             0,
+                             new BaseGridCellValue<>(rowIndex));
+            gridData.getCell(rowIndex,
+                             0).setSelectionManager(RowSelectionStrategy.INSTANCE);
         }
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{false, false},
                           new boolean[]{false, false},
                           new Expected[][]{
@@ -1310,44 +1196,37 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                          1)}
                           });
 
-        data.selectCell(0,
-                        0);
+        gridData.selectCell(0,
+                            0);
         assertEquals(1,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
 
-        mutation.accept(data);
+        mutation.accept(gridData);
 
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              1)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                               1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                   1)));
         assertEquals(2,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
     }
 
     @Test
     public void testSelectCellDeleteColumn() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col2",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
+        constructGridData(2, 1);
+        final GridColumn<String> gc1 = gridColumns[0];
 
-        data.appendRow(new BaseGridRow());
-
-        for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-            data.setCell(0,
-                         columnIndex,
-                         new BaseGridCellValue<String>("(0, " + columnIndex + ")"));
+        for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
+            gridData.setCell(0,
+                             columnIndex,
+                             new BaseGridCellValue<String>("(0, " + columnIndex + ")"));
         }
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{false},
                           new boolean[]{false},
                           new Expected[][]{
@@ -1358,40 +1237,33 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                           "(0, 1)")}
                           });
 
-        data.selectCell(0,
-                        0);
+        gridData.selectCell(0,
+                            0);
         assertEquals(1,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
 
-        data.deleteColumn(gc1);
+        gridData.deleteColumn(gc1);
 
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   1)));
         assertEquals(0,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
     }
 
     @Test
     public void testSelectCellDeleteColumnWithAdditionalSelections() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col2",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
+        constructGridData(2, 1);
+        final GridColumn<String> gc1 = gridColumns[0];
 
-        data.appendRow(new BaseGridRow());
-
-        for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-            data.setCell(0,
-                         columnIndex,
-                         new BaseGridCellValue<String>("(0, " + columnIndex + ")"));
+        for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
+            gridData.setCell(0,
+                             columnIndex,
+                             new BaseGridCellValue<String>("(0, " + columnIndex + ")"));
         }
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{false},
                           new boolean[]{false},
                           new Expected[][]{
@@ -1402,40 +1274,33 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                           "(0, 1)")}
                           });
 
-        data.selectCell(0,
-                        0);
-        data.selectCell(0,
-                        1);
+        gridData.selectCell(0,
+                            0);
+        gridData.selectCell(0,
+                            1);
         assertEquals(2,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
 
-        data.deleteColumn(gc1);
+        gridData.deleteColumn(gc1);
 
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
         assertEquals(1,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
     }
 
     @Test
     public void testSelectCellMoveColumnDeleteColumn() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col2",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
+        constructGridData(2, 1);
+        final GridColumn<String> gc1 = gridColumns[0];
 
-        data.appendRow(new BaseGridRow());
-
-        for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-            data.setCell(0,
-                         columnIndex,
-                         new BaseGridCellValue<String>("(0, " + columnIndex + ")"));
+        for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
+            gridData.setCell(0,
+                             columnIndex,
+                             new BaseGridCellValue<String>("(0, " + columnIndex + ")"));
         }
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{false},
                           new boolean[]{false},
                           new Expected[][]{
@@ -1446,48 +1311,36 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                           "(0, 1)")}
                           });
 
-        data.selectCell(0,
-                        0);
+        gridData.selectCell(0,
+                            0);
         assertEquals(1,
-                     data.getSelectedCells().size());
-        data.moveColumnTo(1,
-                          gc1);
+                     gridData.getSelectedCells().size());
+        gridData.moveColumnTo(1,
+                              gc1);
 
-        data.deleteColumn(gc1);
+        gridData.deleteColumn(gc1);
 
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               0)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   0)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   1)));
         assertEquals(0,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
     }
 
     @Test
     public void testSelectCellMoveColumnToSplitSelectionsDeleteColumn() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col2",
-                                                                          100);
-        final GridColumn<String> gc3 = new MockMergableGridColumn<String>("col3",
-                                                                          100);
-        final GridColumn<String> gc4 = new MockMergableGridColumn<String>("col4",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
-        data.appendColumn(gc3);
-        data.appendColumn(gc4);
+        constructGridData(4, 1);
+        final GridColumn<String> gc2 = gridColumns[1];
+        final GridColumn<String> gc4 = gridColumns[3];
 
-        data.appendRow(new BaseGridRow());
-
-        for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-            data.setCell(0,
-                         columnIndex,
-                         new BaseGridCellValue<String>("(0, " + columnIndex + ")"));
+        for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
+            gridData.setCell(0,
+                             columnIndex,
+                             new BaseGridCellValue<String>("(0, " + columnIndex + ")"));
         }
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{false},
                           new boolean[]{false},
                           new Expected[][]{
@@ -1502,61 +1355,49 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                                                             "(0, 3)")}
                           });
 
-        data.selectCell(0,
-                        0);
-        data.selectCell(0,
-                        1);
-        data.selectCell(0,
-                        2);
+        gridData.selectCell(0,
+                            0);
+        gridData.selectCell(0,
+                            1);
+        gridData.selectCell(0,
+                            2);
         assertEquals(3,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              1)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              2)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               3)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  2)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   3)));
 
-        data.moveColumnTo(1,
-                          gc4);
+        gridData.moveColumnTo(1,
+                              gc4);
 
-        data.deleteColumn(gc2);
+        gridData.deleteColumn(gc2);
 
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              1)));
-        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                               2)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  1)));
+        assertFalse(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                   2)));
         assertEquals(2,
-                     data.getSelectedCells().size());
+                     gridData.getSelectedCells().size());
     }
 
     @Test
     public void testUnmergedMoveRowUpWithSelections() {
-        final GridData data = new BaseGridData(false);
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
+        constructGridData(false, 2, 3);
+        final GridRow row1 = gridRows[1];
 
-        final GridRow row0 = new BaseGridRow();
-        final GridRow row1 = new BaseGridRow();
-        final GridRow row2 = new BaseGridRow();
-        data.appendRow(row0);
-        data.appendRow(row1);
-        data.appendRow(row2);
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 1 ? "b" : "a") : Integer.toString(rowIndex);
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>(value));
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>(value));
             }
         }
 
@@ -1564,7 +1405,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row1 = b[X], 1[X]
         // row2 = a[ ], 2[ ]
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{false, false, false},
                           new boolean[]{false, false, false},
                           new Expected[][]{
@@ -1585,26 +1426,26 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                                        "2")}
                           });
 
-        data.selectCell(1,
-                        0);
-        data.selectCell(1,
-                        1);
+        gridData.selectCell(1,
+                            0);
+        gridData.selectCell(1,
+                            1);
         assertEquals(2,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              1)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  1)));
 
         //Move row
-        data.moveRowTo(0,
-                       row1);
+        gridData.moveRowTo(0,
+                           row1);
 
         // row0 = b[X], 1[X]
         // row1 = a[ ], 0[ ]
         // row2 = a[ ], 2[ ]
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{false, false, false},
                           new boolean[]{false, false, false},
                           new Expected[][]{
@@ -1626,36 +1467,24 @@ public class GridCellSelectionsTest extends BaseGridTest {
                           });
 
         assertEquals(2,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              1)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  1)));
     }
 
     @Test
     public void testUnmergedMoveRowDownWithSelections() {
-        final GridData data = new BaseGridData(false);
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
+        constructGridData(false, 2, 3);
+        final GridRow row0 = gridRows[0];
 
-        final GridRow row0 = new BaseGridRow();
-        final GridRow row1 = new BaseGridRow();
-        final GridRow row2 = new BaseGridRow();
-        data.appendRow(row0);
-        data.appendRow(row1);
-        data.appendRow(row2);
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 0 ? "b" : "a") : Integer.toString(rowIndex);
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>(value));
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>(value));
             }
         }
 
@@ -1663,7 +1492,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row1 = a[ ], 1[ ]
         // row2 = a[ ], 2[ ]
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{false, false, false},
                           new boolean[]{false, false, false},
                           new Expected[][]{
@@ -1684,26 +1513,26 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                                        "2")}
                           });
 
-        data.selectCell(0,
-                        0);
-        data.selectCell(0,
-                        1);
+        gridData.selectCell(0,
+                            0);
+        gridData.selectCell(0,
+                            1);
         assertEquals(2,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              1)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  1)));
 
         //Move row
-        data.moveRowTo(1,
-                       row0);
+        gridData.moveRowTo(1,
+                           row0);
 
         // row0 = a[ ], 1[ ]
         // row1 = b[X], 0[X]
         // row2 = a[ ], 2[ ]
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{false, false, false},
                           new boolean[]{false, false, false},
                           new Expected[][]{
@@ -1725,40 +1554,24 @@ public class GridCellSelectionsTest extends BaseGridTest {
                           });
 
         assertEquals(2,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              1)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  1)));
     }
 
     @Test
     public void testMergedMoveRowUpWithSelections1() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
+        constructGridData(2, 5);
+        final GridRow row4 = gridRows[4];
 
-        final GridRow row0 = new BaseGridRow();
-        final GridRow row1 = new BaseGridRow();
-        final GridRow row2 = new BaseGridRow();
-        final GridRow row3 = new BaseGridRow();
-        final GridRow row4 = new BaseGridRow();
-        data.appendRow(row0);
-        data.appendRow(row1);
-        data.appendRow(row2);
-        data.appendRow(row3);
-        data.appendRow(row4);
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 4 ? "b" : "a") : Integer.toString(rowIndex);
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>(value));
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>(value));
             }
         }
 
@@ -1768,7 +1581,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row3 = a[ ], 3[ ]
         // row4 = b[X], 4[ ]
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true, true, true, false},
                           new boolean[]{false, false, false, false, false},
                           new Expected[][]{
@@ -1799,20 +1612,20 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                                        "4")}
                           });
 
-        data.selectCell(0,
-                        1);
-        data.selectCell(4,
-                        0);
+        gridData.selectCell(0,
+                            1);
+        gridData.selectCell(4,
+                            0);
         assertEquals(2,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              1)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(4,
-                                                                              0)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(4,
+                                                                                  0)));
 
         //Move row
-        data.moveRowTo(3,
-                       row4);
+        gridData.moveRowTo(3,
+                           row4);
 
         // row0 = a[ ], 0[X]
         // row1 = a[ ], 1[ ]
@@ -1820,7 +1633,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row3 = b[X], 4[ ]
         // row4 = a[ ], 3[ ]
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true, true, false, false},
                           new boolean[]{false, false, false, false, false},
                           new Expected[][]{
@@ -1852,40 +1665,24 @@ public class GridCellSelectionsTest extends BaseGridTest {
                           });
 
         assertEquals(2,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              1)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(3,
-                                                                              0)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(3,
+                                                                                  0)));
     }
 
     @Test
     public void testMergedMoveRowUpWithSelections2() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
+        constructGridData(2, 5);
+        final GridRow row4 = gridRows[4];
 
-        final GridRow row0 = new BaseGridRow();
-        final GridRow row1 = new BaseGridRow();
-        final GridRow row2 = new BaseGridRow();
-        final GridRow row3 = new BaseGridRow();
-        final GridRow row4 = new BaseGridRow();
-        data.appendRow(row0);
-        data.appendRow(row1);
-        data.appendRow(row2);
-        data.appendRow(row3);
-        data.appendRow(row4);
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 4 ? "b" : "a") : Integer.toString(rowIndex);
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>(value));
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>(value));
             }
         }
 
@@ -1895,7 +1692,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row3 = a[X], 3[ ]
         // row4 = b[X], 4[ ]
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true, true, true, false},
                           new boolean[]{false, false, false, false, false},
                           new Expected[][]{
@@ -1926,26 +1723,26 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                                        "4")}
                           });
 
-        data.selectCell(0,
-                        0);
-        data.selectCell(4,
-                        0);
+        gridData.selectCell(0,
+                            0);
+        gridData.selectCell(4,
+                            0);
         assertEquals(5,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(3,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(4,
-                                                                              0)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(3,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(4,
+                                                                                  0)));
 
         //Move row
-        data.moveRowTo(3,
-                       row4);
+        gridData.moveRowTo(3,
+                           row4);
 
         // row0 = a[X], 0[ ]
         // row1 = a[X], 1[ ]
@@ -1953,7 +1750,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row3 = b[X], 4[ ]
         // row4 = a[X], 3[ ]
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true, true, false, false},
                           new boolean[]{false, false, false, false, false},
                           new Expected[][]{
@@ -1985,46 +1782,30 @@ public class GridCellSelectionsTest extends BaseGridTest {
                           });
 
         assertEquals(5,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(3,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(4,
-                                                                              0)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(3,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(4,
+                                                                                  0)));
     }
 
     @Test
     public void testMergedMoveRowUpWithSelections3() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
+        constructGridData(2, 5);
+        final GridRow row4 = gridRows[4];
 
-        final GridRow row0 = new BaseGridRow();
-        final GridRow row1 = new BaseGridRow();
-        final GridRow row2 = new BaseGridRow();
-        final GridRow row3 = new BaseGridRow();
-        final GridRow row4 = new BaseGridRow();
-        data.appendRow(row0);
-        data.appendRow(row1);
-        data.appendRow(row2);
-        data.appendRow(row3);
-        data.appendRow(row4);
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? "a" : Integer.toString(rowIndex);
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>(value));
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>(value));
             }
         }
 
@@ -2034,7 +1815,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row3 = a[X], 3[ ]
         // row4 = a[X], 4[ ]
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true, true, true, true},
                           new boolean[]{false, false, false, false, false},
                           new Expected[][]{
@@ -2065,24 +1846,24 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                                        "4")}
                           });
 
-        data.selectCell(0,
-                        0);
+        gridData.selectCell(0,
+                            0);
         assertEquals(5,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(3,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(4,
-                                                                              0)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(3,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(4,
+                                                                                  0)));
 
         //Move row
-        data.moveRowTo(3,
-                       row4);
+        gridData.moveRowTo(3,
+                           row4);
 
         // row0 = a[X], 0[ ]
         // row1 = a[X], 1[ ]
@@ -2090,7 +1871,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row3 = a[X], 4[ ]
         // row4 = a[X], 3[ ]
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true, true, true, true},
                           new boolean[]{false, false, false, false, false},
                           new Expected[][]{
@@ -2122,46 +1903,30 @@ public class GridCellSelectionsTest extends BaseGridTest {
                           });
 
         assertEquals(5,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(3,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(4,
-                                                                              0)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(3,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(4,
+                                                                                  0)));
     }
 
     @Test
     public void testMergedMoveRowUpWithSelections4() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
+        constructGridData(2, 5);
+        final GridRow row3 = gridRows[3];
 
-        final GridRow row0 = new BaseGridRow();
-        final GridRow row1 = new BaseGridRow();
-        final GridRow row2 = new BaseGridRow();
-        final GridRow row3 = new BaseGridRow();
-        final GridRow row4 = new BaseGridRow();
-        data.appendRow(row0);
-        data.appendRow(row1);
-        data.appendRow(row2);
-        data.appendRow(row3);
-        data.appendRow(row4);
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? "a" : Integer.toString(rowIndex);
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>(value));
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>(value));
             }
         }
 
@@ -2171,7 +1936,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row3 = a[X], 3[ ]
         // row4 = a[X], 4[ ]
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true, true, true, true},
                           new boolean[]{false, false, false, false, false},
                           new Expected[][]{
@@ -2202,24 +1967,24 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                                        "4")}
                           });
 
-        data.selectCell(0,
-                        0);
+        gridData.selectCell(0,
+                            0);
         assertEquals(5,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(3,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(4,
-                                                                              0)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(3,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(4,
+                                                                                  0)));
 
         //Move row
-        data.moveRowTo(2,
-                       row3);
+        gridData.moveRowTo(2,
+                           row3);
 
         // row0 = a[X], 0[ ]
         // row1 = a[X], 1[ ]
@@ -2227,7 +1992,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row3 = a[X], 4[ ]
         // row4 = a[X], 3[ ]
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true, true, true, true},
                           new boolean[]{false, false, false, false, false},
                           new Expected[][]{
@@ -2259,46 +2024,30 @@ public class GridCellSelectionsTest extends BaseGridTest {
                           });
 
         assertEquals(5,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(3,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(4,
-                                                                              0)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(3,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(4,
+                                                                                  0)));
     }
 
     @Test
     public void testMergedMoveRowDownWithSelections1() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
+        constructGridData(2, 5);
+        final GridRow row3 = gridRows[3];
 
-        final GridRow row0 = new BaseGridRow();
-        final GridRow row1 = new BaseGridRow();
-        final GridRow row2 = new BaseGridRow();
-        final GridRow row3 = new BaseGridRow();
-        final GridRow row4 = new BaseGridRow();
-        data.appendRow(row0);
-        data.appendRow(row1);
-        data.appendRow(row2);
-        data.appendRow(row3);
-        data.appendRow(row4);
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 4 ? "b" : "a") : Integer.toString(rowIndex);
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>(value));
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>(value));
             }
         }
 
@@ -2308,7 +2057,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row3 = a[ ], 3[ ]
         // row4 = b[X], 4[ ]
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true, true, true, false},
                           new boolean[]{false, false, false, false, false},
                           new Expected[][]{
@@ -2339,20 +2088,20 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                                        "4")}
                           });
 
-        data.selectCell(0,
-                        1);
-        data.selectCell(4,
-                        0);
+        gridData.selectCell(0,
+                            1);
+        gridData.selectCell(4,
+                            0);
         assertEquals(2,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              1)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(4,
-                                                                              0)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(4,
+                                                                                  0)));
 
         //Move row
-        data.moveRowTo(4,
-                       row3);
+        gridData.moveRowTo(4,
+                           row3);
 
         // row0 = a[ ], 0[X]
         // row1 = a[ ], 1[ ]
@@ -2360,7 +2109,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row3 = b[X], 4[ ]
         // row4 = a[ ], 3[ ]
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true, true, false, false},
                           new boolean[]{false, false, false, false, false},
                           new Expected[][]{
@@ -2392,40 +2141,24 @@ public class GridCellSelectionsTest extends BaseGridTest {
                           });
 
         assertEquals(2,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              1)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(3,
-                                                                              0)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(3,
+                                                                                  0)));
     }
 
     @Test
     public void testMergedMoveRowDownWithSelections2() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
+        constructGridData(2, 5);
+        final GridRow row3 = gridRows[3];
 
-        final GridRow row0 = new BaseGridRow();
-        final GridRow row1 = new BaseGridRow();
-        final GridRow row2 = new BaseGridRow();
-        final GridRow row3 = new BaseGridRow();
-        final GridRow row4 = new BaseGridRow();
-        data.appendRow(row0);
-        data.appendRow(row1);
-        data.appendRow(row2);
-        data.appendRow(row3);
-        data.appendRow(row4);
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 4 ? "b" : "a") : Integer.toString(rowIndex);
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>(value));
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>(value));
             }
         }
 
@@ -2435,7 +2168,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row3 = a[X], 3[ ]
         // row4 = b[X], 4[ ]
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true, true, true, false},
                           new boolean[]{false, false, false, false, false},
                           new Expected[][]{
@@ -2466,26 +2199,26 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                                        "4")}
                           });
 
-        data.selectCell(0,
-                        0);
-        data.selectCell(4,
-                        0);
+        gridData.selectCell(0,
+                            0);
+        gridData.selectCell(4,
+                            0);
         assertEquals(5,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(3,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(4,
-                                                                              0)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(3,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(4,
+                                                                                  0)));
 
         //Move row
-        data.moveRowTo(4,
-                       row3);
+        gridData.moveRowTo(4,
+                           row3);
 
         // row0 = a[X], 0[ ]
         // row1 = a[X], 1[ ]
@@ -2493,7 +2226,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row3 = b[X], 4[ ]
         // row4 = a[X], 3[ ]
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true, true, false, false},
                           new boolean[]{false, false, false, false, false},
                           new Expected[][]{
@@ -2525,46 +2258,30 @@ public class GridCellSelectionsTest extends BaseGridTest {
                           });
 
         assertEquals(5,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(3,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(4,
-                                                                              0)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(3,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(4,
+                                                                                  0)));
     }
 
     @Test
     public void testMergedMoveRowDownWithSelections3() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
+        constructGridData(2, 5);
+        final GridRow row3 = gridRows[3];
 
-        final GridRow row0 = new BaseGridRow();
-        final GridRow row1 = new BaseGridRow();
-        final GridRow row2 = new BaseGridRow();
-        final GridRow row3 = new BaseGridRow();
-        final GridRow row4 = new BaseGridRow();
-        data.appendRow(row0);
-        data.appendRow(row1);
-        data.appendRow(row2);
-        data.appendRow(row3);
-        data.appendRow(row4);
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? "a" : Integer.toString(rowIndex);
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>(value));
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>(value));
             }
         }
 
@@ -2574,7 +2291,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row3 = a[X], 3[ ]
         // row4 = a[X], 4[ ]
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true, true, true, true},
                           new boolean[]{false, false, false, false, false},
                           new Expected[][]{
@@ -2605,24 +2322,24 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                                        "4")}
                           });
 
-        data.selectCell(0,
-                        0);
+        gridData.selectCell(0,
+                            0);
         assertEquals(5,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(3,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(4,
-                                                                              0)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(3,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(4,
+                                                                                  0)));
 
         //Move row
-        data.moveRowTo(4,
-                       row3);
+        gridData.moveRowTo(4,
+                           row3);
 
         // row0 = a[X], 0[ ]
         // row1 = a[X], 1[ ]
@@ -2630,7 +2347,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row3 = a[X], 4[ ]
         // row4 = a[X], 3[ ]
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true, true, true, true},
                           new boolean[]{false, false, false, false, false},
                           new Expected[][]{
@@ -2662,46 +2379,30 @@ public class GridCellSelectionsTest extends BaseGridTest {
                           });
 
         assertEquals(5,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(3,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(4,
-                                                                              0)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(3,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(4,
+                                                                                  0)));
     }
 
     @Test
     public void testMergedMoveRowDownWithSelections4() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
+        constructGridData(2, 5);
+        final GridRow row0 = gridRows[0];
 
-        final GridRow row0 = new BaseGridRow();
-        final GridRow row1 = new BaseGridRow();
-        final GridRow row2 = new BaseGridRow();
-        final GridRow row3 = new BaseGridRow();
-        final GridRow row4 = new BaseGridRow();
-        data.appendRow(row0);
-        data.appendRow(row1);
-        data.appendRow(row2);
-        data.appendRow(row3);
-        data.appendRow(row4);
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? "a" : Integer.toString(rowIndex);
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>(value));
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>(value));
             }
         }
 
@@ -2711,7 +2412,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row3 = a[X], 3[ ]
         // row4 = a[X], 4[ ]
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true, true, true, true},
                           new boolean[]{false, false, false, false, false},
                           new Expected[][]{
@@ -2742,24 +2443,24 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                                        "4")}
                           });
 
-        data.selectCell(0,
-                        0);
+        gridData.selectCell(0,
+                            0);
         assertEquals(5,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(3,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(4,
-                                                                              0)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(3,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(4,
+                                                                                  0)));
 
         //Move row
-        data.moveRowTo(1,
-                       row0);
+        gridData.moveRowTo(1,
+                           row0);
 
         // row0 = a[X], 0[ ]
         // row1 = a[X], 1[ ]
@@ -2767,7 +2468,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row3 = a[X], 4[ ]
         // row4 = a[X], 3[ ]
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true, true, true, true},
                           new boolean[]{false, false, false, false, false},
                           new Expected[][]{
@@ -2799,46 +2500,30 @@ public class GridCellSelectionsTest extends BaseGridTest {
                           });
 
         assertEquals(5,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(3,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(4,
-                                                                              0)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(3,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(4,
+                                                                                  0)));
     }
 
     @Test
     public void testGroupedMoveRowUpWithSelections1() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
+        constructGridData(2, 5);
+        final GridRow row4 = gridRows[4];
 
-        final GridRow row0 = new BaseGridRow();
-        final GridRow row1 = new BaseGridRow();
-        final GridRow row2 = new BaseGridRow();
-        final GridRow row3 = new BaseGridRow();
-        final GridRow row4 = new BaseGridRow();
-        data.appendRow(row0);
-        data.appendRow(row1);
-        data.appendRow(row2);
-        data.appendRow(row3);
-        data.appendRow(row4);
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 4 ? "b" : "a") : Integer.toString(rowIndex);
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>(value));
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>(value));
             }
         }
 
@@ -2849,10 +2534,10 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row4 = b[X], 4[ ]
 
         //Collapse cell
-        data.collapseCell(0,
-                          0);
+        gridData.collapseCell(0,
+                              0);
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true, true, true, false},
                           new boolean[]{false, true, true, true, false},
                           new Expected[][]{
@@ -2883,28 +2568,28 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                                        "4")}
                           });
 
-        data.selectCell(0,
-                        1);
-        data.selectCell(4,
-                        0);
+        gridData.selectCell(0,
+                            1);
+        gridData.selectCell(4,
+                            0);
         assertEquals(5,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              1)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              1)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              1)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(3,
-                                                                              1)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(4,
-                                                                              0)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(3,
+                                                                                  1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(4,
+                                                                                  0)));
 
         //Move row
-        data.moveRowsTo(0,
-                        new ArrayList<GridRow>() {{
-                            add(row4);
-                        }});
+        gridData.moveRowsTo(0,
+                            new ArrayList<GridRow>() {{
+                                add(row4);
+                            }});
 
         // row0 = b[X], 4[ ]
         // row1 = a[ ], 0[X] } Collapse (Lead)
@@ -2912,7 +2597,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row3 = a[ ], 2[X] } Collapse (Child)
         // row4 = a[ ], 3[X] } Collapse (Child)
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{false, true, true, true, true},
                           new boolean[]{false, false, true, true, true},
                           new Expected[][]{
@@ -2944,46 +2629,30 @@ public class GridCellSelectionsTest extends BaseGridTest {
                           });
 
         assertEquals(5,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              1)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              1)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(3,
-                                                                              1)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(4,
-                                                                              1)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(3,
+                                                                                  1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(4,
+                                                                                  1)));
     }
 
     @Test
     public void testGroupedMoveRowUpWithSelections2() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
+        constructGridData(2, 5);
+        final GridRow row4 = gridRows[4];
 
-        final GridRow row0 = new BaseGridRow();
-        final GridRow row1 = new BaseGridRow();
-        final GridRow row2 = new BaseGridRow();
-        final GridRow row3 = new BaseGridRow();
-        final GridRow row4 = new BaseGridRow();
-        data.appendRow(row0);
-        data.appendRow(row1);
-        data.appendRow(row2);
-        data.appendRow(row3);
-        data.appendRow(row4);
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 4 ? "b" : "a") : Integer.toString(rowIndex);
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>(value));
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>(value));
             }
         }
 
@@ -2993,7 +2662,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row3 = a[X], 3[ ] } Collapse (Child)
         // row4 = b[X], 4[ ]
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true, true, true, false},
                           new boolean[]{false, false, false, false, false},
                           new Expected[][]{
@@ -3025,31 +2694,31 @@ public class GridCellSelectionsTest extends BaseGridTest {
                           });
 
         //Collapse cell
-        data.collapseCell(0,
-                          0);
+        gridData.collapseCell(0,
+                              0);
 
-        data.selectCell(0,
-                        0);
-        data.selectCell(4,
-                        0);
+        gridData.selectCell(0,
+                            0);
+        gridData.selectCell(4,
+                            0);
         assertEquals(5,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(3,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(4,
-                                                                              0)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(3,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(4,
+                                                                                  0)));
 
         //Move row
-        data.moveRowsTo(0,
-                        new ArrayList<GridRow>() {{
-                            add(row4);
-                        }});
+        gridData.moveRowsTo(0,
+                            new ArrayList<GridRow>() {{
+                                add(row4);
+                            }});
 
         // row0 = b[X], 4[ ]
         // row1 = a[X], 0[ ] } Collapse (Lead)
@@ -3057,7 +2726,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row3 = a[X], 2[ ] } Collapse (Child)
         // row4 = a[X], 3[ ] } Collapse (Child)
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{false, true, true, true, true},
                           new boolean[]{false, false, true, true, true},
                           new Expected[][]{
@@ -3089,46 +2758,33 @@ public class GridCellSelectionsTest extends BaseGridTest {
                           });
 
         assertEquals(5,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(3,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(4,
-                                                                              0)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(3,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(4,
+                                                                                  0)));
     }
 
     @Test
     public void testGroupedMoveRowUpWithSelections3() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
+        constructGridData(2, 5);
+        final GridRow row1 = gridRows[1];
+        final GridRow row2 = gridRows[2];
+        final GridRow row3 = gridRows[3];
+        final GridRow row4 = gridRows[4];
 
-        final GridRow row0 = new BaseGridRow();
-        final GridRow row1 = new BaseGridRow();
-        final GridRow row2 = new BaseGridRow();
-        final GridRow row3 = new BaseGridRow();
-        final GridRow row4 = new BaseGridRow();
-        data.appendRow(row0);
-        data.appendRow(row1);
-        data.appendRow(row2);
-        data.appendRow(row3);
-        data.appendRow(row4);
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 0 ? "b" : "a") : Integer.toString(rowIndex);
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>(value));
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>(value));
             }
         }
 
@@ -3138,7 +2794,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row3 = a[X], 3[ ] } Collapse (Child)
         // row4 = a[X], 4[ ] } Collapse (Child)
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{false, true, true, true, true},
                           new boolean[]{false, false, false, false, false},
                           new Expected[][]{
@@ -3170,34 +2826,34 @@ public class GridCellSelectionsTest extends BaseGridTest {
                           });
 
         //Collapse cell
-        data.collapseCell(1,
-                          0);
+        gridData.collapseCell(1,
+                              0);
 
-        data.selectCell(0,
-                        0);
-        data.selectCell(1,
-                        0);
+        gridData.selectCell(0,
+                            0);
+        gridData.selectCell(1,
+                            0);
         assertEquals(5,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(3,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(4,
-                                                                              0)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(3,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(4,
+                                                                                  0)));
 
         //Move row
-        data.moveRowsTo(0,
-                        new ArrayList<GridRow>() {{
-                            add(row1);
-                            add(row2);
-                            add(row3);
-                            add(row4);
-                        }});
+        gridData.moveRowsTo(0,
+                            new ArrayList<GridRow>() {{
+                                add(row1);
+                                add(row2);
+                                add(row3);
+                                add(row4);
+                            }});
 
         // row0 = a[X], 1[ ] } Collapse (Lead)
         // row1 = a[X], 2[ ] } Collapse (Child)
@@ -3205,7 +2861,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row3 = a[X], 4[ ] } Collapse (Child)
         // row4 = b[X], 0[ ]
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true, true, true, false},
                           new boolean[]{false, true, true, true, false},
                           new Expected[][]{
@@ -3237,46 +2893,33 @@ public class GridCellSelectionsTest extends BaseGridTest {
                           });
 
         assertEquals(5,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(3,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(4,
-                                                                              0)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(3,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(4,
+                                                                                  0)));
     }
 
     @Test
     public void testGroupedMoveRowDownWithSelections1() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
+        constructGridData(2, 5);
+        final GridRow row0 = gridRows[0];
+        final GridRow row1 = gridRows[1];
+        final GridRow row2 = gridRows[2];
+        final GridRow row3 = gridRows[3];
 
-        final GridRow row0 = new BaseGridRow();
-        final GridRow row1 = new BaseGridRow();
-        final GridRow row2 = new BaseGridRow();
-        final GridRow row3 = new BaseGridRow();
-        final GridRow row4 = new BaseGridRow();
-        data.appendRow(row0);
-        data.appendRow(row1);
-        data.appendRow(row2);
-        data.appendRow(row3);
-        data.appendRow(row4);
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 4 ? "b" : "a") : Integer.toString(rowIndex);
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>(value));
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>(value));
             }
         }
 
@@ -3286,7 +2929,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row3 = a[ ], 3[X] } Collapse (Child)
         // row4 = b[X], 4[ ]
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true, true, true, false},
                           new boolean[]{false, false, false, false, false},
                           new Expected[][]{
@@ -3318,34 +2961,34 @@ public class GridCellSelectionsTest extends BaseGridTest {
                           });
 
         //Collapse cell
-        data.collapseCell(0,
-                          0);
+        gridData.collapseCell(0,
+                              0);
 
-        data.selectCell(0,
-                        1);
-        data.selectCell(4,
-                        0);
+        gridData.selectCell(0,
+                            1);
+        gridData.selectCell(4,
+                            0);
         assertEquals(5,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              1)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              1)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              1)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(3,
-                                                                              1)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(4,
-                                                                              0)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(3,
+                                                                                  1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(4,
+                                                                                  0)));
 
         //Move rows
-        data.moveRowsTo(4,
-                        new ArrayList<GridRow>() {{
-                            add(row0);
-                            add(row1);
-                            add(row2);
-                            add(row3);
-                        }});
+        gridData.moveRowsTo(4,
+                            new ArrayList<GridRow>() {{
+                                add(row0);
+                                add(row1);
+                                add(row2);
+                                add(row3);
+                            }});
 
         // row0 = b[X], 4[ ]
         // row1 = a[ ], 0[X] } Collapse (Lead)
@@ -3353,7 +2996,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row3 = a[ ], 2[X] } Collapse (Child)
         // row4 = a[ ], 3[X] } Collapse (Child)
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{false, true, true, true, true},
                           new boolean[]{false, false, true, true, true},
                           new Expected[][]{
@@ -3385,46 +3028,33 @@ public class GridCellSelectionsTest extends BaseGridTest {
                           });
 
         assertEquals(5,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              1)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              1)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(3,
-                                                                              1)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(4,
-                                                                              1)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(3,
+                                                                                  1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(4,
+                                                                                  1)));
     }
 
     @Test
     public void testGroupedMoveRowDownWithSelections2() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
+        constructGridData(2, 5);
+        final GridRow row0 = gridRows[0];
+        final GridRow row1 = gridRows[1];
+        final GridRow row2 = gridRows[2];
+        final GridRow row3 = gridRows[3];
 
-        final GridRow row0 = new BaseGridRow();
-        final GridRow row1 = new BaseGridRow();
-        final GridRow row2 = new BaseGridRow();
-        final GridRow row3 = new BaseGridRow();
-        final GridRow row4 = new BaseGridRow();
-        data.appendRow(row0);
-        data.appendRow(row1);
-        data.appendRow(row2);
-        data.appendRow(row3);
-        data.appendRow(row4);
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 4 ? "b" : "a") : Integer.toString(rowIndex);
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>(value));
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>(value));
             }
         }
 
@@ -3434,7 +3064,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row3 = a[X], 3[ ] } Collapse (Child)
         // row4 = b[X], 4[ ]
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true, true, true, false},
                           new boolean[]{false, false, false, false, false},
                           new Expected[][]{
@@ -3466,34 +3096,34 @@ public class GridCellSelectionsTest extends BaseGridTest {
                           });
 
         //Collapse cell
-        data.collapseCell(0,
-                          0);
+        gridData.collapseCell(0,
+                              0);
 
-        data.selectCell(0,
-                        0);
-        data.selectCell(4,
-                        0);
+        gridData.selectCell(0,
+                            0);
+        gridData.selectCell(4,
+                            0);
         assertEquals(5,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(3,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(4,
-                                                                              0)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(3,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(4,
+                                                                                  0)));
 
         //Move rows
-        data.moveRowsTo(4,
-                        new ArrayList<GridRow>() {{
-                            add(row0);
-                            add(row1);
-                            add(row2);
-                            add(row3);
-                        }});
+        gridData.moveRowsTo(4,
+                            new ArrayList<GridRow>() {{
+                                add(row0);
+                                add(row1);
+                                add(row2);
+                                add(row3);
+                            }});
 
         // row0 = b[X], 4[ ]
         // row1 = a[X], 0[ ] } Collapse (Lead)
@@ -3501,7 +3131,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row3 = a[X], 2[ ] } Collapse (Child)
         // row4 = a[X], 3[ ] } Collapse (Child)
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{false, true, true, true, true},
                           new boolean[]{false, false, true, true, true},
                           new Expected[][]{
@@ -3533,46 +3163,30 @@ public class GridCellSelectionsTest extends BaseGridTest {
                           });
 
         assertEquals(5,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(3,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(4,
-                                                                              0)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(3,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(4,
+                                                                                  0)));
     }
 
     @Test
     public void testGroupedMoveRowDownWithSelections3() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
+        constructGridData(2, 5);
+        final GridRow row0 = gridRows[0];
 
-        final GridRow row0 = new BaseGridRow();
-        final GridRow row1 = new BaseGridRow();
-        final GridRow row2 = new BaseGridRow();
-        final GridRow row3 = new BaseGridRow();
-        final GridRow row4 = new BaseGridRow();
-        data.appendRow(row0);
-        data.appendRow(row1);
-        data.appendRow(row2);
-        data.appendRow(row3);
-        data.appendRow(row4);
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 0 ? "b" : "a") : Integer.toString(rowIndex);
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>(value));
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>(value));
             }
         }
 
@@ -3582,7 +3196,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row3 = a[X], 3[ ] } Collapse (Child)
         // row4 = a[X], 4[ ] } Collapse (Child)
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{false, true, true, true, true},
                           new boolean[]{false, false, false, false, false},
                           new Expected[][]{
@@ -3614,31 +3228,31 @@ public class GridCellSelectionsTest extends BaseGridTest {
                           });
 
         //Collapse cell
-        data.collapseCell(1,
-                          0);
+        gridData.collapseCell(1,
+                              0);
 
-        data.selectCell(0,
-                        0);
-        data.selectCell(1,
-                        0);
+        gridData.selectCell(0,
+                            0);
+        gridData.selectCell(1,
+                            0);
         assertEquals(5,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(3,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(4,
-                                                                              0)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(3,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(4,
+                                                                                  0)));
 
         //Move rows
-        data.moveRowsTo(4,
-                        new ArrayList<GridRow>() {{
-                            add(row0);
-                        }});
+        gridData.moveRowsTo(4,
+                            new ArrayList<GridRow>() {{
+                                add(row0);
+                            }});
 
         // row0 = a[X], 1[ ] } Collapse (Lead)
         // row1 = a[X], 2[ ] } Collapse (Child)
@@ -3646,7 +3260,7 @@ public class GridCellSelectionsTest extends BaseGridTest {
         // row3 = a[X], 4[ ] } Collapse (Child)
         // row4 = b[X], 0[ ]
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{true, true, true, true, false},
                           new boolean[]{false, true, true, true, false},
                           new Expected[][]{
@@ -3678,45 +3292,32 @@ public class GridCellSelectionsTest extends BaseGridTest {
                           });
 
         assertEquals(5,
-                     data.getSelectedCells().size());
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(3,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(4,
-                                                                              0)));
+                     gridData.getSelectedCells().size());
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(3,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(4,
+                                                                                  0)));
     }
 
     @Test
     public void testSelectCellSelectedRangeChangeTopLeft() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col2",
-                                                                          100);
-        final GridColumn<String> gc3 = new MockMergableGridColumn<String>("col3",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
-        data.appendColumn(gc3);
+        constructGridData(3, 3);
 
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{false, false, false},
                           new boolean[]{false, false, false},
                           new Expected[][]{
@@ -3743,63 +3344,50 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                                            "(2, 2)")}
                           });
 
-        data.selectCell(1,
-                        1);
+        gridData.selectCell(1,
+                            1);
 
         assertEquals(1,
-                     data.getSelectedCells().size());
-        assertEquals(data.getSelectedCellsOrigin(),
+                     gridData.getSelectedCells().size());
+        assertEquals(gridData.getSelectedCellsOrigin(),
                      new GridData.SelectedCell(1,
                                                1));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  1)));
 
-        data.selectCells(0,
-                         0,
-                         2,
-                         2);
+        gridData.selectCells(0,
+                             0,
+                             2,
+                             2);
 
         assertEquals(4,
-                     data.getSelectedCells().size());
-        assertEquals(data.getSelectedCellsOrigin(),
+                     gridData.getSelectedCells().size());
+        assertEquals(gridData.getSelectedCellsOrigin(),
                      new GridData.SelectedCell(1,
                                                1));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              1)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  1)));
     }
 
     @Test
     public void testSelectCellSelectedRangeChangeTopRight() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col2",
-                                                                          100);
-        final GridColumn<String> gc3 = new MockMergableGridColumn<String>("col3",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
-        data.appendColumn(gc3);
+        constructGridData(3, 3);
 
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{false, false, false},
                           new boolean[]{false, false, false},
                           new Expected[][]{
@@ -3826,63 +3414,50 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                                            "(2, 2)")}
                           });
 
-        data.selectCell(1,
-                        1);
+        gridData.selectCell(1,
+                            1);
 
         assertEquals(1,
-                     data.getSelectedCells().size());
-        assertEquals(data.getSelectedCellsOrigin(),
+                     gridData.getSelectedCells().size());
+        assertEquals(gridData.getSelectedCellsOrigin(),
                      new GridData.SelectedCell(1,
                                                1));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  1)));
 
-        data.selectCells(0,
-                         1,
-                         2,
-                         2);
+        gridData.selectCells(0,
+                             1,
+                             2,
+                             2);
 
         assertEquals(4,
-                     data.getSelectedCells().size());
-        assertEquals(data.getSelectedCellsOrigin(),
+                     gridData.getSelectedCells().size());
+        assertEquals(gridData.getSelectedCellsOrigin(),
                      new GridData.SelectedCell(1,
                                                1));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              1)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
-                                                                              2)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              1)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              2)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                                  2)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  2)));
     }
 
     @Test
     public void testSelectCellSelectedRangeChangeBottomLeft() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col2",
-                                                                          100);
-        final GridColumn<String> gc3 = new MockMergableGridColumn<String>("col3",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
-        data.appendColumn(gc3);
+        constructGridData(3, 3);
 
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{false, false, false},
                           new boolean[]{false, false, false},
                           new Expected[][]{
@@ -3909,63 +3484,50 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                                            "(2, 2)")}
                           });
 
-        data.selectCell(1,
-                        1);
+        gridData.selectCell(1,
+                            1);
 
         assertEquals(1,
-                     data.getSelectedCells().size());
-        assertEquals(data.getSelectedCellsOrigin(),
+                     gridData.getSelectedCells().size());
+        assertEquals(gridData.getSelectedCellsOrigin(),
                      new GridData.SelectedCell(1,
                                                1));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  1)));
 
-        data.selectCells(1,
-                         0,
-                         2,
-                         2);
+        gridData.selectCells(1,
+                             0,
+                             2,
+                             2);
 
         assertEquals(4,
-                     data.getSelectedCells().size());
-        assertEquals(data.getSelectedCellsOrigin(),
+                     gridData.getSelectedCells().size());
+        assertEquals(gridData.getSelectedCellsOrigin(),
                      new GridData.SelectedCell(1,
                                                1));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              1)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              0)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  0)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  1)));
     }
 
     @Test
     public void testSelectCellSelectedRangeChangeBottomRight() {
-        final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
-                                                                          100);
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col2",
-                                                                          100);
-        final GridColumn<String> gc3 = new MockMergableGridColumn<String>("col3",
-                                                                          100);
-        data.appendColumn(gc1);
-        data.appendColumn(gc2);
-        data.appendColumn(gc3);
+        constructGridData(3, 3);
 
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-        data.appendRow(new BaseGridRow());
-
-        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
-            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+        for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
+                gridData.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        assertGridIndexes(data,
+        assertGridIndexes(gridData,
                           new boolean[]{false, false, false},
                           new boolean[]{false, false, false},
                           new Expected[][]{
@@ -3992,34 +3554,34 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                                            "(2, 2)")}
                           });
 
-        data.selectCell(1,
-                        1);
+        gridData.selectCell(1,
+                            1);
 
         assertEquals(1,
-                     data.getSelectedCells().size());
-        assertEquals(data.getSelectedCellsOrigin(),
+                     gridData.getSelectedCells().size());
+        assertEquals(gridData.getSelectedCellsOrigin(),
                      new GridData.SelectedCell(1,
                                                1));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  1)));
 
-        data.selectCells(1,
-                         1,
-                         2,
-                         2);
+        gridData.selectCells(1,
+                             1,
+                             2,
+                             2);
 
         assertEquals(4,
-                     data.getSelectedCells().size());
-        assertEquals(data.getSelectedCellsOrigin(),
+                     gridData.getSelectedCells().size());
+        assertEquals(gridData.getSelectedCellsOrigin(),
                      new GridData.SelectedCell(1,
                                                1));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              1)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
-                                                                              2)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              1)));
-        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
-                                                                              2)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                                  2)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  1)));
+        assertTrue(gridData.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                                  2)));
     }
 }
