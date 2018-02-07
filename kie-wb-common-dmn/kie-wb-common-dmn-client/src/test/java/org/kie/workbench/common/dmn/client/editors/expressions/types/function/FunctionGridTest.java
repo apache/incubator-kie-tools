@@ -329,5 +329,6 @@ public class FunctionGridTest {
 
         verify(gridLayer).draw();
         verify(gridLayer).select(eq(literalExpressionEditor));
+        verify(literalExpressionEditor).selectFirstCell();
     }
 }

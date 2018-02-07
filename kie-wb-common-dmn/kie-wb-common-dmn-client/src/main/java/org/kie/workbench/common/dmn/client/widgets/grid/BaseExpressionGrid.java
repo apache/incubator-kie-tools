@@ -54,9 +54,11 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
 
 public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIModelMapper<E>> extends BaseGridWidget implements HasExpressionEditorControls {
@@ -178,7 +180,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
         this.hasExpression = hasExpression;
         this.expression = expression;
         this.hasName = hasName;
-        this.isHeaderHidden=isHeaderHidden;
+        this.isHeaderHidden = isHeaderHidden;
 
         doInitialisation();
     }
@@ -310,7 +312,6 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
             return true;
         };
 
-
         allOtherCommands.stream().filter(renderHeader).forEach(p -> p.getK2().execute(p.getK1()));
         gridLineCommands.stream().filter(renderHeader).forEach(p -> p.getK2().execute(p.getK1()));
         selectedCellsCommands.stream().filter(renderHeader).forEach(p -> p.getK2().execute(p.getK1()));
@@ -336,5 +337,34 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
             minimumWidth = minimumWidth + uiColumns.get(columnCount - 1).getMinimumWidth();
         }
         return minimumWidth;
+    }
+
+    protected void synchroniseViewWhenExpressionEditorChanged(final Optional<BaseExpressionGrid> oEditor) {
+        parent.onResize();
+        gridPanel.refreshScrollPosition();
+        gridPanel.updatePanelSize();
+
+        oEditor.ifPresent(BaseExpressionGrid::selectFirstCell);
+
+        gridLayer.batch(new GridLayerRedrawManager.PrioritizedCommand(0) {
+            @Override
+            public void execute() {
+                gridLayer.draw();
+                gridLayer.select(oEditor.get());
+            }
+        });
+    }
+
+    public void selectFirstCell() {
+        final GridData uiModel = getModel();
+        if (uiModel.getRowCount() == 0 || uiModel.getColumnCount() == 0) {
+            gridLayer.clearAllSelections();
+        }
+        uiModel.getColumns()
+                .stream()
+                .filter(c -> !(c instanceof RowNumberColumn))
+                .map(c -> uiModel.getColumns().indexOf(c))
+                .findFirst()
+                .ifPresent(index -> uiModel.selectCell(0, index));
     }
 }

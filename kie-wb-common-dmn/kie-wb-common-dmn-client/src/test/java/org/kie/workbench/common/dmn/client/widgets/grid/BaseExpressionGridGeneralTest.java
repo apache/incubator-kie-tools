@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.widgets.grid;
 
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.jboss.errai.common.client.api.IsElement;
@@ -27,9 +28,13 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -145,6 +150,45 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
                      grid.getLayer());
     }
 
+    @Test
+    public void testSelectFirstCellWithNoRowsOrColumns() {
+        grid.selectFirstCell();
+
+        assertThat(grid.getModel().getSelectedCells()).isEmpty();
+    }
+
+    @Test
+    public void testSelectFirstCellWithRowAndNonRowNumberColumn() {
+        grid.getModel().appendRow(new DMNGridRow());
+        appendColumns(GridColumn.class);
+
+        grid.selectFirstCell();
+
+        assertThat(grid.getModel().getSelectedCells()).isNotEmpty();
+        assertThat(grid.getModel().getSelectedCells()).contains(new GridData.SelectedCell(0, 0));
+    }
+
+    @Test
+    public void testSelectFirstCellWithRowAndRowNumberColumn() {
+        grid.getModel().appendRow(new DMNGridRow());
+        appendColumns(RowNumberColumn.class);
+
+        grid.selectFirstCell();
+
+        assertThat(grid.getModel().getSelectedCells()).isEmpty();
+    }
+
+    @Test
+    public void testSelectFirstCellWithRowAndRowNumberColumnAndAnotherColumn() {
+        grid.getModel().appendRow(new DMNGridRow());
+        appendColumns(RowNumberColumn.class, GridColumn.class);
+
+        grid.selectFirstCell();
+
+        assertThat(grid.getModel().getSelectedCells()).isNotEmpty();
+        assertThat(grid.getModel().getSelectedCells()).contains(new GridData.SelectedCell(0, 1));
+    }
+
     private void assertMinimumWidth(final double expectedMinimumWidth,
                                     final MockColumnData... columnData) {
         Arrays.asList(columnData).forEach(cd -> {
@@ -157,6 +201,15 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
         assertEquals(expectedMinimumWidth,
                      grid.getMinimumWidth(),
                      0.0);
+    }
+
+    @SafeVarargs
+    private final void appendColumns(final Class<? extends GridColumn>... columnClasses) {
+        IntStream.range(0, columnClasses.length).forEach(i -> {
+            final GridColumn column = mock(columnClasses[i]);
+            doReturn(i).when(column).getIndex();
+            grid.getModel().appendColumn(column);
+        });
     }
 
     private static class MockColumnData {

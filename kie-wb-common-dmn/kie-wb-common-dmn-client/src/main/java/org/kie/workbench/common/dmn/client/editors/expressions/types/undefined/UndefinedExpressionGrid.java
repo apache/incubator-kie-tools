@@ -42,7 +42,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
-import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
 
 public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, UndefinedExpressionUIModelMapper> {
 
@@ -141,18 +140,7 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           new SetCellValueCommand(gcv,
                                                                   () -> uiModelMapper,
-                                                                  () -> {
-                                                                      parent.onResize();
-                                                                      gridPanel.refreshScrollPosition();
-                                                                      gridPanel.updatePanelSize();
-                                                                      gridLayer.batch(new GridLayerRedrawManager.PrioritizedCommand(0) {
-                                                                          @Override
-                                                                          public void execute() {
-                                                                              gridLayer.draw();
-                                                                              gridLayer.select(editor.get());
-                                                                          }
-                                                                      });
-                                                                  }));
+                                                                  () -> synchroniseViewWhenExpressionEditorChanged(editor)));
         });
     }
 }

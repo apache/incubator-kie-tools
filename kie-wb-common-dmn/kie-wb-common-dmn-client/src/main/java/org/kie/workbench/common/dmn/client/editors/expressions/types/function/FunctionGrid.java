@@ -55,7 +55,6 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
-import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
 
 public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, FunctionUIModelMapper> implements FunctionGridControls.Presenter {
 
@@ -290,17 +289,9 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
         });
     }
 
-    void synchroniseViewWhenExpressionEditorChanged(final Optional<BaseExpressionGrid> oEditor) {
-        parent.onResize();
-        gridPanel.refreshScrollPosition();
-        gridPanel.updatePanelSize();
-        gridLayer.batch(new GridLayerRedrawManager.PrioritizedCommand(0) {
-            @Override
-            public void execute() {
-                gridLayer.draw();
-                oEditor.ifPresent(gridLayer::select);
-            }
-        });
+    @Override
+    protected void synchroniseViewWhenExpressionEditorChanged(final Optional<BaseExpressionGrid> oEditor) {
+        super.synchroniseViewWhenExpressionEditorChanged(oEditor);
         getEditorControls();
     }
 }
