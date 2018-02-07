@@ -59,7 +59,7 @@ public abstract class BaseSubprocess implements BPMNViewDefinition {
     protected RectangleDimensionsSet dimensionsSet;
 
     @Labels
-    protected final Set<String> labels = new HashSet<String>();
+    protected final Set<String> labels = new HashSet<>();
 
     protected BaseSubprocess() {
         initLabels();
@@ -141,24 +141,30 @@ public abstract class BaseSubprocess implements BPMNViewDefinition {
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(general.hashCode(),
-                                         backgroundSet.hashCode(),
-                                         fontSet.hashCode(),
-                                         simulationSet.hashCode(),
-                                         dimensionsSet.hashCode(),
-                                         labels.hashCode());
+        return HashUtil.combineHashCodes(Objects.hashCode(general),
+                                         Objects.hashCode(backgroundSet),
+                                         Objects.hashCode(fontSet),
+                                         Objects.hashCode(simulationSet),
+                                         Objects.hashCode(dimensionsSet),
+                                         Objects.hashCode(labels));
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof BaseSubprocess) {
             BaseSubprocess other = (BaseSubprocess) o;
-            return  Objects.equals(general, other.general) &&
-                    Objects.equals(backgroundSet, other.backgroundSet) &&
-                    Objects.equals(fontSet, other.fontSet) &&
-                    Objects.equals(simulationSet, other.simulationSet) &&
-                    Objects.equals(dimensionsSet, other.dimensionsSet) &&
-                    Objects.equals(labels, other.labels);
+            return Objects.equals(general,
+                                  other.general) &&
+                    Objects.equals(backgroundSet,
+                                   other.backgroundSet) &&
+                    Objects.equals(fontSet,
+                                   other.fontSet) &&
+                    Objects.equals(simulationSet,
+                                   other.simulationSet) &&
+                    Objects.equals(dimensionsSet,
+                                   other.dimensionsSet) &&
+                    Objects.equals(labels,
+                                   other.labels);
         }
         return false;
     }

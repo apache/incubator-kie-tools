@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.bpmn.definition.property.connectors;
 
+import java.util.Objects;
+
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -23,10 +25,8 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
-import org.kie.workbench.common.stunner.bpmn.forms.model.ConditionalComboBoxFieldType;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -45,42 +45,22 @@ public class SequenceFlowExecutionSet implements BPMNPropertySet {
     private Priority priority;
 
     @Property
-    @FormField(
-            type = TextAreaFieldType.class,
-            afterElement = "priority",
-            settings = {@FieldParam(name = "rows", value = "5")}
-    )
+    @FormField(afterElement = "priority",
+            settings = {@FieldParam(name = "mode", value = "FLOW_CONDITION")})
     @Valid
     private ConditionExpression conditionExpression;
 
-    @Property
-    @FormField(
-            type = ConditionalComboBoxFieldType.class,
-            afterElement = "conditionExpression",
-            settings = {
-                    @FieldParam(name = "relatedField", value = "executionSet.conditionExpression"),
-                    @FieldParam(name = "allowCustomValue", value = "false")
-            }
-    )
-    @SelectorDataProvider(
-            type = SelectorDataProvider.ProviderType.REMOTE,
-            className = "org.kie.workbench.common.stunner.bpmn.backend.dataproviders.ConditionLanguageFormProvider")
-    @Valid
-    protected ConditionExpressionLanguage conditionExpressionLanguage;
-
     public SequenceFlowExecutionSet() {
         this(new Priority(""),
-             new ConditionExpression(""),
-             new ConditionExpressionLanguage()
+             new ConditionExpression(new ScriptTypeValue("java",
+                                                         ""))
         );
     }
 
     public SequenceFlowExecutionSet(final @MapsTo("priority") Priority priority,
-                                    final @MapsTo("conditionExpression") ConditionExpression conditionExpression,
-                                    final @MapsTo("conditionExpressionLanguage") ConditionExpressionLanguage conditionExpressionLanguage) {
+                                    final @MapsTo("conditionExpression") ConditionExpression conditionExpression) {
         this.priority = priority;
         this.conditionExpression = conditionExpression;
-        this.conditionExpressionLanguage = conditionExpressionLanguage;
     }
 
     public Priority getPriority() {
@@ -99,28 +79,20 @@ public class SequenceFlowExecutionSet implements BPMNPropertySet {
         this.conditionExpression = conditionExpression;
     }
 
-    public ConditionExpressionLanguage getConditionExpressionLanguage() {
-        return conditionExpressionLanguage;
-    }
-
-    public void setConditionExpressionLanguage(final ConditionExpressionLanguage conditionExpressionLanguage) {
-        this.conditionExpressionLanguage = conditionExpressionLanguage;
-    }
-
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(priority.hashCode(),
-                                         conditionExpression.hashCode(),
-                                         conditionExpressionLanguage.hashCode());
+        return HashUtil.combineHashCodes(Objects.hashCode(priority),
+                                         Objects.hashCode(conditionExpression));
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof SequenceFlowExecutionSet) {
             SequenceFlowExecutionSet other = (SequenceFlowExecutionSet) o;
-            return priority.equals(other.priority) &&
-                    conditionExpression.equals(other.conditionExpression) &&
-                    conditionExpressionLanguage.equals(other.conditionExpressionLanguage);
+            return Objects.equals(priority,
+                                  other.priority) &&
+                    Objects.equals(conditionExpression,
+                                   other.conditionExpression);
         }
         return false;
     }

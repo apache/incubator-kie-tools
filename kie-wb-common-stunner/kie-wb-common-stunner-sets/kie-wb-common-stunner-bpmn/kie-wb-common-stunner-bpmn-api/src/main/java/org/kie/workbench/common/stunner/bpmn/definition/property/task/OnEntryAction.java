@@ -16,14 +16,23 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition.property.task;
 
+import java.util.Objects;
+
+import javax.validation.Valid;
+
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.I18nMode;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
+import org.kie.workbench.common.stunner.bpmn.definition.property.type.ScriptTypeList;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.Type;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
@@ -31,36 +40,40 @@ import org.kie.workbench.common.stunner.core.definition.annotation.property.Valu
 @FieldDefinition(i18nMode = I18nMode.OVERRIDE_I18N_KEY)
 public class OnEntryAction implements BPMNProperty {
 
+    @Type
+    public static final PropertyType type = new ScriptTypeList();
+
     @Value
     @FieldValue
-    private String value;
+    @Valid
+    private ScriptTypeListValue value;
 
     public OnEntryAction() {
-        this("");
     }
 
-    public OnEntryAction(final String value) {
+    public OnEntryAction(@MapsTo("value") final ScriptTypeListValue value) {
         this.value = value;
     }
 
-    public String getValue() {
+    public ScriptTypeListValue getValue() {
         return value;
     }
 
-    public void setValue(final String value) {
+    public void setValue(final ScriptTypeListValue value) {
         this.value = value;
     }
 
     @Override
     public int hashCode() {
-        return (null != value) ? value.hashCode() : 0;
+        return HashUtil.combineHashCodes(Objects.hashCode(value));
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof OnEntryAction) {
             OnEntryAction other = (OnEntryAction) o;
-            return (null != value) ? value.equals(other.value) : null == other.value;
+            return Objects.equals(value,
+                                  other.value);
         }
         return false;
     }

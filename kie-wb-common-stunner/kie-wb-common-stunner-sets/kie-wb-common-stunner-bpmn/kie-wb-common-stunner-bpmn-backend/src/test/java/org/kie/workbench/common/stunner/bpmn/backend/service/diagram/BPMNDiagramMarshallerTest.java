@@ -66,9 +66,12 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.DoubleTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.EnumTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.IntegerTypeSerializer;
+import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.ScriptTypeListTypeSerializer;
+import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.ScriptTypeTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.StringTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.TimerSettingsTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.VariablesTypeSerializer;
+import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
@@ -105,9 +108,11 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.M
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.SignalRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ReusableSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.UserTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.bind.BackendBindableMorphAdapter;
@@ -201,6 +206,7 @@ public class BPMNDiagramMarshallerTest {
     private static final String BPMN_REUSABLE_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/reusableSubprocessCalledElement.bpmn";
     private static final String BPMN_EMBEDDED_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/embeddedSubprocess.bpmn";
     private static final String BPMN_EVENT_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/eventSubprocess.bpmn";
+    private static final String BPMN_ADHOC_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/adHocSubProcess.bpmn";
     private static final String BPMN_SCRIPTTASK = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/scriptTask.bpmn";
     private static final String BPMN_USERTASKASSIGNEES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/userTaskAssignees.bpmn";
     private static final String BPMN_USERTASKPROPERTIES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/userTaskProperties.bpmn";
@@ -372,6 +378,8 @@ public class BPMNDiagramMarshallerTest {
         AssignmentsTypeSerializer assignmentsTypeSerializer = new AssignmentsTypeSerializer();
         VariablesTypeSerializer variablesTypeSerializer = new VariablesTypeSerializer();
         TimerSettingsTypeSerializer timerSettingsTypeSerializer = new TimerSettingsTypeSerializer();
+        ScriptTypeTypeSerializer scriptTypeTypeSerializer = new ScriptTypeTypeSerializer();
+        ScriptTypeListTypeSerializer scriptTypeListTypeSerializer = new ScriptTypeListTypeSerializer();
         List<Bpmn2OryxPropertySerializer<?>> propertySerializers = new LinkedList<>();
         propertySerializers.add(stringTypeSerializer);
         propertySerializers.add(booleanTypeSerializer);
@@ -382,6 +390,8 @@ public class BPMNDiagramMarshallerTest {
         propertySerializers.add(assignmentsTypeSerializer);
         propertySerializers.add(variablesTypeSerializer);
         propertySerializers.add(timerSettingsTypeSerializer);
+        propertySerializers.add(scriptTypeTypeSerializer);
+        propertySerializers.add(scriptTypeListTypeSerializer);
         oryxPropertyManager = new Bpmn2OryxPropertyManager(propertySerializers);
         oryxManager = new Bpmn2OryxManager(oryxIdMappings,
                                            oryxPropertyManager);
@@ -988,13 +998,16 @@ public class BPMNDiagramMarshallerTest {
                      userTaskExecutionSet.getAdHocAutostart().getValue().toString());
 
         assertEquals("System.out.println(\"Hello\");",
-                     userTaskExecutionSet.getOnEntryAction().getValue());
-
-        assertEquals("System.out.println(\"Bye\");",
-                     userTaskExecutionSet.getOnExitAction().getValue());
+                     userTaskExecutionSet.getOnEntryAction().getValue().getValues().get(0).getScript());
 
         assertEquals("java",
-                     userTaskExecutionSet.getScriptLanguage().getValue());
+                     userTaskExecutionSet.getOnEntryAction().getValue().getValues().get(0).getLanguage());
+
+        assertEquals("System.out.println(\"Bye\");",
+                     userTaskExecutionSet.getOnExitAction().getValue().getValues().get(0).getScript());
+
+        assertEquals("java",
+                     userTaskExecutionSet.getOnExitAction().getValue().getValues().get(0).getLanguage());
     }
 
     @Test
@@ -1130,15 +1143,14 @@ public class BPMNDiagramMarshallerTest {
         assertNotNull(javascriptScriptTask);
         assertNotNull(javascriptScriptTask.getExecutionSet());
         assertNotNull(javascriptScriptTask.getExecutionSet().getScript());
-        assertNotNull(javascriptScriptTask.getExecutionSet().getScriptLanguage());
         assertEquals(javascriptScriptTask.getTaskType().getValue(),
                      TaskTypes.SCRIPT);
         assertEquals("Javascript Script Task",
                      javascriptScriptTask.getGeneral().getName().getValue());
         assertEquals("var str = FirstName + LastName;",
-                     javascriptScriptTask.getExecutionSet().getScript().getValue());
+                     javascriptScriptTask.getExecutionSet().getScript().getValue().getScript());
         assertEquals("javascript",
-                     javascriptScriptTask.getExecutionSet().getScriptLanguage().getValue());
+                     javascriptScriptTask.getExecutionSet().getScript().getValue().getLanguage());
         assertEquals("true",
                      javascriptScriptTask.getExecutionSet().getIsAsync().getValue().toString());
 
@@ -1148,7 +1160,6 @@ public class BPMNDiagramMarshallerTest {
         assertNotNull(javaScriptTask);
         assertNotNull(javaScriptTask.getExecutionSet());
         assertNotNull(javaScriptTask.getExecutionSet().getScript());
-        assertNotNull(javaScriptTask.getExecutionSet().getScriptLanguage());
         assertEquals(javaScriptTask.getTaskType().getValue(),
                      TaskTypes.SCRIPT);
         assertEquals("Java Script Task",
@@ -1164,9 +1175,9 @@ public class BPMNDiagramMarshallerTest {
                              "\n" +
                              "\n" +
                              "}\n",
-                     javaScriptTask.getExecutionSet().getScript().getValue());
+                     javaScriptTask.getExecutionSet().getScript().getValue().getScript());
         assertEquals("java",
-                     javaScriptTask.getExecutionSet().getScriptLanguage().getValue());
+                     javaScriptTask.getExecutionSet().getScript().getValue().getLanguage());
         assertEquals("true",
                      javaScriptTask.getExecutionSet().getIsAsync().getValue().toString());
 
@@ -1201,23 +1212,21 @@ public class BPMNDiagramMarshallerTest {
         assertNotNull(sequenceFlow1);
         assertNotNull(sequenceFlow1.getExecutionSet());
         assertNotNull(sequenceFlow1.getExecutionSet().getConditionExpression());
-        assertNotNull(sequenceFlow1.getExecutionSet().getConditionExpressionLanguage());
         assertNotNull(sequenceFlow1.getExecutionSet().getPriority());
         assertNotNull(sequenceFlow1.getGeneral());
         assertNotNull(sequenceFlow1.getGeneral().getName());
         assertEquals("route1",
                      sequenceFlow1.getGeneral().getName().getValue());
         assertEquals("age >= 10;",
-                     sequenceFlow1.getExecutionSet().getConditionExpression().getValue());
+                     sequenceFlow1.getExecutionSet().getConditionExpression().getValue().getScript());
         assertEquals("javascript",
-                     sequenceFlow1.getExecutionSet().getConditionExpressionLanguage().getValue());
+                     sequenceFlow1.getExecutionSet().getConditionExpression().getValue().getLanguage());
         assertEquals("2",
                      sequenceFlow1.getExecutionSet().getPriority().getValue());
 
         assertNotNull(sequenceFlow2);
         assertNotNull(sequenceFlow2.getExecutionSet());
         assertNotNull(sequenceFlow2.getExecutionSet().getConditionExpression());
-        assertNotNull(sequenceFlow2.getExecutionSet().getConditionExpressionLanguage());
         assertNotNull(sequenceFlow2.getExecutionSet().getPriority());
         assertNotNull(sequenceFlow2.getGeneral());
         assertNotNull(sequenceFlow2.getGeneral().getName());
@@ -1226,9 +1235,9 @@ public class BPMNDiagramMarshallerTest {
         assertEquals("age\n" +
                              "<\n" +
                              "10;",
-                     sequenceFlow2.getExecutionSet().getConditionExpression().getValue());
+                     sequenceFlow2.getExecutionSet().getConditionExpression().getValue().getScript());
         assertEquals("java",
-                     sequenceFlow2.getExecutionSet().getConditionExpressionLanguage().getValue());
+                     sequenceFlow2.getExecutionSet().getConditionExpression().getValue().getLanguage());
         assertEquals("1",
                      sequenceFlow2.getExecutionSet().getPriority().getValue());
     }
@@ -1266,13 +1275,16 @@ public class BPMNDiagramMarshallerTest {
                      businessRuleTask.getExecutionSet().getIsAsync().getValue().toString());
 
         assertEquals("System.out.println(\"Hello\");",
-                     businessRuleTask.getExecutionSet().getOnEntryAction().getValue());
-
-        assertEquals("System.out.println(\"Bye\");",
-                     businessRuleTask.getExecutionSet().getOnExitAction().getValue());
+                     businessRuleTask.getExecutionSet().getOnEntryAction().getValue().getValues().get(0).getScript());
 
         assertEquals("java",
-                     businessRuleTask.getExecutionSet().getScriptLanguage().getValue());
+                     businessRuleTask.getExecutionSet().getOnEntryAction().getValue().getValues().get(0).getLanguage());
+
+        assertEquals("System.out.println(\"Bye\");",
+                     businessRuleTask.getExecutionSet().getOnExitAction().getValue().getValues().get(0).getScript());
+
+        assertEquals("java",
+                     businessRuleTask.getExecutionSet().getOnExitAction().getValue().getValues().get(0).getLanguage());
     }
 
     @Test
@@ -1351,6 +1363,68 @@ public class BPMNDiagramMarshallerTest {
 
         assertEquals("true",
                      reusableSubprocess.getExecutionSet().getIsAsync().getValue().toString());
+    }
+
+    @Test
+    public void testUnmarshallAddHocSubprocess() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_ADHOC_SUBPROCESS);
+        AdHocSubprocess adHocSubprocess = null;
+        Iterator<Element> it = nodesIterator(diagram);
+        while (it.hasNext()) {
+            Element element = it.next();
+            if (element.getContent() instanceof View) {
+                Object oDefinition = ((View) element.getContent()).getDefinition();
+                if (oDefinition instanceof AdHocSubprocess) {
+                    adHocSubprocess = (AdHocSubprocess) oDefinition;
+                    break;
+                }
+            }
+        }
+
+        assertNotNull(adHocSubprocess);
+
+        BPMNGeneralSet generalSet = adHocSubprocess.getGeneral();
+        AdHocSubprocessTaskExecutionSet executionSet = adHocSubprocess.getExecutionSet();
+        ProcessData processData = adHocSubprocess.getProcessData();
+        assertNotNull(generalSet);
+        assertNotNull(executionSet);
+        assertNotNull(processData);
+
+        assertEquals("AdHocSubprocess1",
+                     generalSet.getName().getValue());
+        assertEquals("AdHocSubprocess1Documentation",
+                     generalSet.getDocumentation().getValue());
+
+        assertNotNull(executionSet.getAdHocCompletionCondition());
+        assertNotNull(executionSet.getAdHocCompletionCondition().getValue());
+        assertNotNull(executionSet.getAdHocOrdering());
+        assertNotNull(executionSet.getOnEntryAction());
+        assertNotNull(executionSet.getOnExitAction());
+
+        assertEquals("autocomplete",
+                     executionSet.getAdHocCompletionCondition().getValue().getScript());
+        assertEquals("drools",
+                     executionSet.getAdHocCompletionCondition().getValue().getLanguage());
+
+        assertEquals("Sequential",
+                     executionSet.getAdHocOrdering().getValue());
+
+        assertEquals(1,
+                     executionSet.getOnEntryAction().getValue().getValues().size());
+        assertEquals("System.out.println(\"onEntryAction\");",
+                     executionSet.getOnEntryAction().getValue().getValues().get(0).getScript());
+        assertEquals("mvel",
+                     executionSet.getOnEntryAction().getValue().getValues().get(0).getLanguage());
+
+        assertEquals(1,
+                     executionSet.getOnExitAction().getValue().getValues().size());
+        assertEquals("System.out.println(\"onExitAction\");",
+                     executionSet.getOnExitAction().getValue().getValues().get(0).getScript());
+        assertEquals("java",
+                     executionSet.getOnExitAction().getValue().getValues().get(0).getLanguage());
+
+        assertEquals("subProcessVar1:String,subProcessVar2:String",
+                     processData.getProcessVariables().getValue());
     }
 
     @Test
@@ -1686,7 +1760,8 @@ public class BPMNDiagramMarshallerTest {
         Node<? extends Definition, ?> eventSubprocessNode = diagram.getGraph().getNode("_DF031493-5F1C-4D2B-9916-2FEABB1FADFF");
         EventSubprocess eventSubprocess = (EventSubprocess) eventSubprocessNode.getContent().getDefinition();
         assertTrue(eventSubprocess.getIsAsync().getValue());
-        assertEquals(eventSubprocess.getProcessData().getProcessVariables().getValue(),"Var1:String");
+        assertEquals(eventSubprocess.getProcessData().getProcessVariables().getValue(),
+                     "Var1:String");
     }
 
     @Test
@@ -2217,6 +2292,32 @@ public class BPMNDiagramMarshallerTest {
         assertTrue(result.contains("<bpmn2:subProcess id=\"_DF031493-5F1C-4D2B-9916-2FEABB1FADFF\""));
     }
 
+    public void testMarshallAdHocSubprocess() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_ADHOC_SUBPROCESS);
+        assertDiagram(diagram,
+                      9);
+        String result = tested.marshall(diagram);
+
+        assertDiagram(result,
+                      1,
+                      8,
+                      5);
+
+        assertTrue(result.contains("<bpmn2:adHocSubProcess id=\"_B65DDF51-9822-4B12-8669-2018A845A01B\""));
+        assertTrue(result.contains("name=\"AdHocSubprocess1\""));
+
+        assertTrue(result.contains("<drools:onEntry-script scriptFormat=\"http://www.mvel.org/2.0\">"));
+        assertTrue(result.contains("<drools:script><![CDATA[System.out.println(\"onEntryAction\");]]></drools:script>"));
+        assertTrue(result.contains("</drools:onEntry-script>"));
+
+        assertTrue(result.contains("<drools:onExit-script scriptFormat=\"http://www.java.com/java\">"));
+        assertTrue(result.contains("<drools:script><![CDATA[System.out.println(\"onExitAction\");]]></drools:script>"));
+        assertTrue(result.contains("</drools:onExit-script>"));
+
+        assertTrue(result.contains("<bpmn2:completionCondition xsi:type=\"bpmn2:tFormalExpression\""));
+        assertTrue(result.contains("language=\"http://www.jboss.org/drools/rule\"><![CDATA[autocomplete]]></bpmn2:completionCondition>"));
+    }
+
     @Test
     public void testMarshallUserTaskAssignees() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_USERTASKASSIGNEES);
@@ -2355,7 +2456,7 @@ public class BPMNDiagramMarshallerTest {
                         .map(view -> ((SequenceFlow) view.getDefinition()))
                         .findFirst();
 
-        String conditionLanguage = (sequenceFlow.isPresent() ? sequenceFlow.get().getExecutionSet().getConditionExpressionLanguage().getValue() : null);
+        String conditionLanguage = (sequenceFlow.isPresent() ? sequenceFlow.get().getExecutionSet().getConditionExpression().getValue().getLanguage() : null);
         assertEquals(value,
                      conditionLanguage);
     }

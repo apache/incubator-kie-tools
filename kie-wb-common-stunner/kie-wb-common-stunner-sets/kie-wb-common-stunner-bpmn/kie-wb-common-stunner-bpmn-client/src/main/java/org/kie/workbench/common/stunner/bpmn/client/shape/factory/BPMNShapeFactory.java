@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.bpmn.client.shape.def.StartEventShapeDef
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.SubprocessShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.TaskShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.ThrowingIntermediateEventShapeDef;
+import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
@@ -139,6 +140,9 @@ public class BPMNShapeFactory
                           new SubprocessShapeDef(),
                           () -> svgShapeFactory)
                 .delegate(EventSubprocess.class,
+                          new SubprocessShapeDef(),
+                          () -> svgShapeFactory)
+                .delegate(AdHocSubprocess.class,
                           new SubprocessShapeDef(),
                           () -> svgShapeFactory)
                 .delegate(EndNoneEvent.class,

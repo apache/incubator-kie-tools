@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.bpmn.definition.property.event.timer;
 
+import java.util.Objects;
+
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -29,6 +31,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Type;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
@@ -66,14 +69,15 @@ public class TimerSettings implements BPMNProperty {
 
     @Override
     public int hashCode() {
-        return (null != value) ? value.hashCode() : 0;
+        return HashUtil.combineHashCodes(Objects.hashCode(value));
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof TimerSettings) {
             TimerSettings other = (TimerSettings) o;
-            return (null != value) ? value.equals(other.value) : null == other.value;
+            return Objects.equals(value,
+                                  other.value);
         }
         return false;
     }

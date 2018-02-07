@@ -39,4 +39,7 @@
   <g transform="translate(8,20) scale(0.08,0.08)" style="opacity:1">
     <use xlink:href="subprocess-adhoc.svg#subProcessAdHoc"/>
   </g>
+  <g transform="translate(8,20) scale(0.08,0.08)" style="opacity:1">
+    <use xlink:href="subprocess-embedded.svg#subProcessEmbedded"/>
+  </g>
 </svg>

@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.bpmn.definition.property.task;
 
+import java.util.Objects;
+
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -23,8 +25,6 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.Actors;
@@ -40,9 +40,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Portable
 @Bindable
 @PropertySet
-@FormDefinition(
-        startElement = "taskName"
-)
+@FormDefinition(startElement = "taskName")
 public class UserTaskExecutionSet implements BPMNPropertySet {
 
     @Property
@@ -51,9 +49,7 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
     protected TaskName taskName;
 
     @Property
-    @FormField(
-            afterElement = "taskName"
-    )
+    @FormField(afterElement = "taskName")
     @Valid
     private Subject subject;
 
@@ -84,23 +80,17 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
     private AssignmentsInfo assignmentsinfo;
 
     @Property
-    @FormField(
-            afterElement = "assignmentsinfo"
-    )
+    @FormField(afterElement = "assignmentsinfo")
     @Valid
     private IsAsync isAsync;
 
     @Property
-    @FormField(
-            afterElement = "isAsync"
-    )
+    @FormField(afterElement = "isAsync")
     @Valid
     private Skippable skippable;
 
     @Property
-    @FormField(
-            afterElement = "skippable"
-    )
+    @FormField(afterElement = "skippable")
     @Valid
     private Priority priority;
 
@@ -125,40 +115,21 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
     private CreatedBy createdBy;
 
     @Property
-    @FormField(
-            afterElement = "createdBy"
-    )
+    @FormField(afterElement = "createdBy")
     @Valid
     private AdHocAutostart adHocAutostart;
 
     @Property
-    @FormField(
-            type = TextAreaFieldType.class,
-            afterElement = "adHocAutostart",
-            settings = {@FieldParam(name = "rows", value = "5")}
-    )
+    @FormField(afterElement = "adHocAutostart",
+            settings = {@FieldParam(name = "mode", value = "ACTION_SCRIPT")})
     @Valid
     private OnEntryAction onEntryAction;
 
     @Property
-    @FormField(
-            type = TextAreaFieldType.class,
-            afterElement = "onEntryAction",
-            settings = {@FieldParam(name = "rows", value = "5")}
-    )
+    @FormField(afterElement = "onEntryAction",
+            settings = {@FieldParam(name = "mode", value = "ACTION_SCRIPT")})
     @Valid
     private OnExitAction onExitAction;
-
-    @Property
-    @FormField(
-            type = ListBoxFieldType.class,
-            afterElement = "onExitAction"
-    )
-    @SelectorDataProvider(
-            type = SelectorDataProvider.ProviderType.REMOTE,
-            className = "org.kie.workbench.common.stunner.bpmn.backend.dataproviders.ScriptLanguageFormProvider")
-    @Valid
-    protected ScriptLanguage scriptLanguage;
 
     public UserTaskExecutionSet() {
         this(new TaskName("Task"),
@@ -172,9 +143,10 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
              new Description(""),
              new CreatedBy(),
              new AdHocAutostart(),
-             new OnEntryAction(""),
-             new OnExitAction(""),
-             new ScriptLanguage());
+             new OnEntryAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
+                                                                                      ""))),
+             new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
+                                                                                     ""))));
     }
 
     public UserTaskExecutionSet(final @MapsTo("taskName") TaskName taskName,
@@ -189,8 +161,7 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
                                 final @MapsTo("createdBy") CreatedBy createdBy,
                                 final @MapsTo("adHocAutostart") AdHocAutostart adHocAutostart,
                                 final @MapsTo("onEntryAction") OnEntryAction onEntryAction,
-                                final @MapsTo("onExitAction") OnExitAction onExitAction,
-                                final @MapsTo("scriptLanguage") ScriptLanguage scriptLanguage) {
+                                final @MapsTo("onExitAction") OnExitAction onExitAction) {
         this.taskName = taskName;
         this.actors = actors;
         this.groupid = groupid;
@@ -204,7 +175,6 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
         this.adHocAutostart = adHocAutostart;
         this.onEntryAction = onEntryAction;
         this.onExitAction = onExitAction;
-        this.scriptLanguage = scriptLanguage;
     }
 
     public TaskName getTaskName() {
@@ -311,50 +281,53 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
         this.onExitAction = onExitAction;
     }
 
-    public ScriptLanguage getScriptLanguage() {
-        return scriptLanguage;
-    }
-
-    public void setScriptLanguage(ScriptLanguage scriptLanguage) {
-        this.scriptLanguage = scriptLanguage;
-    }
-
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(taskName.hashCode(),
-                                         subject.hashCode(),
-                                         actors.hashCode(),
-                                         groupid.hashCode(),
-                                         assignmentsinfo.hashCode(),
-                                         isAsync.hashCode(),
-                                         skippable.hashCode(),
-                                         priority.hashCode(),
-                                         description.hashCode(),
-                                         createdBy.hashCode(),
-                                         adHocAutostart.hashCode(),
-                                         onEntryAction.hashCode(),
-                                         onExitAction.hashCode(),
-                                         scriptLanguage.hashCode());
+        return HashUtil.combineHashCodes(Objects.hashCode(taskName),
+                                         Objects.hashCode(subject),
+                                         Objects.hashCode(actors),
+                                         Objects.hashCode(groupid),
+                                         Objects.hashCode(assignmentsinfo),
+                                         Objects.hashCode(isAsync),
+                                         Objects.hashCode(skippable),
+                                         Objects.hashCode(priority),
+                                         Objects.hashCode(description),
+                                         Objects.hashCode(createdBy),
+                                         Objects.hashCode(adHocAutostart),
+                                         Objects.hashCode(onEntryAction),
+                                         Objects.hashCode(onExitAction));
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof UserTaskExecutionSet) {
             UserTaskExecutionSet other = (UserTaskExecutionSet) o;
-            return taskName.equals(other.taskName) &&
-                    subject.equals(other.subject) &&
-                    actors.equals(other.actors) &&
-                    groupid.equals(other.groupid) &&
-                    assignmentsinfo.equals(other.assignmentsinfo) &&
-                    isAsync.equals(other.isAsync) &&
-                    skippable.equals(other.skippable) &&
-                    priority.equals(other.priority) &&
-                    description.equals(other.description) &&
-                    createdBy.equals(other.createdBy) &&
-                    adHocAutostart.equals(other.adHocAutostart) &&
-                    onEntryAction.equals(other.onEntryAction) &&
-                    onExitAction.equals(other.onExitAction) &&
-                    scriptLanguage.equals(other.scriptLanguage);
+            return Objects.equals(taskName,
+                                  other.taskName) &&
+                    Objects.equals(subject,
+                                   other.subject) &&
+                    Objects.equals(actors,
+                                   other.actors) &&
+                    Objects.equals(groupid,
+                                   other.groupid) &&
+                    Objects.equals(assignmentsinfo,
+                                   other.assignmentsinfo) &&
+                    Objects.equals(isAsync,
+                                   other.isAsync) &&
+                    Objects.equals(skippable,
+                                   other.skippable) &&
+                    Objects.equals(priority,
+                                   other.priority) &&
+                    Objects.equals(description,
+                                   other.description) &&
+                    Objects.equals(createdBy,
+                                   other.createdBy) &&
+                    Objects.equals(adHocAutostart,
+                                   other.adHocAutostart) &&
+                    Objects.equals(onEntryAction,
+                                   other.onEntryAction) &&
+                    Objects.equals(onExitAction,
+                                   other.onExitAction);
         }
         return false;
     }

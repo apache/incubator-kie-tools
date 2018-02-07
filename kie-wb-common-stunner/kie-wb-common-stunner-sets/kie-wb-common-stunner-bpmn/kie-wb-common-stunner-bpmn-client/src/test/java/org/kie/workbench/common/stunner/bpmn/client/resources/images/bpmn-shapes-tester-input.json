@@ -123,7 +123,7 @@
       "icon": {
         "path": "icons/subprocess/",
         "file": "subprocess.svg",
-        "refs": "subProcessAdHoc"
+        "refs": "subProcessEmbedded"
       }
     },
     {

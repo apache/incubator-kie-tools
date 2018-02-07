@@ -23,11 +23,13 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.FieldEditorPresenter;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimerSettingsValue;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.commons.data.Pair;
 
-public class TimerSettingsFieldEditorPresenter {
+public class TimerSettingsFieldEditorPresenter
+        extends FieldEditorPresenter<TimerSettingsValue> {
 
     protected enum DISPLAY_MODE {
         DURATION_TIMER,
@@ -119,17 +121,7 @@ public class TimerSettingsFieldEditorPresenter {
         String formatToISO(final Date value);
     }
 
-    public interface ValueChangeHandler {
-
-        void onValueChange(TimerSettingsValue oldValue,
-                           TimerSettingsValue newValue);
-    }
-
     private final View view;
-
-    private TimerSettingsValue value;
-
-    private List<ValueChangeHandler> changeHandlers = new ArrayList<>();
 
     @Inject
     public TimerSettingsFieldEditorPresenter(final View view) {
@@ -151,8 +143,8 @@ public class TimerSettingsFieldEditorPresenter {
     }
 
     public void setValue(TimerSettingsValue value) {
+        super.setValue(value);
         view.clear();
-        this.value = value;
         setDisplayMode(DISPLAY_MODE.DURATION_TIMER,
                        true);
         if (value != null) {
@@ -170,16 +162,6 @@ public class TimerSettingsFieldEditorPresenter {
                 view.setTimeCycleLanguage(value.getTimeCycleLanguage());
                 view.setTimeCycle(value.getTimeCycle());
             }
-        }
-    }
-
-    public TimerSettingsValue getValue() {
-        return value;
-    }
-
-    public void addChangeHandler(ValueChangeHandler changeHandler) {
-        if (!changeHandlers.contains(changeHandler)) {
-            changeHandlers.add(changeHandler);
         }
     }
 
@@ -312,11 +294,5 @@ public class TimerSettingsFieldEditorPresenter {
         copy.setTimeCycle(source.getTimeCycle());
         copy.setTimeCycleLanguage(source.getTimeCycleLanguage());
         return copy;
-    }
-
-    private void notifyChange(TimerSettingsValue oldValue,
-                              TimerSettingsValue newValue) {
-        changeHandlers.forEach(changeHandler -> changeHandler.onValueChange(oldValue,
-                                                                            newValue));
     }
 }

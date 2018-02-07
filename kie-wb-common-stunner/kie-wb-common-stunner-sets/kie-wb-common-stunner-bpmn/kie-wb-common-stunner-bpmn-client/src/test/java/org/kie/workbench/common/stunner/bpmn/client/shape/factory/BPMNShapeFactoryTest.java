@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.bpmn.client.shape.def.StartEventShapeDef
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.SubprocessShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.TaskShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.ThrowingIntermediateEventShapeDef;
+import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
@@ -167,6 +168,10 @@ public class BPMNShapeFactoryTest {
                                   any(SubprocessShapeDef.class),
                                   factoryArgumentCaptor.capture());
         verify(delegateShapeFactory,
+               times(1)).delegate(eq(AdHocSubprocess.class),
+                                  any(SubprocessShapeDef.class),
+                                  factoryArgumentCaptor.capture());
+        verify(delegateShapeFactory,
                times(1)).delegate(eq(EndNoneEvent.class),
                                   any(EndEventShapeDef.class),
                                   factoryArgumentCaptor.capture());
@@ -204,7 +209,7 @@ public class BPMNShapeFactoryTest {
         final long basicFactoryCallCount = factoryArgumentCaptor.getAllValues().stream()
                 .filter(this::isBasicShapeFactory)
                 .count();
-        assertEquals(22,
+        assertEquals(23,
                      svgFactoryCallCount,
                      0);
         assertEquals(1,

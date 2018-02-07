@@ -20,50 +20,30 @@ import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.FieldEditorPresenter;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.FieldEditorPresenterBaseTest;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimerSettingsValue;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.timerEditor.TimerSettingsFieldEditorPresenter.TIME_CYCLE_LANGUAGE;
-
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class TimerSettingsFieldEditorPresenterTest {
+public class TimerSettingsFieldEditorPresenterTest
+        extends FieldEditorPresenterBaseTest<TimerSettingsValue, TimerSettingsFieldEditorPresenter, TimerSettingsFieldEditorPresenter.View> {
 
     private static final String VALUE_1 = "VALUE_1";
 
     private static final String VALUE_2 = "VALUE_2";
 
-    @Mock
-    private TimerSettingsFieldEditorPresenter.View view;
-
-    @Mock
-    private TimerSettingsFieldEditorPresenter.ValueChangeHandler changeHandler;
-
-    private TimerSettingsFieldEditorPresenter editor;
-
-    private ArgumentCaptor<TimerSettingsValue> newValueCaptor;
-
-    private ArgumentCaptor<TimerSettingsValue> oldValueCaptor;
-
     @Before
     public void setUp() {
-        oldValueCaptor = ArgumentCaptor.forClass(TimerSettingsValue.class);
-        newValueCaptor = ArgumentCaptor.forClass(TimerSettingsValue.class);
-        editor = spy(new TimerSettingsFieldEditorPresenter(view));
-        editor.init();
-        editor.addChangeHandler(changeHandler);
-        verify(view,
-               times(1)).init(editor);
+        super.setUp();
         verify(view,
                times(1)).setTimeCycleLanguageOptions(anyList(),
                                                      eq(TIME_CYCLE_LANGUAGE.ISO.value()));
@@ -72,10 +52,25 @@ public class TimerSettingsFieldEditorPresenterTest {
                                        true);
     }
 
-    @Test
-    public void testGetView() {
-        assertEquals(view,
-                     editor.getView());
+    @Override
+    public ArgumentCaptor<TimerSettingsValue> newArgumentCaptor() {
+        return ArgumentCaptor.forClass(TimerSettingsValue.class);
+    }
+
+    @Override
+    public TimerSettingsFieldEditorPresenter.View mockEditorView() {
+        return mock(TimerSettingsFieldEditorPresenter.View.class);
+    }
+
+    @Override
+    public TimerSettingsFieldEditorPresenter newEditorPresenter(TimerSettingsFieldEditorPresenter.View view) {
+        return new TimerSettingsFieldEditorPresenter(view);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public FieldEditorPresenter.ValueChangeHandler<TimerSettingsValue> mockChangeHandler() {
+        return mock(FieldEditorPresenter.ValueChangeHandler.class);
     }
 
     @Test

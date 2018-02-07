@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
+import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
@@ -41,18 +42,20 @@ public class SubprocessShapeDef extends BaseDimensionedShapeDef
             new SVGShapeViewResources<BaseSubprocess, BPMNSVGViewFactory>()
                     .put(ReusableSubprocess.class, BPMNSVGViewFactory::reusableSubProcess)
                     .put(EmbeddedSubprocess.class, BPMNSVGViewFactory::embeddedSubProcess)
-                    .put(EventSubprocess.class, BPMNSVGViewFactory::eventSubProcess);
+                    .put(EventSubprocess.class, BPMNSVGViewFactory::eventSubProcess)
+                    .put(AdHocSubprocess.class, BPMNSVGViewFactory::adHocSubProcess);
 
     public static final Map<Class<? extends BaseSubprocess>, SvgDataUriGlyph> GLYPHS =
             new HashMap<Class<? extends BaseSubprocess>, SvgDataUriGlyph>() {{
                 put(ReusableSubprocess.class, BPMNSVGGlyphFactory.REUSABLE_SUBPROCESS_GLYPH);
                 put(EmbeddedSubprocess.class, BPMNSVGGlyphFactory.ADHOC_SUBPROCESS_GLYPH);
                 put(EventSubprocess.class, BPMNSVGGlyphFactory.EVENT_SUBPROCESS_GLYPH);
+                put(AdHocSubprocess.class, BPMNSVGGlyphFactory.ADHOC_SUBPROCESS_GLYPH);
             }};
 
     private static HasTitle.Position getSubprocessTextPosition(final BaseSubprocess bean) {
-        if ((bean instanceof EmbeddedSubprocess) || (bean instanceof EventSubprocess)) {
-            return HasTitle.Position.BOTTOM;
+        if ((bean instanceof EmbeddedSubprocess) || (bean instanceof EventSubprocess) || (bean instanceof AdHocSubprocess)) {
+            return HasTitle.Position.TOP;
         } else {
             return HasTitle.Position.CENTER;
         }
@@ -82,7 +85,8 @@ public class SubprocessShapeDef extends BaseDimensionedShapeDef
                                            final BaseSubprocess task) {
         return newViewInstance(Optional.ofNullable(task.getDimensionsSet().getWidth()),
                                Optional.ofNullable(task.getDimensionsSet().getHeight()),
-                               VIEW_RESOURCES.getResource(factory, task));
+                               VIEW_RESOURCES.getResource(factory,
+                                                          task));
     }
 
     @Override

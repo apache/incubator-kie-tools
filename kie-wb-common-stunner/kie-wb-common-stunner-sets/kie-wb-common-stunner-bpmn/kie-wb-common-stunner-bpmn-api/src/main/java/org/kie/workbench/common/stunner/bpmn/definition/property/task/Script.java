@@ -16,14 +16,22 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition.property.task;
 
+import java.util.Objects;
+
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.I18nMode;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
+import org.kie.workbench.common.stunner.bpmn.definition.property.type.ScriptType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
+import org.kie.workbench.common.stunner.core.definition.annotation.property.Type;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
@@ -31,36 +39,40 @@ import org.kie.workbench.common.stunner.core.definition.annotation.property.Valu
 @FieldDefinition(i18nMode = I18nMode.OVERRIDE_I18N_KEY)
 public class Script implements BPMNProperty {
 
+    @Type
+    public static final PropertyType type = new ScriptType();
+
     @Value
     @FieldValue
-    private String value;
+    @Valid
+    private ScriptTypeValue value;
 
     public Script() {
-        this("");
     }
 
-    public Script(final String value) {
+    public Script(final ScriptTypeValue value) {
         this.value = value;
     }
 
-    public String getValue() {
+    public ScriptTypeValue getValue() {
         return value;
     }
 
-    public void setValue(final String value) {
+    public void setValue(final ScriptTypeValue value) {
         this.value = value;
     }
 
     @Override
     public int hashCode() {
-        return (null != value) ? value.hashCode() : 0;
+        return HashUtil.combineHashCodes(Objects.hashCode(value));
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof Script) {
             Script other = (Script) o;
-            return (null != value) ? value.equals(other.value) : null == other.value;
+            return Objects.equals(value,
+                                  other.value);
         }
         return false;
     }

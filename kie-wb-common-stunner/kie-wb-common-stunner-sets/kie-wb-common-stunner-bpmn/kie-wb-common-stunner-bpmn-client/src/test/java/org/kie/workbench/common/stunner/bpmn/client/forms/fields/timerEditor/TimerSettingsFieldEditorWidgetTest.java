@@ -17,45 +17,28 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.timerEditor;
 
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.FieldEditorEditorWidgetBaseTest;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimerSettingsValue;
-import org.mockito.Mock;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-@RunWith(GwtMockitoTestRunner.class)
-public class TimerSettingsFieldEditorWidgetTest {
+public class TimerSettingsFieldEditorWidgetTest
+        extends FieldEditorEditorWidgetBaseTest<TimerSettingsValue, TimerSettingsFieldEditorPresenter, TimerSettingsFieldEditorWidget, TimerSettingsFieldEditorPresenter.View> {
 
-    @Mock
-    private TimerSettingsFieldEditorPresenter.View view;
+    @Override
+    public TimerSettingsFieldEditorPresenter.View mockEditorView() {
+        return mock(TimerSettingsFieldEditorPresenter.View.class);
+    }
 
-    @Mock
-    private HTMLElement element;
+    @Override
+    public TimerSettingsFieldEditorPresenter mockEditorPresenter() {
+        return mock(TimerSettingsFieldEditorPresenter.class);
+    }
 
-    @Mock
-    private Widget wrapperWidget;
-
-    @Mock
-    private TimerSettingsFieldEditorPresenter editor;
-
-    private TimerSettingsFieldEditorWidget widget;
-
-    @Before
-    public void setUp() {
-        when(editor.getView()).thenReturn(view);
-        when(view.getElement()).thenReturn(element);
-        widget = spy(new TimerSettingsFieldEditorWidget(editor) {
+    @Override
+    public TimerSettingsFieldEditorWidget newEditorWidget(TimerSettingsFieldEditorPresenter editor) {
+        return new TimerSettingsFieldEditorWidget(editor) {
             @Override
             protected void initWidget(Widget widget) {
                 //avoid GWT client processing for testing purposes.
@@ -66,40 +49,11 @@ public class TimerSettingsFieldEditorWidgetTest {
                 //avoid GWT client processing for testing purposes.
                 return wrapperWidget;
             }
-        });
-        widget.init();
-        verify(editor,
-               times(1)).addChangeHandler(any(TimerSettingsFieldEditorPresenter.ValueChangeHandler.class));
+        };
     }
 
-    @Test
-    public void testGetValue() {
-        TimerSettingsValue value = mock(TimerSettingsValue.class);
-        when(editor.getValue()).thenReturn(value);
-        assertEquals(value,
-                     widget.getValue());
-    }
-
-    @Test
-    public void testSetValueWithoutNotification() {
-        TimerSettingsValue oldValue = mock(TimerSettingsValue.class);
-        when(editor.getValue()).thenReturn(oldValue);
-        TimerSettingsValue value = mock(TimerSettingsValue.class);
-        widget.setValue(value);
-        verify(widget,
-               never()).notifyChange(any(),
-                                     any());
-    }
-
-    @Test
-    public void testSetValueWithNotification() {
-        TimerSettingsValue oldValue = mock(TimerSettingsValue.class);
-        when(editor.getValue()).thenReturn(oldValue);
-        TimerSettingsValue value = mock(TimerSettingsValue.class);
-        widget.setValue(value,
-                        true);
-        verify(widget,
-               times(1)).notifyChange(oldValue,
-                                      value);
+    @Override
+    public TimerSettingsValue mockValue() {
+        return mock(TimerSettingsValue.class);
     }
 }

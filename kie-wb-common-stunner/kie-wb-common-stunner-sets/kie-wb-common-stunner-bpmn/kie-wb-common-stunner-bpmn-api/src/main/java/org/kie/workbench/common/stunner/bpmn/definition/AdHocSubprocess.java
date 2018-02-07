@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
+import java.util.Objects;
+
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -26,121 +28,99 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
-import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.ReusableSubprocessTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocSubprocessTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
+import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
-@CanContain(roles = {"cm_activity"})
+@CanContain(roles = {"cm_activity", "cm_stage", "IntermediateEventsMorph", "GatewaysMorph"})
+@CanDock(roles = {"IntermediateEventOnSubprocessBoundary"})
 @Definition(graphFactory = NodeFactory.class, builder = AdHocSubprocess.AdHocSubprocessBuilder.class)
+@Morph(base = BaseSubprocess.class)
 @FormDefinition(
         startElement = "general",
         policy = FieldPolicy.ONLY_MARKED
 )
-public class AdHocSubprocess extends BaseSubprocess implements DataIOModel {
+public class AdHocSubprocess
+        extends BaseSubprocess {
 
     @PropertySet
-    @FormField(
-            afterElement = "general"
-    )
+    @FormField(afterElement = "general")
     @Valid
-    protected ReusableSubprocessTaskExecutionSet executionSet;
+    protected AdHocSubprocessTaskExecutionSet executionSet;
 
     @PropertySet
-    @FormField(
-            afterElement = "executionSet"
-    )
+    @FormField(afterElement = "executionSet")
     @Valid
-    protected DataIOSet dataIOSet;
+    private ProcessData processData;
 
     @NonPortable
     public static class AdHocSubprocessBuilder implements Builder<AdHocSubprocess> {
 
         @Override
         public AdHocSubprocess build() {
-            return new AdHocSubprocess(
-                    new BPMNGeneralSet("Subprocess"),
-                    new ReusableSubprocessTaskExecutionSet(),
-                    new DataIOSet(),
-                    new BackgroundSet(),
-                    new FontSet(),
-                    new RectangleDimensionsSet(),
-                    new SimulationSet());
+            return new AdHocSubprocess(new BPMNGeneralSet("Sub-process"),
+                                       new BackgroundSet(),
+                                       new FontSet(),
+                                       new RectangleDimensionsSet(),
+                                       new SimulationSet(),
+                                       new AdHocSubprocessTaskExecutionSet(),
+                                       new ProcessData());
         }
     }
 
     public AdHocSubprocess() {
-        super();
     }
 
     public AdHocSubprocess(final @MapsTo("general") BPMNGeneralSet general,
-                           final @MapsTo("executionSet") ReusableSubprocessTaskExecutionSet executionSet,
-                           final @MapsTo("dataIOSet") DataIOSet dataIOSet,
                            final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                            final @MapsTo("fontSet") FontSet fontSet,
                            final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
-                           final @MapsTo("simulationSet") SimulationSet simulationSet) {
+                           final @MapsTo("simulationSet") SimulationSet simulationSet,
+                           final @MapsTo("executionSet") AdHocSubprocessTaskExecutionSet executionSet,
+                           final @MapsTo("processData") ProcessData processData) {
         super(general,
               backgroundSet,
               fontSet,
               dimensionsSet,
               simulationSet);
         this.executionSet = executionSet;
-        this.dataIOSet = dataIOSet;
+        this.processData = processData;
     }
 
-    @Override
-    public boolean hasInputVars() {
-        return true;
-    }
-
-    @Override
-    public boolean isSingleInputVar() {
-        return false;
-    }
-
-    @Override
-    public boolean hasOutputVars() {
-        return true;
-    }
-
-    @Override
-    public boolean isSingleOutputVar() {
-        return false;
-    }
-
-    public ReusableSubprocessTaskExecutionSet getExecutionSet() {
+    public AdHocSubprocessTaskExecutionSet getExecutionSet() {
         return executionSet;
     }
 
-    public DataIOSet getDataIOSet() {
-        return dataIOSet;
-    }
-
-    public void setExecutionSet(final ReusableSubprocessTaskExecutionSet executionSet) {
+    public void setExecutionSet(final AdHocSubprocessTaskExecutionSet executionSet) {
         this.executionSet = executionSet;
     }
 
-    public void setDataIOSet(final DataIOSet dataIOSet) {
-        this.dataIOSet = dataIOSet;
+    public ProcessData getProcessData() {
+        return processData;
+    }
+
+    public void setProcessData(final ProcessData processData) {
+        this.processData = processData;
     }
 
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
-                                         executionSet.hashCode(),
-                                         dataIOSet.hashCode());
+                                         Objects.hashCode(executionSet),
+                                         Objects.hashCode(processData));
     }
 
     @Override
@@ -148,8 +128,10 @@ public class AdHocSubprocess extends BaseSubprocess implements DataIOModel {
         if (o instanceof AdHocSubprocess) {
             AdHocSubprocess other = (AdHocSubprocess) o;
             return super.equals(other) &&
-                    executionSet.equals(other.executionSet) &&
-                    dataIOSet.equals(other.dataIOSet);
+                    Objects.equals(executionSet,
+                                   other.executionSet) &&
+                    Objects.equals(processData,
+                                   other.processData);
         }
         return false;
     }

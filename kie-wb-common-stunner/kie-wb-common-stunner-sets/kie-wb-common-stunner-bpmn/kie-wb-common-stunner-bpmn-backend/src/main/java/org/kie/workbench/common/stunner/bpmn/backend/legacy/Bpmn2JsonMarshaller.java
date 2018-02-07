@@ -156,8 +156,12 @@ import org.jboss.drools.impl.DroolsPackageImpl;
 import org.kie.workbench.common.stunner.bpmn.backend.legacy.profile.IDiagramProfile;
 import org.kie.workbench.common.stunner.bpmn.backend.legacy.util.Utils;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.Bpmn2OryxManager;
+import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.ScriptTypeListTypeSerializer;
+import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.ScriptTypeTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.TimerSettingsTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimerSettingsValue;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeListValue;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -171,8 +175,6 @@ import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonProp
 import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.BOUNDARYCANCELACTIVITY;
 import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.CALLEDELEMENT;
 import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.CONDITIONEXPRESSION;
-import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.CONDITIONEXPRESSIONLANGUAGE;
-import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.CONDITIONLANGUAGE;
 import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.CURRENCY;
 import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.CUSTOMTYPE;
 import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.DATAINPUT;
@@ -215,7 +217,6 @@ import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonProp
 import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.PACKAGE;
 import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.PRIORITY;
 import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.PROCESSN;
-import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.SCRIPT_LANGUAGE;
 import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.SIGNALREF;
 import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.SIGNALSCOPE;
 import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonPropertyIds.STANDARDDEVIATION;
@@ -765,24 +766,10 @@ public class Bpmn2JsonMarshaller {
                 }
             } else if (ed instanceof ConditionalEventDefinition) {
                 FormalExpression conditionalExp = (FormalExpression) ((ConditionalEventDefinition) ed).getCondition();
-                if (conditionalExp.getBody() != null) {
-                    properties.put(CONDITIONEXPRESSION,
-                                   conditionalExp.getBody().replaceAll("\n",
-                                                                       "\\\\n"));
-                }
-                if (conditionalExp.getLanguage() != null) {
-                    String languageVal = conditionalExp.getLanguage();
-                    if (languageVal.equals("http://www.jboss.org/drools/rule")) {
-                        properties.put(CONDITIONLANGUAGE,
-                                       "drools");
-                    } else if (languageVal.equals("http://www.mvel.org/2.0")) {
-                        properties.put(CONDITIONLANGUAGE,
-                                       "mvel");
-                    } else {
-                        // default to drools
-                        properties.put(CONDITIONLANGUAGE,
-                                       "drools");
-                    }
+                if (conditionalExp != null) {
+                    setConditionExpressionProperties(conditionalExp,
+                                                     properties,
+                                                     "drools");
                 }
             } else if (ed instanceof EscalationEventDefinition) {
                 if (((EscalationEventDefinition) ed).getEscalationRef() != null) {
@@ -894,23 +881,10 @@ public class Bpmn2JsonMarshaller {
                 }
             } else if (ed instanceof ConditionalEventDefinition) {
                 FormalExpression conditionalExp = (FormalExpression) ((ConditionalEventDefinition) ed).getCondition();
-                if (conditionalExp.getBody() != null) {
-                    properties.put(CONDITIONEXPRESSION,
-                                   conditionalExp.getBody());
-                }
-                if (conditionalExp.getLanguage() != null) {
-                    String languageVal = conditionalExp.getLanguage();
-                    if (languageVal.equals("http://www.jboss.org/drools/rule")) {
-                        properties.put(CONDITIONLANGUAGE,
-                                       "drools");
-                    } else if (languageVal.equals("http://www.mvel.org/2.0")) {
-                        properties.put(CONDITIONLANGUAGE,
-                                       "mvel");
-                    } else {
-                        // default to drools
-                        properties.put(CONDITIONLANGUAGE,
-                                       "drools");
-                    }
+                if (conditionalExp != null) {
+                    setConditionExpressionProperties(conditionalExp,
+                                                     properties,
+                                                     "drools");
                 }
             } else if (ed instanceof EscalationEventDefinition) {
                 if (((EscalationEventDefinition) ed).getEscalationRef() != null) {
@@ -956,6 +930,128 @@ public class Bpmn2JsonMarshaller {
         }
         properties.put(TIMERSETTINGS,
                        new TimerSettingsTypeSerializer().serialize(timerSettings));
+    }
+
+    private void setAdHocSubProcessProperties(final AdHocSubProcess subProcess,
+                                              final Map<String, Object> properties) {
+        if (subProcess.getOrdering().equals(AdHocOrdering.PARALLEL)) {
+            properties.put(ADHOCORDERING,
+                           "Parallel");
+        } else if (subProcess.getOrdering().equals(AdHocOrdering.SEQUENTIAL)) {
+            properties.put(ADHOCORDERING,
+                           "Sequential");
+        } else {
+            // default to parallel
+            properties.put(ADHOCORDERING,
+                           "Parallel");
+        }
+        if (subProcess.getCompletionCondition() != null) {
+            final FormalExpression expression = (FormalExpression) subProcess.getCompletionCondition();
+            final String language = Utils.getScriptLanguage(expression.getLanguage());
+            final String script = expression.getBody().replaceAll("\n",
+                                                                  "\\\\n");
+            final ScriptTypeValue value = new ScriptTypeValue(language,
+                                                              script);
+            properties.put(ADHOCCOMPLETIONCONDITION,
+                           new ScriptTypeTypeSerializer().serialize(value));
+        }
+    }
+
+    public ScriptTypeValue getOnEntryAction(final OnEntryScriptType onEntryScriptType) {
+        String language = Utils.getScriptLanguage(onEntryScriptType.getScriptFormat());
+        if (language == null) {
+            //default to java
+            language = "java";
+        }
+        final String script = onEntryScriptType.getScript();
+        return new ScriptTypeValue(language,
+                                   script);
+    }
+
+    public ScriptTypeValue getOnExitAction(final OnExitScriptType onExitScriptType) {
+        String language = Utils.getScriptLanguage(onExitScriptType.getScriptFormat());
+        if (language == null) {
+            //default to java
+            language = "java";
+        }
+        final String script = onExitScriptType.getScript();
+        return new ScriptTypeValue(language,
+                                   script);
+    }
+
+    public ScriptTypeListValue getOnEntryActions(final List<ExtensionAttributeValue> extensionValues) {
+        final ScriptTypeListValue onEntryActions = new ScriptTypeListValue();
+        ScriptTypeValue onEntryAction;
+        if (extensionValues != null && !extensionValues.isEmpty()) {
+            for (ExtensionAttributeValue extattrval : extensionValues) {
+                FeatureMap extensionElements = extattrval.getValue();
+                @SuppressWarnings("unchecked")
+                List<OnEntryScriptType> onEntryExtensions = (List<OnEntryScriptType>) extensionElements
+                        .get(DroolsPackage.Literals.DOCUMENT_ROOT__ON_ENTRY_SCRIPT,
+                             true);
+
+                for (OnEntryScriptType onEntryScript : onEntryExtensions) {
+                    onEntryAction = getOnEntryAction(onEntryScript);
+                    if (onEntryAction.getScript() != null && !onEntryAction.getScript().isEmpty()) {
+                        onEntryActions.addValue(onEntryAction);
+                    }
+                }
+            }
+        }
+        return onEntryActions;
+    }
+
+    public ScriptTypeListValue getOnExitActions(final List<ExtensionAttributeValue> extensionValues) {
+        final ScriptTypeListValue onExitActions = new ScriptTypeListValue();
+        ScriptTypeValue onExitAction;
+        if (extensionValues != null && !extensionValues.isEmpty()) {
+            for (ExtensionAttributeValue extattrval : extensionValues) {
+                FeatureMap extensionElements = extattrval.getValue();
+                @SuppressWarnings("unchecked")
+                List<OnExitScriptType> onExitExtensions = (List<OnExitScriptType>) extensionElements
+                        .get(DroolsPackage.Literals.DOCUMENT_ROOT__ON_EXIT_SCRIPT,
+                             true);
+
+                for (OnExitScriptType onExitScript : onExitExtensions) {
+                    onExitAction = getOnExitAction(onExitScript);
+                    if (onExitAction.getScript() != null && !onExitAction.getScript().isEmpty()) {
+                        onExitActions.addValue(onExitAction);
+                    }
+                }
+            }
+        }
+        return onExitActions;
+    }
+
+    public void setConditionExpressionProperties(final FormalExpression conditionExpression,
+                                                 final Map<String, Object> properties,
+                                                 final String defaultLanguage) {
+        String language = Utils.getScriptLanguage(conditionExpression.getLanguage());
+        final String script = conditionExpression.getBody();
+        if (language != null || script != null) {
+            if (language == null) {
+                language = defaultLanguage;
+            }
+            properties.put(CONDITIONEXPRESSION,
+                           new ScriptTypeTypeSerializer().serialize(new ScriptTypeValue(language,
+                                                                                        script)));
+        }
+    }
+
+    public void setScriptProperties(final ScriptTask scriptTask,
+                                    final Map<String, Object> properties) {
+        String script = scriptTask.getScript() != null ? scriptTask.getScript() : "";
+        String language = null;
+        if (scriptTask.getScriptFormat() != null && !scriptTask.getScriptFormat().isEmpty()) {
+            language = Utils.getScriptLanguage(scriptTask.getScriptFormat());
+            if (language == null) {
+                // default to java
+                language = "java";
+            }
+        }
+        properties.put("script",
+                       new ScriptTypeTypeSerializer().serialize(new ScriptTypeValue(language,
+                                                                                    script)));
     }
 
     private List<String> marshallLanes(Lane lane,
@@ -1807,77 +1903,17 @@ public class Bpmn2JsonMarshaller {
                                    assignmentString,
                                    properties);
         // on-entry and on-exit actions
-        if (callActivity.getExtensionValues() != null && callActivity.getExtensionValues().size() > 0) {
-            String onEntryStr = "";
-            String onExitStr = "";
-            for (ExtensionAttributeValue extattrval : callActivity.getExtensionValues()) {
-                FeatureMap extensionElements = extattrval.getValue();
-                @SuppressWarnings("unchecked")
-                List<OnEntryScriptType> onEntryExtensions = (List<OnEntryScriptType>) extensionElements
-                        .get(DroolsPackage.Literals.DOCUMENT_ROOT__ON_ENTRY_SCRIPT,
-                             true);
-                @SuppressWarnings("unchecked")
-                List<OnExitScriptType> onExitExtensions = (List<OnExitScriptType>) extensionElements
-                        .get(DroolsPackage.Literals.DOCUMENT_ROOT__ON_EXIT_SCRIPT,
-                             true);
-                for (OnEntryScriptType onEntryScript : onEntryExtensions) {
-                    onEntryStr += onEntryScript.getScript();
-                    onEntryStr += "|";
-                    if (onEntryScript.getScriptFormat() != null) {
-                        String format = onEntryScript.getScriptFormat();
-                        String formatToWrite = "";
-                        if (format.equals("http://www.java.com/java")) {
-                            formatToWrite = "java";
-                        } else if (format.equals("http://www.mvel.org/2.0")) {
-                            formatToWrite = "mvel";
-                        } else if (format.equals("http://www.javascript.com/javascript")) {
-                            formatToWrite = "javascript";
-                        } else {
-                            formatToWrite = "java";
-                        }
-                        properties.put(SCRIPT_LANGUAGE,
-                                       formatToWrite);
-                    }
-                }
-                for (OnExitScriptType onExitScript : onExitExtensions) {
-                    onExitStr += onExitScript.getScript();
-                    onExitStr += "|";
-                    if (onExitScript.getScriptFormat() != null) {
-                        String format = onExitScript.getScriptFormat();
-                        String formatToWrite = "";
-                        if (format.equals("http://www.java.com/java")) {
-                            formatToWrite = "java";
-                        } else if (format.equals("http://www.mvel.org/2.0")) {
-                            formatToWrite = "mvel";
-                        } else if (format.equals("http://www.javascript.com/javascript")) {
-                            formatToWrite = "javascript";
-                        } else {
-                            formatToWrite = "java";
-                        }
-                        if (properties.get("script_language") == null) {
-                            properties.put(SCRIPT_LANGUAGE,
-                                           formatToWrite);
-                        }
-                    }
-                }
-            }
-            if (onEntryStr.length() > 0) {
-                if (onEntryStr.endsWith("|")) {
-                    onEntryStr = onEntryStr.substring(0,
-                                                      onEntryStr.length() - 1);
-                }
-                properties.put(ONENTRYACTIONS,
-                               onEntryStr);
-            }
-            if (onExitStr.length() > 0) {
-                if (onExitStr.endsWith("|")) {
-                    onExitStr = onExitStr.substring(0,
-                                                    onExitStr.length() - 1);
-                }
-                properties.put(ONEXITACTIONS,
-                               onExitStr);
-            }
+        ScriptTypeListValue onEntryActions = getOnEntryActions(callActivity.getExtensionValues());
+        ScriptTypeListValue onExitActions = getOnExitActions(callActivity.getExtensionValues());
+        if (!onEntryActions.isEmpty()) {
+            properties.put(ONENTRYACTIONS,
+                           new ScriptTypeListTypeSerializer().serialize(onEntryActions));
         }
+        if (!onExitActions.isEmpty()) {
+            properties.put(ONEXITACTIONS,
+                           new ScriptTypeListTypeSerializer().serialize(onExitActions));
+        }
+
         // simulation properties
         setSimulationProperties(callActivity.getId(),
                                 properties);
@@ -1911,25 +1947,8 @@ public class Bpmn2JsonMarshaller {
                 }
             }
         } else if (task instanceof ScriptTask) {
-            ScriptTask scriptTask = (ScriptTask) task;
-            properties.put("script",
-                           scriptTask.getScript() != null ? scriptTask.getScript() : "");
-            String format = scriptTask.getScriptFormat();
-            if (format != null && format.length() > 0) {
-                String formatToWrite = "";
-                if (format.equals("http://www.java.com/java")) {
-                    formatToWrite = "java";
-                } else if (format.equals("http://www.mvel.org/2.0")) {
-                    formatToWrite = "mvel";
-                } else if (format.equals("http://www.javascript.com/javascript")) {
-                    formatToWrite = "javascript";
-                } else {
-                    // default to java
-                    formatToWrite = "java";
-                }
-                properties.put("script_language",
-                               formatToWrite);
-            }
+            setScriptProperties((ScriptTask) task,
+                                properties);
             taskType = "Script";
         } else if (task instanceof ServiceTask) {
             taskType = "Service";
@@ -2413,77 +2432,17 @@ public class Bpmn2JsonMarshaller {
                                    assignmentString,
                                    properties);
         // on-entry and on-exit actions
-        if (task.getExtensionValues() != null && task.getExtensionValues().size() > 0) {
-            String onEntryStr = "";
-            String onExitStr = "";
-            for (ExtensionAttributeValue extattrval : task.getExtensionValues()) {
-                FeatureMap extensionElements = extattrval.getValue();
-                @SuppressWarnings("unchecked")
-                List<OnEntryScriptType> onEntryExtensions = (List<OnEntryScriptType>) extensionElements
-                        .get(DroolsPackage.Literals.DOCUMENT_ROOT__ON_ENTRY_SCRIPT,
-                             true);
-                @SuppressWarnings("unchecked")
-                List<OnExitScriptType> onExitExtensions = (List<OnExitScriptType>) extensionElements
-                        .get(DroolsPackage.Literals.DOCUMENT_ROOT__ON_EXIT_SCRIPT,
-                             true);
-                for (OnEntryScriptType onEntryScript : onEntryExtensions) {
-                    onEntryStr += onEntryScript.getScript();
-                    onEntryStr += "|";
-                    if (onEntryScript.getScriptFormat() != null) {
-                        String format = onEntryScript.getScriptFormat();
-                        String formatToWrite = "";
-                        if (format.equals("http://www.java.com/java")) {
-                            formatToWrite = "java";
-                        } else if (format.equals("http://www.mvel.org/2.0")) {
-                            formatToWrite = "mvel";
-                        } else if (format.equals("http://www.javascript.com/javascript")) {
-                            formatToWrite = "javascript";
-                        } else {
-                            formatToWrite = "java";
-                        }
-                        properties.put("script_language",
-                                       formatToWrite);
-                    }
-                }
-                for (OnExitScriptType onExitScript : onExitExtensions) {
-                    onExitStr += onExitScript.getScript();
-                    onExitStr += "|";
-                    if (onExitScript.getScriptFormat() != null) {
-                        String format = onExitScript.getScriptFormat();
-                        String formatToWrite = "";
-                        if (format.equals("http://www.java.com/java")) {
-                            formatToWrite = "java";
-                        } else if (format.equals("http://www.mvel.org/2.0")) {
-                            formatToWrite = "mvel";
-                        } else if (format.equals("http://www.javascript.com/javascript")) {
-                            formatToWrite = "javascript";
-                        } else {
-                            formatToWrite = "java";
-                        }
-                        if (properties.get("script_language") == null) {
-                            properties.put("script_language",
-                                           formatToWrite);
-                        }
-                    }
-                }
-            }
-            if (onEntryStr.length() > 0) {
-                if (onEntryStr.endsWith("|")) {
-                    onEntryStr = onEntryStr.substring(0,
-                                                      onEntryStr.length() - 1);
-                }
-                properties.put("onentryactions",
-                               onEntryStr);
-            }
-            if (onExitStr.length() > 0) {
-                if (onExitStr.endsWith("|")) {
-                    onExitStr = onExitStr.substring(0,
-                                                    onExitStr.length() - 1);
-                }
-                properties.put("onexitactions",
-                               onExitStr);
-            }
+        ScriptTypeListValue onEntryActions = getOnEntryActions(task.getExtensionValues());
+        ScriptTypeListValue onExitActions = getOnExitActions(task.getExtensionValues());
+        if (!onEntryActions.isEmpty()) {
+            properties.put(ONENTRYACTIONS,
+                           new ScriptTypeListTypeSerializer().serialize(onEntryActions));
         }
+        if (!onExitActions.isEmpty()) {
+            properties.put(ONEXITACTIONS,
+                           new ScriptTypeListTypeSerializer().serialize(onExitActions));
+        }
+
         // simulation properties
         setSimulationProperties(task.getId(),
                                 properties);
@@ -3000,23 +2959,8 @@ public class Bpmn2JsonMarshaller {
                            elementName);
         }
         if (subProcess instanceof AdHocSubProcess) {
-            AdHocSubProcess ahsp = (AdHocSubProcess) subProcess;
-            if (ahsp.getOrdering().equals(AdHocOrdering.PARALLEL)) {
-                properties.put(ADHOCORDERING,
-                               "Parallel");
-            } else if (ahsp.getOrdering().equals(AdHocOrdering.SEQUENTIAL)) {
-                properties.put(ADHOCORDERING,
-                               "Sequential");
-            } else {
-                // default to parallel
-                properties.put(ADHOCORDERING,
-                               "Parallel");
-            }
-            if (ahsp.getCompletionCondition() != null) {
-                properties.put(ADHOCCOMPLETIONCONDITION,
-                               ((FormalExpression) ahsp.getCompletionCondition()).getBody().replaceAll("\n",
-                                                                                                       "\\\\n"));
-            }
+            setAdHocSubProcessProperties((AdHocSubProcess) subProcess,
+                                         properties);
         }
         // custom async
         String customAsyncMetaData = Utils.getMetaDataValue(subProcess.getExtensionValues(),
@@ -3052,77 +2996,17 @@ public class Bpmn2JsonMarshaller {
                                    assignmentString,
                                    properties);
         // on-entry and on-exit actions
-        if (subProcess.getExtensionValues() != null && subProcess.getExtensionValues().size() > 0) {
-            String onEntryStr = "";
-            String onExitStr = "";
-            for (ExtensionAttributeValue extattrval : subProcess.getExtensionValues()) {
-                FeatureMap extensionElements = extattrval.getValue();
-                @SuppressWarnings("unchecked")
-                List<OnEntryScriptType> onEntryExtensions = (List<OnEntryScriptType>) extensionElements
-                        .get(DroolsPackage.Literals.DOCUMENT_ROOT__ON_ENTRY_SCRIPT,
-                             true);
-                @SuppressWarnings("unchecked")
-                List<OnExitScriptType> onExitExtensions = (List<OnExitScriptType>) extensionElements
-                        .get(DroolsPackage.Literals.DOCUMENT_ROOT__ON_EXIT_SCRIPT,
-                             true);
-                for (OnEntryScriptType onEntryScript : onEntryExtensions) {
-                    onEntryStr += onEntryScript.getScript();
-                    onEntryStr += "|";
-                    if (onEntryScript.getScriptFormat() != null) {
-                        String format = onEntryScript.getScriptFormat();
-                        String formatToWrite = "";
-                        if (format.equals("http://www.java.com/java")) {
-                            formatToWrite = "java";
-                        } else if (format.equals("http://www.mvel.org/2.0")) {
-                            formatToWrite = "mvel";
-                        } else if (format.equals("http://www.javascript.com/javascript")) {
-                            formatToWrite = "javascript";
-                        } else {
-                            formatToWrite = "java";
-                        }
-                        properties.put(SCRIPT_LANGUAGE,
-                                       formatToWrite);
-                    }
-                }
-                for (OnExitScriptType onExitScript : onExitExtensions) {
-                    onExitStr += onExitScript.getScript();
-                    onExitStr += "|";
-                    if (onExitScript.getScriptFormat() != null) {
-                        String format = onExitScript.getScriptFormat();
-                        String formatToWrite = "";
-                        if (format.equals("http://www.java.com/java")) {
-                            formatToWrite = "java";
-                        } else if (format.equals("http://www.mvel.org/2.0")) {
-                            formatToWrite = "mvel";
-                        } else if (format.equals("http://www.javascript.com/javascript")) {
-                            formatToWrite = "javascript";
-                        } else {
-                            formatToWrite = "java";
-                        }
-                        if (properties.get("script_language") == null) {
-                            properties.put(SCRIPT_LANGUAGE,
-                                           formatToWrite);
-                        }
-                    }
-                }
-            }
-            if (onEntryStr.length() > 0) {
-                if (onEntryStr.endsWith("|")) {
-                    onEntryStr = onEntryStr.substring(0,
-                                                      onEntryStr.length() - 1);
-                }
-                properties.put(ONENTRYACTIONS,
-                               onEntryStr);
-            }
-            if (onExitStr.length() > 0) {
-                if (onExitStr.endsWith("|")) {
-                    onExitStr = onExitStr.substring(0,
-                                                    onExitStr.length() - 1);
-                }
-                properties.put(ONEXITACTIONS,
-                               onExitStr);
-            }
+        ScriptTypeListValue onEntryActions = getOnEntryActions(subProcess.getExtensionValues());
+        ScriptTypeListValue onExitActions = getOnExitActions(subProcess.getExtensionValues());
+        if (!onEntryActions.isEmpty()) {
+            properties.put(ONENTRYACTIONS,
+                           new ScriptTypeListTypeSerializer().serialize(onEntryActions));
         }
+        if (!onExitActions.isEmpty()) {
+            properties.put(ONEXITACTIONS,
+                           new ScriptTypeListTypeSerializer().serialize(onExitActions));
+        }
+
         // loop characteristics
         boolean haveValidLoopCharacteristics = false;
         if (subProcess.getLoopCharacteristics() != null && subProcess.getLoopCharacteristics() instanceof MultiInstanceLoopCharacteristics) {
@@ -3439,28 +3323,9 @@ public class Bpmn2JsonMarshaller {
         }
         Expression conditionExpression = sequenceFlow.getConditionExpression();
         if (conditionExpression instanceof FormalExpression) {
-            if (((FormalExpression) conditionExpression).getBody() != null) {
-                properties.put(CONDITIONEXPRESSION,
-                               ((FormalExpression) conditionExpression).getBody());
-            }
-            if (((FormalExpression) conditionExpression).getLanguage() != null) {
-                String cd = ((FormalExpression) conditionExpression).getLanguage();
-                String cdStr = "";
-                if (cd.equalsIgnoreCase("http://www.java.com/java")) {
-                    cdStr = "java";
-                } else if (cd.equalsIgnoreCase("http://www.jboss.org/drools/rule")) {
-                    cdStr = "drools";
-                } else if (cd.equalsIgnoreCase("http://www.mvel.org/2.0")) {
-                    cdStr = "mvel";
-                } else if (cd.equalsIgnoreCase("http://www.javascript.com/javascript")) {
-                    cdStr = "javascript";
-                } else {
-                    // default to mvel
-                    cdStr = "mvel";
-                }
-                properties.put(CONDITIONEXPRESSIONLANGUAGE,
-                               cdStr);
-            }
+            setConditionExpressionProperties((FormalExpression) conditionExpression,
+                                             properties,
+                                             "mvel");
         }
         boolean foundBgColor = false;
         boolean foundBrColor = false;

@@ -16,7 +16,17 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+
 import org.junit.Test;
+import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.Actors;
+import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.Groupid;
+import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.ConditionExpression;
+import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.Priority;
+import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.SequenceFlowExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.CancelActivity;
@@ -28,6 +38,25 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.M
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.ScopedSignalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.SignalRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.SignalScope;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocCompletionCondition;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocOrdering;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocSubprocessTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.BusinessRuleTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.CreatedBy;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.Description;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleFlowGroup;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.Script;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeListValue;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.Skippable;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.Subject;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskName;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.UserTaskExecutionSet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -44,6 +73,8 @@ public class HashCodeAndEqualityTest {
         AdHocSubprocess b = builder.build();
         assertEquals(a,
                      b);
+        assertEquals(new AdHocSubprocess(),
+                     new AdHocSubprocess());
         assertFalse(a.equals(19));
         assertFalse(a.equals(null));
     }
@@ -54,7 +85,8 @@ public class HashCodeAndEqualityTest {
         AdHocSubprocess a = builder.build();
         builder = new AdHocSubprocess.AdHocSubprocessBuilder();
         AdHocSubprocess b = builder.build();
-        assertEquals(a.hashCode(), b.hashCode());
+        assertTrue(a.hashCode() == b.hashCode());
+        assertTrue(new AdHocSubprocess().hashCode() == new AdHocSubprocess().hashCode());
     }
 
     @Test
@@ -75,7 +107,8 @@ public class HashCodeAndEqualityTest {
         BPMNDiagramImpl a = builder.build();
         builder = new BPMNDiagramImpl.BPMNDiagramBuilder();
         BPMNDiagramImpl b = builder.build();
-        assertEquals(a.hashCode(), b.hashCode());
+        assertEquals(a.hashCode(),
+                     b.hashCode());
     }
 
     @Test
@@ -96,7 +129,8 @@ public class HashCodeAndEqualityTest {
         BusinessRuleTask a = builder.build();
         builder = new BusinessRuleTask.BusinessRuleTaskBuilder();
         BusinessRuleTask b = builder.build();
-        assertEquals(a.hashCode(), b.hashCode());
+        assertEquals(a.hashCode(),
+                     b.hashCode());
     }
 
     @Test
@@ -117,7 +151,8 @@ public class HashCodeAndEqualityTest {
         EndNoneEvent a = builder.build();
         builder = new EndNoneEvent.EndNoneEventBuilder();
         EndNoneEvent b = builder.build();
-        assertEquals(a.hashCode(), b.hashCode());
+        assertEquals(a.hashCode(),
+                     b.hashCode());
     }
 
     @Test
@@ -138,18 +173,22 @@ public class HashCodeAndEqualityTest {
         EndTerminateEvent a = builder.build();
         builder = new EndTerminateEvent.EndTerminateEventBuilder();
         EndTerminateEvent b = builder.build();
-        assertEquals(a.hashCode(), b.hashCode());
+        assertEquals(a.hashCode(),
+                     b.hashCode());
     }
-
 
     @Test
     public void testEndSignalEventEquals() {
         final String SIGNAL_REF = "signal ref";
         final String SIGNAL_SCOPE = "signal scope";
-        final ScopedSignalEventExecutionSet A_EXECUTION_SET = new ScopedSignalEventExecutionSet(new SignalRef(SIGNAL_REF),new SignalScope(SIGNAL_SCOPE));
-        final ScopedSignalEventExecutionSet B_EXECUTION_SET = new ScopedSignalEventExecutionSet(new SignalRef(SIGNAL_REF),new SignalScope(SIGNAL_SCOPE));
-        final ScopedSignalEventExecutionSet C_EXECUTION_SET = new ScopedSignalEventExecutionSet(new SignalRef("Other value"),new SignalScope(SIGNAL_SCOPE));
-        final ScopedSignalEventExecutionSet D_EXECUTION_SET = new ScopedSignalEventExecutionSet(new SignalRef(SIGNAL_REF),new SignalScope(SIGNAL_SCOPE));
+        final ScopedSignalEventExecutionSet A_EXECUTION_SET = new ScopedSignalEventExecutionSet(new SignalRef(SIGNAL_REF),
+                                                                                                new SignalScope(SIGNAL_SCOPE));
+        final ScopedSignalEventExecutionSet B_EXECUTION_SET = new ScopedSignalEventExecutionSet(new SignalRef(SIGNAL_REF),
+                                                                                                new SignalScope(SIGNAL_SCOPE));
+        final ScopedSignalEventExecutionSet C_EXECUTION_SET = new ScopedSignalEventExecutionSet(new SignalRef("Other value"),
+                                                                                                new SignalScope(SIGNAL_SCOPE));
+        final ScopedSignalEventExecutionSet D_EXECUTION_SET = new ScopedSignalEventExecutionSet(new SignalRef(SIGNAL_REF),
+                                                                                                new SignalScope(SIGNAL_SCOPE));
 
         final String ASSIGNMENT_INFO = "some value";
         final DataIOSet A_DATA_SET = new DataIOSet(new AssignmentsInfo(ASSIGNMENT_INFO));
@@ -177,29 +216,40 @@ public class HashCodeAndEqualityTest {
         d.setExecutionSet(D_EXECUTION_SET);
         d.setDataIOSet(D_DATA_SET);
 
-        assertEquals(a, a);
-        assertEquals(a, b);
-        assertNotEquals(a, c);
-        assertNotEquals(a, d);
-        assertNotEquals(a, 19);
-        assertNotEquals(a,null);
+        assertEquals(a,
+                     a);
+        assertEquals(a,
+                     b);
+        assertNotEquals(a,
+                        c);
+        assertNotEquals(a,
+                        d);
+        assertNotEquals(a,
+                        19);
+        assertNotEquals(a,
+                        null);
 
         a.setExecutionSet(null);
-        assertNotEquals(a, b);
-        assertNotEquals(b, a);
+        assertNotEquals(a,
+                        b);
+        assertNotEquals(b,
+                        a);
 
         a.setExecutionSet(A_EXECUTION_SET);
-        assertEquals(a, b);
+        assertEquals(a,
+                     b);
 
         a.setDataIOSet(null);
-        assertNotEquals(a, b);
-        assertNotEquals(b, a);
+        assertNotEquals(a,
+                        b);
+        assertNotEquals(b,
+                        a);
 
         EndMessageEvent.EndMessageEventBuilder builderMessage = new EndMessageEvent.EndMessageEventBuilder();
         EndMessageEvent e = builderMessage.build();
-        assertNotEquals(a, e);
+        assertNotEquals(a,
+                        e);
     }
-
 
     @Test
     public void testEndSignalEventHashCode() {
@@ -207,7 +257,8 @@ public class HashCodeAndEqualityTest {
         EndSignalEvent a = builder.build();
         builder = new EndSignalEvent.EndSignalEventBuilder();
         EndSignalEvent b = builder.build();
-        assertEquals(a.hashCode(), b.hashCode());
+        assertEquals(a.hashCode(),
+                     b.hashCode());
     }
 
     @Test
@@ -244,31 +295,47 @@ public class HashCodeAndEqualityTest {
         d.setExecutionSet(D_EXECUTION_SET);
         d.setDataIOSet(D_DATA_SET);
 
-        assertEquals(a, a);
-        assertEquals(a, b);
-        assertNotEquals(a,c);
-        assertNotEquals(a,d);
-        assertNotEquals(a,19);
-        assertNotEquals(a,null);
+        assertEquals(a,
+                     a);
+        assertEquals(a,
+                     b);
+        assertNotEquals(a,
+                        c);
+        assertNotEquals(a,
+                        d);
+        assertNotEquals(a,
+                        19);
+        assertNotEquals(a,
+                        null);
 
         a.setExecutionSet(null);
-        assertNotEquals(a, b);
-        assertNotEquals(b, a);
+        assertNotEquals(a,
+                        b);
+        assertNotEquals(b,
+                        a);
 
         a.setExecutionSet(A_EXECUTION_SET);
-        assertEquals(a, b);
-        assertNotEquals(a, c);
-        assertNotEquals(a, d);
+        assertEquals(a,
+                     b);
+        assertNotEquals(a,
+                        c);
+        assertNotEquals(a,
+                        d);
 
         a.setDataIOSet(null);
-        assertNotEquals(a, b);
-        assertNotEquals(b, a);
-        assertNotEquals(a, c);
-        assertNotEquals(a, d);
+        assertNotEquals(a,
+                        b);
+        assertNotEquals(b,
+                        a);
+        assertNotEquals(a,
+                        c);
+        assertNotEquals(a,
+                        d);
 
         EndSignalEvent.EndSignalEventBuilder builderSignal = new EndSignalEvent.EndSignalEventBuilder();
         EndSignalEvent e = builderSignal.build();
-        assertNotEquals(a, e);
+        assertNotEquals(a,
+                        e);
     }
 
     @Test
@@ -277,7 +344,8 @@ public class HashCodeAndEqualityTest {
         EndMessageEvent a = builder.build();
         builder = new EndMessageEvent.EndMessageEventBuilder();
         EndMessageEvent b = builder.build();
-        assertEquals(a.hashCode(), b.hashCode());
+        assertEquals(a.hashCode(),
+                     b.hashCode());
     }
 
     @Test
@@ -298,7 +366,8 @@ public class HashCodeAndEqualityTest {
         ExclusiveDatabasedGateway a = builder.build();
         builder = new ExclusiveDatabasedGateway.ExclusiveDatabasedGatewayBuilder();
         ExclusiveDatabasedGateway b = builder.build();
-        assertEquals(a.hashCode(), b.hashCode());
+        assertEquals(a.hashCode(),
+                     b.hashCode());
     }
 
     @Test
@@ -319,7 +388,8 @@ public class HashCodeAndEqualityTest {
         IntermediateMessageEventThrowing a = builder.build();
         builder = new IntermediateMessageEventThrowing.IntermediateMessageEventThrowingBuilder();
         IntermediateMessageEventThrowing b = builder.build();
-        assertEquals(a.hashCode(), b.hashCode());
+        assertEquals(a.hashCode(),
+                     b.hashCode());
     }
 
     @Test
@@ -356,52 +426,74 @@ public class HashCodeAndEqualityTest {
         d.setExecutionSet(D_EXECUTION_SET);
         d.setDataIOSet(D_DATA_SET);
 
-        assertEquals(a, a);
-        assertEquals(a, b);
-        assertNotEquals(a, c);
-        assertNotEquals(a, d);
-        assertNotEquals(a, 19);
-        assertNotEquals(a, null);
+        assertEquals(a,
+                     a);
+        assertEquals(a,
+                     b);
+        assertNotEquals(a,
+                        c);
+        assertNotEquals(a,
+                        d);
+        assertNotEquals(a,
+                        19);
+        assertNotEquals(a,
+                        null);
 
         a.setExecutionSet(null);
-        assertNotEquals(a, b);
-        assertNotEquals(b, a);
-        assertNotEquals(a, c);
-        assertNotEquals(a, d);
+        assertNotEquals(a,
+                        b);
+        assertNotEquals(b,
+                        a);
+        assertNotEquals(a,
+                        c);
+        assertNotEquals(a,
+                        d);
 
         a.setExecutionSet(A_EXECUTION_SET);
-        assertEquals(a, b);
-        assertNotEquals(a, c);
-        assertNotEquals(a, d);
+        assertEquals(a,
+                     b);
+        assertNotEquals(a,
+                        c);
+        assertNotEquals(a,
+                        d);
 
         a.setDataIOSet(null);
-        assertNotEquals(a, b);
-        assertNotEquals(b, a);
-        assertNotEquals(a, c);
-        assertNotEquals(a, d);
+        assertNotEquals(a,
+                        b);
+        assertNotEquals(b,
+                        a);
+        assertNotEquals(a,
+                        c);
+        assertNotEquals(a,
+                        d);
 
         EndSignalEvent.EndSignalEventBuilder builderSignal = new EndSignalEvent.EndSignalEventBuilder();
         EndSignalEvent e = builderSignal.build();
-        assertNotEquals(a, e);
+        assertNotEquals(a,
+                        e);
     }
-
 
     @Test
     public void IntermediateMessageEventCatchingHashCode() {
-        IntermediateMessageEventCatching.IntermediateMessageEventCatchingBuilder builder = new  IntermediateMessageEventCatching.IntermediateMessageEventCatchingBuilder();
+        IntermediateMessageEventCatching.IntermediateMessageEventCatchingBuilder builder = new IntermediateMessageEventCatching.IntermediateMessageEventCatchingBuilder();
         IntermediateMessageEventCatching a = builder.build();
         builder = new IntermediateMessageEventCatching.IntermediateMessageEventCatchingBuilder();
         IntermediateMessageEventCatching b = builder.build();
-        assertEquals(a.hashCode(), b.hashCode());
+        assertEquals(a.hashCode(),
+                     b.hashCode());
     }
 
     @Test
     public void IntermediateMessageEventCatchingEquals() {
         final String MESSAGE_REF = "message ref";
-        final CancellingMessageEventExecutionSet A_EXECUTION_SET = new CancellingMessageEventExecutionSet(new CancelActivity(true), new MessageRef(MESSAGE_REF));
-        final CancellingMessageEventExecutionSet B_EXECUTION_SET = new CancellingMessageEventExecutionSet(new CancelActivity(true),new MessageRef(MESSAGE_REF));
-        final CancellingMessageEventExecutionSet C_EXECUTION_SET = new CancellingMessageEventExecutionSet(new CancelActivity(true),new MessageRef("Other value"));
-        final CancellingMessageEventExecutionSet D_EXECUTION_SET = new CancellingMessageEventExecutionSet(new CancelActivity(true),new MessageRef(MESSAGE_REF));
+        final CancellingMessageEventExecutionSet A_EXECUTION_SET = new CancellingMessageEventExecutionSet(new CancelActivity(true),
+                                                                                                          new MessageRef(MESSAGE_REF));
+        final CancellingMessageEventExecutionSet B_EXECUTION_SET = new CancellingMessageEventExecutionSet(new CancelActivity(true),
+                                                                                                          new MessageRef(MESSAGE_REF));
+        final CancellingMessageEventExecutionSet C_EXECUTION_SET = new CancellingMessageEventExecutionSet(new CancelActivity(true),
+                                                                                                          new MessageRef("Other value"));
+        final CancellingMessageEventExecutionSet D_EXECUTION_SET = new CancellingMessageEventExecutionSet(new CancelActivity(true),
+                                                                                                          new MessageRef(MESSAGE_REF));
 
         final String ASSIGNMENT_INFO = "some value";
         final DataIOSet A_DATA_SET = new DataIOSet(new AssignmentsInfo(ASSIGNMENT_INFO));
@@ -429,33 +521,51 @@ public class HashCodeAndEqualityTest {
         d.setExecutionSet(D_EXECUTION_SET);
         d.setDataIOSet(D_DATA_SET);
 
-        assertEquals(a, a);
-        assertEquals(a, b);
-        assertNotEquals(a, c);
-        assertNotEquals(a, d);
-        assertNotEquals(a, 19);
-        assertNotEquals(a, null);
+        assertEquals(a,
+                     a);
+        assertEquals(a,
+                     b);
+        assertNotEquals(a,
+                        c);
+        assertNotEquals(a,
+                        d);
+        assertNotEquals(a,
+                        19);
+        assertNotEquals(a,
+                        null);
 
         a.setExecutionSet(null);
-        assertNotEquals(a, b);
-        assertNotEquals(b, a);
-        assertNotEquals(a, c);
-        assertNotEquals(a, d);
+        assertNotEquals(a,
+                        b);
+        assertNotEquals(b,
+                        a);
+        assertNotEquals(a,
+                        c);
+        assertNotEquals(a,
+                        d);
 
         a.setExecutionSet(A_EXECUTION_SET);
-        assertEquals(a, b);
-        assertNotEquals(a, c);
-        assertNotEquals(a, d);
+        assertEquals(a,
+                     b);
+        assertNotEquals(a,
+                        c);
+        assertNotEquals(a,
+                        d);
 
         a.setDataIOSet(null);
-        assertNotEquals(a, b);
-        assertNotEquals(b, a);
-        assertNotEquals(a, c);
-        assertNotEquals(a, d);
+        assertNotEquals(a,
+                        b);
+        assertNotEquals(b,
+                        a);
+        assertNotEquals(a,
+                        c);
+        assertNotEquals(a,
+                        d);
 
         EndSignalEvent.EndSignalEventBuilder builderSignal = new EndSignalEvent.EndSignalEventBuilder();
         EndSignalEvent e = builderSignal.build();
-        assertNotEquals(a, e);
+        assertNotEquals(a,
+                        e);
     }
 
     @Test
@@ -464,7 +574,8 @@ public class HashCodeAndEqualityTest {
         IntermediateTimerEvent a = builder.build();
         builder = new IntermediateTimerEvent.IntermediateTimerEventBuilder();
         IntermediateTimerEvent b = builder.build();
-        assertEquals(a.hashCode(), b.hashCode());
+        assertEquals(a.hashCode(),
+                     b.hashCode());
     }
 
     @Test
@@ -485,7 +596,8 @@ public class HashCodeAndEqualityTest {
         Lane a = builder.build();
         builder = new Lane.LaneBuilder();
         Lane b = builder.build();
-        assertEquals(a.hashCode(), b.hashCode());
+        assertEquals(a.hashCode(),
+                     b.hashCode());
     }
 
     @Test
@@ -506,7 +618,8 @@ public class HashCodeAndEqualityTest {
         NoneTask a = builder.build();
         builder = new NoneTask.NoneTaskBuilder();
         NoneTask b = builder.build();
-        assertEquals(a.hashCode(), b.hashCode());
+        assertEquals(a.hashCode(),
+                     b.hashCode());
     }
 
     @Test
@@ -527,7 +640,8 @@ public class HashCodeAndEqualityTest {
         ParallelGateway a = builder.build();
         builder = new ParallelGateway.ParallelGatewayBuilder();
         ParallelGateway b = builder.build();
-        assertEquals(a.hashCode(), b.hashCode());
+        assertEquals(a.hashCode(),
+                     b.hashCode());
     }
 
     @Test
@@ -548,9 +662,9 @@ public class HashCodeAndEqualityTest {
         ReusableSubprocess a = builder.build();
         builder = new ReusableSubprocess.ReusableSubprocessBuilder();
         ReusableSubprocess b = builder.build();
-        assertEquals(a.hashCode(), b.hashCode());
+        assertEquals(a.hashCode(),
+                     b.hashCode());
     }
-
 
     @Test
     public void testEventSubprocessEquals() {
@@ -570,10 +684,9 @@ public class HashCodeAndEqualityTest {
         EventSubprocess a = builder.build();
         builder = new EventSubprocess.EventSubprocessBuilder();
         EventSubprocess b = builder.build();
-        assertEquals(a.hashCode(), b.hashCode());
+        assertEquals(a.hashCode(),
+                     b.hashCode());
     }
-
-
 
     @Test
     public void testScriptTaskEquals() {
@@ -593,7 +706,8 @@ public class HashCodeAndEqualityTest {
         ScriptTask a = builder.build();
         builder = new ScriptTask.ScriptTaskBuilder();
         ScriptTask b = builder.build();
-        assertEquals(a.hashCode(), b.hashCode());
+        assertEquals(a.hashCode(),
+                     b.hashCode());
     }
 
     @Test
@@ -614,7 +728,8 @@ public class HashCodeAndEqualityTest {
         SequenceFlow a = builder.build();
         builder = new SequenceFlow.SequenceFlowBuilder();
         SequenceFlow b = builder.build();
-        assertEquals(a.hashCode(), b.hashCode());
+        assertEquals(a.hashCode(),
+                     b.hashCode());
     }
 
     @Test
@@ -635,7 +750,8 @@ public class HashCodeAndEqualityTest {
         StartNoneEvent a = builder.build();
         builder = new StartNoneEvent.StartNoneEventBuilder();
         StartNoneEvent b = builder.build();
-        assertEquals(a.hashCode(), b.hashCode());
+        assertEquals(a.hashCode(),
+                     b.hashCode());
     }
 
     @Test
@@ -656,16 +772,21 @@ public class HashCodeAndEqualityTest {
         StartSignalEvent a = builder.build();
         builder = new StartSignalEvent.StartSignalEventBuilder();
         StartSignalEvent b = builder.build();
-        assertEquals(a.hashCode(), b.hashCode());
+        assertEquals(a.hashCode(),
+                     b.hashCode());
     }
 
     @Test
     public void testStartMessageEventEquals() {
         final String MESSAGE_REF = "message ref";
-        final InterruptingMessageEventExecutionSet A_EXECUTION_SET = new InterruptingMessageEventExecutionSet(new IsInterrupting(true),new MessageRef(MESSAGE_REF));
-        final InterruptingMessageEventExecutionSet B_EXECUTION_SET = new InterruptingMessageEventExecutionSet(new IsInterrupting(true),new MessageRef(MESSAGE_REF));
-        final InterruptingMessageEventExecutionSet C_EXECUTION_SET = new InterruptingMessageEventExecutionSet(new IsInterrupting(true),new MessageRef("Other value"));
-        final InterruptingMessageEventExecutionSet D_EXECUTION_SET = new InterruptingMessageEventExecutionSet(new IsInterrupting(true),new MessageRef(MESSAGE_REF));
+        final InterruptingMessageEventExecutionSet A_EXECUTION_SET = new InterruptingMessageEventExecutionSet(new IsInterrupting(true),
+                                                                                                              new MessageRef(MESSAGE_REF));
+        final InterruptingMessageEventExecutionSet B_EXECUTION_SET = new InterruptingMessageEventExecutionSet(new IsInterrupting(true),
+                                                                                                              new MessageRef(MESSAGE_REF));
+        final InterruptingMessageEventExecutionSet C_EXECUTION_SET = new InterruptingMessageEventExecutionSet(new IsInterrupting(true),
+                                                                                                              new MessageRef("Other value"));
+        final InterruptingMessageEventExecutionSet D_EXECUTION_SET = new InterruptingMessageEventExecutionSet(new IsInterrupting(true),
+                                                                                                              new MessageRef(MESSAGE_REF));
 
         final String ASSIGNMENT_INFO = "some value";
         final DataIOSet A_DATA_SET = new DataIOSet(new AssignmentsInfo(ASSIGNMENT_INFO));
@@ -693,36 +814,52 @@ public class HashCodeAndEqualityTest {
         d.setExecutionSet(D_EXECUTION_SET);
         d.setDataIOSet(D_DATA_SET);
 
-        assertEquals(a, a);
-        assertEquals(a, b);
-        assertNotEquals(a, c);
-        assertNotEquals(a, d);
-        assertNotEquals(a, 19);
-        assertNotEquals(a, null);
+        assertEquals(a,
+                     a);
+        assertEquals(a,
+                     b);
+        assertNotEquals(a,
+                        c);
+        assertNotEquals(a,
+                        d);
+        assertNotEquals(a,
+                        19);
+        assertNotEquals(a,
+                        null);
 
         a.setExecutionSet(null);
-        assertNotEquals(a, b);
-        assertNotEquals(b, a);
-        assertNotEquals(a, c);
-        assertNotEquals(a, d);
+        assertNotEquals(a,
+                        b);
+        assertNotEquals(b,
+                        a);
+        assertNotEquals(a,
+                        c);
+        assertNotEquals(a,
+                        d);
 
         a.setExecutionSet(A_EXECUTION_SET);
-        assertEquals(a, b);
-        assertNotEquals(a, c);
-        assertNotEquals(a, d);
+        assertEquals(a,
+                     b);
+        assertNotEquals(a,
+                        c);
+        assertNotEquals(a,
+                        d);
 
         a.setDataIOSet(null);
-        assertNotEquals(a, b);
-        assertNotEquals(b, a);
-        assertNotEquals(a, c);
-        assertNotEquals(a, d);
+        assertNotEquals(a,
+                        b);
+        assertNotEquals(b,
+                        a);
+        assertNotEquals(a,
+                        c);
+        assertNotEquals(a,
+                        d);
 
         EndSignalEvent.EndSignalEventBuilder builderSignal = new EndSignalEvent.EndSignalEventBuilder();
         EndSignalEvent e = builderSignal.build();
-        assertNotEquals(a, e);
+        assertNotEquals(a,
+                        e);
     }
-
-
 
     @Test
     public void testStartMessageEventHashCode() {
@@ -730,7 +867,8 @@ public class HashCodeAndEqualityTest {
         StartMessageEvent a = builder.build();
         builder = new StartMessageEvent.StartMessageEventBuilder();
         StartMessageEvent b = builder.build();
-        assertEquals(a.hashCode(), b.hashCode());
+        assertEquals(a.hashCode(),
+                     b.hashCode());
     }
 
     @Test
@@ -751,7 +889,8 @@ public class HashCodeAndEqualityTest {
         StartTimerEvent a = builder.build();
         builder = new StartTimerEvent.StartTimerEventBuilder();
         StartTimerEvent b = builder.build();
-        assertEquals(a.hashCode(), b.hashCode());
+        assertEquals(a.hashCode(),
+                     b.hashCode());
     }
 
     @Test
@@ -772,7 +911,8 @@ public class HashCodeAndEqualityTest {
         UserTask a = builder.build();
         builder = new UserTask.UserTaskBuilder();
         UserTask b = builder.build();
-        assertEquals(a.hashCode(), b.hashCode());
+        assertEquals(a.hashCode(),
+                     b.hashCode());
     }
 
     @Test
@@ -783,6 +923,8 @@ public class HashCodeAndEqualityTest {
         EmbeddedSubprocess b = builder.build();
         assertEquals(a,
                      b);
+        assertEquals(new EmbeddedSubprocess(),
+                     new EmbeddedSubprocess());
         assertFalse(a.equals(19));
         assertFalse(a.equals(null));
     }
@@ -793,8 +935,470 @@ public class HashCodeAndEqualityTest {
         EmbeddedSubprocess a = builder.build();
         builder = new EmbeddedSubprocess.EmbeddedSubprocessBuilder();
         EmbeddedSubprocess b = builder.build();
-        assertEquals(a.hashCode(), b.hashCode());
+        assertEquals(a.hashCode(),
+                     b.hashCode());
+        assertEquals(new EmbeddedSubprocess().hashCode(),
+                     new EmbeddedSubprocess().hashCode());
     }
 
+    @Test
+    public void testConditionExpressionEqualsAndHashCode() {
+        testHashCodeAndEquality(
+                TestCaseBuilder.newTestCase()
+                        .addTrueCase(new ConditionExpression(),
+                                     new ConditionExpression())
 
+                        .addTrueCase(new ConditionExpression(new ScriptTypeValue("a",
+                                                                                 "b")),
+                                     new ConditionExpression(new ScriptTypeValue("a",
+                                                                                 "b")))
+                        .addTrueCase(new ConditionExpression(null),
+                                     new ConditionExpression(null))
+
+                        .addFalseCase(new ConditionExpression(new ScriptTypeValue("a",
+                                                                                  "b")),
+                                      new ConditionExpression(new ScriptTypeValue("a",
+                                                                                  "X")))
+
+                        .addFalseCase(new ConditionExpression(new ScriptTypeValue("a",
+                                                                                  "b")),
+                                      new ConditionExpression(new ScriptTypeValue("Y",
+                                                                                  "b")))
+
+                        .addFalseCase(new ConditionExpression(new ScriptTypeValue("a",
+                                                                                  "b")),
+                                      new ConditionExpression(new ScriptTypeValue("Y",
+                                                                                  "X")))
+                        .build()
+        );
+    }
+
+    @Test
+    public void testScriptTypeValueEqualsAndHashCode() {
+        testHashCodeAndEquality(
+                TestCaseBuilder.newTestCase()
+                        .addTrueCase(new ScriptTypeValue(),
+                                     new ScriptTypeValue())
+
+                        .addTrueCase(new ScriptTypeValue(null,
+                                                         null),
+                                     new ScriptTypeValue(null,
+                                                         null))
+
+                        .addTrueCase(new ScriptTypeValue("a",
+                                                         "b"),
+                                     new ScriptTypeValue("a",
+                                                         "b"))
+
+                        .addTrueCase(new ScriptTypeValue("a",
+                                                         null),
+                                     new ScriptTypeValue("a",
+                                                         null))
+
+                        .addTrueCase(new ScriptTypeValue(null,
+                                                         "b"),
+                                     new ScriptTypeValue(null,
+                                                         "b"))
+
+                        .addFalseCase(new ScriptTypeValue("a",
+                                                          "b"),
+                                      new ScriptTypeValue("X",
+                                                          "b"))
+
+                        .addFalseCase(new ScriptTypeValue("a",
+                                                          "b"),
+                                      new ScriptTypeValue("a",
+                                                          "Y"))
+
+                        .addFalseCase(new ScriptTypeValue("a",
+                                                          "b"),
+                                      new ScriptTypeValue("X",
+                                                          "Y"))
+                        .build()
+
+        );
+    }
+
+    @Test
+    public void testSequenceFlowExecutionSetEqualsAndHashCode() {
+        testHashCodeAndEquality(
+                TestCaseBuilder.newTestCase()
+                        .addTrueCase(new SequenceFlowExecutionSet(),
+                                     new SequenceFlowExecutionSet())
+
+                        .addTrueCase(new SequenceFlowExecutionSet(null,
+                                                                  null),
+                                     new SequenceFlowExecutionSet(null,
+                                                                  null))
+
+                        .addTrueCase(new SequenceFlowExecutionSet(new Priority(),
+                                                                  new ConditionExpression()),
+                                     new SequenceFlowExecutionSet(new Priority(),
+                                                                  new ConditionExpression()))
+
+                        .addTrueCase(new SequenceFlowExecutionSet(new Priority("1"),
+                                                                  new ConditionExpression(new ScriptTypeValue("a",
+                                                                                                              "b"))),
+                                     new SequenceFlowExecutionSet(new Priority("1"),
+                                                                  new ConditionExpression(new ScriptTypeValue("a",
+                                                                                                              "b"))))
+
+                        .addFalseCase(new SequenceFlowExecutionSet(new Priority("1"),
+                                                                   new ConditionExpression(new ScriptTypeValue("a",
+                                                                                                               "b"))),
+                                      new SequenceFlowExecutionSet(new Priority("2"),
+                                                                   new ConditionExpression(new ScriptTypeValue("a",
+                                                                                                               "b"))))
+
+                        .addFalseCase(new SequenceFlowExecutionSet(new Priority("1"),
+                                                                   new ConditionExpression(new ScriptTypeValue("a",
+                                                                                                               "b"))),
+                                      new SequenceFlowExecutionSet(new Priority("1"),
+                                                                   new ConditionExpression(new ScriptTypeValue("X",
+                                                                                                               "Y"))))
+
+                        .addFalseCase(new SequenceFlowExecutionSet(new Priority("1"),
+                                                                   new ConditionExpression(new ScriptTypeValue("a",
+                                                                                                               "b"))),
+                                      new SequenceFlowExecutionSet(new Priority("2"),
+                                                                   new ConditionExpression(new ScriptTypeValue("X",
+                                                                                                               "Y"))))
+                        .build()
+
+        );
+    }
+
+    @Test
+    public void testAdHocCompletionConditionEqualsAndHashCode() {
+        testHashCodeAndEquality(
+                TestCaseBuilder.newTestCase()
+                        .addTrueCase(new AdHocCompletionCondition(),
+                                     new AdHocCompletionCondition())
+
+                        .addTrueCase(new AdHocCompletionCondition(new ScriptTypeValue()),
+                                     new AdHocCompletionCondition(new ScriptTypeValue()))
+
+                        .addTrueCase(new AdHocCompletionCondition(new ScriptTypeValue(null,
+                                                                                      null)),
+                                     new AdHocCompletionCondition(new ScriptTypeValue(null,
+                                                                                      null)))
+
+                        .addTrueCase(new AdHocCompletionCondition(new ScriptTypeValue("a",
+                                                                                      "b")),
+                                     new AdHocCompletionCondition(new ScriptTypeValue("a",
+                                                                                      "b")))
+
+                        .addTrueCase(new AdHocCompletionCondition(new ScriptTypeValue("a",
+                                                                                      null)),
+                                     new AdHocCompletionCondition(new ScriptTypeValue("a",
+                                                                                      null)))
+
+                        .addTrueCase(new AdHocCompletionCondition(new ScriptTypeValue(null,
+                                                                                      "b")),
+                                     new AdHocCompletionCondition(new ScriptTypeValue(null,
+                                                                                      "b")))
+
+                        .addFalseCase(new AdHocCompletionCondition(new ScriptTypeValue("a",
+                                                                                       "b")),
+                                      new AdHocCompletionCondition(new ScriptTypeValue("X",
+                                                                                       "b")))
+
+                        .addFalseCase(new AdHocCompletionCondition(new ScriptTypeValue("a",
+                                                                                       "b")),
+                                      new AdHocCompletionCondition(new ScriptTypeValue("a",
+                                                                                       "Y")))
+
+                        .addFalseCase(new AdHocCompletionCondition(new ScriptTypeValue("a",
+                                                                                       "b")),
+                                      new AdHocCompletionCondition(new ScriptTypeValue("X",
+                                                                                       "Y")))
+                        .build()
+        );
+    }
+
+    @Test
+    public void testAdHocOrderingEqualsAndHash() {
+        testHashCodeAndEquality(
+                TestCaseBuilder.newTestCase()
+                        .addTrueCase(new AdHocOrdering(),
+                                     new AdHocOrdering())
+
+                        .addTrueCase(new AdHocOrdering(null),
+                                     new AdHocOrdering(null))
+
+                        .addTrueCase(new AdHocOrdering("a"),
+                                     new AdHocOrdering("a"))
+
+                        .addFalseCase(new AdHocOrdering("a"),
+                                      new AdHocOrdering(null))
+
+                        .addFalseCase(new AdHocOrdering(null),
+                                      new AdHocOrdering("a"))
+
+                        .build()
+        );
+    }
+
+    @Test
+    public void testAdHocSubprocessTaskExecutionSEtSetEqualsAndHashCode() {
+        testHashCodeAndEquality(
+                TestCaseBuilder.newTestCase()
+                        .addTrueCase(new AdHocSubprocessTaskExecutionSet(),
+                                     new AdHocSubprocessTaskExecutionSet())
+
+                        .addTrueCase(new AdHocSubprocessTaskExecutionSet(new AdHocCompletionCondition(),
+                                                                         new AdHocOrdering(),
+                                                                         new OnEntryAction(),
+                                                                         new OnExitAction()),
+                                     new AdHocSubprocessTaskExecutionSet(new AdHocCompletionCondition(),
+                                                                         new AdHocOrdering(),
+                                                                         new OnEntryAction(),
+                                                                         new OnExitAction()))
+                        .build()
+
+        );
+    }
+
+    @Test
+    public void testBusinessRuleTaskExecutionSetEqualsAndHashCode() {
+        testHashCodeAndEquality(
+                TestCaseBuilder.newTestCase()
+                        .addTrueCase(new BusinessRuleTaskExecutionSet(),
+                                     new BusinessRuleTaskExecutionSet())
+
+                        .addTrueCase(new BusinessRuleTaskExecutionSet(new RuleFlowGroup(),
+                                                                      new OnEntryAction(),
+                                                                      new OnExitAction(),
+                                                                      new IsAsync(),
+                                                                      new AdHocAutostart()),
+                                     new BusinessRuleTaskExecutionSet(new RuleFlowGroup(),
+                                                                      new OnEntryAction(),
+                                                                      new OnExitAction(),
+                                                                      new IsAsync(),
+                                                                      new AdHocAutostart()))
+                        .build()
+        );
+    }
+
+    @Test
+    public void testOnEntryActionEqualsAndHashCode() {
+        testHashCodeAndEquality(
+                TestCaseBuilder.newTestCase()
+                        .addTrueCase(new OnEntryAction(),
+                                     new OnEntryAction())
+
+                        .addTrueCase(new OnEntryAction(new ScriptTypeListValue()),
+                                     new OnEntryAction(new ScriptTypeListValue()))
+                        .build()
+        );
+    }
+
+    @Test
+    public void testOnExitActionEqualsAndHashCode() {
+        testHashCodeAndEquality(
+                TestCaseBuilder.newTestCase()
+                        .addTrueCase(new OnExitAction(),
+                                     new OnExitAction())
+
+                        .addTrueCase(new OnExitAction(new ScriptTypeListValue()),
+                                     new OnExitAction(new ScriptTypeListValue()))
+                        .build()
+        );
+    }
+
+    @Test
+    public void testScriptEqualsAndHashCode() {
+        testHashCodeAndEquality(
+                TestCaseBuilder.newTestCase()
+                        .addTrueCase(new Script(),
+                                     new Script())
+
+                        .addTrueCase(new Script(new ScriptTypeValue()),
+                                     new Script(new ScriptTypeValue()))
+                        .build()
+        );
+    }
+
+    @Test
+    public void testScriptTaskExecutionSetEqualsAndHashCode() {
+        testHashCodeAndEquality(
+                TestCaseBuilder.newTestCase()
+                        .addTrueCase(new ScriptTaskExecutionSet(),
+                                     new ScriptTaskExecutionSet())
+
+                        .addTrueCase(new ScriptTaskExecutionSet(new Script(),
+                                                                new IsAsync()),
+
+                                     new ScriptTaskExecutionSet(new Script(),
+                                                                new IsAsync()))
+                        .build()
+        );
+    }
+
+    @Test
+    public void testScriptTypeListValueEqualsAndHashCode() {
+        testHashCodeAndEquality(
+                TestCaseBuilder.newTestCase()
+                        .addTrueCase(new ScriptTypeListValue(),
+                                     new ScriptTypeListValue())
+
+                        .addTrueCase(new ScriptTypeListValue().addValue(new ScriptTypeValue()),
+                                     new ScriptTypeListValue().addValue(new ScriptTypeValue()))
+
+                        .addTrueCase(new ScriptTypeListValue().addValue(new ScriptTypeValue(null,
+                                                                                            null)),
+                                     new ScriptTypeListValue().addValue(new ScriptTypeValue(null,
+                                                                                            null)))
+
+                        .addTrueCase(new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
+                                                                                            "b")),
+                                     new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
+                                                                                            "b")))
+
+                        .addTrueCase(new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
+                                                                                            null)),
+                                     new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
+                                                                                            null)))
+
+                        .addTrueCase(new ScriptTypeListValue().addValue(new ScriptTypeValue(null,
+                                                                                            "b")),
+                                     new ScriptTypeListValue().addValue(new ScriptTypeValue(null,
+                                                                                            "b")))
+
+                        .addFalseCase(new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
+                                                                                             "b")),
+                                      new ScriptTypeListValue().addValue(new ScriptTypeValue("X",
+                                                                                             "b")))
+
+                        .addFalseCase(new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
+                                                                                             "b")),
+                                      new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
+                                                                                             "Y")))
+
+                        .addFalseCase(new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
+                                                                                             "b")),
+                                      new ScriptTypeListValue().addValue(new ScriptTypeValue("X",
+                                                                                             "Y")))
+                        .build()
+        );
+    }
+
+    @Test
+    public void testUserTaskExecutionSetEqualsAndHashCode() {
+        testHashCodeAndEquality(
+                TestCaseBuilder.newTestCase()
+                        .addTrueCase(new UserTaskExecutionSet(),
+                                     new UserTaskExecutionSet())
+
+                        .addTrueCase(new UserTaskExecutionSet(new TaskName(),
+                                                              new Actors(),
+                                                              new Groupid(),
+                                                              new AssignmentsInfo(),
+                                                              new IsAsync(),
+                                                              new Skippable(),
+                                                              new Priority(),
+                                                              new Subject(),
+                                                              new Description(),
+                                                              new CreatedBy(),
+                                                              new AdHocAutostart(),
+                                                              new OnEntryAction(),
+                                                              new OnExitAction()),
+
+                                     new UserTaskExecutionSet(new TaskName(),
+                                                              new Actors(),
+                                                              new Groupid(),
+                                                              new AssignmentsInfo(),
+                                                              new IsAsync(),
+                                                              new Skippable(),
+                                                              new Priority(),
+                                                              new Subject(),
+                                                              new Description(),
+                                                              new CreatedBy(),
+                                                              new AdHocAutostart(),
+                                                              new OnEntryAction(),
+                                                              new OnExitAction()))
+                        .build()
+        );
+    }
+
+    public static class HashCodeAndEqualityTestCase {
+
+        private Object a;
+        private Object b;
+        private boolean expectedResult = true;
+
+        public HashCodeAndEqualityTestCase(Object a,
+                                           Object b,
+                                           boolean expectedResult) {
+            this.a = a;
+            this.b = b;
+            this.expectedResult = expectedResult;
+        }
+
+        public Object getA() {
+            return a;
+        }
+
+        public Object getB() {
+            return b;
+        }
+
+        public boolean isExpectedResult() {
+            return expectedResult;
+        }
+    }
+
+    public static class TestCaseBuilder {
+
+        private List<HashCodeAndEqualityTestCase> testCases = new ArrayList<>();
+
+        private TestCaseBuilder() {
+        }
+
+        public static TestCaseBuilder newTestCase() {
+            return new TestCaseBuilder();
+        }
+
+        public TestCaseBuilder addTrueCase(Object a,
+                                           Object b) {
+            testCases.add(new HashCodeAndEqualityTestCase(a,
+                                                          b,
+                                                          true));
+            return this;
+        }
+
+        public TestCaseBuilder addFalseCase(Object a,
+                                            Object b) {
+            testCases.add(new HashCodeAndEqualityTestCase(a,
+                                                          b,
+                                                          false));
+            return this;
+        }
+
+        public Collection<HashCodeAndEqualityTestCase> build() {
+            return testCases;
+        }
+    }
+
+    public static void testHashCodeAndEquality(Collection<HashCodeAndEqualityTestCase> testCases) {
+        int index = 0;
+        for (HashCodeAndEqualityTestCase testCase : testCases) {
+            if (testCase.isExpectedResult()) {
+                assertEquals("Equality check failed for test case element: " + index + " expected result is: " + testCase.isExpectedResult(),
+                             testCase.getA(),
+                             testCase.getB());
+                assertEquals("HashCode check failed for test case element: " + index + " expected result is: " + testCase.isExpectedResult(),
+                             Objects.hashCode(testCase.getA()),
+                             Objects.hashCode(testCase.getB()));
+            } else {
+                assertNotEquals("Equality check failed for test case element: " + index + " expected result is: " + testCase.isExpectedResult(),
+                                testCase.getA(),
+                                testCase.getB());
+                assertNotEquals("HashCode check failed for test case element: " + index + " expected result is: " + testCase.isExpectedResult(),
+                                Objects.hashCode(testCase.getA()),
+                                Objects.hashCode(testCase.getB()));
+            }
+            index++;
+        }
+    }
 }

@@ -28,7 +28,41 @@ import org.jboss.drools.DroolsFactory;
 import org.jboss.drools.DroolsPackage;
 import org.jboss.drools.MetaDataType;
 
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.util.Utils.LANGUAGE.DROOLS;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.util.Utils.LANGUAGE.JAVA;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.util.Utils.LANGUAGE.JAVASCRIPT;
+import static org.kie.workbench.common.stunner.bpmn.backend.legacy.util.Utils.LANGUAGE.MVEL;
+
 public class Utils {
+
+    enum LANGUAGE {
+        JAVA("java",
+             "http://www.java.com/java"),
+        JAVASCRIPT("javascript",
+                   "http://www.javascript.com/javascript"),
+        MVEL("mvel",
+             "http://www.mvel.org/2.0"),
+        DROOLS("drools",
+               "http://www.jboss.org/drools/rule");
+
+        private final String language;
+
+        private final String format;
+
+        LANGUAGE(String language,
+                 String format) {
+            this.language = language;
+            this.format = format;
+        }
+
+        String language() {
+            return language;
+        }
+
+        String format() {
+            return format;
+        }
+    }
 
     public static String getMetaDataValue(List<ExtensionAttributeValue> extensionValues,
                                           String metaDataName) {
@@ -64,5 +98,31 @@ public class Utils {
                     eleMetadata);
             element.getExtensionValues().get(0).getValue().add(eleExtensionElementEntry);
         }
+    }
+
+    public static String getScriptLanguage(final String languageFormat) {
+        if (JAVA.format().equals(languageFormat)) {
+            return JAVA.language();
+        } else if (MVEL.format().equals(languageFormat)) {
+            return MVEL.language();
+        } else if (JAVASCRIPT.format().equals(languageFormat)) {
+            return JAVASCRIPT.language();
+        } else if (DROOLS.format().equals(languageFormat)) {
+            return DROOLS.language();
+        }
+        return null;
+    }
+
+    public static String getScriptLanguageFormat(final String language) {
+        if (JAVA.language().equals(language)) {
+            return JAVA.format();
+        } else if (MVEL.language().equals(language)) {
+            return MVEL.format();
+        } else if (JAVASCRIPT.language().equals(language)) {
+            return JAVASCRIPT.format();
+        } else if (DROOLS.language().equals(language)) {
+            return DROOLS.format();
+        }
+        return null;
     }
 }
