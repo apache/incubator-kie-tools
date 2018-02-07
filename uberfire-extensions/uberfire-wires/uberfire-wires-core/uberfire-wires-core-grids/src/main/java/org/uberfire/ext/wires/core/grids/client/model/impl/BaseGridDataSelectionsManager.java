@@ -18,12 +18,14 @@ package org.uberfire.ext.wires.core.grids.client.model.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.util.ColumnIndexUtilities;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionStrategy;
 
 /**
  * Helper class that manages "selected cell" meta-data following different mutations to {@link GridData}
@@ -49,6 +51,22 @@ public class BaseGridDataSelectionsManager {
                                      1);
             }
         }
+    }
+
+    public void onInsertColumn(final int index) {
+        final List<GridData.SelectedCell> selectedCells = gridData.getSelectedCells();
+        final List<Integer> rowsWithASelection = selectedCells.stream()
+                .filter(sc -> {
+                    final int ri = sc.getRowIndex();
+                    final int ci = sc.getColumnIndex();
+                    final int _ci = ColumnIndexUtilities.findUiColumnIndex(gridData.getColumns(), ci);
+                    final GridCell<?> cell = gridData.getCell(ri, _ci);
+                    return cell != null && cell.getSelectionManager() instanceof RowSelectionStrategy;
+                })
+                .map(GridData.SelectedCell::getRowIndex)
+                .collect(Collectors.toList());
+
+        rowsWithASelection.forEach(rowIndex -> onSelectCell(rowIndex, index));
     }
 
     public void onDeleteColumn(final int index) {

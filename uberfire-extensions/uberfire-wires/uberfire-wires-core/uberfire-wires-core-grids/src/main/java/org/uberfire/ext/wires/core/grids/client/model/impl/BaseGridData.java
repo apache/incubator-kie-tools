@@ -69,6 +69,8 @@ public class BaseGridData implements GridData {
     public void appendColumn(final GridColumn<?> column) {
         column.setIndex(columns.size());
         columns.add(column);
+
+        selectionsManager.onInsertColumn(columns.size() - 1);
     }
 
     @Override
@@ -77,6 +79,8 @@ public class BaseGridData implements GridData {
         column.setIndex(columns.size());
         columns.add(index,
                     column);
+
+        selectionsManager.onInsertColumn(index);
     }
 
     @Override

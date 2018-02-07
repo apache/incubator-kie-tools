@@ -16,11 +16,15 @@
 package org.uberfire.ext.wires.core.grids.client.model.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.function.Consumer;
 
 import org.junit.Test;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionStrategy;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -1258,6 +1262,67 @@ public class GridCellSelectionsTest extends BaseGridTest {
                                                                               0)));
         assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
                                                                                1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               1)));
+        assertEquals(2,
+                     data.getSelectedCells().size());
+    }
+
+    @Test
+    public void testSelectCellAppendColumnWithRowSelected() {
+        doTestSelectCellWithRowSelected((data) -> data.appendColumn(new MockMergableGridColumn<String>("col1",
+                                                                                                       100)));
+    }
+
+    @Test
+    public void testSelectCellInsertColumnWithRowSelected() {
+        doTestSelectCellWithRowSelected((data) -> data.insertColumn(0,
+                                                                    new MockMergableGridColumn<String>("col1",
+                                                                                                       100)));
+    }
+
+    private void doTestSelectCellWithRowSelected(final Consumer<GridData> mutation) {
+        final GridData data = new BaseGridData();
+        final RowNumberColumn gc1 = new RowNumberColumn(Collections.singletonList(new BaseHeaderMetaData("#")),
+                                                        new MockMergableGridColumnRenderer<>());
+        data.appendColumn(gc1);
+
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
+
+        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
+            data.setCell(rowIndex,
+                         0,
+                         new BaseGridCellValue<>(rowIndex));
+            data.getCell(rowIndex,
+                         0).setSelectionManager(RowSelectionStrategy.INSTANCE);
+        }
+
+        assertGridIndexes(data,
+                          new boolean[]{false, false},
+                          new boolean[]{false, false},
+                          new Expected[][]{
+                                  {build(false,
+                                         1,
+                                         0)},
+                                  {build(false,
+                                         1,
+                                         1)}
+                          });
+
+        data.selectCell(0,
+                        0);
+        assertEquals(1,
+                     data.getSelectedCells().size());
+
+        mutation.accept(data);
+
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                              0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               0)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                              1)));
         assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
                                                                                1)));
         assertEquals(2,
