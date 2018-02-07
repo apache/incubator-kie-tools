@@ -59,6 +59,7 @@ import org.uberfire.mocks.CallerMock;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
@@ -278,77 +279,83 @@ public class FormEditorHelperTest {
 
     @Test
     public void testRemoveFieldsNotAddToAvailableNoFields() {
-        testRemoveFields(false,
-                         false);
+        testRemoveFields(false);
     }
 
     @Test
     public void testRemoveFieldsAddToAvailable() {
-        testRemoveFields(true,
-                         true);
+        testRemoveFields(true);
     }
 
-    @Test
-    public void testRemoveFieldsNotAddToAvailable() {
-        testRemoveFields(false,
-                         true);
-    }
+    private void testRemoveFields(boolean addToAvailable) {
+        content.getDefinition().getFields().addAll(employeeFields);
+        formEditorHelper.getAvailableFields().clear();
 
-    @Test
-    public void testRemoveFieldsAddToAvailableNoFields() {
-        testRemoveFields(true,
-                         false);
-    }
-
-    private void testRemoveFields(boolean addToAvailable,
-                                  boolean definitionHasFields) {
-        if (definitionHasFields) {
-            content.getDefinition().getFields().addAll(employeeFields);
-            formEditorHelper.getAvailableFields().clear();
-        }
         int prevAvailableSize = formEditorHelper.getAvailableFields().size();
-        FieldDefinition removedField = formEditorHelper.removeField(nameField.getId(),
-                                                                    addToAvailable);
+        formEditorHelper.removeField(nameField.getId(), addToAvailable);
+
         assertEquals("It should " + (addToAvailable ? " " : "not ") + "add the field to the available fields",
                      formEditorHelper.getAvailableFields().size(),
-                     prevAvailableSize + (addToAvailable && definitionHasFields ? 1 : 0));
+                     prevAvailableSize + (addToAvailable ? 1 : 0));
+    }
 
-        assertFalse("Removed field should " + (definitionHasFields ? "not " : " ") + "be null",
-                    (removedField == null) == definitionHasFields);
+    @Test
+    public void testRemoveUnbindedFieldsAndAddToAvailable() {
+        testRemoveUnboundField(true);
+    }
+
+    @Test
+    public void testRemoveUnbindedFields() {
+       testRemoveUnboundField(false);
+    }
+
+    protected void testRemoveUnboundField(boolean addToAvailables) {
+        content.getDefinition().getFields().addAll(employeeFields);
+        formEditorHelper.getAvailableFields().clear();
+
+        TextBoxFieldDefinition textBoxFieldDefinition = new TextBoxFieldDefinition();
+
+        formDefinition.getFields().add(textBoxFieldDefinition);
+
+        formEditorHelper.removeField(textBoxFieldDefinition.getId(), true);
+
+        Assertions.assertThat(formEditorHelper.getAvailableFields())
+                .isNotNull()
+                .isEmpty();
     }
 
     @Test
     public void testGetCompatibleModelFields() {
         List<String> compatibleModelFields = formEditorHelper.getCompatibleModelFields(nameField);
-        assertEquals(2,
-                     compatibleModelFields.size());
-        Assertions.assertThat(compatibleModelFields).containsExactly(lastNameField.getId(),
-                                                                     nameField.getId());
+
+        Assertions.assertThat(compatibleModelFields)
+                .hasSize(2)
+                .contains(lastNameField.getId(), nameField.getId());
 
         // Getting compatible model propertynames for an integerbox field -> only checks integer properties (age -> integer)
         compatibleModelFields = formEditorHelper.getCompatibleModelFields(ageField);
-        assertEquals(1,
-                     compatibleModelFields.size());
+
         Assertions.assertThat(compatibleModelFields).containsOnly(ageField.getId());
 
         // Getting compatible model propertynames for an decimalbox field -> only checks decimal properties (weight -> double)
         compatibleModelFields = formEditorHelper.getCompatibleModelFields(weightField);
-        assertEquals(1,
-                     compatibleModelFields.size());
-        Assertions.assertThat(compatibleModelFields).containsOnly(weightField.getId());
+
+        Assertions.assertThat(compatibleModelFields)
+                .hasSize(1)
+                .containsOnly(weightField.getId());
 
         IntegerSliderDefinition slider = new IntegerSliderDefinition();
         slider.setId("slider");
         slider.setName("slider");
         slider.setLabel("slider");
+        slider.setBinding("slider");
 
-        // Getting compatible model propertynames for an integer slider field -> slider's are available for integer &
-        // decimal properties (age -> integer & weight -> double)
+        // Getting compatible model propertynames for an integer slider field -> slider's are available for integer properties (age -> integer)
         compatibleModelFields = formEditorHelper.getCompatibleModelFields(slider);
-        assertEquals(2,
-                     compatibleModelFields.size());
-        Assertions.assertThat(compatibleModelFields).containsExactly(ageField.getId(),
-                                                                     weightField.getId());
+
+        Assertions.assertThat(compatibleModelFields)
+                .hasSize(1)
+                .containsOnly(ageField.getId());
     }
 
     @Test
@@ -403,6 +410,9 @@ public class FormEditorHelperTest {
 
     @Test
     public void testSwitchToFieldType() {
+        content.getDefinition().getFields().addAll(employeeFields);
+        formEditorHelper.getAvailableFields().clear();
+
         FieldDefinition fieldDefinition = formEditorHelper.switchToFieldType(nameField,
                                                                              TextAreaFieldDefinition.FIELD_TYPE.getTypeName());
         assertEquals(TextAreaFieldDefinition.class,

@@ -27,6 +27,8 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.ty
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.datePicker.type.DatePickerFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.decimalBox.type.DecimalBoxFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.integerBox.type.IntegerBoxFieldType;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.lists.input.MultipleInputFieldType;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.lists.selector.MultipleSelectorFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.type.RadioGroupFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType;
@@ -53,6 +55,8 @@ public class EditorFieldTypesProviderImpl implements EditorFieldTypesProvider {
         paletteFieldTypes.add(new SliderFieldType());
         paletteFieldTypes.add(new ListBoxFieldType());
         paletteFieldTypes.add(new RadioGroupFieldType());
+        paletteFieldTypes.add(new MultipleSelectorFieldType());
+        paletteFieldTypes.add(new MultipleInputFieldType());
         fieldPropertiesFieldTypes.addAll(paletteFieldTypes);
         fieldPropertiesFieldTypes.add(new SubFormFieldType());
         fieldPropertiesFieldTypes.add(new MultipleSubFormFieldType());

@@ -79,7 +79,7 @@ public abstract class BasicTypeFieldProvider<FIELD extends FieldDefinition> impl
         return isSupported(field.getFieldTypeInfo());
     }
 
-    protected boolean isSupported(TypeInfo typeInfo) {
+    public boolean isSupported(TypeInfo typeInfo) {
         for (String type : getSupportedTypes()) {
             if (type.equals(typeInfo.getClassName())) {
                 return true;

@@ -62,6 +62,7 @@ public class FormModelPropertiesUtil {
         // List types
         // TODO: Add support to other types
         listPropertyTypes.add(List.class.getName());
+        listPropertyTypes.add(ArrayList.class.getName());
     }
 
     public static void registerBaseType(String baseType) {

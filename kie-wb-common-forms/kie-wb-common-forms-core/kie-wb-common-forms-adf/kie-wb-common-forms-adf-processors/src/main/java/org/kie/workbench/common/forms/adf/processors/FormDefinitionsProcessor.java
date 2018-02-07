@@ -71,6 +71,7 @@ import org.kie.workbench.common.forms.adf.definitions.settings.ColSpan;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.forms.adf.processors.util.FormGenerationUtils;
 import org.kie.workbench.common.forms.model.FieldType;
+import org.kie.workbench.common.forms.model.util.formModel.FormModelPropertiesUtil;
 import org.uberfire.annotations.processors.AbstractErrorAbsorbingProcessor;
 import org.uberfire.annotations.processors.GenerationCompleteCallback;
 import org.uberfire.annotations.processors.GeneratorUtils;
@@ -581,7 +582,14 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
                         }
                         isList = true;
                         finalType = fieldType.getTypeArguments().get(0);
-                        typeKind = org.kie.workbench.common.forms.model.TypeKind.OBJECT;
+
+                        if(FormModelPropertiesUtil.isBaseType(finalType.toString())) {
+                            typeKind = org.kie.workbench.common.forms.model.TypeKind.BASE;
+                        } else if(elementUtils.getTypeElement(finalType.toString()).getSuperclass().toString().startsWith("java.lang.Enum")){
+                            typeKind = org.kie.workbench.common.forms.model.TypeKind.ENUM;
+                        } else {
+                            typeKind = org.kie.workbench.common.forms.model.TypeKind.OBJECT;
+                        }
                     } else if(elementUtils.getTypeElement(finalType.toString()).getSuperclass().toString().startsWith("java.lang.Enum")){
                         typeKind = org.kie.workbench.common.forms.model.TypeKind.ENUM;
                     }

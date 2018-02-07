@@ -58,16 +58,24 @@ public class LocalDateFieldValueProcessor implements FieldValueProcessor<DatePic
     public Date toFlatValue(DatePickerFieldDefinition field,
                             Object value,
                             BackendFormRenderingContext context) {
-        if (value != null) {
-            if (value instanceof Date) {
+      return toFlatValue(field.getStandaloneClassName(), value);
+    }
+
+    public Date toFlatValue(String className, Object value) {
+
+        if(value != null) {
+
+            if (Date.class.getName().equals(className)) {
                 return (Date) value;
             }
 
-            TimeConverter converter = converters.get(field.getStandaloneClassName());
+            TimeConverter converter = converters.get(className);
+
             if (converter != null) {
                 return converter.toFlatValue(value);
             }
         }
+
         return null;
     }
 
@@ -77,13 +85,22 @@ public class LocalDateFieldValueProcessor implements FieldValueProcessor<DatePic
                              Object originalValue,
                              BackendFormRenderingContext context) {
 
-        if (flatValue == null || field.getStandaloneClassName().equals(Date.class.getName())) {
-            return flatValue;
-        }
+        return toRawValue(field.getStandaloneClassName(), flatValue);
+    }
 
-        TimeConverter converter = converters.get(field.getStandaloneClassName());
-        if (converter != null) {
-            return converter.toRawValue(flatValue);
+    public Object toRawValue(String className, Date flatValue) {
+
+        if(flatValue != null) {
+
+            if (Date.class.getName().equals(className)) {
+                return flatValue;
+            }
+
+            TimeConverter converter = converters.get(className);
+
+            if (converter != null) {
+                return converter.toRawValue(flatValue);
+            }
         }
 
         return null;

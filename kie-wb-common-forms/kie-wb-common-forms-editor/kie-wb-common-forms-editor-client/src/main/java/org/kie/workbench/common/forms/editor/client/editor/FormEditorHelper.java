@@ -17,8 +17,8 @@ package org.kie.workbench.common.forms.editor.client.editor;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -42,6 +42,7 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FieldType;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
+import org.kie.workbench.common.forms.model.ModelProperty;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.uberfire.commons.data.Pair;
 
@@ -67,7 +68,7 @@ public class FormEditorHelper {
     public void init() {
         Collection<SyncBeanDef<EditorFieldTypesProvider>> providers = IOC.getBeanManager().lookupBeans(EditorFieldTypesProvider.class);
         providers.stream().map(SyncBeanDef::getInstance)
-                .sorted((EditorFieldTypesProvider providerA, EditorFieldTypesProvider providerB) -> providerA.getPriority() - providerB.getPriority())
+                .sorted(Comparator.comparingInt(EditorFieldTypesProvider::getPriority))
                 .forEach((EditorFieldTypesProvider editorProvider) -> {
                     enabledPaletteFieldTypes.addAll(editorProvider.getPaletteFieldTypes());
                     enabledFieldPropertiesFieldTypes.addAll(editorProvider.getFieldPropertiesFieldTypes());
@@ -122,7 +123,7 @@ public class FormEditorHelper {
         FormDefinition formDefinition = getFormDefinition();
 
         model.getProperties().forEach(modelProperty -> {
-            if(formDefinition.getFieldByBinding(modelProperty.getName()) == null) {
+            if (formDefinition.getFieldByBinding(modelProperty.getName()) == null) {
                 addAvailableField(fieldManager.getDefinitionByModelProperty(modelProperty));
             }
         });
@@ -175,22 +176,35 @@ public class FormEditorHelper {
         return result;
     }
 
-    public FieldDefinition removeField(String fieldId,
-                                       boolean addToAvailables) {
-        Iterator<FieldDefinition> it = content.getDefinition().getFields().iterator();
+    public void removeField(String fieldId,
+                            boolean addToAvailables) {
 
-        while (it.hasNext()) {
-            FieldDefinition field = it.next();
-            if (field.getId().equals(fieldId)) {
-                it.remove();
-                if (addToAvailables && modelContainsField(field)) {
-                    availableFields.put(field.getId(),
-                                        field);
+        FormDefinition formDefinition = content.getDefinition();
+
+        FieldDefinition fieldToRemove = formDefinition.getFieldById(fieldId);
+
+        if (fieldToRemove != null) {
+
+            formDefinition.getFields().remove(fieldToRemove);
+
+            if (addToAvailables) {
+
+                FieldDefinition originalField = fieldToRemove;
+
+                if(fieldToRemove.getBinding() == null) {
+                    return;
                 }
-                return field;
+
+                ModelProperty property = formDefinition.getModel().getProperty(fieldToRemove.getBinding());
+
+                fieldToRemove = fieldManager.getDefinitionByModelProperty(property);
+
+                fieldToRemove.setId(originalField.getId());
+
+                availableFields.put(fieldToRemove.getId(),
+                                    fieldToRemove);
             }
         }
-        return null;
     }
 
     public boolean modelContainsField(FieldDefinition fieldDefinition) {
@@ -200,16 +214,11 @@ public class FormEditorHelper {
     }
 
     public List<String> getCompatibleModelFields(FieldDefinition field) {
-        Collection<String> compatibles = fieldManager.getCompatibleTypes(field);
-
-        Set<String> result = new TreeSet<>();
-        if (field.getBinding() != null && !field.getBinding().isEmpty()) {
-            result.add(field.getBinding());
-        }
-
-        availableFields.values().stream().filter(availableField -> compatibles.contains(availableField.getStandaloneClassName())).forEach(availableField -> result.add(availableField.getBinding()));
-
-        return new ArrayList<>(result);
+        return availableFields.values()
+                .stream()
+                .filter(availableField -> availableField.getFieldTypeInfo().equals(field.getFieldTypeInfo()))
+                .map(FieldDefinition::getBinding)
+                .collect(Collectors.toList());
     }
 
     public List<String> getCompatibleFieldTypes(FieldDefinition field) {
@@ -250,7 +259,7 @@ public class FormEditorHelper {
         }
 
         // If we arrive here is because we have a dynamic binding or we are unbinding a field
-        FieldDefinition resultField = fieldManager.getDefinitionByFieldTypeName(originalField.getFieldType().getTypeName());
+        FieldDefinition resultField = fieldManager.getFieldFromProvider(originalField.getFieldType().getTypeName(), originalField.getFieldTypeInfo());
 
         if (newBinding == null || newBinding.equals("")) {
             // unbinding a field

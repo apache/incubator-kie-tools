@@ -216,9 +216,9 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
         assertNotNull("No compatibles fields found!",
                       compatibleFields);
 
-        assertEquals("There should exist 2 compatible fields for " + field.getName() + "!",
-                     compatibleFields.size(),
-                     2);
+        assertEquals("There should exist 1 compatible fields for " + field.getName() + "!",
+                     1,
+                     compatibleFields.size());
 
         String expectedBindingExpression = "lastName";
 
@@ -228,9 +228,6 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
         assertEquals("Wrong binding expression after switch field!",
                      field.getBinding(),
                      expectedBindingExpression);
-
-        presenter.onRemoveComponent(createComponentRemovedEvent(form,
-                                                                field));
     }
 
     protected ComponentRemovedEvent createComponentRemovedEvent(FormDefinition form,

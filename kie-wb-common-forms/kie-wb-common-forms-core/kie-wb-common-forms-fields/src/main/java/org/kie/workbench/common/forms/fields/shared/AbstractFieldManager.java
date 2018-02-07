@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.jboss.errai.common.client.api.Assert;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;
@@ -51,6 +53,8 @@ public abstract class AbstractFieldManager implements FieldManager {
 
     protected Set<BasicTypeFieldProvider> basicProviders = new TreeSet<>((o1, o2) -> o1.getPriority() - o2.getPriority());
 
+    protected Set<BasicTypeFieldProvider> basicMultipleProviders  = new TreeSet<>((o1, o2) -> o1.getPriority() - o2.getPriority());
+
     protected Map<String, FieldProvider> entityTypeFieldProvider = new HashMap<>();
 
     protected Map<String, FieldProvider> multipleEntityTypeFieldProvider = new HashMap<>();
@@ -75,7 +79,11 @@ public abstract class AbstractFieldManager implements FieldManager {
         if (provider instanceof BasicTypeFieldProvider) {
             BasicTypeFieldProvider basicTypeProvider = (BasicTypeFieldProvider) provider;
 
-            basicProviders.add(basicTypeProvider);
+            if(isMultiple) {
+                basicMultipleProviders.add(basicTypeProvider);
+            } else {
+                basicProviders.add(basicTypeProvider);
+            }
         } else {
             if (isMultiple) {
                 multipleEntityTypeFieldProvider.put(provider.getFieldTypeName(),
@@ -126,13 +134,8 @@ public abstract class AbstractFieldManager implements FieldManager {
     public FieldDefinition getDefinitionByDataType(TypeInfo typeInfo) {
 
         if (!TypeKind.OBJECT.equals(typeInfo.getType())) {
-            for (BasicTypeFieldProvider basicProvider : basicProviders) {
-                FieldDefinition field = basicProvider.getFieldByType(typeInfo);
-                if (field != null) {
-                    field.setStandaloneClassName(typeInfo.getClassName());
-                    return field;
-                }
-            }
+
+            return getFieldDefinitionFromBasicProvider(typeInfo);
         }
 
         FieldProvider provider;
@@ -149,6 +152,22 @@ public abstract class AbstractFieldManager implements FieldManager {
             return instance;
         }
         return null;
+    }
+
+    protected FieldDefinition getFieldDefinitionFromBasicProvider(TypeInfo typeInfo) {
+
+        Predicate<BasicTypeFieldProvider> filterPredicate = provider -> provider.isSupported(typeInfo);
+
+        Function<BasicTypeFieldProvider, FieldDefinition> mapFunction = provider -> {
+            FieldDefinition field = provider.getFieldByType(typeInfo);
+            field.setStandaloneClassName(typeInfo.getClassName());
+            return field;
+        };
+
+        if(typeInfo.isMultiple()) {
+            return basicMultipleProviders.stream().filter(filterPredicate).findFirst().map(mapFunction).orElse(null);
+        }
+        return basicProviders.stream().filter(filterPredicate).findFirst().map(mapFunction).orElse(null);
     }
 
     @Override
@@ -207,9 +226,18 @@ public abstract class AbstractFieldManager implements FieldManager {
             }
 
             Set result = new TreeSet();
-            for (BasicTypeFieldProvider provider : basicProviders) {
-                if (provider.isCompatible(fieldDefinition)) {
-                    result.add(provider.getFieldTypeName());
+
+            if(fieldDefinition.getFieldTypeInfo().isMultiple()) {
+                for (BasicTypeFieldProvider provider : basicMultipleProviders) {
+                    if (provider.isCompatible(fieldDefinition)) {
+                        result.add(provider.getFieldTypeName());
+                    }
+                }
+            } else {
+                for (BasicTypeFieldProvider provider : basicProviders) {
+                    if (provider.isCompatible(fieldDefinition)) {
+                        result.add(provider.getFieldTypeName());
+                    }
                 }
             }
 
@@ -257,6 +285,12 @@ public abstract class AbstractFieldManager implements FieldManager {
         }
 
         for (BasicTypeFieldProvider basicProvider : basicProviders) {
+            if (basicProvider.getFieldTypeName().equals(typeCode)) {
+                return basicProvider.getFieldByType(typeInfo);
+            }
+        }
+
+        for (BasicTypeFieldProvider basicProvider : basicMultipleProviders) {
             if (basicProvider.getFieldTypeName().equals(typeCode)) {
                 return basicProvider.getFieldByType(typeInfo);
             }

@@ -122,7 +122,7 @@ public class ListBoxFieldProvider extends SelectorFieldProvider<ListBoxBaseDefin
     }
 
     @Override
-    protected boolean isSupported(TypeInfo typeInfo) {
+    public boolean isSupported(TypeInfo typeInfo) {
         return super.isSupported(typeInfo) || typeInfo.getType().equals(TypeKind.ENUM);
     }
 }
