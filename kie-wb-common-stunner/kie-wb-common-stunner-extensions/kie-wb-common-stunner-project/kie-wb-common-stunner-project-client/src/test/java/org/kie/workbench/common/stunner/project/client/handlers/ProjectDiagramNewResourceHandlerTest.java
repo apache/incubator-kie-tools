@@ -15,8 +15,12 @@
  */
 package org.kie.workbench.common.stunner.project.client.handlers;
 
+import java.util.Optional;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,6 +49,7 @@ public class ProjectDiagramNewResourceHandlerTest {
     private static final String DEFSET_ID = "ds1";
     private static final String PROJ_PKG = "org.kie.stunner.test";
     private static final String PROJ_ROOT_FILENAME = "rootFileName";
+    private static final String MODULE_NAME = "moduleName";
 
     @Mock
     DefinitionManager definitionManager;
@@ -67,9 +72,13 @@ public class ProjectDiagramNewResourceHandlerTest {
     @Mock
     NewResourcePresenter presenter;
     @Mock
+    WorkspaceProjectContext context;
+    @Mock
     Path path;
     @Mock
     Path moduleRootPath;
+    @Mock
+    Module module;
 
     private ProjectDiagramNewResourceHandlerStub tested;
 
@@ -86,6 +95,8 @@ public class ProjectDiagramNewResourceHandlerTest {
         when(aPackage.getPackageName()).thenReturn(PROJ_PKG);
         when(aPackage.getModuleRootPath()).thenReturn(moduleRootPath);
         when(moduleRootPath.getFileName()).thenReturn(PROJ_ROOT_FILENAME);
+        when(context.getActiveModule()).thenReturn(Optional.of(module));
+        when(module.getModuleName()).thenReturn(MODULE_NAME);
         when(projectDiagramResourceType.getSuffix()).thenReturn("bpmn2");
         when(projectDiagramResourceType.getPrefix()).thenReturn("");
         this.tested = new ProjectDiagramNewResourceHandlerStub(definitionManager,
@@ -105,7 +116,7 @@ public class ProjectDiagramNewResourceHandlerTest {
                times(1)).create(eq(path),
                                 eq("file1"),
                                 eq(DEFSET_ID),
-                                eq(PROJ_ROOT_FILENAME),
+                                eq(MODULE_NAME),
                                 eq(PROJ_PKG),
                                 any(ServiceCallback.class));
     }
@@ -123,6 +134,7 @@ public class ProjectDiagramNewResourceHandlerTest {
                   projectDiagramServices,
                   indicatorView,
                   projectDiagramResourceType);
+            context = ProjectDiagramNewResourceHandlerTest.this.context;
         }
 
         @Override
