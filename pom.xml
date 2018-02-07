@@ -33,17 +33,23 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+	<scm>
+          <connection>scm:git:https://github.com/kiegroup/lienzo-core.git</connection>
+          <developerConnection>scm:git:git@github.com:kiegroup/lienzo-core.git</developerConnection>
+          <url>https://github.com/kiegroup/lienzo-core</url>
+        </scm>
+
 	<distributionManagement>
-		<repository>
-			<id>jboss-public-repository-group</id>
-			<name>JBoss Public Repository Group</name>
-			<url>https://repository.jboss.org/nexus/content/groups/public/</url>
-		</repository>
-		<snapshotRepository>
-			<id>jboss-snapshots-repository</id>
-			<name>JBoss Snapshot Repository</name>
-			<url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
-		</snapshotRepository>
+	  <repository>
+	    <id>jboss-public-repository-group</id>
+	    <name>JBoss Public Repository Group</name>
+	    <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+	  </repository>
+	  <snapshotRepository>
+	    <id>jboss-snapshots-repository</id>
+	    <name>JBoss Snapshot Repository</name>
+	    <url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
+	  </snapshotRepository>
 	</distributionManagement>
 	
 	<build>
