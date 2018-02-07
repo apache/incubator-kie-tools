@@ -20,6 +20,12 @@
 
   </properties>
 
+  <scm>
+    <connection>scm:git:https://github.com/kiegroup/lienzo-tests.git</connection>
+    <developerConnection>scm:git:git@github.com:kiegroup/lienzo-tests.git</developerConnection>
+    <url>https://github.com/kiegroup/lienzo-tests</url>
+  </scm>
+
   <distributionManagement>
     <repository>
       <id>jboss-public-repository-group</id>
