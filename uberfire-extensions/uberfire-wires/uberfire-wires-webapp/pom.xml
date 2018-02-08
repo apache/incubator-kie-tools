@@ -563,7 +563,7 @@
             <configuration>
               <artifactItems>
                 <artifactItem>
-                  <groupId>org.wildfly</groupId>
+                  <groupId>org.jboss.errai</groupId>
                   <artifactId>wildfly-dist</artifactId>
                   <version>${version.org.wildfly.gwt.sdm}</version>
                   <type>zip</type>
