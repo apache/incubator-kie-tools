@@ -24,9 +24,11 @@ import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Element;
+import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Document;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -244,5 +246,19 @@ public class ExpressionEditorViewImplTest {
                        expression);
 
         verify(returnToDRG, never()).setTextContent(any(String.class));
+    }
+
+    @Test
+    public void testOnExpressionEditorSelected() throws Exception {
+        final Optional<BaseExpressionGrid> expressionGridEditor = Optional.of(editor);
+        final HTMLElement selectedEditorControlsHTML = mock(HTMLElement.class);
+        final IsElement selectedEditorControlsElement = mock(IsElement.class);
+        final Optional<IsElement> selectedEditorControls = Optional.of(selectedEditorControlsElement);
+
+        doReturn(selectedEditorControlsHTML).when(selectedEditorControlsElement).getElement();
+        doReturn(selectedEditorControls).when(editor).getEditorControls();
+
+        view.onExpressionEditorSelected(expressionGridEditor);
+        verify(expressionEditorControls).appendChild(selectedEditorControlsHTML);
     }
 }

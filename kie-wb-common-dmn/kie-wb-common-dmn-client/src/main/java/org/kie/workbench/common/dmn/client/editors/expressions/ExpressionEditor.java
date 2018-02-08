@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.dmn.client.editors.expressions;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -121,7 +122,7 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
     }
 
     private boolean isSameSession(final ClientSession other) {
-        return null != other && null != getSession() && other.equals(getSession());
+        return Objects.equals(other, getSession());
     }
 
     private ClientSession getSession() {
