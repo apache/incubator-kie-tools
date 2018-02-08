@@ -43,11 +43,13 @@ public class JGitFileSystemsManager {
     private final JGitFileSystemProvider jGitFileSystemProvider;
 
     private final JGitFileSystemsCache fsCache;
+    private final JGitFileSystemProviderConfiguration config;
 
-    public JGitFileSystemsManager(JGitFileSystemProvider jGitFileSystemProvider,
-                                  JGitFileSystemProviderConfiguration config) {
+    public JGitFileSystemsManager(final JGitFileSystemProvider jGitFileSystemProvider,
+                                  final JGitFileSystemProviderConfiguration config) {
         this.jGitFileSystemProvider = jGitFileSystemProvider;
-        fsCache = new JGitFileSystemsCache(config);
+        this.config = config;
+        this.fsCache = new JGitFileSystemsCache(config);
     }
 
     public void newFileSystem(Supplier<Map<String, String>> fullHostNames,
@@ -173,15 +175,8 @@ public class JGitFileSystemsManager {
     }
 
     private String extractFSNameFromRepo(Repository db) {
-        final String nioGitPath = ".niogit/";
-
-        String fullPath = db.getDirectory().getPath();
-
-        fullPath = fullPath.substring((fullPath.indexOf(nioGitPath) + nioGitPath.length()),
-                                      fullPath.length());
-        String fsName = fullPath.substring(0,
-                                           fullPath.indexOf(DOT_GIT_EXT));
-        return fsName;
+        final String fullRepoName = config.getGitReposParentDir().toPath().relativize(db.getDirectory().toPath()).toString();
+        return fullRepoName.substring(0, fullRepoName.indexOf(DOT_GIT_EXT));
     }
 
     Set<String> getClosedFileSystems() {
