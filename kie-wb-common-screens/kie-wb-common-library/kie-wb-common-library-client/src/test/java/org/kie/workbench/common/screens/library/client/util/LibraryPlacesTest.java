@@ -258,21 +258,20 @@ public class LibraryPlacesTest {
     }
 
     @Test
-    public void onChangeNoActiveProject() {
+    public void onChangeWithActiveModule() {
 
-        doReturn(Optional.empty()).when(projectContext).getActiveWorkspaceProject();
-        when(current.getWorkspaceProject()).thenReturn(null);
-
+        when(current.getModule()).thenReturn(mock(Module.class));
         libraryPlaces.onChange(previous, current);
 
-        verify(libraryPlaces, never()).goToProject();
+        verify(libraryPlaces).goToProject();
     }
 
     @Test
-    public void onNoChangeWhenThereIsActivePackage() {
+    public void onChangeNoActiveProject() {
 
-        doReturn(Optional.of(new Package())).when(projectContext).getActivePackage();
-        when(current.getPackage()).thenReturn(new Package());
+        doReturn(Optional.empty()).when(projectContext).getActiveWorkspaceProject();
+        when(current.getModule()).thenReturn(mock(Module.class));
+        when(current.getWorkspaceProject()).thenReturn(null);
 
         libraryPlaces.onChange(previous, current);
 
@@ -807,4 +806,5 @@ public class LibraryPlacesTest {
         verify(placeManager).goTo(libraryPerspective);
         verify(libraryPlaces).goToAsset(any(Path.class));
     }
+
 }
