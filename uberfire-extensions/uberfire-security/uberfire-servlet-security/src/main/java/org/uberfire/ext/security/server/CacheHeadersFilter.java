@@ -58,6 +58,7 @@ public class CacheHeadersFilter implements Filter {
 
             httpServletResponse.setHeader(CACHE_CONTROL_HEADER,
                                           "max-age=" + YEAR_IN_SECONDS + ", must-revalidate");
+            httpServletResponse.setHeader(PRAGMA_HEADER, "cache");
             httpServletResponse.setDateHeader(EXPIRES_HEADER,
                                               calendar.getTime().getTime());
         } else if (requestURI.endsWith(".nocache.js") || (requestURI.endsWith(".html"))) {
