@@ -1191,10 +1191,38 @@
         <version>${version.ch.qos.logback}</version>
       </dependency>
 
+      <!-- Lienzo Charts -->
       <dependency>
         <groupId>com.ahome-it</groupId>
         <artifactId>lienzo-charts</artifactId>
         <version>${version.com.ahome-it.lienzo-charts}</version>
+      </dependency>
+
+      <!-- KIE Lienzo modules -->
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>lienzo-core</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>lienzo-core</artifactId>
+        <version>${version.org.kie}</version>
+        <classifier>sources</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>lienzo-tests</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>lienzo-tests</artifactId>
+        <version>${version.org.kie}</version>
+        <classifier>sources</classifier>
       </dependency>
 
       <dependency>
