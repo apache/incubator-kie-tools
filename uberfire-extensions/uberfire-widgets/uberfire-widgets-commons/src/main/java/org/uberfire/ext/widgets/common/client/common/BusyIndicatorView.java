@@ -15,6 +15,7 @@
  */
 package org.uberfire.ext.widgets.common.client.common;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 
 @Dependent
@@ -25,7 +26,13 @@ public class BusyIndicatorView implements HasBusyIndicator {
         BusyPopup.showMessage(message);
     }
 
+    /**
+     * This method is invoked by the container when this bean is destroyed,
+     * so that loading popups are guaranteed to close when an enclosing
+     * bean is destroyed.
+     */
     @Override
+    @PreDestroy
     public void hideBusyIndicator() {
         BusyPopup.close();
     }
