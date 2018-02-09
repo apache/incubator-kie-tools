@@ -19,19 +19,15 @@
 
     <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
 
-    <b:Row>
-        <b:FormGroup>
-            <b:FormLabel ui:field="valueLabel" addStyleNames="col-md-3"/>
-            <b:Column size="MD_9">
-                <b:TextBox ui:field="valueTextBox"/>
-            </b:Column>
-        </b:FormGroup>
-        <b:Column size="MD_9" offset="MD_3">
-            <b:FormGroup>
+    <b:FormGroup>
+        <b:FormLabel ui:field="valueLabel"/>
+        <b:InputGroup>
+            <b:TextBox ui:field="valueTextBox"/>
+            <b:InputGroupButton>
                 <b:Button ui:field="editButton" text="{i18n.advanced_domain_annotation_list_editor_action_edit}"/>
                 <b:Button ui:field="clearButton" text="{i18n.advanced_domain_annotation_list_editor_action_clear}"/>
-            </b:FormGroup>
-        </b:Column>
-    </b:Row>
+            </b:InputGroupButton>
+        </b:InputGroup>
+    </b:FormGroup>
 
 </ui:UiBinder>

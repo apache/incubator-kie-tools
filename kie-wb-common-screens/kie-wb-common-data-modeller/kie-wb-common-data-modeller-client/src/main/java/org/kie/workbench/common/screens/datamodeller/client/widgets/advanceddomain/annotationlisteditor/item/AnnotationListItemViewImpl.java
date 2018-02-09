@@ -107,8 +107,9 @@ public class AnnotationListItemViewImpl
     }
 
     @Override
-    public void setHeadingTitle( String text ) {
-        collapseAnchor.setText( text );
+    public void setHeadingTitle( String fqcn ) {
+        collapseAnchor.setText( "@" + fqcn.replaceAll(".*\\.", "") );
+        collapseAnchor.setTitle( fqcn );
     }
 
     @Override

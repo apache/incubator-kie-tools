@@ -67,7 +67,7 @@ public class AnnotationListItem
 
     public void loadAnnotation( Annotation annotation, AnnotationSource annotationSource ) {
         this.annotation = annotation;
-        view.setHeadingTitle( "@" + annotation.getClassName( ) );
+        view.setHeadingTitle( annotation.getClassName( ) );
 
         if ( annotation.getAnnotationDefinition( ) != null &&
                 annotation.getAnnotationDefinition( ).getValuePairs( ) != null ) {

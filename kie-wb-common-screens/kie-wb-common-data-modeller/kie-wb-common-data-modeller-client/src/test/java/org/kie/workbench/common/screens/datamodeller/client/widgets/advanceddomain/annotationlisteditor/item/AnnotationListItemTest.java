@@ -104,7 +104,7 @@ public class AnnotationListItemTest {
 
         listItem.loadAnnotation( annotation, annotationSource );
 
-        verify( view, times( 1 ) ).setHeadingTitle( "@" + ANNOTATION_CLASS_NAME );
+        verify( view, times( 1 ) ).setHeadingTitle( ANNOTATION_CLASS_NAME );
         // the corresponding AnnotationValuePairListItems should have been properly initialized and added to the view.
         verify( itemInstance, times( valuePairs.size( ) ) ).get( );
         for ( int i = 0; i < valuePairItems.size( ); i++ ) {
