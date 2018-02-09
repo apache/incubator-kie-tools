@@ -76,7 +76,7 @@
     <!-- Lienzo. -->
 
     <dependency>
-      <groupId>com.ahome-it</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>lienzo-core</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -182,7 +182,7 @@
     </dependency>
 
     <dependency>
-      <groupId>com.ahome-it</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>lienzo-tests</artifactId>
       <exclusions>
         <exclusion>

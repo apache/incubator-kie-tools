@@ -193,7 +193,7 @@
     <!-- Test scope. -->
 
     <dependency>
-      <groupId>com.ahome-it</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>lienzo-tests</artifactId>
       <exclusions>
         <exclusion>

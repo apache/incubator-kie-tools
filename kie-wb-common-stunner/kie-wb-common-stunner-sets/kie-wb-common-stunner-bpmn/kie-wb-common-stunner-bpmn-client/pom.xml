@@ -248,7 +248,7 @@
     <!-- Lienzo. -->
 
     <dependency>
-      <groupId>com.ahome-it</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>lienzo-core</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -259,7 +259,7 @@
     Lienzo mockito is not compatible with PowerMock, once running both
     in same classpath the build does not work - the use of power mock must be removed.
     <dependency>
-      <groupId>com.ahome-it</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>lienzo-tests</artifactId>
       <scope>test</scope>
     </dependency> -->
