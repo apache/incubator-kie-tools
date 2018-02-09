@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import javax.annotation.PostConstruct;
@@ -288,8 +289,15 @@ public class Container {
     }
 
     private void removeOldComponent(Column column) {
-        for (Row row : rows) {
-            row.removeChildColumn(column);
+
+        // Search the row that contains the column
+        Optional<Row> rowOptional = rows.stream()
+                .filter(row -> row.cointainsColumn(column))
+                .findAny();
+
+        // If the row is present remove it!
+        if (rowOptional.isPresent()) {
+            rowOptional.get().removeChildColumn(column);
         }
     }
 

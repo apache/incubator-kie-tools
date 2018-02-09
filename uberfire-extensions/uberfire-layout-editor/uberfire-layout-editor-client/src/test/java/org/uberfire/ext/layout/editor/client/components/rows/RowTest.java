@@ -33,7 +33,10 @@ import org.uberfire.ext.layout.editor.client.infra.ColumnResizeEvent;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jgroups.util.Util.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -299,6 +302,56 @@ public class RowTest extends AbstractLayoutEditorTest {
         verify(componentDropEventMock).fire(dropEventCaptor.capture());
         assertTrue(dropEventCaptor.getValue().getFromMove());
         assertTrue(dnDManager.isOnComponentMove());
+
+    }
+
+    @Test
+    public void moveLastElementInRow() throws Exception {
+        loadLayout(FULL_LAYOUT_PAGE);
+
+        Row firstRow = getRowByIndex(FIRST_ROW);
+
+        Row secondRow = getRowByIndex(SECOND_ROW);
+
+        assertThat(container.getRows())
+                .hasSize(2)
+                .containsOnly(firstRow, secondRow);
+
+        assertThat(secondRow.getColumns())
+                .hasSize(1);
+
+        Column droppedColumn = secondRow.getColumns().get(0);
+        assertThat(droppedColumn)
+                .isNotNull();
+
+        dnDManager.dragComponent(droppedColumn.getLayoutComponent(),
+                                 droppedColumn.getId(),
+                                 droppedColumn);
+
+        // Dropping secondRow BEFORE firstRow
+        firstRow.drop("", RowDrop.Orientation.BEFORE);
+
+        assertThat(container.getRows())
+                .hasSize(2);
+
+        // after the drop firstRowAfterMove must be a new row containing droppedColumn
+        Row firstRowAfterMove = getRowByIndex(FIRST_ROW);
+
+        // after the drop secondRowAfterMove must be firstRow
+        Row secondRowAfterMove = getRowByIndex(SECOND_ROW);
+
+        assertNotEquals(firstRow, firstRowAfterMove);
+
+        assertNotEquals(secondRow, secondRowAfterMove);
+
+        assertThat(firstRowAfterMove.getColumns())
+                .hasSize(1);
+
+        assertThat(firstRowAfterMove.getColumns().get(0).getLayoutComponent())
+                .isNotNull()
+                .isEqualTo(droppedColumn.getLayoutComponent());
+
+        assertEquals(firstRow, secondRowAfterMove);
 
     }
 }

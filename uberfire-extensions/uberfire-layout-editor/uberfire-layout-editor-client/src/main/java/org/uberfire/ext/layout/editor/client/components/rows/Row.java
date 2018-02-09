@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
@@ -311,16 +310,20 @@ public class Row {
 
     public void removeColumn(Column targetColumn) {
         removeChildColumn(targetColumn);
-        if (rowIsEmpty()) {
-            removeRowCommand.execute(this);
-        }
     }
 
     public void removeChildColumn(Column targetColumn) {
         if (isAChildColumn(targetColumn)) {
+            // Removing a child Column
             removeChildComponentColumn(targetColumn);
         } else {
+            // Removing a column inside a ColumnWithComponents
             lookupAndRemoveFromColumnsWithComponents(targetColumn);
+        }
+
+        // If the current row is empty we must remove it from the layout
+        if (rowIsEmpty()) {
+            removeRowCommand.execute(this);
         }
     }
 
@@ -363,8 +366,18 @@ public class Row {
                                                              dndManager.isOnComponentMove()));
     }
 
+    public boolean cointainsColumn(Column targetColumn) {
+        return isAChildColumn(targetColumn) || checkIfColumnExistsInChildColumnWithComponents(targetColumn).isPresent();
+    }
+
     private boolean isAChildColumn(Column targetColumn) {
         return columns.contains(targetColumn);
+    }
+
+    private Optional<Column> checkIfColumnExistsInChildColumnWithComponents(Column targetColumn) {
+        return columns.stream()
+                .filter(column -> column instanceof ColumnWithComponents && ((ColumnWithComponents) column).hasComponent(targetColumn))
+                .findAny();
     }
 
     public boolean rowIsEmpty() {
@@ -372,11 +385,8 @@ public class Row {
     }
 
     private void lookupAndRemoveFromColumnsWithComponents(Column targetColumn) {
-
         // find the ColumnWithComponents that contains the targetColumn
-        Optional<Column> optional = columns.stream()
-                .filter(column -> column instanceof ColumnWithComponents && ((ColumnWithComponents) column).hasComponent(targetColumn))
-                .findAny();
+        Optional<Column> optional = checkIfColumnExistsInChildColumnWithComponents(targetColumn);
 
         // If present let's remove it!
         optional.ifPresent(column -> removeComponentFromColumnWihtComponents((ColumnWithComponents) column,
