@@ -33,6 +33,7 @@ import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSService;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.common.client.api.Caller;
@@ -302,7 +303,9 @@ public class DecisionTableXLSEditorPresenterTest {
             @Override
             public DecisionTableXLSContent loadContent(Path path) {
                 DecisionTableXLSContent content = new DecisionTableXLSContent();
-                content.setOverview(new Overview());
+                content.setOverview(new Overview() {{
+                    setMetadata(mock(Metadata.class));
+                }});
                 remoteCallback.callback(content);
                 return null;
             }

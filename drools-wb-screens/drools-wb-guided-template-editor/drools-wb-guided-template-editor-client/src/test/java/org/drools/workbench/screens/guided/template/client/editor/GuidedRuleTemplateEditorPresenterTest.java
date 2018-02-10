@@ -16,12 +16,15 @@
 
 package org.drools.workbench.screens.guided.template.client.editor;
 
+import java.util.function.Supplier;
+
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.model.GuidedTemplateEditorContent;
 import org.drools.workbench.screens.guided.template.service.GuidedRuleTemplateEditorService;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
@@ -39,14 +42,17 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
+import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.mocks.CallerMock;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.notNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
@@ -136,5 +142,25 @@ public class GuidedRuleTemplateEditorPresenterTest {
                                          any(Caller.class),
                                          any(EventBus.class),
                                          anyBoolean());
+    }
+
+    @Test
+    public void testGetContentSupplier() throws Exception {
+
+        final TemplateModel content = mock(TemplateModel.class);
+
+        doReturn(content).when(presenter).getModel();
+
+        final Supplier<TemplateModel> contentSupplier = presenter.getContentSupplier();
+
+        assertEquals(content, contentSupplier.get());
+    }
+
+    @Test
+    public void testGetSaveAndRenameServiceCaller() throws Exception {
+
+        final Caller<? extends SupportsSaveAndRename<TemplateModel, Metadata>> serviceCaller = presenter.getSaveAndRenameServiceCaller();
+
+        assertEquals(this.serviceCaller, serviceCaller);
     }
 }

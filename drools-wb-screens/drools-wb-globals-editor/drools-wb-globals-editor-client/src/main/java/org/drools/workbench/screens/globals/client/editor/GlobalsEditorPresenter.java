@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.globals.client.editor;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -26,6 +27,7 @@ import org.drools.workbench.screens.globals.client.type.GlobalResourceType;
 import org.drools.workbench.screens.globals.model.GlobalsEditorContent;
 import org.drools.workbench.screens.globals.model.GlobalsModel;
 import org.drools.workbench.screens.globals.service.GlobalsEditorService;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -40,6 +42,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
@@ -52,7 +55,7 @@ import org.uberfire.workbench.model.menu.Menus;
 
 @WorkbenchEditor(identifier = "org.kie.guvnor.globals", supportedTypes = {GlobalResourceType.class}, priority = 101)
 public class GlobalsEditorPresenter
-        extends KieEditor {
+        extends KieEditor<GlobalsModel> {
 
     @Inject
     protected Caller<GlobalsEditorService> globalsEditorService;
@@ -97,8 +100,7 @@ public class GlobalsEditorPresenter
                     .addSave(versionRecordManager.newSaveMenuItem(this::saveAction))
                     .addCopy(versionRecordManager.getCurrentPath(),
                              assetUpdateValidator)
-                    .addRename(versionRecordManager.getPathToLatest(),
-                               assetUpdateValidator)
+                    .addRename(getSaveAndRename())
                     .addDelete(this::onDelete);
         }
 
@@ -111,6 +113,16 @@ public class GlobalsEditorPresenter
         view.showLoading();
         globalsEditorService.call(getModelSuccessCallback(),
                                   getNoSuchFileExceptionErrorCallback()).loadContent(versionRecordManager.getCurrentPath());
+    }
+
+    @Override
+    protected Supplier<GlobalsModel> getContentSupplier() {
+        return () -> model;
+    }
+
+    @Override
+    protected Caller<? extends SupportsSaveAndRename<GlobalsModel, Metadata>> getSaveAndRenameServiceCaller() {
+        return globalsEditorService;
     }
 
     protected RemoteCallback<GlobalsEditorContent> getModelSuccessCallback() {

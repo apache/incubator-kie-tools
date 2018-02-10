@@ -20,6 +20,7 @@ import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.model.GuidedTemplateEditorContent;
 import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
 import org.guvnor.common.services.shared.file.SupportsUpdate;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.ValidationService;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.services.shared.source.ViewSourceService;
@@ -29,6 +30,7 @@ import org.uberfire.ext.editor.commons.service.support.SupportsCreate;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRead;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
+import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 
 @Remote
 public interface GuidedRuleTemplateEditorService
@@ -38,11 +40,9 @@ public interface GuidedRuleTemplateEditorService
         ValidationService<TemplateModel>,
         SupportsCreate<TemplateModel>,
         SupportsRead<TemplateModel>,
-        SupportsUpdate<TemplateModel>,
+        SupportsSaveAndRename<TemplateModel, Metadata>,
         SupportsDelete,
-        SupportsCopy,
-        SupportsRename {
+        SupportsCopy {
 
-    GuidedTemplateEditorContent loadContent( final Path path );
-
+    GuidedTemplateEditorContent loadContent(final Path path);
 }

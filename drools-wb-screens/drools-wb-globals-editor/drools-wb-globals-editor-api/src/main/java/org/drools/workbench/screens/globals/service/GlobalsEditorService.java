@@ -18,7 +18,7 @@ package org.drools.workbench.screens.globals.service;
 
 import org.drools.workbench.screens.globals.model.GlobalsEditorContent;
 import org.drools.workbench.screens.globals.model.GlobalsModel;
-import org.guvnor.common.services.shared.file.SupportsUpdate;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.ValidationService;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.services.shared.source.ViewSourceService;
@@ -27,7 +27,7 @@ import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsCreate;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRead;
-import org.uberfire.ext.editor.commons.service.support.SupportsRename;
+import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 
 /**
  * Service definition for Globals editor
@@ -39,16 +39,14 @@ public interface GlobalsEditorService
         ValidationService<GlobalsModel>,
         SupportsCreate<GlobalsModel>,
         SupportsRead<GlobalsModel>,
-        SupportsUpdate<GlobalsModel>,
+        SupportsSaveAndRename<GlobalsModel, Metadata>,
         SupportsDelete,
-        SupportsCopy,
-        SupportsRename {
+        SupportsCopy {
 
-    GlobalsEditorContent loadContent( final Path path );
+    GlobalsEditorContent loadContent(final Path path);
 
-    Path generate( final Path context,
-                   final String fileName,
-                   final GlobalsModel content,
-                   final String comment );
-
+    Path generate(final Path context,
+                  final String fileName,
+                  final GlobalsModel content,
+                  final String comment);
 }

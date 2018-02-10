@@ -20,10 +20,12 @@ import java.util.HashMap;
 
 import javax.enterprise.event.Event;
 
+import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.model.GuidedTemplateEditorContent;
 import org.drools.workbench.screens.guided.template.type.GuidedRuleTemplateResourceTypeDefinition;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.backend.validation.GenericValidator;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +35,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
@@ -45,6 +48,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -79,9 +83,10 @@ public class GuidedRuleTemplateEditorServiceImplTest {
 
     @Mock
     private SessionInfo sessionInfo;
-
     @InjectMocks
     GuidedRuleTemplateEditorServiceImpl service = spy(new GuidedRuleTemplateEditorServiceImpl(sessionInfo));
+    @Mock
+    private SaveAndRenameServiceImpl<TemplateModel, Metadata> saveAndRenameService;
 
     @Test
     public void checkConstructContentPopulateProjectCollectionTypes() {
@@ -114,5 +119,26 @@ public class GuidedRuleTemplateEditorServiceImplTest {
         assertTrue(content.getDataModel().getCollectionTypes().containsKey("java.util.Collection"));
         assertTrue(content.getDataModel().getCollectionTypes().containsKey("java.util.List"));
         assertTrue(content.getDataModel().getCollectionTypes().containsKey("java.util.Set"));
+    }
+
+    @Test
+    public void testInit() throws Exception {
+        service.init();
+
+        verify(saveAndRenameService).init(service);
+    }
+
+    @Test
+    public void testSaveAndRename() throws Exception {
+
+        final Path path = mock(Path.class);
+        final String newFileName = "newFileName";
+        final Metadata metadata = mock(Metadata.class);
+        final TemplateModel content = mock(TemplateModel.class);
+        final String comment = "comment";
+
+        service.saveAndRename(path, newFileName, metadata, content, comment);
+
+        verify(saveAndRenameService).saveAndRename(path, newFileName, metadata, content, comment);
     }
 }

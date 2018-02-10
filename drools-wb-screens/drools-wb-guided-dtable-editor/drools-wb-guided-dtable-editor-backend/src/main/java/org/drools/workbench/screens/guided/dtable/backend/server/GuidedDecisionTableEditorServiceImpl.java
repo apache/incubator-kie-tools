@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -54,6 +55,7 @@ import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
 import org.uberfire.ext.editor.commons.backend.version.VersionRecordService;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
@@ -85,6 +87,7 @@ public class GuidedDecisionTableEditorServiceImpl
     private GenericValidator genericValidator;
     private CommentedOptionFactory commentedOptionFactory;
     private SafeSessionInfo safeSessionInfo;
+    private SaveAndRenameServiceImpl<GuidedDecisionTable52, Metadata> saveAndRenameService;
 
     public GuidedDecisionTableEditorServiceImpl() {
         //Zero parameter constructor for CDI
@@ -104,6 +107,7 @@ public class GuidedDecisionTableEditorServiceImpl
                                                 final Event<ResourceOpenedEvent> resourceOpenedEvent,
                                                 final GenericValidator genericValidator,
                                                 final CommentedOptionFactory commentedOptionFactory,
+                                                final SaveAndRenameServiceImpl<GuidedDecisionTable52, Metadata> saveAndRenameService,
                                                 final SessionInfo sessionInfo) {
         this.ioService = ioService;
         this.copyService = copyService;
@@ -118,7 +122,13 @@ public class GuidedDecisionTableEditorServiceImpl
         this.resourceOpenedEvent = resourceOpenedEvent;
         this.genericValidator = genericValidator;
         this.commentedOptionFactory = commentedOptionFactory;
+        this.saveAndRenameService = saveAndRenameService;
         this.safeSessionInfo = new SafeSessionInfo(sessionInfo);
+    }
+
+    @PostConstruct
+    public void init() {
+        saveAndRenameService.init(this);
     }
 
     @Override
@@ -371,5 +381,14 @@ public class GuidedDecisionTableEditorServiceImpl
         } catch (Exception e) {
             throw ExceptionUtilities.handleException(e);
         }
+    }
+
+    @Override
+    public Path saveAndRename(final Path path,
+                              final String newFileName,
+                              final Metadata metadata,
+                              final GuidedDecisionTable52 content,
+                              final String comment) {
+        return saveAndRenameService.saveAndRename(path, newFileName, metadata, content, comment);
     }
 }

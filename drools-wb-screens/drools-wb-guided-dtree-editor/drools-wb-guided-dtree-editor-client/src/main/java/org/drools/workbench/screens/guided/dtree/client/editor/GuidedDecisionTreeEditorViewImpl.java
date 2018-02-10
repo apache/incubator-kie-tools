@@ -92,4 +92,8 @@ public class GuidedDecisionTreeEditorViewImpl
                                     isReadOnly );
     }
 
+    @Override
+    public GuidedDecisionTree getModel() {
+        return model;
+    }
 }

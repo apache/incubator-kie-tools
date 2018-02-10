@@ -27,8 +27,10 @@ import javax.enterprise.inject.Instance;
 import org.drools.workbench.models.datamodel.oracle.DSLActionSentence;
 import org.drools.workbench.models.datamodel.oracle.DSLConditionSentence;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
+import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.model.GuidedEditorContent;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDSLRResourceTypeDefinition;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,6 +44,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
 import org.uberfire.io.IOService;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
@@ -50,6 +53,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -60,6 +64,10 @@ public class GuidedRuleEditorServiceImplTest {
 
     @Mock
     private SessionInfo sessionInfo;
+
+    @InjectMocks
+    GuidedRuleEditorServiceImpl service = new GuidedRuleEditorServiceImpl(sessionInfo,
+                                                                          mock(Instance.class));
 
     @Mock
     private GuidedRuleDSLRResourceTypeDefinition dslrResourceTypeDefinition;
@@ -76,9 +84,8 @@ public class GuidedRuleEditorServiceImplTest {
     @Mock
     private DSLSentence dslSentence;
 
-    @InjectMocks
-    GuidedRuleEditorServiceImpl service = new GuidedRuleEditorServiceImpl(sessionInfo,
-                                                                          mock(Instance.class));
+    @Mock
+    private SaveAndRenameServiceImpl<RuleModel, Metadata> saveAndRenameService;
 
     @Test
     public void checkConstructContentPopulateProjectCollectionTypesAndDSLSentences() throws Exception {
@@ -107,5 +114,26 @@ public class GuidedRuleEditorServiceImplTest {
         assertTrue(content.getDataModel().getCollectionTypes().containsKey("java.util.Set"));
         assertTrue(content.getDataModel().getPackageElements(DSLActionSentence.INSTANCE).contains(dslSentence));
         assertTrue(content.getDataModel().getPackageElements(DSLConditionSentence.INSTANCE).contains(dslSentence));
+    }
+
+    @Test
+    public void testInit() throws Exception {
+        service.init();
+
+        verify(saveAndRenameService).init(service);
+    }
+
+    @Test
+    public void testSaveAndRename() throws Exception {
+
+        final Path path = mock(Path.class);
+        final String newFileName = "newFileName";
+        final Metadata metadata = mock(Metadata.class);
+        final RuleModel content = mock(RuleModel.class);
+        final String comment = "comment";
+
+        service.saveAndRename(path, newFileName, metadata, content, comment);
+
+        verify(saveAndRenameService).saveAndRename(path, newFileName, metadata, content, comment);
     }
 }

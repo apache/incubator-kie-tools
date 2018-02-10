@@ -30,6 +30,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
@@ -61,6 +62,9 @@ public class DRLTextEditorServiceImplTest {
 
     @Mock
     private KieModuleService moduleService;
+
+    @Mock
+    private SaveAndRenameServiceImpl<String, Metadata> saveAndRenameService;
 
     @InjectMocks
     private DRLTextEditorServiceImpl drlService = new DRLTextEditorServiceImpl();
@@ -106,5 +110,27 @@ public class DRLTextEditorServiceImplTest {
                                 eq(ruleContent),
                                 eq(Collections.EMPTY_MAP),
                                 eq(commentedOption));
+    }
+
+    @Test
+    public void testInit() {
+
+        drlService.init();
+
+        verify(saveAndRenameService).init(drlService);
+    }
+
+    @Test
+    public void testSaveAndRename() {
+
+        final Path path = mock(Path.class);
+        final String newFileName = "newFileName";
+        final Metadata metadata = mock(Metadata.class);
+        final String content = "content";
+        final String comment = "comment";
+
+        drlService.saveAndRename(path, newFileName, metadata, content, comment);
+
+        verify(saveAndRenameService).saveAndRename(path, newFileName, metadata, content, comment);
     }
 }

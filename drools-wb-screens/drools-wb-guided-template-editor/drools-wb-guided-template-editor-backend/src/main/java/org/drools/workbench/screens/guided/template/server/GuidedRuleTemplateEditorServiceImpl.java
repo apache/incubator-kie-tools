@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -49,6 +50,7 @@ import org.kie.workbench.common.services.datamodel.backend.server.service.DataMo
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
@@ -90,9 +92,18 @@ public class GuidedRuleTemplateEditorServiceImpl
 
     @Inject
     private CommentedOptionFactory commentedOptionFactory;
+
+    @Inject
+    private SaveAndRenameServiceImpl<TemplateModel, Metadata> saveAndRenameService;
+
     private SafeSessionInfo safeSessionInfo;
 
     public GuidedRuleTemplateEditorServiceImpl() {
+    }
+
+    @PostConstruct
+    public void init() {
+        saveAndRenameService.init(this);
     }
 
     @Inject
@@ -311,5 +322,14 @@ public class GuidedRuleTemplateEditorServiceImpl
         msg.setLevel(Level.WARNING);
         msg.setText(message);
         return msg;
+    }
+
+    @Override
+    public Path saveAndRename(final Path path,
+                              final String newFileName,
+                              final Metadata metadata,
+                              final TemplateModel content,
+                              final String comment) {
+        return saveAndRenameService.saveAndRename(path, newFileName, metadata, content, comment);
     }
 }

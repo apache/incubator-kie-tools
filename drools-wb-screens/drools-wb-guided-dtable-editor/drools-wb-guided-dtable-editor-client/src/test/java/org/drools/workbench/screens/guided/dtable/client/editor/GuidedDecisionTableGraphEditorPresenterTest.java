@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.enterprise.event.Event;
@@ -41,6 +42,7 @@ import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEdito
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel.GuidedDecisionTableGraphEntry;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableGraphEditorService;
+import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableGraphSaveAndRenameService;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
@@ -54,6 +56,7 @@ import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.source.ViewDRLSourceWidget;
 import org.kie.workbench.common.widgets.metadata.client.KieDocument;
+import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -69,7 +72,9 @@ import org.uberfire.client.mvp.SaveInProgressEvent;
 import org.uberfire.client.mvp.UpdatedLockStatusEvent;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
+import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
+import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.version.events.RestoreEvent;
 import org.uberfire.ext.editor.commons.version.impl.PortableVersionRecord;
 import org.uberfire.java.nio.base.version.VersionRecord;
@@ -119,6 +124,10 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
     private Caller<KieModuleService> moduleServiceCaller;
 
     @Mock
+    private GuidedDecisionTableGraphSaveAndRenameService graphSaveAndRenameService;
+    private Caller<GuidedDecisionTableGraphSaveAndRenameService> graphSaveAndRenameServiceCaller;
+
+    @Mock
     private NewGuidedDecisionTableWizardHelper helper;
 
     @Mock
@@ -126,6 +135,9 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
 
     @Mock
     private Path activePackageResourcesPath;
+
+    @Mock
+    private SaveAndRenameCommandBuilder<List<GuidedDecisionTableEditorContent>, Metadata> saveAndRenameCommandBuilder;
 
     @Captor
     private ArgumentCaptor<ParameterizedCommand<KieDocument>> activateDocumentCommandCaptor;
@@ -177,7 +189,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
     public void setup() {
         this.dtGraphServiceCaller = new CallerMock<>(dtGraphService);
         this.moduleServiceCaller = new CallerMock<>(moduleService);
-
+        this.graphSaveAndRenameServiceCaller = new CallerMock<>(graphSaveAndRenameService);
         when(view.asWidget()).thenReturn(mock(Widget.class));
         when(moduleService.resolvePackage(any(Path.class))).thenReturn(activePackage);
         when(activePackage.getPackageMainResourcesPath()).thenReturn(activePackageResourcesPath);
@@ -191,6 +203,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                                                            dtServiceCaller,
                                                            dtGraphServiceCaller,
                                                            moduleServiceCaller,
+                                                           graphSaveAndRenameServiceCaller,
                                                            notification,
                                                            saveInProgressEvent,
                                                            decisionTableSelectedEvent,
@@ -205,10 +218,16 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                                                            beanManager,
                                                            placeManager,
                                                            lockManager,
-                                                           columnsPage) {
+                                                           columnsPage,
+                                                           saveAndRenameCommandBuilder) {
             {
                 workbenchContext = GuidedDecisionTableGraphEditorPresenterTest.this.workbenchContext;
                 projectController = GuidedDecisionTableGraphEditorPresenterTest.this.projectController;
+            }
+
+            @Override
+            protected Command getSaveAndRenameCommand() {
+                return mock(Command.class);
             }
 
             @Override
@@ -329,8 +348,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                times(1)).addCopy(any(BasicFileMenuBuilder.PathProvider.class),
                                  eq(assetUpdateValidator));
         verify(fileMenuBuilder,
-               times(1)).addRename(any(BasicFileMenuBuilder.PathProvider.class),
-                                   eq(assetUpdateValidator));
+               times(1)).addRename(any(Command.class));
         verify(fileMenuBuilder,
                times(1)).addDelete(any(BasicFileMenuBuilder.PathProvider.class),
                                    eq(assetUpdateValidator));
@@ -1381,6 +1399,209 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                                                          presenter.access.getLock()));
     }
 
+    @Test
+    public void testGetSaveAndRenameCommand() {
+
+        final Command expectedCommand = mock(Command.class);
+        final GuidedDecisionTableGraphEditorPresenter presenter = makePresenter();
+
+        doReturn(saveAndRenameCommandBuilder).when(saveAndRenameCommandBuilder).addPathSupplier(any());
+        doReturn(saveAndRenameCommandBuilder).when(saveAndRenameCommandBuilder).addValidator(any(Validator.class));
+        doReturn(saveAndRenameCommandBuilder).when(saveAndRenameCommandBuilder).addValidator(any(Supplier.class));
+        doReturn(saveAndRenameCommandBuilder).when(saveAndRenameCommandBuilder).addRenameService(any());
+        doReturn(saveAndRenameCommandBuilder).when(saveAndRenameCommandBuilder).addMetadataSupplier(any());
+        doReturn(saveAndRenameCommandBuilder).when(saveAndRenameCommandBuilder).addContentSupplier(any());
+        doReturn(saveAndRenameCommandBuilder).when(saveAndRenameCommandBuilder).addIsDirtySupplier(any());
+        doReturn(saveAndRenameCommandBuilder).when(saveAndRenameCommandBuilder).addSuccessCallback(any());
+        doReturn(expectedCommand).when(saveAndRenameCommandBuilder).build();
+
+        final Command actualCommand = presenter.getSaveAndRenameCommand();
+
+        assertEquals(expectedCommand, actualCommand);
+    }
+
+    @Test
+    public void testGetMetadataSupplier() {
+
+        final GuidedDecisionTableView.Presenter document = mock(GuidedDecisionTableView.Presenter.class);
+        final Overview overview = mock(Overview.class);
+        final Metadata expectedMetadata = mock(Metadata.class);
+
+        doReturn(document).when(presenter).getActiveDocument();
+        doReturn(overview).when(document).getOverview();
+        doReturn(expectedMetadata).when(overview).getMetadata();
+
+        final Metadata actualMetadata = presenter.getMetadataSupplier().get();
+
+        assertEquals(expectedMetadata, actualMetadata);
+    }
+
+    @Test
+    public void testGetContentSupplier() {
+
+        final GuidedDecisionTableView.Presenter presenter = mock(GuidedDecisionTableView.Presenter.class);
+        final GuidedDecisionTable52 model = mock(GuidedDecisionTable52.class);
+        final Overview overview = mock(Overview.class);
+        final ObservablePath currentPath = mock(ObservablePath.class);
+        final ObservablePath latestPath = mock(ObservablePath.class);
+
+        doReturn(model).when(presenter).getModel();
+        doReturn(overview).when(presenter).getOverview();
+        doReturn(currentPath).when(presenter).getCurrentPath();
+        doReturn(latestPath).when(presenter).getLatestPath();
+        doReturn(asSet(presenter)).when(this.presenter).getAvailableDecisionTables();
+
+        final List<GuidedDecisionTableEditorContent> content = this.presenter.getContentSupplier().get();
+        final GuidedDecisionTableEditorContent firstContent = content.get(0);
+
+        assertEquals(1, content.size());
+
+        assertEquals(model, firstContent.getModel());
+        assertEquals(overview, firstContent.getOverview());
+        assertEquals(currentPath, firstContent.getCurrentPath());
+        assertEquals(latestPath, firstContent.getLatestPath());
+    }
+
+    @Test
+    public void testIsGuidedDecisionTablesDirtyWhenItIsDirty() {
+
+        final GuidedDecisionTableView.Presenter presenter = mock(GuidedDecisionTableView.Presenter.class);
+        final GuidedDecisionTable52 model = mock(GuidedDecisionTable52.class);
+        final Set<GuidedDecisionTableView.Presenter> availableDecisionTables = asSet(presenter);
+        final int currentHash = 456;
+        final int originalHash = 123;
+
+        doReturn(currentHash).when(this.presenter).currentHashCode(presenter);
+        doReturn(originalHash).when(this.presenter).originalHashCode(presenter);
+        doReturn(model).when(presenter).getModel();
+        doReturn(availableDecisionTables).when(this.presenter).getAvailableDecisionTables();
+
+        final boolean isDirty = this.presenter.isGuidedDecisionTablesDirty();
+
+        assertTrue(isDirty);
+    }
+
+    @Test
+    public void testIsGuidedDecisionTablesDirtyWhenItIsNotDirty() {
+
+        final GuidedDecisionTableView.Presenter presenter = mock(GuidedDecisionTableView.Presenter.class);
+        final GuidedDecisionTable52 model = mock(GuidedDecisionTable52.class);
+        final Set<GuidedDecisionTableView.Presenter> availableDecisionTables = asSet(presenter);
+        final int currentHash = 123;
+        final int originalHash = 123;
+
+        doReturn(currentHash).when(this.presenter).currentHashCode(presenter);
+        doReturn(originalHash).when(this.presenter).originalHashCode(presenter);
+        doReturn(model).when(presenter).getModel();
+        doReturn(availableDecisionTables).when(this.presenter).getAvailableDecisionTables();
+
+        final boolean isDirty = this.presenter.isGuidedDecisionTablesDirty();
+
+        assertFalse(isDirty);
+    }
+
+    @Test
+    public void testIsGraphDirtyWhenItIsDirty() {
+
+        presenter.originalGraphHash = 123;
+        doReturn(456).when(presenter).getCurrentHashCode();
+
+        final boolean isDirty = presenter.isGraphDirty();
+
+        assertTrue(isDirty);
+    }
+
+    @Test
+    public void testIsGraphDirtyWhenItIsNotDirty() {
+
+        presenter.originalGraphHash = 123;
+        doReturn(123).when(presenter).getCurrentHashCode();
+
+        final boolean isDirty = presenter.isGraphDirty();
+
+        assertFalse(isDirty);
+    }
+
+    @Test
+    public void testIsOverviewWidgetDirtyWhenItIsDirty() {
+
+        final OverviewWidgetPresenter overviewWidget = mock(OverviewWidgetPresenter.class);
+
+        doReturn(true).when(overviewWidget).isDirty();
+        doReturn(overviewWidget).when(presenter).getOverviewWidget();
+
+        final boolean isDirty = presenter.isOverviewWidgetDirty();
+
+        assertTrue(isDirty);
+    }
+
+    @Test
+    public void testIsOverviewWidgetDirtyWhenItIsNotDirty() {
+
+        final OverviewWidgetPresenter overviewWidget = mock(OverviewWidgetPresenter.class);
+
+        doReturn(false).when(overviewWidget).isDirty();
+        doReturn(overviewWidget).when(presenter).getOverviewWidget();
+
+        final boolean isDirty = presenter.isOverviewWidgetDirty();
+
+        assertFalse(isDirty);
+    }
+
+    @Test
+    public void testGetIsDirtySupplierWhenGuidedDecisionTablesIsDirty() {
+
+        doReturn(true).when(presenter).isGuidedDecisionTablesDirty();
+        doReturn(false).when(presenter).isGraphDirty();
+        doReturn(false).when(presenter).isOverviewWidgetDirty();
+
+        final Supplier<Boolean> isDirtySupplier = presenter.getIsDirtySupplier();
+
+        assertTrue(isDirtySupplier.get());
+    }
+
+    @Test
+    public void testGetIsDirtySupplierWhenGraphIsDirty() {
+
+        doReturn(false).when(presenter).isGuidedDecisionTablesDirty();
+        doReturn(true).when(presenter).isGraphDirty();
+        doReturn(false).when(presenter).isOverviewWidgetDirty();
+
+        final Supplier<Boolean> isDirtySupplier = presenter.getIsDirtySupplier();
+
+        assertTrue(isDirtySupplier.get());
+    }
+
+    @Test
+    public void testGetIsDirtySupplierWhenOverviewWidgetIsDirty() {
+
+        doReturn(false).when(presenter).isGuidedDecisionTablesDirty();
+        doReturn(false).when(presenter).isGraphDirty();
+        doReturn(true).when(presenter).isOverviewWidgetDirty();
+
+        final Supplier<Boolean> isDirtySupplier = presenter.getIsDirtySupplier();
+
+        assertTrue(isDirtySupplier.get());
+    }
+
+    @Test
+    public void testGetIsDirtySupplierWhenItIsNotDirty() {
+
+        doReturn(false).when(presenter).isGuidedDecisionTablesDirty();
+        doReturn(false).when(presenter).isGraphDirty();
+        doReturn(false).when(presenter).isOverviewWidgetDirty();
+
+        final Supplier<Boolean> isDirtySupplier = presenter.getIsDirtySupplier();
+
+        assertFalse(isDirtySupplier.get());
+    }
+
+    private HashSet<GuidedDecisionTableView.Presenter> asSet(final GuidedDecisionTableView.Presenter presenter) {
+        return new HashSet<GuidedDecisionTableView.Presenter>() {{
+            add(presenter);
+        }};
+    }
+
     private void checkOnUpdatedLockStatusEvent(final ObservablePath path,
                                                final boolean locked,
                                                final boolean lockedByCurrentUser,
@@ -1417,9 +1638,34 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                                                          mock(Overview.class));
     }
 
+    private GuidedDecisionTableGraphEditorPresenter makePresenter() {
+        return new GuidedDecisionTableGraphEditorPresenter(view,
+                                                           dtServiceCaller,
+                                                           dtGraphServiceCaller,
+                                                           moduleServiceCaller,
+                                                           graphSaveAndRenameServiceCaller,
+                                                           notification,
+                                                           saveInProgressEvent,
+                                                           decisionTableSelectedEvent,
+                                                           validationPopup,
+                                                           dtGraphResourceType,
+                                                           editMenuBuilder,
+                                                           viewMenuBuilder,
+                                                           insertMenuBuilder,
+                                                           radarMenuBuilder,
+                                                           modeller,
+                                                           helper,
+                                                           beanManager,
+                                                           placeManager,
+                                                           lockManager,
+                                                           columnsPage,
+                                                           saveAndRenameCommandBuilder);
+    }
+
     private static class OnSaveSetupDataHolder {
 
         private ObservablePath dtGraphPath;
+
         private PlaceRequest dtGraphPlaceRequest;
         private GuidedDecisionTableView.Presenter dtPresenter;
 

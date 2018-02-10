@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.testscenario.client;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import javax.inject.Inject;
 
@@ -31,6 +32,7 @@ import org.drools.workbench.screens.testscenario.client.utils.ScenarioUtils;
 import org.drools.workbench.screens.testscenario.model.TestScenarioModelContent;
 import org.drools.workbench.screens.testscenario.model.TestScenarioResult;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.test.TestService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -45,6 +47,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
@@ -55,7 +58,7 @@ import org.uberfire.workbench.model.menu.Menus;
 
 @WorkbenchEditor(identifier = "ScenarioEditorPresenter", supportedTypes = {TestScenarioResourceType.class})
 public class ScenarioEditorPresenter
-        extends KieEditor
+        extends KieEditor<Scenario>
         implements ScenarioEditorView.Presenter {
 
     private final TestScenarioResourceType type;
@@ -115,16 +118,28 @@ public class ScenarioEditorPresenter
                      getNoSuchFileExceptionErrorCallback()).loadContent(versionRecordManager.getCurrentPath());
     }
 
+    @Override
+    protected Supplier<Scenario> getContentSupplier() {
+        return this::getScenario;
+    }
+
+    @Override
+    protected Caller<? extends SupportsSaveAndRename<Scenario, Metadata>> getSaveAndRenameServiceCaller() {
+        return service;
+    }
+
     private RemoteCallback<TestScenarioModelContent> getModelSuccessCallback() {
         return new RemoteCallback<TestScenarioModelContent>() {
             @Override
             public void callback(final TestScenarioModelContent content) {
+
                 //Path is set to null when the Editor is closed (which can happen before async calls complete).
                 if (versionRecordManager.getCurrentPath() == null) {
                     return;
                 }
 
                 scenario = content.getScenario();
+                setOriginalHash(scenario.hashCode());
 
                 ifFixturesSizeZeroThenAddExecutionTrace();
 
@@ -243,8 +258,7 @@ public class ScenarioEditorPresenter
                     .addSave(this::saveAction)
                     .addCopy(versionRecordManager.getCurrentPath(),
                              assetUpdateValidator)
-                    .addRename(versionRecordManager.getPathToLatest(),
-                               assetUpdateValidator)
+                    .addRename(getSaveAndRename())
                     .addDelete(versionRecordManager.getPathToLatest(),
                                assetUpdateValidator);
         }
@@ -264,6 +278,10 @@ public class ScenarioEditorPresenter
     @OnMayClose
     public boolean mayClose() {
         return super.mayClose(scenario);
+    }
+
+    Scenario getScenario() {
+        return scenario;
     }
 
     @OnClose

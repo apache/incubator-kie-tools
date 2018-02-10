@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -52,6 +53,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
@@ -92,6 +94,10 @@ public class ScenarioTestEditorServiceImpl
 
     @Inject
     private CommentedOptionFactory commentedOptionFactory;
+
+    @Inject
+    private SaveAndRenameServiceImpl<Scenario, Metadata> saveAndRenameService;
+
     private SafeSessionInfo safeSessionInfo;
 
     public ScenarioTestEditorServiceImpl() {
@@ -100,6 +106,11 @@ public class ScenarioTestEditorServiceImpl
     @Inject
     public ScenarioTestEditorServiceImpl(final SessionInfo sessionInfo) {
         safeSessionInfo = new SafeSessionInfo(sessionInfo);
+    }
+
+    @PostConstruct
+    public void init() {
+        saveAndRenameService.init(this);
     }
 
     @Override
@@ -331,5 +342,14 @@ public class ScenarioTestEditorServiceImpl
 
     private Collection<String> getFullyQualifiedClassNamesUsedByGlobals(final PackageDataModelOracle dataModelOracle) {
         return dataModelOracle.getPackageGlobals().values();
+    }
+
+    @Override
+    public Path saveAndRename(final Path path,
+                              final String newFileName,
+                              final Metadata metadata,
+                              final Scenario content,
+                              final String comment) {
+        return saveAndRenameService.saveAndRename(path, newFileName, metadata, content, comment);
     }
 }

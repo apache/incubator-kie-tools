@@ -30,6 +30,7 @@ import org.uberfire.ext.editor.commons.service.support.SupportsCreate;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRead;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
+import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 
 @Remote
 public interface GuidedDecisionTableEditorService
@@ -38,20 +39,18 @@ public interface GuidedDecisionTableEditorService
         ValidationService<GuidedDecisionTable52>,
         SupportsCreate<GuidedDecisionTable52>,
         SupportsRead<GuidedDecisionTable52>,
-        SupportsUpdate<GuidedDecisionTable52>,
+        SupportsSaveAndRename<GuidedDecisionTable52, Metadata>,
         SupportsDelete,
-        SupportsCopy,
-        SupportsRename {
+        SupportsCopy {
 
     String DTABLE_VERIFICATION_DISABLED = "org.kie.verification.disable-dtable-realtime-verification";
 
-    GuidedDecisionTableEditorContent loadContent( final Path path );
+    GuidedDecisionTableEditorContent loadContent(final Path path);
 
-    PackageDataModelOracleBaselinePayload loadDataModel( final Path path );
+    PackageDataModelOracleBaselinePayload loadDataModel(final Path path);
 
-    Path saveAndUpdateGraphEntries( final Path resource,
-                                    final GuidedDecisionTable52 model,
-                                    final Metadata metadata,
-                                    final String comment );
-
+    Path saveAndUpdateGraphEntries(final Path resource,
+                                   final GuidedDecisionTable52 model,
+                                   final Metadata metadata,
+                                   final String comment);
 }

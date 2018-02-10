@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.dsltext.client.editor;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -26,6 +27,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.dsltext.client.type.DSLResourceType;
 import org.drools.workbench.screens.dsltext.model.DSLTextEditorContent;
 import org.drools.workbench.screens.dsltext.service.DSLTextEditorService;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -38,6 +40,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
@@ -53,7 +56,7 @@ import org.uberfire.workbench.model.menu.Menus;
 @Dependent
 @WorkbenchEditor(identifier = "DSLEditor", supportedTypes = { DSLResourceType.class })
 public class DSLEditorPresenter
-        extends KieEditor {
+        extends KieEditor<String> {
 
     @Inject
     private Caller<DSLTextEditorService> dslTextEditorService;
@@ -87,6 +90,16 @@ public class DSLEditorPresenter
         view.showLoading();
         dslTextEditorService.call( getModelSuccessCallback(),
                                    getNoSuchFileExceptionErrorCallback() ).loadContent( versionRecordManager.getCurrentPath() );
+    }
+
+    @Override
+    protected Supplier<String> getContentSupplier() {
+        return () -> view.getContent();
+    }
+
+    @Override
+    protected Caller<? extends SupportsSaveAndRename<String, Metadata>> getSaveAndRenameServiceCaller() {
+        return dslTextEditorService;
     }
 
     private RemoteCallback<DSLTextEditorContent> getModelSuccessCallback() {

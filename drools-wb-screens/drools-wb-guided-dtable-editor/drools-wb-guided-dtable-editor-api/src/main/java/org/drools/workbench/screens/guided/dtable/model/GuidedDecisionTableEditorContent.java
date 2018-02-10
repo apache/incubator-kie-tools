@@ -24,6 +24,7 @@ import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.uberfire.backend.vfs.ObservablePath;
 
 @Portable
 public class GuidedDecisionTableEditorContent {
@@ -32,8 +33,20 @@ public class GuidedDecisionTableEditorContent {
     private Set<PortableWorkDefinition> workItemDefinitions;
     private PackageDataModelOracleBaselinePayload dataModel;
     private Overview overview;
+    private ObservablePath currentPath;
+    private ObservablePath latestPath;
 
     public GuidedDecisionTableEditorContent() {
+    }
+
+    public GuidedDecisionTableEditorContent(final GuidedDecisionTable52 model,
+                                            final Overview overview,
+                                            final ObservablePath currentPath,
+                                            final ObservablePath latestPath) {
+        this.model = PortablePreconditions.checkNotNull("model", model);
+        this.overview = PortablePreconditions.checkNotNull("overview", overview);
+        this.currentPath = PortablePreconditions.checkNotNull("currentPath", currentPath);
+        this.latestPath = PortablePreconditions.checkNotNull("latestPath", latestPath);
     }
 
     public GuidedDecisionTableEditorContent(final GuidedDecisionTable52 model,
@@ -68,5 +81,13 @@ public class GuidedDecisionTableEditorContent {
 
     public void setOverview(Overview overview) {
         this.overview = overview;
+    }
+
+    public ObservablePath getCurrentPath() {
+        return currentPath;
+    }
+
+    public ObservablePath getLatestPath() {
+        return latestPath;
     }
 }

@@ -16,6 +16,7 @@
 package org.drools.workbench.screens.guided.dtree.client.editor;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
@@ -39,6 +40,7 @@ import org.drools.workbench.screens.guided.dtree.client.widget.popups.EditTypePo
 import org.drools.workbench.screens.guided.dtree.client.widget.popups.ParserMessagesPopup;
 import org.drools.workbench.screens.guided.dtree.model.GuidedDecisionTreeEditorContent;
 import org.drools.workbench.screens.guided.dtree.service.GuidedDecisionTreeEditorService;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -57,6 +59,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
@@ -71,7 +74,7 @@ import org.uberfire.workbench.model.menu.Menus;
  */
 @WorkbenchEditor(identifier = "GuidedDecisionTreeEditorPresenter", supportedTypes = { GuidedDTreeResourceType.class }, priority = 101)
 public class GuidedDecisionTreeEditorPresenter
-        extends KieEditor {
+        extends KieEditor<GuidedDecisionTree> {
 
     @Inject
     private ImportsWidgetPresenter importsWidget;
@@ -93,6 +96,7 @@ public class GuidedDecisionTreeEditorPresenter
 
     private GuidedDecisionTree model;
     private AsyncPackageDataModelOracle oracle;
+
     private GuidedDecisionTreeEditorContent content;
 
     private GuidedDecisionTreeEditorView view;
@@ -125,6 +129,16 @@ public class GuidedDecisionTreeEditorPresenter
         view.showLoading();
         service.call( getModelSuccessCallback(),
                       getNoSuchFileExceptionErrorCallback() ).loadContent( versionRecordManager.getCurrentPath() );
+    }
+
+    @Override
+    protected Supplier<GuidedDecisionTree> getContentSupplier() {
+        return () -> view.getModel();
+    }
+
+    @Override
+    protected Caller<? extends SupportsSaveAndRename<GuidedDecisionTree, Metadata>> getSaveAndRenameServiceCaller() {
+        return service;
     }
 
     private RemoteCallback<GuidedDecisionTreeEditorContent> getModelSuccessCallback() {

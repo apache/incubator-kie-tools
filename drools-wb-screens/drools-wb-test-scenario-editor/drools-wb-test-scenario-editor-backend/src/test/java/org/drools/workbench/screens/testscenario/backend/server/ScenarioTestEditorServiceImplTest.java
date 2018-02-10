@@ -49,6 +49,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
@@ -75,9 +76,9 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ScenarioTestEditorServiceImplTest {
 
-    private static final String COMMENT = "comment";
     public static final String EMPTY_SCENARIO_FILENAME = "empty.scenario";
     public static final String NEW_FILE_NAME = "new" + EMPTY_SCENARIO_FILENAME;
+    private static final String COMMENT = "comment";
 
     @Mock
     Scenario scenario;
@@ -114,6 +115,9 @@ public class ScenarioTestEditorServiceImplTest {
 
     @Mock
     CopyService copyService;
+
+    @Mock
+    SaveAndRenameServiceImpl<Scenario, Metadata> saveAndRenameService;
 
     @Spy
     IOService ioService = new IOServiceDotFileImpl("testIoService");
@@ -527,6 +531,27 @@ public class ScenarioTestEditorServiceImplTest {
         verify(scenarioRunner).run("userName",
                                    scenario,
                                    module);
+    }
+
+    @Test
+    public void testInit() throws Exception {
+        testEditorService.init();
+
+        verify(saveAndRenameService).init(testEditorService);
+    }
+
+    @Test
+    public void testSaveAndRename() throws Exception {
+
+        final Path path = mock(Path.class);
+        final String newFileName = "newFileName";
+        final Metadata metadata = mock(Metadata.class);
+        final Scenario content = mock(Scenario.class);
+        final String comment = "comment";
+
+        testEditorService.saveAndRename(path, newFileName, metadata, content, comment);
+
+        verify(saveAndRenameService).saveAndRename(path, newFileName, metadata, content, comment);
     }
 
     private FactData factData(final String type) {

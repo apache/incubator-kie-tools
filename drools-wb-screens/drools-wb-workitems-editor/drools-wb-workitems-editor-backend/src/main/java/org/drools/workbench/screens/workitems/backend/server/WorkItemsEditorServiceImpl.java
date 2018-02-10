@@ -69,6 +69,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
@@ -117,6 +118,9 @@ public class WorkItemsEditorServiceImpl
     private WorkItemsTypeDefinition resourceTypeDefinition;
 
     @Inject
+    private SaveAndRenameServiceImpl<String, Metadata> saveAndRenameService;
+
+    @Inject
     private CommentedOptionFactory commentedOptionFactory;
 
     private WorkItemDefinitionElements workItemDefinitionElements;
@@ -134,9 +138,10 @@ public class WorkItemsEditorServiceImpl
     @PostConstruct
     public void setupWorkItemDefinitionElements() {
         workItemDefinitionElements = new WorkItemDefinitionElements(loadWorkItemDefinitionElements());
+        saveAndRenameService.init(this);
     }
 
-    private Map<String, String> loadWorkItemDefinitionElements() {
+    Map<String, String> loadWorkItemDefinitionElements() {
         final Map<String, String> workItemDefinitionElements = new HashMap<String, String>();
         final List<ConfigGroup> editorConfigGroups = configurationService.getConfiguration(ConfigType.EDITOR);
         for (ConfigGroup editorConfigGroup : editorConfigGroups) {
@@ -401,5 +406,14 @@ public class WorkItemsEditorServiceImpl
             }
         }
         return pps;
+    }
+
+    @Override
+    public Path saveAndRename(final Path path,
+                              final String newFileName,
+                              final Metadata metadata,
+                              final String content,
+                              final String comment) {
+        return saveAndRenameService.saveAndRename(path, newFileName, metadata, content, comment);
     }
 }

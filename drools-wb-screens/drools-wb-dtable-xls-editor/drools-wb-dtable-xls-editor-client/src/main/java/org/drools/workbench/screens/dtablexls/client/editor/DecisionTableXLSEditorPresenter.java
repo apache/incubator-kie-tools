@@ -65,7 +65,7 @@ import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopu
 @Dependent
 @WorkbenchEditor(identifier = "DecisionTableXLSEditor", supportedTypes = {DecisionTableXLSResourceType.class, DecisionTableXLSXResourceType.class})
 public class DecisionTableXLSEditorPresenter
-        extends KieEditor
+        extends KieEditor<DecisionTableXLSContent>
         implements DecisionTableXLSEditorView.Presenter {
 
     private Caller<DecisionTableXLSService> decisionTableXLSService;

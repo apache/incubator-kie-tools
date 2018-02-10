@@ -21,6 +21,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -43,6 +44,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.backend.service.KieService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
@@ -82,9 +84,17 @@ public class DSLTextEditorServiceImpl
     @Inject
     private CommentedOptionFactory commentedOptionFactory;
 
+    @Inject
+    private SaveAndRenameServiceImpl<String, Metadata> saveAndRenameService;
+
     private SafeSessionInfo safeSessionInfo;
 
     public DSLTextEditorServiceImpl() {
+    }
+
+    @PostConstruct
+    public void init() {
+        saveAndRenameService.init(this);
     }
 
     @Inject
@@ -296,5 +306,14 @@ public class DSLTextEditorServiceImpl
         msg.setLevel( Level.ERROR );
         msg.setText( "Uncategorized error " + o );
         return msg;
+    }
+
+    @Override
+    public Path saveAndRename(final Path path,
+                              final String newFileName,
+                              final Metadata metadata,
+                              final String content,
+                              final String comment) {
+        return saveAndRenameService.saveAndRename(path, newFileName, metadata, content, comment);
     }
 }

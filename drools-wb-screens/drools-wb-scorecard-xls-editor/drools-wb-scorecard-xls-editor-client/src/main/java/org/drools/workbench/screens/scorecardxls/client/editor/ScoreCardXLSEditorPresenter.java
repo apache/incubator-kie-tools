@@ -49,7 +49,7 @@ import org.uberfire.workbench.model.menu.Menus;
 @Dependent
 @WorkbenchEditor(identifier = "ScoreCardXLSEditor", supportedTypes = { ScoreCardXLSResourceType.class })
 public class ScoreCardXLSEditorPresenter
-        extends KieEditor
+        extends KieEditor<ScoreCardXLSContent>
         implements ScoreCardXLSEditorView.Presenter {
 
     @Inject

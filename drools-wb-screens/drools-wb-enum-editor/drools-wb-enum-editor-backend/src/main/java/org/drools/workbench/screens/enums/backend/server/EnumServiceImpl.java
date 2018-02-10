@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -46,6 +47,7 @@ import org.kie.workbench.common.services.datamodel.backend.server.builder.util.D
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
@@ -94,6 +96,9 @@ public class EnumServiceImpl
     @Inject
     private MVELEvaluator evaluator;
 
+    @Inject
+    private SaveAndRenameServiceImpl<String, Metadata> saveAndRenameService;
+
     private SafeSessionInfo safeSessionInfo;
 
     public EnumServiceImpl() {
@@ -102,6 +107,11 @@ public class EnumServiceImpl
     @Inject
     public EnumServiceImpl(final SessionInfo sessionInfo) {
         safeSessionInfo = new SafeSessionInfo(sessionInfo);
+    }
+
+    @PostConstruct
+    public void init() {
+        saveAndRenameService.init(this);
     }
 
     @Override
@@ -287,5 +297,14 @@ public class EnumServiceImpl
         msg.setLevel(Level.ERROR);
         msg.setText(message);
         return msg;
+    }
+
+    @Override
+    public Path saveAndRename(final Path path,
+                              final String newFileName,
+                              final Metadata metadata,
+                              final String content,
+                              final String comment) {
+        return saveAndRenameService.saveAndRename(path, newFileName, metadata, content, comment);
     }
 }

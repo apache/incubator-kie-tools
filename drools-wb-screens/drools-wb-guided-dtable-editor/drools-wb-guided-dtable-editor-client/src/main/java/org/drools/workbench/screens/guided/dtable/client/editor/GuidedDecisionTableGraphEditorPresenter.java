@@ -22,6 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -49,6 +51,7 @@ import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEdito
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableGraphEditorService;
+import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableGraphSaveAndRenameService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.bus.client.api.messaging.Message;
@@ -60,6 +63,8 @@ import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
+import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
+import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -74,6 +79,7 @@ import org.uberfire.client.mvp.SaveInProgressEvent;
 import org.uberfire.client.mvp.UpdatedLockStatusEvent;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
+import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.editor.commons.version.events.RestoreEvent;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
@@ -106,8 +112,10 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
 
     private final Caller<GuidedDecisionTableGraphEditorService> graphService;
     private final Caller<KieModuleService> moduleService;
+    private final Caller<GuidedDecisionTableGraphSaveAndRenameService> graphSaveAndRenameService;
     private final Event<SaveInProgressEvent> saveInProgressEvent;
     private final LockManager lockManager;
+    private final SaveAndRenameCommandBuilder<List<GuidedDecisionTableEditorContent>, Metadata> saveAndRenameCommandBuilder;
     protected ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
     protected Access access = new Access();
     protected Integer originalGraphHash;
@@ -121,6 +129,7 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
                                                    final Caller<GuidedDecisionTableEditorService> service,
                                                    final Caller<GuidedDecisionTableGraphEditorService> graphService,
                                                    final Caller<KieModuleService> moduleService,
+                                                   final Caller<GuidedDecisionTableGraphSaveAndRenameService> graphSaveAndRenameService,
                                                    final Event<NotificationEvent> notification,
                                                    final Event<SaveInProgressEvent> saveInProgressEvent,
                                                    final Event<DecisionTableSelectedEvent> decisionTableSelectedEvent,
@@ -135,7 +144,8 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
                                                    final SyncBeanManager beanManager,
                                                    final PlaceManager placeManager,
                                                    final LockManager lockManager,
-                                                   final ColumnsPage columnsPage) {
+                                                   final ColumnsPage columnsPage,
+                                                   final SaveAndRenameCommandBuilder<List<GuidedDecisionTableEditorContent>, Metadata> saveAndRenameCommandBuilder) {
         super(view,
               service,
               notification,
@@ -155,6 +165,8 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
         this.saveInProgressEvent = saveInProgressEvent;
         this.helper = helper;
         this.lockManager = lockManager;
+        this.graphSaveAndRenameService = graphSaveAndRenameService;
+        this.saveAndRenameCommandBuilder = saveAndRenameCommandBuilder;
     }
 
     @PostConstruct
@@ -379,8 +391,7 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
                     .addSave(getSaveMenuItem())
                     .addCopy(versionRecordManager::getCurrentPath,
                              assetUpdateValidator)
-                    .addRename(versionRecordManager::getPathToLatest,
-                               assetUpdateValidator)
+                    .addRename(getSaveAndRenameCommand())
                     .addDelete(versionRecordManager::getPathToLatest,
                                assetUpdateValidator);
         }
@@ -394,6 +405,101 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
                 .addNewTopLevelMenu(getRegisteredDocumentsMenuItem())
                 .addNewTopLevelMenu(getVersionManagerMenuItem())
                 .build();
+    }
+
+    protected Command getSaveAndRenameCommand() {
+
+        return saveAndRenameCommandBuilder
+                .addPathSupplier(getPathSupplier())
+                .addValidator(getValidator())
+                .addRenameService(getGraphSaveAndRenameService())
+                .addMetadataSupplier(getMetadataSupplier())
+                .addContentSupplier(getContentSupplier())
+                .addIsDirtySupplier(getIsDirtySupplier())
+                .addSuccessCallback(onSuccess())
+                .build();
+    }
+
+    Supplier<Path> getPathSupplier() {
+        return () -> versionRecordManager.getPathToLatest();
+    }
+
+    AssetUpdateValidator getValidator() {
+        return assetUpdateValidator;
+    }
+
+    Caller<GuidedDecisionTableGraphSaveAndRenameService> getGraphSaveAndRenameService() {
+        return graphSaveAndRenameService;
+    }
+
+    Supplier<Metadata> getMetadataSupplier() {
+        return () -> {
+
+            final Overview overview = getActiveDocument().getOverview();
+
+            return overview.getMetadata();
+        };
+    }
+
+    Supplier<List<GuidedDecisionTableEditorContent>> getContentSupplier() {
+        return () -> getAvailableDecisionTables()
+                .stream()
+                .map(c -> new GuidedDecisionTableEditorContent(c.getModel(), c.getOverview(), c.getCurrentPath(), c.getLatestPath()))
+                .collect(Collectors.toList());
+    }
+
+    Supplier<Boolean> getIsDirtySupplier() {
+        return () -> isGuidedDecisionTablesDirty() || isGraphDirty() || isOverviewWidgetDirty();
+    }
+
+    boolean isGuidedDecisionTablesDirty() {
+
+        return getAvailableDecisionTables().stream().anyMatch(dtPresenter -> {
+
+            final Integer originalHashCode = originalHashCode(dtPresenter);
+            final Integer currentHashCode = currentHashCode(dtPresenter);
+
+            return isDirty(originalHashCode, currentHashCode);
+        });
+    }
+
+    boolean isGraphDirty() {
+        return isDirty(originalGraphHash, getCurrentHashCode());
+    }
+
+    int getCurrentHashCode() {
+        return buildModelFromEditor().hashCode();
+    }
+
+    boolean isOverviewWidgetDirty() {
+        return getOverviewWidget().isDirty();
+    }
+
+    OverviewWidgetPresenter getOverviewWidget() {
+        return overviewWidget;
+    }
+
+    int originalHashCode(final GuidedDecisionTableView.Presenter dtPresenter) {
+        return dtPresenter.getOriginalHashCode();
+    }
+
+    int currentHashCode(final GuidedDecisionTableView.Presenter dtPresenter) {
+        return dtPresenter.getModel().hashCode();
+    }
+
+    Set<GuidedDecisionTableView.Presenter> getAvailableDecisionTables() {
+        return modeller.getAvailableDecisionTables();
+    }
+
+    ParameterizedCommand<Path> onSuccess() {
+        return (path) -> {
+
+            final Set<GuidedDecisionTableView.Presenter> allDecisionTables = new HashSet<>(modeller.getAvailableDecisionTables());
+            final int size = allDecisionTables.size();
+            final SaveGraphLatch saveGraphLatch = new SaveGraphLatch(size, "Sava and Rename");
+
+            saveGraphLatch.saveDocumentGraph(path);
+        };
     }
 
     @Override
@@ -746,7 +852,10 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
             if (dtGraphElementCount > 0) {
                 return;
             }
+            saveDocumentGraph(editorPath);
+        }
 
+        private void saveDocumentGraph(final Path editorPath) {
             final GuidedDecisionTableEditorGraphModel model = buildModelFromEditor();
             graphService.call(new RemoteCallback<Path>() {
                                   @Override

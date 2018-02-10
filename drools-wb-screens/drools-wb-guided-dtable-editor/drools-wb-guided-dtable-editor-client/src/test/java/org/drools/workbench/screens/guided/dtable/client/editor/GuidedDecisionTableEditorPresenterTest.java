@@ -17,26 +17,33 @@
 package org.drools.workbench.screens.guided.dtable.client.editor;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Optional;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
+import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
@@ -53,6 +60,9 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
 
     private GuidedDTableResourceType resourceType = new GuidedDTableResourceType();
 
+    @Mock
+    private SaveAndRenameCommandBuilder<GuidedDecisionTable52, Metadata> saveAndRenameCommandBuilder;
+
     @Override
     protected GuidedDecisionTableEditorPresenter getPresenter() {
         return new GuidedDecisionTableEditorPresenter(view,
@@ -68,10 +78,16 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
                                                       modeller,
                                                       beanManager,
                                                       placeManager,
-                                                      columnsPage) {
+                                                      columnsPage,
+                                                      saveAndRenameCommandBuilder) {
             {
                 workbenchContext = GuidedDecisionTableEditorPresenterTest.this.workbenchContext;
                 projectController = GuidedDecisionTableEditorPresenterTest.this.projectController;
+            }
+
+            @Override
+            protected Command getSaveAndRenameCommand() {
+                return mock(Command.class);
             }
         };
     }
@@ -84,8 +100,7 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
                times(1)).addCopy(any(BasicFileMenuBuilder.PathProvider.class),
                                  eq(assetUpdateValidator));
         verify(fileMenuBuilder,
-               times(1)).addRename(any(BasicFileMenuBuilder.PathProvider.class),
-                                   eq(assetUpdateValidator));
+               times(1)).addRename(any(Command.class));
         verify(fileMenuBuilder,
                times(1)).addDelete(any(BasicFileMenuBuilder.PathProvider.class),
                                    eq(assetUpdateValidator));
@@ -179,5 +194,77 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
 
         verify(placeManager,
                times(1)).forceClosePlace(eq(placeRequest));
+    }
+
+    @Test
+    public void testGetMetadataSupplier() {
+
+        final GuidedDecisionTableView.Presenter document = mock(GuidedDecisionTableView.Presenter.class);
+        final Overview overview = mock(Overview.class);
+        final Metadata expectedMetadata = mock(Metadata.class);
+
+        doReturn(document).when(presenter).getActiveDocument();
+        doReturn(overview).when(document).getOverview();
+        doReturn(expectedMetadata).when(overview).getMetadata();
+
+        final Metadata actualMetadata = presenter.getMetadataSupplier().get();
+
+        assertEquals(expectedMetadata, actualMetadata);
+    }
+
+    @Test
+    public void testGetContentSupplier() {
+
+        final GuidedDecisionTableView.Presenter presenter = mock(GuidedDecisionTableView.Presenter.class);
+        final GuidedDecisionTable52 expected = mock(GuidedDecisionTable52.class);
+
+        doReturn(expected).when(presenter).getModel();
+        doReturn(presenter).when(this.presenter).getActiveDocument();
+
+        final GuidedDecisionTable52 actual = this.presenter.getContentSupplier().get();
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetIsDirtySupplierWhenItIsDirty() {
+
+        final GuidedDecisionTableView.Presenter presenter = mock(GuidedDecisionTableView.Presenter.class);
+        final GuidedDecisionTable52 model = mock(GuidedDecisionTable52.class);
+        final int currentHash = 456;
+        final int originalHash = 123;
+
+        doReturn(currentHash).when(this.presenter).currentHashCode(presenter);
+        doReturn(originalHash).when(this.presenter).originalHashCode(presenter);
+        doReturn(model).when(presenter).getModel();
+        doReturn(presenter).when(this.presenter).getActiveDocument();
+
+        final boolean isDirty = this.presenter.getIsDirtySupplier().get();
+
+        assertTrue(isDirty);
+    }
+
+    @Test
+    public void testGetIsDirtySupplierWhenItIsNotDirty() {
+
+        final GuidedDecisionTableView.Presenter presenter = mock(GuidedDecisionTableView.Presenter.class);
+        final GuidedDecisionTable52 model = mock(GuidedDecisionTable52.class);
+        final int currentHash = 123;
+        final int originalHash = 123;
+
+        doReturn(currentHash).when(this.presenter).currentHashCode(presenter);
+        doReturn(originalHash).when(this.presenter).originalHashCode(presenter);
+        doReturn(model).when(presenter).getModel();
+        doReturn(presenter).when(this.presenter).getActiveDocument();
+
+        final boolean isDirty = this.presenter.getIsDirtySupplier().get();
+
+        assertFalse(isDirty);
+    }
+
+    private HashSet<GuidedDecisionTableView.Presenter> asSet(final GuidedDecisionTableView.Presenter presenter) {
+        return new HashSet<GuidedDecisionTableView.Presenter>() {{
+            add(presenter);
+        }};
     }
 }

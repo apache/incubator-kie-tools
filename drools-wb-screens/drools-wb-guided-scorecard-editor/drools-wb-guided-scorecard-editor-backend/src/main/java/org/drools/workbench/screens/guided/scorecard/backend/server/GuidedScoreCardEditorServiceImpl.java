@@ -19,6 +19,7 @@ package org.drools.workbench.screens.guided.scorecard.backend.server;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -47,6 +48,7 @@ import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleB
 import org.kie.workbench.common.services.shared.source.SourceGenerationFailedException;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
@@ -82,6 +84,10 @@ public class GuidedScoreCardEditorServiceImpl
 
     @Inject
     private CommentedOptionFactory commentedOptionFactory;
+
+    @Inject
+    private SaveAndRenameServiceImpl<ScoreCardModel, Metadata> saveAndRenameService;
+
     private SafeSessionInfo safeSessionInfo;
 
     public GuidedScoreCardEditorServiceImpl() {
@@ -90,6 +96,11 @@ public class GuidedScoreCardEditorServiceImpl
     @Inject
     public GuidedScoreCardEditorServiceImpl(final SessionInfo sessionInfo) {
         safeSessionInfo = new SafeSessionInfo(sessionInfo);
+    }
+
+    @PostConstruct
+    public void init() {
+        saveAndRenameService.init(this);
     }
 
     @Override
@@ -337,5 +348,14 @@ public class GuidedScoreCardEditorServiceImpl
         msg.setText(message);
         msg.setLevel(Level.ERROR);
         return msg;
+    }
+
+    @Override
+    public Path saveAndRename(final Path path,
+                              final String newFileName,
+                              final Metadata metadata,
+                              final ScoreCardModel content,
+                              final String comment) {
+        return saveAndRenameService.saveAndRename(path, newFileName, metadata, content, comment);
     }
 }

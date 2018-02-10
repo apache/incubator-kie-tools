@@ -18,10 +18,12 @@ package org.drools.workbench.screens.guided.dtable.client.editor;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.editor.clipboard.Clipboard;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.EditMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.InsertMenuBuilder;
@@ -34,8 +36,10 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDeci
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTablePopoverUtils;
+import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -65,6 +69,7 @@ import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilderImpl;
 import org.uberfire.ext.editor.commons.client.menu.RestoreVersionCommandProvider;
+import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
 import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
 import org.uberfire.ext.editor.commons.version.VersionService;
 import org.uberfire.ext.editor.commons.version.events.RestoreEvent;
@@ -234,6 +239,9 @@ public class GuidedDecisionTableEditorMenusTest {
     protected ColumnsPage columnsPage;
 
     @Mock
+    protected SaveAndRenameCommandBuilder<GuidedDecisionTable52, Metadata> saveAndRenameCommandBuilder;
+
+    @Mock
     protected MenuItemWithIconView menuItemWithIconView;
 
     @Mock
@@ -326,7 +334,13 @@ public class GuidedDecisionTableEditorMenusTest {
                                                                                                   modeller,
                                                                                                   beanManager,
                                                                                                   placeManager,
-                                                                                                  columnsPage);
+                                                                                                  columnsPage,
+                                                                                                  saveAndRenameCommandBuilder) {
+            @Override
+            protected Command getSaveAndRenameCommand() {
+                return mock(Command.class);
+            }
+        };
 
         wrapped.setKieEditorWrapperView(kieEditorWrapperView);
         wrapped.setOverviewWidget(overviewWidget);

@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -46,6 +47,7 @@ import org.kie.workbench.common.services.datamodel.backend.server.service.DataMo
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
@@ -89,6 +91,9 @@ public class GuidedDecisionTreeEditorServiceImpl
     @Inject
     private CommentedOptionFactory commentedOptionFactory;
 
+    @Inject
+    private SaveAndRenameServiceImpl<GuidedDecisionTree, Metadata> saveAndRenameService;
+
     private SafeSessionInfo safeSessionInfo;
 
     public GuidedDecisionTreeEditorServiceImpl() {
@@ -98,6 +103,11 @@ public class GuidedDecisionTreeEditorServiceImpl
     @Inject
     public GuidedDecisionTreeEditorServiceImpl(final SessionInfo sessionInfo) {
         safeSessionInfo = new SafeSessionInfo(sessionInfo);
+    }
+
+    @PostConstruct
+    public void init() {
+        saveAndRenameService.init(this);
     }
 
     @Override
@@ -284,5 +294,14 @@ public class GuidedDecisionTreeEditorServiceImpl
         } catch (Exception e) {
             throw ExceptionUtilities.handleException(e);
         }
+    }
+
+    @Override
+    public Path saveAndRename(final Path path,
+                              final String newFileName,
+                              final Metadata metadata,
+                              final GuidedDecisionTree content,
+                              final String comment) {
+        return saveAndRenameService.saveAndRename(path, newFileName, metadata, content, comment);
     }
 }

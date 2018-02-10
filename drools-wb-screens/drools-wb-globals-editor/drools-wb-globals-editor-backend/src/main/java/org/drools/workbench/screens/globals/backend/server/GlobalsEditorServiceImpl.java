@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -44,6 +45,7 @@ import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
@@ -81,6 +83,9 @@ public class GlobalsEditorServiceImpl
     @Inject
     private GenericValidator genericValidator;
 
+    @Inject
+    private SaveAndRenameServiceImpl<GlobalsModel, Metadata> saveAndRenameService;
+
     private SafeSessionInfo safeSessionInfo;
 
     public GlobalsEditorServiceImpl() {
@@ -89,6 +94,11 @@ public class GlobalsEditorServiceImpl
     @Inject
     public GlobalsEditorServiceImpl(final SessionInfo sessionInfo) {
         safeSessionInfo = new SafeSessionInfo(sessionInfo);
+    }
+
+    @PostConstruct
+    public void init() {
+        saveAndRenameService.init(this);
     }
 
     @Override
@@ -280,5 +290,14 @@ public class GlobalsEditorServiceImpl
         } catch (Exception e) {
             throw ExceptionUtilities.handleException(e);
         }
+    }
+
+    @Override
+    public Path saveAndRename(final Path path,
+                              final String newFileName,
+                              final Metadata metadata,
+                              final GlobalsModel content,
+                              final String comment) {
+        return saveAndRenameService.saveAndRename(path, newFileName, metadata, content, comment);
     }
 }

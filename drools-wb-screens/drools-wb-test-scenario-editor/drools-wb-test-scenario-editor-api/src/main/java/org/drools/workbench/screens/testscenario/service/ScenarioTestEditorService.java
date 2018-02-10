@@ -20,6 +20,7 @@ import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.model.TestScenarioModelContent;
 import org.drools.workbench.screens.testscenario.model.TestScenarioResult;
 import org.guvnor.common.services.shared.file.SupportsUpdate;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
@@ -27,6 +28,7 @@ import org.uberfire.ext.editor.commons.service.support.SupportsCreate;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRead;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
+import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 
 /**
  * Service definition for Globals editor
@@ -36,18 +38,16 @@ public interface ScenarioTestEditorService
         extends
         SupportsCreate<Scenario>,
         SupportsRead<Scenario>,
-        SupportsUpdate<Scenario>,
+        SupportsSaveAndRename<Scenario, Metadata>,
         SupportsDelete,
-        SupportsCopy,
-        SupportsRename {
+        SupportsCopy {
 
     public static final String TEST_SCENARIO_EDITOR_SETTINGS = "test-scenario-editor-settings";
     public static final String TEST_SCENARIO_EDITOR_MAX_RULE_FIRINGS = "max-rule-firings";
 
-    TestScenarioModelContent loadContent( final Path path );
+    TestScenarioModelContent loadContent(final Path path);
 
     TestScenarioResult runScenario(final String userName,
                                    final Path path,
                                    final Scenario scenario);
-
 }

@@ -19,6 +19,7 @@ package org.drools.workbench.screens.drltext.backend.server;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -49,6 +50,7 @@ import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracl
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
@@ -92,6 +94,9 @@ public class DRLTextEditorServiceImpl
     private DSLRResourceTypeDefinition dslrResourceType;
 
     @Inject
+    private SaveAndRenameServiceImpl<String, Metadata> saveAndRenameService;
+
+    @Inject
     private CommentedOptionFactory commentedOptionFactory;
     private SafeSessionInfo safeSessionInfo;
 
@@ -101,6 +106,11 @@ public class DRLTextEditorServiceImpl
     @Inject
     public DRLTextEditorServiceImpl(final SessionInfo sessionInfo) {
         safeSessionInfo = new SafeSessionInfo(sessionInfo);
+    }
+
+    @PostConstruct
+    public void init() {
+        saveAndRenameService.init(this);
     }
 
     @Override
@@ -294,5 +304,14 @@ public class DRLTextEditorServiceImpl
         } catch (Exception e) {
             throw ExceptionUtilities.handleException(e);
         }
+    }
+
+    @Override
+    public Path saveAndRename(final Path path,
+                              final String newFileName,
+                              final Metadata metadata,
+                              final String content,
+                              final String comment) {
+        return saveAndRenameService.saveAndRename(path, newFileName, metadata, content, comment);
     }
 }

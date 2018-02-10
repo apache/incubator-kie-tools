@@ -53,6 +53,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
 import org.uberfire.ext.editor.commons.backend.version.VersionRecordService;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
@@ -127,6 +128,9 @@ public class GuidedDecisionTableEditorServiceImplTest {
     private SessionInfo sessionInfo;
 
     @Mock
+    private SaveAndRenameServiceImpl<GuidedDecisionTable52, Metadata> saveAndRenameService;
+
+    @Mock
     private org.guvnor.common.services.project.model.Package pkg;
 
     @Mock
@@ -139,7 +143,9 @@ public class GuidedDecisionTableEditorServiceImplTest {
     private BasicFileAttributes basicFileAttributes;
 
     private GuidedDTableResourceTypeDefinition dtType = new GuidedDTableResourceTypeDefinition();
+
     private GuidedDTableGraphResourceTypeDefinition dtGraphType = new GuidedDTableGraphResourceTypeDefinition();
+
     private GuidedDecisionTableEditorServiceImpl service;
 
     @Before
@@ -158,6 +164,7 @@ public class GuidedDecisionTableEditorServiceImplTest {
                                                            resourceOpenedEvent,
                                                            genericValidator,
                                                            commentedOptionFactory,
+                                                           saveAndRenameService,
                                                            sessionInfo) {
             {
                 this.sourceServices = mockSourceServices;
@@ -425,6 +432,27 @@ public class GuidedDecisionTableEditorServiceImplTest {
         verify(mockSourceService,
                times(1)).getSource(any(org.uberfire.java.nio.file.Path.class),
                                    eq(model));
+    }
+
+    @Test
+    public void testInit() throws Exception {
+        service.init();
+
+        verify(saveAndRenameService).init(service);
+    }
+
+    @Test
+    public void testSaveAndRename() throws Exception {
+
+        final Path path = mock(Path.class);
+        final String newFileName = "newFileName";
+        final Metadata metadata = mock(Metadata.class);
+        final GuidedDecisionTable52 content = mock(GuidedDecisionTable52.class);
+        final String comment = "comment";
+
+        service.saveAndRename(path, newFileName, metadata, content, comment);
+
+        verify(saveAndRenameService).saveAndRename(path, newFileName, metadata, content, comment);
     }
 
     @Test

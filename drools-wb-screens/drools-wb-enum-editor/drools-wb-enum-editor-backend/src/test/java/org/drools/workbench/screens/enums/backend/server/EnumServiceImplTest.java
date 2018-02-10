@@ -20,7 +20,6 @@ import java.util.Collections;
 
 import javax.enterprise.event.Event;
 
-import org.drools.workbench.screens.enums.service.EnumService;
 import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
@@ -33,6 +32,7 @@ import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 
@@ -60,9 +60,12 @@ public class EnumServiceImplTest {
     @Mock
     private Event<InvalidateDMOPackageCacheEvent> invalidateDMOPackageCache;
 
+    @Mock
+    private SaveAndRenameServiceImpl<String, Metadata> saveAndRenameService;
+
     @Spy
     @InjectMocks
-    private EnumService enumService = new EnumServiceImpl();
+    private EnumServiceImpl enumService = new EnumServiceImpl();
 
     @Test
     public void testCreate() throws Exception {
@@ -98,5 +101,26 @@ public class EnumServiceImplTest {
                                 eq(fileContent),
                                 eq(Collections.EMPTY_MAP),
                                 eq(commentedOption));
+    }
+
+    @Test
+    public void testInit() throws Exception {
+        enumService.init();
+
+        verify(saveAndRenameService).init(enumService);
+    }
+
+    @Test
+    public void testSaveAndRename() throws Exception {
+
+        final Path path = mock(Path.class);
+        final String newFileName = "newFileName";
+        final Metadata metadata = mock(Metadata.class);
+        final String content = "content";
+        final String comment = "comment";
+
+        enumService.saveAndRename(path, newFileName, metadata, content, comment);
+
+        verify(saveAndRenameService).saveAndRename(path, newFileName, metadata, content, comment);
     }
 }

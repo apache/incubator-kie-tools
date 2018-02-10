@@ -131,6 +131,11 @@ public class GlobalsEditorPresenterTest {
                 versionRecordManager = GlobalsEditorPresenterTest.this.versionRecordManager;
                 assetUpdateValidator = GlobalsEditorPresenterTest.this.assetUpdateValidator;
             }
+
+            @Override
+            protected Command getSaveAndRename() {
+                return mock(Command.class);
+            }
         };
     }
 
@@ -231,8 +236,7 @@ public class GlobalsEditorPresenterTest {
         verify(fileMenuBuilder).addSave(any(MenuItem.class));
         verify(fileMenuBuilder).addCopy(any(Path.class),
                                         any(AssetUpdateValidator.class));
-        verify(fileMenuBuilder).addRename(any(Path.class),
-                                          any(AssetUpdateValidator.class));
+        verify(fileMenuBuilder).addRename(any(Command.class));
         verify(fileMenuBuilder).addDelete(any(Command.class));
     }
 

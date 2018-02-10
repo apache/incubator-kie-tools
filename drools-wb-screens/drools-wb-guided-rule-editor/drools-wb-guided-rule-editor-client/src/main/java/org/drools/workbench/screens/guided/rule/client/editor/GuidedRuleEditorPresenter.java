@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.rule.client.editor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
@@ -32,6 +33,7 @@ import org.drools.workbench.screens.guided.rule.client.type.GuidedRuleDRLResourc
 import org.drools.workbench.screens.guided.rule.client.type.GuidedRuleDSLRResourceType;
 import org.drools.workbench.screens.guided.rule.model.GuidedEditorContent;
 import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -55,6 +57,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 import org.uberfire.lifecycle.OnClose;
@@ -69,7 +72,7 @@ import org.uberfire.workbench.model.menu.Menus;
 @Dependent
 @WorkbenchEditor(identifier = "GuidedRuleEditor", supportedTypes = {GuidedRuleDRLResourceType.class, GuidedRuleDSLRResourceType.class}, priority = 102)
 public class GuidedRuleEditorPresenter
-        extends KieEditor {
+        extends KieEditor<RuleModel> {
 
     @Inject
     private ImportsWidgetPresenter importsWidget;
@@ -125,6 +128,16 @@ public class GuidedRuleEditorPresenter
         view.showLoading();
         getService().call(getModelSuccessCallback(),
                           getNoSuchFileExceptionErrorCallback()).loadContent(getVersionRecordManager().getCurrentPath());
+    }
+
+    @Override
+    protected Supplier<RuleModel> getContentSupplier() {
+        return () -> view.getContent();
+    }
+
+    @Override
+    protected Caller<? extends SupportsSaveAndRename<RuleModel, Metadata>> getSaveAndRenameServiceCaller() {
+        return getService();
     }
 
     @Override

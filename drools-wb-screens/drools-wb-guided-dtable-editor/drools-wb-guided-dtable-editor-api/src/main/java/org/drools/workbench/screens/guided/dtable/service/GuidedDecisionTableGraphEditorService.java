@@ -39,8 +39,7 @@ public interface GuidedDecisionTableGraphEditorService
         SupportsCopy,
         SupportsRename {
 
-    GuidedDecisionTableEditorGraphContent loadContent( final Path path );
+    GuidedDecisionTableEditorGraphContent loadContent(final Path path);
 
-    List<Path> listDecisionTablesInPackage( final Path path );
-
+    List<Path> listDecisionTablesInPackage(final Path path);
 }

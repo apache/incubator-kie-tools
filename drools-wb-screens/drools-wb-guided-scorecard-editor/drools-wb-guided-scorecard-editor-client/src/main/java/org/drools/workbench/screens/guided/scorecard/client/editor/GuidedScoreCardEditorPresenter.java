@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.guided.scorecard.client.editor;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -28,6 +29,7 @@ import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.client.type.GuidedScoreCardResourceType;
 import org.drools.workbench.screens.guided.scorecard.model.ScoreCardModelContent;
 import org.drools.workbench.screens.guided.scorecard.service.GuidedScoreCardEditorService;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -46,6 +48,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
@@ -56,9 +59,9 @@ import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
-@WorkbenchEditor(identifier = "GuidedScoreCardEditor", supportedTypes = { GuidedScoreCardResourceType.class })
+@WorkbenchEditor(identifier = "GuidedScoreCardEditor", supportedTypes = {GuidedScoreCardResourceType.class})
 public class GuidedScoreCardEditorPresenter
-        extends KieEditor {
+        extends KieEditor<ScoreCardModel> {
 
     @Inject
     private Caller<GuidedScoreCardEditorService> scoreCardEditorService;
@@ -84,67 +87,77 @@ public class GuidedScoreCardEditorPresenter
     private ImportsWidgetPresenter importsWidget;
 
     @Inject
-    public GuidedScoreCardEditorPresenter( final GuidedScoreCardEditorView baseView ) {
-        super( baseView );
+    public GuidedScoreCardEditorPresenter(final GuidedScoreCardEditorView baseView) {
+        super(baseView);
         view = baseView;
     }
 
     @OnStartup
-    public void onStartup( final ObservablePath path,
-                           final PlaceRequest place ) {
-        super.init( path,
-                    place,
-                    type );
+    public void onStartup(final ObservablePath path,
+                          final PlaceRequest place) {
+        super.init(path,
+                   place,
+                   type);
     }
 
     protected void loadContent() {
         view.showLoading();
-        scoreCardEditorService.call( getModelSuccessCallback(),
-                                     getNoSuchFileExceptionErrorCallback() ).loadContent( versionRecordManager.getCurrentPath() );
+        scoreCardEditorService.call(getModelSuccessCallback(),
+                                    getNoSuchFileExceptionErrorCallback()).loadContent(versionRecordManager.getCurrentPath());
+    }
+
+    @Override
+    protected Supplier<ScoreCardModel> getContentSupplier() {
+        return () -> view.getModel();
+    }
+
+    @Override
+    protected Caller<? extends SupportsSaveAndRename<ScoreCardModel, Metadata>> getSaveAndRenameServiceCaller() {
+        return scoreCardEditorService;
     }
 
     private RemoteCallback<ScoreCardModelContent> getModelSuccessCallback() {
         return new RemoteCallback<ScoreCardModelContent>() {
 
             @Override
-            public void callback( final ScoreCardModelContent content ) {
+            public void callback(final ScoreCardModelContent content) {
                 //Path is set to null when the Editor is closed (which can happen before async calls complete).
-                if ( versionRecordManager.getCurrentPath() == null ) {
+                if (versionRecordManager.getCurrentPath() == null) {
                     return;
                 }
 
                 model = content.getModel();
                 final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
-                oracle = oracleFactory.makeAsyncPackageDataModelOracle( versionRecordManager.getCurrentPath(),
-                                                                        model,
-                                                                        dataModel );
+                oracle = oracleFactory.makeAsyncPackageDataModelOracle(versionRecordManager.getCurrentPath(),
+                                                                       model,
+                                                                       dataModel);
 
-                resetEditorPages( content.getOverview() );
+                resetEditorPages(content.getOverview());
                 addSourcePage();
 
-                addImportsTab( importsWidget );
+                addImportsTab(importsWidget);
 
-                view.setContent( model,
-                                 oracle );
-                importsWidget.setContent( oracle,
-                                          model.getImports(),
-                                          isReadOnly );
+                view.setContent(model,
+                                oracle);
+                importsWidget.setContent(oracle,
+                                         model.getImports(),
+                                         isReadOnly);
 
-                createOriginalHash( model );
+                createOriginalHash(model);
                 view.hideBusyIndicator();
             }
         };
     }
 
-    public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
-        if ( !event.getDataModelOracle().equals( this.oracle ) ) {
+    public void handleImportAddedEvent(@Observes ImportAddedEvent event) {
+        if (!event.getDataModelOracle().equals(this.oracle)) {
             return;
         }
         view.refreshFactTypes();
     }
 
-    public void handleImportRemovedEvent( @Observes ImportRemovedEvent event ) {
-        if ( !event.getDataModelOracle().equals( this.oracle ) ) {
+    public void handleImportRemovedEvent(@Observes ImportRemovedEvent event) {
+        if (!event.getDataModelOracle().equals(this.oracle)) {
             return;
         }
         view.refreshFactTypes();
@@ -154,40 +167,40 @@ public class GuidedScoreCardEditorPresenter
         return new Command() {
             @Override
             public void execute() {
-                scoreCardEditorService.call( new RemoteCallback<List<ValidationMessage>>() {
+                scoreCardEditorService.call(new RemoteCallback<List<ValidationMessage>>() {
                     @Override
-                    public void callback( final List<ValidationMessage> results ) {
-                        if ( results == null || results.isEmpty() ) {
-                            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
-                                                                      NotificationEvent.NotificationType.SUCCESS ) );
+                    public void callback(final List<ValidationMessage> results) {
+                        if (results == null || results.isEmpty()) {
+                            notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
+                                                                    NotificationEvent.NotificationType.SUCCESS));
                         } else {
-                            validationPopup.showMessages( results );
+                            validationPopup.showMessages(results);
                         }
                     }
-                } ).validate( versionRecordManager.getCurrentPath(),
-                              view.getModel() );
+                }).validate(versionRecordManager.getCurrentPath(),
+                            view.getModel());
             }
         };
     }
 
     @Override
-    protected void save( String commitMessage ) {
-        scoreCardEditorService.call( getSaveSuccessCallback( view.getModel().hashCode() ),
-                                     new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
-                                                                                              view.getModel(),
-                                                                                              metadata,
-                                                                                              commitMessage );
+    protected void save(String commitMessage) {
+        scoreCardEditorService.call(getSaveSuccessCallback(view.getModel().hashCode()),
+                                    new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
+                                                                                         view.getModel(),
+                                                                                         metadata,
+                                                                                         commitMessage);
     }
 
     @Override
     public void onSourceTabSelected() {
-        scoreCardEditorService.call( new RemoteCallback<String>() {
+        scoreCardEditorService.call(new RemoteCallback<String>() {
             @Override
-            public void callback( String source ) {
-                updateSource( source );
+            public void callback(String source) {
+                updateSource(source);
             }
-        } ).toSource( versionRecordManager.getCurrentPath(),
-                      view.getModel() );
+        }).toSource(versionRecordManager.getCurrentPath(),
+                    view.getModel());
     }
 
     @WorkbenchPartView
@@ -198,12 +211,12 @@ public class GuidedScoreCardEditorPresenter
     @OnClose
     public void onClose() {
         this.versionRecordManager.clear();
-        this.oracleFactory.destroy( oracle );
+        this.oracleFactory.destroy(oracle);
     }
 
     @OnMayClose
     public boolean mayClose() {
-        return super.mayClose( view.getModel() );
+        return super.mayClose(view.getModel());
     }
 
     @WorkbenchPartTitleDecoration
@@ -220,5 +233,4 @@ public class GuidedScoreCardEditorPresenter
     public Menus getMenus() {
         return menus;
     }
-
 }

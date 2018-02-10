@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.guided.template.client.editor;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -31,6 +32,7 @@ import org.drools.workbench.screens.guided.template.client.resources.i18n.Guided
 import org.drools.workbench.screens.guided.template.client.type.GuidedRuleTemplateResourceType;
 import org.drools.workbench.screens.guided.template.model.GuidedTemplateEditorContent;
 import org.drools.workbench.screens.guided.template.service.GuidedRuleTemplateEditorService;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -51,6 +53,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.views.pfly.multipage.PageImpl;
+import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
@@ -63,7 +66,7 @@ import org.uberfire.workbench.model.menu.Menus;
 @Dependent
 @WorkbenchEditor(identifier = "GuidedRuleTemplateEditor", supportedTypes = {GuidedRuleTemplateResourceType.class})
 public class GuidedRuleTemplateEditorPresenter
-        extends KieEditor {
+        extends KieEditor<TemplateModel> {
 
     private GuidedRuleTemplateEditorView view;
 
@@ -114,6 +117,16 @@ public class GuidedRuleTemplateEditorPresenter
         view.showLoading();
         getService().call(getModelSuccessCallback(),
                           getNoSuchFileExceptionErrorCallback()).loadContent(versionRecordManager.getCurrentPath());
+    }
+
+    @Override
+    protected Supplier<TemplateModel> getContentSupplier() {
+        return this::getModel;
+    }
+
+    @Override
+    protected Caller<? extends SupportsSaveAndRename<TemplateModel, Metadata>> getSaveAndRenameServiceCaller() {
+        return getService();
     }
 
     private RemoteCallback<GuidedTemplateEditorContent> getModelSuccessCallback() {
@@ -258,5 +271,9 @@ public class GuidedRuleTemplateEditorPresenter
      */
     Caller<GuidedRuleTemplateEditorService> getService() {
         return service;
+    }
+
+    TemplateModel getModel() {
+        return model;
     }
 }

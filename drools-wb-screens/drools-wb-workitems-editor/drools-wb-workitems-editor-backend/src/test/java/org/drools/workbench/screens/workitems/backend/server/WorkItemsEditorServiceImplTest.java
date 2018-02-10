@@ -19,18 +19,26 @@ package org.drools.workbench.screens.workitems.backend.server;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WorkItemsEditorServiceImplTest {
@@ -38,12 +46,11 @@ public class WorkItemsEditorServiceImplTest {
     @Mock
     Path path;
 
-    WorkItemsEditorServiceImpl service;
+    @Mock
+    SaveAndRenameServiceImpl<String, Metadata> saveAndRenameService;
 
-    @Before
-    public void setUp() throws Exception {
-        service = new WorkItemsEditorServiceImpl();
-    }
+    @InjectMocks
+    WorkItemsEditorServiceImpl service = spy(new WorkItemsEditorServiceImpl());
 
     private String loadFile(String fileName) throws Exception {
         URL fileURL = getClass().getResource(fileName);
@@ -65,5 +72,34 @@ public class WorkItemsEditorServiceImplTest {
                      messages.size());
         assertTrue("Expected error about missing import",
                    messages.get(0).getText().contains("Error: could not resolve class: MyCustomDataType"));
+    }
+
+    @Test
+    public void testSetupWorkItemDefinitionElements() throws Exception {
+
+        final HashMap<String, String> expectedDefinitionElements = new HashMap<>();
+
+        doReturn(expectedDefinitionElements).when(service).loadWorkItemDefinitionElements();
+
+        service.setupWorkItemDefinitionElements();
+
+        final Map<String, String> actualDefinitionElements = service.loadDefinitionElements().getDefinitionElements();
+
+        verify(saveAndRenameService).init(service);
+        assertEquals(expectedDefinitionElements, actualDefinitionElements);
+    }
+
+    @Test
+    public void testSaveAndRename() throws Exception {
+
+        final Path path = mock(Path.class);
+        final String newFileName = "newFileName";
+        final Metadata metadata = mock(Metadata.class);
+        final String content = "content";
+        final String comment = "comment";
+
+        service.saveAndRename(path, newFileName, metadata, content, comment);
+
+        verify(saveAndRenameService).saveAndRename(path, newFileName, metadata, content, comment);
     }
 }

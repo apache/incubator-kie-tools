@@ -25,15 +25,16 @@ import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
 import org.guvnor.common.services.backend.metadata.attribute.GeneratedAttributesView;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 
@@ -63,19 +64,18 @@ public class GlobalsEditorServiceTest {
     @Mock
     private MetadataServerSideService metadataService;
 
-    private GlobalsEditorService globalsEditorService;
+    @Mock
+    private SaveAndRenameServiceImpl<GlobalsModel, Metadata> saveAndRenameService;
 
-    @Before
-    public void setUp() {
-        globalsEditorService = new GlobalsEditorServiceImpl() {
-            {
-                moduleService = GlobalsEditorServiceTest.this.kieModuleService;
-                ioService = GlobalsEditorServiceTest.this.ioService;
-                commentedOptionFactory = GlobalsEditorServiceTest.this.commentedOptionFactory;
-                metadataService = GlobalsEditorServiceTest.this.metadataService;
-            }
-        };
-    }
+    @InjectMocks
+    private GlobalsEditorService globalsEditorService = new GlobalsEditorServiceImpl() {
+        {
+            moduleService = GlobalsEditorServiceTest.this.kieModuleService;
+            ioService = GlobalsEditorServiceTest.this.ioService;
+            commentedOptionFactory = GlobalsEditorServiceTest.this.commentedOptionFactory;
+            metadataService = GlobalsEditorServiceTest.this.metadataService;
+        }
+    };
 
     @Test
     public void save() {
@@ -134,5 +134,30 @@ public class GlobalsEditorServiceTest {
         Object generatedAttribute = capturedMap.get(GeneratedAttributesView.GENERATED_ATTRIBUTE_NAME);
         assertNotNull(generatedAttribute);
         assertTrue(Boolean.parseBoolean(generatedAttribute.toString()));
+    }
+
+    @Test
+    public void testInit() throws Exception {
+
+        final GlobalsEditorServiceImpl service = (GlobalsEditorServiceImpl) globalsEditorService;
+
+        service.init();
+
+        verify(saveAndRenameService).init(service);
+    }
+
+    @Test
+    public void testSaveAndRename() throws Exception {
+
+        final GlobalsEditorServiceImpl service = (GlobalsEditorServiceImpl) globalsEditorService;
+        final Path path = mock(Path.class);
+        final String newFileName = "newFileName";
+        final Metadata metadata = mock(Metadata.class);
+        final GlobalsModel content = mock(GlobalsModel.class);
+        final String comment = "comment";
+
+        service.saveAndRename(path, newFileName, metadata, content, comment);
+
+        verify(saveAndRenameService).saveAndRename(path, newFileName, metadata, content, comment);
     }
 }

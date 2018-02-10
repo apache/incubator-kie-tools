@@ -19,6 +19,7 @@ package org.drools.workbench.screens.testscenario.client;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import javax.enterprise.event.Event;
 
@@ -39,6 +40,7 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.test.TestService;
 import org.jboss.errai.bus.client.api.messaging.Message;
+import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,6 +66,7 @@ import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
+import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
@@ -140,6 +143,7 @@ public class ScenarioEditorPresenterTest {
     @Mock
     private AuditPage auditPage;
 
+    private CallerMock<ScenarioTestEditorService> fakeService;
     private ScenarioEditorPresenter editor;
     private Scenario scenario;
     private Overview overview;
@@ -150,10 +154,11 @@ public class ScenarioEditorPresenterTest {
 
         final AsyncPackageDataModelOracleFactory modelOracleFactory = mock(AsyncPackageDataModelOracleFactory.class);
 
+        fakeService = new CallerMock<>(service);
         editor = spy(new ScenarioEditorPresenter(view,
                                                  user,
                                                  importsWidget,
-                                                 new CallerMock<>(service),
+                                                 fakeService,
                                                  new CallerMock<>(testService),
                                                  new TestScenarioResourceType(),
                                                  modelOracleFactory,
@@ -168,6 +173,11 @@ public class ScenarioEditorPresenterTest {
                 projectController = ScenarioEditorPresenterTest.this.projectController;
                 workbenchContext = ScenarioEditorPresenterTest.this.workbenchContext;
                 versionRecordManager = ScenarioEditorPresenterTest.this.versionRecordManager;
+            }
+
+            @Override
+            protected Command getSaveAndRename() {
+                return mock(Command.class);
             }
         });
 
@@ -350,8 +360,7 @@ public class ScenarioEditorPresenterTest {
         verify(fileMenuBuilder).addSave(any(Command.class));
         verify(fileMenuBuilder).addCopy(any(Path.class),
                                         any(AssetUpdateValidator.class));
-        verify(fileMenuBuilder).addRename(any(Path.class),
-                                          any(AssetUpdateValidator.class));
+        verify(fileMenuBuilder).addRename(any(Command.class));
         verify(fileMenuBuilder).addDelete(any(Path.class),
                                           any(AssetUpdateValidator.class));
     }
@@ -374,6 +383,26 @@ public class ScenarioEditorPresenterTest {
         verify(fileMenuBuilder,
                never()).addDelete(any(Path.class),
                                   any(AssetUpdateValidator.class));
+    }
+
+    @Test
+    public void testGetContentSupplier() throws Exception {
+
+        final Scenario content = mock(Scenario.class);
+
+        doReturn(content).when(editor).getScenario();
+
+        final Supplier<Scenario> contentSupplier = editor.getContentSupplier();
+
+        assertEquals(content, contentSupplier.get());
+    }
+
+    @Test
+    public void testGetSaveAndRenameServiceCaller() throws Exception {
+
+        final Caller<? extends SupportsSaveAndRename<Scenario, Metadata>> serviceCaller = editor.getSaveAndRenameServiceCaller();
+
+        assertEquals(fakeService, serviceCaller);
     }
 
     private Event<NotificationEvent> makeNotificationEvent() {

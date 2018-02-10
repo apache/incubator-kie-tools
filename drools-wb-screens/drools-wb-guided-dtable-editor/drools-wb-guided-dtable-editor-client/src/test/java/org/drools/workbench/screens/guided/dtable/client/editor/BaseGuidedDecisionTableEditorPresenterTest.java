@@ -36,12 +36,15 @@ import org.junit.runner.RunWith;
 import org.kie.soup.project.datamodel.imports.Imports;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UpdatedLockStatusEvent;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
 import org.uberfire.client.workbench.widgets.multipage.Page;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
+import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
@@ -69,6 +72,9 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
 
     private GuidedDTableResourceType resourceType = new GuidedDTableResourceType();
 
+    @Mock
+    private SaveAndRenameCommandBuilder<GuidedDecisionTable52, Metadata> saveAndRenameCommandBuilder;
+
     @Override
     protected GuidedDecisionTableEditorPresenter getPresenter() {
         return new GuidedDecisionTableEditorPresenter(view,
@@ -84,7 +90,13 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
                                                       modeller,
                                                       beanManager,
                                                       placeManager,
-                                                      columnsPage);
+                                                      columnsPage,
+                                                      saveAndRenameCommandBuilder) {
+            @Override
+            protected Command getSaveAndRenameCommand() {
+                return mock(Command.class);
+            }
+        };
     }
 
     @Test

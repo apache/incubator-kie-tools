@@ -32,4 +32,5 @@ public interface GuidedDecisionTreeEditorView extends KieEditorView,
     void setDataModel( final AsyncPackageDataModelOracle oracle,
                        final boolean isReadOnly );
 
+    GuidedDecisionTree getModel();
 }

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
@@ -52,6 +53,7 @@ import org.kie.workbench.common.services.datamodel.backend.server.service.DataMo
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
@@ -100,6 +102,9 @@ public class GuidedRuleEditorServiceImpl
     @Inject
     private CommentedOptionFactory commentedOptionFactory;
 
+    @Inject
+    private SaveAndRenameServiceImpl<RuleModel, Metadata> saveAndRenameService;
+
     private SafeSessionInfo safeSessionInfo;
 
     private Collection<RuleModelIActionPersistenceExtension> persistenceExtensions = new ArrayList<>();
@@ -113,6 +118,11 @@ public class GuidedRuleEditorServiceImpl
         this.safeSessionInfo = new SafeSessionInfo(sessionInfo);
 
         persistenceExtensionInstance.forEach(persistenceExtensions::add);
+    }
+
+    @PostConstruct
+    public void init() {
+        saveAndRenameService.init(this);
     }
 
     @Override
@@ -334,5 +344,14 @@ public class GuidedRuleEditorServiceImpl
                                                             dslrResourceType.accept(path));
         final String source = RuleModelDRLPersistenceImpl.getInstance().marshal(model);
         return source;
+    }
+
+    @Override
+    public Path saveAndRename(final Path path,
+                              final String newFileName,
+                              final Metadata metadata,
+                              final RuleModel content,
+                              final String comment) {
+        return saveAndRenameService.saveAndRename(path, newFileName, metadata, content, comment);
     }
 }
