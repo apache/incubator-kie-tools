@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.editor.commons.client;
 
+import java.util.Set;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
@@ -30,6 +32,7 @@ import org.uberfire.ext.editor.commons.client.event.ConcurrentDeleteAcceptedEven
 import org.uberfire.ext.editor.commons.client.event.ConcurrentDeleteIgnoredEvent;
 import org.uberfire.ext.editor.commons.client.event.ConcurrentRenameAcceptedEvent;
 import org.uberfire.ext.editor.commons.client.event.ConcurrentRenameIgnoredEvent;
+import org.uberfire.ext.editor.commons.file.DefaultMetadata;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.ext.editor.commons.version.events.RestoreEvent;
@@ -53,7 +56,7 @@ public class KieEditorTest {
     public void setUp() throws Exception {
         view = mock(BaseEditorView.class);
         restoreEvent = mock(RestoreEvent.class);
-        kieEditor = spy(new BaseEditor(view) {
+        kieEditor = spy(new BaseEditor<String, DefaultMetadata>(view) {
 
             @Override
             protected void loadContent() {
@@ -208,10 +211,12 @@ public class KieEditorTest {
             }
         };
 
+        final Set<MenuItems> menuItems = kieEditor.menuItems;
+
         kieEditor.init(new ObservablePathImpl(),
                        kieEditor.place,
                        kieEditor.type,
-                       kieEditor.menuItems.toArray(new MenuItems[0]));
+                       menuItems.toArray(new MenuItems[0]));
 
         kieEditor.onSave();
 

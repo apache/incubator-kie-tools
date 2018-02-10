@@ -24,6 +24,7 @@ import org.uberfire.ext.editor.commons.service.support.SupportsCreate;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRead;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
+import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.ext.editor.commons.service.support.SupportsUpdate;
 import org.uberfire.ext.wires.bpmn.api.model.impl.BpmnEditorContent;
 import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.ProcessNode;
@@ -33,6 +34,7 @@ import org.uberfire.ext.wires.bpmn.api.service.todo.Metadata;
 public interface BpmnService extends SupportsCreate<ProcessNode>,
                                      SupportsRead<ProcessNode>,
                                      SupportsUpdate<ProcessNode, Metadata>,
+                                     SupportsSaveAndRename<ProcessNode, Metadata>,
                                      SupportsDelete,
                                      SupportsCopy,
                                      SupportsRename {

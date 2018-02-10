@@ -15,6 +15,8 @@
  */
 package org.uberfire.ext.wires.bpmn.client.editor;
 
+import java.util.function.Supplier;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -29,9 +31,11 @@ import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
+import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.ext.wires.bpmn.api.model.impl.BpmnEditorContent;
 import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.ProcessNode;
 import org.uberfire.ext.wires.bpmn.api.service.BpmnService;
+import org.uberfire.ext.wires.bpmn.api.service.todo.Metadata;
 import org.uberfire.ext.wires.bpmn.client.resources.i18n.BpmnEditorConstants;
 import org.uberfire.ext.wires.bpmn.client.type.BpmnResourceType;
 import org.uberfire.lifecycle.OnMayClose;
@@ -46,8 +50,7 @@ import static org.uberfire.ext.editor.commons.client.menu.MenuItems.SAVE;
 
 @Dependent
 @WorkbenchEditor(identifier = "BPMN Editor", supportedTypes = {BpmnResourceType.class}, priority = Integer.MAX_VALUE)
-public class BpmnEditorPresenter
-        extends BaseEditor {
+public class BpmnEditorPresenter extends BaseEditor<ProcessNode, Metadata> {
 
     @Inject
     private BpmnResourceType resourceType;
@@ -108,6 +111,20 @@ public class BpmnEditorPresenter
     protected void loadContent() {
         //TODO {manstis} When we move to KIE-WB this class can extend KieBaseEditor and be refactored
         service.call(getModelSuccessCallback()).loadContent(versionRecordManager.getCurrentPath());
+    }
+
+    @Override
+    protected Supplier<ProcessNode> getContentSupplier() {
+        return this::getContent;
+    }
+
+    ProcessNode getContent() {
+        return process;
+    }
+
+    @Override
+    protected Caller<? extends SupportsSaveAndRename<ProcessNode, Metadata>> getSaveAndRenameServiceCaller() {
+        return service;
     }
 
     private RemoteCallback<BpmnEditorContent> getModelSuccessCallback() {

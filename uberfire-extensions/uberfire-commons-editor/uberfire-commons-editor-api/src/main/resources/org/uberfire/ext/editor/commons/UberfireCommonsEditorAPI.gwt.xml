@@ -22,7 +22,7 @@
   <inherits name="org.uberfire.UberfireAPI"/>
   <inherits name="org.uberfire.java.nio.UberfireNIO2Model"/>
 
-  <source path='file/exports'/>
+  <source path='file'/>
   <source path='readonly'/>
   <source path='version'/>
   <source path='service'/>

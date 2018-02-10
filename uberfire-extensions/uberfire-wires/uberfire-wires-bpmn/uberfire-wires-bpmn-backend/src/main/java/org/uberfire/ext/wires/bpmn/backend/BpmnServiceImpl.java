@@ -29,6 +29,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
@@ -70,6 +71,9 @@ public class BpmnServiceImpl implements BpmnService {
 
     @Inject
     private BpmnResourceTypeDefinition typeDefinition;
+
+    @Inject
+    private SaveAndRenameServiceImpl<ProcessNode, Metadata> saveAndRenameService;
     /**
      * TEMPORARY METHODS UNTIL INTEGRATED INTO KIE-WB
      */
@@ -205,6 +209,8 @@ public class BpmnServiceImpl implements BpmnService {
 
         ioService.write(root.resolve("file1.bpmn"),
                         BpmnPersistence.getInstance().marshal(new ProcessNode()));
+
+        saveAndRenameService.init(this);
     }
 
     @Override
@@ -222,5 +228,14 @@ public class BpmnServiceImpl implements BpmnService {
             files.add(Paths.convert(itr.next()));
         }
         return files;
+    }
+
+    @Override
+    public Path saveAndRename(final Path path,
+                              final String newFileName,
+                              final Metadata metadata,
+                              final ProcessNode content,
+                              final String comment) {
+        return saveAndRenameService.saveAndRename(path, newFileName, metadata, content, comment);
     }
 }

@@ -136,6 +136,7 @@ public class MultiPageEditorViewImplTest {
         doReturn(widget).when(navTabs).getWidget(index);
         doReturn(element).when(widget).getElement();
         doReturn(style).when(element).getStyle();
+        doReturn(true).when(view).isValid(anyInt());
 
         view.disablePage(index);
 
@@ -156,6 +157,7 @@ public class MultiPageEditorViewImplTest {
         doReturn(widget).when(navTabs).getWidget(index);
         doReturn(element).when(widget).getElement();
         doReturn(style).when(element).getStyle();
+        doReturn(true).when(view).isValid(anyInt());
 
         view.enablePage(index);
 

@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -43,9 +45,10 @@ import org.uberfire.ext.editor.commons.client.BaseEditorView;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
+import org.uberfire.ext.editor.commons.file.DefaultMetadata;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
-import org.uberfire.ext.editor.commons.service.support.SupportsRename;
+import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.ext.layout.editor.api.PerspectiveServices;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentPalette;
@@ -73,26 +76,34 @@ import static org.uberfire.ext.editor.commons.client.menu.MenuItems.SAVE;
 
 @Dependent
 @WorkbenchEditor(identifier = PerspectiveEditorPresenter.ID, supportedTypes = {PerspectiveLayoutPluginResourceType.class}, priority = Integer.MAX_VALUE)
-public class PerspectiveEditorPresenter extends BaseEditor {
+public class PerspectiveEditorPresenter extends BaseEditor<LayoutTemplate, DefaultMetadata> {
 
     public static final String ID = "Perspective Editor";
 
     @Inject
     private View perspectiveEditorView;
+
     @Inject
     private LayoutEditorPlugin layoutEditorPlugin;
+
     @Inject
     private Event<NotificationEvent> ufNotification;
+
     @Inject
     private PerspectiveLayoutPluginResourceType resourceType;
+
     @Inject
     private Caller<PerspectiveServices> perspectiveServices;
+
     @Inject
     private PluginNameValidator pluginNameValidator;
+
     @Inject
     private PluginController pluginController;
+
     @Inject
     private PerspectiveEditorSettings perspectiveEditorSettings;
+
     @Inject
     private SyncBeanManager beanManager;
     @Inject
@@ -196,12 +207,12 @@ public class PerspectiveEditorPresenter extends BaseEditor {
 
         if (perspectiveEditorSettings.isTagsEnabled()) {
             menuBuilder.addNewTopLevelMenu(MenuFactory.newTopLevelMenu(CommonConstants.INSTANCE.Tags())
-                    .respondsWith(() -> {
-                        AddTag addTag = new AddTag(PerspectiveEditorPresenter.this);
-                        addTag.show();
-                    })
-                    .endMenu()
-                    .build().getItems().get(0));
+                                                   .respondsWith(() -> {
+                                                       AddTag addTag = new AddTag(PerspectiveEditorPresenter.this);
+                                                       addTag.show();
+                                                   })
+                                                   .endMenu()
+                                                   .build().getItems().get(0));
         }
     }
 
@@ -238,11 +249,16 @@ public class PerspectiveEditorPresenter extends BaseEditor {
         layoutEditorPlugin.load(versionRecordManager.getCurrentPath(), this::afterLoad);
     }
 
+    @Override
+    protected Supplier<LayoutTemplate> getContentSupplier() {
+        return layoutEditorPlugin::getLayout;
+    }
+
     protected void afterLoad() {
         setOriginalHash(getCurrentModelHash());
         plugin = new Plugin(layoutEditorPlugin.getLayout().getName(),
-                PluginType.PERSPECTIVE_LAYOUT,
-                versionRecordManager.getCurrentPath());
+                            PluginType.PERSPECTIVE_LAYOUT,
+                            versionRecordManager.getCurrentPath());
     }
 
     @Override
@@ -265,8 +281,8 @@ public class PerspectiveEditorPresenter extends BaseEditor {
     protected void afterRename() {
         this.afterLoad();
         changeTitleNotification.fire(new ChangeTitleWidgetEvent(place,
-                getTitleText(),
-                getTitle()));
+                                                                getTitleText(),
+                                                                getTitle()));
     }
 
     @Override
@@ -285,7 +301,7 @@ public class PerspectiveEditorPresenter extends BaseEditor {
     }
 
     @Override
-    protected Caller<? extends SupportsRename> getRenameServiceCaller() {
+    protected Caller<? extends SupportsSaveAndRename<LayoutTemplate, DefaultMetadata>> getSaveAndRenameServiceCaller() {
         return perspectiveServices;
     }
 
@@ -308,9 +324,9 @@ public class PerspectiveEditorPresenter extends BaseEditor {
         return TargetDivList.list(layoutEditorPlugin.getLayout());
     }
 
-    public interface View extends BaseEditorView, UberView<PerspectiveEditorPresenter> {
+    public interface View extends BaseEditorView,
+                                  UberView<PerspectiveEditorPresenter> {
 
         void setupLayoutEditor(Widget widget);
     }
 }
-

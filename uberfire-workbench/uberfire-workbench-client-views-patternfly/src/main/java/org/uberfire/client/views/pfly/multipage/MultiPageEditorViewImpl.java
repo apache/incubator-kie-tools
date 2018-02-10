@@ -107,6 +107,10 @@ public class MultiPageEditorViewImpl extends ResizeTabPanel implements MultiPage
     @Override
     public void disablePage(int index) {
 
+        if (!isValid(index)) {
+            return;
+        }
+
         final Widget tab = getTabBar().getWidget(index);
 
         tab.addStyleName("disabled");
@@ -116,10 +120,18 @@ public class MultiPageEditorViewImpl extends ResizeTabPanel implements MultiPage
     @Override
     public void enablePage(int index) {
 
+        if (!isValid(index)) {
+            return;
+        }
+
         final Widget tab = getTabBar().getWidget(index);
 
         tab.removeStyleName("disabled");
         enableWidget(tab);
+    }
+
+    boolean isValid(final int index) {
+        return getTabBar().getWidgetCount() > index;
     }
 
     private void enableWidget(final Widget tab) {

@@ -78,6 +78,9 @@ public class Constants {
     public static final String RenamePopUpView_Rename = "RenamePopUpView.Rename";
 
     @TranslationKey(defaultValue = "")
+    public static final String RenamePopUpView_SaveAndRename = "RenamePopUpView.SaveAndRename";
+
+    @TranslationKey(defaultValue = "")
     public static final String RenamePopUpView_Cancel = "RenamePopUpView.Cancel";
 
     @TranslationKey(defaultValue = "")

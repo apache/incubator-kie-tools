@@ -21,7 +21,8 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.Element;
-import org.uberfire.client.mvp.UberElement;
+import org.jboss.errai.ui.shared.TemplateUtil;
+import org.uberfire.client.mvp.UberElemental;
 
 @Dependent
 public class ToggleCommentPresenter {
@@ -29,7 +30,7 @@ public class ToggleCommentPresenter {
     private View view;
 
     @Inject
-    public ToggleCommentPresenter(View view) {
+    public ToggleCommentPresenter(final View view) {
         this.view = view;
     }
 
@@ -38,8 +39,13 @@ public class ToggleCommentPresenter {
         view.init(this);
     }
 
+    @Deprecated
     public Element getViewElement() {
-        return view.getElement();
+        return TemplateUtil.asErraiElement(view.getElement());
+    }
+
+    public View getView() {
+        return view;
     }
 
     public String getComment() {
@@ -47,10 +53,10 @@ public class ToggleCommentPresenter {
     }
 
     public void setHidden(final boolean hidden) {
-        view.getElement().setHidden(hidden);
+        view.getElement().hidden = hidden;
     }
 
-    public interface View extends UberElement<ToggleCommentPresenter> {
+    public interface View extends UberElemental<ToggleCommentPresenter> {
 
         String getComment();
     }

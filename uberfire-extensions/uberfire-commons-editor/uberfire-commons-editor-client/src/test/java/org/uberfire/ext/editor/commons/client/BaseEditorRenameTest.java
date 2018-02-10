@@ -17,6 +17,7 @@
 package org.uberfire.ext.editor.commons.client;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +31,9 @@ import org.uberfire.ext.editor.commons.client.history.VersionMenuDropDownButton;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
+import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
+import org.uberfire.ext.editor.commons.client.validation.Validator;
+import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.ext.editor.commons.version.VersionService;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
@@ -78,6 +82,21 @@ public class BaseEditorRenameTest {
                                     changeTitleNotification) {
             @Override
             protected void loadContent() {
+            }
+
+            @Override
+            protected SaveAndRenameCommandBuilder getSaveAndRenameCommandBuilder() {
+                return new SaveAndRenameCommandBuilder<>(null, null, null);
+            }
+
+            @Override
+            public Validator getRenameValidator() {
+                return mock(Validator.class);
+            }
+
+            @Override
+            protected Caller<? extends SupportsSaveAndRename> getSaveAndRenameServiceCaller() {
+                return mock(Caller.class);
             }
         };
         when(restoreUtil.createObservablePath(any(),

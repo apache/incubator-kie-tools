@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -41,7 +42,9 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
 import org.uberfire.ext.editor.commons.backend.validation.DefaultFileNameValidator;
+import org.uberfire.ext.editor.commons.file.DefaultMetadata;
 import org.uberfire.ext.plugin.event.MediaDeleted;
 import org.uberfire.ext.plugin.event.PluginAdded;
 import org.uberfire.ext.plugin.event.PluginDeleted;
@@ -100,6 +103,7 @@ public class PluginServicesImpl implements PluginServices {
     private Event<MediaDeleted> mediaDeletedEvent;
     private DefaultFileNameValidator defaultFileNameValidator;
     private User identity;
+    private SaveAndRenameServiceImpl<Plugin, DefaultMetadata> saveAndRenameService;
     private FileSystem fileSystem;
     private Path root;
 
@@ -107,17 +111,18 @@ public class PluginServicesImpl implements PluginServices {
     }
 
     @Inject
-    public PluginServicesImpl(@Named("ioStrategy") IOService ioService,
-                              @Named("MediaServletURI") Instance<MediaServletURI> mediaServletURI,
-                              SessionInfo sessionInfo,
-                              Event<PluginAdded> pluginAddedEvent,
-                              Event<PluginDeleted> pluginDeletedEvent,
-                              Event<PluginSaved> pluginSavedEvent,
-                              Event<PluginRenamed> pluginRenamedEvent,
-                              Event<MediaDeleted> mediaDeletedEvent,
-                              DefaultFileNameValidator defaultFileNameValidator,
-                              User identity,
-                              @Named("pluginsFS") FileSystem fileSystem) {
+    public PluginServicesImpl(final @Named("ioStrategy") IOService ioService,
+                              final @Named("MediaServletURI") Instance<MediaServletURI> mediaServletURI,
+                              final SessionInfo sessionInfo,
+                              final Event<PluginAdded> pluginAddedEvent,
+                              final Event<PluginDeleted> pluginDeletedEvent,
+                              final Event<PluginSaved> pluginSavedEvent,
+                              final Event<PluginRenamed> pluginRenamedEvent,
+                              final Event<MediaDeleted> mediaDeletedEvent,
+                              final DefaultFileNameValidator defaultFileNameValidator,
+                              final User identity,
+                              final @Named("pluginsFS") FileSystem fileSystem,
+                              final SaveAndRenameServiceImpl<Plugin, DefaultMetadata> saveAndRenameService) {
         this.ioService = ioService;
         this.mediaServletURI = mediaServletURI;
         this.sessionInfo = sessionInfo;
@@ -129,12 +134,15 @@ public class PluginServicesImpl implements PluginServices {
         this.defaultFileNameValidator = defaultFileNameValidator;
         this.identity = identity;
         this.fileSystem = fileSystem;
+        this.saveAndRenameService = saveAndRenameService;
     }
 
     @PostConstruct
     public void init() {
         this.gson = new GsonBuilder().setPrettyPrinting().create();
         this.root = resolveRoot();
+
+        saveAndRenameService.init(this);
     }
 
     Path resolveRoot() {
@@ -330,6 +338,16 @@ public class PluginServicesImpl implements PluginServices {
     }
 
     @Override
+    public org.uberfire.backend.vfs.Path save(final Plugin plugin,
+                                              final String commitMessage) {
+
+        if (plugin instanceof PluginSimpleContent) {
+            return save((PluginSimpleContent) plugin, commitMessage);
+        }
+
+        return null;
+    }
+
     public org.uberfire.backend.vfs.Path save(final PluginSimpleContent plugin,
                                               final String commitMessage) {
 
@@ -851,5 +869,22 @@ public class PluginServicesImpl implements PluginServices {
 
     private Path getMenuItemsPath(final Path rootPlugin) {
         return rootPlugin.resolve("info.dynamic");
+    }
+
+    @Override
+    public org.uberfire.backend.vfs.Path save(final org.uberfire.backend.vfs.Path _path,
+                                              final Plugin content,
+                                              final DefaultMetadata _metadata,
+                                              final String comment) {
+        return save(content, comment);
+    }
+
+    @Override
+    public org.uberfire.backend.vfs.Path saveAndRename(final org.uberfire.backend.vfs.Path path,
+                                                       final String newFileName,
+                                                       final DefaultMetadata metadata,
+                                                       final Plugin content,
+                                                       final String comment) {
+        return saveAndRenameService.saveAndRename(path, newFileName, metadata, content, comment);
     }
 }

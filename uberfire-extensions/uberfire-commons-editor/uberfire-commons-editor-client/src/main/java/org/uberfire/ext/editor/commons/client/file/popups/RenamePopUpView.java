@@ -18,17 +18,16 @@ package org.uberfire.ext.editor.commons.client.file.popups;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.ModalFooter;
-import org.gwtbootstrap3.client.ui.TextBox;
+import elemental2.dom.HTMLButtonElement;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLInputElement;
+import elemental2.dom.Node;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Span;
-import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -36,53 +35,85 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.ext.editor.commons.client.file.popups.commons.ToggleCommentPresenter;
 import org.uberfire.ext.editor.commons.client.resources.i18n.Constants;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
-import org.uberfire.ext.widgets.common.client.common.popups.footers.GenericModalFooter;
-import org.uberfire.mvp.Command;
 
 @Dependent
 @Templated
-public class RenamePopUpView implements RenamePopUpPresenter.View,
-                                        IsElement {
+public class RenamePopUpView implements RenamePopUpPresenter.View {
 
-    @Inject
-    @DataField("body")
-    Div body;
+    @DataField("modal-view")
+    private HTMLDivElement view;
 
-    @Inject
+    @DataField("modal-body")
+    private HTMLDivElement body;
+
+    @DataField("modal-footer")
+    private HTMLDivElement footer;
+
+    @DataField("cancel")
+    private HTMLButtonElement cancel;
+
+    @DataField("rename")
+    private HTMLButtonElement rename;
+
+    @DataField("saveAndRename")
+    private HTMLButtonElement saveAndRename;
+
     @DataField("newNameTextBox")
-    TextBox newNameTextBox;
+    private HTMLInputElement newNameTextBox;
 
-    @Inject
     @DataField("error")
-    Div error;
+    private HTMLDivElement error;
 
-    @Inject
     @DataField("errorMessage")
-    Span errorMessage;
+    private HTMLElement errorMessage;
 
-    @Inject
     private TranslationService translationService;
 
     private RenamePopUpPresenter presenter;
 
     private BaseModal modal;
 
-    private Button renameButton;
-
     private String originalFileName;
+
+    @Inject
+    public RenamePopUpView(final HTMLDivElement body,
+                           final HTMLDivElement view,
+                           final HTMLButtonElement cancel,
+                           final HTMLButtonElement rename,
+                           final HTMLButtonElement saveAndRename,
+                           final HTMLDivElement footer,
+                           final HTMLInputElement newNameTextBox,
+                           final HTMLDivElement error,
+                           final @Named("span") HTMLElement errorMessage,
+                           final TranslationService translationService) {
+        this.body = body;
+        this.view = view;
+        this.cancel = cancel;
+        this.footer = footer;
+        this.rename = rename;
+        this.saveAndRename = saveAndRename;
+        this.newNameTextBox = newNameTextBox;
+        this.error = error;
+        this.errorMessage = errorMessage;
+        this.translationService = translationService;
+    }
 
     @Override
     public void init(RenamePopUpPresenter presenter) {
         this.presenter = presenter;
-        modalSetup();
     }
 
     @Override
     public void show() {
+        setup();
+        modal.show();
+    }
+
+    private void setup() {
+        modalSetup();
         errorSetup();
         setupComment();
         newNameTextBoxSetup();
-        modal.show();
     }
 
     @Override
@@ -92,14 +123,12 @@ public class RenamePopUpView implements RenamePopUpPresenter.View,
 
     @Override
     public void handleDuplicatedFileName() {
-        showError(translate(Constants.RenamePopUpView_FileAlreadyExists,
-                            newNameTextBox.getValue()));
+        showError(translate(Constants.RenamePopUpView_FileAlreadyExists, newNameTextBox.value));
     }
 
     @Override
     public void handleInvalidFileName() {
-        showError(translate(Constants.RenamePopUpView_InvalidFileName,
-                            newNameTextBox.getValue()));
+        showError(translate(Constants.RenamePopUpView_InvalidFileName, newNameTextBox.value));
     }
 
     @Override
@@ -113,89 +142,100 @@ public class RenamePopUpView implements RenamePopUpPresenter.View,
     }
 
     @EventHandler("newNameTextBox")
-    public void onNewFileNameChange(KeyUpEvent event) {
-        disableRenameButtonIfNewNameIsNotNew();
+    public void onNewFileNameChange(final KeyUpEvent event) {
+        disableRenameButtonsIfNewNameIsNotNew();
+    }
+
+    @EventHandler("cancel")
+    private void cancelCommand(final ClickEvent event) {
+        presenter.cancel();
+    }
+
+    @EventHandler("rename")
+    private void onRename(final ClickEvent event) {
+        presenter.rename(newNameTextBox.value);
+    }
+
+    @EventHandler("saveAndRename")
+    private void onSaveAndRename(final ClickEvent event) {
+        presenter.saveAndRename(newNameTextBox.value);
+    }
+
+    @Override
+    public void renameAsPrimary() {
+        addPrimaryClass(rename);
+        removePrimaryClass(saveAndRename);
+    }
+
+    @Override
+    public void saveAndRenameAsPrimary() {
+        addPrimaryClass(saveAndRename);
+        removePrimaryClass(rename);
+    }
+
+    @Override
+    public void hideSaveAndRename(final boolean hidden) {
+        saveAndRename.hidden = hidden;
     }
 
     private void modalSetup() {
         this.modal = new CommonModalBuilder()
                 .addHeader(translate(Constants.RenamePopUpView_RenameAsset))
                 .addBody(body)
-                .addFooter(footer())
+                .addFooter(footer)
                 .build();
     }
 
-    private ModalFooter footer() {
-        GenericModalFooter footer = new GenericModalFooter();
-        footer.add(cancelButton());
-        footer.add(renameButton());
-        return footer;
+    private void addPrimaryClass(final HTMLButtonElement buttonElement) {
+        buttonElement.classList.add(ButtonType.PRIMARY.getCssName());
     }
 
-    private Button renameButton() {
-        renameButton = button(translate(Constants.RenamePopUpView_Rename),
-                              renameCommand(),
-                              ButtonType.PRIMARY);
-        return renameButton;
-    }
-
-    private Button cancelButton() {
-        return button(translate(Constants.RenamePopUpView_Cancel),
-                      cancelCommand(),
-                      ButtonType.DEFAULT);
-    }
-
-    private Button button(final String text,
-                          final Command command,
-                          final ButtonType type) {
-        Button button = new Button(text,
-                                   new ClickHandler() {
-                                       @Override
-                                       public void onClick(ClickEvent event) {
-                                           command.execute();
-                                       }
-                                   });
-        button.setType(type);
-        return button;
+    private void removePrimaryClass(final HTMLButtonElement buttonElement) {
+        buttonElement.classList.remove(ButtonType.PRIMARY.getCssName());
     }
 
     private String translate(final String key,
-                             Object... args) {
-        return translationService.format(key,
-                                         args);
+                             final Object... args) {
+        return translationService.format(key, args);
     }
 
     private void newNameTextBoxSetup() {
-        newNameTextBox.setValue(originalFileName);
-        disableRenameButtonIfNewNameIsNotNew();
+
+        newNameTextBox.value = originalFileName;
+        disableRenameButtonsIfNewNameIsNotNew();
     }
 
     private void errorSetup() {
-        this.error.setHidden(true);
+        this.error.hidden = true;
     }
 
-    private void disableRenameButtonIfNewNameIsNotNew() {
-        renameButton.setEnabled(!newNameTextBox.getValue().equals(originalFileName));
+    private void disableRenameButtonsIfNewNameIsNotNew() {
+
+        final boolean disabled = newNameTextBox.value.equals(originalFileName);
+
+        rename.disabled = disabled;
+        saveAndRename.disabled = disabled;
     }
 
-    private void showError(String errorMessage) {
-        this.errorMessage.setTextContent(errorMessage);
-        this.error.setHidden(false);
-    }
-
-    private Command renameCommand() {
-        return () -> presenter.rename(newNameTextBox.getValue());
-    }
-
-    private Command cancelCommand() {
-        return () -> presenter.cancel();
+    private void showError(final String errorMessage) {
+        this.errorMessage.textContent = errorMessage;
+        this.error.hidden = false;
     }
 
     private void setupComment() {
-        body.appendChild(toggleCommentPresenter().getViewElement());
+        body.appendChild(getToggleCommentElement());
     }
 
-    private ToggleCommentPresenter toggleCommentPresenter() {
-        return presenter.getToggleCommentPresenter();
+    private Node getToggleCommentElement() {
+
+        final ToggleCommentPresenter toggleCommentPresenter = presenter.getToggleCommentPresenter();
+        final ToggleCommentPresenter.View view = toggleCommentPresenter.getView();
+
+        return view.getElement();
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return view;
     }
 }

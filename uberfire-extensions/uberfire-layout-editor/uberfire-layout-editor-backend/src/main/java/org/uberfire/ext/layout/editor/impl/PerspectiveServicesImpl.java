@@ -18,11 +18,15 @@ package org.uberfire.ext.layout.editor.impl;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
+import org.uberfire.ext.editor.commons.file.DefaultMetadata;
 import org.uberfire.ext.layout.editor.api.PerspectiveServices;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.plugin.backend.PluginServicesImpl;
@@ -36,11 +40,20 @@ public class PerspectiveServicesImpl implements PerspectiveServices {
 
     private PluginServicesImpl pluginServices;
     private LayoutServicesImpl layoutServices;
+    private SaveAndRenameServiceImpl<LayoutTemplate, DefaultMetadata> saveAndRenameService;
 
     @Inject
-    public PerspectiveServicesImpl(PluginServicesImpl pluginServices, LayoutServicesImpl layoutServices) {
+    public PerspectiveServicesImpl(final PluginServicesImpl pluginServices,
+                                   final LayoutServicesImpl layoutServices,
+                                   final SaveAndRenameServiceImpl<LayoutTemplate, DefaultMetadata> saveAndRenameService) {
         this.pluginServices = pluginServices;
         this.layoutServices = layoutServices;
+        this.saveAndRenameService = saveAndRenameService;
+    }
+
+    @PostConstruct
+    public void init() {
+        saveAndRenameService.init(this);
     }
 
     @Override
@@ -136,5 +149,22 @@ public class PerspectiveServicesImpl implements PerspectiveServices {
         String layoutModel = layoutServices.convertLayoutToString(layoutTemplate);
         LayoutEditorModel pluginCopy = new LayoutEditorModel(newName, PluginType.PERSPECTIVE_LAYOUT, path, layoutModel);
         pluginServices.saveLayout(pluginCopy, comment);
+    }
+
+    @Override
+    public Path save(final Path path,
+                     final LayoutTemplate content,
+                     final DefaultMetadata metadata,
+                     final String comment) {
+        return saveLayoutTemplate(path, content, comment);
+    }
+
+    @Override
+    public Path saveAndRename(final Path path,
+                              final String newFileName,
+                              final DefaultMetadata metadata,
+                              final LayoutTemplate content,
+                              final String comment) {
+        return saveAndRenameService.saveAndRename(path, newFileName, metadata, content, comment);
     }
 }

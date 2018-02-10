@@ -17,6 +17,8 @@
 package org.uberfire.ext.plugin.client.editor;
 
 import java.util.Collection;
+import java.util.function.Supplier;
+
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -32,9 +34,10 @@ import org.uberfire.ext.editor.commons.client.BaseEditor;
 import org.uberfire.ext.editor.commons.client.BaseEditorView;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
+import org.uberfire.ext.editor.commons.file.DefaultMetadata;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
-import org.uberfire.ext.editor.commons.service.support.SupportsRename;
+import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.ext.plugin.client.validation.PluginNameValidator;
 import org.uberfire.ext.plugin.event.NewPluginRegistered;
 import org.uberfire.ext.plugin.event.PluginAdded;
@@ -59,7 +62,7 @@ import static org.uberfire.ext.editor.commons.client.menu.MenuItems.DELETE;
 import static org.uberfire.ext.editor.commons.client.menu.MenuItems.RENAME;
 import static org.uberfire.ext.editor.commons.client.menu.MenuItems.SAVE;
 
-public abstract class RuntimePluginBaseEditor extends BaseEditor {
+public abstract class RuntimePluginBaseEditor extends BaseEditor<Plugin, DefaultMetadata> {
 
     protected Plugin plugin;
 
@@ -78,6 +81,10 @@ public abstract class RuntimePluginBaseEditor extends BaseEditor {
     @Inject
     private SavePopUpPresenter savePopUpPresenter;
 
+    public RuntimePluginBaseEditor() {
+        // Zero-parameter constructor for CDI proxies
+    }
+
     protected RuntimePluginBaseEditor(final BaseEditorView baseView) {
         super(baseView);
     }
@@ -85,6 +92,11 @@ public abstract class RuntimePluginBaseEditor extends BaseEditor {
     protected abstract PluginType getPluginType();
 
     protected abstract ClientResourceType getResourceType();
+
+    @Override
+    protected Supplier<Plugin> getContentSupplier() {
+        return this::getContent;
+    }
 
     @OnStartup
     public void onStartup(final ObservablePath path,
@@ -125,8 +137,8 @@ public abstract class RuntimePluginBaseEditor extends BaseEditor {
         return pluginServices;
     }
 
-    protected Caller<? extends SupportsRename> getRenameServiceCaller() {
-        return pluginServices;
+    protected Caller<? extends SupportsSaveAndRename<Plugin, DefaultMetadata>> getSaveAndRenameServiceCaller() {
+        return getPluginServices();
     }
 
     protected Caller<? extends SupportsCopy> getCopyServiceCaller() {
@@ -158,7 +170,7 @@ public abstract class RuntimePluginBaseEditor extends BaseEditor {
         return versionRecordManager.getCurrentPath();
     }
 
-    public PluginSimpleContent getContent() {
+    public Plugin getContent() {
         return new PluginSimpleContent(view().getContent(),
                                        view().getTemplate(),
                                        view().getCss(),
@@ -193,7 +205,6 @@ public abstract class RuntimePluginBaseEditor extends BaseEditor {
     abstract RuntimePluginBaseView view();
 
     Caller<PluginServices> getPluginServices() {
-
         return pluginServices;
     }
 

@@ -21,9 +21,10 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
-import org.gwtbootstrap3.client.ui.Anchor;
+import elemental2.dom.HTMLAnchorElement;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
 import org.gwtbootstrap3.client.ui.TextBox;
-import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -32,21 +33,31 @@ import org.uberfire.ext.editor.commons.client.resources.i18n.Constants;
 
 @Dependent
 @Templated
-public class ToggleCommentView implements ToggleCommentPresenter.View,
-                                          IsElement {
+public class ToggleCommentView implements ToggleCommentPresenter.View {
 
-    @Inject
+    @DataField("view")
+    private HTMLDivElement view;
+
     @DataField("addComment")
-    Anchor addComment;
+    private HTMLAnchorElement addComment;
 
-    @Inject
     @DataField("commentTextBox")
-    TextBox commentTextBox;
+    private TextBox commentTextBox;
 
-    @Inject
     private TranslationService translationService;
 
     private ToggleCommentPresenter presenter;
+
+    @Inject
+    public ToggleCommentView(final HTMLDivElement view,
+                             final HTMLAnchorElement addComment,
+                             final TextBox commentTextBox,
+                             final TranslationService translationService) {
+        this.view = view;
+        this.addComment = addComment;
+        this.commentTextBox = commentTextBox;
+        this.translationService = translationService;
+    }
 
     @Override
     public void init(final ToggleCommentPresenter presenter) {
@@ -73,5 +84,10 @@ public class ToggleCommentView implements ToggleCommentPresenter.View,
 
     private void toggleCommentTextBox() {
         commentTextBox.setVisible(!commentTextBox.isVisible());
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return view;
     }
 }

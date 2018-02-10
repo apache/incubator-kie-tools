@@ -27,8 +27,13 @@ import org.uberfire.ext.editor.commons.client.file.popups.commons.ToggleCommentP
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RenamePopUpPresenterTest {
@@ -40,7 +45,10 @@ public class RenamePopUpPresenterTest {
     Validator validator;
 
     @Mock
-    CommandWithFileNameAndCommitMessage command;
+    CommandWithFileNameAndCommitMessage renameCommand;
+
+    @Mock
+    CommandWithFileNameAndCommitMessage saveAndRenameCommand;
 
     @Mock
     ToggleCommentPresenter toggleCommentPresenter;
@@ -52,8 +60,7 @@ public class RenamePopUpPresenterTest {
 
     @Before
     public void init() throws Exception {
-        presenter = new RenamePopUpPresenter(view,
-                                             toggleCommentPresenter);
+        presenter = spy(new RenamePopUpPresenter(view, toggleCommentPresenter));
     }
 
     @Test
@@ -67,27 +74,56 @@ public class RenamePopUpPresenterTest {
     public void testShow() throws Exception {
         presenter.show(path,
                        validator,
-                       command);
+                       renameCommand);
 
         assertNotNull(presenter.getPath());
         assertNotNull(presenter.getValidator());
-        assertNotNull(presenter.getCommand());
-        verify(view).show();
-        verify(view).setOriginalFileName("");
+        assertNotNull(presenter.getRenameCommand());
+
+        verify(presenter).setupView();
+        verify(presenter).showView();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testShowMissingPath() throws Exception {
         presenter.show(null,
                        validator,
-                       command);
+                       renameCommand);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testShowMissingValidator() throws Exception {
         presenter.show(path,
                        null,
-                       command);
+                       renameCommand);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testShowMissingRenameCommand() throws Exception {
+
+        final boolean isDirty = true;
+        final String fileName = "file.plugin";
+
+        presenter.show(path,
+                       validator,
+                       null,
+                       saveAndRenameCommand,
+                       isDirty,
+                       fileName);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testShowMissingSaveAndRenameCommand() throws Exception {
+
+        final boolean isDirty = true;
+        final String fileName = "file.plugin";
+
+        presenter.show(path,
+                       validator,
+                       renameCommand,
+                       null,
+                       isDirty,
+                       fileName);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -100,13 +136,14 @@ public class RenamePopUpPresenterTest {
     @Test
     public void testShowWithDefaultValidator() throws Exception {
         presenter.show(path,
-                       command);
+                       renameCommand);
 
         assertNotNull(presenter.getPath());
         assertNotNull(presenter.getValidator());
-        assertNotNull(presenter.getCommand());
-        verify(view).show();
-        verify(view).setOriginalFileName("");
+        assertNotNull(presenter.getRenameCommand());
+
+        verify(presenter).setupView();
+        verify(presenter).showView();
     }
 
     @Test
@@ -118,14 +155,97 @@ public class RenamePopUpPresenterTest {
 
     @Test
     public void testRename() throws Exception {
-        when(path.getFileName()).thenReturn("file.plugin");
-        presenter.show(path,
-                       validator,
-                       command);
 
+        when(path.getFileName()).thenReturn("file.plugin");
+
+        presenter.show(path, validator, renameCommand);
         presenter.rename("newFile");
 
-        verify(validator).validate(eq("newFile.plugin"),
-                                   any(ValidatorWithReasonCallback.class));
+        verify(validator).validate(eq("newFile.plugin"), any(ValidatorWithReasonCallback.class));
+    }
+
+    @Test
+    public void testSaveAndRename() throws Exception {
+
+        final boolean isDirty = true;
+
+        when(path.getFileName()).thenReturn("file.plugin");
+
+        presenter.show(path, validator, isDirty, renameCommand, saveAndRenameCommand);
+        presenter.saveAndRename("newFile");
+
+        verify(validator).validate(eq("newFile.plugin"), any(ValidatorWithReasonCallback.class));
+    }
+
+    @Test
+    public void testEnablePrimaryButtonWhenAssetIsDirty() {
+
+        final boolean isDirty = true;
+
+        doReturn(isDirty).when(presenter).isDirty();
+
+        presenter.enablePrimaryButton();
+
+        verify(view).saveAndRenameAsPrimary();
+    }
+
+    @Test
+    public void testEnablePrimaryButtonWhenAssetIsNotDirty() {
+
+        final boolean isDirty = false;
+
+        doReturn(isDirty).when(presenter).isDirty();
+
+        presenter.enablePrimaryButton();
+
+        verify(view).renameAsPrimary();
+    }
+
+    @Test
+    public void testHideSaveAndRenameIfAssetIsNotDirtyWhenAssetIsDirty() {
+
+        final boolean isDirty = true;
+        final boolean hidden = false;
+
+        doReturn(isDirty).when(presenter).isDirty();
+
+        presenter.hideSaveAndRenameIfAssetIsNotDirty();
+
+        verify(view).hideSaveAndRename(hidden);
+    }
+
+    @Test
+    public void testHideSaveAndRenameIfAssetIsNotDirtyWhenAssetIsNotDirty() {
+
+        final boolean isDirty = false;
+        final boolean hidden = true;
+
+        doReturn(isDirty).when(presenter).isDirty();
+
+        presenter.hideSaveAndRenameIfAssetIsNotDirty();
+
+        verify(view).hideSaveAndRename(hidden);
+    }
+
+    @Test
+    public void testSetupView() {
+
+        presenter.setupView();
+
+        verify(presenter).enablePrimaryButton();
+        verify(presenter).hideSaveAndRenameIfAssetIsNotDirty();
+    }
+
+    @Test
+    public void testShowView() {
+
+        final String originalFileName = "originalFileName";
+
+        doReturn(originalFileName).when(presenter).getOriginalFileName();
+
+        presenter.showView();
+
+        verify(view).setOriginalFileName(originalFileName);
+        verify(view).show();
     }
 }

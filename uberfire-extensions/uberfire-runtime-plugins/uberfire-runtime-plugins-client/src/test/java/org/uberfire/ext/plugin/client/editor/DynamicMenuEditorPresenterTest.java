@@ -18,18 +18,36 @@ package org.uberfire.ext.plugin.client.editor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.uberfire.ext.plugin.client.validation.RuleValidator;
+import org.uberfire.ext.plugin.model.DynamicMenu;
 import org.uberfire.ext.plugin.model.DynamicMenuItem;
+import org.uberfire.ext.plugin.model.Plugin;
+import org.uberfire.ext.plugin.service.PluginServices;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
+@RunWith(GwtMockitoTestRunner.class)
 public class DynamicMenuEditorPresenterTest {
 
+    @Mock
+    Caller<PluginServices> pluginServices;
+
     private DynamicMenuEditorPresenter presenter;
+
     private DynamicMenuEditorPresenter.View view;
 
     private DynamicMenuItem existingMenuItem;
@@ -37,7 +55,7 @@ public class DynamicMenuEditorPresenterTest {
     @Before
     public void setup() {
         view = mock(DynamicMenuEditorPresenter.View.class);
-        presenter = createDynamicMenuEditorPresenter();
+        presenter = spy(createDynamicMenuEditorPresenter());
 
         when(view.emptyActivityID()).thenReturn("e1");
         when(view.invalidActivityID()).thenReturn("e2");
@@ -91,6 +109,26 @@ public class DynamicMenuEditorPresenterTest {
                                                                            existingMenuItem);
         assertTrue(labelValidator.isValid("newMenuLabel"));
         assertTrue(labelValidator.isValid("existingMenuLabel"));
+    }
+
+    @Test
+    public void testGetContentSupplier() {
+
+        final Plugin dynamicMenu = mock(DynamicMenu.class);
+
+        doReturn(dynamicMenu).when(presenter).getContent();
+
+        final Supplier<Plugin> contentSupplier = presenter.getContentSupplier();
+
+        assertEquals(dynamicMenu, contentSupplier.get());
+    }
+
+    @Test
+    public void testGetSaveAndRenameServiceCaller() {
+
+        doReturn(pluginServices).when(presenter).getPluginServices();
+
+        assertEquals(pluginServices, presenter.getSaveAndRenameServiceCaller());
     }
 
     private DynamicMenuEditorPresenter createDynamicMenuEditorPresenter() {

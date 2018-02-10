@@ -16,6 +16,8 @@
 package org.uberfire.ext.plugin.client.perspective.editor;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.function.Supplier;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.common.client.api.Caller;
@@ -30,7 +32,11 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
+import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
+import org.uberfire.ext.editor.commons.file.DefaultMetadata;
+import org.uberfire.ext.layout.editor.api.PerspectiveServices;
+import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.LayoutEditorPresenter;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentPalette;
@@ -43,8 +49,14 @@ import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class PerspectiveEditorPresenterTest {
@@ -90,6 +102,12 @@ public class PerspectiveEditorPresenterTest {
 
     @Mock
     EventSourceMock<PerspectiveEditorFocusEvent> perspectiveEditorFocusEvent;
+
+    @Mock
+    Caller<PerspectiveServices> perspectiveServices;
+
+    @Mock
+    SaveAndRenameCommandBuilder<LayoutTemplate, DefaultMetadata> saveAndRenameCommandBuilder;
 
     @InjectMocks
     PerspectiveEditorPresenter presenter;
@@ -140,6 +158,8 @@ public class PerspectiveEditorPresenterTest {
 
         when(beanManager.lookupBeans(PerspectiveEditorComponentGroupProvider.class))
                 .thenReturn(Arrays.asList(perspectiveEditorGroupBeanB, perspectiveEditorGroupBeanA));
+
+        mockSaveAndRenameCommandBuilder();
     }
 
     @Test
@@ -157,7 +177,7 @@ public class PerspectiveEditorPresenterTest {
 
         verify(menuBuilder).addSave(any(Command.class));
         verify(menuBuilder).addCopy(any(Path.class), any(Validator.class), any(Caller.class));
-        verify(menuBuilder).addRename(any(Path.class), any(Validator.class), any(Caller.class));
+        verify(menuBuilder).addRename(any(Command.class));
         verify(menuBuilder).addDelete(any(Path.class), any(Caller.class));
         verify(menuBuilder).addDelete(any(Path.class), any(Caller.class));
         verify(menuBuilder, never()).addNewTopLevelMenu(any());
@@ -170,9 +190,39 @@ public class PerspectiveEditorPresenterTest {
 
         verify(menuBuilder).addSave(any(Command.class));
         verify(menuBuilder).addCopy(any(Path.class), any(Validator.class), any(Caller.class));
-        verify(menuBuilder).addRename(any(Path.class), any(Validator.class), any(Caller.class));
+        verify(menuBuilder).addRename(any(Command.class));
         verify(menuBuilder).addDelete(any(Path.class), any(Caller.class));
         verify(menuBuilder).addDelete(any(Path.class), any(Caller.class));
         verify(menuBuilder).addNewTopLevelMenu(any());
+    }
+
+    @Test
+    public void testGetContentSupplier() {
+
+        final LayoutTemplate layoutTemplate = mock(LayoutTemplate.class);
+
+        doReturn(layoutTemplate).when(layoutEditorPlugin).getLayout();
+
+        final Supplier<LayoutTemplate> contentSupplier = presenter.getContentSupplier();
+
+        assertEquals(layoutTemplate, contentSupplier.get());
+    }
+
+    @Test
+    public void testGetSaveAndRenameServiceCaller() {
+        assertEquals(perspectiveServices, presenter.getSaveAndRenameServiceCaller());
+    }
+
+    private void mockSaveAndRenameCommandBuilder() {
+        when(saveAndRenameCommandBuilder.addPathSupplier(any())).thenReturn(saveAndRenameCommandBuilder);
+        when(saveAndRenameCommandBuilder.addValidator(any(Validator.class))).thenReturn(saveAndRenameCommandBuilder);
+        when(saveAndRenameCommandBuilder.addValidator(any(Supplier.class))).thenReturn(saveAndRenameCommandBuilder);
+        when(saveAndRenameCommandBuilder.addRenameService(any())).thenReturn(saveAndRenameCommandBuilder);
+        when(saveAndRenameCommandBuilder.addMetadataSupplier(any())).thenReturn(saveAndRenameCommandBuilder);
+        when(saveAndRenameCommandBuilder.addContentSupplier(any())).thenReturn(saveAndRenameCommandBuilder);
+        when(saveAndRenameCommandBuilder.addIsDirtySupplier(any())).thenReturn(saveAndRenameCommandBuilder);
+        when(saveAndRenameCommandBuilder.addSuccessCallback(any())).thenReturn(saveAndRenameCommandBuilder);
+        when(saveAndRenameCommandBuilder.build()).thenReturn(() -> {
+        });
     }
 }

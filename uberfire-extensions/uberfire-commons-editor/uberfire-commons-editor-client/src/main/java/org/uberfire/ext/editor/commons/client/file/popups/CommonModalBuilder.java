@@ -22,6 +22,7 @@ import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+import org.jboss.errai.ui.shared.TemplateUtil;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 
 public class CommonModalBuilder {
@@ -43,6 +44,13 @@ public class CommonModalBuilder {
         return this;
     }
 
+    public CommonModalBuilder addBody(final elemental2.dom.HTMLElement htmlElement) {
+
+        final FlowPanel flowPanel = buildPanel(htmlElement, makeModalBody());
+        getModal().add(flowPanel);
+        return this;
+    }
+
     public CommonModalBuilder addFooter(ModalFooter footer) {
         modal.add(footer);
         return this;
@@ -54,13 +62,42 @@ public class CommonModalBuilder {
         return this;
     }
 
+    public CommonModalBuilder addFooter(final elemental2.dom.HTMLElement htmlElement) {
+
+        final FlowPanel flowPanel = buildPanel(htmlElement, makeModalFooter());
+        getModal().add(flowPanel);
+        return this;
+    }
+
     public BaseModal build() {
+        return getModal();
+    }
+
+    BaseModal getModal() {
         return modal;
     }
 
-    private FlowPanel buildPanel(HTMLElement element,
-                                 FlowPanel panel) {
-        panel.add(build(element));
+    ModalBody makeModalBody() {
+        return new ModalBody();
+    }
+
+    ModalFooter makeModalFooter() {
+        return new ModalFooter();
+    }
+
+    FlowPanel buildPanel(final elemental2.dom.HTMLElement element,
+                         final FlowPanel panel) {
+
+        final HTMLElement htmlElement = TemplateUtil.asErraiElement(element);
+        panel.add(build(htmlElement));
+        return panel;
+    }
+
+    private FlowPanel buildPanel(final HTMLElement element,
+                                 final FlowPanel panel) {
+
+        final HTMLElement htmlElement = TemplateUtil.asErraiElement(element);
+        panel.add(build(htmlElement));
         return panel;
     }
 

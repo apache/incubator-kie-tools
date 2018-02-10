@@ -47,6 +47,7 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
+import org.uberfire.ext.editor.commons.file.DefaultMetadata;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
@@ -72,7 +73,7 @@ import static org.uberfire.workbench.events.NotificationEvent.NotificationType.S
 
 @Dependent
 @WorkbenchEditor(identifier = "DataSetDefEditor", supportedTypes = {DataSetDefType.class}, priority = Integer.MAX_VALUE)
-public class DataSetDefEditorPresenter extends BaseEditor {
+public class DataSetDefEditorPresenter extends BaseEditor<DataSetDef, DefaultMetadata> {
 
     @Inject
     SyncBeanManager beanManager;

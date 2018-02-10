@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.Supplier;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -43,9 +45,10 @@ import org.uberfire.ext.editor.commons.client.BaseEditor;
 import org.uberfire.ext.editor.commons.client.BaseEditorView;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
+import org.uberfire.ext.editor.commons.file.DefaultMetadata;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
-import org.uberfire.ext.editor.commons.service.support.SupportsRename;
+import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.plugin.client.type.DynamicMenuResourceType;
 import org.uberfire.ext.plugin.client.validation.NameValidator;
@@ -73,22 +76,30 @@ import static org.uberfire.ext.editor.commons.client.menu.MenuItems.SAVE;
 @Dependent
 @WorkbenchEditor(identifier = "Dynamic Menu Editor", supportedTypes = {DynamicMenuResourceType.class}, priority = Integer.MAX_VALUE)
 public class DynamicMenuEditorPresenter
-        extends BaseEditor {
+        extends BaseEditor<Plugin, DefaultMetadata> {
 
     @Inject
     private DynamicMenuResourceType resourceType;
+
     @Inject
     private Caller<PluginServices> pluginServices;
+
     @Inject
     private Event<NotificationEvent> notification;
+
     @Inject
     private ActivityBeansCache activityBeansCache;
+
     @Inject
     private PluginNameValidator pluginNameValidator;
+
     @Inject
     private SavePopUpPresenter savePopUpPresenter;
-    private ListDataProvider<DynamicMenuItem> dataProvider = new ListDataProvider<DynamicMenuItem>();
+
+    private ListDataProvider<DynamicMenuItem> dataProvider = new ListDataProvider<>();
+
     private DynamicMenu menuItem;
+
     private Plugin plugin;
 
     @Inject
@@ -257,6 +268,11 @@ public class DynamicMenuEditorPresenter
         }).getDynamicMenuContent(getVersionRecordManager().getCurrentPath());
     }
 
+    @Override
+    protected Supplier<Plugin> getContentSupplier() {
+        return this::getContent;
+    }
+
     Caller<PluginServices> getPluginServices() {
         return pluginServices;
     }
@@ -322,7 +338,7 @@ public class DynamicMenuEditorPresenter
         return new DynamicMenu(menuItem.getName(),
                                PluginType.DYNAMIC_MENU,
                                versionRecordManager.getCurrentPath(),
-                               new ArrayList<DynamicMenuItem>(getDynamicMenuItems()));
+                               new ArrayList<>(getDynamicMenuItems()));
     }
 
     @Override
@@ -339,7 +355,7 @@ public class DynamicMenuEditorPresenter
         return getPluginServices();
     }
 
-    protected Caller<? extends SupportsRename> getRenameServiceCaller() {
+    protected Caller<? extends SupportsSaveAndRename<Plugin, DefaultMetadata>> getSaveAndRenameServiceCaller() {
         return getPluginServices();
     }
 

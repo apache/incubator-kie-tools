@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.plugin.client.editor;
 
+import java.util.function.Supplier;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -23,6 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
+import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
@@ -33,30 +36,45 @@ import org.uberfire.ext.plugin.event.PluginSaved;
 import org.uberfire.ext.plugin.model.Media;
 import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginContent;
-import org.uberfire.ext.plugin.model.PluginSimpleContent;
 import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.plugin.service.PluginServices;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.ParameterizedCommand;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyCollection;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class RuntimePluginBaseEditorTest {
 
-    RemoteCallback<PluginContent> successCallBack;
-    RuntimePluginBaseView baseEditorView = null;
+    @Mock
+    private RemoteCallback<PluginContent> successCallBack;
+
+    @Mock
+    private RuntimePluginBaseView baseEditorView;
+
+    @Mock
     private PluginServices pluginServices;
-    private CallerMock<PluginServices> callerMock;
+
+    @Mock
     private RuntimePluginBaseEditor editor;
+
+    @Mock
+    private Plugin pluginMock;
+
+    private CallerMock<PluginServices> callerMock;
 
     @Before
     public void setup() {
-        pluginServices = mock(PluginServices.class);
-        callerMock = new CallerMock<PluginServices>(pluginServices);
-        successCallBack = mock(RemoteCallback.class);
-        baseEditorView = mock(RuntimePluginBaseView.class);
+        callerMock = new CallerMock<>(pluginServices);
         editor = spy(createRuntimePluginBaseEditor());
     }
 
@@ -112,6 +130,19 @@ public class RuntimePluginBaseEditorTest {
         verify(baseEditorView).onSave();
     }
 
+    @Test
+    public void testGetContentSupplier() {
+
+        final Supplier<Plugin> contentSupplier = editor.getContentSupplier();
+
+        assertEquals(pluginMock, contentSupplier.get());
+    }
+
+    @Test
+    public void testGetSaveAndRenameServiceCaller() {
+        assertEquals(callerMock, editor.getSaveAndRenameServiceCaller());
+    }
+
     private RuntimePluginBaseEditor createRuntimePluginBaseEditor() {
 
         return new RuntimePluginBaseEditor(baseEditorView) {
@@ -141,8 +172,8 @@ public class RuntimePluginBaseEditorTest {
             }
 
             @Override
-            public PluginSimpleContent getContent() {
-                return mock(PluginSimpleContent.class);
+            public Plugin getContent() {
+                return pluginMock;
             }
 
             @Override
@@ -155,7 +186,7 @@ public class RuntimePluginBaseEditorTest {
             }
 
             @Override
-            protected RemoteCallback<Path> getSaveSuccessCallback(final int newHash) {
+            public RemoteCallback<Path> getSaveSuccessCallback(final int newHash) {
                 return path -> {
                 };
             }

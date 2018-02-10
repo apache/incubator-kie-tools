@@ -13,16 +13,25 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
+<div>
+    <div data-field="modal-view">
+        <div data-field="modal-body">
+            <div data-field="error" class="alert alert-danger alert-dismissable">
+                <span class="pficon pficon-error-circle-o"></span>
+                <span data-field="errorMessage"></span>
+            </div>
+            <div>
+                <label class="col-sm-3 form-control-label" data-i18n-key="AssetName"></label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" data-field="newNameTextBox"/>
+                </div>
+            </div>
+        </div>
 
-<div data-field="body">
-    <div data-field="error" class="alert alert-danger alert-dismissable">
-        <span class="pficon pficon-error-circle-o"></span>
-        <span data-field="errorMessage"></span>
-    </div>
-    <div>
-        <label class="col-sm-3 form-control-label" data-i18n-key="AssetName"></label>
-        <div class="col-sm-9">
-            <input type="text" class="form-control" data-field="newNameTextBox"/>
+        <div data-field="modal-footer">
+            <button class="kie-btn btn btn-default" data-field="cancel" data-i18n-key="Cancel"></button>
+            <button class="kie-btn btn btn-default" data-field="rename" data-i18n-key="Rename"></button>
+            <button class="kie-btn btn btn-default" data-field="saveAndRename" data-i18n-key="SaveAndRename"></button>
         </div>
     </div>
 </div>

@@ -16,15 +16,15 @@
 
 package org.uberfire.ext.editor.commons.client.htmleditor;
 
+import java.util.function.Supplier;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -32,12 +32,11 @@ import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
-import org.uberfire.ext.editor.commons.service.CopyService;
-import org.uberfire.ext.editor.commons.service.DeleteService;
-import org.uberfire.ext.editor.commons.service.RenameService;
+import org.uberfire.ext.editor.commons.file.DefaultMetadata;
+import org.uberfire.ext.editor.commons.service.htmleditor.HtmlEditorService;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
-import org.uberfire.ext.editor.commons.service.support.SupportsRename;
+import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
@@ -49,39 +48,32 @@ import static org.uberfire.ext.editor.commons.client.menu.MenuItems.SAVE;
 
 @Dependent
 @WorkbenchEditor(identifier = "HtmlEditor", supportedTypes = HtmlResourceType.class)
-public class HtmlEditor extends BaseEditor {
+public class HtmlEditor extends BaseEditor<String, DefaultMetadata> {
 
     private HtmlResourceType htmlResourceType;
 
     private HtmlEditorPresenter editor;
 
-    private Caller<VFSService> vfsServices;
-
-    private Caller<DeleteService> deleteService;
-
-    private Caller<RenameService> renameService;
-
-    private Caller<CopyService> copyService;
+    private Caller<HtmlEditorService> htmlEditorService;
 
     @Inject
     public HtmlEditor(final HtmlResourceType htmlResourceType,
                       final HtmlEditorPresenter editor,
-                      final Caller<VFSService> vfsServices,
-                      final Caller<DeleteService> deleteService,
-                      final Caller<RenameService> renameService,
-                      final Caller<CopyService> copyService) {
+                      final Caller<HtmlEditorService> htmlEditorService) {
         super(editor.getView());
         this.htmlResourceType = htmlResourceType;
         this.editor = editor;
-        this.vfsServices = vfsServices;
-        this.deleteService = deleteService;
-        this.renameService = renameService;
-        this.copyService = copyService;
+        this.htmlEditorService = htmlEditorService;
     }
 
     @PostConstruct
     public void init() {
         editor.load();
+    }
+
+    @Override
+    protected Supplier<String> getContentSupplier() {
+        return editor::getContent;
     }
 
     @OnStartup
@@ -99,35 +91,34 @@ public class HtmlEditor extends BaseEditor {
     @Override
     protected void loadContent() {
         baseView.hideBusyIndicator();
-        vfsServices.call(new RemoteCallback<String>() {
-            @Override
-            public void callback(final String htmlContent) {
-                editor.setContent(htmlContent);
-            }
-        }).readAllString(versionRecordManager.getCurrentPath());
+        htmlEditorService.call((String htmlContent) -> {
+            editor.setContent(htmlContent);
+        }).load(versionRecordManager.getCurrentPath());
     }
 
     @Override
     protected void save() {
         final String htmlContent = editor.getContent();
-        vfsServices.call(getSaveSuccessCallback(htmlContent.hashCode())).write(versionRecordManager.getCurrentPath(),
-                                                                               htmlContent);
+        htmlEditorService.call(getSaveSuccessCallback(htmlContent.hashCode())).save(versionRecordManager.getCurrentPath(),
+                                                                                    htmlContent,
+                                                                                    null,
+                                                                                    null);
         concurrentUpdateSessionInfo = null;
     }
 
     @Override
     protected Caller<? extends SupportsDelete> getDeleteServiceCaller() {
-        return deleteService;
+        return htmlEditorService;
     }
 
     @Override
-    protected Caller<? extends SupportsRename> getRenameServiceCaller() {
-        return renameService;
+    protected Caller<? extends SupportsSaveAndRename<String, DefaultMetadata>> getSaveAndRenameServiceCaller() {
+        return htmlEditorService;
     }
 
     @Override
     protected Caller<? extends SupportsCopy> getCopyServiceCaller() {
-        return copyService;
+        return htmlEditorService;
     }
 
     @Override
