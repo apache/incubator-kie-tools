@@ -18,17 +18,18 @@ package org.kie.workbench.common.services.shared.project;
 
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.file.SupportsUpdate;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.support.SupportsRead;
+import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 
 @Remote
-public interface ProjectImportsService
-        extends SupportsRead<ProjectImports>,
-        SupportsUpdate<ProjectImports> {
+public interface ProjectImportsService extends SupportsRead<ProjectImports>,
+                                               SupportsUpdate<ProjectImports>,
+                                               SupportsSaveAndRename<ProjectImports, Metadata> {
 
-        ProjectImportsContent loadContent(Path path);
+    ProjectImportsContent loadContent(final Path path);
 
-        void saveProjectImports( final Path projectRootPath );
-
+    void saveProjectImports(final Path projectRootPath);
 }

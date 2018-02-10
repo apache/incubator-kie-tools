@@ -21,6 +21,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -56,7 +57,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 @WorkbenchEditor(identifier = "DataSourceDefEditor",
         supportedTypes = {DataSourceDefType.class})
 public class DataSourceDefEditor
-        extends BaseEditor
+        extends BaseEditor<DataSourceDefEditorContent, Metadata>
         implements DataSourceDefEditorView.Presenter {
 
     private DataSourceDefEditorView view;

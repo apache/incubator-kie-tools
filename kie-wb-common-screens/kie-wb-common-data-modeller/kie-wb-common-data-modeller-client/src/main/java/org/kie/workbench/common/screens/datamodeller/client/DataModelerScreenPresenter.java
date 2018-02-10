@@ -100,7 +100,7 @@ import org.uberfire.workbench.model.menu.Menus;
         supportedTypes = {JavaResourceType.class},
         priority = Integer.MAX_VALUE)
 public class DataModelerScreenPresenter
-        extends KieEditor {
+        extends KieEditor<String> {
 
     public interface DataModelerScreenView
             extends

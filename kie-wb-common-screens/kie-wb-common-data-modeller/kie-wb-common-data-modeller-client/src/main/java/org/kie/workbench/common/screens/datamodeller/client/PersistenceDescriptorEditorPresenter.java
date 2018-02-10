@@ -69,7 +69,7 @@ import org.uberfire.workbench.model.menu.Menus;
         supportedTypes = { PersistenceDescriptorType.class },
         priority = Integer.MAX_VALUE )
 public class PersistenceDescriptorEditorPresenter
-        extends KieEditor
+        extends KieEditor<PersistenceDescriptorEditorContent>
         implements PersistenceDescriptorEditorView.Presenter {
 
     private PersistenceDescriptorEditorView view;

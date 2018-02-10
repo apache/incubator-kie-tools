@@ -94,7 +94,7 @@ import org.uberfire.workbench.model.menu.Menus;
 import static java.util.logging.Level.FINE;
 
 // TODO: i18n.
-public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType> extends KieEditor {
+public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType> extends KieEditor<ProjectDiagram> {
 
     private static Logger LOGGER = Logger.getLogger(AbstractProjectDiagramEditor.class.getName());
     private static final String TITLE_FORMAT_TEMPLATE = "#title.#suffix - #type";

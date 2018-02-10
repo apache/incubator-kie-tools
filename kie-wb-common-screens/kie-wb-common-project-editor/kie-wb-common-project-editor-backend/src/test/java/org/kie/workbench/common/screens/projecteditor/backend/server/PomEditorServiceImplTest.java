@@ -49,12 +49,24 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
+import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileSystem;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PomEditorServiceImplTest {
@@ -79,6 +91,12 @@ public class PomEditorServiceImplTest {
 
     @Mock
     private ModuleRepositoriesService moduleRepositoriesService;
+
+    @Mock
+    private RenameService renameService;
+
+    @Mock
+    private SaveAndRenameServiceImpl<String, Metadata> saveAndRenameService;
 
     @Mock
     private Path pomPath;
@@ -130,14 +148,18 @@ public class PomEditorServiceImplTest {
 
     @Before
     public void setup() {
-        service = new PomEditorServiceImpl(ioService,
+
+        service = spy(new PomEditorServiceImpl(ioService,
                                            defaultEditorService,
                                            metadataService,
                                            commentedOptionFactory,
                                            moduleService,
                                            pomContentHandler,
                                            repositoryResolver,
-                                           moduleRepositoriesService);
+                                           moduleRepositoriesService,
+                                           renameService,
+                                           saveAndRenameService));
+
 
         when(pomPath.toURI()).thenReturn(pomPathUri);
         when(defaultEditorService.loadContent(pomPath)).thenReturn(content);
@@ -465,5 +487,56 @@ public class PomEditorServiceImplTest {
                                any(CommentedOption.class));
         verify(ioService,
                times(1)).endBatch();
+    }
+
+    @Test
+    public void testInit() {
+
+        final PomEditorServiceImpl serviceImpl = (PomEditorServiceImpl) this.service;
+
+        serviceImpl.init();
+
+        verify(saveAndRenameService).init(serviceImpl);
+    }
+
+    @Test
+    public void testSaveAndRename() {
+
+        final Path path = mock(Path.class);
+        final String newFileName = "newFileName";
+        final Metadata metadata = mock(Metadata.class);
+        final String content = "content";
+        final String comment = "comment";
+
+        service.saveAndRename(path, newFileName, metadata, content, comment);
+
+        verify(saveAndRenameService).saveAndRename(path, newFileName, metadata, content, comment);
+    }
+
+    @Test
+    public void testRename() {
+
+        final Path path = mock(Path.class);
+        final String newFileName = "newFileName";
+        final String comment = "comment";
+
+        service.rename(path, newFileName, comment);
+
+        verify(renameService).rename(path, newFileName, comment);
+    }
+
+    @Test
+    public void testSave() {
+
+        final Path path = mock(Path.class);
+        final String content = "content";
+        final Metadata metadata = mock(Metadata.class);
+        final String comment = "comment";
+
+        doReturn(path).when(service).save(path, content, metadata, comment, DeploymentMode.FORCED);
+
+        service.save(path, content, metadata, comment);
+
+        verify(service).save(path, content, metadata, comment, DeploymentMode.FORCED);
     }
 }

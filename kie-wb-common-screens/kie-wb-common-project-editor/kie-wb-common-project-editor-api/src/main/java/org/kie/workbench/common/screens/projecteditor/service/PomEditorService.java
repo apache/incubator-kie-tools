@@ -21,16 +21,16 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorContent;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 
 @Remote
-public interface PomEditorService {
+public interface PomEditorService extends SupportsSaveAndRename<String, Metadata> {
 
-    DefaultEditorContent loadContent( final Path path );
+    DefaultEditorContent loadContent(final Path path);
 
-    Path save( final Path path,
-               final String content,
-               final Metadata metadata,
-               final String comment,
-               final DeploymentMode mode );
-
+    Path save(final Path path,
+              final String content,
+              final Metadata metadata,
+              final String comment,
+              final DeploymentMode mode);
 }

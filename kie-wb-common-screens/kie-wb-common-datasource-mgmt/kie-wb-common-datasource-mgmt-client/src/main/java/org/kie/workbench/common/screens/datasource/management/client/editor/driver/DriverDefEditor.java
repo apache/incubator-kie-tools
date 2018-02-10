@@ -20,6 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -52,7 +53,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 @WorkbenchEditor( identifier = "DriverDefEditor",
         supportedTypes = { DriverDefType.class } )
 public class DriverDefEditor
-        extends BaseEditor
+        extends BaseEditor<DriverDefEditorContent, Metadata>
         implements DriverDefEditorView.Presenter {
 
     private DriverDefEditorView view;

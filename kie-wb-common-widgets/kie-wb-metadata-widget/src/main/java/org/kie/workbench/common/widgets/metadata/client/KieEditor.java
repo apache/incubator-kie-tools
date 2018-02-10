@@ -17,6 +17,7 @@
 package org.kie.workbench.common.widgets.metadata.client;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -36,6 +37,7 @@ import org.kie.workbench.common.widgets.client.source.ViewDRLSourceWidget;
 import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.widgets.multipage.Page;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
@@ -45,13 +47,16 @@ import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.ext.editor.commons.client.validation.ValidationErrorReason;
+import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
-public abstract class KieEditor
-        extends BaseEditor
+public abstract class KieEditor<T>
+        extends BaseEditor<T, Metadata>
         implements KieEditorWrapperView.KieEditorWrapperPresenter {
 
     @Inject
@@ -225,7 +230,7 @@ public abstract class KieEditor
 
         this.overviewWidget.setContent(overview,
                                        versionRecordManager.getPathToLatest());
-        this.metadata = overview.getMetadata();
+        resetMetadata(overview);
 
         kieView.clear();
 
@@ -233,6 +238,15 @@ public abstract class KieEditor
 
         kieView.addOverviewPage(overviewWidget,
                                 () -> overviewWidget.refresh(versionRecordManager.getVersion()));
+    }
+
+    private void resetMetadata(final Overview overview) {
+
+        this.metadata = overview.getMetadata();
+
+        if (Optional.ofNullable(metadata).isPresent()) {
+            setMetadataOriginalHash(metadata.hashCode());
+        }
     }
 
     protected void OnClose() {
@@ -253,8 +267,7 @@ public abstract class KieEditor
                     .addSave(versionRecordManager.newSaveMenuItem(this::saveAction))
                     .addCopy(versionRecordManager.getCurrentPath(),
                              assetUpdateValidator)
-                    .addRename(versionRecordManager.getPathToLatest(),
-                               assetUpdateValidator)
+                    .addRename(getSaveAndRename())
                     .addDelete(versionRecordManager.getPathToLatest(),
                                assetUpdateValidator);
         }
@@ -262,6 +275,16 @@ public abstract class KieEditor
         fileMenuBuilder
                 .addValidate(onValidate())
                 .addNewTopLevelMenu(versionRecordManager.buildMenu());
+    }
+
+    @Override
+    protected Supplier<Metadata> getMetadataSupplier() {
+        return () -> metadata;
+    }
+
+    @Override
+    public Validator getRenameValidator() {
+        return assetUpdateValidator;
     }
 
     protected void saveAction() {

@@ -47,7 +47,7 @@ import org.uberfire.workbench.model.menu.Menus;
 @Dependent
 @WorkbenchEditor(identifier = "GuvnorDefaultFileEditor", supportedTypes = {AnyResourceType.class}, priority = -1)
 public class GuvnorDefaultEditorPresenter
-        extends KieEditor {
+        extends KieEditor<String> {
 
     private final GuvnorDefaultEditorView view;
 

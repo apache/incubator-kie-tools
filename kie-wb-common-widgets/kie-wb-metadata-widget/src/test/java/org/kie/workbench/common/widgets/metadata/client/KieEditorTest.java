@@ -16,12 +16,14 @@
 
 package org.kie.workbench.common.widgets.metadata.client;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import java.util.Optional;
+import java.util.function.Supplier;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,12 +35,20 @@ import org.mockito.Spy;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
+import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
+import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class KieEditorTest {
@@ -63,17 +73,23 @@ public class KieEditorTest {
     protected EventSourceMock<NotificationEvent> notification;
 
     @Mock
+    protected SaveAndRenameCommandBuilder<String, Metadata> saveAndRenameCommandBuilder;
+
+    @Mock
+    protected Metadata metadata;
+
+    @Mock
     protected KieEditorWrapperView kieView;
 
     @Spy
     @InjectMocks
     protected AssetUpdateValidator assetUpdateValidator;
 
-    protected KieEditor presenter;
+    protected KieEditor<String> presenter;
 
     @Before
     public void setup() {
-        presenter = spy(new KieEditor() {
+        presenter = spy(new KieEditor<String>() {
             {
                 fileMenuBuilder = KieEditorTest.this.fileMenuBuilder;
                 projectController = KieEditorTest.this.projectController;
@@ -82,16 +98,26 @@ public class KieEditorTest {
                 assetUpdateValidator = KieEditorTest.this.assetUpdateValidator;
                 notification = KieEditorTest.this.notification;
                 kieView = KieEditorTest.this.kieView;
+                saveAndRenameCommandBuilder = KieEditorTest.this.saveAndRenameCommandBuilder;
+                metadata = KieEditorTest.this.metadata;
+            }
+
+            @Override
+            protected Command getSaveAndRename() {
+                return mock(Command.class);
             }
 
             @Override
             protected void loadContent() {
+            }
 
+            @Override
+            protected Supplier<String> getContentSupplier() {
+                return null;
             }
 
             @Override
             protected void onSave() {
-
             }
         });
     }
@@ -104,12 +130,9 @@ public class KieEditorTest {
         presenter.makeMenuBar();
 
         verify(fileMenuBuilder).addSave(any(MenuItem.class));
-        verify(fileMenuBuilder).addCopy(any(Path.class),
-                                        any(AssetUpdateValidator.class));
-        verify(fileMenuBuilder).addRename(any(Path.class),
-                                          any(AssetUpdateValidator.class));
-        verify(fileMenuBuilder).addDelete(any(Path.class),
-                                          any(AssetUpdateValidator.class));
+        verify(fileMenuBuilder).addCopy(any(Path.class), any(AssetUpdateValidator.class));
+        verify(fileMenuBuilder).addRename(any(Command.class));
+        verify(fileMenuBuilder).addDelete(any(Path.class), any(AssetUpdateValidator.class));
     }
 
     @Test
@@ -119,17 +142,10 @@ public class KieEditorTest {
 
         presenter.makeMenuBar();
 
-        verify(fileMenuBuilder,
-               never()).addSave(any(MenuItem.class));
-        verify(fileMenuBuilder,
-               never()).addCopy(any(Path.class),
-                                any(AssetUpdateValidator.class));
-        verify(fileMenuBuilder,
-               never()).addRename(any(Path.class),
-                                  any(AssetUpdateValidator.class));
-        verify(fileMenuBuilder,
-               never()).addDelete(any(Path.class),
-                                  any(AssetUpdateValidator.class));
+        verify(fileMenuBuilder, never()).addSave(any(MenuItem.class));
+        verify(fileMenuBuilder, never()).addCopy(any(Path.class), any(AssetUpdateValidator.class));
+        verify(fileMenuBuilder, never()).addRename(any(Command.class));
+        verify(fileMenuBuilder, never()).addDelete(any(Path.class), any(AssetUpdateValidator.class));
     }
 
     @Test
@@ -154,5 +170,21 @@ public class KieEditorTest {
                                                         NotificationEvent.NotificationType.ERROR));
         verify(presenter,
                never()).onSave();
+    }
+
+    @Test
+    public void testGetMetadataSupplier() {
+
+        final Supplier<Metadata> metadataSupplier = presenter.getMetadataSupplier();
+
+        assertEquals(metadata, metadataSupplier.get());
+    }
+
+    @Test
+    public void testGetRenameValidator() {
+
+        final Validator renameValidator = presenter.getRenameValidator();
+
+        assertEquals(assetUpdateValidator, renameValidator);
     }
 }

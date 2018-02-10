@@ -24,6 +24,7 @@ import javax.enterprise.inject.spi.Bean;
 
 import org.guvnor.common.services.project.backend.server.ProjectConfigurationContentHandler;
 import org.guvnor.common.services.project.model.ProjectImports;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,6 +36,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
+import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
@@ -42,6 +45,7 @@ import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -52,6 +56,12 @@ public class ProjectImportsServiceImplTest extends WeldModuleTestBase {
 
     private final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
     private ProjectImportsServiceImpl projectImportsService;
+
+    @Mock
+    private RenameService renameService;
+
+    @Mock
+    private SaveAndRenameServiceImpl<ProjectImports, Metadata> saveAndRenameService;
 
     @Mock
     private IOService ioService;
@@ -78,10 +88,14 @@ public class ProjectImportsServiceImplTest extends WeldModuleTestBase {
 
         final URL packageUrl = this.getClass().getResource("/ModuleBackendTestModuleStructureValid/package-names-white-list");
         final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath(packageUrl.toURI());
+        final ProjectConfigurationContentHandler contentHandler = new ProjectConfigurationContentHandler();
+
         pathToImports = paths.convert(nioPackagePath);
 
         projectImportsService = new ProjectImportsServiceImpl(ioService,
-                                                              new ProjectConfigurationContentHandler());
+                                                              contentHandler,
+                                                              renameService,
+                                                              saveAndRenameService);
     }
 
     @After
@@ -156,5 +170,38 @@ public class ProjectImportsServiceImplTest extends WeldModuleTestBase {
         // projects imports need always to contain java.lang.Number
         // because of the guided rule editor
         assertTrue(projectImports.getImports().contains(new Import(Number.class)));
+    }
+
+    @Test
+    public void testInit() {
+        projectImportsService.init();
+
+        verify(saveAndRenameService).init(projectImportsService);
+    }
+
+    @Test
+    public void testRename() {
+
+        final Path path = mock(Path.class);
+        final String newName = "newName";
+        final String comment = "comment";
+
+        projectImportsService.rename(path, newName, comment);
+
+        verify(renameService).rename(path, newName, comment);
+    }
+
+    @Test
+    public void testSaveAndRename() {
+
+        final Path path = mock(Path.class);
+        final String newName = "newName";
+        final Metadata metadata = mock(Metadata.class);
+        final ProjectImports content = mock(ProjectImports.class);
+        final String comment = "comment";
+
+        projectImportsService.saveAndRename(path, newName, metadata, content, comment);
+
+        verify(saveAndRenameService).saveAndRename(path, newName, metadata, content, comment);
     }
 }

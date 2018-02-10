@@ -75,7 +75,7 @@ import org.uberfire.workbench.type.FileNameUtil;
 
 @Dependent
 @WorkbenchEditor(identifier = FormEditorPresenter.ID, supportedTypes = {FormDefinitionResourceType.class})
-public class FormEditorPresenter extends KieEditor {
+public class FormEditorPresenter extends KieEditor<FormModelerContent> {
 
     public static final String ID = "FormEditor";
 

@@ -15,10 +15,13 @@
  */
 package org.kie.workbench.common.screens.defaulteditor.client.editor;
 
+import java.util.function.Supplier;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorContent;
@@ -30,6 +33,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
+import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
@@ -41,12 +45,12 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 
 public abstract class KieTextEditorPresenter
-        extends KieEditor {
+        extends KieEditor<String> {
 
     protected KieTextEditorView view;
 
     @Inject
-    private Caller<DefaultEditorService> defaultEditorService;
+    protected Caller<DefaultEditorService> defaultEditorService;
 
     @Inject
     protected BusyIndicatorView busyIndicatorView;
@@ -84,22 +88,26 @@ public abstract class KieTextEditorPresenter
     protected void makeMenuBar() {
         if (canUpdateProject()) {
             fileMenuBuilder
-                    .addSave(versionRecordManager.newSaveMenuItem(new Command() {
-                        @Override
-                        public void execute() {
-                            saveAction();
-                        }
-                    }))
+                    .addSave(versionRecordManager.newSaveMenuItem(this::saveAction))
                     .addCopy(versionRecordManager.getCurrentPath(),
-                             assetUpdateValidator)
-                    .addRename(versionRecordManager.getPathToLatest(),
-                               assetUpdateValidator)
+                             getRenameValidator())
+                    .addRename(getSaveAndRename())
                     .addDelete(versionRecordManager.getPathToLatest(),
                                assetUpdateValidator);
         }
 
         fileMenuBuilder
                 .addNewTopLevelMenu(versionRecordManager.buildMenu());
+    }
+
+    @Override
+    protected Caller<? extends SupportsSaveAndRename<String, Metadata>> getSaveAndRenameServiceCaller() {
+        return defaultEditorService;
+    }
+
+    @Override
+    protected Supplier<String> getContentSupplier() {
+        return view::getContent;
     }
 
     @Override
@@ -120,6 +128,8 @@ public abstract class KieTextEditorPresenter
             public void callback(final DefaultEditorContent content) {
                 resetEditorPages(content.getOverview());
                 metadata = content.getOverview().getMetadata();
+                setMetadataOriginalHash(metadata.hashCode());
+
                 view.onStartup(versionRecordManager.getCurrentPath());
                 view.setReadOnly(isReadOnly);
             }

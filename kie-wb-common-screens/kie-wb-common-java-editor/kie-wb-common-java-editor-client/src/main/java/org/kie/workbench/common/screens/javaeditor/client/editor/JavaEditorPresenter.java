@@ -35,7 +35,7 @@ import org.uberfire.mvp.PlaceRequest;
 
 @WorkbenchEditor(identifier = "JavaEditor", supportedTypes = {JavaResourceType.class})
 public class JavaEditorPresenter
-        extends KieEditor {
+        extends KieEditor<String> {
 
     @Inject
     private Caller<VFSService> vfsServices;

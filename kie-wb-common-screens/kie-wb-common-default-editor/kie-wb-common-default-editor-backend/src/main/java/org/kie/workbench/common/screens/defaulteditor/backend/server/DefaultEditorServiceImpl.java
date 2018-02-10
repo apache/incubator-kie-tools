@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.screens.defaulteditor.backend.server;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
@@ -30,7 +30,8 @@ import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorServi
 import org.kie.workbench.common.services.backend.service.KieService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.io.IOService;
+import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
+import org.uberfire.ext.editor.commons.service.RenameService;
 
 @Service
 @ApplicationScoped
@@ -40,6 +41,17 @@ public class DefaultEditorServiceImpl
 
     @Inject
     CommentedOptionFactory commentedOptionFactory;
+
+    @Inject
+    SaveAndRenameServiceImpl<String, Metadata> saveAndRenameService;
+
+    @Inject
+    RenameService renameService;
+
+    @PostConstruct
+    public void init() {
+        saveAndRenameService.init(this);
+    }
 
     @Override
     public DefaultEditorContent loadContent(Path path) {
@@ -59,7 +71,6 @@ public class DefaultEditorServiceImpl
                             commentedOptionFactory.makeCommentedOption(comment));
 
             return resource;
-
         } catch (Exception e) {
             throw ExceptionUtilities.handleException(e);
         }
@@ -68,5 +79,21 @@ public class DefaultEditorServiceImpl
     @Override
     protected DefaultEditorContent constructContent(Path path, Overview overview) {
         return new DefaultEditorContent(overview);
+    }
+
+    @Override
+    public Path rename(final Path path,
+                       final String newName,
+                       final String comment) {
+        return renameService.rename(path, newName, comment);
+    }
+
+    @Override
+    public Path saveAndRename(final Path path,
+                              final String newFileName,
+                              final Metadata metadata,
+                              final String content,
+                              final String comment) {
+        return saveAndRenameService.saveAndRename(path, newFileName, metadata, content, comment);
     }
 }

@@ -104,6 +104,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.server.io.ConfigIOServiceProducer;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
+import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.java.nio.file.FileSystemNotFoundException;
@@ -143,6 +145,8 @@ public class DataModelServiceConstructorTest {
             throws IllegalArgumentException, FileSystemNotFoundException, SecurityException, URISyntaxException {
 
         final URL packageUrl = this.getClass().getResource("/DataModelServiceConstructorTest/src/main/java/t1p1");
+        final RenameService renameService = mock(RenameService.class);
+        final SaveAndRenameServiceImpl saveAndRenameService = mock(SaveAndRenameServiceImpl.class);
 
         IOService ioService = new IOServiceDotFileImpl();
         Collection<Role> roles = new ArrayList<>();
@@ -173,7 +177,9 @@ public class DataModelServiceConstructorTest {
         CommentedOptionFactory commentedOptionFactory = new CommentedOptionFactoryImpl(sessionInfo);
         ProjectConfigurationContentHandler moduleConfigurationContentHandler = new ProjectConfigurationContentHandler();
         ProjectImportsService moduleImportsService = new ProjectImportsServiceImpl(ioService,
-                                                                                   moduleConfigurationContentHandler);
+                                                                                   moduleConfigurationContentHandler,
+                                                                                   renameService,
+                                                                                   saveAndRenameService);
 
         Event<NewModuleEvent> newModuleEvent = new EventSourceMock<>();
         Event<NewPackageEvent> newPackageEvent = new EventSourceMock<>();
@@ -263,7 +269,9 @@ public class DataModelServiceConstructorTest {
         kModuleService.setModuleService(moduleService);
 
         ProjectImportsService importsService = new ProjectImportsServiceImpl(ioService,
-                                                                             moduleConfigurationContentHandler);
+                                                                             moduleConfigurationContentHandler,
+                                                                             renameService,
+                                                                             saveAndRenameService);
         Instance<BuildValidationHelper> buildValidationHelperBeans = null;
         Instance<Predicate<String>> classFilterBeans = null;
         HackedLRUModuleDependenciesClassLoaderCache dependenciesClassLoaderCache = new HackedLRUModuleDependenciesClassLoaderCache();

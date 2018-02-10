@@ -18,6 +18,7 @@ package org.kie.workbench.common.services.backend.project;
 
 import java.util.Objects;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -35,6 +36,8 @@ import org.kie.workbench.common.services.shared.project.ProjectImportsContent;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
+import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 
@@ -46,15 +49,28 @@ public class ProjectImportsServiceImpl
 
     protected ProjectConfigurationContentHandler projectConfigurationContentHandler;
 
+    private RenameService renameService;
+
+    private SaveAndRenameServiceImpl<ProjectImports, Metadata> saveAndRenameService;
+
     public ProjectImportsServiceImpl() {
     }
 
     @Inject
     public ProjectImportsServiceImpl(final @Named("ioStrategy") IOService ioService,
-                                     final ProjectConfigurationContentHandler projectConfigurationContentHandler) {
+                                     final ProjectConfigurationContentHandler projectConfigurationContentHandler,
+                                     final RenameService renameService,
+                                     final SaveAndRenameServiceImpl<ProjectImports, Metadata> saveAndRenameService) {
 
         this.ioService = ioService;
         this.projectConfigurationContentHandler = projectConfigurationContentHandler;
+        this.renameService = renameService;
+        this.saveAndRenameService = saveAndRenameService;
+    }
+
+    @PostConstruct
+    public void init() {
+        saveAndRenameService.init(this);
     }
 
     public void saveProjectImports(final Path path) {
@@ -135,5 +151,21 @@ public class ProjectImportsServiceImpl
         } catch (Exception e) {
             throw ExceptionUtilities.handleException(e);
         }
+    }
+
+    @Override
+    public Path rename(final Path path,
+                       final String newName,
+                       final String comment) {
+        return renameService.rename(path, newName, comment);
+    }
+
+    @Override
+    public Path saveAndRename(final Path path,
+                              final String newFileName,
+                              final Metadata metadata,
+                              final ProjectImports content,
+                              final String comment) {
+        return saveAndRenameService.saveAndRename(path, newFileName, metadata, content, comment);
     }
 }
