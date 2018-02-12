@@ -7,6 +7,26 @@
   <name>[KIE] Lienzo - Testing Framework</name>
   <description>[KIE] Lienzo - Testing Framework</description>
   <packaging>jar</packaging>
+  <url>http://www.kiegroup.org</url>
+  <inceptionYear>2001</inceptionYear>
+  <organization>
+    <name>JBoss by Red Hat</name>
+    <url>http://www.jboss.org/</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>All developers are listed on the team website</name>
+      <url>http://www.drools.org/community/team.html</url>
+    </developer>
+  </developers>
+
   
   <properties>
 
