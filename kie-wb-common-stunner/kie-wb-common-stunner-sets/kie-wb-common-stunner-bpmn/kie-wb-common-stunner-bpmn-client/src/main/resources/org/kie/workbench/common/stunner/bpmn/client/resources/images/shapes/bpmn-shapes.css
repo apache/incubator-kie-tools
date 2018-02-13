@@ -39,7 +39,16 @@
     stroke: #EC7A08;
 }
 
+.gateway_inclusiveIcon {
+    fill: #EC7A08;
+    stroke: #EC7A08;
+}
+
 .gateway_group_exclusive {
+    opacity: 0;
+}
+
+.gateway_group_inclusive {
     opacity: 0;
 }
 
@@ -48,6 +57,10 @@
 }
 
 #exclusiveGateway .gateway_group_exclusive {
+    opacity: 1;
+}
+
+#inclusiveGateway .gateway_group_inclusive {
     opacity: 1;
 }
 

@@ -122,22 +122,27 @@ public abstract class BaseGateway implements BPMNViewDefinition {
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(general.hashCode(),
-                                         backgroundSet.hashCode(),
-                                         fontSet.hashCode(),
-                                         dimensionsSet.hashCode(),
-                                         labels.hashCode());
+        return HashUtil.combineHashCodes(Objects.hashCode(general),
+                                         Objects.hashCode(backgroundSet),
+                                         Objects.hashCode(fontSet),
+                                         Objects.hashCode(dimensionsSet),
+                                         Objects.hashCode(labels));
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof BaseGateway) {
             BaseGateway other = (BaseGateway) o;
-            return  Objects.equals(general, other.general) &&
-                    Objects.equals(backgroundSet, other.backgroundSet) &&
-                    Objects.equals(fontSet, other.fontSet) &&
-                    Objects.equals(dimensionsSet, other.dimensionsSet) &&
-                    Objects.equals(labels, other.labels);
+            return Objects.equals(general,
+                                  other.general) &&
+                    Objects.equals(backgroundSet,
+                                   other.backgroundSet) &&
+                    Objects.equals(fontSet,
+                                   other.fontSet) &&
+                    Objects.equals(dimensionsSet,
+                                   other.dimensionsSet) &&
+                    Objects.equals(labels,
+                                   other.labels);
         }
         return false;
     }

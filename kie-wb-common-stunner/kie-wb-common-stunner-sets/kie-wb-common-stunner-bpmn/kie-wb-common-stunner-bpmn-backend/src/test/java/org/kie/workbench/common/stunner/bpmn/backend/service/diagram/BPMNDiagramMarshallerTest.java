@@ -83,7 +83,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
-import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.InclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventThrowing;
@@ -212,6 +213,7 @@ public class BPMNDiagramMarshallerTest {
     private static final String BPMN_USERTASKPROPERTIES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/userTaskProperties.bpmn";
     private static final String BPMN_SEQUENCEFLOW = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/sequenceFlow.bpmn";
     private static final String BPMN_XORGATEWAY = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/xorGateway.bpmn";
+    private static final String BPMN_INCLUSIVE_GATEWAY = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/inclusiveGateway.bpmn";
     private static final String BPMN_TIMER_EVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/timerEvent.bpmn";
     private static final String BPMN_SIMULATIONPROPERTIES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/simulationProperties.bpmn";
     private static final String BPMN_MAGNETDOCKERS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/magnetDockers.bpmn";
@@ -1195,7 +1197,7 @@ public class BPMNDiagramMarshallerTest {
             Element element = it.next();
             if (element.getContent() instanceof View) {
                 Object oDefinition = ((View) element.getContent()).getDefinition();
-                if (oDefinition instanceof ExclusiveDatabasedGateway) {
+                if (oDefinition instanceof ExclusiveGateway) {
                     List<Edge> outEdges = ((NodeImpl) element).getOutEdges();
                     for (Edge edge : outEdges) {
                         SequenceFlow flow = (SequenceFlow) ((ViewConnectorImpl) ((EdgeImpl) edge).getContent()).getDefinition();
@@ -1297,10 +1299,10 @@ public class BPMNDiagramMarshallerTest {
                      "XORGateway");
         Graph graph = diagram.getGraph();
         Node<? extends Definition, ?> gatewayNode = graph.getNode("_877EA035-1A14-42E9-8CAA-43E9BF908C70");
-        ExclusiveDatabasedGateway xorGateway = (ExclusiveDatabasedGateway) gatewayNode.getContent().getDefinition();
+        ExclusiveGateway xorGateway = (ExclusiveGateway) gatewayNode.getContent().getDefinition();
         assertEquals("AgeSplit",
                      xorGateway.getGeneral().getName().getValue());
-        assertEquals("under 10 : _5110D608-BDAD-47BF-A3F9-E1DBE43ED7CD",
+        assertEquals("_5110D608-BDAD-47BF-A3F9-E1DBE43ED7CD",
                      xorGateway.getExecutionSet().getDefaultRoute().getValue());
         SequenceFlow sequenceFlow1 = null;
         SequenceFlow sequenceFlow2 = null;
@@ -1314,12 +1316,47 @@ public class BPMNDiagramMarshallerTest {
                 }
             }
         }
-        Node<? extends Definition, ?> sequenceFlowNode1 = graph.getNode("_C72E00C3-70DC-4BC9-A08E-761B4263A239");
         assertNotNull(sequenceFlow1);
         assertEquals("10 and over",
                      sequenceFlow1.getGeneral().getName().getValue());
         assertNotNull(sequenceFlow2);
         assertEquals("under 10",
+                     sequenceFlow2.getGeneral().getName().getValue());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnmarshallInclusiveGateway() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_INCLUSIVE_GATEWAY);
+        assertDiagram(diagram,
+                      7);
+        assertEquals(diagram.getMetadata().getTitle(),
+                     "TestInclusiveGateway");
+        Graph graph = diagram.getGraph();
+        Node<? extends Definition, ?> gatewayNode = graph.getNode("_526EE472-FE8B-4E9A-A951-CFBA86C3691F");
+        assertTrue(gatewayNode.getContent().getDefinition() instanceof InclusiveGateway);
+        InclusiveGateway inclusiveGateway = (InclusiveGateway) gatewayNode.getContent().getDefinition();
+        assertEquals("InclusiveGatewayName",
+                     inclusiveGateway.getGeneral().getName().getValue());
+        assertEquals("_3D5701E9-CFD3-4218-9200-897B6D4FF041",
+                     inclusiveGateway.getExecutionSet().getDefaultRoute().getValue());
+        SequenceFlow sequenceFlow1 = null;
+        SequenceFlow sequenceFlow2 = null;
+        List<Edge> outEdges = (List<Edge>) gatewayNode.getOutEdges();
+        if (outEdges != null) {
+            for (Edge edge : outEdges) {
+                if ("_3D5701E9-CFD3-4218-9200-897B6D4FF041".equals(edge.getUUID())) {
+                    sequenceFlow1 = (SequenceFlow) ((ViewConnector) edge.getContent()).getDefinition();
+                } else if ("_A414F16D-90BB-4742-A4E7-EBF7EA1ECD7E".equals(edge.getUUID())) {
+                    sequenceFlow2 = (SequenceFlow) ((ViewConnector) edge.getContent()).getDefinition();
+                }
+            }
+        }
+        assertNotNull(sequenceFlow1);
+        assertEquals("OutSequence1",
+                     sequenceFlow1.getGeneral().getName().getValue());
+        assertNotNull(sequenceFlow2);
+        assertEquals("OutSequence2",
                      sequenceFlow2.getGeneral().getName().getValue());
     }
 
@@ -2483,6 +2520,17 @@ public class BPMNDiagramMarshallerTest {
     }
 
     @Test
+    public void testMarshallInclusiveGateway() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_INCLUSIVE_GATEWAY);
+        String result = tested.marshall(diagram);
+        assertDiagram(result,
+                      1,
+                      6,
+                      6);
+        assertTrue(result.contains("<bpmn2:inclusiveGateway id=\"_526EE472-FE8B-4E9A-A951-CFBA86C3691F\" drools:dg=\"_3D5701E9-CFD3-4218-9200-897B6D4FF041\" name=\"InclusiveGatewayName\" gatewayDirection=\"Diverging\" default=\"_3D5701E9-CFD3-4218-9200-897B6D4FF041\">"));
+    }
+
+    @Test
     public void testMarshallXorGateway() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_XORGATEWAY);
         String result = tested.marshall(diagram);
@@ -2490,7 +2538,7 @@ public class BPMNDiagramMarshallerTest {
                       1,
                       6,
                       5);
-        assertTrue(result.contains("<bpmn2:exclusiveGateway id=\"_877EA035-1A14-42E9-8CAA-43E9BF908C70\" drools:dg=\"under 10 : _5110D608-BDAD-47BF-A3F9-E1DBE43ED7CD\" name=\"AgeSplit\" gatewayDirection=\"Diverging\" default=\"_5110D608-BDAD-47BF-A3F9-E1DBE43ED7CD\">"));
+        assertTrue(result.contains("<bpmn2:exclusiveGateway id=\"_877EA035-1A14-42E9-8CAA-43E9BF908C70\" drools:dg=\"_5110D608-BDAD-47BF-A3F9-E1DBE43ED7CD\" name=\"AgeSplit\" gatewayDirection=\"Diverging\" default=\"_5110D608-BDAD-47BF-A3F9-E1DBE43ED7CD\">"));
     }
 
     @Test

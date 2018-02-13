@@ -41,7 +41,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
-import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.InclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventThrowing;
@@ -148,7 +149,11 @@ public class BPMNShapeFactoryTest {
                                   any(GatewayShapeDef.class),
                                   factoryArgumentCaptor.capture());
         verify(delegateShapeFactory,
-               times(1)).delegate(eq(ExclusiveDatabasedGateway.class),
+               times(1)).delegate(eq(ExclusiveGateway.class),
+                                  any(GatewayShapeDef.class),
+                                  factoryArgumentCaptor.capture());
+        verify(delegateShapeFactory,
+               times(1)).delegate(eq(InclusiveGateway.class),
                                   any(GatewayShapeDef.class),
                                   factoryArgumentCaptor.capture());
         verify(delegateShapeFactory,
@@ -209,7 +214,7 @@ public class BPMNShapeFactoryTest {
         final long basicFactoryCallCount = factoryArgumentCaptor.getAllValues().stream()
                 .filter(this::isBasicShapeFactory)
                 .count();
-        assertEquals(23,
+        assertEquals(24,
                      svgFactoryCallCount,
                      0);
         assertEquals(1,

@@ -25,12 +25,12 @@ import javax.validation.ValidatorFactory;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 
 import static org.junit.Assert.assertTrue;
 
-public class ExclusiveDatabasedGatewayTest {
+public class ExclusiveGatewayTest {
 
     private Validator validator;
 
@@ -44,17 +44,17 @@ public class ExclusiveDatabasedGatewayTest {
 
     @Test
     public void testExclusiveDatabasedGatewayNameValid() {
-        ExclusiveDatabasedGateway exclusiveDatabasedGateway = new ExclusiveDatabasedGateway.ExclusiveDatabasedGatewayBuilder().build();
-        exclusiveDatabasedGateway.getGeneral().setName(new Name(NAME_VALID));
-        Set<ConstraintViolation<ExclusiveDatabasedGateway>> violations = this.validator.validate(exclusiveDatabasedGateway);
+        ExclusiveGateway exclusiveGateway = new ExclusiveGateway.ExclusiveGatewayBuilder().build();
+        exclusiveGateway.getGeneral().setName(new Name(NAME_VALID));
+        Set<ConstraintViolation<ExclusiveGateway>> violations = this.validator.validate(exclusiveGateway);
         assertTrue(violations.isEmpty());
     }
 
     @Test
     public void testExclusiveDatabasedGatewayNameEmpty() {
-        ExclusiveDatabasedGateway exclusiveDatabasedGateway = new ExclusiveDatabasedGateway.ExclusiveDatabasedGatewayBuilder().build();
-        exclusiveDatabasedGateway.getGeneral().setName(new Name(""));
-        Set<ConstraintViolation<ExclusiveDatabasedGateway>> violations = this.validator.validate(exclusiveDatabasedGateway);
+        ExclusiveGateway exclusiveGateway = new ExclusiveGateway.ExclusiveGatewayBuilder().build();
+        exclusiveGateway.getGeneral().setName(new Name(""));
+        Set<ConstraintViolation<ExclusiveGateway>> violations = this.validator.validate(exclusiveGateway);
         assertTrue(violations.isEmpty());
     }
 }

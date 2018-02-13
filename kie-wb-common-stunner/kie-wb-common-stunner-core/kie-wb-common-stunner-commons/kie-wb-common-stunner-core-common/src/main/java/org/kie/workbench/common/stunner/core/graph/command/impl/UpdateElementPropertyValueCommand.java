@@ -48,8 +48,8 @@ public final class UpdateElementPropertyValueCommand extends AbstractGraphComman
                                                               elementUUID);
         this.propertyId = PortablePreconditions.checkNotNull("propertyId",
                                                              propertyId);
-        this.value = PortablePreconditions.checkNotNull("value",
-                                                        value);
+        this.value = value;
+
         this.node = null;
     }
 

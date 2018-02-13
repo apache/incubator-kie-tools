@@ -28,6 +28,18 @@
       }
     },
     {
+      "id": "inclusiveGateway",
+      "name": "Gateway - Inclusive",
+      "shape": {
+        "path": "shapes/",
+        "file": "gateway.svg"
+      },
+      "icon": {
+        "path": "icons/gateway/",
+        "file": "inclusive.svg"
+      }
+    },
+    {
       "id": "lane",
       "name": "Lane",
       "shape": {

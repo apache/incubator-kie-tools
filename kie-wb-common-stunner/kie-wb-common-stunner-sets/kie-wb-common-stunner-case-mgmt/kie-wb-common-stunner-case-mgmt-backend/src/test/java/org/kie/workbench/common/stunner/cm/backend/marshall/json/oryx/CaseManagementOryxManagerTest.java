@@ -39,7 +39,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
-import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
@@ -116,7 +116,7 @@ public class CaseManagementOryxManagerTest {
         assertTrue(classes.contains(EndTerminateEvent.class));
         assertTrue(classes.contains(IntermediateTimerEvent.class));
         assertTrue(classes.contains(ParallelGateway.class));
-        assertTrue(classes.contains(ExclusiveDatabasedGateway.class));
+        assertTrue(classes.contains(ExclusiveGateway.class));
         assertTrue(classes.contains(AdHocSubprocess.class));
         assertTrue(classes.contains(ReusableSubprocess.class));
         assertTrue(classes.contains(SequenceFlow.class));

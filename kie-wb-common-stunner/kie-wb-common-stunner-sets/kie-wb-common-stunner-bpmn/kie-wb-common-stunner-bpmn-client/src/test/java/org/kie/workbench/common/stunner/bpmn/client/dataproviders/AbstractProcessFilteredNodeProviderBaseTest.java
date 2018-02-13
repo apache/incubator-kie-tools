@@ -30,7 +30,7 @@ import org.kie.workbench.common.forms.dynamic.model.config.SelectorDataProvider;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -51,7 +51,7 @@ public abstract class AbstractProcessFilteredNodeProviderBaseTest {
     protected SessionManager sessionManager;
 
     @Mock
-    protected ClientSession session;
+    protected ClientFullSession session;
 
     @Mock
     protected CanvasHandler canvasHandler;

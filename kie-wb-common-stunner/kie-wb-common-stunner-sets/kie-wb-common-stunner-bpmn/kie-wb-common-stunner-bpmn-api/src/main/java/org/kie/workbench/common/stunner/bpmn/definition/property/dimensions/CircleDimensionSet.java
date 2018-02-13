@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.bpmn.definition.property.dimensions;
 
+import java.util.Objects;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -25,6 +27,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
@@ -61,14 +64,15 @@ public class CircleDimensionSet implements BPMNPropertySet {
 
     @Override
     public int hashCode() {
-        return radius.hashCode();
+        return HashUtil.combineHashCodes(Objects.hashCode(radius));
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof CircleDimensionSet) {
             CircleDimensionSet other = (CircleDimensionSet) o;
-            return radius.equals(other.radius);
+            return Objects.equals(radius,
+                                  other.radius);
         }
         return false;
     }

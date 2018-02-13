@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition.property.gateway;
 
+import java.util.Objects;
+
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -33,7 +35,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 @Bindable
 @PropertySet
 @FormDefinition
-public class ExclusiveGatewayExecutionSet implements BPMNPropertySet {
+public class GatewayExecutionSet implements BPMNPropertySet {
 
     @Property
     @FormField(
@@ -42,20 +44,20 @@ public class ExclusiveGatewayExecutionSet implements BPMNPropertySet {
     )
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.CLIENT,
-            className = "org.kie.workbench.common.stunner.bpmn.client.forms.fields.gateway.DefaultRouteFormProvider")
+            className = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.DefaultRouteFormProvider")
 
     @Valid
     protected DefaultRoute defaultRoute;
 
-    public ExclusiveGatewayExecutionSet() {
+    public GatewayExecutionSet() {
         this(new DefaultRoute());
     }
 
-    public ExclusiveGatewayExecutionSet(final @MapsTo("defaultRoute") DefaultRoute defaultRoute) {
+    public GatewayExecutionSet(final @MapsTo("defaultRoute") DefaultRoute defaultRoute) {
         this.defaultRoute = defaultRoute;
     }
 
-    public ExclusiveGatewayExecutionSet(final String defaultRoute) {
+    public GatewayExecutionSet(final String defaultRoute) {
         this.defaultRoute = new DefaultRoute(defaultRoute);
     }
 
@@ -69,14 +71,15 @@ public class ExclusiveGatewayExecutionSet implements BPMNPropertySet {
 
     @Override
     public int hashCode() {
-        return defaultRoute.hashCode();
+        return Objects.hashCode(defaultRoute);
     }
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof ExclusiveGatewayExecutionSet) {
-            ExclusiveGatewayExecutionSet other = (ExclusiveGatewayExecutionSet) o;
-            return defaultRoute.equals(other.defaultRoute);
+        if (o instanceof GatewayExecutionSet) {
+            GatewayExecutionSet other = (GatewayExecutionSet) o;
+            return Objects.equals(defaultRoute,
+                                  other.defaultRoute);
         }
         return false;
     }

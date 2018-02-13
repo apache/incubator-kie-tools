@@ -2583,12 +2583,7 @@ public class Bpmn2JsonMarshaller {
                                             Map<String, Object> flowElementProperties) throws JsonGenerationException, IOException {
         if (gateway.getDefault() != null) {
             SequenceFlow defsf = gateway.getDefault();
-            String defGatewayStr = "";
-            if (defsf.getName() != null && defsf.getName().length() > 0) {
-                defGatewayStr = defsf.getName() + " : " + defsf.getId();
-            } else {
-                defGatewayStr = defsf.getId();
-            }
+            String defGatewayStr = defsf.getId();
             flowElementProperties.put("defaultgate",
                                       defGatewayStr);
         }
@@ -2609,12 +2604,7 @@ public class Bpmn2JsonMarshaller {
                                             Map<String, Object> flowElementProperties) throws JsonGenerationException, IOException {
         if (gateway.getDefault() != null) {
             SequenceFlow defsf = gateway.getDefault();
-            String defGatewayStr = "";
-            if (defsf.getName() != null && defsf.getName().length() > 0) {
-                defGatewayStr = defsf.getName() + " : " + defsf.getId();
-            } else {
-                defGatewayStr = defsf.getId();
-            }
+            String defGatewayStr = defsf.getId();
             flowElementProperties.put("defaultgate",
                                       defGatewayStr);
         }

@@ -16,12 +16,13 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition.property.general;
 
+import java.util.Objects;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNBaseInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
@@ -91,16 +92,18 @@ public class BPMNGeneralSet implements BPMNPropertySet,
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(name.hashCode(),
-                                         documentation.hashCode());
+        return HashUtil.combineHashCodes(Objects.hashCode(name),
+                                         Objects.hashCode(documentation));
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof BPMNGeneralSet) {
             BPMNGeneralSet other = (BPMNGeneralSet) o;
-            return name.equals(other.name) &&
-                    documentation.equals(other.documentation);
+            return Objects.equals(name,
+                                  other.name) &&
+                    Objects.equals(documentation,
+                                   other.documentation);
         }
         return false;
     }

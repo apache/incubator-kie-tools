@@ -40,6 +40,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.InclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventThrowing;
@@ -109,6 +111,10 @@ public class BPMNPaletteDefinitionFactory extends BindableDefSetPaletteDefinitio
             IntermediateErrorEventCatching.class);
         put(Categories.GATEWAYS,
             ParallelGateway.class);
+        put(Categories.GATEWAYS,
+            ExclusiveGateway.class);
+        put(Categories.GATEWAYS,
+            InclusiveGateway.class);
         put(Categories.CONTAINERS,
             Lane.class);
     }};

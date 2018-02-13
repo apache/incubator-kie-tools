@@ -16,7 +16,7 @@
       </bpmn2:extensionElements>
       <bpmn2:outgoing>_74CAE484-1A28-44E9-8EBE-5E32FEC56A66</bpmn2:outgoing>
     </bpmn2:startEvent>
-    <bpmn2:exclusiveGateway id="_877EA035-1A14-42E9-8CAA-43E9BF908C70" drools:selectable="true" drools:dg="under 10 : _5110D608-BDAD-47BF-A3F9-E1DBE43ED7CD" color:background-color="#f0e68c" color:border-color="#a67f00" color:color="#000000" name="AgeSplit" gatewayDirection="Diverging" default="_5110D608-BDAD-47BF-A3F9-E1DBE43ED7CD">
+    <bpmn2:exclusiveGateway id="_877EA035-1A14-42E9-8CAA-43E9BF908C70" drools:selectable="true" drools:dg="_5110D608-BDAD-47BF-A3F9-E1DBE43ED7CD" color:background-color="#f0e68c" color:border-color="#a67f00" color:color="#000000" name="AgeSplit" gatewayDirection="Diverging" default="_5110D608-BDAD-47BF-A3F9-E1DBE43ED7CD">
       <bpmn2:extensionElements>
         <drools:metaData name="elementname">
           <drools:metaValue><![CDATA[AgeSplit]]></drools:metaValue>

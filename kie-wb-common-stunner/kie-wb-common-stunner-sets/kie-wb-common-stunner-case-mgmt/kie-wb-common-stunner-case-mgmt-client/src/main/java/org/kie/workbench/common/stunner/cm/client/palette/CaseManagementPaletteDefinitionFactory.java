@@ -28,7 +28,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.Categories;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
-import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
@@ -82,7 +82,7 @@ public class CaseManagementPaletteDefinitionFactory extends BindableDefSetPalett
         excludeDefinition(EndNoneEvent.class);
         excludeDefinition(EndTerminateEvent.class);
         excludeDefinition(ParallelGateway.class);
-        excludeDefinition(ExclusiveDatabasedGateway.class);
+        excludeDefinition(ExclusiveGateway.class);
         excludeDefinition(SequenceFlow.class);
 
         excludeCategory(Categories.EVENTS);

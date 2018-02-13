@@ -38,6 +38,9 @@ public interface BPMNSVGGlyphFactory {
     SvgDataUriGlyph EXCLUSIVE_GATEWAY_GLYPH =
             SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.gatewayExclusive().getSafeUri());
 
+    SvgDataUriGlyph INCLUSIVE_GATEWAY_GLYPH =
+            SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.gatewayInclusive().getSafeUri());
+
     SvgDataUriGlyph START_NONE_EVENT_GLYPH =
             SvgDataUriGlyph.Builder
                     .create()

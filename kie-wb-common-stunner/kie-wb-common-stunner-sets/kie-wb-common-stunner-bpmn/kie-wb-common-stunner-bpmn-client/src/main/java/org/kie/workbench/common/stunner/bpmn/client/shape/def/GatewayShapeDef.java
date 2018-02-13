@@ -22,7 +22,8 @@ import java.util.Map;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseGateway;
-import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.InclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
 import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
@@ -35,13 +36,21 @@ public class GatewayShapeDef
 
     public static final SVGShapeViewResources<BaseGateway, BPMNSVGViewFactory> VIEW_RESOURCES =
             new SVGShapeViewResources<BaseGateway, BPMNSVGViewFactory>()
-                    .put(ParallelGateway.class, BPMNSVGViewFactory::parallelMultipleGateway)
-                    .put(ExclusiveDatabasedGateway.class, BPMNSVGViewFactory::exclusiveGateway);
+                    .put(ParallelGateway.class,
+                         BPMNSVGViewFactory::parallelMultipleGateway)
+                    .put(ExclusiveGateway.class,
+                         BPMNSVGViewFactory::exclusiveGateway)
+                    .put(InclusiveGateway.class,
+                         BPMNSVGViewFactory::inclusiveGateway);
 
     public static final Map<Class<? extends BaseGateway>, SvgDataUriGlyph> GLYPHS =
             new HashMap<Class<? extends BaseGateway>, SvgDataUriGlyph>() {{
-                put(ParallelGateway.class, BPMNSVGGlyphFactory.PARALLEL_MULTIPLE_GATEWAY_GLYPH);
-                put(ExclusiveDatabasedGateway.class, BPMNSVGGlyphFactory.EXCLUSIVE_GATEWAY_GLYPH);
+                put(ParallelGateway.class,
+                    BPMNSVGGlyphFactory.PARALLEL_MULTIPLE_GATEWAY_GLYPH);
+                put(ExclusiveGateway.class,
+                    BPMNSVGGlyphFactory.EXCLUSIVE_GATEWAY_GLYPH);
+                put(InclusiveGateway.class,
+                    BPMNSVGGlyphFactory.INCLUSIVE_GATEWAY_GLYPH);
             }};
 
     @Override
@@ -55,7 +64,8 @@ public class GatewayShapeDef
     public SVGShapeView<?> newViewInstance(final BPMNSVGViewFactory factory,
                                            final BaseGateway task) {
         return VIEW_RESOURCES
-                .getResource(factory, task)
+                .getResource(factory,
+                             task)
                 .build(false);
     }
 

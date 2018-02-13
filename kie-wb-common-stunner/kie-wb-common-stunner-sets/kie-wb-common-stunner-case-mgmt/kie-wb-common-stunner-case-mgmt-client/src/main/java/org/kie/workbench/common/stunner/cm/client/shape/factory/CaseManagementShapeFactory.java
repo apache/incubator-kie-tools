@@ -26,7 +26,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
-import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
@@ -93,7 +93,7 @@ public class CaseManagementShapeFactory implements ShapeFactory<BPMNDefinition, 
                 .delegate(ParallelGateway.class,
                           new NullShapeDef(),
                           () -> caseManagementShapeDefFactory)
-                .delegate(ExclusiveDatabasedGateway.class,
+                .delegate(ExclusiveGateway.class,
                           new NullShapeDef(),
                           () -> caseManagementShapeDefFactory)
                 .delegate(Lane.class,

@@ -30,7 +30,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
-import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
@@ -252,9 +252,9 @@ public class CaseManagementShapeFactoryTest {
 
     @Test
     public void checkExclusiveDatabasedGateway() {
-        assertShapeConstruction(new ExclusiveDatabasedGateway.ExclusiveDatabasedGatewayBuilder().build(),
+        assertShapeConstruction(new ExclusiveGateway.ExclusiveGatewayBuilder().build(),
                                 nullAssertions);
-        assertShapeGlyph(new ExclusiveDatabasedGateway.ExclusiveDatabasedGatewayBuilder().build());
+        assertShapeGlyph(new ExclusiveGateway.ExclusiveGatewayBuilder().build());
     }
 
     @Test

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition.property.font;
 
+import java.util.Objects;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -153,22 +155,27 @@ public class FontSet implements BPMNPropertySet {
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(fontFamily.hashCode(),
-                                         fontColor.hashCode(),
-                                         fontSize.hashCode(),
-                                         fontBorderSize.hashCode(),
-                                         fontBorderColor.hashCode());
+        return HashUtil.combineHashCodes(Objects.hashCode(fontFamily),
+                                         Objects.hashCode(fontColor),
+                                         Objects.hashCode(fontSize),
+                                         Objects.hashCode(fontBorderSize),
+                                         Objects.hashCode(fontBorderColor));
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof FontSet) {
             FontSet other = (FontSet) o;
-            return fontFamily.equals(other.fontFamily) &&
-                    fontColor.equals(other.fontColor) &&
-                    fontSize.equals(other.fontSize) &&
-                    fontBorderSize.equals(other.fontBorderSize) &&
-                    fontBorderColor.equals(other.fontBorderColor);
+            return Objects.equals(fontFamily,
+                                  other.fontFamily) &&
+                    Objects.equals(fontColor,
+                                   other.fontColor) &&
+                    Objects.equals(fontSize,
+                                   other.fontSize) &&
+                    Objects.equals(fontBorderSize,
+                                   other.fontBorderSize) &&
+                    Objects.equals(fontBorderColor,
+                                   other.fontBorderColor);
         }
         return false;
     }

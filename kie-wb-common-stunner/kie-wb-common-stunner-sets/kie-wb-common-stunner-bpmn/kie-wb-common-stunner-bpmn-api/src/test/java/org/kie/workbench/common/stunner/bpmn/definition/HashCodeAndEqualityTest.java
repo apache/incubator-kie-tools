@@ -24,11 +24,17 @@ import java.util.Objects;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.Actors;
 import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.Groupid;
+import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.background.BgColor;
+import org.kie.workbench.common.stunner.bpmn.definition.property.background.BorderColor;
+import org.kie.workbench.common.stunner.bpmn.definition.property.background.BorderSize;
 import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.ConditionExpression;
 import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.Priority;
 import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.SequenceFlowExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radius;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.CancelActivity;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.IsInterrupting;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.CancellingMessageEventExecutionSet;
@@ -38,6 +44,17 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.M
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.ScopedSignalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.SignalRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.SignalScope;
+import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontBorderColor;
+import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontBorderSize;
+import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontColor;
+import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontFamily;
+import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSize;
+import org.kie.workbench.common.stunner.bpmn.definition.property.gateway.DefaultRoute;
+import org.kie.workbench.common.stunner.bpmn.definition.property.gateway.GatewayExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocCompletionCondition;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocOrdering;
@@ -350,10 +367,10 @@ public class HashCodeAndEqualityTest {
 
     @Test
     public void testExclusiveDatabasedGatewayEquals() {
-        ExclusiveDatabasedGateway.ExclusiveDatabasedGatewayBuilder builder = new ExclusiveDatabasedGateway.ExclusiveDatabasedGatewayBuilder();
-        ExclusiveDatabasedGateway a = builder.build();
-        builder = new ExclusiveDatabasedGateway.ExclusiveDatabasedGatewayBuilder();
-        ExclusiveDatabasedGateway b = builder.build();
+        ExclusiveGateway.ExclusiveGatewayBuilder builder = new ExclusiveGateway.ExclusiveGatewayBuilder();
+        ExclusiveGateway a = builder.build();
+        builder = new ExclusiveGateway.ExclusiveGatewayBuilder();
+        ExclusiveGateway b = builder.build();
         assertEquals(a,
                      b);
         assertFalse(a.equals(19));
@@ -362,10 +379,10 @@ public class HashCodeAndEqualityTest {
 
     @Test
     public void testExclusiveDatabasedGatewayHashCode() {
-        ExclusiveDatabasedGateway.ExclusiveDatabasedGatewayBuilder builder = new ExclusiveDatabasedGateway.ExclusiveDatabasedGatewayBuilder();
-        ExclusiveDatabasedGateway a = builder.build();
-        builder = new ExclusiveDatabasedGateway.ExclusiveDatabasedGatewayBuilder();
-        ExclusiveDatabasedGateway b = builder.build();
+        ExclusiveGateway.ExclusiveGatewayBuilder builder = new ExclusiveGateway.ExclusiveGatewayBuilder();
+        ExclusiveGateway a = builder.build();
+        builder = new ExclusiveGateway.ExclusiveGatewayBuilder();
+        ExclusiveGateway b = builder.build();
         assertEquals(a.hashCode(),
                      b.hashCode());
     }
@@ -943,382 +960,445 @@ public class HashCodeAndEqualityTest {
 
     @Test
     public void testConditionExpressionEqualsAndHashCode() {
-        testHashCodeAndEquality(
-                TestCaseBuilder.newTestCase()
-                        .addTrueCase(new ConditionExpression(),
-                                     new ConditionExpression())
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new ConditionExpression(),
+                             new ConditionExpression())
 
-                        .addTrueCase(new ConditionExpression(new ScriptTypeValue("a",
-                                                                                 "b")),
-                                     new ConditionExpression(new ScriptTypeValue("a",
-                                                                                 "b")))
-                        .addTrueCase(new ConditionExpression(null),
-                                     new ConditionExpression(null))
+                .addTrueCase(new ConditionExpression(new ScriptTypeValue("a",
+                                                                         "b")),
+                             new ConditionExpression(new ScriptTypeValue("a",
+                                                                         "b")))
+                .addTrueCase(new ConditionExpression(null),
+                             new ConditionExpression(null))
 
-                        .addFalseCase(new ConditionExpression(new ScriptTypeValue("a",
-                                                                                  "b")),
-                                      new ConditionExpression(new ScriptTypeValue("a",
-                                                                                  "X")))
+                .addFalseCase(new ConditionExpression(new ScriptTypeValue("a",
+                                                                          "b")),
+                              new ConditionExpression(new ScriptTypeValue("a",
+                                                                          "X")))
 
-                        .addFalseCase(new ConditionExpression(new ScriptTypeValue("a",
-                                                                                  "b")),
-                                      new ConditionExpression(new ScriptTypeValue("Y",
-                                                                                  "b")))
+                .addFalseCase(new ConditionExpression(new ScriptTypeValue("a",
+                                                                          "b")),
+                              new ConditionExpression(new ScriptTypeValue("Y",
+                                                                          "b")))
 
-                        .addFalseCase(new ConditionExpression(new ScriptTypeValue("a",
-                                                                                  "b")),
-                                      new ConditionExpression(new ScriptTypeValue("Y",
-                                                                                  "X")))
-                        .build()
-        );
+                .addFalseCase(new ConditionExpression(new ScriptTypeValue("a",
+                                                                          "b")),
+                              new ConditionExpression(new ScriptTypeValue("Y",
+                                                                          "X")))
+                .test();
     }
 
     @Test
     public void testScriptTypeValueEqualsAndHashCode() {
-        testHashCodeAndEquality(
-                TestCaseBuilder.newTestCase()
-                        .addTrueCase(new ScriptTypeValue(),
-                                     new ScriptTypeValue())
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new ScriptTypeValue(),
+                             new ScriptTypeValue())
 
-                        .addTrueCase(new ScriptTypeValue(null,
-                                                         null),
-                                     new ScriptTypeValue(null,
-                                                         null))
+                .addTrueCase(new ScriptTypeValue(null,
+                                                 null),
+                             new ScriptTypeValue(null,
+                                                 null))
 
-                        .addTrueCase(new ScriptTypeValue("a",
-                                                         "b"),
-                                     new ScriptTypeValue("a",
-                                                         "b"))
+                .addTrueCase(new ScriptTypeValue("a",
+                                                 "b"),
+                             new ScriptTypeValue("a",
+                                                 "b"))
 
-                        .addTrueCase(new ScriptTypeValue("a",
-                                                         null),
-                                     new ScriptTypeValue("a",
-                                                         null))
+                .addTrueCase(new ScriptTypeValue("a",
+                                                 null),
+                             new ScriptTypeValue("a",
+                                                 null))
 
-                        .addTrueCase(new ScriptTypeValue(null,
-                                                         "b"),
-                                     new ScriptTypeValue(null,
-                                                         "b"))
+                .addTrueCase(new ScriptTypeValue(null,
+                                                 "b"),
+                             new ScriptTypeValue(null,
+                                                 "b"))
 
-                        .addFalseCase(new ScriptTypeValue("a",
-                                                          "b"),
-                                      new ScriptTypeValue("X",
-                                                          "b"))
+                .addFalseCase(new ScriptTypeValue("a",
+                                                  "b"),
+                              new ScriptTypeValue("X",
+                                                  "b"))
 
-                        .addFalseCase(new ScriptTypeValue("a",
-                                                          "b"),
-                                      new ScriptTypeValue("a",
-                                                          "Y"))
+                .addFalseCase(new ScriptTypeValue("a",
+                                                  "b"),
+                              new ScriptTypeValue("a",
+                                                  "Y"))
 
-                        .addFalseCase(new ScriptTypeValue("a",
-                                                          "b"),
-                                      new ScriptTypeValue("X",
-                                                          "Y"))
-                        .build()
-
-        );
+                .addFalseCase(new ScriptTypeValue("a",
+                                                  "b"),
+                              new ScriptTypeValue("X",
+                                                  "Y"))
+                .test();
     }
 
     @Test
     public void testSequenceFlowExecutionSetEqualsAndHashCode() {
-        testHashCodeAndEquality(
-                TestCaseBuilder.newTestCase()
-                        .addTrueCase(new SequenceFlowExecutionSet(),
-                                     new SequenceFlowExecutionSet())
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new SequenceFlowExecutionSet(),
+                             new SequenceFlowExecutionSet())
 
-                        .addTrueCase(new SequenceFlowExecutionSet(null,
-                                                                  null),
-                                     new SequenceFlowExecutionSet(null,
-                                                                  null))
+                .addTrueCase(new SequenceFlowExecutionSet(null,
+                                                          null),
+                             new SequenceFlowExecutionSet(null,
+                                                          null))
 
-                        .addTrueCase(new SequenceFlowExecutionSet(new Priority(),
-                                                                  new ConditionExpression()),
-                                     new SequenceFlowExecutionSet(new Priority(),
-                                                                  new ConditionExpression()))
+                .addTrueCase(new SequenceFlowExecutionSet(new Priority(),
+                                                          new ConditionExpression()),
+                             new SequenceFlowExecutionSet(new Priority(),
+                                                          new ConditionExpression()))
 
-                        .addTrueCase(new SequenceFlowExecutionSet(new Priority("1"),
-                                                                  new ConditionExpression(new ScriptTypeValue("a",
-                                                                                                              "b"))),
-                                     new SequenceFlowExecutionSet(new Priority("1"),
-                                                                  new ConditionExpression(new ScriptTypeValue("a",
-                                                                                                              "b"))))
+                .addTrueCase(new SequenceFlowExecutionSet(new Priority("1"),
+                                                          new ConditionExpression(new ScriptTypeValue("a",
+                                                                                                      "b"))),
+                             new SequenceFlowExecutionSet(new Priority("1"),
+                                                          new ConditionExpression(new ScriptTypeValue("a",
+                                                                                                      "b"))))
 
-                        .addFalseCase(new SequenceFlowExecutionSet(new Priority("1"),
-                                                                   new ConditionExpression(new ScriptTypeValue("a",
-                                                                                                               "b"))),
-                                      new SequenceFlowExecutionSet(new Priority("2"),
-                                                                   new ConditionExpression(new ScriptTypeValue("a",
-                                                                                                               "b"))))
+                .addFalseCase(new SequenceFlowExecutionSet(new Priority("1"),
+                                                           new ConditionExpression(new ScriptTypeValue("a",
+                                                                                                       "b"))),
+                              new SequenceFlowExecutionSet(new Priority("2"),
+                                                           new ConditionExpression(new ScriptTypeValue("a",
+                                                                                                       "b"))))
 
-                        .addFalseCase(new SequenceFlowExecutionSet(new Priority("1"),
-                                                                   new ConditionExpression(new ScriptTypeValue("a",
-                                                                                                               "b"))),
-                                      new SequenceFlowExecutionSet(new Priority("1"),
-                                                                   new ConditionExpression(new ScriptTypeValue("X",
-                                                                                                               "Y"))))
+                .addFalseCase(new SequenceFlowExecutionSet(new Priority("1"),
+                                                           new ConditionExpression(new ScriptTypeValue("a",
+                                                                                                       "b"))),
+                              new SequenceFlowExecutionSet(new Priority("1"),
+                                                           new ConditionExpression(new ScriptTypeValue("X",
+                                                                                                       "Y"))))
 
-                        .addFalseCase(new SequenceFlowExecutionSet(new Priority("1"),
-                                                                   new ConditionExpression(new ScriptTypeValue("a",
-                                                                                                               "b"))),
-                                      new SequenceFlowExecutionSet(new Priority("2"),
-                                                                   new ConditionExpression(new ScriptTypeValue("X",
-                                                                                                               "Y"))))
-                        .build()
-
-        );
+                .addFalseCase(new SequenceFlowExecutionSet(new Priority("1"),
+                                                           new ConditionExpression(new ScriptTypeValue("a",
+                                                                                                       "b"))),
+                              new SequenceFlowExecutionSet(new Priority("2"),
+                                                           new ConditionExpression(new ScriptTypeValue("X",
+                                                                                                       "Y"))))
+                .test();
     }
 
     @Test
     public void testAdHocCompletionConditionEqualsAndHashCode() {
-        testHashCodeAndEquality(
-                TestCaseBuilder.newTestCase()
-                        .addTrueCase(new AdHocCompletionCondition(),
-                                     new AdHocCompletionCondition())
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new AdHocCompletionCondition(),
+                             new AdHocCompletionCondition())
 
-                        .addTrueCase(new AdHocCompletionCondition(new ScriptTypeValue()),
-                                     new AdHocCompletionCondition(new ScriptTypeValue()))
+                .addTrueCase(new AdHocCompletionCondition(new ScriptTypeValue()),
+                             new AdHocCompletionCondition(new ScriptTypeValue()))
 
-                        .addTrueCase(new AdHocCompletionCondition(new ScriptTypeValue(null,
-                                                                                      null)),
-                                     new AdHocCompletionCondition(new ScriptTypeValue(null,
-                                                                                      null)))
+                .addTrueCase(new AdHocCompletionCondition(new ScriptTypeValue(null,
+                                                                              null)),
+                             new AdHocCompletionCondition(new ScriptTypeValue(null,
+                                                                              null)))
 
-                        .addTrueCase(new AdHocCompletionCondition(new ScriptTypeValue("a",
-                                                                                      "b")),
-                                     new AdHocCompletionCondition(new ScriptTypeValue("a",
-                                                                                      "b")))
+                .addTrueCase(new AdHocCompletionCondition(new ScriptTypeValue("a",
+                                                                              "b")),
+                             new AdHocCompletionCondition(new ScriptTypeValue("a",
+                                                                              "b")))
 
-                        .addTrueCase(new AdHocCompletionCondition(new ScriptTypeValue("a",
-                                                                                      null)),
-                                     new AdHocCompletionCondition(new ScriptTypeValue("a",
-                                                                                      null)))
+                .addTrueCase(new AdHocCompletionCondition(new ScriptTypeValue("a",
+                                                                              null)),
+                             new AdHocCompletionCondition(new ScriptTypeValue("a",
+                                                                              null)))
 
-                        .addTrueCase(new AdHocCompletionCondition(new ScriptTypeValue(null,
-                                                                                      "b")),
-                                     new AdHocCompletionCondition(new ScriptTypeValue(null,
-                                                                                      "b")))
+                .addTrueCase(new AdHocCompletionCondition(new ScriptTypeValue(null,
+                                                                              "b")),
+                             new AdHocCompletionCondition(new ScriptTypeValue(null,
+                                                                              "b")))
 
-                        .addFalseCase(new AdHocCompletionCondition(new ScriptTypeValue("a",
-                                                                                       "b")),
-                                      new AdHocCompletionCondition(new ScriptTypeValue("X",
-                                                                                       "b")))
+                .addFalseCase(new AdHocCompletionCondition(new ScriptTypeValue("a",
+                                                                               "b")),
+                              new AdHocCompletionCondition(new ScriptTypeValue("X",
+                                                                               "b")))
 
-                        .addFalseCase(new AdHocCompletionCondition(new ScriptTypeValue("a",
-                                                                                       "b")),
-                                      new AdHocCompletionCondition(new ScriptTypeValue("a",
-                                                                                       "Y")))
+                .addFalseCase(new AdHocCompletionCondition(new ScriptTypeValue("a",
+                                                                               "b")),
+                              new AdHocCompletionCondition(new ScriptTypeValue("a",
+                                                                               "Y")))
 
-                        .addFalseCase(new AdHocCompletionCondition(new ScriptTypeValue("a",
-                                                                                       "b")),
-                                      new AdHocCompletionCondition(new ScriptTypeValue("X",
-                                                                                       "Y")))
-                        .build()
-        );
+                .addFalseCase(new AdHocCompletionCondition(new ScriptTypeValue("a",
+                                                                               "b")),
+                              new AdHocCompletionCondition(new ScriptTypeValue("X",
+                                                                               "Y")))
+                .test();
     }
 
     @Test
     public void testAdHocOrderingEqualsAndHash() {
-        testHashCodeAndEquality(
-                TestCaseBuilder.newTestCase()
-                        .addTrueCase(new AdHocOrdering(),
-                                     new AdHocOrdering())
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new AdHocOrdering(),
+                             new AdHocOrdering())
 
-                        .addTrueCase(new AdHocOrdering(null),
-                                     new AdHocOrdering(null))
+                .addTrueCase(new AdHocOrdering(null),
+                             new AdHocOrdering(null))
 
-                        .addTrueCase(new AdHocOrdering("a"),
-                                     new AdHocOrdering("a"))
+                .addTrueCase(new AdHocOrdering("a"),
+                             new AdHocOrdering("a"))
 
-                        .addFalseCase(new AdHocOrdering("a"),
-                                      new AdHocOrdering(null))
+                .addFalseCase(new AdHocOrdering("a"),
+                              new AdHocOrdering(null))
 
-                        .addFalseCase(new AdHocOrdering(null),
-                                      new AdHocOrdering("a"))
+                .addFalseCase(new AdHocOrdering(null),
+                              new AdHocOrdering("a"))
 
-                        .build()
-        );
+                .test();
     }
 
     @Test
     public void testAdHocSubprocessTaskExecutionSEtSetEqualsAndHashCode() {
-        testHashCodeAndEquality(
-                TestCaseBuilder.newTestCase()
-                        .addTrueCase(new AdHocSubprocessTaskExecutionSet(),
-                                     new AdHocSubprocessTaskExecutionSet())
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new AdHocSubprocessTaskExecutionSet(),
+                             new AdHocSubprocessTaskExecutionSet())
 
-                        .addTrueCase(new AdHocSubprocessTaskExecutionSet(new AdHocCompletionCondition(),
-                                                                         new AdHocOrdering(),
-                                                                         new OnEntryAction(),
-                                                                         new OnExitAction()),
-                                     new AdHocSubprocessTaskExecutionSet(new AdHocCompletionCondition(),
-                                                                         new AdHocOrdering(),
-                                                                         new OnEntryAction(),
-                                                                         new OnExitAction()))
-                        .build()
-
-        );
+                .addTrueCase(new AdHocSubprocessTaskExecutionSet(new AdHocCompletionCondition(),
+                                                                 new AdHocOrdering(),
+                                                                 new OnEntryAction(),
+                                                                 new OnExitAction()),
+                             new AdHocSubprocessTaskExecutionSet(new AdHocCompletionCondition(),
+                                                                 new AdHocOrdering(),
+                                                                 new OnEntryAction(),
+                                                                 new OnExitAction()))
+                .test();
     }
 
     @Test
     public void testBusinessRuleTaskExecutionSetEqualsAndHashCode() {
-        testHashCodeAndEquality(
-                TestCaseBuilder.newTestCase()
-                        .addTrueCase(new BusinessRuleTaskExecutionSet(),
-                                     new BusinessRuleTaskExecutionSet())
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new BusinessRuleTaskExecutionSet(),
+                             new BusinessRuleTaskExecutionSet())
 
-                        .addTrueCase(new BusinessRuleTaskExecutionSet(new RuleFlowGroup(),
-                                                                      new OnEntryAction(),
-                                                                      new OnExitAction(),
-                                                                      new IsAsync(),
-                                                                      new AdHocAutostart()),
-                                     new BusinessRuleTaskExecutionSet(new RuleFlowGroup(),
-                                                                      new OnEntryAction(),
-                                                                      new OnExitAction(),
-                                                                      new IsAsync(),
-                                                                      new AdHocAutostart()))
-                        .build()
-        );
+                .addTrueCase(new BusinessRuleTaskExecutionSet(new RuleFlowGroup(),
+                                                              new OnEntryAction(),
+                                                              new OnExitAction(),
+                                                              new IsAsync(),
+                                                              new AdHocAutostart()),
+                             new BusinessRuleTaskExecutionSet(new RuleFlowGroup(),
+                                                              new OnEntryAction(),
+                                                              new OnExitAction(),
+                                                              new IsAsync(),
+                                                              new AdHocAutostart()))
+                .test();
     }
 
     @Test
     public void testOnEntryActionEqualsAndHashCode() {
-        testHashCodeAndEquality(
-                TestCaseBuilder.newTestCase()
-                        .addTrueCase(new OnEntryAction(),
-                                     new OnEntryAction())
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new OnEntryAction(),
+                             new OnEntryAction())
 
-                        .addTrueCase(new OnEntryAction(new ScriptTypeListValue()),
-                                     new OnEntryAction(new ScriptTypeListValue()))
-                        .build()
-        );
+                .addTrueCase(new OnEntryAction(new ScriptTypeListValue()),
+                             new OnEntryAction(new ScriptTypeListValue()))
+                .test();
     }
 
     @Test
     public void testOnExitActionEqualsAndHashCode() {
-        testHashCodeAndEquality(
-                TestCaseBuilder.newTestCase()
-                        .addTrueCase(new OnExitAction(),
-                                     new OnExitAction())
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new OnExitAction(),
+                             new OnExitAction())
 
-                        .addTrueCase(new OnExitAction(new ScriptTypeListValue()),
-                                     new OnExitAction(new ScriptTypeListValue()))
-                        .build()
-        );
+                .addTrueCase(new OnExitAction(new ScriptTypeListValue()),
+                             new OnExitAction(new ScriptTypeListValue()))
+                .test();
     }
 
     @Test
     public void testScriptEqualsAndHashCode() {
-        testHashCodeAndEquality(
-                TestCaseBuilder.newTestCase()
-                        .addTrueCase(new Script(),
-                                     new Script())
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new Script(),
+                             new Script())
 
-                        .addTrueCase(new Script(new ScriptTypeValue()),
-                                     new Script(new ScriptTypeValue()))
-                        .build()
-        );
+                .addTrueCase(new Script(new ScriptTypeValue()),
+                             new Script(new ScriptTypeValue()))
+                .test();
     }
 
     @Test
     public void testScriptTaskExecutionSetEqualsAndHashCode() {
-        testHashCodeAndEquality(
-                TestCaseBuilder.newTestCase()
-                        .addTrueCase(new ScriptTaskExecutionSet(),
-                                     new ScriptTaskExecutionSet())
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new ScriptTaskExecutionSet(),
+                             new ScriptTaskExecutionSet())
 
-                        .addTrueCase(new ScriptTaskExecutionSet(new Script(),
-                                                                new IsAsync()),
+                .addTrueCase(new ScriptTaskExecutionSet(new Script(),
+                                                        new IsAsync()),
 
-                                     new ScriptTaskExecutionSet(new Script(),
-                                                                new IsAsync()))
-                        .build()
-        );
+                             new ScriptTaskExecutionSet(new Script(),
+                                                        new IsAsync()))
+                .test();
     }
 
     @Test
     public void testScriptTypeListValueEqualsAndHashCode() {
-        testHashCodeAndEquality(
-                TestCaseBuilder.newTestCase()
-                        .addTrueCase(new ScriptTypeListValue(),
-                                     new ScriptTypeListValue())
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new ScriptTypeListValue(),
+                             new ScriptTypeListValue())
 
-                        .addTrueCase(new ScriptTypeListValue().addValue(new ScriptTypeValue()),
-                                     new ScriptTypeListValue().addValue(new ScriptTypeValue()))
+                .addTrueCase(new ScriptTypeListValue().addValue(new ScriptTypeValue()),
+                             new ScriptTypeListValue().addValue(new ScriptTypeValue()))
 
-                        .addTrueCase(new ScriptTypeListValue().addValue(new ScriptTypeValue(null,
-                                                                                            null)),
-                                     new ScriptTypeListValue().addValue(new ScriptTypeValue(null,
-                                                                                            null)))
+                .addTrueCase(new ScriptTypeListValue().addValue(new ScriptTypeValue(null,
+                                                                                    null)),
+                             new ScriptTypeListValue().addValue(new ScriptTypeValue(null,
+                                                                                    null)))
 
-                        .addTrueCase(new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
-                                                                                            "b")),
-                                     new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
-                                                                                            "b")))
+                .addTrueCase(new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
+                                                                                    "b")),
+                             new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
+                                                                                    "b")))
 
-                        .addTrueCase(new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
-                                                                                            null)),
-                                     new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
-                                                                                            null)))
+                .addTrueCase(new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
+                                                                                    null)),
+                             new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
+                                                                                    null)))
 
-                        .addTrueCase(new ScriptTypeListValue().addValue(new ScriptTypeValue(null,
-                                                                                            "b")),
-                                     new ScriptTypeListValue().addValue(new ScriptTypeValue(null,
-                                                                                            "b")))
+                .addTrueCase(new ScriptTypeListValue().addValue(new ScriptTypeValue(null,
+                                                                                    "b")),
+                             new ScriptTypeListValue().addValue(new ScriptTypeValue(null,
+                                                                                    "b")))
 
-                        .addFalseCase(new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
-                                                                                             "b")),
-                                      new ScriptTypeListValue().addValue(new ScriptTypeValue("X",
-                                                                                             "b")))
+                .addFalseCase(new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
+                                                                                     "b")),
+                              new ScriptTypeListValue().addValue(new ScriptTypeValue("X",
+                                                                                     "b")))
 
-                        .addFalseCase(new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
-                                                                                             "b")),
-                                      new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
-                                                                                             "Y")))
+                .addFalseCase(new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
+                                                                                     "b")),
+                              new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
+                                                                                     "Y")))
 
-                        .addFalseCase(new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
-                                                                                             "b")),
-                                      new ScriptTypeListValue().addValue(new ScriptTypeValue("X",
-                                                                                             "Y")))
-                        .build()
-        );
+                .addFalseCase(new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
+                                                                                     "b")),
+                              new ScriptTypeListValue().addValue(new ScriptTypeValue("X",
+                                                                                     "Y")))
+                .test();
     }
 
     @Test
     public void testUserTaskExecutionSetEqualsAndHashCode() {
-        testHashCodeAndEquality(
-                TestCaseBuilder.newTestCase()
-                        .addTrueCase(new UserTaskExecutionSet(),
-                                     new UserTaskExecutionSet())
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new UserTaskExecutionSet(),
+                             new UserTaskExecutionSet())
 
-                        .addTrueCase(new UserTaskExecutionSet(new TaskName(),
-                                                              new Actors(),
-                                                              new Groupid(),
-                                                              new AssignmentsInfo(),
-                                                              new IsAsync(),
-                                                              new Skippable(),
-                                                              new Priority(),
-                                                              new Subject(),
-                                                              new Description(),
-                                                              new CreatedBy(),
-                                                              new AdHocAutostart(),
-                                                              new OnEntryAction(),
-                                                              new OnExitAction()),
+                .addTrueCase(new UserTaskExecutionSet(new TaskName(),
+                                                      new Actors(),
+                                                      new Groupid(),
+                                                      new AssignmentsInfo(),
+                                                      new IsAsync(),
+                                                      new Skippable(),
+                                                      new Priority(),
+                                                      new Subject(),
+                                                      new Description(),
+                                                      new CreatedBy(),
+                                                      new AdHocAutostart(),
+                                                      new OnEntryAction(),
+                                                      new OnExitAction()),
 
-                                     new UserTaskExecutionSet(new TaskName(),
-                                                              new Actors(),
-                                                              new Groupid(),
-                                                              new AssignmentsInfo(),
-                                                              new IsAsync(),
-                                                              new Skippable(),
-                                                              new Priority(),
-                                                              new Subject(),
-                                                              new Description(),
-                                                              new CreatedBy(),
-                                                              new AdHocAutostart(),
-                                                              new OnEntryAction(),
-                                                              new OnExitAction()))
-                        .build()
-        );
+                             new UserTaskExecutionSet(new TaskName(),
+                                                      new Actors(),
+                                                      new Groupid(),
+                                                      new AssignmentsInfo(),
+                                                      new IsAsync(),
+                                                      new Skippable(),
+                                                      new Priority(),
+                                                      new Subject(),
+                                                      new Description(),
+                                                      new CreatedBy(),
+                                                      new AdHocAutostart(),
+                                                      new OnEntryAction(),
+                                                      new OnExitAction()))
+                .test();
+    }
+
+    @Test
+    public void testInclusiveGatewayEqualsAndHashCode() {
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new InclusiveGateway(),
+                             new InclusiveGateway())
+                .addTrueCase(new InclusiveGateway(new BPMNGeneralSet(),
+                                                  new BackgroundSet(),
+                                                  new FontSet(),
+                                                  new CircleDimensionSet(),
+                                                  new GatewayExecutionSet()),
+                             new InclusiveGateway(new BPMNGeneralSet(),
+                                                  new BackgroundSet(),
+                                                  new FontSet(),
+                                                  new CircleDimensionSet(),
+                                                  new GatewayExecutionSet()))
+                .test();
+    }
+
+    @Test
+    public void testGatewayExecutionSetEqualsAndHashCode() {
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new GatewayExecutionSet(),
+                             new GatewayExecutionSet())
+                .addTrueCase(new GatewayExecutionSet(new DefaultRoute()),
+                             new GatewayExecutionSet(new DefaultRoute()))
+                .test();
+    }
+
+    @Test
+    public void testDefaultRouteEqualsAndHashCode() {
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new DefaultRoute(),
+                             new DefaultRoute())
+                .addTrueCase(new DefaultRoute("A"),
+                             new DefaultRoute("A"))
+                .test();
+    }
+
+    @Test
+    public void testCircleDimensionSetEqualsAndHashCode() {
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new CircleDimensionSet(),
+                             new CircleDimensionSet())
+                .addTrueCase(new CircleDimensionSet(new Radius()),
+                             new CircleDimensionSet(new Radius()))
+                .test();
+    }
+
+    @Test
+    public void testBPMNGeneralSetEqualsAndHashCode() {
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new BPMNGeneralSet(),
+                             new BPMNGeneralSet())
+                .addTrueCase(new BPMNGeneralSet(new Name(),
+                                                new Documentation()),
+                             new BPMNGeneralSet(new Name(),
+                                                new Documentation()))
+                .test();
+    }
+
+    @Test
+    public void testBackgroundSetEqualsAndHashCode() {
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new BackgroundSet(),
+                             new BackgroundSet())
+                .addTrueCase(new BackgroundSet(new BgColor(),
+                                               new BorderColor(),
+                                               new BorderSize()),
+                             new BackgroundSet(new BgColor(),
+                                               new BorderColor(),
+                                               new BorderSize()))
+                .test();
+    }
+
+    @Test
+    public void testFontSetEqualsAndHashCode() {
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new FontSet(),
+                             new FontSet())
+                .addTrueCase(new FontSet(new FontFamily(),
+                                         new FontColor(),
+                                         new FontSize(),
+                                         new FontBorderSize(),
+                                         new FontBorderColor()),
+                             new FontSet(new FontFamily(),
+                                         new FontColor(),
+                                         new FontSize(),
+                                         new FontBorderSize(),
+                                         new FontBorderColor()))
+                .test();
     }
 
     public static class HashCodeAndEqualityTestCase {
@@ -1375,8 +1455,8 @@ public class HashCodeAndEqualityTest {
             return this;
         }
 
-        public Collection<HashCodeAndEqualityTestCase> build() {
-            return testCases;
+        public void test() {
+            testHashCodeAndEquality(testCases);
         }
     }
 

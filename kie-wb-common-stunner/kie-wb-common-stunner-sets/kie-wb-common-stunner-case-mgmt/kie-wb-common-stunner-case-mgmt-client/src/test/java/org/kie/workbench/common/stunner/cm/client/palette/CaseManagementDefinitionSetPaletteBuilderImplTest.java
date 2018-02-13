@@ -34,8 +34,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent.EndNoneEventBuilder;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent.EndTerminateEventBuilder;
-import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
-import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway.ExclusiveDatabasedGatewayBuilder;
+import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent.IntermediateTimerEventBuilder;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
@@ -105,7 +104,7 @@ public class CaseManagementDefinitionSetPaletteBuilderImplTest {
         add(EndTerminateEvent.class.getName());
         add(IntermediateTimerEvent.class.getName());
         add(ParallelGateway.class.getName());
-        add(ExclusiveDatabasedGateway.class.getName());
+        add(ExclusiveGateway.class.getName());
         add(AdHocSubprocess.class.getName());
         add(ReusableSubprocess.class.getName());
         add(SequenceFlow.class.getName());
@@ -171,7 +170,7 @@ public class CaseManagementDefinitionSetPaletteBuilderImplTest {
         when(definitionAdapter.getCategory(argThat(new ClassOrSubclassMatcher(EndTerminateEvent.class)))).thenReturn(EndTerminateEvent.category);
         when(definitionAdapter.getCategory(argThat(new ClassOrSubclassMatcher(IntermediateTimerEvent.class)))).thenReturn(IntermediateTimerEvent.category);
         when(definitionAdapter.getCategory(argThat(new ClassOrSubclassMatcher(ParallelGateway.class)))).thenReturn(ParallelGateway.category);
-        when(definitionAdapter.getCategory(argThat(new ClassOrSubclassMatcher(ExclusiveDatabasedGateway.class)))).thenReturn(ExclusiveDatabasedGateway.category);
+        when(definitionAdapter.getCategory(argThat(new ClassOrSubclassMatcher(ExclusiveGateway.class)))).thenReturn(ExclusiveGateway.category);
         when(definitionAdapter.getCategory(argThat(new ClassOrSubclassMatcher(SequenceFlow.class)))).thenReturn(SequenceFlow.category);
 
         when(definitionAdapter.getCategory(argThat(new ClassOrSubclassMatcher(AdHocSubprocess.class)))).thenReturn(AdHocSubprocess.category);
@@ -190,7 +189,7 @@ public class CaseManagementDefinitionSetPaletteBuilderImplTest {
         when(clientFactoryManager.newDefinition(eq(EndTerminateEvent.class.getName()))).thenReturn(new EndTerminateEventBuilder().build());
         when(clientFactoryManager.newDefinition(eq(IntermediateTimerEvent.class.getName()))).thenReturn(new IntermediateTimerEventBuilder().build());
         when(clientFactoryManager.newDefinition(eq(ParallelGateway.class.getName()))).thenReturn(new ParallelGatewayBuilder().build());
-        when(clientFactoryManager.newDefinition(eq(ExclusiveDatabasedGateway.class.getName()))).thenReturn(new ExclusiveDatabasedGatewayBuilder().build());
+        when(clientFactoryManager.newDefinition(eq(ExclusiveGateway.class.getName()))).thenReturn(new ExclusiveGateway.ExclusiveGatewayBuilder().build());
         when(clientFactoryManager.newDefinition(eq(SequenceFlow.class.getName()))).thenReturn(new SequenceFlowBuilder().build());
 
         when(clientFactoryManager.newDefinition(eq(AdHocSubprocess.class.getName()))).thenReturn(new AdHocSubprocessBuilder().build());

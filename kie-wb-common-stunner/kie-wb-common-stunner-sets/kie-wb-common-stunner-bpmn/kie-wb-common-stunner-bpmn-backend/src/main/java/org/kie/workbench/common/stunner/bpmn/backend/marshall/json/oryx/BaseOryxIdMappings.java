@@ -34,7 +34,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
-import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.InclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventThrowing;
@@ -154,7 +155,7 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
                 "conditionexpression");
             put(Priority.class,
                 "priority");
-            put(ExclusiveDatabasedGateway.class,
+            put(ExclusiveGateway.class,
                 "Exclusive_Databased_Gateway");
             put(TimerSettings.class,
                 "timersettings");
@@ -377,11 +378,17 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
             adHocSubprocessPropertiesMap.put(ProcessVariables.class,
                                              "vardefs");
 
-            Map<Class<?>, String> exclusiveDatabasedGatewayPropertiesMap = new HashMap<Class<?>, String>();
-            put(ExclusiveDatabasedGateway.class,
-                exclusiveDatabasedGatewayPropertiesMap);
-            exclusiveDatabasedGatewayPropertiesMap.put(DefaultRoute.class,
-                                                       "defaultgate");
+            Map<Class<?>, String> exclusiveGatewayPropertiesMap = new HashMap<Class<?>, String>();
+            put(ExclusiveGateway.class,
+                exclusiveGatewayPropertiesMap);
+            exclusiveGatewayPropertiesMap.put(DefaultRoute.class,
+                                              "defaultgate");
+
+            Map<Class<?>, String> inclusiveGatewayPropertiesMap = new HashMap<>();
+            put(InclusiveGateway.class,
+                inclusiveGatewayPropertiesMap);
+            inclusiveGatewayPropertiesMap.put(DefaultRoute.class,
+                                              "defaultgate");
         }};
 
         return definitionMappings;

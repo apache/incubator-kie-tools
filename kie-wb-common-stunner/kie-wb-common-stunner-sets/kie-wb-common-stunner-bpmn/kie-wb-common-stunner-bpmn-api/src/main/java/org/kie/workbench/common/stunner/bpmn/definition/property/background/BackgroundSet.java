@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.bpmn.definition.property.background;
 
+import java.util.Objects;
+
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -116,18 +118,21 @@ public class BackgroundSet implements BPMNPropertySet {
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(bgColor.hashCode(),
-                                         borderColor.hashCode(),
-                                         borderSize.hashCode());
+        return HashUtil.combineHashCodes(Objects.hashCode(bgColor),
+                                         Objects.hashCode(borderColor),
+                                         Objects.hashCode(borderSize));
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof BackgroundSet) {
             BackgroundSet other = (BackgroundSet) o;
-            return bgColor.equals(other.bgColor) &&
-                    borderColor.equals(other.borderColor) &&
-                    borderSize.equals(other.borderSize);
+            return Objects.equals(bgColor,
+                                  other.bgColor) &&
+                    Objects.equals(borderColor,
+                                   other.borderColor) &&
+                    Objects.equals(borderSize,
+                                   other.borderSize);
         }
         return false;
     }

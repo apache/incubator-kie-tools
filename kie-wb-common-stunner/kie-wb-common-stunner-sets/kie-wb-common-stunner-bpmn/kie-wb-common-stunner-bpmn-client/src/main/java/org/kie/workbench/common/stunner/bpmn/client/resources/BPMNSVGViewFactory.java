@@ -56,6 +56,9 @@ public interface BPMNSVGViewFactory {
     @SVGSource(PATH_GATEWAY)
     SVGShapeViewResource exclusiveGateway();
 
+    @SVGSource(PATH_GATEWAY)
+    SVGShapeViewResource inclusiveGateway();
+
     @SVGSource(PATH_EVENT_ALL)
     SVGShapeViewResource startNoneEvent();
 

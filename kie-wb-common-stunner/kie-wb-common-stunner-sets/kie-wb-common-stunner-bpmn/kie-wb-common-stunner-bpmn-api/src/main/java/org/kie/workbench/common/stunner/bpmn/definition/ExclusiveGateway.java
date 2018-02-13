@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
+import java.util.Objects;
+
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -29,7 +31,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.background.Back
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radius;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.gateway.ExclusiveGatewayExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.gateway.GatewayExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
@@ -40,82 +42,70 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class, builder = ExclusiveDatabasedGateway.ExclusiveDatabasedGatewayBuilder.class)
+@Definition(graphFactory = NodeFactory.class, builder = ExclusiveGateway.ExclusiveGatewayBuilder.class)
 @Morph(base = BaseGateway.class)
 @FormDefinition(
         startElement = "general",
         policy = FieldPolicy.ONLY_MARKED
 )
-public class ExclusiveDatabasedGateway extends BaseGateway {
+public class ExclusiveGateway extends BaseGateway {
 
     @PropertySet
     @FormField(
             afterElement = "general"
     )
     @Valid
-    private ExclusiveGatewayExecutionSet executionSet;
-
-    private static long nextID = 0;
-    private long Id = 0;
+    private GatewayExecutionSet executionSet;
 
     @NonPortable
-    public static class ExclusiveDatabasedGatewayBuilder implements Builder<ExclusiveDatabasedGateway> {
+    public static class ExclusiveGatewayBuilder implements Builder<ExclusiveGateway> {
 
         @Override
-        public ExclusiveDatabasedGateway build() {
-            return new ExclusiveDatabasedGateway(new BPMNGeneralSet(""),
-                                                 new ExclusiveGatewayExecutionSet(),
-                                                 new BackgroundSet(),
-                                                 new FontSet(),
-                                                 new CircleDimensionSet(new Radius()));
+        public ExclusiveGateway build() {
+            return new ExclusiveGateway(new BPMNGeneralSet(""),
+                                        new BackgroundSet(),
+                                        new FontSet(),
+                                        new CircleDimensionSet(new Radius()),
+                                        new GatewayExecutionSet());
         }
     }
 
-    public ExclusiveDatabasedGateway() {
-        this.Id = nextID++;
+    public ExclusiveGateway() {
     }
 
-    public ExclusiveDatabasedGateway(final @MapsTo("general") BPMNGeneralSet general,
-                                     final @MapsTo("executionSet") ExclusiveGatewayExecutionSet executionSet,
-                                     final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
-                                     final @MapsTo("fontSet") FontSet fontSet,
-                                     final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet) {
+    public ExclusiveGateway(final @MapsTo("general") BPMNGeneralSet general,
+                            final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+                            final @MapsTo("fontSet") FontSet fontSet,
+                            final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet,
+                            final @MapsTo("executionSet") GatewayExecutionSet executionSet) {
         super(general,
               backgroundSet,
               fontSet,
               dimensionsSet);
         this.executionSet = executionSet;
-        this.Id = nextID++;
     }
 
-    public ExclusiveGatewayExecutionSet getExecutionSet() {
+    public GatewayExecutionSet getExecutionSet() {
         return executionSet;
     }
 
-    public void setExecutionSet(final ExclusiveGatewayExecutionSet executionSet) {
+    public void setExecutionSet(final GatewayExecutionSet executionSet) {
         this.executionSet = executionSet;
-    }
-
-    public long getId() {
-        return Id;
-    }
-
-    public void setId(final long Id) {
-        this.Id = Id;
     }
 
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
-                                         executionSet.hashCode());
+                                         Objects.hashCode(executionSet));
     }
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof ExclusiveDatabasedGateway) {
-            ExclusiveDatabasedGateway other = (ExclusiveDatabasedGateway) o;
+        if (o instanceof ExclusiveGateway) {
+            ExclusiveGateway other = (ExclusiveGateway) o;
             return super.equals(other) &&
-                    executionSet.equals(other.executionSet);
+                    Objects.equals(executionSet,
+                                   other.executionSet);
         }
         return false;
     }
