@@ -56,6 +56,20 @@ public class FormStyleLayout extends Form {
         return formStyleItem;
     }
 
+    public FormStyleItem addAttribute(final String label,
+                                      final String helpTitle,
+                                      final String helpContent,
+                                      final IsWidget widget) {
+        final FormStyleItem formStyleItem = GWT.create(FormStyleItem.class);
+        formStyleItem.setup(label,
+                            helpTitle,
+                            helpContent,
+                            widget,
+                            getWidgetCount());
+        add(formStyleItem);
+        return formStyleItem;
+    }
+
     public int addRow(final IsWidget widget) {
         final FormGroup formGroup;
         if (widget instanceof FormGroup) {

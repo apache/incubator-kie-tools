@@ -25,6 +25,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
+import org.uberfire.client.views.pfly.widgets.FormLabelHelp;
 
 public class FormStyleItem extends Composite {
 
@@ -34,7 +35,7 @@ public class FormStyleItem extends Composite {
     @UiField
     FlowPanel group;
     @UiField
-    FormLabel label;
+    FlowPanel labelContainer;
     int index = -1;
 
     public FormStyleItem() {
@@ -44,8 +45,24 @@ public class FormStyleItem extends Composite {
     public void setup(final String labelText,
                       final IsWidget field,
                       final int index) {
-        label.setText(labelText);
+        final FormLabel formLabel = GWT.create(FormLabel.class);
+        formLabel.setText(labelText);
+        labelContainer.add(formLabel);
         group.add(field);
+        this.index = index;
+    }
+
+    public void setup(final String labelText,
+                      final String helpTitle,
+                      final String helpContent,
+                      final IsWidget widget,
+                      final int index) {
+        final FormLabelHelp formLabel = GWT.create(FormLabelHelp.class);
+        formLabel.setText(labelText);
+        formLabel.setHelpTitle(helpTitle);
+        formLabel.setHelpContent(helpContent);
+        labelContainer.add(formLabel);
+        group.add(widget);
         this.index = index;
     }
 

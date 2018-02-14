@@ -74,6 +74,19 @@ public class FormStylePopup extends BaseModal {
         return formStyleItem;
     }
 
+    public FormStyleItem addAttributeWithHelp(final String attributeName,
+                                              final String helpTitle,
+                                              final String helpContent,
+                                              final Widget widget) {
+
+        FormStyleItem formStyleItem = form.addAttribute(attributeName,
+                                                        helpTitle,
+                                                        helpContent,
+                                                        widget);
+        setAttributeVisibility(formStyleItem.getIndex(), true);
+        return formStyleItem;
+    }
+
     public int addRow(final IsWidget wid) {
         return form.addRow(wid);
     }
