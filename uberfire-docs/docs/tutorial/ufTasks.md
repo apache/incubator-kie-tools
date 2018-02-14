@@ -126,7 +126,7 @@ public class ProjectsView implements ProjectsPresenter.View, IsElement {
     <label>Project View</label>
 </div>
 ```
-For now, this view only has a label with the text "Project View". 
+For now, this view only has a label with the text "Project View".
 
 ###Creating Tasks Screen
 Our second screen is the Task Screen. Let's create it (inside org.uberfire.client.screens package):
@@ -620,7 +620,7 @@ And also, create NewProjectContentView.html:
     </div>
 </div>
 ```
-It is important to take a look that NewProjectView interacts with NewProjectContentView through two important Uberfire classes: [ParameterizedCommand<T>](https://github.com/uberfire/uberfire/blob/master/uberfire-api/src/main/java/org/uberfire/mvp/ParameterizedCommand.java) and [Command](https://github.com/uberfire/uberfire/blob/master/uberfire-api/src/main/java/org/uberfire/mvp/Command.java).
+It is important to take a look that NewProjectView interacts with NewProjectContentView through two important Uberfire classes: [ParameterizedCommand<T>](https://github.com/kiegroup/appformer/blob/master/uberfire-api/src/main/java/org/uberfire/mvp/ParameterizedCommand.java) and [Command](https://github.com/kiegroup/appformer/blob/master/uberfire-api/src/main/java/org/uberfire/mvp/Command.java).
 ```
 public void init( ParameterizedCommand<String> addProject, Command cancel ){...}
 ```

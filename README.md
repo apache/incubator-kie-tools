@@ -28,7 +28,7 @@ Contribute code through pull requests to this repository. See our [contributing 
 ## Building and contributing to our documentation
 
 In order to build and contribute to our documentation, follow this steps
-   
+
 - Fork the repository https://github.com/uberfire/uberfire then clone the fork locally
 - Get gitbook editor from https://github.com/GitbookIO/editor-legacy
 - Get gitbook builder from https://github.com/GitbookIO/gitbook (you may need to install npm first)
@@ -41,5 +41,4 @@ In order to build and contribute to our documentation, follow this steps
 
 Uberfire Framework is released under Apache 2 License.
 
-Check [LICENSE](https://github.com/uberfire/uberfire/blob/master/LICENSE-ASL-2.0.txt) file for more information.
- 
+Check [LICENSE](LICENSE-ASL-2.0.txt) file for more information.

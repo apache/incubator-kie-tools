@@ -36,7 +36,7 @@ public class GitHubCommitActivityStatsScreen extends AbstractGitHubStatsScreen {
         return $wnd.c3.generate({
             bindto: '#' + id,
             data: {
-                url: 'https://api.github.com/repos/uberfire/uberfire/stats/commit_activity',
+                url: 'https://api.github.com/repos/kiegroup/appformer/stats/commit_activity',
                 mimeType: 'json',
                 keys: {
                     value: ['total']
