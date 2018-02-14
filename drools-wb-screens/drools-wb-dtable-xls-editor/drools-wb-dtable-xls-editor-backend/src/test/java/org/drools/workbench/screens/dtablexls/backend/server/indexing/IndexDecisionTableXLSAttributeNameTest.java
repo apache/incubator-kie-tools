@@ -22,6 +22,8 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.concurrent.NotThreadSafe;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.lucene.search.Query;
 import org.drools.workbench.screens.dtablexls.type.DecisionTableXLSResourceTypeDefinition;
@@ -35,6 +37,7 @@ import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.java.nio.file.Path;
 
+@NotThreadSafe
 public class IndexDecisionTableXLSAttributeNameTest extends BaseIndexingTest<DecisionTableXLSResourceTypeDefinition> {
 
     @Test

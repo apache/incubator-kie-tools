@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.concurrent.NotThreadSafe;
+
 import org.apache.lucene.search.Query;
 import org.drools.workbench.screens.guided.dtable.backend.server.GuidedDTGraphXMLPersistence;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel;
@@ -33,6 +35,7 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.java.nio.file.Path;
 
+@NotThreadSafe
 public class IndexGuidedDecisionTableGraphFileTest extends BaseIndexingTest<GuidedDTableGraphResourceTypeDefinition> {
 
     @Test

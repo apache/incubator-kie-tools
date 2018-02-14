@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.concurrent.NotThreadSafe;
+
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
@@ -34,6 +36,7 @@ import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.java.nio.file.Path;
 
+@NotThreadSafe
 public class IndexRuleAttributeNameAndValueTest extends BaseIndexingTest<GuidedRuleDRLResourceTypeDefinition> {
 
     @Test

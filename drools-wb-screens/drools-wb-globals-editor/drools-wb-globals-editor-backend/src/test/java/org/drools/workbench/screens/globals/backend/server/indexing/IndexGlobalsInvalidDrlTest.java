@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.concurrent.NotThreadSafe;
+
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
@@ -41,9 +43,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@NotThreadSafe
 public class IndexGlobalsInvalidDrlTest extends BaseIndexingTest<GlobalResourceTypeDefinition> {
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testIndexGlobalsInvalidDrl() throws IOException, InterruptedException {
         //Setup logging
         final Logger root = (Logger) LoggerFactory.getLogger( Logger.ROOT_LOGGER_NAME );

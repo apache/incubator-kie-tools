@@ -20,6 +20,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
+import javax.annotation.concurrent.NotThreadSafe;
+
 import org.assertj.core.api.Assertions;
 import org.drools.workbench.screens.enums.service.EnumService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
@@ -30,6 +32,7 @@ import org.junit.Test;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
+@NotThreadSafe
 public class EnumServiceImplCDITest extends CDITestSetup {
 
     private EnumService enumService;
