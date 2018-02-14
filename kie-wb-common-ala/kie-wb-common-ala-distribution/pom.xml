@@ -28,7 +28,7 @@
   <properties>
     <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
   </properties>
-  <dependencies>
+   <dependencies>
     <!-- Swarm Fractions -->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
@@ -42,19 +42,17 @@
           <groupId>javax.inject</groupId>
           <artifactId>javax.inject</artifactId>
         </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>container</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.wildfly.swarm</groupId>
-          <artifactId>bootstrap</artifactId>
-        </exclusion>
         <exclusion>
           <groupId>org.ow2.asm</groupId>
           <artifactId>asm-all</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.modules</groupId>
+          <artifactId>jboss-modules</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.yaml</groupId>
+          <artifactId>snakeyaml</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -68,11 +66,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>jaxrs-cdi</artifactId>
-    </dependency>
-
     <!-- GUVNOR ALA Dependencies -->
     <dependency>
       <groupId>org.kie.workbench</groupId>
