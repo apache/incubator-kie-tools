@@ -225,12 +225,12 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
         modelSynchronizer.appendColumn(column2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<Integer>(1));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<String>("smurf"));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<Integer>(1));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<String>("smurf"));
 
         assertEquals(2,
                      model.getAttributeCols().size());
@@ -307,12 +307,12 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
         modelSynchronizer.appendColumn(column2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<Integer>(1));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<String>("smurf"));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<Integer>(1));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<String>("smurf"));
 
         assertEquals(2,
                      model.getAttributeCols().size());
@@ -389,12 +389,12 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
         modelSynchronizer.appendColumn(column2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<Integer>(1));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<String>("smurf"));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<Integer>(1));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<String>("smurf"));
 
         assertEquals(2,
                      model.getAttributeCols().size());
@@ -474,15 +474,15 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
         modelSynchronizer.appendColumn(column3);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<Integer>(1));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<String>("smurf"));
-        uiModel.setCell(0,
-                        4,
-                        new BaseGridCellValue<Boolean>(true));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<Integer>(1));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<String>("smurf"));
+        uiModel.setCellValue(0,
+                             4,
+                             new BaseGridCellValue<Boolean>(true));
 
         final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
         final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
@@ -528,15 +528,15 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
         modelSynchronizer.appendColumn(column3);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<Integer>(1));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<String>("smurf"));
-        uiModel.setCell(0,
-                        4,
-                        new BaseGridCellValue<Boolean>(true));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<Integer>(1));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<String>("smurf"));
+        uiModel.setCellValue(0,
+                             4,
+                             new BaseGridCellValue<Boolean>(true));
 
         final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
         final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);

@@ -111,12 +111,12 @@ public class ActionRetractFactColumnSynchronizerTest extends BaseSynchronizerTes
         modelSynchronizer.appendColumn(column2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<String>("$r1"));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<String>("$r2"));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<String>("$r1"));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<String>("$r2"));
 
         assertEquals(2,
                      model.getActionCols().size());
@@ -193,12 +193,12 @@ public class ActionRetractFactColumnSynchronizerTest extends BaseSynchronizerTes
         modelSynchronizer.appendColumn(column2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<String>("$r1"));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<String>("$r2"));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<String>("$r1"));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<String>("$r2"));
 
         assertEquals(2,
                      model.getActionCols().size());
@@ -275,12 +275,12 @@ public class ActionRetractFactColumnSynchronizerTest extends BaseSynchronizerTes
         modelSynchronizer.appendColumn(column2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<String>("$r1"));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<String>("$r2"));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<String>("$r1"));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<String>("$r2"));
 
         assertEquals(2,
                      model.getActionCols().size());

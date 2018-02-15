@@ -73,9 +73,9 @@ public interface ModelSynchronizer {
                     final EventBus eventBus,
                     final GuidedDecisionTablePresenter.Access access);
 
-    void setCell(final GridData.Range rowRange,
-                 final int columnIndex,
-                 final GridCellValue<?> value);
+    void setCellValue(final GridData.Range rowRange,
+                      final int columnIndex,
+                      final GridCellValue<?> value);
 
     void deleteCell(final GridData.Range rowRange,
                     final int columnIndex);

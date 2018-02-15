@@ -182,12 +182,12 @@ public class ActionInsertFactColumnSynchronizerTest extends BaseSynchronizerTest
         modelSynchronizer.appendColumn(column2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<Integer>(45));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<String>("Smurf"));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<Integer>(45));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<String>("Smurf"));
 
         assertEquals(2,
                      model.getActionCols().size());
@@ -278,12 +278,12 @@ public class ActionInsertFactColumnSynchronizerTest extends BaseSynchronizerTest
         modelSynchronizer.appendColumn(column2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<Integer>(45));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<String>("Smurf"));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<Integer>(45));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<String>("Smurf"));
 
         assertEquals(2,
                      model.getActionCols().size());
@@ -374,12 +374,12 @@ public class ActionInsertFactColumnSynchronizerTest extends BaseSynchronizerTest
         modelSynchronizer.appendColumn(column2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<Integer>(45));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<String>("Smurf"));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<Integer>(45));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<String>("Smurf"));
 
         assertEquals(2,
                      model.getActionCols().size());

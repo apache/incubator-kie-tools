@@ -17,10 +17,12 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table.model;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.kie.soup.commons.validation.PortablePreconditions;
+import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
@@ -44,13 +46,27 @@ public class GuidedDecisionTableUiModel extends BaseGridData {
     //Override to sync underlying Model with UiModel
     public Range setCell(final int rowIndex,
                          final int columnIndex,
-                         final GridCellValue<?> value) {
+                         final Supplier<GridCell<?>> cellSupplier) {
         final Range range = super.setCell(rowIndex,
                                           columnIndex,
-                                          value);
-        synchronizer.setCell(range,
-                             columnIndex,
-                             value);
+                                          cellSupplier);
+        synchronizer.setCellValue(range,
+                                  columnIndex,
+                                  cellSupplier.get().getValue());
+        return range;
+    }
+
+    @Override
+    //Override to sync underlying Model with UiModel
+    public Range setCellValue(final int rowIndex,
+                              final int columnIndex,
+                              final GridCellValue<?> value) {
+        final Range range = super.setCellValue(rowIndex,
+                                               columnIndex,
+                                               value);
+        synchronizer.setCellValue(range,
+                                  columnIndex,
+                                  value);
         return range;
     }
 
@@ -98,15 +114,15 @@ public class GuidedDecisionTableUiModel extends BaseGridData {
         }
     }
 
-    public Range setCellInternal(final int rowIndex,
-                                 final int columnIndex,
-                                 final GridCellValue<?> value) {
+    public Range setCellValueInternal(final int rowIndex,
+                                      final int columnIndex,
+                                      final GridCellValue<?> value) {
         final boolean isMerged = isMerged();
         try {
             this.isMerged = false;
-            return super.setCell(rowIndex,
-                                 columnIndex,
-                                 value);
+            return super.setCellValue(rowIndex,
+                                      columnIndex,
+                                      value);
         } finally {
             this.isMerged = isMerged;
         }

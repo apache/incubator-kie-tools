@@ -206,12 +206,12 @@ public class ActionWorkItemSetFieldColumnSynchronizerTest extends BaseSynchroniz
         modelSynchronizer.appendColumn(column2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        4,
-                        new BaseGridCellValue<Boolean>(true));
-        uiModel.setCell(0,
-                        5,
-                        new BaseGridCellValue<Boolean>(false));
+        uiModel.setCellValue(0,
+                             4,
+                             new BaseGridCellValue<Boolean>(true));
+        uiModel.setCellValue(0,
+                             5,
+                             new BaseGridCellValue<Boolean>(false));
 
         assertEquals(3,
                      model.getActionCols().size());
@@ -308,12 +308,12 @@ public class ActionWorkItemSetFieldColumnSynchronizerTest extends BaseSynchroniz
         modelSynchronizer.appendColumn(column2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        4,
-                        new BaseGridCellValue<Boolean>(true));
-        uiModel.setCell(0,
-                        5,
-                        new BaseGridCellValue<Boolean>(false));
+        uiModel.setCellValue(0,
+                             4,
+                             new BaseGridCellValue<Boolean>(true));
+        uiModel.setCellValue(0,
+                             5,
+                             new BaseGridCellValue<Boolean>(false));
 
         assertEquals(3,
                      model.getActionCols().size());
@@ -410,12 +410,12 @@ public class ActionWorkItemSetFieldColumnSynchronizerTest extends BaseSynchroniz
         modelSynchronizer.appendColumn(column2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        4,
-                        new BaseGridCellValue<Boolean>(true));
-        uiModel.setCell(0,
-                        5,
-                        new BaseGridCellValue<Boolean>(false));
+        uiModel.setCellValue(0,
+                             4,
+                             new BaseGridCellValue<Boolean>(true));
+        uiModel.setCellValue(0,
+                             5,
+                             new BaseGridCellValue<Boolean>(false));
 
         assertEquals(3,
                      model.getActionCols().size());

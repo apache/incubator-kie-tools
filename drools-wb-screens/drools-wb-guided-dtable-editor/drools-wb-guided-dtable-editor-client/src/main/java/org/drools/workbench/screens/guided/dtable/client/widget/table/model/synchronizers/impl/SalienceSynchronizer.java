@@ -82,9 +82,9 @@ public class SalienceSynchronizer {
             final DTCellValue52 modelCell = modelRow.get( iModelColumn );
             modelCell.setNumericValue( salience );
 
-            uiModel.setCellInternal( rowNumber,
-                                     iModelColumn,
-                                     gridWidgetCellFactory.convertCell( modelCell,
+            uiModel.setCellValueInternal(rowNumber,
+                                         iModelColumn,
+                                         gridWidgetCellFactory.convertCell( modelCell,
                                                                         modelColumn,
                                                                         cellUtilities,
                                                                         columnUtilities ) );

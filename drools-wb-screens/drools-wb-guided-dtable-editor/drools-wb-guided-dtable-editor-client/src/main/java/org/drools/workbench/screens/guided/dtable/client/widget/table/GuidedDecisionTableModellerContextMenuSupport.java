@@ -69,8 +69,7 @@ public class GuidedDecisionTableModellerContextMenuSupport {
         private final CellContextMenu cellContextMenu;
         private final RowContextMenu rowContextMenu;
 
-        public GuidedDecisionTableModellerContextMenuHandler(
-                                                             final GuidedDecisionTableModellerView.Presenter modellerPresenter,
+        public GuidedDecisionTableModellerContextMenuHandler(final GuidedDecisionTableModellerView.Presenter modellerPresenter,
                                                              final CellContextMenu cellContextMenu,
                                                              final RowContextMenu rowContextMenu) {
             this.modellerPresenter = modellerPresenter;
@@ -108,7 +107,6 @@ public class GuidedDecisionTableModellerContextMenuSupport {
                 if (column instanceof IsRowDragHandle) {
                     rowContextMenu.show(eventX,
                                         eventY);
-
                 } else {
                     cellContextMenu.show(eventX,
                                          eventY);
@@ -157,7 +155,7 @@ public class GuidedDecisionTableModellerContextMenuSupport {
             if (cell == null) {
                 selectionStrategy = RangeSelectionStrategy.INSTANCE;
             } else {
-                selectionStrategy = cell.getSelectionManager();
+                selectionStrategy = cell.getSelectionStrategy();
             }
             if (selectionStrategy == null) {
                 return;
@@ -172,7 +170,6 @@ public class GuidedDecisionTableModellerContextMenuSupport {
                 gridView.getLayer().batch();
             }
         }
-
     }
 
     private static class GuidedDecisionTableModellerContextMenuMouseDownHandler implements MouseDownHandler {
@@ -205,7 +202,5 @@ public class GuidedDecisionTableModellerContextMenuSupport {
             }
             return false;
         }
-
     }
-
 }

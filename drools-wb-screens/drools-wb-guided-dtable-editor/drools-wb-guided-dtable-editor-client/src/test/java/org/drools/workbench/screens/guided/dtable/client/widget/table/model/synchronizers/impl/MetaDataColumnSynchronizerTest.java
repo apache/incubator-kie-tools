@@ -145,12 +145,12 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
         modelSynchronizer.appendColumn(column2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<String>("metadata1"));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<String>("metadata2"));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<String>("metadata1"));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<String>("metadata2"));
 
         assertEquals(2,
                      model.getMetadataCols().size());
@@ -227,12 +227,12 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
         modelSynchronizer.appendColumn(column2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<String>("metadata1"));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<String>("metadata2"));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<String>("metadata1"));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<String>("metadata2"));
 
         assertEquals(2,
                      model.getMetadataCols().size());
@@ -309,12 +309,12 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
         modelSynchronizer.appendColumn(column2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<String>("metadata1"));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<String>("metadata2"));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<String>("metadata1"));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<String>("metadata2"));
 
         assertEquals(2,
                      model.getMetadataCols().size());
@@ -394,15 +394,15 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
         modelSynchronizer.appendColumn(column3);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<String>("metadata1"));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<String>("metadata2"));
-        uiModel.setCell(0,
-                        4,
-                        new BaseGridCellValue<String>("metadata3"));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<String>("metadata1"));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<String>("metadata2"));
+        uiModel.setCellValue(0,
+                             4,
+                             new BaseGridCellValue<String>("metadata3"));
 
         final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
         final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
@@ -448,15 +448,15 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
         modelSynchronizer.appendColumn(column3);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<String>("metadata1"));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<String>("metadata2"));
-        uiModel.setCell(0,
-                        4,
-                        new BaseGridCellValue<String>("metadata3"));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<String>("metadata1"));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<String>("metadata2"));
+        uiModel.setCellValue(0,
+                             4,
+                             new BaseGridCellValue<String>("metadata3"));
 
         final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
         final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);

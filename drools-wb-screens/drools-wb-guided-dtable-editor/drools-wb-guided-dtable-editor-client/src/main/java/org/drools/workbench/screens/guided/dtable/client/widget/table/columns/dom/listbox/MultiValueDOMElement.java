@@ -66,9 +66,9 @@ public abstract class MultiValueDOMElement<T, W extends ListBox> extends BaseDTD
             gridWidget.getModel().deleteCell(rowIndex,
                                              columnIndex);
         } else {
-            gridWidget.getModel().setCell(rowIndex,
-                                          columnIndex,
-                                          new GuidedDecisionTableUiCell<T>(value));
+            gridWidget.getModel().setCellValue(rowIndex,
+                                               columnIndex,
+                                               new GuidedDecisionTableUiCell<T>(value));
         }
     }
 }

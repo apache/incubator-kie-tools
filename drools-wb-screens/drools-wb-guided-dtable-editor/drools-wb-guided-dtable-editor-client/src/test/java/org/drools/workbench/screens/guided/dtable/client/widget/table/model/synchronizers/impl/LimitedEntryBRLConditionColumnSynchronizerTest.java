@@ -110,12 +110,12 @@ public class LimitedEntryBRLConditionColumnSynchronizerTest extends BaseSynchron
         modelSynchronizer.appendColumn(column2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<Boolean>(true));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<Boolean>(false));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<Boolean>(true));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<Boolean>(false));
 
         assertEquals(2,
                      model.getConditions().size());
@@ -192,12 +192,12 @@ public class LimitedEntryBRLConditionColumnSynchronizerTest extends BaseSynchron
         modelSynchronizer.appendColumn(column2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<Boolean>(true));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<Boolean>(false));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<Boolean>(true));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<Boolean>(false));
 
         assertEquals(2,
                      model.getConditions().size());
@@ -274,12 +274,12 @@ public class LimitedEntryBRLConditionColumnSynchronizerTest extends BaseSynchron
         modelSynchronizer.appendColumn(column2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<Boolean>(true));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<Boolean>(false));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<Boolean>(true));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<Boolean>(false));
 
         assertEquals(2,
                      model.getConditions().size());

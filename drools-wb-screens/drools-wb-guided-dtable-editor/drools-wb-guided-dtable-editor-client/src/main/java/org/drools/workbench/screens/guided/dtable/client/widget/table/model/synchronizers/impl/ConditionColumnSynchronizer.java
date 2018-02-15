@@ -396,12 +396,12 @@ public class ConditionColumnSynchronizer extends BaseColumnSynchronizer<PatternC
 
                 //BaseGridData is sparsely populated; only add values if needed.
                 if (modelCell.hasValue()) {
-                    uiModel.setCell(rowIndex,
-                                    editedColumnIndex,
-                                    gridWidgetCellFactory.convertCell(modelCell,
-                                                                      editedColumn,
-                                                                      cellUtilities,
-                                                                      columnUtilities));
+                    uiModel.setCellValue(rowIndex,
+                                         editedColumnIndex,
+                                         gridWidgetCellFactory.convertCell(modelCell,
+                                                                           editedColumn,
+                                                                           cellUtilities,
+                                                                           columnUtilities));
                 }
             }
         }

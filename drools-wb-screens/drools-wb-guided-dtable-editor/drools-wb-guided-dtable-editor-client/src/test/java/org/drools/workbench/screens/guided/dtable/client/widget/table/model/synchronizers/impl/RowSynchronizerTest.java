@@ -81,15 +81,15 @@ public class RowSynchronizerTest extends BaseSynchronizerTest {
         modelSynchronizer.appendRow();
         modelSynchronizer.appendRow();
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        1,
-                        new GuidedDecisionTableUiCell<String>("a"));
-        uiModel.setCell(1,
-                        1,
-                        new GuidedDecisionTableUiCell<String>("a"));
-        uiModel.setCell(2,
-                        1,
-                        new GuidedDecisionTableUiCell<String>("b"));
+        uiModel.setCellValue(0,
+                             1,
+                             new GuidedDecisionTableUiCell<String>("a"));
+        uiModel.setCellValue(1,
+                             1,
+                             new GuidedDecisionTableUiCell<String>("a"));
+        uiModel.setCellValue(2,
+                             1,
+                             new GuidedDecisionTableUiCell<String>("b"));
         uiModel.collapseCell(0,
                              1);
 
@@ -107,15 +107,15 @@ public class RowSynchronizerTest extends BaseSynchronizerTest {
         modelSynchronizer.appendRow();
         modelSynchronizer.appendRow();
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        1,
-                        new GuidedDecisionTableUiCell<String>("a"));
-        uiModel.setCell(1,
-                        1,
-                        new GuidedDecisionTableUiCell<String>("a"));
-        uiModel.setCell(2,
-                        1,
-                        new GuidedDecisionTableUiCell<String>("a"));
+        uiModel.setCellValue(0,
+                             1,
+                             new GuidedDecisionTableUiCell<String>("a"));
+        uiModel.setCellValue(1,
+                             1,
+                             new GuidedDecisionTableUiCell<String>("a"));
+        uiModel.setCellValue(2,
+                             1,
+                             new GuidedDecisionTableUiCell<String>("a"));
         uiModel.collapseCell(0,
                              1);
 

@@ -124,7 +124,7 @@ public class GuidedDecisionTableModellerContextMenuSupportTest {
         when(nativeEvent.getClientX()).thenReturn(50);
         when(nativeEvent.getClientY()).thenReturn(50);
 
-        when(uiCell.getSelectionManager()).thenReturn(cellSelectionStrategy);
+        when(uiCell.getSelectionStrategy()).thenReturn(cellSelectionStrategy);
     }
 
     @Test
@@ -358,7 +358,7 @@ public class GuidedDecisionTableModellerContextMenuSupportTest {
         final GridCell uiCell = mock(GridCell.class);
         when(uiModel.getCell(any(Integer.class),
                              any(Integer.class))).thenReturn(uiCell);
-        when(uiCell.getSelectionManager()).thenReturn(null);
+        when(uiCell.getSelectionStrategy()).thenReturn(null);
 
         final ContextMenuHandler handler = contextMenuSupport.getContextMenuHandler(modellerPresenter);
 

@@ -35,9 +35,9 @@ public class ModelSynchronizerTest extends BaseSynchronizerTest {
     public void testSetCells() throws VetoException {
         modelSynchronizer.appendRow();
 
-        uiModel.setCell(0,
-                        1,
-                        new BaseGridCellValue<String>("value"));
+        uiModel.setCellValue(0,
+                             1,
+                             new BaseGridCellValue<String>("value"));
 
         assertEquals("value",
                      model.getData().get(0).get(1).getStringValue());
@@ -50,9 +50,9 @@ public class ModelSynchronizerTest extends BaseSynchronizerTest {
     public void testDeleteCells() throws VetoException {
         modelSynchronizer.appendRow();
 
-        uiModel.setCell(0,
-                        1,
-                        new BaseGridCellValue<String>("value"));
+        uiModel.setCellValue(0,
+                             1,
+                             new BaseGridCellValue<String>("value"));
         assertEquals("value",
                      model.getData().get(0).get(1).getStringValue());
         assertEquals("value",

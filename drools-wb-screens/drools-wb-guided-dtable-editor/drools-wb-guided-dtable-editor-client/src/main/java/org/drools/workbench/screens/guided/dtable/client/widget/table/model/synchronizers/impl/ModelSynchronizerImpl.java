@@ -147,9 +147,9 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
     }
 
     @Override
-    public void setCell(final GridData.Range rowRange,
-                        final int columnIndex,
-                        final GridCellValue<?> value) {
+    public void setCellValue(final GridData.Range rowRange,
+                             final int columnIndex,
+                             final GridCellValue<?> value) {
         final int minRowIndex = rowRange.getMinRowIndex();
         final int maxRowIndex = rowRange.getMaxRowIndex();
         for (int rowIndex = minRowIndex; rowIndex <= maxRowIndex; rowIndex++) {
@@ -453,9 +453,9 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
 
         //BaseGridData is sparsely populated; only add values if needed.
         if (modelCell.hasValue()) {
-            uiModel.setCellInternal(rowIndex,
-                                    columnIndex,
-                                    gridWidgetCellFactory.convertCell(modelCell,
+            uiModel.setCellValueInternal(rowIndex,
+                                         columnIndex,
+                                         gridWidgetCellFactory.convertCell(modelCell,
                                                                       modelColumn,
                                                                       cellUtilities,
                                                                       columnUtilities));

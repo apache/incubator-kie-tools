@@ -106,9 +106,9 @@ public class SystemControlledColumnValuesSynchronizer {
 
             modelCell.setNumericValue(newRowNumber);
 
-            uiModel.setCellInternal(rowNumber,
-                                    iModelColumn,
-                                    gridWidgetCellFactory.convertCell(modelCell,
+            uiModel.setCellValueInternal(rowNumber,
+                                         iModelColumn,
+                                         gridWidgetCellFactory.convertCell(modelCell,
                                                                       modelColumn,
                                                                       cellUtilities,
                                                                       columnUtilities));

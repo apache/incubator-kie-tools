@@ -1082,9 +1082,9 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
             //BaseGridData is sparsely populated; only add values if needed.
             if (modelCell.hasValue()) {
-                uiModel.setCellInternal(rowIndex,
-                                        iModelColumn,
-                                        gridWidgetCellFactory.convertCell(modelCell,
+                uiModel.setCellValueInternal(rowIndex,
+                                             iModelColumn,
+                                             gridWidgetCellFactory.convertCell(modelCell,
                                                                           modelColumn,
                                                                           cellUtilities,
                                                                           columnUtilities));
@@ -1092,7 +1092,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                 //Set-up SelectionManager for Row Number column, to select entire row.
                 if (modelColumn instanceof RowNumberCol52) {
                     uiModel.getCell(rowIndex,
-                                    iModelColumn).setSelectionManager(RowSelectionStrategy.INSTANCE);
+                                    iModelColumn).setSelectionStrategy(RowSelectionStrategy.INSTANCE);
                 }
             }
         }
@@ -1180,12 +1180,12 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
             final DTCellValue52 modelCell = cd.getValue();
             final BaseColumn modelColumn = model.getExpandedColumns().get(targetColumnIndex);
             if (modelCell.hasValue()) {
-                uiModel.setCell(targetRowIndex,
-                                targetColumnIndex,
-                                gridWidgetCellFactory.convertCell(modelCell,
-                                                                  modelColumn,
-                                                                  cellUtilities,
-                                                                  columnUtilities));
+                uiModel.setCellValue(targetRowIndex,
+                                     targetColumnIndex,
+                                     gridWidgetCellFactory.convertCell(modelCell,
+                                                                       modelColumn,
+                                                                       cellUtilities,
+                                                                       columnUtilities));
             } else {
                 uiModel.deleteCell(targetRowIndex,
                                    targetColumnIndex);
@@ -1223,9 +1223,9 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                 continue;
             }
             if (uiColumn instanceof BooleanUiColumn) {
-                uiModel.setCell(rowIndex,
-                                columnIndex,
-                                new GuidedDecisionTableUiCell<>(false));
+                uiModel.setCellValue(rowIndex,
+                                     columnIndex,
+                                     new GuidedDecisionTableUiCell<>(false));
             } else {
                 uiModel.deleteCell(rowIndex,
                                    columnIndex);

@@ -173,12 +173,12 @@ public class ActionWorkItemInsertFactColumnSynchronizerTest extends BaseSynchron
         modelSynchronizer.appendColumn(column2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<Boolean>(true));
-        uiModel.setCell(0,
-                        4,
-                        new BaseGridCellValue<Boolean>(false));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<Boolean>(true));
+        uiModel.setCellValue(0,
+                             4,
+                             new BaseGridCellValue<Boolean>(false));
 
         assertEquals(3,
                      model.getActionCols().size());
@@ -263,12 +263,12 @@ public class ActionWorkItemInsertFactColumnSynchronizerTest extends BaseSynchron
         modelSynchronizer.appendColumn(column2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<Boolean>(true));
-        uiModel.setCell(0,
-                        4,
-                        new BaseGridCellValue<Boolean>(false));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<Boolean>(true));
+        uiModel.setCellValue(0,
+                             4,
+                             new BaseGridCellValue<Boolean>(false));
 
         assertEquals(3,
                      model.getActionCols().size());
@@ -353,12 +353,12 @@ public class ActionWorkItemInsertFactColumnSynchronizerTest extends BaseSynchron
         modelSynchronizer.appendColumn(column2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<Boolean>(true));
-        uiModel.setCell(0,
-                        4,
-                        new BaseGridCellValue<Boolean>(false));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<Boolean>(true));
+        uiModel.setCellValue(0,
+                             4,
+                             new BaseGridCellValue<Boolean>(false));
 
         assertEquals(3,
                      model.getActionCols().size());
@@ -444,12 +444,12 @@ public class ActionWorkItemInsertFactColumnSynchronizerTest extends BaseSynchron
         modelSynchronizer.appendColumn(column2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<>(true));
-        uiModel.setCell(0,
-                        4,
-                        new BaseGridCellValue<>("Fred"));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<>(true));
+        uiModel.setCellValue(0,
+                             4,
+                             new BaseGridCellValue<>("Fred"));
 
         assertGridDefinitionMovingWorkItemInsertFactColAndInsertFactCol(column1,
                                                                         column2);
@@ -488,12 +488,12 @@ public class ActionWorkItemInsertFactColumnSynchronizerTest extends BaseSynchron
         modelSynchronizer.appendColumn(column2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<>(true));
-        uiModel.setCell(0,
-                        4,
-                        new BaseGridCellValue<>("Fred"));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<>(true));
+        uiModel.setCellValue(0,
+                             4,
+                             new BaseGridCellValue<>("Fred"));
 
         assertGridDefinitionMovingWorkItemInsertFactColAndInsertFactCol(column1,
                                                                         column2);

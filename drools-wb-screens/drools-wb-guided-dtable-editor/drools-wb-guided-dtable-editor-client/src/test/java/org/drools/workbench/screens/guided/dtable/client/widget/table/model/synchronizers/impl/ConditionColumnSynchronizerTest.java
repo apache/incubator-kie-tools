@@ -153,13 +153,13 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         modelSynchronizer.appendColumn(pattern,
                                        condition);
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new GuidedDecisionTableUiCell("John"));
+        uiModel.setCellValue(0,
+                             2,
+                             new GuidedDecisionTableUiCell("John"));
         modelSynchronizer.appendRow();
-        uiModel.setCell(1,
-                        2,
-                        new GuidedDecisionTableUiCell("George"));
+        uiModel.setCellValue(1,
+                             2,
+                             new GuidedDecisionTableUiCell("George"));
         modelSynchronizer.setCellOtherwiseState(1,
                                                 2);
 
@@ -784,15 +784,15 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         modelSynchronizer.appendRow();
         modelSynchronizer.appendRow();
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<>("A"));
-        uiModel.setCell(1,
-                        2,
-                        new BaseGridCellValue<>("B"));
-        uiModel.setCell(2,
-                        2,
-                        new BaseGridCellValue<>("C"));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<>("A"));
+        uiModel.setCellValue(1,
+                             2,
+                             new BaseGridCellValue<>("B"));
+        uiModel.setCellValue(2,
+                             2,
+                             new BaseGridCellValue<>("C"));
 
         final Pattern52 editedPattern = boundApplicantPattern("$a");
 
@@ -841,15 +841,15 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         modelSynchronizer.appendRow();
         modelSynchronizer.appendRow();
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<>("A"));
-        uiModel.setCell(1,
-                        2,
-                        new BaseGridCellValue<>("B"));
-        uiModel.setCell(2,
-                        2,
-                        new BaseGridCellValue<>("C"));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<>("A"));
+        uiModel.setCellValue(1,
+                             2,
+                             new BaseGridCellValue<>("B"));
+        uiModel.setCellValue(2,
+                             2,
+                             new BaseGridCellValue<>("C"));
 
         final Pattern52 editedPattern = boundApplicantPattern("$a");
 
@@ -1116,12 +1116,12 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
                                        column2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<Integer>(45));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<String>("Smurf"));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<Integer>(45));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<String>("Smurf"));
 
         assertEquals(1,
                      model.getPatterns().size());
@@ -1203,12 +1203,12 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
                                        column2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<Integer>(45));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<String>("Smurf"));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<Integer>(45));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<String>("Smurf"));
 
         assertEquals(1,
                      model.getPatterns().size());
@@ -1290,12 +1290,12 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
                                        column2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<Integer>(45));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<String>("Smurf"));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<Integer>(45));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<String>("Smurf"));
 
         assertEquals(1,
                      model.getPatterns().size());
@@ -1377,12 +1377,12 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
                                        column2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<Integer>(45));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<String>("Smurf"));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<Integer>(45));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<String>("Smurf"));
 
         assertEquals(1,
                      model.getPatterns().size());
@@ -1472,15 +1472,15 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
                                        column1p2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<Integer>(45));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<String>("Fred"));
-        uiModel.setCell(0,
-                        4,
-                        new BaseGridCellValue<String>("Smurf"));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<Integer>(45));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<String>("Fred"));
+        uiModel.setCellValue(0,
+                             4,
+                             new BaseGridCellValue<String>("Smurf"));
 
         assertEquals(2,
                      model.getPatterns().size());
@@ -1591,12 +1591,12 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
                                        column1p2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<Integer>(45));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<String>("Smurf"));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<Integer>(45));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<String>("Smurf"));
 
         assertEquals(2,
                      model.getPatterns().size());
@@ -1699,18 +1699,18 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
                                        column2p2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<Integer>(45));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<String>("Smurf"));
-        uiModel.setCell(0,
-                        4,
-                        new BaseGridCellValue<String>("NY"));
-        uiModel.setCell(0,
-                        5,
-                        new BaseGridCellValue<String>("America"));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<Integer>(45));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<String>("Smurf"));
+        uiModel.setCellValue(0,
+                             4,
+                             new BaseGridCellValue<String>("NY"));
+        uiModel.setCellValue(0,
+                             5,
+                             new BaseGridCellValue<String>("America"));
 
         assertEquals(2,
                      model.getPatterns().size());
@@ -1883,24 +1883,24 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
                                        column2p3);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<Integer>(45));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<String>("Smurf"));
-        uiModel.setCell(0,
-                        4,
-                        new BaseGridCellValue<String>("NY"));
-        uiModel.setCell(0,
-                        5,
-                        new BaseGridCellValue<String>("America"));
-        uiModel.setCell(0,
-                        6,
-                        new BaseGridCellValue<String>("Essex"));
-        uiModel.setCell(0,
-                        7,
-                        new BaseGridCellValue<String>("England"));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<Integer>(45));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<String>("Smurf"));
+        uiModel.setCellValue(0,
+                             4,
+                             new BaseGridCellValue<String>("NY"));
+        uiModel.setCellValue(0,
+                             5,
+                             new BaseGridCellValue<String>("America"));
+        uiModel.setCellValue(0,
+                             6,
+                             new BaseGridCellValue<String>("Essex"));
+        uiModel.setCellValue(0,
+                             7,
+                             new BaseGridCellValue<String>("England"));
 
         assertEquals(3,
                      model.getPatterns().size());
@@ -2104,18 +2104,18 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
                                        column2p2);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<Integer>(45));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<String>("Smurf"));
-        uiModel.setCell(0,
-                        4,
-                        new BaseGridCellValue<String>("NY"));
-        uiModel.setCell(0,
-                        5,
-                        new BaseGridCellValue<String>("America"));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<Integer>(45));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<String>("Smurf"));
+        uiModel.setCellValue(0,
+                             4,
+                             new BaseGridCellValue<String>("NY"));
+        uiModel.setCellValue(0,
+                             5,
+                             new BaseGridCellValue<String>("America"));
 
         assertEquals(2,
                      model.getPatterns().size());
@@ -2289,24 +2289,24 @@ public class ConditionColumnSynchronizerTest extends BaseSynchronizerTest {
                                        column2p3);
 
         modelSynchronizer.appendRow();
-        uiModel.setCell(0,
-                        2,
-                        new BaseGridCellValue<Integer>(45));
-        uiModel.setCell(0,
-                        3,
-                        new BaseGridCellValue<String>("Smurf"));
-        uiModel.setCell(0,
-                        4,
-                        new BaseGridCellValue<String>("NY"));
-        uiModel.setCell(0,
-                        5,
-                        new BaseGridCellValue<String>("America"));
-        uiModel.setCell(0,
-                        6,
-                        new BaseGridCellValue<String>("Essex"));
-        uiModel.setCell(0,
-                        7,
-                        new BaseGridCellValue<String>("England"));
+        uiModel.setCellValue(0,
+                             2,
+                             new BaseGridCellValue<Integer>(45));
+        uiModel.setCellValue(0,
+                             3,
+                             new BaseGridCellValue<String>("Smurf"));
+        uiModel.setCellValue(0,
+                             4,
+                             new BaseGridCellValue<String>("NY"));
+        uiModel.setCellValue(0,
+                             5,
+                             new BaseGridCellValue<String>("America"));
+        uiModel.setCellValue(0,
+                             6,
+                             new BaseGridCellValue<String>("Essex"));
+        uiModel.setCellValue(0,
+                             7,
+                             new BaseGridCellValue<String>("England"));
 
         assertEquals(3,
                      model.getPatterns().size());

@@ -114,9 +114,9 @@ public class RowSynchronizer extends BaseSynchronizer<RowMetaData, RowMetaData, 
 
             //BaseGridData is sparsely populated; only add values if needed.
             if (modelCell.hasValue()) {
-                uiModel.setCellInternal(rowIndex,
-                                        columnIndex,
-                                        gridWidgetCellFactory.convertCell(modelCell,
+                uiModel.setCellValueInternal(rowIndex,
+                                             columnIndex,
+                                             gridWidgetCellFactory.convertCell(modelCell,
                                                                           modelColumn,
                                                                           cellUtilities,
                                                                           columnUtilities));
@@ -126,7 +126,7 @@ public class RowSynchronizer extends BaseSynchronizer<RowMetaData, RowMetaData, 
             //Set-up SelectionManager for Row Number column, to select entire row.
             if (modelColumn instanceof RowNumberCol52) {
                 uiModel.getCell(rowIndex,
-                                columnIndex).setSelectionManager(RowSelectionStrategy.INSTANCE);
+                                columnIndex).setSelectionStrategy(RowSelectionStrategy.INSTANCE);
             }
         }
     }

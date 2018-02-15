@@ -255,9 +255,9 @@ public class SystemControlledColumnValuesSynchronizerTest extends BaseSynchroniz
         addRowWithPriorityOver("4");
 
         modelSynchronizer.insertRow(0);
-        uiModel.setCell(0,
-                        2,
-                        new GuidedDecisionTableUiCell<>(""));
+        uiModel.setCellValue(0,
+                             2,
+                             new GuidedDecisionTableUiCell<>(""));
 
         assertPriorities(Arrays.asList("",
                                        "",
@@ -276,9 +276,9 @@ public class SystemControlledColumnValuesSynchronizerTest extends BaseSynchroniz
         addRowWithPriorityOver("4");
 
         modelSynchronizer.insertRow(3);
-        uiModel.setCell(3,
-                        2,
-                        new GuidedDecisionTableUiCell<>(""));
+        uiModel.setCellValue(3,
+                             2,
+                             new GuidedDecisionTableUiCell<>(""));
 
         assertPriorities(Arrays.asList("",
                                        "1",
@@ -297,9 +297,9 @@ public class SystemControlledColumnValuesSynchronizerTest extends BaseSynchroniz
         addRowWithPriorityOver("4");
 
         modelSynchronizer.insertRow(4);
-        uiModel.setCell(4,
-                        2,
-                        new GuidedDecisionTableUiCell<>(""));
+        uiModel.setCellValue(4,
+                             2,
+                             new GuidedDecisionTableUiCell<>(""));
 
         assertPriorities(Arrays.asList("",
                                        "1",
@@ -382,12 +382,12 @@ public class SystemControlledColumnValuesSynchronizerTest extends BaseSynchroniz
 
     private void addRowWithPriorityOver(String priorityOverRow) throws Exception {
         modelSynchronizer.appendRow();
-        uiModel.setCell(rowsCount,
-                        0,
-                        new GuidedDecisionTableUiCell<>(rowsCount + 1));
-        uiModel.setCell(rowsCount,
-                        2,
-                        new GuidedDecisionTableUiCell<>(priorityOverRow));
+        uiModel.setCellValue(rowsCount,
+                             0,
+                             new GuidedDecisionTableUiCell<>(rowsCount + 1));
+        uiModel.setCellValue(rowsCount,
+                             2,
+                             new GuidedDecisionTableUiCell<>(priorityOverRow));
         rowsCount++;
     }
 

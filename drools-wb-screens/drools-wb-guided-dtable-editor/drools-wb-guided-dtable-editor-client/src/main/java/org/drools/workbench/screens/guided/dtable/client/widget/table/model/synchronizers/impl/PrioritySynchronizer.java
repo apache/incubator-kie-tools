@@ -82,9 +82,9 @@ public class PrioritySynchronizer {
                                                                       columnUtilities);
                     }
 
-                    uiModel.setCellInternal(rowNumber,
-                                            baseColumnInfo.getColumnIndex(),
-                                            newUiCell);
+                    uiModel.setCellValueInternal(rowNumber,
+                                                 baseColumnInfo.getColumnIndex(),
+                                                 newUiCell);
                 }
             }
         }
@@ -137,9 +137,9 @@ public class PrioritySynchronizer {
 
                 if (oldValue >= deletedRowNumber) {
                     dtCellValue52.setStringValue(Integer.toString(oldValue - 1));
-                    uiModel.setCellInternal(rowNumber,
-                                            baseColumnInfo.getColumnIndex(),
-                                            gridWidgetCellFactory.convertCell(dtCellValue52,
+                    uiModel.setCellValueInternal(rowNumber,
+                                                 baseColumnInfo.getColumnIndex(),
+                                                 gridWidgetCellFactory.convertCell(dtCellValue52,
                                                                               baseColumnInfo.getBaseColumn(),
                                                                               cellUtilities,
                                                                               columnUtilities));
@@ -171,9 +171,9 @@ public class PrioritySynchronizer {
                 if (oldValue != 0 && oldValue >= insertedRowIndex) {
                     dtCellValue52.setStringValue(Integer.toString(oldValue + 1));
 
-                    uiModel.setCellInternal(rowNumber,
-                                            baseColumnInfo.getColumnIndex(),
-                                            gridWidgetCellFactory.convertCell(dtCellValue52,
+                    uiModel.setCellValueInternal(rowNumber,
+                                                 baseColumnInfo.getColumnIndex(),
+                                                 gridWidgetCellFactory.convertCell(dtCellValue52,
                                                                               baseColumnInfo.getBaseColumn(),
                                                                               cellUtilities,
                                                                               columnUtilities));

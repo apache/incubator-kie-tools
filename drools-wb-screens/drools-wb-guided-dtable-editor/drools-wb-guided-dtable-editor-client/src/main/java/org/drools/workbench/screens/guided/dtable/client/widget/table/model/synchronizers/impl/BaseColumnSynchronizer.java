@@ -79,9 +79,9 @@ public abstract class BaseColumnSynchronizer<A extends BaseColumnSynchronizer.Co
 
             //BaseGridData is sparsely populated; only add values if needed.
             if (modelCell.hasValue()) {
-                uiModel.setCellInternal(rowIndex,
-                                        columnIndex,
-                                        gridWidgetCellFactory.convertCell(modelCell,
+                uiModel.setCellValueInternal(rowIndex,
+                                             columnIndex,
+                                             gridWidgetCellFactory.convertCell(modelCell,
                                                                           modelColumn,
                                                                           cellUtilities,
                                                                           columnUtilities));
@@ -107,9 +107,9 @@ public abstract class BaseColumnSynchronizer<A extends BaseColumnSynchronizer.Co
                          modelCell);
 
             if (modelCell.hasValue()) {
-                uiModel.setCellInternal(rowIndex,
-                                        columnIndex,
-                                        gridWidgetCellFactory.convertCell(modelCell,
+                uiModel.setCellValueInternal(rowIndex,
+                                             columnIndex,
+                                             gridWidgetCellFactory.convertCell(modelCell,
                                                                           modelColumn,
                                                                           cellUtilities,
                                                                           columnUtilities));
@@ -133,9 +133,9 @@ public abstract class BaseColumnSynchronizer<A extends BaseColumnSynchronizer.Co
 
             //BaseGridData is sparsely populated; only add values if needed.
             if (modelCell.hasValue()) {
-                uiModel.setCellInternal(rowIndex,
-                                        columnIndex,
-                                        gridWidgetCellFactory.convertCell(modelCell,
+                uiModel.setCellValueInternal(rowIndex,
+                                             columnIndex,
+                                             gridWidgetCellFactory.convertCell(modelCell,
                                                                           modelColumn,
                                                                           cellUtilities,
                                                                           columnUtilities));
