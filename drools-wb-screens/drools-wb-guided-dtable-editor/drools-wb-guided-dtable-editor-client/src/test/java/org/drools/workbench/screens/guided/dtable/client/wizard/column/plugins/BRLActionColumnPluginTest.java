@@ -17,12 +17,14 @@
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
+import org.assertj.core.api.Assertions;
 import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
@@ -35,6 +37,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.popovers.M
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.AdditionalInfoPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.RuleModellerPage;
+import org.drools.workbench.screens.guided.rule.client.editor.plugin.RuleModellerActionPlugin;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -89,7 +92,7 @@ public class BRLActionColumnPluginTest {
 
     @InjectMocks
     private BRLActionColumnPlugin plugin = spy(new BRLActionColumnPlugin(ruleModellerPage,
-                                                                         new MockInstanceImpl<>(new ArrayList<>()),
+                                                                         new MockInstanceImpl<>(Collections.singletonList(mock(RuleModellerActionPlugin.class))),
                                                                          additionalInfoPage,
                                                                          changeEvent,
                                                                          translationService));
@@ -322,5 +325,11 @@ public class BRLActionColumnPluginTest {
         plugin.setHideColumn(hideColumn);
 
         verify(editingCol).setHideColumn(hideColumn);
+    }
+
+    @Test
+    public void testRuleModellerActionPlugins() throws Exception {
+        Assertions.assertThat(plugin.getRuleModellerActionPlugins()).hasSize(1);
+        Assertions.assertThat(plugin.getRuleModellerActionPlugins()).hasAtLeastOneElementOfType(RuleModellerActionPlugin.class);
     }
 }

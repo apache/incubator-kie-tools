@@ -16,10 +16,13 @@
 
 package org.drools.workbench.screens.guided.rule.client.editor;
 
+import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
+import org.assertj.core.api.Assertions;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.editor.plugin.RuleModellerActionPlugin;
 import org.drools.workbench.screens.guided.rule.model.GuidedEditorContent;
@@ -34,11 +37,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.soup.project.datamodel.imports.Imports;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -50,6 +56,8 @@ import org.uberfire.mocks.CallerMock;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -92,6 +100,11 @@ public class GuidedRuleEditorPresenterTest {
     private CallerMock<GuidedRuleEditorService> serviceCaller;
 
     @Mock
+    private RuleNamesService ruleNamesService;
+
+    private CallerMock<RuleNamesService> ruleNamesServiceCaller;
+
+    @Mock
     private RuleModel ruleModel;
 
     @Mock
@@ -110,12 +123,16 @@ public class GuidedRuleEditorPresenterTest {
     @InjectMocks
     private GuidedRuleEditorPresenter presenter = new GuidedRuleEditorPresenter(view);
 
+    @Captor
+    private ArgumentCaptor<List<RuleModellerActionPlugin>> pluginsListCaptor;
+
     @Before
     public void setUp() throws Exception {
         guidedEditorContent = new GuidedEditorContent(ruleModel,
                                                       overview,
                                                       payload);
         serviceCaller = new CallerMock<>(service);
+        ruleNamesServiceCaller = new CallerMock<>(ruleNamesService);
 
         doReturn(imports).when(ruleModel).getImports();
 
@@ -127,11 +144,22 @@ public class GuidedRuleEditorPresenterTest {
         doReturn(guidedEditorContent).when(service).loadContent(resourcePath);
 
         doReturn(serviceCaller).when(presenter).getService();
+        doReturn(ruleNamesServiceCaller).when(presenter).getRuleNamesService();
         doReturn(versionRecordManager).when(presenter).getVersionRecordManager();
     }
 
     @Test
     public void testLoadContentSuccess() throws Exception {
+        final RuleModellerActionPlugin pluginOne = mock(RuleModellerActionPlugin.class);
+        final RuleModellerActionPlugin pluginTwo = mock(RuleModellerActionPlugin.class);
+
+        doAnswer(invocationOnMock -> {
+            final Consumer<RuleModellerActionPlugin> consumer = invocationOnMock.getArgumentAt(0, Consumer.class);
+            consumer.accept(pluginOne);
+            consumer.accept(pluginTwo);
+            return null;
+        }).when(actionPluginInstance).forEach(any());
+
         presenter.loadContent();
 
         verify(kieEditorWrapperView).clear();
@@ -143,6 +171,14 @@ public class GuidedRuleEditorPresenterTest {
         verify(overviewWidgetPresenter).setContent(overview, resourcePath);
         verify(importsWidgetPresenter).setContent(oracle, imports, false);
         verify(view).hideBusyIndicator();
+        verify(view).setContent(eq(ruleModel),
+                                pluginsListCaptor.capture(),
+                                eq(oracle),
+                                eq(ruleNamesServiceCaller),
+                                eq(false),
+                                eq(false));
+
+        Assertions.assertThat(pluginsListCaptor.getValue()).containsExactly(pluginOne, pluginTwo);
     }
 
     @Test

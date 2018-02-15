@@ -219,8 +219,7 @@ public class RuleModeller extends Composite
             addAction.addClickHandler(new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
-                    showActionSelector((Widget) event.getSource(),
-                                       null);
+                    showActionSelector(null);
                 }
             });
             if (!lockRHS()) {
@@ -444,8 +443,7 @@ public class RuleModeller extends Composite
                                                new ClickHandler() {
 
                                                    public void onClick(ClickEvent event) {
-                                                       showActionSelector((Widget) event.getSource(),
-                                                                          index + 1);
+                                                       showActionSelector(index + 1);
                                                    }
                                                },
                                                new ClickHandler() {
@@ -481,14 +479,18 @@ public class RuleModeller extends Composite
         popup.show();
     }
 
-    protected void showActionSelector(Widget w,
-                                      Integer position) {
-        RuleModellerActionSelectorPopup popup = new RuleModellerActionSelectorPopup(model,
-                                                                                    this,
-                                                                                    actionPlugins,
-                                                                                    position,
-                                                                                    getDataModelOracle());
+    protected void showActionSelector(final Integer position) {
+        final RuleModellerActionSelectorPopup popup = ruleModellerActionSelectorPopup(position, actionPlugins);
         popup.show();
+    }
+
+    protected RuleModellerActionSelectorPopup ruleModellerActionSelectorPopup(final Integer position,
+                                                                              final Collection<RuleModellerActionPlugin> actionPlugins) {
+        return new RuleModellerActionSelectorPopup(model,
+                                                   this,
+                                                   actionPlugins,
+                                                   position,
+                                                   getDataModelOracle());
     }
 
     /**

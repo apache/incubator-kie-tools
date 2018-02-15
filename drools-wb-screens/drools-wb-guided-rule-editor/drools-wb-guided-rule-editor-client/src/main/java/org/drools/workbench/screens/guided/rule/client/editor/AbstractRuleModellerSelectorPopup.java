@@ -51,7 +51,7 @@ public abstract class AbstractRuleModellerSelectorPopup extends BaseModal {
 
     protected final SimplePanel choicesPanel = GWT.create(SimplePanel.class);
     protected final FormStyleLayout layoutPanel = GWT.create(FormStyleLayout.class);
-    protected final ListBox positionCbo = new ListBox();
+    protected final ListBox positionCbo = GWT.create(ListBox.class);
     protected ListBox choices;
 
     public AbstractRuleModellerSelectorPopup(final RuleModel model,

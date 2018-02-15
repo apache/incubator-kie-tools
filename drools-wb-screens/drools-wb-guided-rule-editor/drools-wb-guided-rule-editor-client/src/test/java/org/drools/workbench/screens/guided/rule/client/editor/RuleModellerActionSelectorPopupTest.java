@@ -17,16 +17,27 @@ package org.drools.workbench.screens.guided.rule.client.editor;
 
 import java.util.Collections;
 
+import com.google.gwtmockito.GwtMockito;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
+import org.assertj.core.api.Assertions;
+import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.drools.workbench.screens.guided.rule.client.editor.plugin.RuleModellerActionPlugin;
 import org.gwtbootstrap3.client.ui.Heading;
+import org.gwtbootstrap3.client.ui.ListBox;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
+import org.uberfire.mvp.Command;
 
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -42,23 +53,37 @@ public class RuleModellerActionSelectorPopupTest {
     @Mock
     private AsyncPackageDataModelOracle oracle;
 
+    @Mock
+    private RuleModellerActionPlugin actionPlugin;
+
+    @Mock
+    private IAction iAction;
+
+    @Mock
+    private ListBox listBox;
+
+    @Captor
+    private ArgumentCaptor<Command> commandArgumentCaptor;
+
     private RuleModel model;
 
     private RuleModellerActionSelectorPopup popup;
 
     @Before
     public void setUp() {
+        GwtMockito.useProviderForType(ListBox.class, aClass -> listBox);
+
         this.model = spy(new RuleModel());
 
         when(oracle.getDSLConditions()).thenReturn(Collections.emptyList());
         when(oracle.getFactTypes()).thenReturn(new String[]{});
         when(oracle.getGlobalVariables()).thenReturn(new String[]{});
 
-        this.popup = new RuleModellerActionSelectorPopup(model,
-                                                         ruleModeller,
-                                                         Collections.emptyList(),
-                                                         null,
-                                                         oracle);
+        this.popup = spy(new RuleModellerActionSelectorPopup(model,
+                                                             ruleModeller,
+                                                             Collections.singletonList(actionPlugin),
+                                                             null,
+                                                             oracle));
         reset(model);
     }
 
@@ -89,5 +114,36 @@ public class RuleModellerActionSelectorPopupTest {
 
         verify(model).getAllLHSVariables();
         verify(model).getRHSBoundFacts();
+    }
+
+    @Test
+    public void testActionPlugins() throws Exception {
+        // reset due to calls in constructor
+        reset(actionPlugin);
+        final String actionDescription = "modify score";
+        final String actionId = "modify score id";
+        doReturn(actionDescription).when(actionPlugin).getActionAddDescription();
+        doReturn(actionId).when(actionPlugin).getId();
+        doReturn(iAction).when(actionPlugin).createIAction(eq(ruleModeller));
+
+        popup.getContent();
+
+        verify(actionPlugin).createIAction(ruleModeller);
+        verify(actionPlugin).addPluginToActionList(eq(ruleModeller), commandArgumentCaptor.capture());
+
+        // reset due to adding a lot of different items before custom action plugins
+        // listbox is used as popup.choices
+        reset(listBox);
+        commandArgumentCaptor.getValue().execute();
+        verify(listBox).addItem(eq(actionDescription), eq(actionId));
+        Assertions.assertThat(popup.cmds).containsKeys(actionId);
+
+        // reset
+        // now we need listbox as popup.positionCbo
+        reset(listBox);
+        doReturn("123").when(listBox).getValue(anyInt());
+        popup.cmds.get(actionId).execute();
+        verify(model).addRhsItem(iAction, 123);
+        verify(popup).hide();
     }
 }

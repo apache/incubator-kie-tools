@@ -32,6 +32,7 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.B
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.BRLConditionColumnPlugin;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerConfiguration;
+import org.drools.workbench.screens.guided.rule.client.editor.plugin.RuleModellerActionPlugin;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.template.client.editor.TemplateModellerWidgetFactory;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -76,6 +77,9 @@ public class RuleModellerPageTest {
     @Mock
     private GuidedDecisionTableView.Presenter presenter;
 
+    @Mock
+    private RuleModellerActionPlugin ruleModellerActionPlugin;
+
     @InjectMocks
     private RuleModellerPage<BRLActionColumnPlugin> brlActionPage = spy(new RuleModellerPage<BRLActionColumnPlugin>(view,
                                                                                                                     translationService));
@@ -114,7 +118,7 @@ public class RuleModellerPageTest {
     public void testRuleModeller() throws Exception {
         when(brlActionPlugin.getRuleModel()).thenReturn(new RuleModel());
         when(brlActionPlugin.tableFormat()).thenReturn(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY);
-        when(brlActionPlugin.getRuleModellerActionPlugins()).thenReturn(Collections.emptyList());
+        when(brlActionPlugin.getRuleModellerActionPlugins()).thenReturn(Collections.singletonList(ruleModellerActionPlugin));
         when(brlActionPlugin.getRuleModellerConfiguration()).thenReturn(mock(RuleModellerConfiguration.class));
         when(presenter.getDataModelOracle()).thenReturn(mock(AsyncPackageDataModelOracle.class));
 
@@ -122,7 +126,7 @@ public class RuleModellerPageTest {
 
         assertNotNull(ruleModeller);
         assertEquals(brlActionPlugin.getRuleModel(), ruleModeller.getModel());
-        assertEquals(Collections.emptyList(), ruleModeller.getActionPlugins());
+        assertEquals(Collections.singletonList(ruleModellerActionPlugin), ruleModeller.getActionPlugins());
         assertEquals(presenter.getDataModelOracle(), ruleModeller.getDataModelOracle());
         assertTrue(ruleModeller.getWidgetFactory() instanceof TemplateModellerWidgetFactory);
         assertFalse(ruleModeller.isReadOnly());

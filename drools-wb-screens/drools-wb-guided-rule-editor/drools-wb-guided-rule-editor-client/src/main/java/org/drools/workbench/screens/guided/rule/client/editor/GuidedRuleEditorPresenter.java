@@ -180,7 +180,7 @@ public class GuidedRuleEditorPresenter
                 view.setContent(model,
                                 actionPlugins,
                                 oracle,
-                                ruleNamesService,
+                                getRuleNamesService(),
                                 isReadOnly,
                                 isDSLEnabled);
                 importsWidget.setContent(oracle,
@@ -296,9 +296,13 @@ public class GuidedRuleEditorPresenter
     }
 
     /*
-     * Getter due to test purposes
+     * Getters due to test purposes
      */
     Caller<GuidedRuleEditorService> getService() {
         return service;
+    }
+
+    Caller<RuleNamesService> getRuleNamesService() {
+        return ruleNamesService;
     }
 }

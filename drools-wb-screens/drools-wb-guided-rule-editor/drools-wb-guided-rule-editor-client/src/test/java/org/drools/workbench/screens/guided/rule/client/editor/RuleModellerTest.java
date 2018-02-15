@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.guided.rule.client.editor;
 
+import java.util.Collection;
 import java.util.Collections;
 
 import com.google.gwt.event.shared.EventBus;
@@ -24,6 +25,7 @@ import com.google.gwtmockito.GwtMockito;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.drools.workbench.screens.guided.rule.client.editor.plugin.RuleModellerActionPlugin;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +33,11 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.ruleselector.RuleSelector;
 import org.mockito.Mock;
-import org.mockito.Mockito;
+
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 @WithClassesToStub({GuidedRuleEditorImages508.class, FlexTable.class})
@@ -51,6 +57,14 @@ public class RuleModellerTest {
     @Mock
     private RuleSelector ruleSelector;
 
+    @Mock
+    private RuleModellerActionSelectorPopup actionSelectorPopup;
+
+    @Mock
+    private RuleModellerActionPlugin actionPlugin;
+
+    final Collection<RuleModellerActionPlugin> actionPlugins = Collections.singleton(actionPlugin);
+
     private RuleModeller ruleModeller;
 
     @Before
@@ -58,13 +72,13 @@ public class RuleModellerTest {
         model = new RuleModel();
         GwtMockito.useProviderForType(RuleSelector.class, aClass -> ruleSelector);
 
-        ruleModeller = new RuleModeller(model,
-                                        Collections.emptyList(),
-                                        oracle,
-                                        widgetFactory,
-                                        eventBus,
-                                        false,
-                                        false);
+        ruleModeller = spy(new RuleModeller(model,
+                                            actionPlugins,
+                                            oracle,
+                                            widgetFactory,
+                                            eventBus,
+                                            false,
+                                            false));
     }
 
     @Test
@@ -72,6 +86,15 @@ public class RuleModellerTest {
         model.name = "rule 1";
         ruleModeller.setRuleNamesForPackage(Collections.singleton("rule 2"));
 
-        Mockito.verify(ruleSelector).setRuleNames(Collections.singleton("rule 2"), "rule 1");
+        verify(ruleSelector).setRuleNames(Collections.singleton("rule 2"), "rule 1");
+    }
+
+    @Test
+    public void testShowActionSelector() throws Exception {
+        final Integer position = 123;
+        doReturn(actionSelectorPopup).when(ruleModeller).ruleModellerActionSelectorPopup(eq(position), eq(actionPlugins));
+
+        ruleModeller.showActionSelector(position);
+        verify(actionSelectorPopup).show();
     }
 }
