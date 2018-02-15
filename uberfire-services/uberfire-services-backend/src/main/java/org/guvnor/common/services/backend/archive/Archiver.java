@@ -94,7 +94,12 @@ public class Archiver {
             if ("/".equals(originalPath)) {
                 return subPath.substring(originalPath.length());
             } else {
-                return getBaseFolder(originalPath) + subPath.substring(originalPath.length() + 1);
+                String fileSubPath = subPath.substring(originalPath.length());
+                if (fileSubPath.charAt(0) == '/') {
+                    fileSubPath = fileSubPath.substring(1);
+                }
+
+                return getBaseFolder(originalPath) + fileSubPath;
             }
         }
 
