@@ -167,18 +167,20 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
 
     @Override
     public void onItemSelected(final ListSelectorItem item) {
-        final ListSelectorExpressionTypeItem ei = (ListSelectorExpressionTypeItem) item;
-        expressionEditorDefinitionsSupplier
-                .get()
-                .stream()
-                .filter(definition -> definition.getModelClass().isPresent())
-                .map(ExpressionEditorDefinition::getType)
-                .filter(type -> type.equals(ei.getExpressionType()))
-                .findFirst()
-                .ifPresent(type -> {
-                    cellEditorControls.hide();
-                    onExpressionTypeChanged(type);
-                });
+        if (item instanceof ListSelectorExpressionTypeItem) {
+            final ListSelectorExpressionTypeItem eItem = (ListSelectorExpressionTypeItem) item;
+            expressionEditorDefinitionsSupplier
+                    .get()
+                    .stream()
+                    .filter(definition -> definition.getModelClass().isPresent())
+                    .map(ExpressionEditorDefinition::getType)
+                    .filter(type -> type.equals(eItem.getExpressionType()))
+                    .findFirst()
+                    .ifPresent(type -> {
+                        cellEditorControls.hide();
+                        onExpressionTypeChanged(type);
+                    });
+        }
     }
 
     void onExpressionTypeChanged(final ExpressionType type) {

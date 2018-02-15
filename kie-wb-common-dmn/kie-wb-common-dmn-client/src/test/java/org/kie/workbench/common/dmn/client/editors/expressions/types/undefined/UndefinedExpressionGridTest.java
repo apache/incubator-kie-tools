@@ -39,6 +39,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorTextItem;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorDividerItem;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -61,6 +62,8 @@ import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -196,6 +199,26 @@ public class UndefinedExpressionGridTest {
 
         final ListSelectorExpressionTypeItem ti = (ListSelectorExpressionTypeItem) items.get(0);
         assertThat(ti.getExpressionType()).isEqualTo(ExpressionType.LITERAL_EXPRESSION);
+    }
+    
+    @Test
+    public void testGetItemsEmpty() {
+        reset(expressionEditorDefinitionsSupplier);
+        doReturn(new ExpressionEditorDefinitions()).when(expressionEditorDefinitionsSupplier).get();
+
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems();
+
+        assertThat(items.size()).isEqualTo(0);
+    }
+
+    @Test
+    public void testOnItemSelectedDivider() {
+        final ListSelectorDividerItem dItem = mock(ListSelectorDividerItem.class);
+
+        grid.onItemSelected(dItem);
+
+        verify(cellEditorControls, never()).hide();
+        verify(grid, never()).onExpressionTypeChanged(any(ExpressionType.class));
     }
 
     @Test
