@@ -106,7 +106,7 @@ public class GridCellSelectorMouseClickHandlerTest {
         when(uiModel.getRowCount()).thenReturn(1);
         when(uiModel.getRow(eq(0))).thenReturn(uiRow);
         when(uiRow.getHeight()).thenReturn(64.0);
-        when(uiCell.getSelectionManager()).thenReturn(cellSelectionStrategy);
+        when(uiCell.getSelectionStrategy()).thenReturn(cellSelectionStrategy);
 
         final GridCellSelectorMouseClickHandler wrapped = new GridCellSelectorMouseClickHandler(gridWidget,
                                                                                                 selectionManager,

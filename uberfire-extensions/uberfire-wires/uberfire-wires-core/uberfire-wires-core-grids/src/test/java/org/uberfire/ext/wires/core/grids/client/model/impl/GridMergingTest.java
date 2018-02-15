@@ -40,9 +40,9 @@ public class GridMergingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -74,9 +74,9 @@ public class GridMergingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + (columnIndex == 0 ? "X" : rowIndex) + ")"));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>("(" + columnIndex + ", " + (columnIndex == 0 ? "X" : rowIndex) + ")"));
             }
         }
 
@@ -118,15 +118,15 @@ public class GridMergingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        data.setCell(1,
-                     0,
-                     new BaseGridCellValue<String>("(0, 0)"));
+        data.setCellValue(1,
+                          0,
+                          new BaseGridCellValue<String>("(0, 0)"));
 
         assertGridIndexes(data,
                           new boolean[]{true, true, false},
@@ -166,15 +166,15 @@ public class GridMergingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        data.setCell(2,
-                     0,
-                     new BaseGridCellValue<String>("(0, 1)"));
+        data.setCellValue(2,
+                          0,
+                          new BaseGridCellValue<String>("(0, 1)"));
 
         assertGridIndexes(data,
                           new boolean[]{false, true, true},
@@ -214,18 +214,18 @@ public class GridMergingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        data.setCell(1,
-                     0,
-                     new BaseGridCellValue<String>("(0, 0)"));
-        data.setCell(2,
-                     0,
-                     new BaseGridCellValue<String>("(0, 0)"));
+        data.setCellValue(1,
+                          0,
+                          new BaseGridCellValue<String>("(0, 0)"));
+        data.setCellValue(2,
+                          0,
+                          new BaseGridCellValue<String>("(0, 0)"));
 
         assertGridIndexes(data,
                           new boolean[]{true, true, true},
@@ -265,15 +265,15 @@ public class GridMergingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        data.setCell(0,
-                     0,
-                     new BaseGridCellValue<String>("(0, 1)"));
+        data.setCellValue(0,
+                          0,
+                          new BaseGridCellValue<String>("(0, 1)"));
 
         assertGridIndexes(data,
                           new boolean[]{true, true, false},
@@ -313,15 +313,15 @@ public class GridMergingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        data.setCell(1,
-                     0,
-                     new BaseGridCellValue<String>("(0, 2)"));
+        data.setCellValue(1,
+                          0,
+                          new BaseGridCellValue<String>("(0, 2)"));
 
         assertGridIndexes(data,
                           new boolean[]{false, true, true},
@@ -361,19 +361,19 @@ public class GridMergingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        data.setCell(1,
-                     0,
-                     new BaseGridCellValue<String>("(0, 2)"));
+        data.setCellValue(1,
+                          0,
+                          new BaseGridCellValue<String>("(0, 2)"));
 
-        data.setCell(0,
-                     0,
-                     new BaseGridCellValue<String>("(0, 2)"));
+        data.setCellValue(0,
+                          0,
+                          new BaseGridCellValue<String>("(0, 2)"));
 
         assertGridIndexes(data,
                           new boolean[]{true, true, true},
@@ -413,23 +413,23 @@ public class GridMergingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        data.setCell(0,
-                     0,
-                     new BaseGridCellValue<String>("(a, b)"));
+        data.setCellValue(0,
+                          0,
+                          new BaseGridCellValue<String>("(a, b)"));
 
-        data.setCell(2,
-                     0,
-                     new BaseGridCellValue<String>("(a, b)"));
+        data.setCellValue(2,
+                          0,
+                          new BaseGridCellValue<String>("(a, b)"));
 
-        data.setCell(1,
-                     0,
-                     new BaseGridCellValue<String>("(a, b)"));
+        data.setCellValue(1,
+                          0,
+                          new BaseGridCellValue<String>("(a, b)"));
 
         assertGridIndexes(data,
                           new boolean[]{true, true, true},
@@ -469,15 +469,15 @@ public class GridMergingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        data.setCell(1,
-                     0,
-                     new BaseGridCellValue<String>("(0, 0)"));
+        data.setCellValue(1,
+                          0,
+                          new BaseGridCellValue<String>("(0, 0)"));
 
         assertGridIndexes(data,
                           new boolean[]{true, true, false},
@@ -501,9 +501,9 @@ public class GridMergingTest extends BaseGridTest {
                           });
 
         //Update cell value
-        data.setCell(0,
-                     0,
-                     new BaseGridCellValue<String>("<changed>"));
+        data.setCellValue(0,
+                          0,
+                          new BaseGridCellValue<String>("<changed>"));
 
         assertGridIndexes(data,
                           new boolean[]{true, true, false},
@@ -543,15 +543,15 @@ public class GridMergingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        data.setCell(1,
-                     0,
-                     new BaseGridCellValue<String>("(0, 0)"));
+        data.setCellValue(1,
+                          0,
+                          new BaseGridCellValue<String>("(0, 0)"));
 
         assertGridIndexes(data,
                           new boolean[]{true, true, false},
@@ -579,9 +579,9 @@ public class GridMergingTest extends BaseGridTest {
                           gc1);
 
         //Update cell value
-        data.setCell(0,
-                     1,
-                     new BaseGridCellValue<String>("<changed>"));
+        data.setCellValue(0,
+                          1,
+                          new BaseGridCellValue<String>("<changed>"));
 
         assertGridIndexes(data,
                           new boolean[]{true, true, false},
@@ -621,15 +621,15 @@ public class GridMergingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        data.setCell(1,
-                     0,
-                     new BaseGridCellValue<String>("(0, 0)"));
+        data.setCellValue(1,
+                          0,
+                          new BaseGridCellValue<String>("(0, 0)"));
 
         assertGridIndexes(data,
                           new boolean[]{true, true, false},
@@ -657,9 +657,9 @@ public class GridMergingTest extends BaseGridTest {
                           gc1);
 
         //Update cell value
-        data.setCell(0,
-                     1,
-                     new BaseGridCellValue<String>("<changed>"));
+        data.setCellValue(0,
+                          1,
+                          new BaseGridCellValue<String>("<changed>"));
 
         assertGridIndexes(data,
                           new boolean[]{true, true, false},
@@ -745,18 +745,18 @@ public class GridMergingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        data.setCell(1,
-                     0,
-                     new BaseGridCellValue<String>("(0, 0)"));
-        data.setCell(2,
-                     0,
-                     new BaseGridCellValue<String>("(0, 0)"));
+        data.setCellValue(1,
+                          0,
+                          new BaseGridCellValue<String>("(0, 0)"));
+        data.setCellValue(2,
+                          0,
+                          new BaseGridCellValue<String>("(0, 0)"));
 
         //Check initial indexing
         assertGridIndexes(data,
@@ -847,18 +847,18 @@ public class GridMergingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        data.setCell(1,
-                     0,
-                     new BaseGridCellValue<String>("(0, 0)"));
-        data.setCell(2,
-                     0,
-                     new BaseGridCellValue<String>("(0, 0)"));
+        data.setCellValue(1,
+                          0,
+                          new BaseGridCellValue<String>("(0, 0)"));
+        data.setCellValue(2,
+                          0,
+                          new BaseGridCellValue<String>("(0, 0)"));
 
         //Check initial indexing
         assertGridIndexes(data,
@@ -979,18 +979,18 @@ public class GridMergingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        data.setCell(3,
-                     0,
-                     new BaseGridCellValue<String>("(0, 2)"));
-        data.setCell(4,
-                     0,
-                     new BaseGridCellValue<String>("(0, 2)"));
+        data.setCellValue(3,
+                          0,
+                          new BaseGridCellValue<String>("(0, 2)"));
+        data.setCellValue(4,
+                          0,
+                          new BaseGridCellValue<String>("(0, 2)"));
 
         //Check initial indexing
         assertGridIndexes(data,
@@ -1107,9 +1107,9 @@ public class GridMergingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("a"));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>("a"));
             }
         }
 
@@ -1146,9 +1146,9 @@ public class GridMergingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>(rowIndex == 0 ? "b" : "a"));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>(rowIndex == 0 ? "b" : "a"));
             }
         }
 
@@ -1187,9 +1187,9 @@ public class GridMergingTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
                 final String value = (rowIndex == 0 || rowIndex == 3 || rowIndex == 4 ? "a" : "b");
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>(value));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>(value));
             }
         }
 
@@ -1275,9 +1275,9 @@ public class GridMergingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<Boolean>(false));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<Boolean>(false));
             }
         }
 
@@ -1314,9 +1314,9 @@ public class GridMergingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<Boolean>(rowIndex == 0));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<Boolean>(rowIndex == 0));
             }
         }
 
@@ -1355,9 +1355,9 @@ public class GridMergingTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
                 final boolean value = rowIndex == 0 || rowIndex == 3 || rowIndex == 4;
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<Boolean>(value));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<Boolean>(value));
             }
         }
 
@@ -1445,15 +1445,15 @@ public class GridMergingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        data.setCell(1,
-                     0,
-                     new BaseGridCellValue<String>("(0, 0)"));
+        data.setCellValue(1,
+                          0,
+                          new BaseGridCellValue<String>("(0, 0)"));
 
         assertGridIndexes(data,
                           new boolean[]{true, true, false},
@@ -1514,9 +1514,9 @@ public class GridMergingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 

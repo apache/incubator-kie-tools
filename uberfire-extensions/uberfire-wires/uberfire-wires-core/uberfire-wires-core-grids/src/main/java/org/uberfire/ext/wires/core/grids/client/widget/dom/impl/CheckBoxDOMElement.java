@@ -79,8 +79,8 @@ public class CheckBoxDOMElement extends BaseDOMElement<Boolean, CheckBox> {
     public void flush(final Boolean value) {
         final int rowIndex = context.getRowIndex();
         final int columnIndex = context.getColumnIndex();
-        gridWidget.getModel().setCell(rowIndex,
-                                      columnIndex,
-                                      new BaseGridCellValue<Boolean>(value));
+        gridWidget.getModel().setCellValue(rowIndex,
+                                           columnIndex,
+                                           new BaseGridCellValue<Boolean>(value));
     }
 }

@@ -34,9 +34,9 @@ public class GridGroupingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -61,15 +61,15 @@ public class GridGroupingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        gridData.setCell(1,
-                         0,
-                         new BaseGridCellValue<String>("(0, 0)"));
+        gridData.setCellValue(1,
+                              0,
+                              new BaseGridCellValue<String>("(0, 0)"));
 
         //Group cells
         gridData.collapseCell(0,
@@ -130,9 +130,9 @@ public class GridGroupingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -142,9 +142,9 @@ public class GridGroupingTest extends BaseGridTest {
         // [ (0,2) (1,3) ]
         // [ (0,4) (1,4) ]
 
-        gridData.setCell(3,
-                         0,
-                         new BaseGridCellValue<String>("(0, 2)"));
+        gridData.setCellValue(3,
+                              0,
+                              new BaseGridCellValue<String>("(0, 2)"));
 
         //Group cells
         gridData.collapseCell(2,
@@ -182,9 +182,9 @@ public class GridGroupingTest extends BaseGridTest {
                           });
 
         //Set cell above existing block (should not affect existing block)
-        gridData.setCell(1,
-                         0,
-                         new BaseGridCellValue<String>("(0, 2)"));
+        gridData.setCellValue(1,
+                              0,
+                              new BaseGridCellValue<String>("(0, 2)"));
 
         assertGridIndexes(gridData,
                           new boolean[]{false, false, true, true, false},
@@ -218,9 +218,9 @@ public class GridGroupingTest extends BaseGridTest {
                           });
 
         //Set cell above existing block (should create a new block)
-        gridData.setCell(0,
-                         0,
-                         new BaseGridCellValue<String>("(0, 2)"));
+        gridData.setCellValue(0,
+                              0,
+                              new BaseGridCellValue<String>("(0, 2)"));
 
         assertGridIndexes(gridData,
                           new boolean[]{true, true, true, true, false},
@@ -297,9 +297,9 @@ public class GridGroupingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -309,9 +309,9 @@ public class GridGroupingTest extends BaseGridTest {
         // [ (0,3) (1,3) ]
         // [ (0,4) (1,4) ]
 
-        gridData.setCell(2,
-                         0,
-                         new BaseGridCellValue<String>("(0, 1)"));
+        gridData.setCellValue(2,
+                              0,
+                              new BaseGridCellValue<String>("(0, 1)"));
 
         //Group cells
         gridData.collapseCell(1,
@@ -349,9 +349,9 @@ public class GridGroupingTest extends BaseGridTest {
                           });
 
         //Set cell below existing block (should not affect existing block)
-        gridData.setCell(3,
-                         0,
-                         new BaseGridCellValue<String>("(0, 1)"));
+        gridData.setCellValue(3,
+                              0,
+                              new BaseGridCellValue<String>("(0, 1)"));
 
         assertGridIndexes(gridData,
                           new boolean[]{false, true, true, false, false},
@@ -385,9 +385,9 @@ public class GridGroupingTest extends BaseGridTest {
                           });
 
         //Set cell below existing block (should create a new block)
-        gridData.setCell(4,
-                         0,
-                         new BaseGridCellValue<String>("(0, 1)"));
+        gridData.setCellValue(4,
+                              0,
+                              new BaseGridCellValue<String>("(0, 1)"));
 
         assertGridIndexes(gridData,
                           new boolean[]{false, true, true, true, true},
@@ -462,9 +462,9 @@ public class GridGroupingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -474,31 +474,31 @@ public class GridGroupingTest extends BaseGridTest {
         // [   g1    g2  ]      [   g1  (1,4) ]
         // [   g1  (1,4) ]
 
-        gridData.setCell(0,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
-        gridData.setCell(1,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
-        gridData.setCell(2,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
-        gridData.setCell(3,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
-        gridData.setCell(4,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(0,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(1,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(2,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(3,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(4,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
 
-        gridData.setCell(1,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(2,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(3,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(1,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(2,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(3,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
 
         //Group g2
         gridData.collapseCell(1,
@@ -612,9 +612,9 @@ public class GridGroupingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -624,25 +624,25 @@ public class GridGroupingTest extends BaseGridTest {
         // [   g1  (1,3) ]      [   g1  (1,4) ]                           [   g1  (1,4) ]
         // [   g1  (1,4) ]
 
-        gridData.setCell(2,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
-        gridData.setCell(3,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
-        gridData.setCell(4,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(2,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(3,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(4,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
 
-        gridData.setCell(0,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(1,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(2,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(0,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(1,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(2,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
 
         //Group g2 - should split g1
         gridData.collapseCell(0,
@@ -756,9 +756,9 @@ public class GridGroupingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -768,25 +768,25 @@ public class GridGroupingTest extends BaseGridTest {
         // [ (0,3)   g2  ]      [ (0,4)   g2  ]                           [ (0,4)   g2  ]
         // [ (0,4)   g2  ]
 
-        gridData.setCell(0,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
-        gridData.setCell(1,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
-        gridData.setCell(2,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(0,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(1,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(2,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
 
-        gridData.setCell(2,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(3,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(4,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(2,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(3,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(4,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
 
         //Group g1 - should split g2
         gridData.collapseCell(0,
@@ -900,9 +900,9 @@ public class GridGroupingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -912,28 +912,28 @@ public class GridGroupingTest extends BaseGridTest {
         // [ (0,3)  g2 ]
         // [ (0,4)  g2 ]
 
-        gridData.setCell(0,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
-        gridData.setCell(1,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(0,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(1,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
 
-        gridData.setCell(0,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(1,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(2,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(3,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(4,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(0,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(1,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(2,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(3,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(4,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
 
         //Group g1
         gridData.collapseCell(0,
@@ -1012,9 +1012,9 @@ public class GridGroupingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -1024,22 +1024,22 @@ public class GridGroupingTest extends BaseGridTest {
         // [ (0,3)    g2  ]
         // [ (0,4)    g2  ]
 
-        gridData.setCell(1,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
-        gridData.setCell(2,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(1,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(2,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
 
-        gridData.setCell(2,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(3,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(4,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(2,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(3,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(4,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
 
         //Group g1 - should split g2
         gridData.collapseCell(1,
@@ -1118,9 +1118,9 @@ public class GridGroupingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -1130,25 +1130,25 @@ public class GridGroupingTest extends BaseGridTest {
         // [ (0,3)    g2  ]
         // [ (0,4)    g2  ]
 
-        gridData.setCell(1,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
-        gridData.setCell(2,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(1,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(2,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
 
-        gridData.setCell(1,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(2,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(3,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(4,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(1,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(2,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(3,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(4,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
 
         //Group g1 - doesn't need to split g2 since it spans all of g1
         gridData.collapseCell(1,
@@ -1227,9 +1227,9 @@ public class GridGroupingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -1239,28 +1239,28 @@ public class GridGroupingTest extends BaseGridTest {
         // [ (0,3)    g2  ]      [ (0,4)   g2  ]
         // [ (0,4)    g2  ]
 
-        gridData.setCell(0,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
-        gridData.setCell(1,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
-        gridData.setCell(2,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(0,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(1,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(2,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
 
-        gridData.setCell(1,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(2,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(3,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(4,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(1,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(2,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(3,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(4,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
 
         //Group g1 - should split g2
         gridData.collapseCell(0,
@@ -1344,12 +1344,12 @@ public class GridGroupingTest extends BaseGridTest {
         // [   g1    g2  ]
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
-            gridData.setCell(rowIndex,
-                             0,
-                             new BaseGridCellValue<String>("g1"));
-            gridData.setCell(rowIndex,
-                             1,
-                             new BaseGridCellValue<String>("g2"));
+            gridData.setCellValue(rowIndex,
+                                  0,
+                                  new BaseGridCellValue<String>("g1"));
+            gridData.setCellValue(rowIndex,
+                                  1,
+                                  new BaseGridCellValue<String>("g2"));
         }
 
         //Group g1
@@ -1434,20 +1434,20 @@ public class GridGroupingTest extends BaseGridTest {
         // [ (0,4) (1,4) ]
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount() - 1; rowIndex++) {
-            gridData.setCell(rowIndex,
-                             0,
-                             new BaseGridCellValue<String>("g1"));
-            gridData.setCell(rowIndex,
-                             1,
-                             new BaseGridCellValue<String>("g2"));
+            gridData.setCellValue(rowIndex,
+                                  0,
+                                  new BaseGridCellValue<String>("g1"));
+            gridData.setCellValue(rowIndex,
+                                  1,
+                                  new BaseGridCellValue<String>("g2"));
         }
 
-        gridData.setCell(4,
-                         0,
-                         new BaseGridCellValue<String>("(0, 4)"));
-        gridData.setCell(4,
-                         1,
-                         new BaseGridCellValue<String>("(1, 4)"));
+        gridData.setCellValue(4,
+                              0,
+                              new BaseGridCellValue<String>("(0, 4)"));
+        gridData.setCellValue(4,
+                              1,
+                              new BaseGridCellValue<String>("(1, 4)"));
 
         //Group g1
         gridData.collapseCell(0,
@@ -1526,9 +1526,9 @@ public class GridGroupingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -1538,25 +1538,25 @@ public class GridGroupingTest extends BaseGridTest {
         // [ (0,3)   g2  ]      [ (0,4)   g2  ]                           [   g1    g2  ]
         // [ (0,4)   g2  ]                                                [ (0,3)   g2  ]
 
-        gridData.setCell(0,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
-        gridData.setCell(1,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
-        gridData.setCell(2,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(0,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(1,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(2,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
 
-        gridData.setCell(2,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(3,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(4,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(2,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(3,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(4,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
 
         //Group g1 - should split g2
         gridData.collapseCell(0,
@@ -1740,9 +1740,9 @@ public class GridGroupingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -1752,31 +1752,31 @@ public class GridGroupingTest extends BaseGridTest {
         // [ (0,3)   g2  ]                           [ (0,3)   g2  ]
         // [ (0,4)   g2  ]                           [ (0,4)   g2  ]
 
-        gridData.setCell(0,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
-        gridData.setCell(1,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
-        gridData.setCell(2,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(0,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(1,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(2,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
 
-        gridData.setCell(0,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(1,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(2,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(3,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(4,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(0,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(1,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(2,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(3,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(4,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
 
         //Group g2
         gridData.collapseCell(0,
@@ -1890,9 +1890,9 @@ public class GridGroupingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -1902,31 +1902,31 @@ public class GridGroupingTest extends BaseGridTest {
         // [ (0,3)   g2  ]      [ (0,4)   g2  ]      [ (0,3)   g2  ]
         // [ (0,4)   g2  ]                           [ (0,4)   g2  ]
 
-        gridData.setCell(0,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
-        gridData.setCell(1,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
-        gridData.setCell(2,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(0,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(1,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(2,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
 
-        gridData.setCell(0,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(1,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(2,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(3,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(4,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(0,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(1,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(2,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(3,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(4,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
 
         //Group g1
         gridData.collapseCell(0,
@@ -2040,9 +2040,9 @@ public class GridGroupingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -2052,25 +2052,25 @@ public class GridGroupingTest extends BaseGridTest {
         // [   g1  (1,3) ]      [   g1    g2  ]      [   g1    g2  ]
         // [   g1  (1,4) ]
 
-        gridData.setCell(2,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
-        gridData.setCell(3,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
-        gridData.setCell(4,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(2,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(3,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(4,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
 
-        gridData.setCell(0,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(1,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(2,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(0,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(1,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(2,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
 
         //Group g1 - should split g2
         gridData.collapseCell(2,
@@ -2219,9 +2219,9 @@ public class GridGroupingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -2231,32 +2231,32 @@ public class GridGroupingTest extends BaseGridTest {
         // [   g1    g2  (2,3) ]      [ (0,4)   g2  (2,4) ]      [   g1    g2  (2,3) ]
         // [ (0,4)   g2  (2,4) ]
 
-        gridData.setCell(2,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
-        gridData.setCell(3,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(2,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(3,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
 
-        gridData.setCell(2,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(3,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(4,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(2,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(3,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(4,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
 
-        gridData.setCell(0,
-                         2,
-                         new BaseGridCellValue<String>("g3"));
-        gridData.setCell(1,
-                         2,
-                         new BaseGridCellValue<String>("g3"));
-        gridData.setCell(2,
-                         2,
-                         new BaseGridCellValue<String>("g3"));
+        gridData.setCellValue(0,
+                              2,
+                              new BaseGridCellValue<String>("g3"));
+        gridData.setCellValue(1,
+                              2,
+                              new BaseGridCellValue<String>("g3"));
+        gridData.setCellValue(2,
+                              2,
+                              new BaseGridCellValue<String>("g3"));
 
         //Check initial setup
         assertGridIndexes(gridData,
@@ -2397,9 +2397,9 @@ public class GridGroupingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -2411,35 +2411,35 @@ public class GridGroupingTest extends BaseGridTest {
         // [   g1  (1,5) (2,5) ]      [   g1    g2  (2,4) ]
         // [   g1  (1,6) (2,6) ]
 
-        gridData.setCell(4,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
-        gridData.setCell(5,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
-        gridData.setCell(6,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(4,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(5,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(6,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
 
-        gridData.setCell(2,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(3,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(4,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(2,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(3,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(4,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
 
-        gridData.setCell(0,
-                         2,
-                         new BaseGridCellValue<String>("g3"));
-        gridData.setCell(1,
-                         2,
-                         new BaseGridCellValue<String>("g3"));
-        gridData.setCell(2,
-                         2,
-                         new BaseGridCellValue<String>("g3"));
+        gridData.setCellValue(0,
+                              2,
+                              new BaseGridCellValue<String>("g3"));
+        gridData.setCellValue(1,
+                              2,
+                              new BaseGridCellValue<String>("g3"));
+        gridData.setCellValue(2,
+                              2,
+                              new BaseGridCellValue<String>("g3"));
 
         //Check initial setup
         assertGridIndexes(gridData,
@@ -2681,9 +2681,9 @@ public class GridGroupingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -2693,32 +2693,32 @@ public class GridGroupingTest extends BaseGridTest {
         // [   g1  (1,3) (2,3) ]      [   g1  (1,3) (2,3) ]      [ (0,4) (1,4) (2,4) ]
         // [ (0,4) (1,4) (2,4) ]      [ (0,4) (1,4) (2,4) ]
 
-        gridData.setCell(1,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
-        gridData.setCell(2,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
-        gridData.setCell(3,
-                         0,
-                         new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(1,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(2,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
+        gridData.setCellValue(3,
+                              0,
+                              new BaseGridCellValue<String>("g1"));
 
-        gridData.setCell(0,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
-        gridData.setCell(1,
-                         1,
-                         new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(0,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
+        gridData.setCellValue(1,
+                              1,
+                              new BaseGridCellValue<String>("g2"));
 
-        gridData.setCell(0,
-                         2,
-                         new BaseGridCellValue<String>("g3"));
-        gridData.setCell(1,
-                         2,
-                         new BaseGridCellValue<String>("g3"));
-        gridData.setCell(2,
-                         2,
-                         new BaseGridCellValue<String>("g3"));
+        gridData.setCellValue(0,
+                              2,
+                              new BaseGridCellValue<String>("g3"));
+        gridData.setCellValue(1,
+                              2,
+                              new BaseGridCellValue<String>("g3"));
+        gridData.setCellValue(2,
+                              2,
+                              new BaseGridCellValue<String>("g3"));
 
         //Check initial setup
         assertGridIndexes(gridData,
@@ -2949,15 +2949,15 @@ public class GridGroupingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        gridData.setCell(1,
-                         0,
-                         new BaseGridCellValue<String>("(0, 0)"));
+        gridData.setCellValue(1,
+                              0,
+                              new BaseGridCellValue<String>("(0, 0)"));
 
         //Group cells
         gridData.collapseCell(0,
@@ -2985,9 +2985,9 @@ public class GridGroupingTest extends BaseGridTest {
                           });
 
         //Update cell value
-        gridData.setCell(0,
-                         0,
-                         new BaseGridCellValue<String>("<changed>"));
+        gridData.setCellValue(0,
+                              0,
+                              new BaseGridCellValue<String>("<changed>"));
 
         //Ungroup cells
         gridData.expandCell(0,
@@ -3021,15 +3021,15 @@ public class GridGroupingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        gridData.setCell(1,
-                         0,
-                         new BaseGridCellValue<String>("(0, 0)"));
+        gridData.setCellValue(1,
+                              0,
+                              new BaseGridCellValue<String>("(0, 0)"));
 
         //Group cells
         gridData.collapseCell(0,
@@ -3061,9 +3061,9 @@ public class GridGroupingTest extends BaseGridTest {
                               gridColumns[0]);
 
         //Update cell value
-        gridData.setCell(0,
-                         1,
-                         new BaseGridCellValue<String>("<changed>"));
+        gridData.setCellValue(0,
+                              1,
+                              new BaseGridCellValue<String>("<changed>"));
 
         //Ungroup cells
         gridData.expandCell(0,
@@ -3097,15 +3097,15 @@ public class GridGroupingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        gridData.setCell(1,
-                         0,
-                         new BaseGridCellValue<String>("(0, 0)"));
+        gridData.setCellValue(1,
+                              0,
+                              new BaseGridCellValue<String>("(0, 0)"));
 
         //Group cells
         gridData.collapseCell(0,
@@ -3160,18 +3160,18 @@ public class GridGroupingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        gridData.setCell(2,
-                         0,
-                         new BaseGridCellValue<String>("(0, 1)"));
-        gridData.setCell(3,
-                         0,
-                         new BaseGridCellValue<String>("(0, 1)"));
+        gridData.setCellValue(2,
+                              0,
+                              new BaseGridCellValue<String>("(0, 1)"));
+        gridData.setCellValue(3,
+                              0,
+                              new BaseGridCellValue<String>("(0, 1)"));
 
         assertGridIndexes(gridData,
                           new boolean[]{false, true, true, true, false},
@@ -3277,18 +3277,18 @@ public class GridGroupingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        gridData.setCell(2,
-                         0,
-                         new BaseGridCellValue<String>("(0, 1)"));
-        gridData.setCell(3,
-                         0,
-                         new BaseGridCellValue<String>("(0, 1)"));
+        gridData.setCellValue(2,
+                              0,
+                              new BaseGridCellValue<String>("(0, 1)"));
+        gridData.setCellValue(3,
+                              0,
+                              new BaseGridCellValue<String>("(0, 1)"));
 
         assertGridIndexes(gridData,
                           new boolean[]{false, true, true, true, false},
@@ -3384,18 +3384,18 @@ public class GridGroupingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        gridData.setCell(2,
-                         0,
-                         new BaseGridCellValue<String>("(0, 1)"));
-        gridData.setCell(3,
-                         0,
-                         new BaseGridCellValue<String>("(0, 1)"));
+        gridData.setCellValue(2,
+                              0,
+                              new BaseGridCellValue<String>("(0, 1)"));
+        gridData.setCellValue(3,
+                              0,
+                              new BaseGridCellValue<String>("(0, 1)"));
 
         assertGridIndexes(gridData,
                           new boolean[]{false, true, true, true, false},
@@ -3491,18 +3491,18 @@ public class GridGroupingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        gridData.setCell(2,
-                         0,
-                         new BaseGridCellValue<String>("(0, 1)"));
-        gridData.setCell(3,
-                         0,
-                         new BaseGridCellValue<String>("(0, 1)"));
+        gridData.setCellValue(2,
+                              0,
+                              new BaseGridCellValue<String>("(0, 1)"));
+        gridData.setCellValue(3,
+                              0,
+                              new BaseGridCellValue<String>("(0, 1)"));
 
         assertGridIndexes(gridData,
                           new boolean[]{false, true, true, true, false},
@@ -3598,18 +3598,18 @@ public class GridGroupingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        gridData.setCell(2,
-                         0,
-                         new BaseGridCellValue<String>("(0, 1)"));
-        gridData.setCell(3,
-                         0,
-                         new BaseGridCellValue<String>("(0, 1)"));
+        gridData.setCellValue(2,
+                              0,
+                              new BaseGridCellValue<String>("(0, 1)"));
+        gridData.setCellValue(3,
+                              0,
+                              new BaseGridCellValue<String>("(0, 1)"));
 
         // (0, 0), (1, 0)
         // (0, 1), (1, 1)
@@ -3721,9 +3721,9 @@ public class GridGroupingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -3754,18 +3754,18 @@ public class GridGroupingTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        gridData.setCell(1,
-                         0,
-                         new BaseGridCellValue<String>("(0, 0)"));
-        gridData.setCell(2,
-                         0,
-                         new BaseGridCellValue<String>("(0, 0)"));
+        gridData.setCellValue(1,
+                              0,
+                              new BaseGridCellValue<String>("(0, 0)"));
+        gridData.setCellValue(2,
+                              0,
+                              new BaseGridCellValue<String>("(0, 0)"));
 
         assertGridIndexes(gridData,
                           new boolean[]{true, true, true},
@@ -3829,9 +3829,9 @@ public class GridGroupingTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 0 || rowIndex == 4 ? "b" : "a") : Integer.toString(rowIndex);
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>(value));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>(value));
             }
         }
 
@@ -3929,9 +3929,9 @@ public class GridGroupingTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 1 || rowIndex == 4 ? "b" : "a") : Integer.toString(rowIndex);
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>(value));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>(value));
             }
         }
 
@@ -4028,9 +4028,9 @@ public class GridGroupingTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 1 || rowIndex == 4 ? "a" : "b") : "c";
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>(value));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>(value));
             }
         }
 
@@ -4139,9 +4139,9 @@ public class GridGroupingTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 1 || rowIndex == 4 ? "a" : "b") : (rowIndex == 0 ? "d" : "c");
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>(value));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>(value));
             }
         }
 
@@ -4250,9 +4250,9 @@ public class GridGroupingTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 1 || rowIndex == 4 ? "a" : "b") : (rowIndex == 0 || rowIndex == 3 ? "d" : "c");
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>(value));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>(value));
             }
         }
 
@@ -4361,9 +4361,9 @@ public class GridGroupingTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 0 || rowIndex == 4 ? "b" : "a") : Integer.toString(rowIndex);
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>(value));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>(value));
             }
         }
 
@@ -4461,9 +4461,9 @@ public class GridGroupingTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 1 || rowIndex == 2 || rowIndex == 4 ? "b" : "a") : Integer.toString(rowIndex);
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>(value));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>(value));
             }
         }
 

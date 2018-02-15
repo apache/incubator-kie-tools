@@ -184,9 +184,9 @@ public class BaseGridWidgetKeyboardHandlerTest {
         when(gridWidget1.isSelected()).thenReturn(true);
         when(event.getNativeKeyCode()).thenReturn(KeyCodes.KEY_DELETE);
 
-        gridWidget1Data.setCell(0,
-                                0,
-                                new BaseGridCellValue<>("hello"));
+        gridWidget1Data.setCellValue(0,
+                                     0,
+                                     new BaseGridCellValue<>("hello"));
         assertEquals("hello",
                      gridWidget1Data.getCell(0,
                                              0).getValue().getValue());

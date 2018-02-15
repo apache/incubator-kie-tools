@@ -86,9 +86,9 @@ public class ListBoxDOMElement extends BaseDOMElement<String, ListBox> {
             gridWidget.getModel().deleteCell(rowIndex,
                                              columnIndex);
         } else {
-            gridWidget.getModel().setCell(rowIndex,
-                                          columnIndex,
-                                          new BaseGridCellValue<String>(value));
+            gridWidget.getModel().setCellValue(rowIndex,
+                                               columnIndex,
+                                               new BaseGridCellValue<String>(value));
         }
     }
 }

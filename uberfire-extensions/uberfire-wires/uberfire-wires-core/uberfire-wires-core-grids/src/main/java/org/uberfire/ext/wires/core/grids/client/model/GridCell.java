@@ -73,11 +73,11 @@ public interface GridCell<T> {
      * Returns the CellSelectionStrategy to handle selections of the cell.
      * @return
      */
-    CellSelectionStrategy getSelectionManager();
+    CellSelectionStrategy getSelectionStrategy();
 
     /**
      * Sets the CellSelectionStrategy to handle selections of the cell.
      * @return
      */
-    void setSelectionManager(final CellSelectionStrategy selectionManager);
+    void setSelectionStrategy(final CellSelectionStrategy selectionStrategy);
 }

@@ -61,7 +61,7 @@ public class BaseGridDataSelectionsManager {
                     final int ci = sc.getColumnIndex();
                     final int _ci = ColumnIndexUtilities.findUiColumnIndex(gridData.getColumns(), ci);
                     final GridCell<?> cell = gridData.getCell(ri, _ci);
-                    return cell != null && cell.getSelectionManager() instanceof RowSelectionStrategy;
+                    return cell != null && cell.getSelectionStrategy() instanceof RowSelectionStrategy;
                 })
                 .map(GridData.SelectedCell::getRowIndex)
                 .collect(Collectors.toList());

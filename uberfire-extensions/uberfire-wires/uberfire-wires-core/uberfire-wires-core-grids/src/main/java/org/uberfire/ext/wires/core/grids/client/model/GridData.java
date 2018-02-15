@@ -16,6 +16,7 @@
 package org.uberfire.ext.wires.core.grids.client.model;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * An interface defining a generic grid of data.
@@ -159,12 +160,23 @@ public interface GridData {
      * Sets a cell at the specified physical coordinate.
      * @param rowIndex
      * @param columnIndex
-     * @param value
+     * @param cellSupplier A supplier of new cell instances
      * @return The Range of rows affected by the operation.
      */
     Range setCell(final int rowIndex,
                   final int columnIndex,
-                  final GridCellValue<?> value);
+                  final Supplier<GridCell<?>> cellSupplier);
+
+    /**
+     * Sets a cell value at the specified physical coordinate.
+     * @param rowIndex
+     * @param columnIndex
+     * @param value
+     * @return The Range of rows affected by the operation.
+     */
+    Range setCellValue(final int rowIndex,
+                       final int columnIndex,
+                       final GridCellValue<?> value);
 
     /**
      * Deletes a cell at the specified physical coordinate.

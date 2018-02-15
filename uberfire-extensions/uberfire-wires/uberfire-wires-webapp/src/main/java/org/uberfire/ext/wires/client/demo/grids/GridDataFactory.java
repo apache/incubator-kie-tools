@@ -44,15 +44,15 @@ public class GridDataFactory {
             for (int columnIndex = 0; columnIndex < columnCount; columnIndex++) {
                 final GridColumn<?> column = grid.getColumns().get(columnIndex);
                 if (column instanceof RowNumberColumn) {
-                    grid.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<Integer>(rowIndex + 1));
+                    grid.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<Integer>(rowIndex + 1));
                     grid.getCell(rowIndex,
-                                 columnIndex).setSelectionManager(RowSelectionStrategy.INSTANCE);
+                                 columnIndex).setSelectionStrategy(RowSelectionStrategy.INSTANCE);
                 } else if (Math.random() < FILL_FACTOR) {
-                    grid.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                    grid.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
                 }
             }
         }

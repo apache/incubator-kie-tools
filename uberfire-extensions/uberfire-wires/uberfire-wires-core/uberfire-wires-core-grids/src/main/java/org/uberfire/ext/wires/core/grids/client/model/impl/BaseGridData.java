@@ -20,10 +20,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import org.kie.soup.commons.validation.PortablePreconditions;
+import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -107,7 +111,7 @@ public class BaseGridData implements GridData {
                 if (e.getKey() > index) {
                     ((BaseGridRow) row).deleteCell(e.getKey());
                     ((BaseGridRow) row).setCell(e.getKey() - 1,
-                                                e.getValue().getValue());
+                                                e.getValue());
                 }
             }
         }
@@ -357,14 +361,34 @@ public class BaseGridData implements GridData {
     @Override
     public Range setCell(final int rowIndex,
                          final int columnIndex,
-                         final GridCellValue<?> value) {
+                         final Supplier<GridCell<?>> cellSupplier) {
+        return doSetCell(rowIndex,
+                         columnIndex,
+                         (pair) -> cellSupplier.get());
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Range setCellValue(final int rowIndex,
+                              final int columnIndex,
+                              final GridCellValue<?> value) {
+        return doSetCell(rowIndex,
+                         columnIndex,
+                         (pair) -> {
+                             final Optional<BaseGridCell> cell = Optional.ofNullable((BaseGridCell) getCell(pair.getK1(), pair.getK2()));
+                             final BaseGridCell c = cell.orElse(new BaseGridCell<>(value));
+                             c.setValue(value);
+                             return c;
+                         });
+    }
+
+    protected Range doSetCell(final int rowIndex,
+                              final int columnIndex,
+                              final Function<Pair<Integer, Integer>, GridCell<?>> cellSupplier) {
         if (rowIndex < 0 || rowIndex > rows.size() - 1) {
             return new Range(rowIndex);
         }
         if (columnIndex < 0 || columnIndex > columns.size() - 1) {
-            return new Range(rowIndex);
-        }
-        if (value == null) {
             return new Range(rowIndex);
         }
 
@@ -373,7 +397,7 @@ public class BaseGridData implements GridData {
         //If we're not merged just set the value of a single cell
         if (!isMerged) {
             ((BaseGridRow) rows.get(rowIndex)).setCell(_columnIndex,
-                                                       value);
+                                                       cellSupplier.apply(Pair.newPair(rowIndex, columnIndex)));
             return new Range(rowIndex);
         }
 
@@ -389,7 +413,7 @@ public class BaseGridData implements GridData {
         for (int i = minRowIndex; i <= maxRowIndex; i++) {
             final GridRow row = rows.get(i);
             ((BaseGridRow) row).setCell(_columnIndex,
-                                        value);
+                                        cellSupplier.apply(Pair.newPair(i, columnIndex)));
         }
 
         indexManager.onSetCell(range,

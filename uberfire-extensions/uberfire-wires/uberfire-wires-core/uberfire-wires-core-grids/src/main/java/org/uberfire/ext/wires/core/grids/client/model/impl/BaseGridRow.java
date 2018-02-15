@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
-import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 
 /**
@@ -111,13 +110,9 @@ public class BaseGridRow implements GridRow {
     //This is not part of the GridCell interface as we don't want to expose this for general use
     @SuppressWarnings("unchecked")
     void setCell(final int columnIndex,
-                 final GridCellValue value) {
-        if (!cells.containsKey(columnIndex)) {
-            cells.put(columnIndex,
-                      new BaseGridCell(value));
-        } else {
-            ((BaseGridCell) cells.get(columnIndex)).setValue(value);
-        }
+                 final GridCell cell) {
+        cells.put(columnIndex,
+                  cell);
     }
 
     //This is not part of the GridCell interface as we don't want to expose this for general use

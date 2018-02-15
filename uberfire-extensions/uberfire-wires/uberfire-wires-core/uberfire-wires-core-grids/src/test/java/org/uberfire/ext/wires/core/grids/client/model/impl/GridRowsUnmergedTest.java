@@ -38,9 +38,9 @@ public class GridRowsUnmergedTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
                 final String value = (rowIndex > 0 && rowIndex < 4 ? "b" : "a");
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>(value));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>(value));
             }
         }
 
@@ -101,9 +101,9 @@ public class GridRowsUnmergedTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
                 final String value = (rowIndex < 2 ? "a" : "b");
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>(value));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>(value));
             }
         }
 
@@ -164,9 +164,9 @@ public class GridRowsUnmergedTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
                 final String value = (rowIndex < 2 ? "a" : "b");
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>(value));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>(value));
             }
         }
 
@@ -228,9 +228,9 @@ public class GridRowsUnmergedTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
                 final String value = (rowIndex < 2 ? "a" : "b");
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>(value));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>(value));
             }
         }
 
@@ -291,9 +291,9 @@ public class GridRowsUnmergedTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("a"));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>("a"));
             }
         }
 
@@ -355,9 +355,9 @@ public class GridRowsUnmergedTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
                 final String value = (rowIndex < 2 ? "a" : "b");
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>(value));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>(value));
             }
         }
 
@@ -412,9 +412,9 @@ public class GridRowsUnmergedTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
                 final String value = (rowIndex < 2 ? "a" : "b");
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>(value));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>(value));
             }
         }
 
@@ -468,9 +468,9 @@ public class GridRowsUnmergedTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
-                data.setCell(rowIndex,
-                             columnIndex,
-                             new BaseGridCellValue<String>("a"));
+                data.setCellValue(rowIndex,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>("a"));
             }
         }
 

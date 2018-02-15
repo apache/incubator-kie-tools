@@ -16,19 +16,20 @@
 
 package org.uberfire.ext.wires.core.grids.client.model.impl;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class BaseGridDataTest {
@@ -113,5 +114,53 @@ public class BaseGridDataTest {
         final List<GridColumn<?>> columns = baseGridData.getColumns();
 
         assertEquals(2, columns.size());
+    }
+
+    @Test
+    public void testSetCellValueWhenNoExistingGridCell() {
+        final BaseGridColumn<String> column = new BaseGridColumn<>(header, columnRenderer, 25.0);
+
+        baseGridData.insertColumn(0, column);
+        baseGridData.appendRow(new BaseGridRow());
+
+        baseGridData.setCellValue(0, 0, new BaseGridCellValue<>("hello"));
+
+        assertThat(baseGridData.getCell(0, 0).getValue().getValue()).isEqualTo("hello");
+        assertThat(baseGridData.getCell(0, 0)).isInstanceOf(BaseGridCell.class);
+    }
+
+    @Test
+    public void testSetCellValueWhenExistingBaseGridCell() {
+        final BaseGridColumn<String> column = new BaseGridColumn<>(header, columnRenderer, 25.0);
+
+        baseGridData.insertColumn(0, column);
+        baseGridData.appendRow(new BaseGridRow());
+
+        baseGridData.setCell(0, 0, () -> new BaseGridCell<>(new BaseGridCellValue<>("")));
+        baseGridData.setCellValue(0, 0, new BaseGridCellValue<>("hello"));
+
+        assertThat(baseGridData.getCell(0, 0).getValue().getValue()).isEqualTo("hello");
+        assertThat(baseGridData.getCell(0, 0)).isInstanceOf(BaseGridCell.class);
+    }
+
+    @Test
+    public void testSetCellValueWhenExistingCustomGridCell() {
+        final BaseGridColumn<String> column = new BaseGridColumn<>(header, columnRenderer, 25.0);
+
+        baseGridData.insertColumn(0, column);
+        baseGridData.appendRow(new BaseGridRow());
+
+        baseGridData.setCell(0, 0, () -> new CustomGridCell<>(new BaseGridCellValue<>("hello")));
+        baseGridData.setCellValue(0, 0, new BaseGridCellValue<>("hello"));
+
+        assertThat(baseGridData.getCell(0, 0).getValue().getValue()).isEqualTo("hello");
+        assertThat(baseGridData.getCell(0, 0)).isInstanceOf(CustomGridCell.class);
+    }
+
+    static class CustomGridCell<T> extends BaseGridCell<T> {
+
+        public CustomGridCell(final GridCellValue<T> value) {
+            super(value);
+        }
     }
 }

@@ -29,7 +29,7 @@ public class BaseGridCell<T> implements GridCell<T> {
     protected GridCellValue<T> value;
     private int collapseLevel = 0;
     private int mergedCellCount = 1;
-    private CellSelectionStrategy selectionManager = RangeSelectionStrategy.INSTANCE;
+    private CellSelectionStrategy selectionStrategy = RangeSelectionStrategy.INSTANCE;
 
     public BaseGridCell(final GridCellValue<T> value) {
         this.value = value;
@@ -82,13 +82,13 @@ public class BaseGridCell<T> implements GridCell<T> {
     }
 
     @Override
-    public CellSelectionStrategy getSelectionManager() {
-        return selectionManager;
+    public CellSelectionStrategy getSelectionStrategy() {
+        return selectionStrategy;
     }
 
     @Override
-    public void setSelectionManager(final CellSelectionStrategy selectionManager) {
-        this.selectionManager = selectionManager;
+    public void setSelectionStrategy(final CellSelectionStrategy selectionStrategy) {
+        this.selectionStrategy = selectionStrategy;
     }
 
     @Override

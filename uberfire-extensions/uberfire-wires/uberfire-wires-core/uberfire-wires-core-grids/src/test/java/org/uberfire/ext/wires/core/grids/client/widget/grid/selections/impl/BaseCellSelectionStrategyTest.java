@@ -59,9 +59,9 @@ public abstract class BaseCellSelectionStrategyTest {
         for (int rowIndex = 0; rowIndex < uiModel.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < uiModel.getColumnCount(); columnIndex++) {
                 final String value = (rowIndex < 2 ? "a" : "b") + columnIndex;
-                uiModel.setCell(rowIndex,
-                                columnIndex,
-                                new BaseGridCellValue<>(value));
+                uiModel.setCellValue(rowIndex,
+                                     columnIndex,
+                                     new BaseGridCellValue<>(value));
             }
         }
     }

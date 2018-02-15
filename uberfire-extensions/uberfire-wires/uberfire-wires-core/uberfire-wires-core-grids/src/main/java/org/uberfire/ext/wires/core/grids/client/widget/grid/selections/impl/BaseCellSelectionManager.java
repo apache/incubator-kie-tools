@@ -87,7 +87,7 @@ public class BaseCellSelectionManager implements CellSelectionManager {
         if (cell == null) {
             strategy = RangeSelectionStrategy.INSTANCE;
         } else {
-            strategy = cell.getSelectionManager();
+            strategy = cell.getSelectionStrategy();
         }
         if (strategy == null) {
             return false;
@@ -434,9 +434,9 @@ public class BaseCellSelectionManager implements CellSelectionManager {
 
                         @Override
                         public void callback(final GridCellValue<?> value) {
-                            gridModel.setCell(uiRowIndex,
-                                              uiColumnIndex,
-                                              value);
+                            gridModel.setCellValue(uiRowIndex,
+                                                   uiColumnIndex,
+                                                   value);
                             gridWidget.getLayer().batch();
                         }
                     });

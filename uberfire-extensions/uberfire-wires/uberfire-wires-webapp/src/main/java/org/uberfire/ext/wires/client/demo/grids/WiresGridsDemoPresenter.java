@@ -342,9 +342,9 @@ public class WiresGridsDemoPresenter implements WiresGridsDemoView.Presenter {
                                                                                         100);
         grid3.appendColumn(grid3Column2);
         for (int rowIndex = 0; rowIndex < GRID4_ROWS; rowIndex++) {
-            grid3.setCell(rowIndex,
-                          3,
-                          new BaseGridCellValue<String>("(" + 2 + ", " + rowIndex + ")"));
+            grid3.setCellValue(rowIndex,
+                               3,
+                               new BaseGridCellValue<String>("(" + 2 + ", " + rowIndex + ")"));
         }
 
         //Add DOM Column - CheckBox
@@ -358,9 +358,9 @@ public class WiresGridsDemoPresenter implements WiresGridsDemoView.Presenter {
         grid3Column3.setFloatable(true);
         grid3.appendColumn(grid3Column3);
         for (int rowIndex = 0; rowIndex < GRID4_ROWS; rowIndex++) {
-            grid3.setCell(rowIndex,
-                          4,
-                          new BaseGridCellValue<Boolean>(Math.random() < GridDataFactory.FILL_FACTOR));
+            grid3.setCellValue(rowIndex,
+                               4,
+                               new BaseGridCellValue<Boolean>(Math.random() < GridDataFactory.FILL_FACTOR));
         }
 
         //Add DOM Column - ListBox
@@ -374,9 +374,9 @@ public class WiresGridsDemoPresenter implements WiresGridsDemoView.Presenter {
                                                                                          100);
         grid3.appendColumn(grid3Column4);
         for (int rowIndex = 0; rowIndex < GRID4_ROWS; rowIndex++) {
-            grid3.setCell(rowIndex,
-                          5,
-                          new BaseGridCellValue<String>(rowIndex % 2 == 0 ? "one" : "two"));
+            grid3.setCellValue(rowIndex,
+                               5,
+                               new BaseGridCellValue<String>(rowIndex % 2 == 0 ? "one" : "two"));
         }
 
         gridWidget3.setLocation(new Point2D(1050,
@@ -478,15 +478,15 @@ public class WiresGridsDemoPresenter implements WiresGridsDemoView.Presenter {
                 switch (columnIndex) {
                     case 0:
                         if (Math.random() > 0.5) {
-                            grid4.setCell(rowIndex,
-                                          columnIndex,
-                                          new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                            grid4.setCellValue(rowIndex,
+                                               columnIndex,
+                                               new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
                         }
                         break;
                     case 1:
-                        grid4.setCell(rowIndex,
-                                      columnIndex,
-                                      new BaseGridCellValue<Boolean>(Math.random() < 0.5));
+                        grid4.setCellValue(rowIndex,
+                                           columnIndex,
+                                           new BaseGridCellValue<Boolean>(Math.random() < 0.5));
                         break;
                 }
             }

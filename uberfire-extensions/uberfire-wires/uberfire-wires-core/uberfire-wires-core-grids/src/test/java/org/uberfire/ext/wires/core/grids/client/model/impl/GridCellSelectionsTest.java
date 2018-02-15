@@ -37,9 +37,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -89,15 +89,15 @@ public class GridCellSelectionsTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        gridData.setCell(1,
-                         0,
-                         new BaseGridCellValue<String>("(0, 0)"));
+        gridData.setCellValue(1,
+                              0,
+                              new BaseGridCellValue<String>("(0, 0)"));
 
         assertGridIndexes(gridData,
                           new boolean[]{true, true, false},
@@ -145,15 +145,15 @@ public class GridCellSelectionsTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        gridData.setCell(1,
-                         0,
-                         new BaseGridCellValue<String>("(0, 0)"));
+        gridData.setCellValue(1,
+                              0,
+                              new BaseGridCellValue<String>("(0, 0)"));
         gridData.collapseCell(0,
                               0);
 
@@ -203,15 +203,15 @@ public class GridCellSelectionsTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
-        gridData.setCell(1,
-                         0,
-                         new BaseGridCellValue<String>("(0, 0)"));
+        gridData.setCellValue(1,
+                              0,
+                              new BaseGridCellValue<String>("(0, 0)"));
         gridData.collapseCell(0,
                               0);
 
@@ -261,9 +261,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -333,9 +333,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -403,9 +403,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -489,9 +489,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -575,9 +575,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -687,9 +687,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -797,9 +797,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         constructGridData(1, 2);
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
-            gridData.setCell(rowIndex,
-                             0,
-                             new BaseGridCellValue<String>("(0, 0)"));
+            gridData.setCellValue(rowIndex,
+                                  0,
+                                  new BaseGridCellValue<String>("(0, 0)"));
         }
 
         assertGridIndexes(gridData,
@@ -837,9 +837,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         constructGridData(false, 1, 2);
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
-            gridData.setCell(rowIndex,
-                             0,
-                             new BaseGridCellValue<String>("(0, 0)"));
+            gridData.setCellValue(rowIndex,
+                                  0,
+                                  new BaseGridCellValue<String>("(0, 0)"));
         }
 
         assertGridIndexes(gridData,
@@ -879,9 +879,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         constructGridData(1, 2);
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
-            gridData.setCell(rowIndex,
-                             0,
-                             new BaseGridCellValue<String>("(0, 0)"));
+            gridData.setCellValue(rowIndex,
+                                  0,
+                                  new BaseGridCellValue<String>("(0, 0)"));
         }
 
         assertGridIndexes(gridData,
@@ -916,9 +916,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         constructGridData(1, 3);
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
-            gridData.setCell(rowIndex,
-                             0,
-                             new BaseGridCellValue<String>(rowIndex < 2 ? "a" : "b"));
+            gridData.setCellValue(rowIndex,
+                                  0,
+                                  new BaseGridCellValue<String>(rowIndex < 2 ? "a" : "b"));
         }
 
         assertGridIndexes(gridData,
@@ -958,9 +958,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         constructGridData(1, 2);
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
-            gridData.setCell(rowIndex,
-                             0,
-                             new BaseGridCellValue<String>("(0, 0)"));
+            gridData.setCellValue(rowIndex,
+                                  0,
+                                  new BaseGridCellValue<String>("(0, 0)"));
         }
 
         assertGridIndexes(gridData,
@@ -997,9 +997,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         constructGridData(1, 3);
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
-            gridData.setCell(rowIndex,
-                             0,
-                             new BaseGridCellValue<String>(rowIndex < 2 ? "a" : "b"));
+            gridData.setCellValue(rowIndex,
+                                  0,
+                                  new BaseGridCellValue<String>(rowIndex < 2 ? "a" : "b"));
         }
 
         assertGridIndexes(gridData,
@@ -1041,9 +1041,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         constructGridData(false, 1, 2);
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
-            gridData.setCell(rowIndex,
-                             0,
-                             new BaseGridCellValue<String>("(0, 0)"));
+            gridData.setCellValue(rowIndex,
+                                  0,
+                                  new BaseGridCellValue<String>("(0, 0)"));
         }
 
         assertGridIndexes(gridData,
@@ -1080,9 +1080,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         constructGridData(1, 2);
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
-            gridData.setCell(rowIndex,
-                             0,
-                             new BaseGridCellValue<String>("(0, 0)"));
+            gridData.setCellValue(rowIndex,
+                                  0,
+                                  new BaseGridCellValue<String>("(0, 0)"));
         }
 
         assertGridIndexes(gridData,
@@ -1122,9 +1122,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         constructGridData(1, 2);
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
-            gridData.setCell(rowIndex,
-                             0,
-                             new BaseGridCellValue<String>("(0, 0)"));
+            gridData.setCellValue(rowIndex,
+                                  0,
+                                  new BaseGridCellValue<String>("(0, 0)"));
         }
 
         assertGridIndexes(gridData,
@@ -1177,11 +1177,11 @@ public class GridCellSelectionsTest extends BaseGridTest {
         constructGridData(1, 2);
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
-            gridData.setCell(rowIndex,
-                             0,
-                             new BaseGridCellValue<>(rowIndex));
+            gridData.setCellValue(rowIndex,
+                                  0,
+                                  new BaseGridCellValue<>(rowIndex));
             gridData.getCell(rowIndex,
-                             0).setSelectionManager(RowSelectionStrategy.INSTANCE);
+                             0).setSelectionStrategy(RowSelectionStrategy.INSTANCE);
         }
 
         assertGridIndexes(gridData,
@@ -1221,9 +1221,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         final GridColumn<String> gc1 = gridColumns[0];
 
         for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-            gridData.setCell(0,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(0, " + columnIndex + ")"));
+            gridData.setCellValue(0,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>("(0, " + columnIndex + ")"));
         }
 
         assertGridIndexes(gridData,
@@ -1258,9 +1258,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         final GridColumn<String> gc1 = gridColumns[0];
 
         for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-            gridData.setCell(0,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(0, " + columnIndex + ")"));
+            gridData.setCellValue(0,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>("(0, " + columnIndex + ")"));
         }
 
         assertGridIndexes(gridData,
@@ -1295,9 +1295,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         final GridColumn<String> gc1 = gridColumns[0];
 
         for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-            gridData.setCell(0,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(0, " + columnIndex + ")"));
+            gridData.setCellValue(0,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>("(0, " + columnIndex + ")"));
         }
 
         assertGridIndexes(gridData,
@@ -1335,9 +1335,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         final GridColumn<String> gc4 = gridColumns[3];
 
         for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-            gridData.setCell(0,
-                             columnIndex,
-                             new BaseGridCellValue<String>("(0, " + columnIndex + ")"));
+            gridData.setCellValue(0,
+                                  columnIndex,
+                                  new BaseGridCellValue<String>("(0, " + columnIndex + ")"));
         }
 
         assertGridIndexes(gridData,
@@ -1395,9 +1395,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 1 ? "b" : "a") : Integer.toString(rowIndex);
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>(value));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>(value));
             }
         }
 
@@ -1482,9 +1482,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 0 ? "b" : "a") : Integer.toString(rowIndex);
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>(value));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>(value));
             }
         }
 
@@ -1569,9 +1569,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 4 ? "b" : "a") : Integer.toString(rowIndex);
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>(value));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>(value));
             }
         }
 
@@ -1680,9 +1680,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 4 ? "b" : "a") : Integer.toString(rowIndex);
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>(value));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>(value));
             }
         }
 
@@ -1803,9 +1803,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? "a" : Integer.toString(rowIndex);
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>(value));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>(value));
             }
         }
 
@@ -1924,9 +1924,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? "a" : Integer.toString(rowIndex);
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>(value));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>(value));
             }
         }
 
@@ -2045,9 +2045,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 4 ? "b" : "a") : Integer.toString(rowIndex);
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>(value));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>(value));
             }
         }
 
@@ -2156,9 +2156,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 4 ? "b" : "a") : Integer.toString(rowIndex);
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>(value));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>(value));
             }
         }
 
@@ -2279,9 +2279,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? "a" : Integer.toString(rowIndex);
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>(value));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>(value));
             }
         }
 
@@ -2400,9 +2400,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? "a" : Integer.toString(rowIndex);
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>(value));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>(value));
             }
         }
 
@@ -2521,9 +2521,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 4 ? "b" : "a") : Integer.toString(rowIndex);
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>(value));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>(value));
             }
         }
 
@@ -2650,9 +2650,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 4 ? "b" : "a") : Integer.toString(rowIndex);
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>(value));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>(value));
             }
         }
 
@@ -2782,9 +2782,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 0 ? "b" : "a") : Integer.toString(rowIndex);
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>(value));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>(value));
             }
         }
 
@@ -2917,9 +2917,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 4 ? "b" : "a") : Integer.toString(rowIndex);
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>(value));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>(value));
             }
         }
 
@@ -3052,9 +3052,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 4 ? "b" : "a") : Integer.toString(rowIndex);
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>(value));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>(value));
             }
         }
 
@@ -3184,9 +3184,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
                 final String value = columnIndex == 0 ? (rowIndex == 0 ? "b" : "a") : Integer.toString(rowIndex);
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>(value));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>(value));
             }
         }
 
@@ -3311,9 +3311,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -3381,9 +3381,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -3451,9 +3451,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
@@ -3521,9 +3521,9 @@ public class GridCellSelectionsTest extends BaseGridTest {
 
         for (int rowIndex = 0; rowIndex < gridData.getRowCount(); rowIndex++) {
             for (int columnIndex = 0; columnIndex < gridData.getColumnCount(); columnIndex++) {
-                gridData.setCell(rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
+                gridData.setCellValue(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
             }
         }
 
