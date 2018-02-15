@@ -279,6 +279,17 @@ public class LibraryPlacesTest {
     }
 
     @Test
+    public void onChangeSameProject() {
+        when(previous.getWorkspaceProject()).thenReturn(activeProject);
+        when(current.getWorkspaceProject()).thenReturn(activeProject);
+
+        libraryPlaces.onChange(previous, current);
+
+        verify(libraryPlaces).goToProject();
+        verify(libraryPlaces, never()).closeAllPlacesOrNothing();
+    }
+
+    @Test
     public void onSelectPlaceOutsideLibraryTest() {
         doReturn(PlaceStatus.CLOSE).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
         doReturn(PlaceStatus.CLOSE).when(placeManager).getStatus(any(PlaceRequest.class));

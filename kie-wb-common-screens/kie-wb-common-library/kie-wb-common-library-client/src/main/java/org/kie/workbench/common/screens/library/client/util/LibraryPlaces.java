@@ -739,7 +739,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
     @Override
     public void onChange(WorkspaceProjectContextChangeEvent previous, WorkspaceProjectContextChangeEvent current) {
         if (current.getWorkspaceProject() != null) {
-            if (current.getWorkspaceProject().equals(previous.getWorkspaceProject())) {
+            if (!current.getWorkspaceProject().equals(previous.getWorkspaceProject())) {
                 if (closeAllPlacesOrNothing()) {
                     goToProject();
                 }
