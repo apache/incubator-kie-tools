@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.datamodeller.backend.server;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -31,6 +32,8 @@ import org.kie.workbench.common.services.backend.service.KieService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
+import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 
 @Service
@@ -39,14 +42,28 @@ public class PersistenceDescriptorEditorServiceImpl
         extends KieService<PersistenceDescriptorEditorContent>
         implements PersistenceDescriptorEditorService {
 
-    @Inject
-    @Named("ioStrategy")
-    IOService ioService;
+    private final IOService ioService;
+
+    private final RenameService renameService;
+
+    private final PersistenceDescriptorService descriptorService;
+
+    private final SaveAndRenameServiceImpl<PersistenceDescriptorEditorContent, Metadata> saveAndRenameService;
 
     @Inject
-    PersistenceDescriptorService descriptorService;
+    public PersistenceDescriptorEditorServiceImpl(final @Named("ioStrategy") IOService ioService,
+                                                  final PersistenceDescriptorService descriptorService,
+                                                  final RenameService renameService,
+                                                  final SaveAndRenameServiceImpl<PersistenceDescriptorEditorContent, Metadata> saveAndRenameService) {
+        this.ioService = ioService;
+        this.descriptorService = descriptorService;
+        this.renameService = renameService;
+        this.saveAndRenameService = saveAndRenameService;
+    }
 
-    public PersistenceDescriptorEditorServiceImpl() {
+    @PostConstruct
+    public void init() {
+        saveAndRenameService.init(this);
     }
 
     @Override
@@ -98,5 +115,21 @@ public class PersistenceDescriptorEditorServiceImpl
             //When the path was created manually it doesn't have the property.
             return new Pair<Path, Boolean>(Paths.convert(Paths.convert(path)), false);
         }
+    }
+
+    @Override
+    public Path saveAndRename(final Path path,
+                              final String newFileName,
+                              final Metadata metadata,
+                              final PersistenceDescriptorEditorContent content,
+                              final String comment) {
+        return saveAndRenameService.saveAndRename(path, newFileName, metadata, content, comment);
+    }
+
+    @Override
+    public Path rename(final Path path,
+                       final String newName,
+                       final String comment) {
+        return renameService.rename(path, newName, comment);
     }
 }

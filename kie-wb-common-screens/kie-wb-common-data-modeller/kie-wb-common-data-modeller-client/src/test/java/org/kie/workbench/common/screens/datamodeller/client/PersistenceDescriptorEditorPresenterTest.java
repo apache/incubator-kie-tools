@@ -52,15 +52,22 @@ import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@RunWith( GwtMockitoTestRunner.class)
+@RunWith(GwtMockitoTestRunner.class)
 public class PersistenceDescriptorEditorPresenterTest {
 
     @GwtMock
@@ -101,21 +108,36 @@ public class PersistenceDescriptorEditorPresenterTest {
     @Mock
     private EventSourceMock<NotificationEvent> notificationEvent;
 
+    private CallerMock editorServiceCaller;
+
     @Before
     public void setup() {
-        presenter = new PersistenceDescriptorEditorPresenter( view,
-                                                              persistenceDescriptorType,
-                                                              dataSourceSelector,
-                                                              new CallerMock<>( editorService ),
-                                                              new CallerMock<>( descriptorService ),
-                                                              new CallerMock<>( dataModelerService ),
-                                                              validationPopup
-                                                                ) {
+
+        final PersistenceDescriptorEditorPresenter editorPresenter = makePersistenceDescriptorEditorPresenter();
+
+        presenter = spy(editorPresenter);
+
+        verify(view, times(1)).setPresenter(editorPresenter);
+        when(this.editorService.loadContent(any(Path.class), anyBoolean())).thenReturn(createEditorContent());
+        when(dataModelerService.findPersistableClasses(any(Path.class))).thenReturn(createPersistableClasses());
+    }
+
+    private PersistenceDescriptorEditorPresenter makePersistenceDescriptorEditorPresenter() {
+
+        editorServiceCaller = new CallerMock<>(editorService);
+
+        return new PersistenceDescriptorEditorPresenter(view,
+                                                        persistenceDescriptorType,
+                                                        dataSourceSelector,
+                                                        editorServiceCaller,
+                                                        new CallerMock<>(descriptorService),
+                                                        new CallerMock<>(dataModelerService),
+                                                        validationPopup) {
             {
-                kieView = mock( KieEditorWrapperView.class );
-                this.versionRecordManager = _versionRecordManager;
-                overviewWidget = mock( OverviewWidgetPresenter.class );
-                this.notification = notificationEvent;
+                kieView = mock(KieEditorWrapperView.class);
+                versionRecordManager = _versionRecordManager;
+                overviewWidget = mock(OverviewWidgetPresenter.class);
+                notification = notificationEvent;
             }
 
             protected void makeMenuBar() {
@@ -125,19 +147,15 @@ public class PersistenceDescriptorEditorPresenterTest {
             protected void addSourcePage() {
 
             }
-
         };
-        verify( view, times( 1 ) ).setPresenter( presenter );
-        when( editorService.loadContent( any( Path.class ), anyBoolean() ) ).thenReturn( createEditorContent() );
-        when( dataModelerService.findPersistableClasses( any( Path.class ) ) ).thenReturn( createPersistableClasses() );
     }
 
     private void loadContent() {
-        when( _versionRecordManager.getCurrentPath() ).thenReturn( path );
-        when ( view.getPersistenceUnitProperties() ).thenReturn( propertyGrid );
-        when ( view.getPersistenceUnitClasses() ).thenReturn( projectClassList );
+        when(_versionRecordManager.getCurrentPath()).thenReturn(path);
+        when(view.getPersistenceUnitProperties()).thenReturn(propertyGrid);
+        when(view.getPersistenceUnitClasses()).thenReturn(projectClassList);
 
-        presenter.onStartup( path, mock( PlaceRequest.class ) );
+        presenter.onStartup(path, mock(PlaceRequest.class));
     }
 
     @Test
@@ -145,34 +163,34 @@ public class PersistenceDescriptorEditorPresenterTest {
 
         loadContent();
 
-        verify( view, times( 1 ) ).setReadOnly( false );
-        verify( view, times( 1 ) ).hideBusyIndicator();
+        verify(view, times(1)).setReadOnly(false);
+        verify(view, times(1)).hideBusyIndicator();
 
         List<ClassRow> classRows = new ArrayList<ClassRow>();
-        classRows.add( new ClassRowImpl( "Class1" ) );
-        classRows.add( new ClassRowImpl( "Class2" ) );
-        when( projectClassList.getClasses() ).thenReturn( classRows );
+        classRows.add(new ClassRowImpl("Class1"));
+        classRows.add(new ClassRowImpl("Class2"));
+        when(projectClassList.getClasses()).thenReturn(classRows);
 
-        assertEquals( "2.0", presenter.getContent().getDescriptorModel().getVersion() );
-        assertEquals( "UnitName", presenter.getContent().getDescriptorModel().getPersistenceUnit().getName() );
-        assertEquals( TransactionType.JTA, presenter.getContent().getDescriptorModel().getPersistenceUnit().getTransactionType() );
-        assertEquals( "ProviderClass", presenter.getContent().getDescriptorModel().getPersistenceUnit().getProvider() );
-        assertEquals( "JTADataSource", presenter.getContent().getDescriptorModel().getPersistenceUnit().getJtaDataSource() );
-        assertEquals( 2, presenter.getContent().getDescriptorModel().getPersistenceUnit().getClasses().size() );
-        assertEquals( "Class1", presenter.getContent().getDescriptorModel().getPersistenceUnit().getClasses().get( 0 ) );
-        assertEquals( "Class2", presenter.getContent().getDescriptorModel().getPersistenceUnit().getClasses().get( 1 ) );
+        assertEquals("2.0", presenter.getUpdatedContent().getDescriptorModel().getVersion());
+        assertEquals("UnitName", presenter.getUpdatedContent().getDescriptorModel().getPersistenceUnit().getName());
+        assertEquals(TransactionType.JTA, presenter.getUpdatedContent().getDescriptorModel().getPersistenceUnit().getTransactionType());
+        assertEquals("ProviderClass", presenter.getUpdatedContent().getDescriptorModel().getPersistenceUnit().getProvider());
+        assertEquals("JTADataSource", presenter.getUpdatedContent().getDescriptorModel().getPersistenceUnit().getJtaDataSource());
+        assertEquals(2, presenter.getUpdatedContent().getDescriptorModel().getPersistenceUnit().getClasses().size());
+        assertEquals("Class1", presenter.getUpdatedContent().getDescriptorModel().getPersistenceUnit().getClasses().get(0));
+        assertEquals("Class2", presenter.getUpdatedContent().getDescriptorModel().getPersistenceUnit().getClasses().get(1));
     }
 
     @Test
-    public void onJTADataSourceChange( ) {
+    public void onJTADataSourceChange() {
 
-       loadContent();
+        loadContent();
 
-        when( view.getJTADataSource() ).thenReturn( "NewJTADataSource" );
+        when(view.getJTADataSource()).thenReturn("NewJTADataSource");
         presenter.onJTADataSourceChange();
 
-        verify( view, times( 1 ) ).getJTADataSource();
-        assertEquals( "NewJTADataSource", presenter.getContent().getDescriptorModel().getPersistenceUnit().getJtaDataSource() );
+        verify(view, times(1)).getJTADataSource();
+        assertEquals("NewJTADataSource", presenter.getUpdatedContent().getDescriptorModel().getPersistenceUnit().getJtaDataSource());
     }
 
     @Test
@@ -180,11 +198,11 @@ public class PersistenceDescriptorEditorPresenterTest {
 
         loadContent();
 
-        when( view.getJTATransactions() ).thenReturn( true );
+        when(view.getJTATransactions()).thenReturn(true);
         presenter.onJTATransactionsChange();
 
-        verify( view, times( 1 ) ).getJTATransactions();
-        assertEquals( TransactionType.JTA, presenter.getContent().getDescriptorModel().getPersistenceUnit().getTransactionType() );
+        verify(view, times(1)).getJTATransactions();
+        assertEquals(TransactionType.JTA, presenter.getUpdatedContent().getDescriptorModel().getPersistenceUnit().getTransactionType());
     }
 
     @Test
@@ -192,11 +210,11 @@ public class PersistenceDescriptorEditorPresenterTest {
 
         loadContent();
 
-        when( view.getResourceLocalTransactions() ).thenReturn( true );
+        when(view.getResourceLocalTransactions()).thenReturn(true);
         presenter.onResourceLocalTransactionsChange();
 
-        verify( view, times( 2 ) ).getResourceLocalTransactions();
-        assertEquals( TransactionType.RESOURCE_LOCAL, presenter.getContent().getDescriptorModel().getPersistenceUnit().getTransactionType() );
+        verify(view, times(2)).getResourceLocalTransactions();
+        assertEquals(TransactionType.RESOURCE_LOCAL, presenter.getUpdatedContent().getDescriptorModel().getPersistenceUnit().getTransactionType());
     }
 
     @Test
@@ -204,11 +222,11 @@ public class PersistenceDescriptorEditorPresenterTest {
 
         loadContent();
 
-        when( view.getPersistenceUnitName() ).thenReturn( "NewUnitName" );
+        when(view.getPersistenceUnitName()).thenReturn("NewUnitName");
         presenter.onPersistenceUnitNameChange();
 
-        verify( view, times( 1 ) ).getPersistenceUnitName();
-        assertEquals( "NewUnitName", presenter.getContent().getDescriptorModel().getPersistenceUnit().getName() );
+        verify(view, times(1)).getPersistenceUnitName();
+        assertEquals("NewUnitName", presenter.getUpdatedContent().getDescriptorModel().getPersistenceUnit().getName());
     }
 
     @Test
@@ -216,11 +234,11 @@ public class PersistenceDescriptorEditorPresenterTest {
 
         loadContent();
 
-        when( view.getPersistenceProvider() ).thenReturn( "NewPersistenceProvider" );
+        when(view.getPersistenceProvider()).thenReturn("NewPersistenceProvider");
         presenter.onPersistenceProviderChange();
 
-        verify( view, times( 1 ) ).getPersistenceProvider();
-        assertEquals( "NewPersistenceProvider", presenter.getContent().getDescriptorModel().getPersistenceUnit().getProvider() );
+        verify(view, times(1)).getPersistenceProvider();
+        assertEquals("NewPersistenceProvider", presenter.getUpdatedContent().getDescriptorModel().getPersistenceUnit().getProvider());
     }
 
     @Test
@@ -228,23 +246,23 @@ public class PersistenceDescriptorEditorPresenterTest {
 
         loadContent();
 
-        when( view.getPersistenceUnitClasses() ).thenReturn( projectClassList );
+        when(view.getPersistenceUnitClasses()).thenReturn(projectClassList);
 
         List<ClassRow> classRows = new ArrayList<ClassRow>();
-        classRows.add( new ClassRowImpl( "Class3" ) );
-        classRows.add( new ClassRowImpl( "Class4") );
-        when( projectClassList.getClasses() ).thenReturn( classRows );
+        classRows.add(new ClassRowImpl("Class3"));
+        classRows.add(new ClassRowImpl("Class4"));
+        when(projectClassList.getClasses()).thenReturn(classRows);
 
         presenter.onLoadClasses();
 
-        verify( view, times( 1 ) ).showBusyIndicator( anyString() );
+        verify(view, times(1)).showBusyIndicator(anyString());
 
-        verify( view, times( 2 ) ).hideBusyIndicator();
-        verify( view, times( 5 ) ).getPersistenceUnitClasses();
+        verify(view, times(2)).hideBusyIndicator();
+        verify(view, times(5)).getPersistenceUnitClasses();
 
-        assertEquals( 2, presenter.getContent().getDescriptorModel().getPersistenceUnit().getClasses().size() );
-        assertEquals( classRows.get( 0 ).getClassName(), presenter.getContent().getDescriptorModel().getPersistenceUnit().getClasses().get( 0 ) );
-        assertEquals( classRows.get( 1 ).getClassName(), presenter.getContent().getDescriptorModel().getPersistenceUnit().getClasses().get( 1 ) );
+        assertEquals(2, presenter.getUpdatedContent().getDescriptorModel().getPersistenceUnit().getClasses().size());
+        assertEquals(classRows.get(0).getClassName(), presenter.getUpdatedContent().getDescriptorModel().getPersistenceUnit().getClasses().get(0));
+        assertEquals(classRows.get(1).getClassName(), presenter.getUpdatedContent().getDescriptorModel().getPersistenceUnit().getClasses().get(1));
     }
 
     @Test
@@ -252,80 +270,112 @@ public class PersistenceDescriptorEditorPresenterTest {
 
         loadContent();
 
-        when( view.getPersistenceUnitClasses() ).thenReturn( projectClassList );
+        when(view.getPersistenceUnitClasses()).thenReturn(projectClassList);
 
         List<ClassRow> classRows = new ArrayList<ClassRow>();
-        classRows.add( new ClassRowImpl( "Class3" ) );
-        classRows.add( new ClassRowImpl( "Class4" ) );
-        projectClassList.setClasses( classRows );
-        when( projectClassList.getClasses() ).thenReturn( classRows );
-        when( dataModelerService.isPersistableClass( eq( "NewClass" ), any( Path.class ) ) ).thenReturn( true );
+        classRows.add(new ClassRowImpl("Class3"));
+        classRows.add(new ClassRowImpl("Class4"));
+        projectClassList.setClasses(classRows);
+        when(projectClassList.getClasses()).thenReturn(classRows);
+        when(dataModelerService.isPersistableClass(eq("NewClass"), any(Path.class))).thenReturn(true);
 
-        presenter.onLoadClass( "NewClass" );
-        classRows.add( new ClassRowImpl( "NewClass" ) );
+        presenter.onLoadClass("NewClass");
+        classRows.add(new ClassRowImpl("NewClass"));
 
-        verify( view, times( 1 ) ).showBusyIndicator( anyString() );
+        verify(view, times(1)).showBusyIndicator(anyString());
 
-        verify( view, times( 2 ) ).hideBusyIndicator();
-        verify( view, times( 5 ) ).getPersistenceUnitClasses();
-        verify( projectClassList, times( 1 ) ).setNewClassName( null );
-        verify( projectClassList, times( 1 ) ).setNewClassHelpMessage( null );
+        verify(view, times(2)).hideBusyIndicator();
+        verify(view, times(5)).getPersistenceUnitClasses();
+        verify(projectClassList, times(1)).setNewClassName(null);
+        verify(projectClassList, times(1)).setNewClassHelpMessage(null);
 
-        assertEquals( 3, presenter.getContent().getDescriptorModel().getPersistenceUnit().getClasses().size() );
-        assertEquals( classRows.get( 0 ).getClassName(), presenter.getContent().getDescriptorModel().getPersistenceUnit().getClasses().get( 0 ) );
-        assertEquals( classRows.get( 1 ).getClassName(), presenter.getContent().getDescriptorModel().getPersistenceUnit().getClasses().get( 1 ) );
-        assertEquals( classRows.get( 2 ).getClassName(), "NewClass" );
+        assertEquals(3, presenter.getUpdatedContent().getDescriptorModel().getPersistenceUnit().getClasses().size());
+        assertEquals(classRows.get(0).getClassName(), presenter.getUpdatedContent().getDescriptorModel().getPersistenceUnit().getClasses().get(0));
+        assertEquals(classRows.get(1).getClassName(), presenter.getUpdatedContent().getDescriptorModel().getPersistenceUnit().getClasses().get(1));
+        assertEquals(classRows.get(2).getClassName(), "NewClass");
     }
 
     @Test
     public void testOnValidateWithNoMessages() {
         loadContent();
-        List<ValidationMessage> messages = new ArrayList<>(  );
-        when( descriptorService.validate( path, presenter.getContent().getDescriptorModel() ) ).thenReturn( messages );
+        List<ValidationMessage> messages = new ArrayList<>();
+        when(descriptorService.validate(path, presenter.getUpdatedContent().getDescriptorModel())).thenReturn(messages);
         presenter.onValidate().execute();
-        verify( validationPopup, never() ).showTranslatedMessages( anyList() );
-        verify( notificationEvent, times( 1 ) ).fire( new NotificationEvent(
-                CommonConstants.INSTANCE.ItemValidatedSuccessfully( ),
-                NotificationEvent.NotificationType.SUCCESS ) );
+        verify(validationPopup, never()).showTranslatedMessages(anyList());
+        verify(notificationEvent, times(1)).fire(new NotificationEvent(
+                CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
+                NotificationEvent.NotificationType.SUCCESS));
     }
 
     @Test
     public void testOnValidateWithMessages() {
         loadContent();
-        List<ValidationMessage> messages = new ArrayList<>(  );
-        messages.add( mock( ValidationMessage.class ) );
-        messages.add( mock( ValidationMessage.class ) );
+        List<ValidationMessage> messages = new ArrayList<>();
+        messages.add(mock(ValidationMessage.class));
+        messages.add(mock(ValidationMessage.class));
 
-        when( descriptorService.validate( path, presenter.getContent().getDescriptorModel() ) ).thenReturn( messages );
+        when(descriptorService.validate(path, presenter.getUpdatedContent().getDescriptorModel())).thenReturn(messages);
         presenter.onValidate().execute();
-        verify( validationPopup, times( 1 ) ).showTranslatedMessages( messages );
+        verify(validationPopup, times(1)).showTranslatedMessages(messages);
+    }
+
+    @Test
+    public void testGetUpdatedContent() {
+
+        final PersistenceDescriptorEditorContent expectedContent = mock(PersistenceDescriptorEditorContent.class);
+
+        doNothing().when(presenter).updateContent();
+        doReturn(expectedContent).when(presenter).getContent();
+
+        final PersistenceDescriptorEditorContent actualContent = presenter.getUpdatedContent();
+
+        verify(presenter).updateContent();
+
+        assertEquals(expectedContent, actualContent);
+    }
+
+    @Test
+    public void testGetContentSupplier() {
+
+        final PersistenceDescriptorEditorContent expectedContent = mock(PersistenceDescriptorEditorContent.class);
+
+        doReturn(expectedContent).when(presenter).getUpdatedContent();
+
+        final PersistenceDescriptorEditorContent actualContent = presenter.getContentSupplier().get();
+
+        assertEquals(expectedContent, actualContent);
+    }
+
+    @Test
+    public void testGetSaveAndRenameServiceCaller() {
+        assertEquals(editorServiceCaller, presenter.getSaveAndRenameServiceCaller());
     }
 
     private PersistenceDescriptorEditorContent createEditorContent() {
         PersistenceDescriptorEditorContent content = new PersistenceDescriptorEditorContent();
         PersistenceDescriptorModel model = new PersistenceDescriptorModel();
-        model.setVersion( "2.0" );
+        model.setVersion("2.0");
         PersistenceUnitModel unitModel = new PersistenceUnitModel();
-        model.setPersistenceUnit( unitModel );
+        model.setPersistenceUnit(unitModel);
 
-        unitModel.setName( "UnitName" );
-        unitModel.setTransactionType( TransactionType.JTA );
-        unitModel.setProvider( "ProviderClass" );
-        unitModel.setJtaDataSource( "JTADataSource" );
-        List<String> classes = new ArrayList<String>(  );
-        classes.add( "Class1" );
-        classes.add( "Class2" );
-        unitModel.setClasses( classes );
+        unitModel.setName("UnitName");
+        unitModel.setTransactionType(TransactionType.JTA);
+        unitModel.setProvider("ProviderClass");
+        unitModel.setJtaDataSource("JTADataSource");
+        List<String> classes = new ArrayList<String>();
+        classes.add("Class1");
+        classes.add("Class2");
+        unitModel.setClasses(classes);
 
-        content.setDescriptorModel( model );
-        content.setOverview( new Overview() );
+        content.setDescriptorModel(model);
+        content.setOverview(new Overview());
         return content;
     }
 
     private List<String> createPersistableClasses() {
         List<String> classes = new ArrayList<String>();
-        classes.add( "Class3" );
-        classes.add( "Class4" );
+        classes.add("Class3");
+        classes.add("Class4");
         return classes;
     }
 }
