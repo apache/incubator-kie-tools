@@ -117,12 +117,12 @@ public class DecisionTableUIModelMapperTest {
         assertEquals(1,
                      uiModel.getCell(0, 0).getValue().getValue());
         assertEquals(RowSelectionStrategy.INSTANCE,
-                     uiModel.getCell(0, 0).getSelectionManager());
+                     uiModel.getCell(0, 0).getSelectionStrategy());
 
         assertEquals(2,
                      uiModel.getCell(1, 0).getValue().getValue());
         assertEquals(RowSelectionStrategy.INSTANCE,
-                     uiModel.getCell(1, 0).getSelectionManager());
+                     uiModel.getCell(1, 0).getSelectionStrategy());
     }
 
     @Test

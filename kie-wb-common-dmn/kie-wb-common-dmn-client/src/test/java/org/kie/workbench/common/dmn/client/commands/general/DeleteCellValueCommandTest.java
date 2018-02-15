@@ -175,9 +175,9 @@ public class DeleteCellValueCommandTest {
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.getCanvasCommand(canvasHandler).undo(canvasHandler));
 
-        verify(gridModel).setCell(eq(ROW_INDEX),
-                                  eq(COLUMN_INDEX),
-                                  gridCellValueCaptor.capture());
+        verify(gridModel).setCellValue(eq(ROW_INDEX),
+                                       eq(COLUMN_INDEX),
+                                       gridCellValueCaptor.capture());
 
         assertEquals(gridCellValue,
                      gridCellValueCaptor.getValue());

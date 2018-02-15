@@ -18,29 +18,23 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.undefined;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
-import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 
 public class UndefinedExpressionColumn extends DMNGridColumn<String> {
 
     public UndefinedExpressionColumn(final HeaderMetaData headerMetaData,
-                                     final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                      final UndefinedExpressionGrid gridWidget) {
         this(new ArrayList<HeaderMetaData>() {{
                  add(headerMetaData);
              }},
-             expressionEditorDefinitionsSupplier,
              gridWidget);
     }
 
     public UndefinedExpressionColumn(final List<HeaderMetaData> headerMetaData,
-                                     final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                      final UndefinedExpressionGrid gridWidget) {
         super(headerMetaData,
-              new UndefinedExpressionColumnRenderer(expressionEditorDefinitionsSupplier,
-                                                    gridWidget),
+              new UndefinedExpressionColumnRenderer(),
               gridWidget);
     }
 

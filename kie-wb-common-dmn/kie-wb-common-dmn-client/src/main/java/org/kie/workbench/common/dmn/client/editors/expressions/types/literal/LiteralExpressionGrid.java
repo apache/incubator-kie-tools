@@ -29,6 +29,7 @@ import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
@@ -50,6 +51,7 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
                                  final SessionManager sessionManager,
                                  final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                  final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
+                                 final CellEditorControls cellEditorControls,
                                  final boolean isNested) {
         super(parent,
               hasExpression,
@@ -61,6 +63,7 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
               sessionManager,
               sessionCommandManager,
               editorSelectedEvent,
+              cellEditorControls,
               isNested);
 
         setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);

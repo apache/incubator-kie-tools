@@ -30,6 +30,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
@@ -79,6 +80,9 @@ public class LiteralExpressionGridTest {
     private EventSourceMock<ExpressionEditorSelectedEvent> editorSelectedEvent;
 
     @Mock
+    private CellEditorControls cellEditorControls;
+
+    @Mock
     private GridCellTuple parent;
 
     @Mock
@@ -95,7 +99,8 @@ public class LiteralExpressionGridTest {
                                                                                                    gridLayer,
                                                                                                    sessionManager,
                                                                                                    sessionCommandManager,
-                                                                                                   editorSelectedEvent);
+                                                                                                   editorSelectedEvent,
+                                                                                                   cellEditorControls);
 
         final Decision decision = new Decision();
         decision.setName(new Name("name"));

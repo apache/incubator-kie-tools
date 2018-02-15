@@ -43,6 +43,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Exp
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
@@ -108,6 +109,9 @@ public class FunctionGridTest {
     private FunctionGridControls controls;
 
     @Mock
+    private CellEditorControls cellEditorControls;
+
+    @Mock
     private GridCellTuple parent;
 
     @Mock
@@ -155,6 +159,7 @@ public class FunctionGridTest {
                                                                                  expressionEditorDefinitionsSupplier,
                                                                                  supplementaryEditorDefinitionsSupplier,
                                                                                  editorSelectedEvent,
+                                                                                 cellEditorControls,
                                                                                  controlsProvider);
 
         expression = definition.getModelClass();

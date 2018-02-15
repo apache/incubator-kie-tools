@@ -1,0 +1,98 @@
+/*
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.kie.workbench.common.dmn.client.widgets.grid.controls.list;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorItem;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
+public class ListSelectorTest {
+
+    @Mock
+    private ListSelectorItem listSelectorItem1;
+
+    @Mock
+    private ListSelectorItem listSelectorItem2;
+
+    @Mock
+    private ListSelectorView view;
+
+    @Mock
+    private HasListSelectorControl bound;
+
+    @Captor
+    private ArgumentCaptor<List<ListSelectorItem>> itemsCaptor;
+
+    private ListSelector listSelector;
+
+    @Before
+    public void setup() {
+        this.listSelector = new ListSelector(view);
+
+        when(bound.getItems()).thenReturn(Arrays.asList(listSelectorItem1, listSelectorItem2));
+    }
+
+    @Test
+    public void testInit() {
+        verify(view).init(eq(listSelector));
+    }
+
+    @Test
+    public void testShow() {
+        listSelector.show();
+
+        verify(view).show();
+    }
+
+    @Test
+    public void testHide() {
+        listSelector.hide();
+
+        verify(view).hide();
+    }
+
+    @Test
+    public void testBind() {
+        listSelector.bind(bound);
+
+        verify(view).setItems(itemsCaptor.capture());
+
+        assertThat(itemsCaptor.getValue()).containsOnly(listSelectorItem1, listSelectorItem2);
+    }
+
+    @Test
+    public void testOnItemSelected() {
+        listSelector.bind(bound);
+        listSelector.onItemSelected(listSelectorItem2);
+
+        verify(bound).onItemSelected(eq(listSelectorItem2));
+    }
+}

@@ -34,6 +34,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -52,6 +53,7 @@ public class FunctionEditorDefinition implements ExpressionEditorDefinition<Func
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier;
     private Event<ExpressionEditorSelectedEvent> editorSelectedEvent;
+    private CellEditorControls cellEditorControls;
     private ManagedInstance<FunctionGridControls> controlsProvider;
 
     public FunctionEditorDefinition() {
@@ -66,6 +68,7 @@ public class FunctionEditorDefinition implements ExpressionEditorDefinition<Func
                                     final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                     final @FunctionGridSupplementaryEditor Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier,
                                     final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
+                                    final CellEditorControls cellEditorControls,
                                     final ManagedInstance<FunctionGridControls> controlsProvider) {
         this.gridPanel = gridPanel;
         this.gridLayer = gridLayer;
@@ -74,6 +77,7 @@ public class FunctionEditorDefinition implements ExpressionEditorDefinition<Func
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.supplementaryEditorDefinitionsSupplier = supplementaryEditorDefinitionsSupplier;
         this.editorSelectedEvent = editorSelectedEvent;
+        this.cellEditorControls = cellEditorControls;
         this.controlsProvider = controlsProvider;
     }
 
@@ -113,6 +117,7 @@ public class FunctionEditorDefinition implements ExpressionEditorDefinition<Func
                                             expressionEditorDefinitionsSupplier,
                                             supplementaryEditorDefinitionsSupplier,
                                             editorSelectedEvent,
+                                            cellEditorControls,
                                             controlsProvider.get(),
                                             isNested));
     }

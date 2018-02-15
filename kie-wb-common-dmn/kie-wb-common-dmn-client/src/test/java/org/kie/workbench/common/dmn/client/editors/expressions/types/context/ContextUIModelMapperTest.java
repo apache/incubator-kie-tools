@@ -44,10 +44,10 @@ public class ContextUIModelMapperTest extends BaseContextUIModelMapperTest<Conte
         assertEquals(1,
                      uiModel.getCell(0, 0).getValue().getValue());
         assertEquals(RowSelectionStrategy.INSTANCE,
-                     uiModel.getCell(0, 0).getSelectionManager());
+                     uiModel.getCell(0, 0).getSelectionStrategy());
 
         assertNull(uiModel.getCell(1, 0).getValue().getValue());
         assertEquals(RowSelectionStrategy.INSTANCE,
-                     uiModel.getCell(1, 0).getSelectionManager());
+                     uiModel.getCell(1, 0).getSelectionStrategy());
     }
 }

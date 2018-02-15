@@ -16,99 +16,17 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.undefined;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.function.Supplier;
-
-import com.ait.lienzo.client.core.event.NodeMouseEnterHandler;
 import com.ait.lienzo.client.core.shape.Group;
-import com.ait.lienzo.client.core.shape.Rectangle;
-import com.ait.lienzo.client.core.types.Transform;
-import com.ait.lienzo.shared.core.types.ColorName;
-import com.ait.lienzo.shared.core.types.EventPropagationMode;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.shared.HandlerRegistration;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
+import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
-import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.impl.BaseGridColumnRenderer;
 
-public class UndefinedExpressionColumnRenderer extends BaseGridColumnRenderer<String> implements HasDOMElementResources {
-
-    private final ExpressionEditorTooltip tooltip = getTooltip();
-    private final Group editorTypesContainer = GWT.create(Group.class);
-    private final Set<HandlerRegistration> tooltipEventHandlerRegistrations = new HashSet<>();
-
-    private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
-    private final UndefinedExpressionGrid gridWidget;
-
-    public UndefinedExpressionColumnRenderer(final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
-                                             final UndefinedExpressionGrid gridWidget) {
-        this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
-        this.gridWidget = gridWidget;
-
-        setupTooltips();
-    }
-
-    ExpressionEditorTooltip getTooltip() {
-        return ExpressionEditorTooltip.INSTANCE;
-    }
-
-    private void setupTooltips() {
-        double x = 10.0;
-        for (ExpressionEditorDefinition<Expression> definition : expressionEditorDefinitionsSupplier.get()) {
-            if (definition.getModelClass().isPresent()) {
-                final Rectangle r = new Rectangle(10, 10);
-                r.setY(10.0).setX(x).setFillColor(ColorName.AQUAMARINE).setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
-
-                tooltipEventHandlerRegistrations.add(r.addNodeMouseEnterHandler(getNodeMouseEnterHandler(definition, r)));
-                tooltipEventHandlerRegistrations.add(r.addNodeMouseExitHandler((event) -> tooltip.hide()));
-                tooltipEventHandlerRegistrations.add(r.addNodeMouseClickHandler((event) -> {
-                    tooltip.hide();
-                    gridWidget.onExpressionTypeChanged(definition.getType());
-                }));
-
-                x = x + 15.0;
-                editorTypesContainer.add(r);
-            }
-        }
-    }
-
-    NodeMouseEnterHandler getNodeMouseEnterHandler(final ExpressionEditorDefinition<Expression> definition,
-                                                   final Rectangle r) {
-        return (event) -> {
-            final Transform transform = editorTypesContainer.getViewport().getTransform();
-            final double tx = transform.getTranslateX();
-            final double ty = transform.getTranslateY();
-            final double absoluteCellX = editorTypesContainer.getAbsoluteLocation().getX() - tx;
-            final double absoluteCellY = editorTypesContainer.getAbsoluteLocation().getY() - ty;
-            tooltip.show(definition,
-                         absoluteCellX,
-                         absoluteCellY,
-                         r);
-        };
-    }
+public class UndefinedExpressionColumnRenderer extends BaseGridColumnRenderer<String> {
 
     @Override
     public Group renderCell(final GridCell<String> cell,
                             final GridBodyCellRenderContext context) {
-        //Ensure Tooltip is only added to Layer once
-        this.gridWidget.getLayer().remove(tooltip.asPrimitive());
-        this.gridWidget.getLayer().add(tooltip.asPrimitive());
-
-        final Group g = new Group();
-        g.add(editorTypesContainer);
-
-        return g;
-    }
-
-    @Override
-    public void destroyResources() {
-        tooltipEventHandlerRegistrations.stream().forEach(HandlerRegistration::removeHandler);
-        tooltipEventHandlerRegistrations.clear();
-        tooltip.hide();
+        return RendererUtils.getCenteredCellText(context, cell);
     }
 }

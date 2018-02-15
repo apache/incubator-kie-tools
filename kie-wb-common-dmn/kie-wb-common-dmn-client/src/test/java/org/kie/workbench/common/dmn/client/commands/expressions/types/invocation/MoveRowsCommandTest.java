@@ -129,9 +129,9 @@ public class MoveRowsCommandTest {
     protected void addUiModelRow(final int rowIndex) {
         final DMNGridRow uiRow = new DMNGridRow();
         uiModel.appendRow(uiRow);
-        uiModel.setCell(rowIndex, 0, new BaseGridCellValue<>(rowIndex + 1));
-        uiModel.setCell(rowIndex, 1, new BaseGridCellValue<>("name" + rowIndex));
-        uiModel.setCell(rowIndex, 2, new BaseGridCellValue<>("editor" + rowIndex));
+        uiModel.setCellValue(rowIndex, 0, new BaseGridCellValue<>(rowIndex + 1));
+        uiModel.setCellValue(rowIndex, 1, new BaseGridCellValue<>("name" + rowIndex));
+        uiModel.setCellValue(rowIndex, 2, new BaseGridCellValue<>("editor" + rowIndex));
     }
 
     private void setupCommand(final int index,

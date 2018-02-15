@@ -33,6 +33,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Exp
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -70,6 +71,9 @@ public abstract class BaseFunctionSupplementaryGridTest<D extends ExpressionEdit
 
     @Mock
     protected EventSourceMock<ExpressionEditorSelectedEvent> editorSelectedEvent;
+
+    @Mock
+    protected CellEditorControls cellEditorControls;
 
     @Mock
     private GridCellTuple parent;

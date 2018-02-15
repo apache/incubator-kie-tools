@@ -152,9 +152,9 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                                           expression,
                                                                           hasName,
                                                                           false);
-        expressionContainer.getModel().setCell(0,
-                                               0,
-                                               new ExpressionCellValue(oEditor));
+        expressionContainer.getModel().setCellValue(0,
+                                                    0,
+                                                    new ExpressionCellValue(oEditor));
         parent.onResize();
 
         gridPanel.refreshScrollPosition();

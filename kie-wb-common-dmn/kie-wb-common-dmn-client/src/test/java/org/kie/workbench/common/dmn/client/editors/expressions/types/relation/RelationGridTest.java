@@ -34,6 +34,7 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.A
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.AddRelationRowCommand;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.session.DMNClientFullSession;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -90,6 +91,9 @@ public class RelationGridTest {
     @Mock
     private RelationGridControls controls;
 
+    @Mock
+    private CellEditorControls cellEditorControls;
+
     @Captor
     private ArgumentCaptor<AddRelationColumnCommand> addColumnCommand;
 
@@ -107,8 +111,17 @@ public class RelationGridTest {
 
     @Test
     public void testInitialiseUiColumnsEmptyModel() throws Exception {
-        relationGrid = new RelationGrid(parent, hasExpression, expression, hasName, gridPanel, gridLayer, sessionManager,
-                                        sessionCommandManager, editorSelectedEvent, controls);
+        relationGrid = new RelationGrid(parent,
+                                        hasExpression,
+                                        expression,
+                                        hasName,
+                                        gridPanel,
+                                        gridLayer,
+                                        sessionManager,
+                                        sessionCommandManager,
+                                        editorSelectedEvent,
+                                        cellEditorControls,
+                                        controls);
 
         assertEquals(0, relationGrid.getModel().getRowCount());
         assertEquals(1, relationGrid.getModel().getColumns().size());
@@ -121,8 +134,17 @@ public class RelationGridTest {
         relation.getColumn().add(new InformationItem() {{
             getName().setValue(columnHeader);
         }});
-        relationGrid = new RelationGrid(parent, hasExpression, expression, hasName, gridPanel, gridLayer, sessionManager,
-                                        sessionCommandManager, editorSelectedEvent, controls);
+        relationGrid = new RelationGrid(parent,
+                                        hasExpression,
+                                        expression,
+                                        hasName,
+                                        gridPanel,
+                                        gridLayer,
+                                        sessionManager,
+                                        sessionCommandManager,
+                                        editorSelectedEvent,
+                                        cellEditorControls,
+                                        controls);
 
         assertEquals(2, relationGrid.getModel().getColumns().size());
         assertTrue(relationGrid.getModel().getColumns().get(0) instanceof RowNumberColumn);
@@ -146,8 +168,17 @@ public class RelationGridTest {
                 setText(secondRowValue);
             }});
         }});
-        relationGrid = new RelationGrid(parent, hasExpression, expression, hasName, gridPanel, gridLayer, sessionManager,
-                                        sessionCommandManager, editorSelectedEvent, controls);
+        relationGrid = new RelationGrid(parent,
+                                        hasExpression,
+                                        expression,
+                                        hasName,
+                                        gridPanel,
+                                        gridLayer,
+                                        sessionManager,
+                                        sessionCommandManager,
+                                        editorSelectedEvent,
+                                        cellEditorControls,
+                                        controls);
 
         assertEquals(2, relationGrid.getModel().getRowCount());
         assertEquals(firstRowValue, relationGrid.getModel().getRow(0).getCells().get(1).getValue().getValue());
@@ -156,8 +187,17 @@ public class RelationGridTest {
 
     @Test
     public void testAddColumn() throws Exception {
-        relationGrid = new RelationGrid(parent, hasExpression, expression, hasName, gridPanel, gridLayer, sessionManager,
-                                        sessionCommandManager, editorSelectedEvent, controls);
+        relationGrid = new RelationGrid(parent,
+                                        hasExpression,
+                                        expression,
+                                        hasName,
+                                        gridPanel,
+                                        gridLayer,
+                                        sessionManager,
+                                        sessionCommandManager,
+                                        editorSelectedEvent,
+                                        cellEditorControls,
+                                        controls);
 
         relationGrid.addColumn();
 
@@ -171,8 +211,17 @@ public class RelationGridTest {
 
     @Test
     public void testAddRow() throws Exception {
-        relationGrid = new RelationGrid(parent, hasExpression, expression, hasName, gridPanel, gridLayer, sessionManager,
-                                        sessionCommandManager, editorSelectedEvent, controls);
+        relationGrid = new RelationGrid(parent,
+                                        hasExpression,
+                                        expression,
+                                        hasName,
+                                        gridPanel,
+                                        gridLayer,
+                                        sessionManager,
+                                        sessionCommandManager,
+                                        editorSelectedEvent,
+                                        cellEditorControls,
+                                        controls);
 
         relationGrid.addRow();
 

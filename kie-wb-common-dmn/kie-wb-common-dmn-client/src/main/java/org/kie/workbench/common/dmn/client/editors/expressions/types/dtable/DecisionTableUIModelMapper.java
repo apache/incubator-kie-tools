@@ -44,28 +44,28 @@ public class DecisionTableUIModelMapper extends BaseUIModelMapper<DecisionTable>
             final DecisionTableSection section = DecisionTableUIModelMapperHelper.getSection(dtable, columnIndex);
             switch (section) {
                 case ROW_INDEX:
-                    uiModel.get().setCell(rowIndex,
-                                          columnIndex,
-                                          new BaseGridCellValue<>(rowIndex + 1));
+                    uiModel.get().setCellValue(rowIndex,
+                                               columnIndex,
+                                               new BaseGridCellValue<>(rowIndex + 1));
                     uiModel.get().getCell(rowIndex,
-                                          columnIndex).setSelectionManager(RowSelectionStrategy.INSTANCE);
+                                          columnIndex).setSelectionStrategy(RowSelectionStrategy.INSTANCE);
                     break;
                 case INPUT_CLAUSES:
                     final int iei = DecisionTableUIModelMapperHelper.getInputEntryIndex(dtable, columnIndex);
-                    uiModel.get().setCell(rowIndex,
-                                          columnIndex,
-                                          new BaseGridCellValue<>(rule.getInputEntry().get(iei).getText()));
+                    uiModel.get().setCellValue(rowIndex,
+                                               columnIndex,
+                                               new BaseGridCellValue<>(rule.getInputEntry().get(iei).getText()));
                     break;
                 case OUTPUT_CLAUSES:
                     final int oei = DecisionTableUIModelMapperHelper.getOutputEntryIndex(dtable, columnIndex);
-                    uiModel.get().setCell(rowIndex,
-                                          columnIndex,
-                                          new BaseGridCellValue<>(rule.getOutputEntry().get(oei).getText()));
+                    uiModel.get().setCellValue(rowIndex,
+                                               columnIndex,
+                                               new BaseGridCellValue<>(rule.getOutputEntry().get(oei).getText()));
                     break;
                 case DESCRIPTION:
-                    uiModel.get().setCell(rowIndex,
-                                          columnIndex,
-                                          new BaseGridCellValue<>(rule.getDescription().getValue()));
+                    uiModel.get().setCellValue(rowIndex,
+                                               columnIndex,
+                                               new BaseGridCellValue<>(rule.getDescription().getValue()));
                     break;
             }
         });

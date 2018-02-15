@@ -55,18 +55,18 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
             final ContextUIModelMapperHelper.ContextSection section = ContextUIModelMapperHelper.getSection(columnIndex);
             switch (section) {
                 case ROW_INDEX:
-                    uiModel.get().setCell(rowIndex,
-                                          columnIndex,
-                                          isLastRow(rowIndex) ? new BaseGridCellValue<>((Integer) null) : new BaseGridCellValue<>(rowIndex + 1));
+                    uiModel.get().setCellValue(rowIndex,
+                                               columnIndex,
+                                               isLastRow(rowIndex) ? new BaseGridCellValue<>((Integer) null) : new BaseGridCellValue<>(rowIndex + 1));
                     uiModel.get().getCell(rowIndex,
-                                          columnIndex).setSelectionManager(RowSelectionStrategy.INSTANCE);
+                                          columnIndex).setSelectionStrategy(RowSelectionStrategy.INSTANCE);
                     break;
                 case NAME:
                     final InformationItem variable = context.getContextEntry().get(rowIndex).getVariable();
                     final String name = variable == null ? DEFAULT_ROW_CAPTION : variable.getName().getValue();
-                    uiModel.get().setCell(rowIndex,
-                                          columnIndex,
-                                          new BaseGridCellValue<>(name));
+                    uiModel.get().setCellValue(rowIndex,
+                                               columnIndex,
+                                               new BaseGridCellValue<>(name));
                     break;
                 case EXPRESSION:
                     final ContextEntry ce = context.getContextEntry().get(rowIndex);
@@ -81,9 +81,9 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
                                                                                  expression,
                                                                                  Optional.ofNullable(ce.getVariable()),
                                                                                  true);
-                        uiModel.get().setCell(rowIndex,
-                                              columnIndex,
-                                              new ExpressionCellValue(editor));
+                        uiModel.get().setCellValue(rowIndex,
+                                                   columnIndex,
+                                                   new ExpressionCellValue(editor));
                     });
             }
         });

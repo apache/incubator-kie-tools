@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.undefined;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -32,8 +33,13 @@ import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid.ListSelectorExpressionTypeItem;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorTextItem;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
@@ -55,7 +61,9 @@ import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class UndefinedExpressionGridTest {
@@ -83,6 +91,12 @@ public class UndefinedExpressionGridTest {
 
     @Mock
     private EventSourceMock<ExpressionEditorSelectedEvent> editorSelectedEvent;
+
+    @Mock
+    private CellEditorControls cellEditorControls;
+
+    @Mock
+    private ListSelector listSelector;
 
     @Mock
     private TranslationService translationService;
@@ -120,6 +134,8 @@ public class UndefinedExpressionGridTest {
                                                                                                        sessionCommandManager,
                                                                                                        expressionEditorDefinitionsSupplier,
                                                                                                        editorSelectedEvent,
+                                                                                                       cellEditorControls,
+                                                                                                       listSelector,
                                                                                                        translationService);
 
         final Optional<Expression> expression = definition.getModelClass();
@@ -129,6 +145,7 @@ public class UndefinedExpressionGridTest {
 
         doReturn(expressionEditorDefinitions).when(expressionEditorDefinitionsSupplier).get();
         doReturn(ExpressionType.LITERAL_EXPRESSION).when(literalExpressionEditorDefinition).getType();
+        doReturn(LiteralExpression.class.getSimpleName()).when(literalExpressionEditorDefinition).getName();
         doReturn(Optional.of(literalExpression)).when(literalExpressionEditorDefinition).getModelClass();
         doReturn(Optional.of(literalExpressionEditor)).when(literalExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
                                                                                                          any(HasExpression.class),
@@ -143,11 +160,11 @@ public class UndefinedExpressionGridTest {
         doReturn(session).when(sessionManager).getCurrentSession();
         doReturn(handler).when(session).getCanvasHandler();
 
-        this.grid = (UndefinedExpressionGrid) definition.getEditor(parent,
-                                                                   hasExpression,
-                                                                   expression,
-                                                                   hasName,
-                                                                   false).get();
+        this.grid = spy((UndefinedExpressionGrid) definition.getEditor(parent,
+                                                                       hasExpression,
+                                                                       expression,
+                                                                       hasName,
+                                                                       false).get());
     }
 
     @Test
@@ -160,12 +177,35 @@ public class UndefinedExpressionGridTest {
 
         assertThat(uiModel.getRowCount()).isEqualTo(1);
 
-        assertThat(uiModel.getCell(0, 0)).isNull();
+        assertThat(uiModel.getCell(0, 0)).isNotNull();
+
+        assertThat(uiModel.getCell(0, 0)).isInstanceOf(UndefinedExpressionCell.class);
     }
 
     @Test
     public void testGetEditorControls() {
         assertThat(grid.getEditorControls().isPresent()).isFalse();
+    }
+
+    @Test
+    public void testGetItems() {
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems();
+
+        assertThat(items.size()).isEqualTo(1);
+        assertThat(items.get(0)).isInstanceOf(ListSelectorTextItem.class);
+
+        final ListSelectorExpressionTypeItem ti = (ListSelectorExpressionTypeItem) items.get(0);
+        assertThat(ti.getExpressionType()).isEqualTo(ExpressionType.LITERAL_EXPRESSION);
+    }
+
+    @Test
+    public void testOnItemSelected() {
+        final ListSelectorExpressionTypeItem ti = mock(ListSelectorExpressionTypeItem.class);
+        when(ti.getExpressionType()).thenReturn(ExpressionType.LITERAL_EXPRESSION);
+
+        grid.onItemSelected(ti);
+
+        verify(grid).onExpressionTypeChanged(eq(ExpressionType.LITERAL_EXPRESSION));
     }
 
     @Test

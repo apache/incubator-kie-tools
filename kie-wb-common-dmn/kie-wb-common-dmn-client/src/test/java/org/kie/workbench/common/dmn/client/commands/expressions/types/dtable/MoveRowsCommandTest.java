@@ -174,9 +174,9 @@ public class MoveRowsCommandTest {
         }});
         final DMNGridRow uiRow = new DMNGridRow();
         uiModel.appendRow(uiRow);
-        uiModel.setCell(rowIndex, 0, new BaseGridCellValue<>(rowIndex + 1));
-        uiModel.setCell(rowIndex, 1, new BaseGridCellValue<>(inValue));
-        uiModel.setCell(rowIndex, 2, new BaseGridCellValue<>(outValue));
+        uiModel.setCellValue(rowIndex, 0, new BaseGridCellValue<>(rowIndex + 1));
+        uiModel.setCellValue(rowIndex, 1, new BaseGridCellValue<>(inValue));
+        uiModel.setCellValue(rowIndex, 2, new BaseGridCellValue<>(outValue));
 
         rowsUnderTest.add(uiRow);
     }

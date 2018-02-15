@@ -43,11 +43,11 @@ public class RelationUIModelMapper extends BaseUIModelMapper<Relation> {
             final RelationUIModelMapperHelper.RelationSection section = RelationUIModelMapperHelper.getSection(relation, columnIndex);
             switch (section) {
                 case ROW_INDEX:
-                    uiModel.get().setCell(rowIndex,
-                                          columnIndex,
-                                          new BaseGridCellValue<>(rowIndex + 1));
+                    uiModel.get().setCellValue(rowIndex,
+                                               columnIndex,
+                                               new BaseGridCellValue<>(rowIndex + 1));
                     uiModel.get().getCell(rowIndex,
-                                          columnIndex).setSelectionManager(RowSelectionStrategy.INSTANCE);
+                                          columnIndex).setSelectionStrategy(RowSelectionStrategy.INSTANCE);
                     break;
                 case INFORMATION_ITEM:
                     final org.kie.workbench.common.dmn.api.definition.v1_1.List row = relation.getRow().get(rowIndex);
@@ -60,9 +60,9 @@ public class RelationUIModelMapper extends BaseUIModelMapper<Relation> {
                         // to limit ourselves to LiteralExpressions. Our Grid-system supports ANY (nested) expression too; however
                         // the simplification has been made for the benefit of USERS.
                         final LiteralExpression le = (LiteralExpression) ex;
-                        uiModel.get().setCell(rowIndex,
-                                              columnIndex,
-                                              new BaseGridCellValue<>(le.getText()));
+                        uiModel.get().setCellValue(rowIndex,
+                                                   columnIndex,
+                                                   new BaseGridCellValue<>(le.getText()));
                     });
             }
         });

@@ -36,6 +36,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -98,6 +99,9 @@ public class ContextGridTest {
     private ContextGridControls controls;
 
     @Mock
+    private CellEditorControls cellEditorControls;
+
+    @Mock
     private GridCellTuple parent;
 
     @Mock
@@ -130,6 +134,7 @@ public class ContextGridTest {
                                                                                sessionCommandManager,
                                                                                expressionEditorDefinitionsSupplier,
                                                                                editorSelectedEvent,
+                                                                               cellEditorControls,
                                                                                controlsProvider);
 
         final Optional<Context> expression = definition.getModelClass();
@@ -179,7 +184,7 @@ public class ContextGridTest {
         assertNotNull(uiModel.getCell(1, 0));
         assertNull(uiModel.getCell(1, 0).getValue().getValue());
         assertEquals(RowSelectionStrategy.INSTANCE,
-                     uiModel.getCell(1, 0).getSelectionManager());
+                     uiModel.getCell(1, 0).getSelectionStrategy());
         assertEquals(ContextUIModelMapper.DEFAULT_ROW_CAPTION,
                      uiModel.getCell(1, 1).getValue().getValue());
         assertTrue(uiModel.getCell(1, 2).getValue() instanceof ExpressionCellValue);

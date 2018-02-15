@@ -133,7 +133,7 @@ public class InvocationUIModelMapperTest {
         assertEquals(1,
                      uiModel.getCell(0, 0).getValue().getValue());
         assertEquals(RowSelectionStrategy.INSTANCE,
-                     uiModel.getCell(0, 0).getSelectionManager());
+                     uiModel.getCell(0, 0).getSelectionStrategy());
     }
 
     @Test

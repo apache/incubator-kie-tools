@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.widgets.grid.model;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
@@ -84,10 +85,19 @@ public class DelegatingGridData implements GridData {
     @Override
     public Range setCell(final int rowIndex,
                          final int columnIndex,
-                         final GridCellValue<?> value) {
+                         final Supplier<GridCell<?>> cellSupplier) {
         return delegate.setCell(rowIndex,
                                 columnIndex,
-                                value);
+                                cellSupplier);
+    }
+
+    @Override
+    public Range setCellValue(final int rowIndex,
+                              final int columnIndex,
+                              final GridCellValue<?> value) {
+        return delegate.setCellValue(rowIndex,
+                                     columnIndex,
+                                     value);
     }
 
     @Override

@@ -32,6 +32,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Con
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
@@ -59,7 +60,8 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Conte
                                      final SessionManager sessionManager,
                                      final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                      final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
-                                     final Event<ExpressionEditorSelectedEvent> editorSelectedEvent) {
+                                     final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
+                                     final CellEditorControls cellEditorControls) {
         super(parent,
               hasExpression,
               expression,
@@ -75,6 +77,7 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Conte
               sessionManager,
               sessionCommandManager,
               editorSelectedEvent,
+              cellEditorControls,
               true);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
 

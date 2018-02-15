@@ -64,8 +64,8 @@ public class MoveRowsCommandTest extends BaseMoveCommandsTest<MoveRowsCommand> {
     protected void addUiModelRow(final int rowIndex) {
         final DMNGridRow uiRow = new DMNGridRow();
         uiModel.appendRow(uiRow);
-        uiModel.setCell(rowIndex, 0, new BaseGridCellValue<>(rowIndex + 1));
-        uiModel.setCell(rowIndex, 1, new BaseGridCellValue<>("value" + rowIndex));
+        uiModel.setCellValue(rowIndex, 0, new BaseGridCellValue<>(rowIndex + 1));
+        uiModel.setCellValue(rowIndex, 1, new BaseGridCellValue<>("value" + rowIndex));
     }
 
     private void setupCommand(final int index,

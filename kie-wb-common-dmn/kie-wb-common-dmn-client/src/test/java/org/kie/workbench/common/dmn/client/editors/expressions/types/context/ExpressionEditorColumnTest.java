@@ -30,6 +30,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.client.editors.expressions.mocks.MockHasDOMElementResourcesHeaderMetaData;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
@@ -82,6 +83,9 @@ public class ExpressionEditorColumnTest {
 
     @Mock
     private EventSourceMock<ExpressionEditorSelectedEvent> editorSelectedEvent;
+
+    @Mock
+    private CellEditorControls cellEditorControls;
 
     private BaseGridData gridData;
 
@@ -249,9 +253,9 @@ public class ExpressionEditorColumnTest {
     private void mockCells(final int rowIndex,
                            final int columnIndex,
                            final double... widthOfCells) {
-        gridData.setCell(rowIndex,
-                         columnIndex,
-                         new ExpressionCellValue(Optional.of(mockEditor(widthOfCells))));
+        gridData.setCellValue(rowIndex,
+                              columnIndex,
+                              new ExpressionCellValue(Optional.of(mockEditor(widthOfCells))));
     }
 
     @SuppressWarnings("unchecked")
@@ -275,6 +279,7 @@ public class ExpressionEditorColumnTest {
                                       sessionManager,
                                       sessionCommandManager,
                                       editorSelectedEvent,
+                                      cellEditorControls,
                                       false) {
             @Override
             protected BaseUIModelMapper makeUiModelMapper() {

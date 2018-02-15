@@ -36,6 +36,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -53,6 +54,7 @@ public class ContextEditorDefinition implements ExpressionEditorDefinition<Conte
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private Event<ExpressionEditorSelectedEvent> editorSelectedEvent;
+    private CellEditorControls cellEditorControls;
     private ManagedInstance<ContextGridControls> controlsProvider;
 
     public ContextEditorDefinition() {
@@ -66,6 +68,7 @@ public class ContextEditorDefinition implements ExpressionEditorDefinition<Conte
                                    final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                    final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                    final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
+                                   final CellEditorControls cellEditorControls,
                                    final ManagedInstance<ContextGridControls> controlsProvider) {
         this.gridPanel = gridPanel;
         this.gridLayer = gridLayer;
@@ -73,6 +76,7 @@ public class ContextEditorDefinition implements ExpressionEditorDefinition<Conte
         this.sessionCommandManager = sessionCommandManager;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.editorSelectedEvent = editorSelectedEvent;
+        this.cellEditorControls = cellEditorControls;
         this.controlsProvider = controlsProvider;
     }
 
@@ -117,6 +121,7 @@ public class ContextEditorDefinition implements ExpressionEditorDefinition<Conte
                                            sessionCommandManager,
                                            expressionEditorDefinitionsSupplier,
                                            editorSelectedEvent,
+                                           cellEditorControls,
                                            controlsProvider.get(),
                                            isNested));
     }

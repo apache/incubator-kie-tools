@@ -89,15 +89,15 @@ public class SetKindCommandTest {
     public void setup() {
         this.function = new FunctionDefinition();
         this.function.getAdditionalAttributes().put(FunctionDefinition.KIND_QNAME,
-                                               originalKind.code());
+                                                    originalKind.code());
         this.function.setExpression(originalExpression);
 
         this.uiModel = new BaseGridData();
         this.uiModel.appendColumn(mockColumn);
         this.uiModel.appendRow(new BaseGridRow());
-        this.uiModel.setCell(0,
-                             0,
-                             new ExpressionCellValue(Optional.of(originalEditor)));
+        this.uiModel.setCellValue(0,
+                                  0,
+                                  new ExpressionCellValue(Optional.of(originalEditor)));
 
         doReturn(ruleManager).when(handler).getRuleManager();
     }

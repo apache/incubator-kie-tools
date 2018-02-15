@@ -198,7 +198,7 @@ public class RelationColumnTest {
         doReturn(peerWidth).when(peerExpressionEditor).getMinimumWidth();
         doReturn(relationGridWidth).when(gridWidget).getWidth();
 
-        parentUiModel.setCell(1, 0, new ExpressionCellValue(peer));
+        parentUiModel.setCellValue(1, 0, new ExpressionCellValue(peer));
 
         assertEquals(expectedMinimumWidth,
                      relationColumn.getMinimumWidth(),

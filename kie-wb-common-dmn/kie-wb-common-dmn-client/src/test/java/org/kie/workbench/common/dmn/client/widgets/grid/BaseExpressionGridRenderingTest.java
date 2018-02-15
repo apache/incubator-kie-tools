@@ -162,6 +162,7 @@ public class BaseExpressionGridRenderingTest extends BaseExpressionGridTest {
                                       sessionManager,
                                       sessionCommandManager,
                                       editorSelectedEvent,
+                                      cellEditorControls,
                                       () -> isHeaderHidden) {
             @Override
             protected BaseUIModelMapper makeUiModelMapper() {

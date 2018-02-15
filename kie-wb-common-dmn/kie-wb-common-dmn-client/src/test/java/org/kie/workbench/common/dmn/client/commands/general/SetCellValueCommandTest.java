@@ -181,9 +181,9 @@ public class SetCellValueCommandTest {
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.getCanvasCommand(canvasHandler).allow(canvasHandler));
         verify(gridModel,
-               never()).setCell(anyInt(),
-                                anyInt(),
-                                any(GridCellValue.class));
+               never()).setCellValue(anyInt(),
+                                     anyInt(),
+                                     any(GridCellValue.class));
     }
 
     @Test
@@ -251,9 +251,9 @@ public class SetCellValueCommandTest {
     }
 
     private void assertCanvasMutation(final GridCellValue gridCellValue) {
-        verify(gridModel).setCell(eq(ROW_INDEX),
-                                  eq(COLUMN_INDEX),
-                                  gridCellValueCaptor.capture());
+        verify(gridModel).setCellValue(eq(ROW_INDEX),
+                                       eq(COLUMN_INDEX),
+                                       gridCellValueCaptor.capture());
 
         assertEquals(gridCellValue,
                      gridCellValueCaptor.getValue());

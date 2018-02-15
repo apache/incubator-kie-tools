@@ -122,9 +122,9 @@ public class SetKindCommand extends AbstractCanvasGraphCommand implements VetoEx
             @Override
             public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler handler) {
                 final GridData gridData = cellTuple.getGridData();
-                gridData.setCell(cellTuple.getRowIndex(),
-                                 cellTuple.getColumnIndex(),
-                                 cellTuple.getValue());
+                gridData.setCellValue(cellTuple.getRowIndex(),
+                                      cellTuple.getColumnIndex(),
+                                      cellTuple.getValue());
 
                 canvasOperation.execute();
 
@@ -134,9 +134,9 @@ public class SetKindCommand extends AbstractCanvasGraphCommand implements VetoEx
             @Override
             public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler handler) {
                 if (oldCellValue.isPresent()) {
-                    cellTuple.getGridData().setCell(cellTuple.getRowIndex(),
-                                                    cellTuple.getColumnIndex(),
-                                                    oldCellValue.get());
+                    cellTuple.getGridData().setCellValue(cellTuple.getRowIndex(),
+                                                         cellTuple.getColumnIndex(),
+                                                         oldCellValue.get());
                 } else {
                     cellTuple.getGridData().deleteCell(cellTuple.getRowIndex(),
                                                        cellTuple.getColumnIndex());

@@ -34,6 +34,8 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionT
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -51,6 +53,8 @@ public class UndefinedExpressionEditorDefinition implements ExpressionEditorDefi
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private Event<ExpressionEditorSelectedEvent> editorSelectedEvent;
+    private CellEditorControls cellEditorControls;
+    private ListSelector listSelector;
     private TranslationService translationService;
 
     public UndefinedExpressionEditorDefinition() {
@@ -64,6 +68,8 @@ public class UndefinedExpressionEditorDefinition implements ExpressionEditorDefi
                                                final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                                final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                                final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
+                                               final CellEditorControls cellEditorControls,
+                                               final ListSelector listSelector,
                                                final TranslationService translationService) {
         this.gridPanel = gridPanel;
         this.gridLayer = gridLayer;
@@ -71,6 +77,8 @@ public class UndefinedExpressionEditorDefinition implements ExpressionEditorDefi
         this.sessionCommandManager = sessionCommandManager;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.editorSelectedEvent = editorSelectedEvent;
+        this.cellEditorControls = cellEditorControls;
+        this.listSelector = listSelector;
         this.translationService = translationService;
     }
 
@@ -105,6 +113,8 @@ public class UndefinedExpressionEditorDefinition implements ExpressionEditorDefi
                                                        sessionCommandManager,
                                                        expressionEditorDefinitionsSupplier,
                                                        editorSelectedEvent,
+                                                       cellEditorControls,
+                                                       listSelector,
                                                        isNested));
     }
 }

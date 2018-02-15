@@ -88,9 +88,9 @@ public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition>
                                                                  expression,
                                                                  Optional.empty(),
                                                                  true);
-        uiModel.get().setCell(rowIndex,
-                              columnIndex,
-                              new ExpressionCellValue(editor));
+        uiModel.get().setCellValue(rowIndex,
+                                   columnIndex,
+                                   new ExpressionCellValue(editor));
     }
 
     private FunctionDefinition.Kind extractExpressionLanguage(final FunctionDefinition function) {

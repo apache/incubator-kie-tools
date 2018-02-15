@@ -34,6 +34,7 @@ import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -61,6 +62,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
                         final SessionManager sessionManager,
                         final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                         final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
+                        final CellEditorControls cellEditorControls,
                         final RelationGridControls controls) {
         super(parent,
               hasExpression,
@@ -77,6 +79,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
               sessionManager,
               sessionCommandManager,
               editorSelectedEvent,
+              cellEditorControls,
               false);
         this.controls = controls;
 

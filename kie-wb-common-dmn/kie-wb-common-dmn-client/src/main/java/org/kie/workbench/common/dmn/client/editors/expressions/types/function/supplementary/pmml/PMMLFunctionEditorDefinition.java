@@ -38,6 +38,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.function.Fu
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.FunctionSupplementaryGrid;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -60,6 +61,7 @@ public class PMMLFunctionEditorDefinition implements ExpressionEditorDefinition<
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private Event<ExpressionEditorSelectedEvent> editorSelectedEvent;
+    private CellEditorControls cellEditorControls;
 
     public PMMLFunctionEditorDefinition() {
         //CDI proxy
@@ -71,13 +73,15 @@ public class PMMLFunctionEditorDefinition implements ExpressionEditorDefinition<
                                         final SessionManager sessionManager,
                                         final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                         final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
-                                        final Event<ExpressionEditorSelectedEvent> editorSelectedEvent) {
+                                        final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
+                                        final CellEditorControls cellEditorControls) {
         this.gridPanel = gridPanel;
         this.gridLayer = gridLayer;
         this.sessionManager = sessionManager;
         this.sessionCommandManager = sessionCommandManager;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.editorSelectedEvent = editorSelectedEvent;
+        this.cellEditorControls = cellEditorControls;
     }
 
     @Override
@@ -124,6 +128,7 @@ public class PMMLFunctionEditorDefinition implements ExpressionEditorDefinition<
                                                          sessionManager,
                                                          sessionCommandManager,
                                                          expressionEditorDefinitionsSupplier,
-                                                         editorSelectedEvent));
+                                                         editorSelectedEvent,
+                                                         cellEditorControls));
     }
 }

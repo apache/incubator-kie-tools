@@ -38,9 +38,9 @@ public class CommandUtils {
         rowNumberColumn.ifPresent(c -> {
             final int columnIndex = uiModel.getColumns().indexOf(c);
             rangeOfRowsToUpdate.forEach(
-                    rowIndex -> uiModel.setCell(rowIndex,
-                                                columnIndex,
-                                                new BaseGridCellValue<>(rowIndex + 1))
+                    rowIndex -> uiModel.setCellValue(rowIndex,
+                                                     columnIndex,
+                                                     new BaseGridCellValue<>(rowIndex + 1))
 
             );
         });

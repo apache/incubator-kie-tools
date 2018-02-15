@@ -18,16 +18,21 @@ package org.kie.workbench.common.dmn.client.widgets.grid.model;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
+import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
@@ -41,10 +46,16 @@ public class DelegatingGridDataTest {
     private GridColumn gridColumn;
 
     @Mock
+    private GridCell gridCell;
+
+    @Mock
     private GridCellValue gridCellValue;
 
     @Mock
     private DMNGridData delegate;
+
+    @Captor
+    private ArgumentCaptor<Supplier<GridCell<?>>> gridCellSupplierCaptor;
 
     private DelegatingGridData uiModel;
 
@@ -111,11 +122,22 @@ public class DelegatingGridDataTest {
 
     @Test
     public void testDelegateSetCell() {
-        uiModel.setCell(0, 1, gridCellValue);
+        uiModel.setCell(0, 1, () -> gridCell);
 
         verify(delegate).setCell(eq(0),
                                  eq(1),
-                                 eq(gridCellValue));
+                                 gridCellSupplierCaptor.capture());
+
+        assertThat(gridCell).isSameAs(gridCellSupplierCaptor.getValue().get());
+    }
+
+    @Test
+    public void testDelegateSetCellValue() {
+        uiModel.setCellValue(0, 1, gridCellValue);
+
+        verify(delegate).setCellValue(eq(0),
+                                      eq(1),
+                                      eq(gridCellValue));
     }
 
     @Test

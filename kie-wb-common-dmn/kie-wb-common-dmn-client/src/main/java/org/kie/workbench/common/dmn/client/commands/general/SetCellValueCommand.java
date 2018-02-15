@@ -97,9 +97,9 @@ public class SetCellValueCommand extends AbstractCanvasGraphCommand implements V
             @Override
             public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
                 final GridData gridData = cellTuple.getGridData();
-                gridData.setCell(cellTuple.getRowIndex(),
-                                 cellTuple.getColumnIndex(),
-                                 cellTuple.getValue());
+                gridData.setCellValue(cellTuple.getRowIndex(),
+                                      cellTuple.getColumnIndex(),
+                                      cellTuple.getValue());
 
                 canvasOperation.execute();
 
@@ -109,9 +109,9 @@ public class SetCellValueCommand extends AbstractCanvasGraphCommand implements V
             @Override
             public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
                 if (oldCellValue.isPresent()) {
-                    cellTuple.getGridData().setCell(cellTuple.getRowIndex(),
-                                                    cellTuple.getColumnIndex(),
-                                                    oldCellValue.get());
+                    cellTuple.getGridData().setCellValue(cellTuple.getRowIndex(),
+                                                         cellTuple.getColumnIndex(),
+                                                         oldCellValue.get());
                 } else {
                     cellTuple.getGridData().deleteCell(cellTuple.getRowIndex(),
                                                        cellTuple.getColumnIndex());

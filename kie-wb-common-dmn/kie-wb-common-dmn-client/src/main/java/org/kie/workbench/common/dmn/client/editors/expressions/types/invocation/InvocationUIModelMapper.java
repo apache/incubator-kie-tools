@@ -59,18 +59,18 @@ public class InvocationUIModelMapper extends BaseUIModelMapper<Invocation> {
         dmnModel.get().ifPresent(invocation -> {
             switch (columnIndex) {
                 case ROW_NUMBER_COLUMN_INDEX:
-                    uiModel.get().setCell(rowIndex,
-                                          columnIndex,
-                                          new BaseGridCellValue<>(rowIndex + 1));
+                    uiModel.get().setCellValue(rowIndex,
+                                               columnIndex,
+                                               new BaseGridCellValue<>(rowIndex + 1));
                     uiModel.get().getCell(rowIndex,
-                                          columnIndex).setSelectionManager(RowSelectionStrategy.INSTANCE);
+                                          columnIndex).setSelectionStrategy(RowSelectionStrategy.INSTANCE);
                     break;
                 case BINDING_PARAMETER_COLUMN_INDEX:
                     final InformationItem variable = invocation.getBinding().get(rowIndex).getParameter();
                     final String name = variable.getName().getValue();
-                    uiModel.get().setCell(rowIndex,
-                                          columnIndex,
-                                          new BaseGridCellValue<>(name));
+                    uiModel.get().setCellValue(rowIndex,
+                                               columnIndex,
+                                               new BaseGridCellValue<>(name));
                     break;
                 case BINDING_EXPRESSION_COLUMN_INDEX:
                     final Binding binding = invocation.getBinding().get(rowIndex);
@@ -85,9 +85,9 @@ public class InvocationUIModelMapper extends BaseUIModelMapper<Invocation> {
                                                                                  expression,
                                                                                  Optional.ofNullable(binding.getParameter()),
                                                                                  true);
-                        uiModel.get().setCell(rowIndex,
-                                              columnIndex,
-                                              new ExpressionCellValue(editor));
+                        uiModel.get().setCellValue(rowIndex,
+                                                   columnIndex,
+                                                   new ExpressionCellValue(editor));
                     });
             }
         });

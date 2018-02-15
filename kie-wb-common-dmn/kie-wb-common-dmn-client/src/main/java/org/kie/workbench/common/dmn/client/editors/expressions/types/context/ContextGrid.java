@@ -34,6 +34,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -68,6 +69,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
                        final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                        final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                        final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
+                       final CellEditorControls cellEditorControls,
                        final ContextGridControls controls,
                        final boolean isNested) {
         super(parent,
@@ -85,6 +87,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
               sessionManager,
               sessionCommandManager,
               editorSelectedEvent,
+              cellEditorControls,
               isNested);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.controls = controls;

@@ -16,7 +16,10 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.model;
 
+import java.util.function.Supplier;
+
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
+import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
@@ -53,14 +56,23 @@ public class DMNGridData extends BaseGridData {
     @Override
     public Range setCell(final int rowIndex,
                          final int columnIndex,
-                         final GridCellValue<?> value) {
+                         final Supplier<GridCell<?>> cellSupplier) {
         final Range r = super.setCell(rowIndex,
                                       columnIndex,
-                                      value);
-        final GridColumn column = getColumns().get(columnIndex);
-        if (column instanceof RequiresResize) {
-            ((RequiresResize) column).onResize();
-        }
+                                      cellSupplier);
+        resizeColumnIfRequired(columnIndex);
+
+        return r;
+    }
+
+    @Override
+    public Range setCellValue(final int rowIndex,
+                              final int columnIndex,
+                              final GridCellValue<?> value) {
+        final Range r = super.setCellValue(rowIndex,
+                                           columnIndex,
+                                           value);
+        resizeColumnIfRequired(columnIndex);
 
         return r;
     }
@@ -70,11 +82,15 @@ public class DMNGridData extends BaseGridData {
                             final int columnIndex) {
         final Range r = super.deleteCell(rowIndex,
                                          columnIndex);
+        resizeColumnIfRequired(columnIndex);
+
+        return r;
+    }
+
+    private void resizeColumnIfRequired(final int columnIndex) {
         final GridColumn column = getColumns().get(columnIndex);
         if (column instanceof RequiresResize) {
             ((RequiresResize) column).onResize();
         }
-
-        return r;
     }
 }

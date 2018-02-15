@@ -26,11 +26,15 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
@@ -47,16 +51,35 @@ public class UndefinedExpressionUIModelMapperTest {
     @Mock
     private LiteralExpressionGrid editor;
 
+    @Mock
+    private ListSelector listSelector;
+
+    @Mock
+    private UndefinedExpressionColumn uiColumn;
+
+    private GridData uiModel;
+
     private Supplier<Optional<GridCellValue<?>>> cellValueSupplier;
 
     private UndefinedExpressionUIModelMapper mapper;
 
     @Before
     public void setup() {
-        this.mapper = new UndefinedExpressionUIModelMapper(BaseGridData::new,
+        this.uiModel = new BaseGridData();
+        this.uiModel.appendColumn(uiColumn);
+        this.uiModel.appendRow(new DMNGridRow());
+        this.mapper = new UndefinedExpressionUIModelMapper(() -> uiModel,
                                                            () -> Optional.ofNullable(expression),
+                                                           listSelector,
                                                            hasExpression);
         this.cellValueSupplier = () -> Optional.of(new ExpressionCellValue(Optional.of(editor)));
+    }
+
+    @Test
+    public void testFromDMNModel() {
+        mapper.fromDMNModel(0, 0);
+
+        assertThat(mapper.getUiModel().get().getCell(0, 0)).isInstanceOf(UndefinedExpressionCell.class);
     }
 
     @Test

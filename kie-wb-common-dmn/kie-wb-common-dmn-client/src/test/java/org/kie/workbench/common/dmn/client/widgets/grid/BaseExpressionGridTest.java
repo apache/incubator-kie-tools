@@ -22,6 +22,7 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -29,6 +30,7 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.mockito.Mock;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseBounds;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.mocks.EventSourceMock;
 
@@ -60,6 +62,9 @@ public abstract class BaseExpressionGridTest {
     protected EventSourceMock<ExpressionEditorSelectedEvent> editorSelectedEvent;
 
     @Mock
+    protected CellEditorControls cellEditorControls;
+
+    @Mock
     protected BaseUIModelMapper mapper;
 
     @Mock
@@ -72,7 +77,9 @@ public abstract class BaseExpressionGridTest {
     public void setup() {
         this.grid = spy(getGrid());
 
+        doReturn(gridLayer).when(grid).getLayer();
         doReturn(viewport).when(gridLayer).getViewport();
+        doReturn(new BaseBounds(0, 0, 1000, 1000)).when(gridLayer).getVisibleBounds();
     }
 
     protected abstract BaseExpressionGrid getGrid();

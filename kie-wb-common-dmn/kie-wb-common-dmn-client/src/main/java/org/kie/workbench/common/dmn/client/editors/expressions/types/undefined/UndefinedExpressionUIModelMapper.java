@@ -22,26 +22,32 @@ import java.util.function.Supplier;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 public class UndefinedExpressionUIModelMapper extends BaseUIModelMapper<Expression> {
 
+    private ListSelector listSelector;
     private HasExpression hasExpression;
 
     public UndefinedExpressionUIModelMapper(final Supplier<GridData> uiModel,
                                             final Supplier<Optional<Expression>> dmnModel,
+                                            final ListSelector listSelector,
                                             final HasExpression hasExpression) {
         super(uiModel,
               dmnModel);
+        this.listSelector = listSelector;
         this.hasExpression = hasExpression;
     }
 
     @Override
     public void fromDMNModel(final int rowIndex,
                              final int columnIndex) {
-        //NOP. There's nothing to map from an "undefined expression" to the DMN model
+        uiModel.get().setCell(rowIndex,
+                              columnIndex,
+                              () -> new UndefinedExpressionCell(listSelector));
     }
 
     @Override
