@@ -27,6 +27,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
@@ -38,35 +39,54 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
 
     public static final String DEFAULT_ROW_CAPTION = "default";
 
+    private ListSelector listSelector;
+
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
 
     public ContextUIModelMapper(final Supplier<GridData> uiModel,
                                 final Supplier<Optional<Context>> dmnModel,
-                                final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
+                                final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
+                                final ListSelector listSelector) {
         super(uiModel,
               dmnModel);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
+        this.listSelector = listSelector;
     }
 
     @Override
     public void fromDMNModel(final int rowIndex,
                              final int columnIndex) {
         dmnModel.get().ifPresent(context -> {
+            final boolean isLastRow = isLastRow(rowIndex);
             final ContextUIModelMapperHelper.ContextSection section = ContextUIModelMapperHelper.getSection(columnIndex);
             switch (section) {
                 case ROW_INDEX:
-                    uiModel.get().setCellValue(rowIndex,
-                                               columnIndex,
-                                               isLastRow(rowIndex) ? new BaseGridCellValue<>((Integer) null) : new BaseGridCellValue<>(rowIndex + 1));
+                    if (!isLastRow) {
+                        uiModel.get().setCell(rowIndex,
+                                              columnIndex,
+                                              () -> new ContextGridCell<>(new BaseGridCellValue<>(rowIndex + 1),
+                                                                          listSelector));
+                    } else {
+                        uiModel.get().setCellValue(rowIndex,
+                                                   columnIndex,
+                                                   new BaseGridCellValue<>((Integer) null));
+                    }
                     uiModel.get().getCell(rowIndex,
                                           columnIndex).setSelectionStrategy(RowSelectionStrategy.INSTANCE);
                     break;
                 case NAME:
                     final InformationItem variable = context.getContextEntry().get(rowIndex).getVariable();
                     final String name = variable == null ? DEFAULT_ROW_CAPTION : variable.getName().getValue();
-                    uiModel.get().setCellValue(rowIndex,
-                                               columnIndex,
-                                               new BaseGridCellValue<>(name));
+                    if (!isLastRow) {
+                        uiModel.get().setCell(rowIndex,
+                                              columnIndex,
+                                              () -> new ContextGridCell<>(new BaseGridCellValue<>(name),
+                                                                          listSelector));
+                    } else {
+                        uiModel.get().setCellValue(rowIndex,
+                                                   columnIndex,
+                                                   new BaseGridCellValue<>(name));
+                    }
                     break;
                 case EXPRESSION:
                     final ContextEntry ce = context.getContextEntry().get(rowIndex);
@@ -81,9 +101,16 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
                                                                                  expression,
                                                                                  Optional.ofNullable(ce.getVariable()),
                                                                                  true);
-                        uiModel.get().setCellValue(rowIndex,
-                                                   columnIndex,
-                                                   new ExpressionCellValue(editor));
+                        if (!isLastRow) {
+                            uiModel.get().setCell(rowIndex,
+                                                  columnIndex,
+                                                  () -> new ContextGridCell<>(new ExpressionCellValue(editor),
+                                                                              listSelector));
+                        } else {
+                            uiModel.get().setCellValue(rowIndex,
+                                                       columnIndex,
+                                                       new ExpressionCellValue(editor));
+                        }
                     });
             }
         });

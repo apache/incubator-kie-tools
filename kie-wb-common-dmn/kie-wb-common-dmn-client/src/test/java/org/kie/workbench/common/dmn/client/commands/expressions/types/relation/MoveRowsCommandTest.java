@@ -37,6 +37,9 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MoveRowsCommandTest extends BaseMoveCommandsTest<MoveRowsCommand> {
@@ -70,11 +73,11 @@ public class MoveRowsCommandTest extends BaseMoveCommandsTest<MoveRowsCommand> {
 
     private void setupCommand(final int index,
                               final GridRow uiModelRow) {
-        this.command = new MoveRowsCommand(relation,
-                                           uiModel,
-                                           index,
-                                           Collections.singletonList(uiModelRow),
-                                           canvasOperation);
+        this.command = spy(new MoveRowsCommand(relation,
+                                               uiModel,
+                                               index,
+                                               Collections.singletonList(uiModelRow),
+                                               canvasOperation));
     }
 
     @Test
@@ -181,6 +184,9 @@ public class MoveRowsCommandTest extends BaseMoveCommandsTest<MoveRowsCommand> {
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.newCanvasCommand(handler).execute(handler));
 
+        verify(command).updateRowNumbers();
+        verify(command).updateParentInformation();
+
         assertUiModelDefinition(new int[]{1, 0});
     }
 
@@ -191,6 +197,9 @@ public class MoveRowsCommandTest extends BaseMoveCommandsTest<MoveRowsCommand> {
 
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.newCanvasCommand(handler).execute(handler));
+
+        verify(command).updateRowNumbers();
+        verify(command).updateParentInformation();
 
         assertUiModelDefinition(new int[]{1, 0});
     }
@@ -204,8 +213,13 @@ public class MoveRowsCommandTest extends BaseMoveCommandsTest<MoveRowsCommand> {
         final Command<AbstractCanvasHandler, CanvasViolation> cc = command.newCanvasCommand(handler);
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      cc.execute(handler));
+        reset(command);
+
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      cc.undo(handler));
+
+        verify(command).updateRowNumbers();
+        verify(command).updateParentInformation();
 
         assertUiModelDefinition(new int[]{0, 1});
     }
@@ -219,8 +233,13 @@ public class MoveRowsCommandTest extends BaseMoveCommandsTest<MoveRowsCommand> {
         final Command<AbstractCanvasHandler, CanvasViolation> cc = command.newCanvasCommand(handler);
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      cc.execute(handler));
+        reset(command);
+
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      cc.undo(handler));
+
+        verify(command).updateRowNumbers();
+        verify(command).updateParentInformation();
 
         assertUiModelDefinition(new int[]{0, 1});
     }

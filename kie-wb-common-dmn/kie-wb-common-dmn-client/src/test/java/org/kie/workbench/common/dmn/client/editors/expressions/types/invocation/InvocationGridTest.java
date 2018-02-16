@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -106,6 +107,9 @@ public class InvocationGridTest {
     private CellEditorControls cellEditorControls;
 
     @Mock
+    private TranslationService translationService;
+
+    @Mock
     private GridCellTuple parent;
 
     @Mock
@@ -137,6 +141,7 @@ public class InvocationGridTest {
                                                                                      expressionEditorDefinitionsSupplier,
                                                                                      editorSelectedEvent,
                                                                                      cellEditorControls,
+                                                                                     translationService,
                                                                                      controlsProvider);
 
         final Optional<Invocation> expression = definition.getModelClass();

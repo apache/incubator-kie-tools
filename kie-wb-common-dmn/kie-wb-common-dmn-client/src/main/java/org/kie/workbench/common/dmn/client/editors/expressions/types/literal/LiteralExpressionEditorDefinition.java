@@ -22,15 +22,18 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -40,14 +43,9 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.kie.workbench.common.stunner.core.client.session.Session;
 
 @ApplicationScoped
-public class LiteralExpressionEditorDefinition implements ExpressionEditorDefinition<LiteralExpression> {
+public class LiteralExpressionEditorDefinition extends BaseEditorDefinition<LiteralExpression> {
 
-    private DMNGridPanel gridPanel;
-    private DMNGridLayer gridLayer;
-    private SessionManager sessionManager;
-    private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-    private Event<ExpressionEditorSelectedEvent> editorSelectedEvent;
-    private CellEditorControls cellEditorControls;
+    private ListSelector listSelector;
 
     public LiteralExpressionEditorDefinition() {
         //CDI proxy
@@ -59,13 +57,17 @@ public class LiteralExpressionEditorDefinition implements ExpressionEditorDefini
                                              final SessionManager sessionManager,
                                              final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                              final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
-                                             final CellEditorControls cellEditorControls) {
-        this.gridPanel = gridPanel;
-        this.gridLayer = gridLayer;
-        this.sessionManager = sessionManager;
-        this.sessionCommandManager = sessionCommandManager;
-        this.cellEditorControls = cellEditorControls;
-        this.editorSelectedEvent = editorSelectedEvent;
+                                             final CellEditorControls cellEditorControls,
+                                             final TranslationService translationService,
+                                             final ListSelector listSelector) {
+        super(gridPanel,
+              gridLayer,
+              sessionManager,
+              sessionCommandManager,
+              editorSelectedEvent,
+              cellEditorControls,
+              translationService);
+        this.listSelector = listSelector;
     }
 
     @Override
@@ -75,7 +77,7 @@ public class LiteralExpressionEditorDefinition implements ExpressionEditorDefini
 
     @Override
     public String getName() {
-        return LiteralExpression.class.getSimpleName();
+        return translationService.format(DMNEditorConstants.ExpressionEditor_LiteralExpressionType);
     }
 
     @Override
@@ -99,6 +101,8 @@ public class LiteralExpressionEditorDefinition implements ExpressionEditorDefini
                                                      sessionCommandManager,
                                                      editorSelectedEvent,
                                                      cellEditorControls,
+                                                     translationService,
+                                                     listSelector,
                                                      isNested));
     }
 }

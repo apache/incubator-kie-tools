@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.controls.list;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -51,18 +52,32 @@ public class ListSelector implements ListSelectorView.Presenter {
     }
 
     @Override
-    public void bind(final HasListSelectorControl bound) {
+    public void bind(final HasListSelectorControl bound,
+                     final int uiRowIndex,
+                     final int uiColumnIndex) {
         binding = Optional.ofNullable(bound);
-        binding.ifPresent(b -> view.setItems(b.getItems()));
+        binding.ifPresent(b -> {
+            final List<ListSelectorItem> items = b.getItems(uiRowIndex,
+                                                            uiColumnIndex);
+            if (items.isEmpty()) {
+                //If there are no items to display unbind to prevent empty popups being shown
+                bind(null,
+                     uiRowIndex,
+                     uiColumnIndex);
+            } else {
+                view.setItems(b.getItems(uiRowIndex,
+                                         uiColumnIndex));
+            }
+        });
     }
 
     @Override
     public void show() {
-        view.show();
+        binding.ifPresent(b -> view.show());
     }
 
     @Override
     public void hide() {
-        view.hide();
+        binding.ifPresent(b -> view.hide());
     }
 }

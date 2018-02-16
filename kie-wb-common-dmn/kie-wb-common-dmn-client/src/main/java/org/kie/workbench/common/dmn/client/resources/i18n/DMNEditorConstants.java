@@ -33,4 +33,28 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String ExpressionEditor_DecisionTableExpressionType = "ExpressionEditor.DecisionTableExpressionType";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ExpressionEditor_RelationType = "ExpressionEditor.RelationType";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ExpressionEditor_FunctionType = "ExpressionEditor.FunctionType";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ExpressionEditor_PMMLFunctionType = "ExpressionEditor.PMMLFunctionType";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ExpressionEditor_JavaFunctionType = "ExpressionEditor.JavaFunctionType";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ExpressionEditor_InvocationType = "ExpressionEditor.InvocationType";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ContextEditor_InsertContextEntryAbove = "ContextEditor.InsertContextEntryAbove";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ContextEditor_InsertContextEntryBelow = "ContextEditor.InsertContextEntryBelow";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ContextEditor_DeleteContextEntry = "ContextEditor.DeleteContextEntry";
 }

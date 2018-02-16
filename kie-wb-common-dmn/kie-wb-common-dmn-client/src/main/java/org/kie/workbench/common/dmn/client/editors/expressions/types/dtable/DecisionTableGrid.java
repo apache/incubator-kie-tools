@@ -26,6 +26,7 @@ import javax.enterprise.event.Event;
 
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.common.client.api.IsElement;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
@@ -77,6 +78,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                              final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                              final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                              final CellEditorControls cellEditorControls,
+                             final TranslationService translationService,
                              final DecisionTableGridControls controls) {
         super(parent,
               hasExpression,
@@ -94,6 +96,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
               sessionCommandManager,
               editorSelectedEvent,
               cellEditorControls,
+              translationService,
               false);
         this.controls = controls;
 

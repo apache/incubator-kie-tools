@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,9 +34,13 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.context.AddContextEntryCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -54,16 +58,23 @@ import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlers
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionStrategy;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.mvp.Command;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class ContextGridTest {
@@ -93,13 +104,13 @@ public class ContextGridTest {
     private EventSourceMock<ExpressionEditorSelectedEvent> editorSelectedEvent;
 
     @Mock
-    private ManagedInstance<ContextGridControls> controlsProvider;
-
-    @Mock
-    private ContextGridControls controls;
-
-    @Mock
     private CellEditorControls cellEditorControls;
+
+    @Mock
+    private TranslationService translationService;
+
+    @Mock
+    private ListSelector listSelector;
 
     @Mock
     private GridCellTuple parent;
@@ -112,6 +123,12 @@ public class ContextGridTest {
 
     @Mock
     private BaseExpressionGrid literalExpressionEditor;
+
+    @Mock
+    private UndefinedExpressionEditorDefinition undefinedExpressionEditorDefinition;
+
+    @Mock
+    private BaseExpressionGrid undefinedExpressionEditor;
 
     @Mock
     private GridWidgetDnDHandlersState dndHandlersState;
@@ -135,15 +152,17 @@ public class ContextGridTest {
                                                                                expressionEditorDefinitionsSupplier,
                                                                                editorSelectedEvent,
                                                                                cellEditorControls,
-                                                                               controlsProvider);
+                                                                               translationService,
+                                                                               listSelector);
 
         final Optional<Context> expression = definition.getModelClass();
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add((ExpressionEditorDefinition) definition);
         expressionEditorDefinitions.add(literalExpressionEditorDefinition);
+        expressionEditorDefinitions.add(undefinedExpressionEditorDefinition);
 
-        doReturn(controls).when(controlsProvider).get();
         doReturn(expressionEditorDefinitions).when(expressionEditorDefinitionsSupplier).get();
+        doReturn(parent).when(literalExpressionEditor).getParentInformation();
         doReturn(Optional.of(literalExpression)).when(literalExpressionEditorDefinition).getModelClass();
         doReturn(Optional.of(literalExpressionEditor)).when(literalExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
                                                                                                          any(HasExpression.class),
@@ -151,14 +170,24 @@ public class ContextGridTest {
                                                                                                          any(Optional.class),
                                                                                                          anyBoolean());
 
+        doReturn(parent).when(undefinedExpressionEditor).getParentInformation();
+        doReturn(Optional.empty()).when(undefinedExpressionEditorDefinition).getModelClass();
+        doReturn(Optional.of(undefinedExpressionEditor)).when(undefinedExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
+                                                                                                             any(HasExpression.class),
+                                                                                                             any(Optional.class),
+                                                                                                             any(Optional.class),
+                                                                                                             anyBoolean());
+
         doReturn(session).when(sessionManager).getCurrentSession();
         doReturn(handler).when(session).getCanvasHandler();
 
-        this.grid = (ContextGrid) definition.getEditor(parent,
-                                                       hasExpression,
-                                                       expression,
-                                                       hasName,
-                                                       false).get();
+        this.grid = spy((ContextGrid) definition.getEditor(parent,
+                                                           hasExpression,
+                                                           expression,
+                                                           hasName,
+                                                           false).get());
+
+        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
     }
 
     @Test
@@ -179,7 +208,7 @@ public class ContextGridTest {
                      uiModel.getCell(0, 0).getValue().getValue());
         assertEquals(Name.DEFAULT_NAME,
                      uiModel.getCell(0, 1).getValue().getValue());
-        assertNull(uiModel.getCell(0, 2));
+        assertTrue(uiModel.getCell(0, 2).getValue() instanceof ExpressionCellValue);
 
         assertNotNull(uiModel.getCell(1, 0));
         assertNull(uiModel.getCell(1, 0).getValue().getValue());
@@ -224,8 +253,61 @@ public class ContextGridTest {
     }
 
     @Test
+    public void testGetItems() {
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
+
+        assertThat(items.size()).isEqualTo(3);
+        assertListSelectorItem(items.get(0),
+                               DMNEditorConstants.ContextEditor_InsertContextEntryAbove);
+        assertListSelectorItem(items.get(1),
+                               DMNEditorConstants.ContextEditor_InsertContextEntryBelow);
+        assertListSelectorItem(items.get(2),
+                               DMNEditorConstants.ContextEditor_DeleteContextEntry);
+    }
+
+    private void assertListSelectorItem(final HasListSelectorControl.ListSelectorItem item,
+                                        final String text) {
+        assertThat(item).isInstanceOf(HasListSelectorControl.ListSelectorTextItem.class);
+        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) item;
+        assertThat(ti.getText()).isEqualTo(text);
+    }
+
+    @Test
+    public void testOnItemSelected() {
+        final Command command = mock(Command.class);
+        final HasListSelectorControl.ListSelectorTextItem listSelectorItem = mock(HasListSelectorControl.ListSelectorTextItem.class);
+        when(listSelectorItem.getCommand()).thenReturn(command);
+
+        grid.onItemSelected(listSelectorItem);
+
+        verify(command).execute();
+    }
+
+    @Test
+    public void testOnItemSelectedInsertRowAbove() {
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
+        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(0);
+
+        grid.onItemSelected(ti);
+
+        verify(cellEditorControls).hide();
+        verify(grid).addContextEntry(eq(0));
+    }
+
+    @Test
+    public void testOnItemSelectedInsertRowBelow() {
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
+        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(1);
+
+        grid.onItemSelected(ti);
+
+        verify(cellEditorControls).hide();
+        verify(grid).addContextEntry(eq(1));
+    }
+
+    @Test
     public void testAddContextEntry() {
-        grid.addContextEntry();
+        grid.addContextEntry(0);
 
         verify(sessionCommandManager).execute(eq(handler),
                                               addContextEntryCommandCaptor.capture());

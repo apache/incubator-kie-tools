@@ -28,7 +28,9 @@ public interface HasCellEditorControls {
 
         void hide();
 
-        void bind(final T bound);
+        void bind(final T bound,
+                  final int uiRowIndex,
+                  final int uiColumnIndex);
     }
 
     default Optional<Editor> getEditor() {

@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -28,6 +29,7 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -38,6 +40,9 @@ public class LiteralExpressionUIModelMapperTest {
 
     @Mock
     private LiteralExpressionGrid literalExpressionEditor;
+
+    @Mock
+    private ListSelector listSelector;
 
     private BaseGridData uiModel;
 
@@ -55,7 +60,8 @@ public class LiteralExpressionUIModelMapperTest {
         literalExpression = new LiteralExpression();
 
         mapper = new LiteralExpressionUIModelMapper(() -> uiModel,
-                                                    () -> Optional.of(literalExpression));
+                                                    () -> Optional.of(literalExpression),
+                                                    listSelector);
     }
 
     @Test
@@ -71,6 +77,13 @@ public class LiteralExpressionUIModelMapperTest {
         mapper.fromDMNModel(0, 0);
 
         assertEquals("学校", ((BaseGridCellValue) uiModel.getCell(0, 0).getValue()).getValue());
+    }
+
+    @Test
+    public void testFromDmn_CellType() throws Exception {
+        mapper.fromDMNModel(0, 0);
+
+        assertTrue(uiModel.getCell(0, 0) instanceof LiteralExpressionCell);
     }
 
     @Test

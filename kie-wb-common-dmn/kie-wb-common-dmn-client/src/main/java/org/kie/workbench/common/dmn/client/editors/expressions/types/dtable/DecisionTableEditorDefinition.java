@@ -23,6 +23,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
@@ -35,9 +36,10 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
 import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -49,14 +51,8 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.kie.workbench.common.stunner.core.client.session.Session;
 
 @ApplicationScoped
-public class DecisionTableEditorDefinition implements ExpressionEditorDefinition<DecisionTable> {
+public class DecisionTableEditorDefinition extends BaseEditorDefinition<DecisionTable> {
 
-    private DMNGridPanel gridPanel;
-    private DMNGridLayer gridLayer;
-    private SessionManager sessionManager;
-    private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-    private Event<ExpressionEditorSelectedEvent> editorSelectedEvent;
-    private CellEditorControls cellEditorControls;
     private ManagedInstance<DecisionTableGridControls> controlsProvider;
 
     public DecisionTableEditorDefinition() {
@@ -70,13 +66,15 @@ public class DecisionTableEditorDefinition implements ExpressionEditorDefinition
                                          final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                          final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                                          final CellEditorControls cellEditorControls,
+                                         final TranslationService translationService,
                                          final ManagedInstance<DecisionTableGridControls> controlsProvider) {
-        this.gridPanel = gridPanel;
-        this.gridLayer = gridLayer;
-        this.sessionManager = sessionManager;
-        this.sessionCommandManager = sessionCommandManager;
-        this.editorSelectedEvent = editorSelectedEvent;
-        this.cellEditorControls = cellEditorControls;
+        super(gridPanel,
+              gridLayer,
+              sessionManager,
+              sessionCommandManager,
+              editorSelectedEvent,
+              cellEditorControls,
+              translationService);
         this.controlsProvider = controlsProvider;
     }
 
@@ -87,7 +85,7 @@ public class DecisionTableEditorDefinition implements ExpressionEditorDefinition
 
     @Override
     public String getName() {
-        return DecisionTable.class.getSimpleName();
+        return translationService.format(DMNEditorConstants.ExpressionEditor_DecisionTableExpressionType);
     }
 
     @Override
@@ -141,6 +139,7 @@ public class DecisionTableEditorDefinition implements ExpressionEditorDefinition
                                                  sessionCommandManager,
                                                  editorSelectedEvent,
                                                  cellEditorControls,
+                                                 translationService,
                                                  controlsProvider.get()));
     }
 }

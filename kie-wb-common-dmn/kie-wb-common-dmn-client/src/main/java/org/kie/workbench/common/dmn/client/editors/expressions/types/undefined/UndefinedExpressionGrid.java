@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.undefined;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -25,6 +26,7 @@ import javax.enterprise.event.Event;
 
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.common.client.api.IsElement;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
@@ -35,6 +37,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionT
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
@@ -46,8 +49,10 @@ import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
+import org.uberfire.mvp.Command;
 
 public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, UndefinedExpressionUIModelMapper> implements HasListSelectorControl {
 
@@ -56,11 +61,6 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private ListSelector listSelector;
     private boolean isNested;
-
-    public interface ListSelectorExpressionTypeItem extends ListSelectorTextItem {
-
-        ExpressionType getExpressionType();
-    }
 
     public UndefinedExpressionGrid(final GridCellTuple parent,
                                    final HasExpression hasExpression,
@@ -73,6 +73,7 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
                                    final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                    final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                                    final CellEditorControls cellEditorControls,
+                                   final TranslationService translationService,
                                    final ListSelector listSelector,
                                    final boolean isNested) {
         super(parent,
@@ -86,6 +87,7 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
               sessionCommandManager,
               editorSelectedEvent,
               cellEditorControls,
+              translationService,
               true);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.listSelector = listSelector;
@@ -137,21 +139,40 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
     }
 
     @Override
-    public List<ListSelectorItem> getItems() {
-        return expressionEditorDefinitionsSupplier
-                .get()
-                .stream()
-                .filter(definition -> definition.getModelClass().isPresent())
-                .map(this::makeListSelectorItem)
-                .collect(Collectors.toList());
+    @SuppressWarnings("unused")
+    public List<ListSelectorItem> getItems(final int uiRowIndex,
+                                           final int uiColumnIndex) {
+        final List<ListSelectorItem> items = new ArrayList<>();
+        items.addAll(expressionEditorDefinitionsSupplier
+                             .get()
+                             .stream()
+                             .filter(definition -> definition.getModelClass().isPresent())
+                             .map(this::makeListSelectorItem)
+                             .collect(Collectors.toList()));
+
+        final Optional<BaseExpressionGrid> parent = findParentGrid();
+        parent.ifPresent(grid -> {
+            if (grid instanceof HasListSelectorControl) {
+                final int parentUiRowIndex = getParentInformation().getRowIndex();
+                final int parentUiColumnIndex = getParentInformation().getColumnIndex();
+                final GridCell<?> parentCell = getParentInformation().getGridData().getCell(parentUiRowIndex, parentUiColumnIndex);
+
+                if (parentCell instanceof HasCellEditorControls) {
+                    final List<ListSelectorItem> parentItems = ((HasListSelectorControl) grid).getItems(parentUiRowIndex,
+                                                                                                        parentUiColumnIndex);
+                    if (!parentItems.isEmpty()) {
+                        items.add(new ListSelectorDividerItem());
+                        items.addAll(parentItems);
+                    }
+                }
+            }
+        });
+
+        return items;
     }
 
-    ListSelectorExpressionTypeItem makeListSelectorItem(final ExpressionEditorDefinition definition) {
-        return new ListSelectorExpressionTypeItem() {
-            @Override
-            public ExpressionType getExpressionType() {
-                return definition.getType();
-            }
+    ListSelectorTextItem makeListSelectorItem(final ExpressionEditorDefinition definition) {
+        return new ListSelectorTextItem() {
 
             @Override
             public String getText() {
@@ -162,24 +183,22 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
             public boolean isEnabled() {
                 return true;
             }
+
+            @Override
+            public Command getCommand() {
+                return () -> {
+                    cellEditorControls.hide();
+                    onExpressionTypeChanged(definition.getType());
+                };
+            }
         };
     }
 
     @Override
     public void onItemSelected(final ListSelectorItem item) {
-        if (item instanceof ListSelectorExpressionTypeItem) {
-            final ListSelectorExpressionTypeItem eItem = (ListSelectorExpressionTypeItem) item;
-            expressionEditorDefinitionsSupplier
-                    .get()
-                    .stream()
-                    .filter(definition -> definition.getModelClass().isPresent())
-                    .map(ExpressionEditorDefinition::getType)
-                    .filter(type -> type.equals(eItem.getExpressionType()))
-                    .findFirst()
-                    .ifPresent(type -> {
-                        cellEditorControls.hide();
-                        onExpressionTypeChanged(type);
-                    });
+        if (item instanceof ListSelectorTextItem) {
+            final ListSelectorTextItem li = (ListSelectorTextItem) item;
+            li.getCommand().execute();
         }
     }
 

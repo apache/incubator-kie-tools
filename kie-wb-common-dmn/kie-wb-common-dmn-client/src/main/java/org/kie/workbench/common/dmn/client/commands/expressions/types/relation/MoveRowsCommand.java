@@ -95,7 +95,9 @@ public class MoveRowsCommand extends AbstractCanvasGraphCommand implements VetoE
 
                 final java.util.List<List> rows = relation.getRow();
 
-                CommandUtils.moveRows(rows, rowsToMove, index);
+                CommandUtils.moveRows(rows,
+                                      rowsToMove,
+                                      index);
             }
         };
     }
@@ -107,7 +109,9 @@ public class MoveRowsCommand extends AbstractCanvasGraphCommand implements VetoE
             public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
                 uiModel.moveRowsTo(index,
                                    rows);
-                CommandUtils.updateRowNumbers(uiModel, IntStream.range(0, uiModel.getRowCount()));
+
+                updateRowNumbers();
+                updateParentInformation();
 
                 canvasOperation.execute();
 
@@ -118,12 +122,24 @@ public class MoveRowsCommand extends AbstractCanvasGraphCommand implements VetoE
             public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
                 uiModel.moveRowsTo(oldIndex,
                                    rows);
-                CommandUtils.updateRowNumbers(uiModel, IntStream.range(0, uiModel.getRowCount()));
+
+                updateRowNumbers();
+                updateParentInformation();
 
                 canvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
             }
         };
+    }
+
+    public void updateRowNumbers() {
+        CommandUtils.updateRowNumbers(uiModel,
+                                      IntStream.range(0,
+                                                      uiModel.getRowCount()));
+    }
+
+    public void updateParentInformation() {
+        CommandUtils.updateParentInformation(uiModel);
     }
 }

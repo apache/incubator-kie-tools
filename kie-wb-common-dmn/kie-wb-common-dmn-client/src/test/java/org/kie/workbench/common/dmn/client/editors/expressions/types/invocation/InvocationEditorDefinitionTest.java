@@ -21,6 +21,7 @@ import java.util.function.Supplier;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +33,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -48,6 +50,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -81,6 +85,9 @@ public class InvocationEditorDefinitionTest {
     private CellEditorControls cellEditorControls;
 
     @Mock
+    private TranslationService translationService;
+
+    @Mock
     private GridCellTuple parent;
 
     @Mock
@@ -100,12 +107,14 @@ public class InvocationEditorDefinitionTest {
                                                          expressionEditorDefinitionsSupplier,
                                                          editorSelectedEvent,
                                                          cellEditorControls,
+                                                         translationService,
                                                          controlsProvider);
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add((ExpressionEditorDefinition) definition);
 
         doReturn(controls).when(controlsProvider).get();
         doReturn(expressionEditorDefinitions).when(expressionEditorDefinitionsSupplier).get();
+        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
     }
 
     @Test
@@ -116,7 +125,7 @@ public class InvocationEditorDefinitionTest {
 
     @Test
     public void testName() {
-        assertEquals(Invocation.class.getSimpleName(),
+        assertEquals(DMNEditorConstants.ExpressionEditor_InvocationType,
                      definition.getName());
     }
 

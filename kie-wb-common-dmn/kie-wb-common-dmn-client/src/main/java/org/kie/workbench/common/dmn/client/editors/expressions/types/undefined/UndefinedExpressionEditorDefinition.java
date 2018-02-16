@@ -28,7 +28,7 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
@@ -45,17 +45,10 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.kie.workbench.common.stunner.core.client.session.Session;
 
 @ApplicationScoped
-public class UndefinedExpressionEditorDefinition implements ExpressionEditorDefinition<Expression> {
+public class UndefinedExpressionEditorDefinition extends BaseEditorDefinition<Expression> {
 
-    private DMNGridPanel gridPanel;
-    private DMNGridLayer gridLayer;
-    private SessionManager sessionManager;
-    private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
-    private Event<ExpressionEditorSelectedEvent> editorSelectedEvent;
-    private CellEditorControls cellEditorControls;
     private ListSelector listSelector;
-    private TranslationService translationService;
 
     public UndefinedExpressionEditorDefinition() {
         //CDI proxy
@@ -69,17 +62,17 @@ public class UndefinedExpressionEditorDefinition implements ExpressionEditorDefi
                                                final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                                final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                                                final CellEditorControls cellEditorControls,
-                                               final ListSelector listSelector,
-                                               final TranslationService translationService) {
-        this.gridPanel = gridPanel;
-        this.gridLayer = gridLayer;
-        this.sessionManager = sessionManager;
-        this.sessionCommandManager = sessionCommandManager;
+                                               final TranslationService translationService,
+                                               final ListSelector listSelector) {
+        super(gridPanel,
+              gridLayer,
+              sessionManager,
+              sessionCommandManager,
+              editorSelectedEvent,
+              cellEditorControls,
+              translationService);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
-        this.editorSelectedEvent = editorSelectedEvent;
-        this.cellEditorControls = cellEditorControls;
         this.listSelector = listSelector;
-        this.translationService = translationService;
     }
 
     @Override
@@ -114,6 +107,7 @@ public class UndefinedExpressionEditorDefinition implements ExpressionEditorDefi
                                                        expressionEditorDefinitionsSupplier,
                                                        editorSelectedEvent,
                                                        cellEditorControls,
+                                                       translationService,
                                                        listSelector,
                                                        isNested));
     }

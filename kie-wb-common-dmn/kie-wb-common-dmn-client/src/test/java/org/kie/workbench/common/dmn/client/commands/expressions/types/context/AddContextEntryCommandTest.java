@@ -21,15 +21,21 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextUIModelMapper;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.NameColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionEditorDefinition;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -46,9 +52,12 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberCol
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -65,7 +74,7 @@ public class AddContextEntryCommandTest {
     private ExpressionEditorColumn uiExpressionEditorColumn;
 
     @Mock
-    private ExpressionEditorDefinitions expressionEditorDefinitions;
+    private ListSelector listSelector;
 
     @Mock
     private org.uberfire.mvp.Command canvasOperation;
@@ -78,6 +87,15 @@ public class AddContextEntryCommandTest {
 
     @Mock
     private RuleManager ruleManager;
+
+    @Mock
+    private GridCellTuple parent;
+
+    @Mock
+    private UndefinedExpressionEditorDefinition undefinedExpressionEditorDefinition;
+
+    @Mock
+    private BaseExpressionGrid undefinedExpressionEditor;
 
     private Context context;
 
@@ -99,6 +117,7 @@ public class AddContextEntryCommandTest {
     }
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() {
         this.context = new Context();
         this.contextEntry = new ContextEntry() {{
@@ -117,25 +136,45 @@ public class AddContextEntryCommandTest {
         this.uiModel.appendColumn(uiNameColumn);
         this.uiModel.appendColumn(uiExpressionEditorColumn);
 
-        this.uiModelMapper = new ContextUIModelMapper(() -> uiModel,
-                                                      () -> Optional.of(context),
-                                                      () -> expressionEditorDefinitions);
-
-        this.command = new AddContextEntryCommand(context,
-                                                  contextEntry,
-                                                  uiModel,
-                                                  uiModelRow,
-                                                  uiModelMapper,
-                                                  canvasOperation);
         doReturn(ruleManager).when(handler).getRuleManager();
         doReturn(0).when(uiRowNumberColumn).getIndex();
         doReturn(1).when(uiNameColumn).getIndex();
         doReturn(2).when(uiExpressionEditorColumn).getIndex();
-        doReturn(Optional.empty()).when(expressionEditorDefinitions).getExpressionEditorDefinition(any(Optional.class));
+
+        this.uiModel.setCellValue(0,
+                                  2,
+                                  new ExpressionCellValue(Optional.of(undefinedExpressionEditor)));
+
+        final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
+        expressionEditorDefinitions.add(undefinedExpressionEditorDefinition);
+
+        doReturn(parent).when(undefinedExpressionEditor).getParentInformation();
+        doReturn(Optional.empty()).when(undefinedExpressionEditorDefinition).getModelClass();
+        doReturn(Optional.of(undefinedExpressionEditor)).when(undefinedExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
+                                                                                                             any(HasExpression.class),
+                                                                                                             any(Optional.class),
+                                                                                                             any(Optional.class),
+                                                                                                             anyBoolean());
+        this.uiModelMapper = new ContextUIModelMapper(() -> uiModel,
+                                                      () -> Optional.of(context),
+                                                      () -> expressionEditorDefinitions,
+                                                      listSelector);
+    }
+
+    private void makeCommand() {
+        this.command = spy(new AddContextEntryCommand(context,
+                                                      contextEntry,
+                                                      uiModel,
+                                                      uiModelRow,
+                                                      context.getContextEntry().size() - 1,
+                                                      uiModelMapper,
+                                                      canvasOperation));
     }
 
     @Test
     public void testGraphCommandAllow() {
+        makeCommand();
+
         final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
@@ -144,6 +183,8 @@ public class AddContextEntryCommandTest {
 
     @Test
     public void testGraphCommandExecute() {
+        makeCommand();
+
         final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
@@ -165,6 +206,8 @@ public class AddContextEntryCommandTest {
         }};
         context.getContextEntry().add(0, firstEntry);
 
+        makeCommand();
+
         final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
@@ -181,6 +224,8 @@ public class AddContextEntryCommandTest {
 
     @Test
     public void testGraphCommandUndo() {
+        makeCommand();
+
         final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
 
         //Add column and then undo
@@ -203,6 +248,8 @@ public class AddContextEntryCommandTest {
         }};
         context.getContextEntry().add(0, firstEntry);
 
+        makeCommand();
+
         final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
 
         //Add column and then undo
@@ -220,6 +267,8 @@ public class AddContextEntryCommandTest {
 
     @Test
     public void testCanvasCommandAllow() {
+        makeCommand();
+
         final Command<AbstractCanvasHandler, CanvasViolation> c = command.newCanvasCommand(handler);
 
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
@@ -228,6 +277,8 @@ public class AddContextEntryCommandTest {
 
     @Test
     public void testCanvasCommandExecute() {
+        makeCommand();
+
         //Add Graph column first as ContextUIModelMapper relies on the model being first updated
         command.newGraphCommand(handler).execute(gce);
 
@@ -249,25 +300,38 @@ public class AddContextEntryCommandTest {
                      uiModel.getColumns().get(1));
         assertEquals(uiExpressionEditorColumn,
                      uiModel.getColumns().get(2));
-        assertEquals(2,
+
+        assertEquals(3,
                      uiModel.getRows().get(0).getCells().size());
         assertEquals(1,
                      uiModel.getCell(0, 0).getValue().getValue());
         assertEquals("variable",
                      uiModel.getCell(0, 1).getValue().getValue());
-        assertNull(uiModel.getCell(1, 0));
-        assertNull(uiModel.getCell(1, 1));
+        assertTrue(uiModel.getCell(0, 2).getValue() instanceof ExpressionCellValue);
+
+        //Default row
+        assertEquals(1,
+                     uiModel.getRows().get(1).getCells().size());
+        assertTrue(uiModel.getCell(1, 2).getValue() instanceof ExpressionCellValue);
+
+        verify(command).updateRowNumbers();
+        verify(command).updateParentInformation();
 
         verify(canvasOperation).execute();
     }
 
     @Test
     public void testCanvasCommandExecuteMultipleEntries() {
+        makeCommand();
+
         // first row
         command.newGraphCommand(handler).execute(gce);
         final Command<AbstractCanvasHandler, CanvasViolation> firstEntryCanvasCommand = command.newCanvasCommand(handler);
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      firstEntryCanvasCommand.execute(handler));
+
+        verify(command).updateRowNumbers();
+        verify(command).updateParentInformation();
 
         // second row
         final ContextEntry secondRowEntry = new ContextEntry() {{
@@ -276,16 +340,20 @@ public class AddContextEntryCommandTest {
             }});
         }};
         final DMNGridRow uiSecondModelRow = new DMNGridRow();
-        command = new AddContextEntryCommand(context,
-                                             secondRowEntry,
-                                             uiModel,
-                                             uiSecondModelRow,
-                                             uiModelMapper,
-                                             canvasOperation);
+        command = spy(new AddContextEntryCommand(context,
+                                                 secondRowEntry,
+                                                 uiModel,
+                                                 uiSecondModelRow,
+                                                 context.getContextEntry().size() - 1,
+                                                 uiModelMapper,
+                                                 canvasOperation));
         command.newGraphCommand(handler).execute(gce);
         final Command<AbstractCanvasHandler, CanvasViolation> secondEntryCanvasCommand = command.newCanvasCommand(handler);
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      secondEntryCanvasCommand.execute(handler));
+
+        verify(command).updateRowNumbers();
+        verify(command).updateParentInformation();
 
         assertEquals(3,
                      uiModel.getRowCount());
@@ -303,24 +371,35 @@ public class AddContextEntryCommandTest {
                      uiModel.getColumns().get(1));
         assertEquals(uiExpressionEditorColumn,
                      uiModel.getColumns().get(2));
-        assertEquals(2,
+
+        assertEquals(3,
                      uiModel.getRows().get(0).getCells().size());
         assertEquals(1,
                      uiModel.getCell(0, 0).getValue().getValue());
         assertEquals("variable",
                      uiModel.getCell(0, 1).getValue().getValue());
+        assertTrue(uiModel.getCell(0, 2).getValue() instanceof ExpressionCellValue);
+
+        assertEquals(3,
+                     uiModel.getRows().get(1).getCells().size());
         assertEquals(2,
                      uiModel.getCell(1, 0).getValue().getValue());
         assertEquals("last entry",
                      uiModel.getCell(1, 1).getValue().getValue());
-        assertNull(uiModel.getCell(2, 0));
-        assertNull(uiModel.getCell(2, 1));
+        assertTrue(uiModel.getCell(1, 2).getValue() instanceof ExpressionCellValue);
+
+        //Default row
+        assertEquals(1,
+                     uiModel.getRows().get(2).getCells().size());
+        assertTrue(uiModel.getCell(2, 2).getValue() instanceof ExpressionCellValue);
 
         verify(canvasOperation, times(2)).execute();
     }
 
     @Test
     public void testCanvasCommandUndo() {
+        makeCommand();
+
         //Add Graph column first as ContextUIModelMapper relies on the model being first updated
         command.newGraphCommand(handler).execute(gce);
 
@@ -330,7 +409,7 @@ public class AddContextEntryCommandTest {
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      cc.execute(handler));
 
-        reset(canvasOperation);
+        reset(command, canvasOperation);
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      cc.undo(handler));
 
@@ -346,6 +425,9 @@ public class AddContextEntryCommandTest {
                      uiModel.getRowCount());
         assertNull(uiModel.getCell(0, 0));
         assertNull(uiModel.getCell(0, 1));
+
+        verify(command).updateRowNumbers();
+        verify(command).updateParentInformation();
 
         verify(canvasOperation).execute();
     }

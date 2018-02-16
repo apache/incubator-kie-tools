@@ -28,6 +28,7 @@ import javax.enterprise.event.Event;
 
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.common.client.api.IsElement;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
@@ -75,6 +76,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
                         final Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier,
                         final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                         final CellEditorControls cellEditorControls,
+                        final TranslationService translationService,
                         final FunctionGridControls controls,
                         final boolean isNested) {
         super(parent,
@@ -88,6 +90,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
               sessionCommandManager,
               editorSelectedEvent,
               cellEditorControls,
+              translationService,
               false);
         this.controls = controls;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;

@@ -16,12 +16,15 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.literal;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.enterprise.event.Event;
 
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.common.client.api.IsElement;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
@@ -29,7 +32,10 @@ import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
@@ -37,10 +43,12 @@ import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
-import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
-public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression, LiteralExpressionUIModelMapper> {
+public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression, LiteralExpressionUIModelMapper> implements HasListSelectorControl {
+
+    private ListSelector listSelector;
 
     public LiteralExpressionGrid(final GridCellTuple parent,
                                  final HasExpression hasExpression,
@@ -52,6 +60,8 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
                                  final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                  final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                                  final CellEditorControls cellEditorControls,
+                                 final TranslationService translationService,
+                                 final ListSelector listSelector,
                                  final boolean isNested) {
         super(parent,
               hasExpression,
@@ -64,15 +74,26 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
               sessionCommandManager,
               editorSelectedEvent,
               cellEditorControls,
+              translationService,
               isNested);
+        this.listSelector = listSelector;
 
         setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
+
+        super.doInitialisation();
+    }
+
+    @Override
+    protected void doInitialisation() {
+        // Defer initialisation until after the constructor completes as
+        // LiteralExpressionUIModelMapper needs ListSelector to have been set
     }
 
     @Override
     public LiteralExpressionUIModelMapper makeUiModelMapper() {
         return new LiteralExpressionUIModelMapper(this::getModel,
-                                                  () -> expression);
+                                                  () -> expression,
+                                                  listSelector);
     }
 
     @Override
@@ -121,13 +142,34 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
                                                                    parentGrid));
     }
 
-    private Optional<BaseExpressionGrid> findParentGrid() {
-        final GridData parentUiModel = parent.getGridData();
-        return gridLayer.getGridWidgets()
-                .stream()
-                .filter(gridWidget -> gridWidget instanceof BaseExpressionGrid)
-                .filter(gridWidget -> gridWidget.getModel().equals(parentUiModel))
-                .map(gridWidget -> (BaseExpressionGrid) gridWidget)
-                .findFirst();
+    @Override
+    @SuppressWarnings("unused")
+    public List<ListSelectorItem> getItems(final int uiRowIndex,
+                                           final int uiColumnIndex) {
+        final List<ListSelectorItem> items = new ArrayList<>();
+        final Optional<BaseExpressionGrid> parent = findParentGrid();
+        parent.ifPresent(grid -> {
+            if (grid instanceof HasListSelectorControl) {
+                final int parentUiRowIndex = getParentInformation().getRowIndex();
+                final int parentUiColumnIndex = getParentInformation().getColumnIndex();
+                final GridCell<?> parentCell = getParentInformation().getGridData().getCell(parentUiRowIndex, parentUiColumnIndex);
+
+                if (parentCell instanceof HasCellEditorControls) {
+                    final List<ListSelectorItem> parentItems = ((HasListSelectorControl) grid).getItems(parentUiRowIndex,
+                                                                                                        parentUiColumnIndex);
+                    if (!parentItems.isEmpty()) {
+                        items.addAll(parentItems);
+                    }
+                }
+            }
+        });
+
+        return items;
+    }
+
+    @Override
+    public void onItemSelected(final ListSelectorItem item) {
+        final ListSelectorTextItem li = (ListSelectorTextItem) item;
+        li.getCommand().execute();
     }
 }

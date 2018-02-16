@@ -17,14 +17,15 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
 
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionStrategy;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ContextUIModelMapperTest extends BaseContextUIModelMapperTest<ContextUIModelMapper> {
@@ -33,7 +34,8 @@ public class ContextUIModelMapperTest extends BaseContextUIModelMapperTest<Conte
     protected ContextUIModelMapper getMapper() {
         return new ContextUIModelMapper(() -> uiModel,
                                         () -> Optional.of(context),
-                                        expressionEditorDefinitionsSupplier);
+                                        expressionEditorDefinitionsSupplier,
+                                        listSelector);
     }
 
     @Test
@@ -41,13 +43,27 @@ public class ContextUIModelMapperTest extends BaseContextUIModelMapperTest<Conte
         mapper.fromDMNModel(0, 0);
         mapper.fromDMNModel(1, 0);
 
-        assertEquals(1,
-                     uiModel.getCell(0, 0).getValue().getValue());
-        assertEquals(RowSelectionStrategy.INSTANCE,
-                     uiModel.getCell(0, 0).getSelectionStrategy());
+        assertThat(uiModel.getCell(0, 0).getValue().getValue()).isEqualTo(1);
+        assertThat(uiModel.getCell(0, 0).getSelectionStrategy()).isSameAs(RowSelectionStrategy.INSTANCE);
 
-        assertNull(uiModel.getCell(1, 0).getValue().getValue());
-        assertEquals(RowSelectionStrategy.INSTANCE,
-                     uiModel.getCell(1, 0).getSelectionStrategy());
+        assertThat(uiModel.getCell(1, 0).getValue().getValue()).isNull();
+        assertThat(uiModel.getCell(1, 0).getSelectionStrategy()).isSameAs(RowSelectionStrategy.INSTANCE);
+    }
+
+    @Test
+    public void testFromDMNModelCellTypes() {
+        IntStream.range(0, 2).forEach(rowIndex -> {
+            mapper.fromDMNModel(rowIndex, 0);
+            mapper.fromDMNModel(rowIndex, 1);
+            mapper.fromDMNModel(rowIndex, 2);
+        });
+
+        assertThat(uiModel.getCell(0, 0)).isInstanceOf(ContextGridCell.class);
+        assertThat(uiModel.getCell(0, 1)).isInstanceOf(ContextGridCell.class);
+        assertThat(uiModel.getCell(0, 2)).isInstanceOf(ContextGridCell.class);
+
+        assertThat(uiModel.getCell(1, 0)).isInstanceOf(BaseGridCell.class);
+        assertThat(uiModel.getCell(1, 1)).isInstanceOf(BaseGridCell.class);
+        assertThat(uiModel.getCell(1, 2)).isInstanceOf(BaseGridCell.class);
     }
 }

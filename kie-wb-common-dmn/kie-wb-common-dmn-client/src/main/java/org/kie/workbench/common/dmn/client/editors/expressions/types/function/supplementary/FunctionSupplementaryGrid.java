@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -23,6 +25,7 @@ import javax.enterprise.event.Event;
 
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.common.client.api.IsElement;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
@@ -33,6 +36,8 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Exp
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
@@ -45,11 +50,12 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
-public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, ContextUIModelMapper> {
+public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, ContextUIModelMapper> implements HasListSelectorControl {
 
     private static final String EXPRESSION_COLUMN_GROUP = "FunctionSupplementaryGrid$ExpressionColumn1";
 
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+    private ListSelector listSelector;
 
     public FunctionSupplementaryGrid(final GridCellTuple parent,
                                      final HasExpression hasExpression,
@@ -61,7 +67,9 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Conte
                                      final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                      final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                      final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
-                                     final CellEditorControls cellEditorControls) {
+                                     final CellEditorControls cellEditorControls,
+                                     final TranslationService translationService,
+                                     final ListSelector listSelector) {
         super(parent,
               hasExpression,
               expression,
@@ -78,8 +86,10 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Conte
               sessionCommandManager,
               editorSelectedEvent,
               cellEditorControls,
+              translationService,
               true);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
+        this.listSelector = listSelector;
 
         setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
 
@@ -96,7 +106,8 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Conte
     public ContextUIModelMapper makeUiModelMapper() {
         return new FunctionSupplementaryGridUIModelMapper(this::getModel,
                                                           () -> expression,
-                                                          expressionEditorDefinitionsSupplier);
+                                                          expressionEditorDefinitionsSupplier,
+                                                          listSelector);
     }
 
     @Override
@@ -131,5 +142,16 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Conte
     @Override
     public Optional<IsElement> getEditorControls() {
         return Optional.empty();
+    }
+
+    @Override
+    public List<ListSelectorItem> getItems(final int uiRowIndex,
+                                           final int uiColumnIndex) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public void onItemSelected(final ListSelectorItem item) {
+        //Do nothing for now until https://issues.jboss.org/browse/DROOLS-2298
     }
 }

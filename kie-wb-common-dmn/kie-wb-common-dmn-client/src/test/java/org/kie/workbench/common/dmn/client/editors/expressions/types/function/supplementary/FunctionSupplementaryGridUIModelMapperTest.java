@@ -33,7 +33,8 @@ public class FunctionSupplementaryGridUIModelMapperTest extends BaseContextUIMod
     protected FunctionSupplementaryGridUIModelMapper getMapper() {
         return new FunctionSupplementaryGridUIModelMapper(() -> uiModel,
                                                           () -> Optional.of(context),
-                                                          expressionEditorDefinitionsSupplier);
+                                                          expressionEditorDefinitionsSupplier,
+                                                          listSelector);
     }
 
     @Test

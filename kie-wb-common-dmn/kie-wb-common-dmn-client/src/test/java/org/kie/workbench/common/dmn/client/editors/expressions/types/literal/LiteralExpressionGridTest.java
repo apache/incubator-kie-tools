@@ -16,10 +16,13 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.literal;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,9 +31,12 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextGrid;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
@@ -44,14 +50,19 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class LiteralExpressionGridTest {
@@ -83,6 +94,12 @@ public class LiteralExpressionGridTest {
     private CellEditorControls cellEditorControls;
 
     @Mock
+    private TranslationService translationService;
+
+    @Mock
+    private ListSelector listSelector;
+
+    @Mock
     private GridCellTuple parent;
 
     @Mock
@@ -100,7 +117,9 @@ public class LiteralExpressionGridTest {
                                                                                                    sessionManager,
                                                                                                    sessionCommandManager,
                                                                                                    editorSelectedEvent,
-                                                                                                   cellEditorControls);
+                                                                                                   cellEditorControls,
+                                                                                                   translationService,
+                                                                                                   listSelector);
 
         final Decision decision = new Decision();
         decision.setName(new Name("name"));
@@ -155,5 +174,75 @@ public class LiteralExpressionGridTest {
         final ExpressionEditorSelectedEvent event = expressionEditorSelectedEventCaptor.getValue();
         assertThat(event.getEditor()).isPresent();
         assertThat(mockParentGrid).isSameAs(event.getEditor().get());
+    }
+
+    @Test
+    public void testGetItemsWithNoParent() {
+        when(parent.getGridData()).thenReturn(mock(GridData.class));
+        when(gridLayer.getGridWidgets()).thenReturn(Collections.singleton(mock(BaseGridWidget.class)));
+
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
+
+        assertThat(items).isEmpty();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGetItemsWithParentThatDoesSupportCellControls() {
+        final GridData parentGridData = mock(GridData.class);
+        final ContextGrid parentGridWidget = mock(ContextGrid.class);
+        final HasListSelectorControl.ListSelectorItem listSelectorItem = mock(HasListSelectorControl.ListSelectorItem.class);
+        when(parent.getGridData()).thenReturn(parentGridData);
+        when(gridLayer.getGridWidgets()).thenReturn(Collections.singleton(parentGridWidget));
+        when(parentGridWidget.getModel()).thenReturn(parentGridData);
+        when(parentGridWidget.getItems(anyInt(), anyInt())).thenReturn(Collections.singletonList(listSelectorItem));
+        when(parentGridData.getCell(anyInt(), anyInt())).thenReturn(mock(LiteralExpressionCell.class));
+
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
+
+        assertThat(items).isNotEmpty();
+        assertThat(items.size()).isEqualTo(1);
+        assertThat(items.get(0)).isSameAs(listSelectorItem);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGetItemsWithParentThatDoesSupportCellControlsButCellDoesNot() {
+        final GridData parentGridData = mock(GridData.class);
+        final ContextGrid parentGridWidget = mock(ContextGrid.class);
+        final HasListSelectorControl.ListSelectorItem listSelectorItem = mock(HasListSelectorControl.ListSelectorItem.class);
+        when(parent.getGridData()).thenReturn(parentGridData);
+        when(gridLayer.getGridWidgets()).thenReturn(Collections.singleton(parentGridWidget));
+        when(parentGridWidget.getModel()).thenReturn(parentGridData);
+        when(parentGridWidget.getItems(anyInt(), anyInt())).thenReturn(Collections.singletonList(listSelectorItem));
+        when(parentGridData.getCell(anyInt(), anyInt())).thenReturn(mock(BaseGridCell.class));
+
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
+
+        assertThat(items).isEmpty();
+    }
+
+    @Test
+    public void testGetItemsWithParentThatDoesNotSupportCellControls() {
+        final GridData parentGridData = mock(GridData.class);
+        final BaseExpressionGrid parentGridWidget = mock(BaseExpressionGrid.class);
+        when(parent.getGridData()).thenReturn(parentGridData);
+        when(gridLayer.getGridWidgets()).thenReturn(Collections.singleton(parentGridWidget));
+        when(parentGridWidget.getModel()).thenReturn(parentGridData);
+
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
+
+        assertThat(items).isEmpty();
+    }
+
+    @Test
+    public void testOnItemSelected() {
+        final Command command = mock(Command.class);
+        final HasListSelectorControl.ListSelectorTextItem listSelectorItem = mock(HasListSelectorControl.ListSelectorTextItem.class);
+        when(listSelectorItem.getCommand()).thenReturn(command);
+
+        grid.onItemSelected(listSelectorItem);
+
+        verify(command).execute();
     }
 }

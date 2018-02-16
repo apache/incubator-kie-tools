@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.widgets.grid.controls.list;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Before;
@@ -29,7 +30,10 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -57,7 +61,7 @@ public class ListSelectorTest {
     public void setup() {
         this.listSelector = new ListSelector(view);
 
-        when(bound.getItems()).thenReturn(Arrays.asList(listSelectorItem1, listSelectorItem2));
+        when(bound.getItems(anyInt(), anyInt())).thenReturn(Arrays.asList(listSelectorItem1, listSelectorItem2));
     }
 
     @Test
@@ -67,6 +71,8 @@ public class ListSelectorTest {
 
     @Test
     public void testShow() {
+        listSelector.bind(bound, 0, 0);
+
         listSelector.show();
 
         verify(view).show();
@@ -74,23 +80,43 @@ public class ListSelectorTest {
 
     @Test
     public void testHide() {
+        listSelector.bind(bound, 0, 0);
+
         listSelector.hide();
 
         verify(view).hide();
     }
 
     @Test
-    public void testBind() {
-        listSelector.bind(bound);
+    public void testBindWithItems() {
+        listSelector.bind(bound, 0, 0);
 
         verify(view).setItems(itemsCaptor.capture());
 
         assertThat(itemsCaptor.getValue()).containsOnly(listSelectorItem1, listSelectorItem2);
+
+        listSelector.show();
+
+        verify(view).show();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testBindWithNoItems() {
+        when(bound.getItems(anyInt(), anyInt())).thenReturn(Collections.emptyList());
+
+        listSelector.bind(bound, 0, 0);
+
+        verify(view, never()).setItems(anyList());
+
+        listSelector.show();
+
+        verify(view, never()).show();
     }
 
     @Test
     public void testOnItemSelected() {
-        listSelector.bind(bound);
+        listSelector.bind(bound, 0, 0);
         listSelector.onItemSelected(listSelectorItem2);
 
         verify(bound).onItemSelected(eq(listSelectorItem2));

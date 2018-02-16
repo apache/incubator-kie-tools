@@ -31,6 +31,9 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionEditorDefinition;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.mockito.Mock;
@@ -41,7 +44,6 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
@@ -65,9 +67,18 @@ public abstract class BaseContextUIModelMapperTest<M extends ContextUIModelMappe
     @Mock
     private LiteralExpressionGrid literalExpressionEditor;
 
+    @Mock
+    private UndefinedExpressionEditorDefinition undefinedExpressionEditorDefinition;
+
+    @Mock
+    private BaseExpressionGrid undefinedExpressionEditor;
+
     private LiteralExpression literalExpression = new LiteralExpression();
 
     private Supplier<Optional<GridCellValue<?>>> cellValueSupplier;
+
+    @Mock
+    protected ListSelector listSelector;
 
     @Mock
     protected Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
@@ -93,6 +104,7 @@ public abstract class BaseContextUIModelMapperTest<M extends ContextUIModelMappe
 
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add(literalExpressionEditorDefinition);
+        expressionEditorDefinitions.add(undefinedExpressionEditorDefinition);
 
         doReturn(expressionEditorDefinitions).when(expressionEditorDefinitionsSupplier).get();
         doReturn(Optional.of(literalExpression)).when(literalExpressionEditorDefinition).getModelClass();
@@ -102,6 +114,13 @@ public abstract class BaseContextUIModelMapperTest<M extends ContextUIModelMappe
                                                                                                          any(Optional.class),
                                                                                                          any(Optional.class),
                                                                                                          anyBoolean());
+
+        doReturn(Optional.empty()).when(undefinedExpressionEditorDefinition).getModelClass();
+        doReturn(Optional.of(undefinedExpressionEditor)).when(undefinedExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
+                                                                                                             any(HasExpression.class),
+                                                                                                             any(Optional.class),
+                                                                                                             any(Optional.class),
+                                                                                                             anyBoolean());
 
         this.context = new Context();
         this.context.getContextEntry().add(new ContextEntry() {{
@@ -135,12 +154,15 @@ public abstract class BaseContextUIModelMapperTest<M extends ContextUIModelMappe
         mapper.fromDMNModel(0, 2);
         mapper.fromDMNModel(1, 2);
 
-        assertNull(uiModel.getCell(0, 2));
+        assertTrue(uiModel.getCell(0, 2).getValue() instanceof ExpressionCellValue);
+        final ExpressionCellValue dcv0 = (ExpressionCellValue) uiModel.getCell(0, 2).getValue();
+        assertEquals(undefinedExpressionEditor,
+                     dcv0.getValue().get());
 
         assertTrue(uiModel.getCell(1, 2).getValue() instanceof ExpressionCellValue);
-        final ExpressionCellValue dcv = (ExpressionCellValue) uiModel.getCell(1, 2).getValue();
+        final ExpressionCellValue dcv1 = (ExpressionCellValue) uiModel.getCell(1, 2).getValue();
         assertEquals(literalExpressionEditor,
-                     dcv.getValue().get());
+                     dcv1.getValue().get());
     }
 
     @Test

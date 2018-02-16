@@ -24,6 +24,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Binding;
@@ -32,10 +33,11 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -47,15 +49,9 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.kie.workbench.common.stunner.core.client.session.Session;
 
 @ApplicationScoped
-public class InvocationEditorDefinition implements ExpressionEditorDefinition<Invocation> {
+public class InvocationEditorDefinition extends BaseEditorDefinition<Invocation> {
 
-    private DMNGridPanel gridPanel;
-    private DMNGridLayer gridLayer;
-    private SessionManager sessionManager;
-    private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
-    private Event<ExpressionEditorSelectedEvent> editorSelectedEvent;
-    private CellEditorControls cellEditorControls;
     private ManagedInstance<InvocationGridControls> controlsProvider;
 
     public InvocationEditorDefinition() {
@@ -70,14 +66,16 @@ public class InvocationEditorDefinition implements ExpressionEditorDefinition<In
                                       final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                       final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                                       final CellEditorControls cellEditorControls,
+                                      final TranslationService translationService,
                                       final ManagedInstance<InvocationGridControls> controlsProvider) {
-        this.gridPanel = gridPanel;
-        this.gridLayer = gridLayer;
-        this.sessionManager = sessionManager;
-        this.sessionCommandManager = sessionCommandManager;
+        super(gridPanel,
+              gridLayer,
+              sessionManager,
+              sessionCommandManager,
+              editorSelectedEvent,
+              cellEditorControls,
+              translationService);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
-        this.editorSelectedEvent = editorSelectedEvent;
-        this.cellEditorControls = cellEditorControls;
         this.controlsProvider = controlsProvider;
     }
 
@@ -88,7 +86,7 @@ public class InvocationEditorDefinition implements ExpressionEditorDefinition<In
 
     @Override
     public String getName() {
-        return Invocation.class.getSimpleName();
+        return translationService.format(DMNEditorConstants.ExpressionEditor_InvocationType);
     }
 
     @Override
@@ -120,6 +118,7 @@ public class InvocationEditorDefinition implements ExpressionEditorDefinition<In
                                               expressionEditorDefinitionsSupplier,
                                               editorSelectedEvent,
                                               cellEditorControls,
+                                              translationService,
                                               controlsProvider.get(),
                                               isNested));
     }

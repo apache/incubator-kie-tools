@@ -21,6 +21,7 @@ import java.util.Optional;
 import javax.enterprise.event.Event;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -94,6 +95,9 @@ public class RelationGridTest {
     @Mock
     private CellEditorControls cellEditorControls;
 
+    @Mock
+    private TranslationService translationService;
+
     @Captor
     private ArgumentCaptor<AddRelationColumnCommand> addColumnCommand;
 
@@ -121,6 +125,7 @@ public class RelationGridTest {
                                         sessionCommandManager,
                                         editorSelectedEvent,
                                         cellEditorControls,
+                                        translationService,
                                         controls);
 
         assertEquals(0, relationGrid.getModel().getRowCount());
@@ -144,6 +149,7 @@ public class RelationGridTest {
                                         sessionCommandManager,
                                         editorSelectedEvent,
                                         cellEditorControls,
+                                        translationService,
                                         controls);
 
         assertEquals(2, relationGrid.getModel().getColumns().size());
@@ -178,6 +184,7 @@ public class RelationGridTest {
                                         sessionCommandManager,
                                         editorSelectedEvent,
                                         cellEditorControls,
+                                        translationService,
                                         controls);
 
         assertEquals(2, relationGrid.getModel().getRowCount());
@@ -197,6 +204,7 @@ public class RelationGridTest {
                                         sessionCommandManager,
                                         editorSelectedEvent,
                                         cellEditorControls,
+                                        translationService,
                                         controls);
 
         relationGrid.addColumn();
@@ -221,6 +229,7 @@ public class RelationGridTest {
                                         sessionCommandManager,
                                         editorSelectedEvent,
                                         cellEditorControls,
+                                        translationService,
                                         controls);
 
         relationGrid.addRow();

@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.widgets.grid;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
@@ -63,6 +64,9 @@ public abstract class BaseExpressionGridTest {
 
     @Mock
     protected CellEditorControls cellEditorControls;
+
+    @Mock
+    protected TranslationService translationService;
 
     @Mock
     protected BaseUIModelMapper mapper;

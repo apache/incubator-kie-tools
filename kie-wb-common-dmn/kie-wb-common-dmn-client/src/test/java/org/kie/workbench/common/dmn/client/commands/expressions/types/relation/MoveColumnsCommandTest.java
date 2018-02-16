@@ -37,6 +37,9 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MoveColumnsCommandTest extends BaseMoveCommandsTest<MoveColumnsCommand> {
@@ -73,11 +76,11 @@ public class MoveColumnsCommandTest extends BaseMoveCommandsTest<MoveColumnsComm
 
     private void setupCommand(final int index,
                               final GridColumn<?> uiModelColumn) {
-        this.command = new MoveColumnsCommand(relation,
-                                              uiModel,
-                                              index,
-                                              Collections.singletonList(uiModelColumn),
-                                              canvasOperation);
+        this.command = spy(new MoveColumnsCommand(relation,
+                                                  uiModel,
+                                                  index,
+                                                  Collections.singletonList(uiModelColumn),
+                                                  canvasOperation));
     }
 
     @Test
@@ -184,6 +187,8 @@ public class MoveColumnsCommandTest extends BaseMoveCommandsTest<MoveColumnsComm
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.newCanvasCommand(handler).execute(handler));
 
+        verify(command).updateParentInformation();
+
         assertUiModelDefinition(new int[]{1, 0});
     }
 
@@ -194,6 +199,8 @@ public class MoveColumnsCommandTest extends BaseMoveCommandsTest<MoveColumnsComm
 
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.newCanvasCommand(handler).execute(handler));
+
+        verify(command).updateParentInformation();
 
         assertUiModelDefinition(new int[]{1, 0});
     }
@@ -207,8 +214,12 @@ public class MoveColumnsCommandTest extends BaseMoveCommandsTest<MoveColumnsComm
         final Command<AbstractCanvasHandler, CanvasViolation> cc = command.newCanvasCommand(handler);
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      cc.execute(handler));
+        reset(command);
+
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      cc.undo(handler));
+
+        verify(command).updateParentInformation();
 
         assertUiModelDefinition(new int[]{0, 1});
     }
@@ -222,8 +233,12 @@ public class MoveColumnsCommandTest extends BaseMoveCommandsTest<MoveColumnsComm
         final Command<AbstractCanvasHandler, CanvasViolation> cc = command.newCanvasCommand(handler);
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      cc.execute(handler));
+        reset(command);
+
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      cc.undo(handler));
+
+        verify(command).updateParentInformation();
 
         assertUiModelDefinition(new int[]{0, 1});
     }

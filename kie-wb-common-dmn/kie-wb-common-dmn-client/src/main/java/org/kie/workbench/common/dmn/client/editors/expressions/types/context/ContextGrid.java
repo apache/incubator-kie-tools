@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -24,6 +25,7 @@ import javax.enterprise.event.Event;
 
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.common.client.api.IsElement;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
@@ -32,9 +34,12 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.context.AddContextEntryCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -49,15 +54,15 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState;
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState.GridWidgetHandlersOperation;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
+import org.uberfire.mvp.Command;
 
-public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMapper> implements ContextGridControls.Presenter,
-                                                                                              HasRowDragRestrictions {
+public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMapper> implements HasRowDragRestrictions,
+                                                                                              HasListSelectorControl {
 
     private static final String EXPRESSION_COLUMN_GROUP = "ContextGrid$ExpressionColumn1";
 
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
-
-    private ContextGridControls controls;
+    private ListSelector listSelector;
 
     public ContextGrid(final GridCellTuple parent,
                        final HasExpression hasExpression,
@@ -70,7 +75,8 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
                        final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                        final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                        final CellEditorControls cellEditorControls,
-                       final ContextGridControls controls,
+                       final TranslationService translationService,
+                       final ListSelector listSelector,
                        final boolean isNested) {
         super(parent,
               hasExpression,
@@ -88,15 +94,14 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
               sessionCommandManager,
               editorSelectedEvent,
               cellEditorControls,
+              translationService,
               isNested);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
-        this.controls = controls;
+        this.listSelector = listSelector;
 
         setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
 
         super.doInitialisation();
-
-        controls.init(this);
     }
 
     @Override
@@ -109,7 +114,8 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
     public ContextUIModelMapper makeUiModelMapper() {
         return new ContextUIModelMapper(this::getModel,
                                         () -> expression,
-                                        expressionEditorDefinitionsSupplier);
+                                        expressionEditorDefinitionsSupplier,
+                                        listSelector);
     }
 
     @Override
@@ -162,27 +168,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
 
     @Override
     public Optional<IsElement> getEditorControls() {
-        return Optional.of(controls);
-    }
-
-    @Override
-    public void addContextEntry() {
-        expression.ifPresent(c -> {
-            final ContextEntry ce = new ContextEntry();
-            ce.setVariable(new InformationItem());
-            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
-                                          new AddContextEntryCommand(c,
-                                                                     ce,
-                                                                     model,
-                                                                     new DMNGridRow(),
-                                                                     uiModelMapper,
-                                                                     () -> {
-                                                                         parent.onResize();
-                                                                         gridPanel.refreshScrollPosition();
-                                                                         gridPanel.updatePanelSize();
-                                                                         gridLayer.batch();
-                                                                     }));
-        });
+        return Optional.empty();
     }
 
     @Override
@@ -194,5 +180,102 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
             return !rows.contains(model.getRow(lastRowIndex));
         }
         return true;
+    }
+
+    @Override
+    @SuppressWarnings("unused")
+    public List<ListSelectorItem> getItems(final int uiRowIndex,
+                                           final int uiColumnIndex) {
+        final List<ListSelectorItem> items = new ArrayList<>();
+        items.add(new ListSelectorTextItem() {
+
+            @Override
+            public String getText() {
+                return translationService.format(DMNEditorConstants.ContextEditor_InsertContextEntryAbove);
+            }
+
+            @Override
+            public boolean isEnabled() {
+                return true;
+            }
+
+            @Override
+            public Command getCommand() {
+                return () -> {
+                    cellEditorControls.hide();
+                    expression.ifPresent(e -> addContextEntry(uiRowIndex));
+                };
+            }
+        });
+        items.add(new ListSelectorTextItem() {
+
+            @Override
+            public String getText() {
+                return translationService.format(DMNEditorConstants.ContextEditor_InsertContextEntryBelow);
+            }
+
+            @Override
+            public boolean isEnabled() {
+                return true;
+            }
+
+            @Override
+            public Command getCommand() {
+                return () -> {
+                    cellEditorControls.hide();
+                    expression.ifPresent(e -> addContextEntry(uiRowIndex + 1));
+                };
+            }
+        });
+        items.add(new ListSelectorTextItem() {
+
+            @Override
+            public String getText() {
+                return translationService.format(DMNEditorConstants.ContextEditor_DeleteContextEntry);
+            }
+
+            @Override
+            public boolean isEnabled() {
+                return false;
+            }
+
+            @Override
+            public Command getCommand() {
+                return () -> {
+                    cellEditorControls.hide();
+                    deleteContextEntry();
+                };
+            }
+        });
+        return items;
+    }
+
+    @Override
+    public void onItemSelected(final ListSelectorItem item) {
+        final ListSelectorTextItem li = (ListSelectorTextItem) item;
+        li.getCommand().execute();
+    }
+
+    void addContextEntry(final int index) {
+        expression.ifPresent(c -> {
+            final ContextEntry ce = new ContextEntry();
+            ce.setVariable(new InformationItem());
+            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                          new AddContextEntryCommand(c,
+                                                                     ce,
+                                                                     model,
+                                                                     new DMNGridRow(),
+                                                                     index,
+                                                                     uiModelMapper,
+                                                                     () -> {
+                                                                         parent.onResize();
+                                                                         gridPanel.refreshScrollPosition();
+                                                                         gridPanel.updatePanelSize();
+                                                                         gridLayer.batch();
+                                                                     }));
+        });
+    }
+
+    void deleteContextEntry() {
     }
 }

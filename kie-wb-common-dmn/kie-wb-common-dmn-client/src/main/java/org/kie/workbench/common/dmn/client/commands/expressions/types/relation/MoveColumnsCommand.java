@@ -23,6 +23,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.List;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
+import org.kie.workbench.common.dmn.client.commands.util.CommandUtils;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationUIModelMapperHelper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationUIModelMapperHelper.RelationSection;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
@@ -154,6 +155,8 @@ public class MoveColumnsCommand extends AbstractCanvasGraphCommand implements Ve
                 uiModel.moveColumnsTo(index,
                                       columns);
 
+                updateParentInformation();
+
                 canvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
@@ -164,10 +167,16 @@ public class MoveColumnsCommand extends AbstractCanvasGraphCommand implements Ve
                 uiModel.moveColumnsTo(oldIndex,
                                       columns);
 
+                updateParentInformation();
+
                 canvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
             }
         };
+    }
+
+    public void updateParentInformation() {
+        CommandUtils.updateParentInformation(uiModel);
     }
 }

@@ -16,10 +16,13 @@
 
 package org.kie.workbench.common.dmn.client.commands.expressions.types.context;
 
+import java.util.stream.IntStream;
+
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
+import org.kie.workbench.common.dmn.client.commands.util.CommandUtils;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -42,6 +45,7 @@ public class AddContextEntryCommand extends AbstractCanvasGraphCommand implement
     private final ContextEntry contextEntry;
     private final GridData uiModel;
     private final DMNGridRow uiModelRow;
+    private final int index;
     private final ContextUIModelMapper uiModelMapper;
     private final org.uberfire.mvp.Command canvasOperation;
 
@@ -49,12 +53,14 @@ public class AddContextEntryCommand extends AbstractCanvasGraphCommand implement
                                   final ContextEntry contextEntry,
                                   final GridData uiModel,
                                   final DMNGridRow uiModelRow,
+                                  final int index,
                                   final ContextUIModelMapper uiModelMapper,
                                   final org.uberfire.mvp.Command canvasOperation) {
         this.context = context;
         this.contextEntry = contextEntry;
         this.uiModel = uiModel;
         this.uiModelRow = uiModelRow;
+        this.index = index;
         this.uiModelMapper = uiModelMapper;
         this.canvasOperation = canvasOperation;
     }
@@ -69,8 +75,7 @@ public class AddContextEntryCommand extends AbstractCanvasGraphCommand implement
 
             @Override
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext gce) {
-                final int lastRowIndex = context.getContextEntry().size() - 1;
-                context.getContextEntry().add(lastRowIndex,
+                context.getContextEntry().add(index,
                                               contextEntry);
 
                 return GraphCommandResultBuilder.SUCCESS;
@@ -89,15 +94,18 @@ public class AddContextEntryCommand extends AbstractCanvasGraphCommand implement
         return new AbstractCanvasCommand() {
             @Override
             public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler handler) {
-                final int lastRowIndex = uiModel.getRowCount() - 1;
-                uiModel.insertRow(lastRowIndex,
+                uiModel.insertRow(index,
                                   uiModelRow);
-                uiModelMapper.fromDMNModel(lastRowIndex,
+                uiModelMapper.fromDMNModel(index,
                                            0);
-                uiModelMapper.fromDMNModel(lastRowIndex,
+                uiModelMapper.fromDMNModel(index,
                                            1);
-                uiModelMapper.fromDMNModel(lastRowIndex,
+                uiModelMapper.fromDMNModel(index,
                                            2);
+
+                updateRowNumbers();
+                updateParentInformation();
+
                 canvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
@@ -107,10 +115,24 @@ public class AddContextEntryCommand extends AbstractCanvasGraphCommand implement
             public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler handler) {
                 final int rowIndex = uiModel.getRows().indexOf(uiModelRow);
                 uiModel.deleteRow(rowIndex);
+
+                updateRowNumbers();
+                updateParentInformation();
+
                 canvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
             }
         };
+    }
+
+    public void updateRowNumbers() {
+        CommandUtils.updateRowNumbers(uiModel,
+                                      IntStream.range(0,
+                                                      uiModel.getRowCount() - 1));
+    }
+
+    public void updateParentInformation() {
+        CommandUtils.updateParentInformation(uiModel);
     }
 }

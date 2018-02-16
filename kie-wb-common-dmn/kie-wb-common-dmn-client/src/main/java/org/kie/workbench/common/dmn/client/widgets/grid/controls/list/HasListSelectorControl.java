@@ -18,6 +18,8 @@ package org.kie.workbench.common.dmn.client.widgets.grid.controls.list;
 
 import java.util.List;
 
+import org.uberfire.mvp.Command;
+
 public interface HasListSelectorControl {
 
     interface ListSelectorItem {
@@ -29,13 +31,16 @@ public interface HasListSelectorControl {
         String getText();
 
         boolean isEnabled();
+
+        Command getCommand();
     }
 
-    interface ListSelectorDividerItem extends ListSelectorItem {
+    class ListSelectorDividerItem implements ListSelectorItem {
 
     }
 
-    List<ListSelectorItem> getItems();
+    List<ListSelectorItem> getItems(final int uiRowIndex,
+                                    final int uiColumnIndex);
 
     void onItemSelected(final ListSelectorItem item);
 }

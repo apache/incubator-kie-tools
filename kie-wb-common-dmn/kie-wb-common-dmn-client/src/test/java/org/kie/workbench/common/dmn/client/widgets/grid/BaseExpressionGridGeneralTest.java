@@ -70,6 +70,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
                                       sessionCommandManager,
                                       editorSelectedEvent,
                                       cellEditorControls,
+                                      translationService,
                                       false) {
             @Override
             protected BaseUIModelMapper makeUiModelMapper() {

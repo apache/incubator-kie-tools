@@ -163,6 +163,7 @@ public class BaseExpressionGridRenderingTest extends BaseExpressionGridTest {
                                       sessionCommandManager,
                                       editorSelectedEvent,
                                       cellEditorControls,
+                                      translationService,
                                       () -> isHeaderHidden) {
             @Override
             protected BaseUIModelMapper makeUiModelMapper() {

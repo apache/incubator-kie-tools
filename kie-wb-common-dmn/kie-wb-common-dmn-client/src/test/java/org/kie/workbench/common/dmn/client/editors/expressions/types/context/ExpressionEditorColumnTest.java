@@ -21,6 +21,7 @@ import java.util.Optional;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.assertj.core.api.Assertions;
 import org.jboss.errai.common.client.api.IsElement;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -86,6 +87,9 @@ public class ExpressionEditorColumnTest {
 
     @Mock
     private CellEditorControls cellEditorControls;
+
+    @Mock
+    private TranslationService translationService;
 
     private BaseGridData gridData;
 
@@ -280,6 +284,7 @@ public class ExpressionEditorColumnTest {
                                       sessionCommandManager,
                                       editorSelectedEvent,
                                       cellEditorControls,
+                                      translationService,
                                       false) {
             @Override
             protected BaseUIModelMapper makeUiModelMapper() {

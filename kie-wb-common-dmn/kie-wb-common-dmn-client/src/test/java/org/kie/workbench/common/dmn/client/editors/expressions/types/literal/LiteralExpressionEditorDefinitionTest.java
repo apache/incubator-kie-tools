@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
+package org.kie.workbench.common.dmn.client.editors.expressions.types.literal;
 
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -26,10 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
@@ -46,16 +42,12 @@ import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.mocks.EventSourceMock;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doReturn;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class ContextEditorDefinitionTest {
+public class LiteralExpressionEditorDefinitionTest {
 
     @Mock
     private DMNGridPanel gridPanel;
@@ -68,9 +60,6 @@ public class ContextEditorDefinitionTest {
 
     @Mock
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-
-    @Mock
-    private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
 
     @Mock
     private EventSourceMock<ExpressionEditorSelectedEvent> editorSelectedEvent;
@@ -90,68 +79,52 @@ public class ContextEditorDefinitionTest {
     @Mock
     private HasExpression hasExpression;
 
-    private Optional<HasName> hasName = Optional.empty();
+    private Optional<HasName> hasName = Optional.of(HasName.NOP);
 
-    private ContextEditorDefinition definition;
+    private LiteralExpressionEditorDefinition definition;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        this.definition = new ContextEditorDefinition(gridPanel,
-                                                      gridLayer,
-                                                      sessionManager,
-                                                      sessionCommandManager,
-                                                      expressionEditorDefinitionsSupplier,
-                                                      editorSelectedEvent,
-                                                      cellEditorControls,
-                                                      translationService,
-                                                      listSelector);
-        final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
-        expressionEditorDefinitions.add((ExpressionEditorDefinition) definition);
-
-        doReturn(expressionEditorDefinitions).when(expressionEditorDefinitionsSupplier).get();
+        this.definition = new LiteralExpressionEditorDefinition(gridPanel,
+                                                                gridLayer,
+                                                                sessionManager,
+                                                                sessionCommandManager,
+                                                                editorSelectedEvent,
+                                                                cellEditorControls,
+                                                                translationService,
+                                                                listSelector);
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
     }
 
     @Test
     public void testType() {
-        assertEquals(ExpressionType.CONTEXT,
-                     definition.getType());
+        assertThat(definition.getType()).isEqualTo(ExpressionType.LITERAL_EXPRESSION);
     }
 
     @Test
     public void testName() {
-        assertEquals(DMNEditorConstants.ExpressionEditor_ContextExpressionType,
-                     definition.getName());
+        assertThat(definition.getName()).isEqualTo(DMNEditorConstants.ExpressionEditor_LiteralExpressionType);
     }
 
     @Test
     public void testModelDefinition() {
-        final Optional<Context> oModel = definition.getModelClass();
-        assertTrue(oModel.isPresent());
-
-        final Context model = oModel.get();
-        assertEquals(2,
-                     model.getContextEntry().size());
-
-        assertNotNull(model.getContextEntry().get(0).getVariable());
-
-        assertNull(model.getContextEntry().get(1).getVariable());
-        assertTrue(model.getContextEntry().get(1).getExpression() instanceof LiteralExpression);
+        final Optional<LiteralExpression> oModel = definition.getModelClass();
+        assertThat(oModel).isPresent();
     }
 
     @Test
     public void testEditor() {
-        final Optional<Context> expression = definition.getModelClass();
+        final Optional<LiteralExpression> expression = definition.getModelClass();
         final Optional<BaseExpressionGrid> oEditor = definition.getEditor(parent,
                                                                           hasExpression,
                                                                           expression,
                                                                           hasName,
                                                                           false);
 
-        assertTrue(oEditor.isPresent());
+        assertThat(oEditor).isPresent();
 
         final GridWidget editor = oEditor.get();
-        assertTrue(editor instanceof ContextGrid);
+        assertThat(editor).isInstanceOf(LiteralExpressionGrid.class);
     }
 }

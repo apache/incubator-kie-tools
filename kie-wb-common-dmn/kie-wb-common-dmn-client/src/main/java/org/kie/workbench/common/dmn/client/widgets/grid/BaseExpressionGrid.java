@@ -31,6 +31,7 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
@@ -80,6 +81,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
     protected final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     protected final Event<ExpressionEditorSelectedEvent> editorSelectedEvent;
     protected final CellEditorControls cellEditorControls;
+    protected final TranslationService translationService;
 
     protected M uiModelMapper;
 
@@ -96,6 +98,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
                               final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                               final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                               final CellEditorControls cellEditorControls,
+                              final TranslationService translationService,
                               final boolean isHeaderHidden) {
         this(parent,
              hasExpression,
@@ -108,6 +111,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
              sessionCommandManager,
              editorSelectedEvent,
              cellEditorControls,
+             translationService,
              () -> isHeaderHidden);
     }
 
@@ -123,6 +127,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
                               final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                               final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                               final CellEditorControls cellEditorControls,
+                              final TranslationService translationService,
                               final boolean isHeaderHidden) {
         this(parent,
              hasExpression,
@@ -136,6 +141,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
              sessionCommandManager,
              editorSelectedEvent,
              cellEditorControls,
+             translationService,
              () -> isHeaderHidden);
     }
 
@@ -151,6 +157,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
                        final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                        final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                        final CellEditorControls cellEditorControls,
+                       final TranslationService translationService,
                        final Supplier<Boolean> isHeaderHidden) {
         this(parent,
              hasExpression,
@@ -164,6 +171,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
              sessionCommandManager,
              editorSelectedEvent,
              cellEditorControls,
+             translationService,
              isHeaderHidden);
     }
 
@@ -179,6 +187,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
                        final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                        final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                        final CellEditorControls cellEditorControls,
+                       final TranslationService translationService,
                        final Supplier<Boolean> isHeaderHidden) {
         super(gridData,
               gridLayer,
@@ -191,6 +200,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
         this.sessionCommandManager = sessionCommandManager;
         this.editorSelectedEvent = editorSelectedEvent;
         this.cellEditorControls = cellEditorControls;
+        this.translationService = translationService;
 
         this.hasExpression = hasExpression;
         this.expression = expression;
@@ -316,7 +326,9 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
                 final HasCellEditorControls hasControls = (HasCellEditorControls) cell;
                 final Optional<HasCellEditorControls.Editor> editor = hasControls.getEditor();
                 editor.ifPresent(e -> {
-                    e.bind(this);
+                    e.bind(this,
+                           uiRowIndex,
+                           uiColumnIndex);
                     cellEditorControls.show(e,
                                             (int) (ap.getX() + getAbsoluteX()),
                                             (int) (ap.getY() + getAbsoluteY()));
@@ -414,5 +426,15 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
                 .map(c -> uiModel.getColumns().indexOf(c))
                 .findFirst()
                 .ifPresent(index -> uiModel.selectCell(0, index));
+    }
+
+    protected Optional<BaseExpressionGrid> findParentGrid() {
+        final GridData parentUiModel = parent.getGridData();
+        return gridLayer.getGridWidgets()
+                .stream()
+                .filter(gridWidget -> gridWidget instanceof BaseExpressionGrid)
+                .filter(gridWidget -> gridWidget.getModel().equals(parentUiModel))
+                .map(gridWidget -> (BaseExpressionGrid) gridWidget)
+                .findFirst();
     }
 }

@@ -30,7 +30,9 @@ public class PMMLFunctionSupplementaryGridTest extends BaseFunctionSupplementary
                                                 sessionCommandManager,
                                                 expressionEditorDefinitionsSupplier,
                                                 editorSelectedEvent,
-                                                cellEditorControls);
+                                                cellEditorControls,
+                                                translationService,
+                                                listSelector);
     }
 
     protected String[] getExpectedNames() {

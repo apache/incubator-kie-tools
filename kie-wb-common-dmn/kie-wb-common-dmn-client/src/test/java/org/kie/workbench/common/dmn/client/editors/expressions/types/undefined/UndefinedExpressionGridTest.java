@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.undefined;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -33,13 +34,14 @@ import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid.ListSelectorExpressionTypeItem;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextGrid;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionCell;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorTextItem;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorDividerItem;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorTextItem;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -53,12 +55,15 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -99,10 +104,10 @@ public class UndefinedExpressionGridTest {
     private CellEditorControls cellEditorControls;
 
     @Mock
-    private ListSelector listSelector;
+    private TranslationService translationService;
 
     @Mock
-    private TranslationService translationService;
+    private ListSelector listSelector;
 
     @Mock
     private GridCellTuple parent;
@@ -138,8 +143,8 @@ public class UndefinedExpressionGridTest {
                                                                                                        expressionEditorDefinitionsSupplier,
                                                                                                        editorSelectedEvent,
                                                                                                        cellEditorControls,
-                                                                                                       listSelector,
-                                                                                                       translationService);
+                                                                                                       translationService,
+                                                                                                       listSelector);
 
         final Optional<Expression> expression = definition.getModelClass();
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
@@ -191,22 +196,104 @@ public class UndefinedExpressionGridTest {
     }
 
     @Test
-    public void testGetItems() {
-        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems();
+    public void testGetItemsWithNoParent() {
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
 
         assertThat(items.size()).isEqualTo(1);
         assertThat(items.get(0)).isInstanceOf(ListSelectorTextItem.class);
 
-        final ListSelectorExpressionTypeItem ti = (ListSelectorExpressionTypeItem) items.get(0);
-        assertThat(ti.getExpressionType()).isEqualTo(ExpressionType.LITERAL_EXPRESSION);
+        final ListSelectorTextItem ti = (ListSelectorTextItem) items.get(0);
+        assertThat(ti.getText()).isEqualTo(LiteralExpression.class.getSimpleName());
     }
-    
+
+    @Test
+    public void testGetItemsWithParentWithoutCellControls() {
+        final GridData parentGridData = mock(GridData.class);
+        final BaseExpressionGrid parentGridWidget = mock(BaseExpressionGrid.class);
+        when(parent.getGridData()).thenReturn(parentGridData);
+        when(gridLayer.getGridWidgets()).thenReturn(Collections.singleton(parentGridWidget));
+        when(parentGridWidget.getModel()).thenReturn(parentGridData);
+
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
+
+        assertThat(items.size()).isEqualTo(1);
+        assertThat(items.get(0)).isInstanceOf(ListSelectorTextItem.class);
+
+        final ListSelectorTextItem ti = (ListSelectorTextItem) items.get(0);
+        assertThat(ti.getText()).isEqualTo(LiteralExpression.class.getSimpleName());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGetItemsWithParentThatDoesSupportCellControls() {
+        final GridData parentGridData = mock(GridData.class);
+        final ContextGrid parentGridWidget = mock(ContextGrid.class);
+        final HasListSelectorControl.ListSelectorItem listSelectorItem = mock(HasListSelectorControl.ListSelectorItem.class);
+        when(parent.getGridData()).thenReturn(parentGridData);
+        when(gridLayer.getGridWidgets()).thenReturn(Collections.singleton(parentGridWidget));
+        when(parentGridWidget.getModel()).thenReturn(parentGridData);
+        when(parentGridWidget.getItems(anyInt(), anyInt())).thenReturn(Collections.singletonList(listSelectorItem));
+        when(parentGridData.getCell(anyInt(), anyInt())).thenReturn(mock(LiteralExpressionCell.class));
+
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
+
+        assertThat(items).isNotEmpty();
+        assertThat(items.size()).isEqualTo(3);
+
+        assertThat(items.get(0)).isInstanceOf(ListSelectorTextItem.class);
+        final ListSelectorTextItem ti = (ListSelectorTextItem) items.get(0);
+        assertThat(ti.getText()).isEqualTo(LiteralExpression.class.getSimpleName());
+
+        assertThat(items.get(1)).isInstanceOf(HasListSelectorControl.ListSelectorDividerItem.class);
+        assertThat(items.get(2)).isSameAs(listSelectorItem);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGetItemsWithParentThatDoesSupportCellControlsButCellDoesNot() {
+        final GridData parentGridData = mock(GridData.class);
+        final ContextGrid parentGridWidget = mock(ContextGrid.class);
+        final HasListSelectorControl.ListSelectorItem listSelectorItem = mock(HasListSelectorControl.ListSelectorItem.class);
+        when(parent.getGridData()).thenReturn(parentGridData);
+        when(gridLayer.getGridWidgets()).thenReturn(Collections.singleton(parentGridWidget));
+        when(parentGridWidget.getModel()).thenReturn(parentGridData);
+        when(parentGridWidget.getItems(anyInt(), anyInt())).thenReturn(Collections.singletonList(listSelectorItem));
+        when(parentGridData.getCell(anyInt(), anyInt())).thenReturn(mock(BaseGridCell.class));
+
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
+
+        assertThat(items).isNotEmpty();
+        assertThat(items.size()).isEqualTo(1);
+
+        assertThat(items.get(0)).isInstanceOf(ListSelectorTextItem.class);
+        final ListSelectorTextItem ti = (ListSelectorTextItem) items.get(0);
+        assertThat(ti.getText()).isEqualTo(LiteralExpression.class.getSimpleName());
+    }
+
+    @Test
+    public void testGetItemsWithParentThatDoesNotSupportCellControls() {
+        final GridData parentGridData = mock(GridData.class);
+        final BaseExpressionGrid parentGridWidget = mock(BaseExpressionGrid.class);
+        when(parent.getGridData()).thenReturn(parentGridData);
+        when(gridLayer.getGridWidgets()).thenReturn(Collections.singleton(parentGridWidget));
+        when(parentGridWidget.getModel()).thenReturn(parentGridData);
+
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
+
+        assertThat(items).isNotEmpty();
+        assertThat(items.size()).isEqualTo(1);
+
+        assertThat(items.get(0)).isInstanceOf(ListSelectorTextItem.class);
+        final ListSelectorTextItem ti = (ListSelectorTextItem) items.get(0);
+        assertThat(ti.getText()).isEqualTo(LiteralExpression.class.getSimpleName());
+    }
+
     @Test
     public void testGetItemsEmpty() {
         reset(expressionEditorDefinitionsSupplier);
         doReturn(new ExpressionEditorDefinitions()).when(expressionEditorDefinitionsSupplier).get();
 
-        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems();
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
 
         assertThat(items.size()).isEqualTo(0);
     }
@@ -223,8 +310,19 @@ public class UndefinedExpressionGridTest {
 
     @Test
     public void testOnItemSelected() {
-        final ListSelectorExpressionTypeItem ti = mock(ListSelectorExpressionTypeItem.class);
-        when(ti.getExpressionType()).thenReturn(ExpressionType.LITERAL_EXPRESSION);
+        final Command command = mock(Command.class);
+        final HasListSelectorControl.ListSelectorTextItem listSelectorItem = mock(HasListSelectorControl.ListSelectorTextItem.class);
+        when(listSelectorItem.getCommand()).thenReturn(command);
+
+        grid.onItemSelected(listSelectorItem);
+
+        verify(command).execute();
+    }
+
+    @Test
+    public void testOnItemSelectedWithExpressionTypeSelected() {
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
+        final ListSelectorTextItem ti = (ListSelectorTextItem) items.get(0);
 
         grid.onItemSelected(ti);
 

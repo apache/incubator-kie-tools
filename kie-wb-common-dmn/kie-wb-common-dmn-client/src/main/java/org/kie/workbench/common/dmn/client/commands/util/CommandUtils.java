@@ -20,14 +20,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.uberfire.ext.wires.core.grids.client.model.GridCell;
+import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 public class CommandUtils {
 
-    public static void updateRowNumbers(final DMNGridData uiModel,
+    public static void updateRowNumbers(final GridData uiModel,
                                         final IntStream rangeOfRowsToUpdate) {
         final Optional<GridColumn<?>> rowNumberColumn = uiModel
                 .getColumns()
@@ -60,5 +65,30 @@ public class CommandUtils {
             allRows.addAll(index - rowsToMove.size() + 1,
                            rowsToMove);
         }
+    }
+
+    public static void updateParentInformation(final GridData uiModel) {
+        final Optional<ExpressionEditorColumn> expressionColumn = uiModel
+                .getColumns()
+                .stream()
+                .filter(c -> c instanceof ExpressionEditorColumn)
+                .map(c -> (ExpressionEditorColumn) c)
+                .findFirst();
+
+        expressionColumn.ifPresent(c -> {
+            final int columnIndex = uiModel.getColumns().indexOf(c);
+            for (int rowIndex = 0; rowIndex < uiModel.getRowCount(); rowIndex++) {
+                final GridCell<?> cell = uiModel.getCell(rowIndex, columnIndex);
+                final GridCellValue<?> value = cell.getValue();
+                if (value instanceof ExpressionCellValue) {
+                    final ExpressionCellValue ecv = (ExpressionCellValue) value;
+                    if (ecv.getValue().isPresent()) {
+                        final BaseExpressionGrid beg = ecv.getValue().get();
+                        beg.getParentInformation().setRowIndex(rowIndex);
+                        beg.getParentInformation().setColumnIndex(columnIndex);
+                    }
+                }
+            }
+        });
     }
 }
