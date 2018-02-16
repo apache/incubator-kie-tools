@@ -36,6 +36,7 @@ import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
+import org.drools.compiler.kie.builder.impl.MemoryKieModule;
 import org.guvnor.common.services.backend.file.DotFileFilter;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.project.builder.model.BuildMessage;
@@ -193,7 +194,7 @@ public class Builder implements Serializable {
 
         if (this.kieBuilder != null) {
             kieBuilder = createKieBuilder(kieFileSystemClone);
-            kieBuilder.setkModule(((KieBuilderImpl) this.kieBuilder).getkModule());
+            kieBuilder.setkModule((MemoryKieModule) this.kieBuilder.getKieModule());
             kieBuilder.setTrgMfs(((KieFileSystemImpl) kieFileSystemClone).getMfs());
         }
 
