@@ -63,7 +63,6 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.uberfire.ext.widgets.common.client.common.DatePicker;
 import org.uberfire.ext.widgets.common.client.common.DropDownValueChanged;
-import org.uberfire.ext.widgets.common.client.common.InfoPopup;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 
@@ -392,14 +391,14 @@ public class ActionValueEditor extends Composite {
             Image clickme = GuidedRuleEditorImages508.INSTANCE.Edit();
             clickme.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {
-                    showTypeChoice((Widget) event.getSource());
+                    showTypeChoice();
                 }
             });
             return clickme;
         }
     }
 
-    protected void showTypeChoice(Widget w) {
+    protected void showTypeChoice() {
         final FormStylePopup form = new FormStylePopup(GuidedRuleEditorImages508.INSTANCE.Wizard(),
                                                        GuidedRuleEditorResources.CONSTANTS.FieldValue());
         Button lit = new Button(GuidedRuleEditorResources.CONSTANTS.LiteralValue());
@@ -412,10 +411,10 @@ public class ActionValueEditor extends Composite {
             }
         });
 
-        form.addAttribute(GuidedRuleEditorResources.CONSTANTS.LiteralValue() + ":",
-                          widgets(lit,
-                                  new InfoPopup(GuidedRuleEditorResources.CONSTANTS.Literal(),
-                                                GuidedRuleEditorResources.CONSTANTS.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation())));
+        form.addAttributeWithHelp(GuidedRuleEditorResources.CONSTANTS.LiteralValue(),
+                                  GuidedRuleEditorResources.CONSTANTS.Literal(),
+                                  GuidedRuleEditorResources.CONSTANTS.ALiteralValueMeansTheValueAsTypedInIeItsNotACalculation(),
+                                  lit);
 
         if (modeller.isTemplate()) {
             Button templateButton = new Button(GuidedRuleEditorResources.CONSTANTS.TemplateKey());
@@ -426,10 +425,10 @@ public class ActionValueEditor extends Composite {
                     doTypeChosen(form);
                 }
             });
-            form.addAttribute(GuidedRuleEditorResources.CONSTANTS.TemplateKey() + ":",
-                              widgets(templateButton,
-                                      new InfoPopup(GuidedRuleEditorResources.CONSTANTS.TemplateKey(),
-                                                    GuidedRuleEditorResources.CONSTANTS.TemplateKeyTip())));
+            form.addAttributeWithHelp(GuidedRuleEditorResources.CONSTANTS.TemplateKey(),
+                                      GuidedRuleEditorResources.CONSTANTS.TemplateKey(),
+                                      GuidedRuleEditorResources.CONSTANTS.TemplateKeyTip(),
+                                      templateButton);
         }
 
         form.addRow(new HTML("<hr/>"));
@@ -460,10 +459,10 @@ public class ActionValueEditor extends Composite {
             });
         }
 
-        form.addAttribute(GuidedRuleEditorResources.CONSTANTS.Formula() + ":",
-                          widgets(formula,
-                                  new InfoPopup(GuidedRuleEditorResources.CONSTANTS.Formula(),
-                                                GuidedRuleEditorResources.CONSTANTS.FormulaTip())));
+        form.addAttributeWithHelp(GuidedRuleEditorResources.CONSTANTS.Formula(),
+                                  GuidedRuleEditorResources.CONSTANTS.Formula(),
+                                  GuidedRuleEditorResources.CONSTANTS.FormulaTip(),
+                                  formula);
 
         form.show();
     }
@@ -584,14 +583,6 @@ public class ActionValueEditor extends Composite {
             }
         }
         return true;
-    }
-
-    private Widget widgets(Button lit,
-                           InfoPopup popup) {
-        HorizontalPanel h = new HorizontalPanel();
-        h.add(lit);
-        h.add(popup);
-        return h;
     }
 
     private void executeOnChangeCommand() {

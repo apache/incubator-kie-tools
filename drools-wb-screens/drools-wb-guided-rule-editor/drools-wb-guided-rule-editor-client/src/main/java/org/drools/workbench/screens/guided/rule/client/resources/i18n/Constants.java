@@ -179,6 +179,8 @@ public interface Constants
 
     String ExpressionEditor();
 
+    String ExpressionEditorTip();
+
     String NoModelTip();
 
     String AddANewAction();

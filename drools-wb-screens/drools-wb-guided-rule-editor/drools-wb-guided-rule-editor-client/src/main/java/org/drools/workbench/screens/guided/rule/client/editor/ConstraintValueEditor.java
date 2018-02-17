@@ -73,7 +73,6 @@ import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.common.client.common.DatePicker;
 import org.uberfire.ext.widgets.common.client.common.DropDownValueChanged;
-import org.uberfire.ext.widgets.common.client.common.InfoPopup;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 
@@ -112,8 +111,7 @@ public class ConstraintValueEditor extends Composite {
     private AddConstraintButton addConstraintButton = new AddConstraintButton(
             new ClickHandler() {
                 public void onClick(ClickEvent event) {
-                    showTypeChoice((Widget) event.getSource(),
-                                   constraint);
+                    showTypeChoice(constraint);
                 }
             });
 
@@ -304,8 +302,7 @@ public class ConstraintValueEditor extends Composite {
                                               new ClickHandler() {
 
                                                   public void onClick(ClickEvent event) {
-                                                      showTypeChoice((Widget) event.getSource(),
-                                                                     constraint);
+                                                      showTypeChoice(constraint);
                                                   }
                                               });
                 btnCustom.setEnabled(!this.readOnly);
@@ -533,8 +530,7 @@ public class ConstraintValueEditor extends Composite {
     /**
      * Show a list of possibilities for the value type.
      */
-    private void showTypeChoice(Widget w,
-                                final BaseSingleFieldConstraint con) {
+    private void showTypeChoice(final BaseSingleFieldConstraint con) {
 
         CustomFormConfiguration customFormConfiguration = getWorkingSetManager().getCustomFormConfiguration(modeller.getPath(),
                                                                                                             factType,
@@ -598,10 +594,10 @@ public class ConstraintValueEditor extends Composite {
 
         //Literal value selector
         if (showLiteralSelector) {
-            form.addAttribute(GuidedRuleEditorResources.CONSTANTS.LiteralValue() + ":",
-                              widgets(lit,
-                                      new InfoPopup(GuidedRuleEditorResources.CONSTANTS.LiteralValue(),
-                                                    GuidedRuleEditorResources.CONSTANTS.LiteralValTip())));
+            form.addAttributeWithHelp(GuidedRuleEditorResources.CONSTANTS.LiteralValue(),
+                                      GuidedRuleEditorResources.CONSTANTS.LiteralValue(),
+                                      GuidedRuleEditorResources.CONSTANTS.LiteralValTip(),
+                                      lit);
         }
 
         //Template key selector
@@ -612,10 +608,10 @@ public class ConstraintValueEditor extends Composite {
                                                                              form,
                                                                              SingleFieldConstraint.TYPE_TEMPLATE));
 
-            form.addAttribute(templateKeyLabel + ":",
-                              widgets(templateKeyButton,
-                                      new InfoPopup(templateKeyLabel,
-                                                    GuidedRuleEditorResources.CONSTANTS.TemplateKeyTip())));
+            form.addAttributeWithHelp(templateKeyLabel,
+                                      templateKeyLabel,
+                                      GuidedRuleEditorResources.CONSTANTS.TemplateKeyTip(),
+                                      templateKeyButton);
         }
 
         //Divider, if we have any advanced options
@@ -645,10 +641,10 @@ public class ConstraintValueEditor extends Composite {
                                                                        bindingButton.addClickHandler(getValueTypeFormOnClickHandler(con,
                                                                                                                                     form,
                                                                                                                                     SingleFieldConstraint.TYPE_VARIABLE));
-                                                                       form.addAttribute(GuidedRuleEditorResources.CONSTANTS.AVariable(),
-                                                                                         widgets(bindingButton,
-                                                                                                 new InfoPopup(GuidedRuleEditorResources.CONSTANTS.ABoundVariable(),
-                                                                                                               GuidedRuleEditorResources.CONSTANTS.BoundVariableTip())));
+                                                                       form.addAttributeWithHelp(GuidedRuleEditorResources.CONSTANTS.AVariable(),
+                                                                                                 GuidedRuleEditorResources.CONSTANTS.ABoundVariable(),
+                                                                                                 GuidedRuleEditorResources.CONSTANTS.BoundVariableTip(),
+                                                                                                 bindingButton);
                                                                    }
                                                                }
                                                            }
@@ -664,10 +660,10 @@ public class ConstraintValueEditor extends Composite {
                                                                    form,
                                                                    SingleFieldConstraint.TYPE_RET_VALUE));
 
-            form.addAttribute(GuidedRuleEditorResources.CONSTANTS.AFormula() + ":",
-                              widgets(formula,
-                                      new InfoPopup(GuidedRuleEditorResources.CONSTANTS.AFormula(),
-                                                    GuidedRuleEditorResources.CONSTANTS.FormulaExpressionTip())));
+            form.addAttributeWithHelp(GuidedRuleEditorResources.CONSTANTS.AFormula(),
+                                      GuidedRuleEditorResources.CONSTANTS.AFormula(),
+                                      GuidedRuleEditorResources.CONSTANTS.FormulaExpressionTip(),
+                                      formula);
         }
 
         //Expression selector
@@ -677,10 +673,10 @@ public class ConstraintValueEditor extends Composite {
                                                                       form,
                                                                       SingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE));
 
-            form.addAttribute(GuidedRuleEditorResources.CONSTANTS.ExpressionEditor() + ":",
-                              widgets(expression,
-                                      new InfoPopup(GuidedRuleEditorResources.CONSTANTS.ExpressionEditor(),
-                                                    GuidedRuleEditorResources.CONSTANTS.ExpressionEditor())));
+            form.addAttributeWithHelp(GuidedRuleEditorResources.CONSTANTS.ExpressionEditor(),
+                                      GuidedRuleEditorResources.CONSTANTS.ExpressionEditor(),
+                                      GuidedRuleEditorResources.CONSTANTS.ExpressionEditorTip(),
+                                      expression);
         }
 
         form.show();
