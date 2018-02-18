@@ -77,6 +77,9 @@ public class DateRangePickerOptions {
     public native void setSingleDatePicker(Boolean singleDatePicker);
 
     @JsProperty
+    public native void setDrops(String drops);
+
+    @JsProperty
     protected native void setLocale(Object locale);
 
     @JsProperty(name = "locale.format")
