@@ -28,6 +28,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridCell;
@@ -262,6 +263,39 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
         verify(cellEditorControls).show(eq(editor),
                                         eq(10),
                                         eq(20));
+    }
+
+    @Test
+    public void testSelectEditorCellWithContainsNestedEditor() {
+        grid.getModel().appendRow(new DMNGridRow());
+        appendColumns(RowNumberColumn.class);
+
+        final ExpressionCellValue value = mock(ExpressionCellValue.class);
+        final DMNGridCell<Optional<BaseExpressionGrid>> cell = new DMNGridCell<>(value);
+        doReturn(Optional.empty()).when(value).getValue();
+
+        grid.getModel().setCell(0, 0, () -> cell);
+
+        final Point2D point = new Point2D(10, 20);
+        grid.selectCell(point, true, false);
+
+        verify(cellEditorControls, never()).show(any(HasCellEditorControls.Editor.class),
+                                                 anyInt(),
+                                                 anyInt());
+    }
+
+    @Test
+    public void testPaddingWithParent() {
+        doReturn(Optional.of(mock(BaseExpressionGrid.class))).when(grid).findParentGrid();
+
+        assertThat(grid.getPadding()).isEqualTo(BaseExpressionGrid.DEFAULT_PADDING);
+    }
+
+    @Test
+    public void testPaddingWithNoParent() {
+        doReturn(Optional.empty()).when(grid).findParentGrid();
+
+        assertThat(grid.getPadding()).isEqualTo(0.0);
     }
 
     private void assertMinimumWidth(final double expectedMinimumWidth,

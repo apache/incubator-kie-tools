@@ -50,6 +50,8 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
 
     private ListSelector listSelector;
 
+    private static final double PADDING = 0.0;
+
     public LiteralExpressionGrid(final GridCellTuple parent,
                                  final HasExpression hasExpression,
                                  final Optional<LiteralExpression> expression,
@@ -133,6 +135,11 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
     @Override
     public Optional<IsElement> getEditorControls() {
         return Optional.empty();
+    }
+
+    @Override
+    public double getPadding() {
+        return PADDING;
     }
 
     @Override

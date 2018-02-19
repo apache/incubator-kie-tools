@@ -28,8 +28,6 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.Gr
 
 public class DMNGridColumn<T> extends BaseGridColumn<T> {
 
-    public static final double PADDING = 0.0;
-
     public static final double DEFAULT_WIDTH = 100.0;
 
     protected final GridWidget gridWidget;
@@ -59,11 +57,12 @@ public class DMNGridColumn<T> extends BaseGridColumn<T> {
 
     public void updateWidthOfPeers() {
         if (gridWidget instanceof BaseExpressionGrid) {
-            final int parentColumnIndex = ((BaseExpressionGrid) gridWidget).getParentInformation().getColumnIndex();
-            final GridData gridData = ((BaseExpressionGrid) gridWidget).getParentInformation().getGridData();
-            if (gridData != null) {
-                final GridColumn<?> parentColumn = gridData.getColumns().get(parentColumnIndex);
-                parentColumn.setWidth(gridWidget.getWidth() + PADDING * 2);
+            final BaseExpressionGrid beg = (BaseExpressionGrid) gridWidget;
+            final int parentColumnIndex = beg.getParentInformation().getColumnIndex();
+            final GridData parentGridData = beg.getParentInformation().getGridData();
+            if (parentGridData != null) {
+                final GridColumn<?> parentColumn = parentGridData.getColumns().get(parentColumnIndex);
+                parentColumn.setWidth(gridWidget.getWidth() + beg.getPadding() * 2);
             }
         }
     }

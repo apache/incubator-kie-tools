@@ -58,6 +58,8 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
 
     private static final String EXPRESSION_COLUMN_GROUP = "UndefinedExpressionGrid$ExpressionColumn";
 
+    private static final double PADDING = 0.0;
+
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private ListSelector listSelector;
     private boolean isNested;
@@ -136,6 +138,11 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
     @Override
     public Optional<IsElement> getEditorControls() {
         return Optional.empty();
+    }
+
+    @Override
+    public double getPadding() {
+        return PADDING;
     }
 
     @Override

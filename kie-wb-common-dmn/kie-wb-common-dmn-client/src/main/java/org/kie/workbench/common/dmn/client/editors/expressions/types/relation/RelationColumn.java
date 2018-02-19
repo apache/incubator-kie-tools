@@ -16,8 +16,11 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.relation;
 
+import java.util.Optional;
+
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -75,8 +78,10 @@ public class RelationColumn extends DMNGridColumn<String> implements HasSingleto
                     final GridCellValue<?> value = cell.getValue();
                     if (value instanceof ExpressionCellValue) {
                         final ExpressionCellValue ecv = (ExpressionCellValue) value;
+                        final Optional<BaseExpressionGrid> editor = ecv.getValue();
+                        final double padding = editor.map(BaseExpressionGrid::getPadding).get();
                         minimumWidth = Math.max(minimumWidth,
-                                                ecv.getMinimumWidth().orElse(0.0) + DMNGridColumn.PADDING * 2);
+                                                ecv.getMinimumWidth().orElse(0.0) + padding * 2);
                     }
                 }
             }

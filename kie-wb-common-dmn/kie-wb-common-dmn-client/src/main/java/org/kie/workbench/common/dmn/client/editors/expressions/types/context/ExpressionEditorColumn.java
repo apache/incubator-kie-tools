@@ -62,8 +62,10 @@ public class ExpressionEditorColumn extends DMNGridColumn<Optional<BaseExpressio
                     final GridCellValue<?> value = cell.getValue();
                     if (value instanceof ExpressionCellValue) {
                         final ExpressionCellValue ecv = (ExpressionCellValue) value;
+                        final Optional<BaseExpressionGrid> editor = ecv.getValue();
+                        final double padding = editor.map(BaseExpressionGrid::getPadding).get();
                         minimumWidth = Math.max(minimumWidth,
-                                                ecv.getMinimumWidth().orElse(0.0) + DMNGridColumn.PADDING * 2);
+                                                ecv.getMinimumWidth().orElse(0.0) + padding * 2);
                     }
                 }
             }
@@ -110,7 +112,7 @@ public class ExpressionEditorColumn extends DMNGridColumn<Optional<BaseExpressio
     private void updateWidthOfLastColumn(final BaseExpressionGrid gridWidget,
                                          final double columnWidth) {
         final List<GridColumn<?>> gwcs = gridWidget.getModel().getColumns();
-        double targetGridWidth = columnWidth - DMNGridColumn.PADDING * 2;
+        double targetGridWidth = columnWidth - gridWidget.getPadding() * 2;
         for (GridColumn<?> gwc : gwcs) {
             targetGridWidth = targetGridWidth - gwc.getWidth();
         }
@@ -149,7 +151,7 @@ public class ExpressionEditorColumn extends DMNGridColumn<Optional<BaseExpressio
                         if (editor.isPresent()) {
                             final BaseExpressionGrid beg = editor.get();
                             requiredColumnWidth = Math.max(requiredColumnWidth,
-                                                           beg.getWidth() + DMNGridColumn.PADDING * 2);
+                                                           beg.getWidth() + beg.getPadding() * 2);
                         }
                     }
                 }

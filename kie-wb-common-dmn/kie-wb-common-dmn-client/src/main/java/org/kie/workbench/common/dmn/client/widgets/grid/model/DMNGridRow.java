@@ -46,7 +46,7 @@ public class DMNGridRow extends BaseGridRow {
                 .map(value -> (ExpressionCellValue) value)
                 .filter(value -> value.getValue().isPresent())
                 .map(value -> value.getValue().get())
-                .map(editor -> editor.getHeight() + DMNGridColumn.PADDING * 2)
+                .map(editor -> editor.getHeight() + editor.getPadding() * 2)
                 .reduce(Double::max)
                 .orElse(defaultHeight);
     }

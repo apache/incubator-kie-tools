@@ -197,15 +197,16 @@ public class BaseExpressionGridRenderingTest extends BaseExpressionGridTest {
         verify(renderHeaderGridLinesCommand, never()).execute(any(Group.class));
         verify(renderHeaderContentCommand, never()).execute(any(Group.class));
         verify(renderHeaderBodyDividerCommand, never()).execute(any(Group.class));
-        verify(renderGridBoundaryCommand, never()).execute(any(Group.class));
 
         final InOrder order = inOrder(renderBodyGridBackgroundCommand,
                                       renderBodyGridContentCommand,
                                       renderBodyGridLinesCommand,
+                                      renderGridBoundaryCommand,
                                       renderSelectedCellsCommand);
 
         order.verify(renderBodyGridBackgroundCommand).execute(any(Group.class));
         order.verify(renderBodyGridContentCommand).execute(any(Group.class));
+        order.verify(renderGridBoundaryCommand).execute(any(Group.class));
         order.verify(renderBodyGridLinesCommand).execute(any(Group.class));
         order.verify(renderSelectedCellsCommand).execute(any(Group.class));
     }
@@ -216,12 +217,11 @@ public class BaseExpressionGridRenderingTest extends BaseExpressionGridTest {
 
         grid.drawWithTransforms(context, 1.0, new BoundingBox());
 
-        verify(renderGridBoundaryCommand, never()).execute(any(Group.class));
-
         final InOrder order = inOrder(renderHeaderBackgroundCommand,
                                       renderHeaderContentCommand,
                                       renderBodyGridBackgroundCommand,
                                       renderBodyGridContentCommand,
+                                      renderGridBoundaryCommand,
                                       renderHeaderGridLinesCommand,
                                       renderBodyGridLinesCommand,
                                       renderSelectedCellsCommand);
@@ -230,6 +230,7 @@ public class BaseExpressionGridRenderingTest extends BaseExpressionGridTest {
         order.verify(renderHeaderContentCommand).execute(any(Group.class));
         order.verify(renderBodyGridBackgroundCommand).execute(any(Group.class));
         order.verify(renderBodyGridContentCommand).execute(any(Group.class));
+        order.verify(renderGridBoundaryCommand).execute(any(Group.class));
         order.verify(renderHeaderGridLinesCommand).execute(any(Group.class));
         order.verify(renderBodyGridLinesCommand).execute(any(Group.class));
         order.verify(renderSelectedCellsCommand).execute(any(Group.class));

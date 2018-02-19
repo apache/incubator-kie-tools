@@ -39,6 +39,7 @@ import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueComma
 import org.kie.workbench.common.dmn.client.commands.general.DeleteHeaderValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetHeaderValueCommand;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderGridWidgetMouseDoubleClickHandler;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
@@ -57,6 +58,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanva
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
+import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
@@ -68,6 +70,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedra
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
 
 public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIModelMapper<E>> extends BaseGridWidget implements HasExpressionEditorControls {
+
+    static final double DEFAULT_PADDING = 10.0;
 
     protected final GridCellTuple parent;
 
@@ -249,6 +253,10 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
         };
     }
 
+    public double getPadding() {
+        return findParentGrid().isPresent() ? DEFAULT_PADDING : 0.0;
+    }
+
     protected EditableHeaderMetaData extractEditableHeaderMetaData(final GridCellTuple gc) {
         final int headerRowIndex = gc.getRowIndex();
         final int headerColumnIndex = gc.getColumnIndex();
@@ -322,6 +330,13 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
 
         if (!(uiRowIndex == null || uiColumnIndex == null)) {
             final GridCell<?> cell = getModel().getCell(uiRowIndex, uiColumnIndex);
+            if (cell == null) {
+                return false;
+            }
+            final GridCellValue<?> value = cell.getValue();
+            if (value instanceof ExpressionCellValue) {
+                return false;
+            }
             if (cell instanceof HasCellEditorControls) {
                 final HasCellEditorControls hasControls = (HasCellEditorControls) cell;
                 final Optional<HasCellEditorControls.Editor> editor = hasControls.getEditor();
@@ -364,9 +379,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
 
         final Predicate<Pair<Group, GridRenderer.RendererCommand>> renderHeader = (p) -> {
             final GridRenderer.RendererCommand command = p.getK2();
-            if (command instanceof GridRenderer.RenderGridBoundaryCommand) {
-                return false;
-            } else if (isHeaderHidden.get()) {
+            if (isHeaderHidden.get()) {
                 return !(command instanceof GridRenderer.RendererHeaderCommand);
             }
             return true;

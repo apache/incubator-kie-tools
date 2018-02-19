@@ -61,6 +61,8 @@ public class ExpressionEditorColumnTest {
 
     private static final double DEFAULT_WIDTH = 100D;
 
+    private static final int PADDING = 10;
+
     @Mock
     private GridSelectionManager selectionManager;
 
@@ -121,7 +123,7 @@ public class ExpressionEditorColumnTest {
         gridData.appendRow(new DMNGridRow());
         gridData.appendRow(new DMNGridRow());
         gridData.appendRow(new DMNGridRow());
-        mockCells(0, 0, 100);
+        mockCells(0, 0, 100d);
         mockCells(1, 0, 150);
         mockCells(2, 0, 125);
         Assertions.assertThat(column.getMinimumWidth()).isEqualTo(150);
@@ -195,6 +197,91 @@ public class ExpressionEditorColumnTest {
         Assertions.assertThat(column.getMinimumWidth()).isEqualTo(110);
     }
 
+    /**
+     * (10)[100](10)
+     * (10)[150](10)
+     * (10)[125](10)
+     */
+    @Test
+    public void testMinimalWidthOneCellInEachRowWithPadding() throws Exception {
+        gridData.appendColumn(column);
+        gridData.appendRow(new DMNGridRow());
+        gridData.appendRow(new DMNGridRow());
+        gridData.appendRow(new DMNGridRow());
+        mockCellsWithPadding(0, 0, PADDING, 100);
+        mockCellsWithPadding(1, 0, PADDING, 150);
+        mockCellsWithPadding(2, 0, PADDING, 125);
+        Assertions.assertThat(column.getMinimumWidth()).isEqualTo(170);
+    }
+
+    /**
+     * (10)[100](10)
+     * (10)[50][60](10)
+     * (10)[105](10)
+     */
+    @Test
+    public void testMinimalWidthTwoCellsSumWithPadding() throws Exception {
+        gridData.appendColumn(column);
+        gridData.appendRow(new DMNGridRow());
+        gridData.appendRow(new DMNGridRow());
+        gridData.appendRow(new DMNGridRow());
+        mockCellsWithPadding(0, 0, PADDING, 100);
+        mockCellsWithPadding(1, 0, PADDING, 50, 60);
+        mockCellsWithPadding(2, 0, PADDING, 105);
+        Assertions.assertThat(column.getMinimumWidth()).isEqualTo(130);
+    }
+
+    /**
+     * (10)[100](10)
+     * (10)[50][60](10)
+     * (10)[50][60][10](10)
+     */
+    @Test
+    public void testMinimalWidthThreeCellsSumWithPadding() throws Exception {
+        gridData.appendColumn(column);
+        gridData.appendRow(new DMNGridRow());
+        gridData.appendRow(new DMNGridRow());
+        gridData.appendRow(new DMNGridRow());
+        mockCellsWithPadding(0, 0, PADDING, 100);
+        mockCellsWithPadding(1, 0, PADDING, 50, 60);
+        mockCellsWithPadding(2, 0, PADDING, 50, 60, 10);
+        Assertions.assertThat(column.getMinimumWidth()).isEqualTo(140);
+    }
+
+    /**
+     * (10)[99](10)
+     * (10)[30][30][30](10)
+     * (10)[49][50](10)
+     */
+    @Test
+    public void testMinimalWidthDefaultWidthWithPadding() throws Exception {
+        gridData.appendColumn(column);
+        gridData.appendRow(new DMNGridRow());
+        gridData.appendRow(new DMNGridRow());
+        gridData.appendRow(new DMNGridRow());
+        mockCellsWithPadding(0, 0, PADDING, 99);
+        mockCellsWithPadding(1, 0, PADDING, 30, 30, 30);
+        mockCellsWithPadding(2, 0, PADDING, 49, 50);
+        Assertions.assertThat(column.getMinimumWidth()).isEqualTo(119);
+    }
+
+    /**
+     * (10)[100](10)
+     * (10)-(10)
+     * (10)[50][60](10)
+     */
+    @Test
+    public void testMinimalWidthNoCellsInMiddleWithPadding() throws Exception {
+        gridData.appendColumn(column);
+        gridData.appendRow(new DMNGridRow());
+        gridData.appendRow(new DMNGridRow());
+        gridData.appendRow(new DMNGridRow());
+        mockCellsWithPadding(0, 0, PADDING, 100);
+        mockCellsWithPadding(1, 0, PADDING);
+        mockCellsWithPadding(2, 0, PADDING, 50, 60);
+        Assertions.assertThat(column.getMinimumWidth()).isEqualTo(130);
+    }
+
     @Test
     public void testUpdateInternalWidth() throws Exception {
         gridData.appendColumn(column);
@@ -257,13 +344,25 @@ public class ExpressionEditorColumnTest {
     private void mockCells(final int rowIndex,
                            final int columnIndex,
                            final double... widthOfCells) {
+        mockCellsWithPadding(rowIndex,
+                             columnIndex,
+                             0,
+                             widthOfCells);
+    }
+
+    private void mockCellsWithPadding(final int rowIndex,
+                                      final int columnIndex,
+                                      final int padding,
+                                      final double... widthOfCells) {
         gridData.setCellValue(rowIndex,
                               columnIndex,
-                              new ExpressionCellValue(Optional.of(mockEditor(widthOfCells))));
+                              new ExpressionCellValue(Optional.of(mockEditor(padding,
+                                                                             widthOfCells))));
     }
 
     @SuppressWarnings("unchecked")
-    private BaseExpressionGrid mockEditor(final double... widthOfCells) {
+    private BaseExpressionGrid mockEditor(final double padding,
+                                          final double... widthOfCells) {
         final GridColumn.HeaderMetaData headerMetaData = mock(GridColumn.HeaderMetaData.class);
         final GridColumnRenderer gridColumnRenderer = mock(GridColumnRenderer.class);
         final BaseExpressionGrid gridWidget = mock(BaseExpressionGrid.class);
@@ -309,6 +408,11 @@ public class ExpressionEditorColumnTest {
             @Override
             public Optional<IsElement> getEditorControls() {
                 return Optional.empty();
+            }
+
+            @Override
+            public double getPadding() {
+                return padding;
             }
         };
     }
