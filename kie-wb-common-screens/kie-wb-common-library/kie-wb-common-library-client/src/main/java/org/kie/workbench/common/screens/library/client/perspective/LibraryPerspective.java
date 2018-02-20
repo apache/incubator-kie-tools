@@ -11,19 +11,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.kie.workbench.common.screens.library.client.perspective;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
+import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
 import org.uberfire.lifecycle.OnClose;
-import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
@@ -32,7 +33,7 @@ import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "LibraryPerspective")
+@WorkbenchPerspective(identifier = LibraryPlaces.LIBRARY_PERSPECTIVE)
 public class LibraryPerspective {
 
     private LibraryPlaces libraryPlaces;
@@ -66,10 +67,10 @@ public class LibraryPerspective {
         this.refresh = refresh;
     }
 
-    @OnOpen
-    public void onOpen() {
-
-        libraryPlaces.refresh(getRefreshCallBack());
+    public void perspectiveChangeEvent(@Observes PerspectiveChange event) {
+        if (event.getIdentifier().equals(LibraryPlaces.LIBRARY_PERSPECTIVE)) {
+            libraryPlaces.refresh(getRefreshCallBack());
+        }
     }
 
     private Command getRefreshCallBack() {

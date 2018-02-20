@@ -23,6 +23,7 @@ import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PanelDefinition;
 
@@ -39,9 +40,13 @@ public class LibraryPerspectiveTest {
 
     private LibraryPerspective perspective;
 
+    @Mock
+    private PerspectiveChange perspectiveChangeEvent;
+
     @Before
     public void setup() {
         perspective = spy(new LibraryPerspective(libraryPlaces));
+        when(perspectiveChangeEvent.getIdentifier()).thenReturn(LibraryPlaces.LIBRARY_PERSPECTIVE);
     }
 
     @Test
@@ -50,10 +55,10 @@ public class LibraryPerspectiveTest {
     }
 
     @Test
-    public void libraryRefreshesPlacesOnOpenWithRootPanelTest() {
+    public void libraryRefreshesPlacesOnPerspectiveChangeEventWithRootPanelTest() {
         doReturn(mock(PanelDefinition.class)).when(perspective).getRootPanel();
 
-        perspective.onOpen();
+        perspective.perspectiveChangeEvent(perspectiveChangeEvent);
 
         verify(libraryPlaces).refresh(commandCaptor.capture());
 
@@ -63,10 +68,10 @@ public class LibraryPerspectiveTest {
     }
 
     @Test
-    public void libraryDoesNotLoadOnOpenWithoutRootPanelTest() {
+    public void libraryDoesNotLoadOnPerspectiveChangeEventWithoutRootPanelTest() {
         doReturn(null).when(perspective).getRootPanel();
 
-        perspective.onOpen();
+        perspective.perspectiveChangeEvent(perspectiveChangeEvent);
 
         verify(libraryPlaces).refresh(commandCaptor.capture());
 
@@ -74,6 +79,16 @@ public class LibraryPerspectiveTest {
 
         verify(libraryPlaces,
                never()).goToLibrary();
+    }
+
+    @Test
+    public void libraryDoesNotLoadOnPerspectiveChangeEventFromOtherPerspectives() {
+
+        when(perspectiveChangeEvent.getIdentifier()).thenReturn("dora");
+
+        perspective.perspectiveChangeEvent(perspectiveChangeEvent);
+
+        verify(libraryPlaces, never()).refresh(any());
     }
 
     @Test
