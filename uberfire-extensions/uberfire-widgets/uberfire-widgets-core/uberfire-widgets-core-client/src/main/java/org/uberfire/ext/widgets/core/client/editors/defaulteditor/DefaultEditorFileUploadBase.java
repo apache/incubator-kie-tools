@@ -74,10 +74,8 @@ public abstract class DefaultEditorFileUploadBase
 
         form.addSubmitCompleteHandler(event -> {
             if (isUploadSuccessful(event)) {
-                Window.alert(CoreConstants.INSTANCE.UploadSuccess());
                 executeCallback(successCallback);
             } else {
-                Window.alert(CoreConstants.INSTANCE.UploadFail());
                 executeCallback(errorCallback);
             }
         });
