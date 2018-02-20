@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -125,7 +125,7 @@ public class CanvasLayoutUtils {
                                                       offset[0].getY());
 
         final Point2D rootNodeCoordinates = new Point2D(rootBounds[0],
-                                                          rootBounds[1]);
+                                                        rootBounds[1]);
 
         return getNext(canvasHandler,
                        root,
@@ -160,12 +160,9 @@ public class CanvasLayoutUtils {
 
         graphBoundsIndexer.build(canvasHandler.getDiagram().getGraph());
 
-        boolean canContain = false;
-
         Element parentNode = GraphUtils.getParent(root.asNode());
 
         boolean checkParent = false;
-
         if (parentNode != null) {
             if (!(isCanvasRoot(canvasHandler.getDiagram(),
                                parentNode.getUUID()))) {
@@ -178,8 +175,8 @@ public class CanvasLayoutUtils {
                                                             newNodeWidth,
                                                             newNodeHeight,
                                                             parentNode);
+        boolean canContain = false;
         if (targetNodeContainer != null) {
-
             canContain = canContain(canvasHandler,
                                     targetNodeContainer,
                                     root);
@@ -196,12 +193,11 @@ public class CanvasLayoutUtils {
                                                           rootNodeWidth,
                                                           newNodeWidth);
             }
-            while
-                    (((!isCanvasPositionAvailable(graphBoundsIndexer,
-                                                  newPositionUL,
-                                                  newNodeWidth,
-                                                  newNodeHeight,
-                                                  parentNode)) &&
+            while (((!isCanvasPositionAvailable(graphBoundsIndexer,
+                                                newPositionUL,
+                                                newNodeWidth,
+                                                newNodeHeight,
+                                                parentNode)) &&
                     !canContain)
                     &&
                     (newPositionUL.getY() < canvasHeight) && (newPositionUL.getX() < canvasWidth)
@@ -239,9 +235,8 @@ public class CanvasLayoutUtils {
                     }
                 } else {
 
-                    if ((nodeAtPositionSize == null) && (!checkParent)) {
-                        nodeAtPositionSize = new double[1];
-                        nodeAtPositionSize[1] = 0;
+                    if (nodeAtPositionSize == null) {
+                        nodeAtPositionSize = new double[]{0.0d};
                         offset.setY(offset.getY() + PADDING_Y);
                     } else {
                         offset.setY(offset.getY() + nodeAtPositionSize[1] + PADDING_Y);
@@ -274,13 +269,7 @@ public class CanvasLayoutUtils {
                                                                newNodeWidth,
                                                                newNodeHeight,
                                                                parentNode);
-                if (targetNodeContainer != null) {
-                    canContain = canContain(canvasHandler,
-                                            targetNodeContainer,
-                                            root);
-                } else {
-                    canContain = true;
-                }
+                canContain = targetNodeContainer == null || canContain(canvasHandler, targetNodeContainer, root);
             }
         } else {
             if (checkParent) {
@@ -345,11 +334,7 @@ public class CanvasLayoutUtils {
     private boolean isOutOfCanvas(Point2D newPositionUL,
                                   double newNodeHeight,
                                   double canvasHeight) {
-
-        if (newPositionUL.getY() + newNodeHeight > canvasHeight - CANVAS_BOTTOM_MARGIN) {
-            return true;
-        }
-        return false;
+        return newPositionUL.getY() + newNodeHeight > canvasHeight - CANVAS_BOTTOM_MARGIN;
     }
 
     private Point2D getNextPositionWithOffset(final Point2D nextPosition,
@@ -370,9 +355,7 @@ public class CanvasLayoutUtils {
                                                          h,
                                                          parentNode);
         if (targetNode != null) {
-            final double[] nodeSize = GraphUtils.getNodeSize((View) targetNode.getContent());
-
-            return nodeSize;
+            return GraphUtils.getNodeSize((View) targetNode.getContent());
         } else {
             return null;
         }
@@ -383,43 +366,13 @@ public class CanvasLayoutUtils {
                                               final double width,
                                               final double height,
                                               final Element parentNode
-
     ) {
-
         final Node targetNode = graphBoundsIndexer.getAt(positionUL.getX(),
                                                          positionUL.getY(),
                                                          width,
                                                          height,
                                                          parentNode);
-
-        if ((targetNode == null)) {
-            return true;
-        }
-        return false;
-    }
-
-    @SuppressWarnings("unchecked")
-    private double[] getAbsolute(final Node<View<?>, Edge> root) {
-        final double[] pos = getBoundCoordinates(root.getContent());
-        return getAbsolute(root,
-                           pos[0],
-                           pos[1]);
-    }
-
-    @SuppressWarnings("unchecked")
-    private double[] getAbsolute(final Node<View<?>, Edge> root,
-                                 final double x,
-                                 final double y) {
-        Element parent = GraphUtils.getParent(root);
-        if (null != parent
-                && parent instanceof Node
-                && parent.getContent() instanceof View) {
-            final double[] pos = getBoundCoordinates((View) parent.getContent());
-            return getAbsolute((Node<View<?>, Edge>) parent,
-                               x + pos[0],
-                               y + pos[1]);
-        }
-        return new double[]{x, y};
+        return targetNode == null;
     }
 
     private double[] getBoundCoordinates(final View view) {
@@ -429,11 +382,5 @@ public class CanvasLayoutUtils {
         final double lrX = lrBound.getX();
         final double lrY = ulBound.getY();
         return new double[]{lrX, lrY};
-    }
-
-    @SuppressWarnings("unchecked")
-    private Bounds getGraphBounds(final CanvasHandler canvasHandler) {
-        final Graph<DefinitionSet, ?> graph = canvasHandler.getDiagram().getGraph();
-        return graph.getContent().getBounds();
     }
 }
