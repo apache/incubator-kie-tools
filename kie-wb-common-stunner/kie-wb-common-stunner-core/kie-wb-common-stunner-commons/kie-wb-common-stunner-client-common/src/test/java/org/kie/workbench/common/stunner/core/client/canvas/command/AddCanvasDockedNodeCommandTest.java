@@ -43,8 +43,8 @@ public class AddCanvasDockedNodeCommandTest extends AbstractCanvasCommandTest {
     private AddCanvasDockedNodeCommand tested;
 
     @Before
-    public void setup() throws Exception {
-        super.setup();
+    public void setUp() throws Exception {
+        super.setUp();
         this.tested = new AddCanvasDockedNodeCommand(parent,
                                                      candidate,
                                                      SHAPE_SET_ID);

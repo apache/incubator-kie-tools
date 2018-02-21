@@ -118,11 +118,6 @@ public class WiresCanvasTest {
             }
 
             @Override
-            protected WiresControlFactory getWiresControlFactory() {
-                return null;
-            }
-
-            @Override
             public Canvas initialize(final int width,
                                      final int height) {
                 return this;

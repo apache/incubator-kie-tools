@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
@@ -176,5 +177,9 @@ public class GraphCommandFactory {
 
     public ClearGraphCommand clearGraph(final String rootUUID) {
         return new ClearGraphCommand(rootUUID);
+    }
+
+    public AddControlPointCommand addControlPoint(Edge edge, ControlPoint... controlPoints){
+        return new AddControlPointCommand(edge, controlPoints);
     }
 }

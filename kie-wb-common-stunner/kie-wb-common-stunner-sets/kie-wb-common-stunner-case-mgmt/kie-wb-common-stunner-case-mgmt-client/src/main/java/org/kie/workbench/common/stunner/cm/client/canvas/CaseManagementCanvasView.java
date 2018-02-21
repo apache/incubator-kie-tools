@@ -16,10 +16,12 @@
 package org.kie.workbench.common.stunner.cm.client.canvas;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
+import org.kie.workbench.common.stunner.client.lienzo.wires.WiresManagerFactory;
 import org.kie.workbench.common.stunner.client.widgets.canvas.wires.WiresCanvasView;
 import org.kie.workbench.common.stunner.cm.client.wires.AbstractCaseManagementShape;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
@@ -29,6 +31,11 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 @Dependent
 @CaseManagementEditor
 public class CaseManagementCanvasView extends WiresCanvasView {
+
+    @Inject
+    public CaseManagementCanvasView(@CaseManagementEditor WiresManagerFactory wiresManagerFactory) {
+        super(wiresManagerFactory);
+    }
 
     @Override
     public WiresCanvas.View addShape(final ShapeView<?> shapeView) {

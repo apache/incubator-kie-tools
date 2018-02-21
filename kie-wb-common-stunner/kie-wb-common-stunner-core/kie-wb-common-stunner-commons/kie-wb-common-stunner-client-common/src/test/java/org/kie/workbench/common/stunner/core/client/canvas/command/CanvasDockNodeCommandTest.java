@@ -43,8 +43,8 @@ public class CanvasDockNodeCommandTest extends AbstractCanvasCommandTest {
     private CanvasDockNodeCommand tested;
 
     @Before
-    public void setup() throws Exception {
-        super.setup();
+    public void setUp() throws Exception {
+        super.setUp();
         this.tested = new CanvasDockNodeCommand(parent,
                                                 candidate);
     }

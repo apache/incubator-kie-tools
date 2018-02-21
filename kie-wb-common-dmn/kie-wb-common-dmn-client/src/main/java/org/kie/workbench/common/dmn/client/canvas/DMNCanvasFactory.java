@@ -33,6 +33,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.Node
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.Observer;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.ClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ControlPointControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.LocationControl;
@@ -66,10 +67,12 @@ public class DMNCanvasFactory
     private final ManagedInstance<ClipboardControl> clipboardControls;
     private final ManagedInstance<AbstractCanvas> canvasInstances;
     private final ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances;
+    private final ManagedInstance<ControlPointControl> controlPointControls;
 
     // Required by CDI proxies.
     protected DMNCanvasFactory() {
         this(null,
+             null,
              null,
              null,
              null,
@@ -105,7 +108,8 @@ public class DMNCanvasFactory
                             final ManagedInstance<KeyboardControl> keyboardControls,
                             final ManagedInstance<ClipboardControl> clipboardControls,
                             final @Default ManagedInstance<AbstractCanvas> canvasInstances,
-                            final @Default ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances) {
+                            final @Default ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances,
+                            final ManagedInstance<ControlPointControl> controlPointControls) {
         this.resizeControls = resizeControls;
         this.connectionAcceptorControls = connectionAcceptorControls;
         this.containmentAcceptorControls = containmentAcceptorControls;
@@ -123,6 +127,7 @@ public class DMNCanvasFactory
         this.canvasInstances = canvasInstances;
         this.canvasHandlerInstances = canvasHandlerInstances;
         this.clipboardControls = clipboardControls;
+        this.controlPointControls = controlPointControls;
     }
 
     @PostConstruct
@@ -157,7 +162,9 @@ public class DMNCanvasFactory
                 .register(KeyboardControl.class,
                           keyboardControls)
                 .register(ClipboardControl.class,
-                          clipboardControls);
+                          clipboardControls)
+                .register(ControlPointControl.class,
+                        controlPointControls);
     }
 
     @Override

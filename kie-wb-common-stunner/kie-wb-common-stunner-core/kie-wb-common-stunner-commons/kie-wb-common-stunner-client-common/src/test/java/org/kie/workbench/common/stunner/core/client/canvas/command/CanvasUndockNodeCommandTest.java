@@ -47,8 +47,8 @@ public class CanvasUndockNodeCommandTest extends AbstractCanvasCommandTest {
     private CanvasUndockNodeCommand tested;
 
     @Before
-    public void setup() throws Exception {
-        super.setup();
+    public void setUp() throws Exception {
+        super.setUp();
         when(parent.getUUID()).thenReturn(P_ID);
         when(candidate.getUUID()).thenReturn(C_ID);
         this.tested = new CanvasUndockNodeCommand(parent,

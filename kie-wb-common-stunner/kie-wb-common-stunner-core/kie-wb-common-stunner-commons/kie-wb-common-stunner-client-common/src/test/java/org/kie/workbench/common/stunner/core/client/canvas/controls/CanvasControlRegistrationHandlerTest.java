@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jboss.errai.ioc.client.api.Disposer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,9 +31,11 @@ import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -53,6 +56,9 @@ public class CanvasControlRegistrationHandlerTest {
     @Mock
     private MockAbstractCanvasSessionAwareControl sessionAwareControl;
 
+    @Mock
+    private Disposer disposer;
+
     private CanvasControlRegistrationHandler tested;
     private final List<CanvasControl<AbstractCanvas>> canvasControls = new ArrayList<>(CONTROLS_SIZE);
     private final List<CanvasControl<AbstractCanvasHandler>> canvasHandlerControls = new ArrayList<>(CONTROLS_SIZE);
@@ -60,8 +66,9 @@ public class CanvasControlRegistrationHandlerTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
-        this.tested = new CanvasControlRegistrationHandler<>(canvas,
-                                                             canvasHandler);
+        this.tested = spy(new CanvasControlRegistrationHandler<>(canvas,
+                                                             canvasHandler,
+                                                             disposer));
         for (int x = 0; x < CONTROLS_SIZE; x++) {
             canvasControls.add(mock(CanvasControl.class));
             canvasHandlerControls.add(mock(CanvasControl.class));
@@ -114,56 +121,23 @@ public class CanvasControlRegistrationHandlerTest {
 
     @Test
     public void testClear() {
-        tested.enable();
+        assertEquals(tested.getCanvasControls().size(), canvasControls.size());
+        assertEquals(tested.getCanvasHandlerControls().size(), canvasHandlerControls.size());
         tested.clear();
-        verify(canvas,
-               times(1)).addRegistrationListener(any(CanvasShapeListener.class));
-        verify(canvasHandler,
-               times(1)).addRegistrationListener(any(CanvasElementListener.class));
-        verify(canvas,
-               times(1)).removeRegistrationListener(any(CanvasShapeListener.class));
-        verify(canvasHandler,
-               times(1)).removeRegistrationListener(any(CanvasElementListener.class));
-        canvasControls.forEach(c -> {
-            verify(c,
-                   times(1)).enable(eq(canvas));
-            verify(c,
-                   times(1)).disable();
-        });
-        canvasHandlerControls.forEach(c -> {
-            verify(c,
-                   times(1)).enable(eq(canvasHandler));
-            verify(c,
-                   times(1)).disable();
-        });
+        assertEquals(tested.getCanvasControls().size(), 0);
+        assertEquals(tested.getCanvasHandlerControls().size(), 0);
     }
 
     @Test
     public void testDestroy() {
         tested.enable();
         tested.destroy();
-        verify(canvas,
-               times(1)).addRegistrationListener(any(CanvasShapeListener.class));
-        verify(canvasHandler,
-               times(1)).addRegistrationListener(any(CanvasElementListener.class));
-        verify(canvas,
-               times(1)).removeRegistrationListener(any(CanvasShapeListener.class));
-        verify(canvas,
-               times(1)).clearRegistrationListeners();
-        verify(canvasHandler,
-               times(1)).clearRegistrationListeners();
-        canvasControls.forEach(c -> {
-            verify(c,
-                   times(1)).enable(eq(canvas));
-            verify(c,
-                   times(1)).disable();
-        });
-        canvasHandlerControls.forEach(c -> {
-            verify(c,
-                   times(1)).enable(eq(canvasHandler));
-            verify(c,
-                   times(1)).disable();
-        });
+
+        verify(tested).clear();
+        verify(canvas).clearRegistrationListeners();
+        verify(canvasHandler).clearRegistrationListeners();
+        canvasControls.forEach(control-> verify(disposer).dispose(control));
+        canvasHandlerControls.forEach(control-> verify(disposer).dispose(control));
     }
 
     @Test

@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
@@ -213,6 +214,21 @@ public class DefaultCanvasCommandFactory implements CanvasCommandFactory<Abstrac
     @Override
     public CanvasCommand<AbstractCanvasHandler> cloneConnector(Edge candidate, String sourceUUID, String targetUUID, String shapeSetId, Consumer<Edge> callback) {
         return new CloneConnectorCommand(candidate, sourceUUID, targetUUID, shapeSetId, callback);
+    }
+
+    @Override
+    public CanvasCommand<AbstractCanvasHandler> addControlPoint(Edge candidate, ControlPoint... controlPoints) {
+        return new AddControlPointCommand(candidate, controlPoints);
+    }
+
+    @Override
+    public CanvasCommand<AbstractCanvasHandler> deleteControlPoint(Edge candidate, ControlPoint... controlPoints) {
+        return new DeleteControlPointCommand(candidate, controlPoints);
+    }
+
+    @Override
+    public CanvasCommand<AbstractCanvasHandler> updateControlPointPosition(Edge candidate, ControlPoint controlPoint, Point2D position) {
+        return new UpdateControlPointPositionCommand(candidate, controlPoint, position);
     }
 
     protected ChildrenTraverseProcessor newChildrenTraverseProcessor() {

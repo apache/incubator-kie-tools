@@ -200,6 +200,11 @@ public class CanvasInPlaceTextEditorControlImpl
         disableShapeEdit();
         this.uuid = null;
         textEditorBox.hide();
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
         floatingView.destroy();
     }
 

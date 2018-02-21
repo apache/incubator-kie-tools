@@ -49,7 +49,6 @@ public class CaseManagementCanvasPresenter extends WiresCanvasPresenter {
              null,
              null,
              null,
-             null,
              null);
     }
 
@@ -61,8 +60,7 @@ public class CaseManagementCanvasPresenter extends WiresCanvasPresenter {
                                          final Event<CanvasFocusedEvent> canvasFocusedEvent,
                                          final @Lienzo Layer layer,
                                          final @CaseManagementEditor WiresCanvas.View view,
-                                         final LienzoPanel lienzoPanel,
-                                         final @CaseManagementEditor WiresControlFactory caseManagementControlFactory) {
+                                         final LienzoPanel lienzoPanel) {
         super(canvasClearEvent,
               canvasShapeAddedEvent,
               canvasShapeRemovedEvent,
@@ -70,8 +68,7 @@ public class CaseManagementCanvasPresenter extends WiresCanvasPresenter {
               canvasFocusedEvent,
               layer,
               view,
-              lienzoPanel,
-              caseManagementControlFactory);
+              lienzoPanel);
     }
 
     @SuppressWarnings("unchecked")

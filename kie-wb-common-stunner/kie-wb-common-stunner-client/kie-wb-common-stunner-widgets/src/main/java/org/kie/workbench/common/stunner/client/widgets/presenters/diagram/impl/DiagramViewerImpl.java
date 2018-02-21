@@ -16,10 +16,12 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters.diagram.impl;
 
+import org.jboss.errai.ioc.client.api.Disposer;
 import org.kie.workbench.common.stunner.client.widgets.canvas.wires.WiresCanvasPresenter;
 import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControlRegistrationHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
@@ -40,6 +42,7 @@ public class DiagramViewerImpl<D extends Diagram, H extends AbstractCanvasHandle
     private final H canvasHandler;
     private final ZoomControl<AbstractCanvas> zoomControl;
     private final SelectionControl<H, Element> selectionControl;
+    private final Disposer<CanvasControl> disposer;
 
     private CanvasControlRegistrationHandler<AbstractCanvas, H, S> registrationHandler;
 
@@ -47,13 +50,15 @@ public class DiagramViewerImpl<D extends Diagram, H extends AbstractCanvasHandle
                       final H canvasHandler,
                       final WidgetWrapperView view,
                       final ZoomControl<AbstractCanvas> zoomControl,
-                      final SelectionControl<H, Element> selectionControl) {
+                      final SelectionControl<H, Element> selectionControl,
+                      final Disposer<CanvasControl> disposer) {
         super(view);
         this.canvas = canvas;
         this.canvasHandler = canvasHandler;
         this.zoomControl = zoomControl;
         this.selectionControl = selectionControl;
         this.registrationHandler = null;
+        this.disposer = disposer;
     }
 
     @Override
@@ -72,7 +77,8 @@ public class DiagramViewerImpl<D extends Diagram, H extends AbstractCanvasHandle
     protected void enableControls() {
         registrationHandler =
                 new CanvasControlRegistrationHandler<AbstractCanvas, H, S>(getHandler().getAbstractCanvas(),
-                                                                           getHandler());
+                                                                           getHandler(),
+                                                                           disposer);
         registerControls(registrationHandler);
         registrationHandler.enable();
     }
@@ -85,6 +91,7 @@ public class DiagramViewerImpl<D extends Diagram, H extends AbstractCanvasHandle
     @Override
     protected void disableControls() {
         if (null != registrationHandler) {
+            registrationHandler.disable();
             registrationHandler.clear();
             registrationHandler = null;
         }
@@ -93,6 +100,7 @@ public class DiagramViewerImpl<D extends Diagram, H extends AbstractCanvasHandle
     @Override
     protected void destroyControls() {
         if (null != registrationHandler) {
+            registrationHandler.disable();
             registrationHandler.destroy();
             registrationHandler = null;
         }

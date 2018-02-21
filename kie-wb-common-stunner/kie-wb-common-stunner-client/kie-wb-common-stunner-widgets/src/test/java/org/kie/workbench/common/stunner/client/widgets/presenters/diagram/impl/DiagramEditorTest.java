@@ -17,12 +17,14 @@
 package org.kie.workbench.common.stunner.client.widgets.presenters.diagram.impl;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.jboss.errai.ioc.client.api.Disposer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.widgets.presenters.AbstractCanvasHandlerViewerTest;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramViewer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
@@ -63,6 +65,9 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
 
     private DiagramEditorImpl<Diagram, AbstractCanvasHandler, ClientSession> tested;
 
+    @Mock
+    private Disposer<CanvasControl> disposer;
+
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
@@ -89,7 +94,8 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
                                         commandManager,
                                         connectionAcceptorControl,
                                         containmentAcceptorControl,
-                                        dockingAcceptorControl);
+                                        dockingAcceptorControl,
+                                        disposer);
     }
 
     @Test

@@ -61,8 +61,8 @@ public class SetCanvasChildNodeCommandTest extends AbstractCanvasCommandTest {
 
     @Before
     @SuppressWarnings("unchecked")
-    public void setup() throws Exception {
-        super.setup();
+    public void setUp() throws Exception {
+        super.setUp();
         this.graphTestHandler = new TestingGraphMockHandler();
         graph1Instance = TestingGraphInstanceBuilder.newGraph1(graphTestHandler);
         when(diagram.getGraph()).thenReturn(graph1Instance.graph);

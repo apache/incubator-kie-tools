@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.shape.EdgeShape;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
+import org.kie.workbench.common.stunner.core.client.shape.impl.ConnectorShape;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -52,7 +53,7 @@ public class AddCanvasConnectorCommandTest extends AbstractCanvasCommandTest {
     @Mock
     private Node source;
     @Mock
-    private EdgeShape candidateShape;
+    private ConnectorShape candidateShape;
     @Mock
     private Shape sourceShape;
     @Mock
@@ -61,8 +62,8 @@ public class AddCanvasConnectorCommandTest extends AbstractCanvasCommandTest {
     private AddCanvasConnectorCommand tested;
 
     @Before
-    public void setup() throws Exception {
-        super.setup();
+    public void setUp() throws Exception {
+        super.setUp();
         when(candidate.getUUID()).thenReturn(EDGE_ID);
         when(candidate.getContent()).thenReturn(candidateContent);
         when(candidateContent.getSourceConnection()).thenReturn(Optional.empty());

@@ -198,6 +198,11 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         commandManagerProvider = null;
     }
 
+    @Override
+    protected boolean isEnabled() {
+        return super.isEnabled();
+    }
+
     public void getCommands(final Object definition,
                             final Node<View<?>, Edge> parent,
                             final double x,

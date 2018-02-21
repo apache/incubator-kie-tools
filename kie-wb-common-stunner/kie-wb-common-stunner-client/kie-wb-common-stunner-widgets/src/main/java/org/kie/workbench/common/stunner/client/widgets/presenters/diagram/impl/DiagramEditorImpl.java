@@ -16,12 +16,14 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters.diagram.impl;
 
+import org.jboss.errai.ioc.client.api.Disposer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramEditor;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramViewer;
 import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControlRegistrationHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
@@ -47,6 +49,7 @@ public class DiagramEditorImpl<D extends Diagram, H extends AbstractCanvasHandle
     private final ConnectionAcceptorControl<H> connectionAcceptorControl;
     private final ContainmentAcceptorControl<H> containmentAcceptorControl;
     private final DockingAcceptorControl<H> dockingAcceptorControl;
+    private final Disposer<CanvasControl> disposer;
 
     private CanvasControlRegistrationHandler<AbstractCanvas, H, S> registrationHandler;
 
@@ -54,12 +57,14 @@ public class DiagramEditorImpl<D extends Diagram, H extends AbstractCanvasHandle
                       final CanvasCommandManager<H> commandManager,
                       final ConnectionAcceptorControl<H> connectionAcceptorControl,
                       final ContainmentAcceptorControl<H> containmentAcceptorControl,
-                      final DockingAcceptorControl<H> dockingAcceptorControl) {
+                      final DockingAcceptorControl<H> dockingAcceptorControl,
+                      final Disposer<CanvasControl> disposer) {
         this.viewer = viewer;
         this.commandManager = commandManager;
         this.connectionAcceptorControl = connectionAcceptorControl;
         this.containmentAcceptorControl = containmentAcceptorControl;
         this.dockingAcceptorControl = dockingAcceptorControl;
+        this.disposer = disposer;
         this.registrationHandler = null;
     }
 
@@ -105,6 +110,7 @@ public class DiagramEditorImpl<D extends Diagram, H extends AbstractCanvasHandle
 
     public void clear() {
         if (null != registrationHandler) {
+            this.registrationHandler.disable();
             this.registrationHandler.clear();
             this.registrationHandler = null;
         }
@@ -114,6 +120,7 @@ public class DiagramEditorImpl<D extends Diagram, H extends AbstractCanvasHandle
     @Override
     public void destroy() {
         if (null != registrationHandler) {
+            this.registrationHandler.disable();
             this.registrationHandler.destroy();
             this.registrationHandler = null;
         }
@@ -182,7 +189,7 @@ public class DiagramEditorImpl<D extends Diagram, H extends AbstractCanvasHandle
     private void prepareEdit() {
         registrationHandler =
                 new CanvasControlRegistrationHandler<AbstractCanvas, H, S>((AbstractCanvas) getHandler().getCanvas(),
-                                                                           getHandler());
+                                                                           getHandler(), disposer);
         registrationHandler.setCommandManagerProvider(this::getCommandManager);
         // Register the canvas controls that the aggregated diagram viewer instance does not provide.
         registrationHandler.registerCanvasHandlerControl(connectionAcceptorControl);

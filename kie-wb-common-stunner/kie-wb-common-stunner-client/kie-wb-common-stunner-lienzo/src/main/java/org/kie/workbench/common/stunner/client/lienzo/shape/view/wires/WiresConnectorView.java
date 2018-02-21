@@ -17,8 +17,13 @@
 package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
@@ -35,20 +40,23 @@ import com.ait.lienzo.shared.core.types.ColorName;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.LienzoShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.BoundingBox;
-import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasManageableControlPoints;
 import org.kie.workbench.common.stunner.core.client.shape.view.IsConnector;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.util.ShapeUtils;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
+import org.kie.workbench.common.stunner.core.graph.content.view.ControlPointImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.DiscreteConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
+import org.kie.workbench.common.stunner.core.util.Counter;
 
 public class WiresConnectorView<T> extends WiresConnector
         implements
         LienzoShapeView<T>,
         IsConnector<T>,
-        HasControlPoints<T> {
+        HasManageableControlPoints<T> {
 
     protected String uuid;
     private WiresConnectorControl connectorControl;
@@ -103,6 +111,49 @@ public class WiresConnectorView<T> extends WiresConnector
         return connectorControl;
     }
 
+    @Override
+    public List<ControlPoint> addControlPoint(ControlPoint... controlPoint) {
+        if (validateControlPointShape()) {
+            return Stream.of(controlPoint)
+                    .map(cp -> {
+                        double x = cp.getLocation().getX();
+                        double y = cp.getLocation().getY();
+                        if (Objects.isNull(cp.getIndex()) || Objects.equals(cp.getIndex(), 0)) {
+                            int index = connectorControl.addControlPoint(x, y);
+                            cp.setIndex(Objects.equals(index, -1) ? null : index);
+                        } else {
+                            connectorControl.addControlPointToLine(x, y, cp.getIndex());
+                        }
+                        return cp;
+                    }).collect(Collectors.toList());
+        }
+        return Collections.emptyList();
+    }
+
+    private boolean validateControlPointShape() {
+        return Objects.nonNull(connectorControl) && getLine().isControlPointShape();
+    }
+
+    @Override
+    public T removeControlPoint(ControlPoint... cps) {
+        if (validateControlPointShape()) {
+            Arrays.stream(cps)
+                    .filter(Objects::nonNull)
+                    .map(ControlPoint::getLocation)
+                    .forEach(cp -> connectorControl.removeControlPoint(cp.getX(), cp.getY()));
+        }
+        return cast();
+    }
+
+    @Override
+    public List<ControlPoint> getShapeControlPoints() {
+        Counter counter = new Counter(-1);
+        return StreamSupport.stream(getControlPoints().spliterator(), false)
+                .map(point -> new ControlPointImpl(new Point2D(point.getX(), point.getY()), counter.increment()))
+                .sequential()
+                .collect(Collectors.toList());
+    }
+
     @SuppressWarnings("unchecked")
     public T connect(final ShapeView headShapeView,
                      final Connection headConnection,
@@ -110,6 +161,7 @@ public class WiresConnectorView<T> extends WiresConnector
                      final Connection tailConnection) {
         final WiresShape headWiresShape = (WiresShape) headShapeView;
         final WiresShape tailWiresShape = (WiresShape) tailShapeView;
+
         return connect(headWiresShape.getMagnets(),
                        headWiresShape.getGroup().getComputedLocation(),
                        headConnection,
@@ -123,7 +175,8 @@ public class WiresConnectorView<T> extends WiresConnector
               final Connection headConnection,
               final MagnetManager.Magnets tailMagnets,
               final com.ait.lienzo.client.core.types.Point2D tailAbsoluteLoc,
-              final Connection tailConnection) {
+              final Connection tailConnection
+    ) {
         // Update head connection.
         updateConnection(headConnection,
                          headMagnets,

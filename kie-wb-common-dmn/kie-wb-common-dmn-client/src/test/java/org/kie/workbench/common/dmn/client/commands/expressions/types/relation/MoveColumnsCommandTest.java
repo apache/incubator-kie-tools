@@ -85,7 +85,7 @@ public class MoveColumnsCommandTest extends BaseMoveCommandsTest<MoveColumnsComm
 
     @Test
     public void testGraphCommandAllow() {
-        //Arbitrary command setup
+        //Arbitrary command setUp
         setupCommand(0,
                      uiModel.getColumns().get(0));
 
@@ -169,7 +169,7 @@ public class MoveColumnsCommandTest extends BaseMoveCommandsTest<MoveColumnsComm
 
     @Test
     public void testCanvasCommandAllow() {
-        //Arbitrary command setup
+        //Arbitrary command setUp
         setupCommand(0,
                      uiModel.getColumns().get(0));
 

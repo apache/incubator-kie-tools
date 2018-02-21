@@ -40,8 +40,8 @@ public class DockNodeCommandTest extends AbstractCanvasCommandTest {
     private DockNodeCommand tested;
 
     @Before
-    public void setup() throws Exception {
-        super.setup();
+    public void setUp() throws Exception {
+        super.setUp();
         when(candidate.getUUID()).thenReturn(ID);
         when(parent.getUUID()).thenReturn(P_ID);
         this.tested = new DockNodeCommand(parent,

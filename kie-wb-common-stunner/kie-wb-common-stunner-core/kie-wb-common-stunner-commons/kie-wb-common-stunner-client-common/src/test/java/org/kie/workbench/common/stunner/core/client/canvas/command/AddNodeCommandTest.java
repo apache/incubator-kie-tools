@@ -35,8 +35,8 @@ public class AddNodeCommandTest extends AbstractCanvasCommandTest {
     private AddNodeCommand tested;
 
     @Before
-    public void setup() throws Exception {
-        super.setup();
+    public void setUp() throws Exception {
+        super.setUp();
         when(candidate.getUUID()).thenReturn("uuid1");
         this.tested = new AddNodeCommand(candidate,
                                          SHAPE_SET_ID);

@@ -37,8 +37,8 @@ public class AddChildNodeCommandTest extends AbstractCanvasCommandTest {
     private AddChildNodeCommand tested;
 
     @Before
-    public void setup() throws Exception {
-        super.setup();
+    public void setUp() throws Exception {
+        super.setUp();
         when(parent.getUUID()).thenReturn("uuid1");
         this.tested = new AddChildNodeCommand(parent,
                                               candidate,

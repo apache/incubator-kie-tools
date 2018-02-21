@@ -22,6 +22,7 @@
   <inherits name="com.google.gwt.user.User"/>
   <inherits name="org.kie.workbench.common.stunner.cm.StunnerCaseManagementApi"/>
   <inherits name="org.kie.workbench.common.stunner.core.StunnerClientCommon"/>
+  <inherits name="org.kie.workbench.common.stunner.client.StunnerLienzo"/>
 
   <source path="client"/>
 

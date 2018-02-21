@@ -81,12 +81,9 @@ public abstract class WiresCanvas extends AbstractCanvas<WiresCanvas.View> {
               view);
     }
 
-    protected abstract WiresControlFactory getWiresControlFactory();
-
     @Override
     public Canvas initialize(final int width,
                              final int height) {
-        getWiresManager().setWiresControlFactory(getWiresControlFactory());
         return this;
     }
 

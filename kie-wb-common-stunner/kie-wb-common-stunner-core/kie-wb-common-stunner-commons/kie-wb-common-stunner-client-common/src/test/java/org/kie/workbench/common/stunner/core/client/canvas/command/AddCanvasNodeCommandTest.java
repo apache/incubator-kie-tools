@@ -62,8 +62,8 @@ public class AddCanvasNodeCommandTest extends AbstractCanvasCommandTest {
 
     @Before
     @SuppressWarnings("unchecked")
-    public void setup() throws Exception {
-        super.setup();
+    public void setUp() throws Exception {
+        super.setUp();
         boundingBox = new BoundingBox(0d, 0d, 50d, 50d);
         when(shape.getShapeView()).thenReturn(view);
         when(view.getBoundingBox()).thenReturn(boundingBox);

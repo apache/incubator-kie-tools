@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.jboss.errai.ioc.client.api.Disposer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElementListener;
@@ -47,10 +48,14 @@ public class CanvasControlRegistrationHandler<C extends AbstractCanvas, H extend
     private CanvasElementListener elementListener;
     private CommandManagerProvider<H> commandManagerProvider;
 
+    private Disposer<CanvasControl> disposer;
+
     public CanvasControlRegistrationHandler(final C canvas,
-                                            final H handler) {
+                                            final H handler,
+                                            final Disposer<CanvasControl> disposer) {
         this.canvas = canvas;
         this.handler = handler;
+        this.disposer = disposer;
     }
 
     /**
@@ -110,9 +115,7 @@ public class CanvasControlRegistrationHandler<C extends AbstractCanvas, H extend
      * Enables the canvas control.
      */
     public void enableCanvasControl(final CanvasControl<C> control) {
-        if (null != control) {
-            control.enable(getCanvas());
-        }
+        enableControl(control, getCanvas());
     }
 
     /**
@@ -120,8 +123,12 @@ public class CanvasControlRegistrationHandler<C extends AbstractCanvas, H extend
      */
     @SuppressWarnings("unchecked")
     public void enableCanvasHandlerControl(final CanvasControl<H> control) {
+        enableControl(control, getCanvasHandler());
+    }
+
+    private <T> void enableControl(CanvasControl<T> control, T context) {
         if (null != control) {
-            control.enable(getCanvasHandler());
+            control.enable(context);
             if (null != commandManagerProvider
                     && control instanceof RequiresCommandManager) {
                 ((RequiresCommandManager<H>) control).setCommandManagerProvider(commandManagerProvider);
@@ -134,7 +141,6 @@ public class CanvasControlRegistrationHandler<C extends AbstractCanvas, H extend
      * Controls can be added again and listeners will make it fire.
      */
     public void clear() {
-        disable();
         canvasControls.clear();
         canvasHandlerControls.clear();
     }
@@ -143,12 +149,18 @@ public class CanvasControlRegistrationHandler<C extends AbstractCanvas, H extend
      * Destroys the registered controls and this instance.
      */
     public void destroy() {
+        disposeControls();
         clear();
         canvas.clearRegistrationListeners();
         handler.clearRegistrationListeners();
         shapeListener = null;
         elementListener = null;
         commandManagerProvider = null;
+    }
+
+    private void disposeControls() {
+        canvasControls.forEach(disposer::dispose);
+        canvasHandlerControls.forEach(disposer::dispose);
     }
 
     @Override
@@ -319,5 +331,13 @@ public class CanvasControlRegistrationHandler<C extends AbstractCanvas, H extend
 
     private void onClear() {
         canvasHandlerControls.forEach(this::fireRegistrationClearListeners);
+    }
+
+    protected List<CanvasControl<C>> getCanvasControls() {
+        return canvasControls;
+    }
+
+    protected List<CanvasControl<H>> getCanvasHandlerControls() {
+        return canvasHandlerControls;
     }
 }

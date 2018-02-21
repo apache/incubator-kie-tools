@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
@@ -99,4 +100,10 @@ public interface CanvasCommandFactory<H extends CanvasHandler> {
     CanvasCommand<H> cloneNode(Node candidate, String parentUuid, Point2D cloneLocation, Consumer<Node> callback);
 
     CanvasCommand<H> cloneConnector(Edge candidate, String sourceUUID, String targetUUID, String shapeSetId, Consumer<Edge> callback);
+
+    CanvasCommand<H> addControlPoint(Edge candidate, ControlPoint... controlPoints);
+
+    CanvasCommand<H> deleteControlPoint(Edge candidate, ControlPoint... controlPoints);
+
+    CanvasCommand<H> updateControlPointPosition(Edge candidate, ControlPoint controlPoint, Point2D position);
 }

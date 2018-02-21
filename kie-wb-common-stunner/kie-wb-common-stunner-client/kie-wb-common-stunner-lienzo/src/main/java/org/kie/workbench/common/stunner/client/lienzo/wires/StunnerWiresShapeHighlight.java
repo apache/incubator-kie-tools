@@ -29,9 +29,10 @@ import org.uberfire.mvp.Command;
 
 public class StunnerWiresShapeHighlight implements WiresShapeHighlight<PickerPart.ShapePart> {
 
-    static final String HIGHLIGHT_COLOR = "#0000FF";
-    static final double HIGHLIGHT_STROKE_PCT = 10d;
-    static final double HIGHLIGHT_ALPHA = 1d;
+    private static final String HIGHLIGHT_COLOR = "#0000FF";
+    private static final String ERROR_COLOR = "#FF0000";
+    private static final double HIGHLIGHT_STROKE_PCT = 10d;
+    private static final double HIGHLIGHT_ALPHA = 1d;
 
     private final WiresShapeHighlightImpl delegate;
     private AnimationHandle restoreAnimationHandle;
@@ -48,13 +49,17 @@ public class StunnerWiresShapeHighlight implements WiresShapeHighlight<PickerPar
     @Override
     public void highlight(final WiresShape shape,
                           final PickerPart.ShapePart part) {
-        switch (part) {
-            case BODY:
-                highlightBody(shape);
-                break;
-            default:
-                highlightBorder(shape);
-        }
+        highlight(shape,
+                  part,
+                  HIGHLIGHT_COLOR);
+    }
+
+    @Override
+    public void error(final WiresShape shape,
+                      final PickerPart.ShapePart shapePart) {
+        highlight(shape,
+                  shapePart,
+                  ERROR_COLOR);
     }
 
     @Override
@@ -68,17 +73,34 @@ public class StunnerWiresShapeHighlight implements WiresShapeHighlight<PickerPar
         return restoreAnimation;
     }
 
-    private void highlightBody(final WiresShape shape) {
+    private void highlight(final WiresShape shape,
+                           final PickerPart.ShapePart part,
+                           final String color) {
+        switch (part) {
+            case BODY:
+                highlightBody(shape,
+                              color);
+                break;
+            default:
+                highlightBorder(shape);
+        }
+    }
+
+    private void highlightBody(final WiresShape shape,
+                               final String color) {
         if (shape instanceof LienzoShapeView) {
-            highlightBody((LienzoShapeView) shape);
+            highlightBody((LienzoShapeView) shape,
+                          color);
         } else {
             delegate.highlight(shape, PickerPart.ShapePart.BODY);
         }
     }
 
-    void highlightBody(final LienzoShapeView view) {
+    void highlightBody(final LienzoShapeView view,
+                       final String color) {
         checkPreviousAnimation(view,
-                               () -> runAnimation(view));
+                               () -> runAnimation(view,
+                                                  color));
     }
 
     private void checkPreviousAnimation(final LienzoShapeView<?> view,
@@ -93,7 +115,8 @@ public class StunnerWiresShapeHighlight implements WiresShapeHighlight<PickerPar
         }
     }
 
-    private void runAnimation(final LienzoShapeView view) {
+    private void runAnimation(final LienzoShapeView view,
+                              final String color) {
         final String strokeColor = view.getStrokeColor();
         final double strokeWidth = view.getStrokeWidth();
         final double strokeAlpha = view.getStrokeAlpha();
@@ -103,7 +126,7 @@ public class StunnerWiresShapeHighlight implements WiresShapeHighlight<PickerPar
                                                            strokeAlpha);
         final Animation highlightAnimation =
                 new ShapeViewDecoratorAnimation(() -> view,
-                                                HIGHLIGHT_COLOR,
+                                                color,
                                                 calculateStrokeWidth(strokeWidth),
                                                 HIGHLIGHT_ALPHA);
         highlightAnimation.run();

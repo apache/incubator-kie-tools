@@ -19,14 +19,19 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
+import org.kie.workbench.common.stunner.core.client.shape.impl.ConnectorShape;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -43,16 +48,19 @@ public class DeleteCanvasConnectorCommandTest extends AbstractCanvasCommandTest 
     private Node source;
     @Mock
     private Node target;
+    @Mock
+    private ConnectorShape connectorShape;
 
     private DeleteCanvasConnectorCommand tested;
 
     @Before
-    public void setup() throws Exception {
-        super.setup();
+    public void setUp() throws Exception {
+        super.setUp();
         when(candidate.getUUID()).thenReturn(EDGE_ID);
         when(source.getUUID()).thenReturn(SOURCE_ID);
         when(candidate.getSourceNode()).thenReturn(source);
         when(candidate.getTargetNode()).thenReturn(target);
+        when(canvas.getShape(EDGE_ID)).thenReturn(connectorShape);
         this.tested = new DeleteCanvasConnectorCommand(candidate);
     }
 
@@ -68,5 +76,12 @@ public class DeleteCanvasConnectorCommandTest extends AbstractCanvasCommandTest 
                times(1)).notifyCanvasElementUpdated(eq(source));
         verify(canvasHandler,
                times(1)).notifyCanvasElementUpdated(eq(target));
+    }
+
+    @Test
+    public void testExecuteNullShape(){
+        when(canvas.getShape(EDGE_ID)).thenReturn(null);
+        assertFalse(CommandUtils.isError(tested.execute(canvasHandler)));
+        verify(canvasHandler, never()).deregister(eq(candidate));
     }
 }

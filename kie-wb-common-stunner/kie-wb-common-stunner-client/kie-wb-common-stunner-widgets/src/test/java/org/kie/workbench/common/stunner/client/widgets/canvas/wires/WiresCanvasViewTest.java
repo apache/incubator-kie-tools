@@ -30,13 +30,20 @@ import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresConnectorView;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresShapeView;
+import org.kie.workbench.common.stunner.client.lienzo.wires.StunnerWiresControlFactory;
+import org.kie.workbench.common.stunner.client.lienzo.wires.StunnerWiresHandlerFactory;
+import org.kie.workbench.common.stunner.client.lienzo.wires.WiresManagerFactory;
+import org.kie.workbench.common.stunner.client.lienzo.wires.WiresManagerFactoryImpl;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
+import org.mockito.ArgumentCaptor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresCanvasViewTest {
@@ -45,10 +52,13 @@ public class WiresCanvasViewTest {
 
     private LienzoPanel panel;
     private Layer layer;
+    private WiresManagerFactory wiresManagerFactory;
 
     @Before
     public void setup() {
-        this.canvas = new WiresCanvasView();
+        this.wiresManagerFactory = spy(new WiresManagerFactoryImpl(new StunnerWiresControlFactory(), new StunnerWiresHandlerFactory()));
+
+        this.canvas = new WiresCanvasView(this.wiresManagerFactory);
         this.panel = new LienzoPanel(100,
                                      100);
         this.layer = new LienzoLayer();
@@ -57,6 +67,13 @@ public class WiresCanvasViewTest {
                          100,
                          100,
                          layer);
+    }
+
+    @Test
+    public void testInit(){
+        ArgumentCaptor<com.ait.lienzo.client.core.shape.Layer> layerArgumentCaptor
+                = ArgumentCaptor.forClass(com.ait.lienzo.client.core.shape.Layer.class);
+        verify(wiresManagerFactory).newWiresManager(layerArgumentCaptor.capture());
     }
 
     @Test

@@ -54,8 +54,8 @@ public class AddCanvasChildNodeCommandTest extends AbstractCanvasCommandTest {
 
     @Before
     @SuppressWarnings("unchecked")
-    public void setup() throws Exception {
-        super.setup();
+    public void setUp() throws Exception {
+        super.setUp();
         when(candidate.getContent()).thenReturn(candidateContent);
         when(parent.getContent()).thenReturn(parentContent);
         when(candidateContent.getBounds()).thenReturn(BoundsImpl.build(0d, 0d, 10d, 10d));

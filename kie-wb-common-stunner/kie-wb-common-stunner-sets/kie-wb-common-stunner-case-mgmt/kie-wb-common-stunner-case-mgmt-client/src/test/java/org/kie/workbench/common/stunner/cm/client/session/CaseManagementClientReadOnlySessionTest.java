@@ -17,12 +17,14 @@
 package org.kie.workbench.common.stunner.cm.client.session;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.jboss.errai.ioc.client.api.Disposer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
@@ -62,6 +64,9 @@ public class CaseManagementClientReadOnlySessionTest {
 
     private CaseManagementReadOnlySession session;
 
+    @Mock
+    private Disposer<CanvasControl> canvasControlDisposer;
+
     @Before
     public void setup() throws Exception {
         when(factory.newCanvas()).thenReturn(canvas);
@@ -70,7 +75,7 @@ public class CaseManagementClientReadOnlySessionTest {
         when(factory.newControl(eq(PanControl.class))).thenReturn(panControl);
         when(factory.newControl(eq(SelectionControl.class))).thenReturn(selectionControl);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
-        this.session = new CaseManagementReadOnlySession(factory);
+        this.session = new CaseManagementReadOnlySession(factory, canvasControlDisposer);
     }
 
     @Test

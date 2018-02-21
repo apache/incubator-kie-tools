@@ -19,7 +19,9 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,6 +40,7 @@ public abstract class AbstractCanvasHandlerRegistrationControl<H extends Abstrac
     private static Logger LOGGER = Logger.getLogger(AbstractCanvasHandlerRegistrationControl.class.getName());
 
     private final Map<String, ViewHandler<?>> handlers = new HashMap<>();
+    private final Map<String, ViewHandler<?>> disabledHandlers = new HashMap<>();
 
     public void update(final Element element) {
         // Do nothing by default.
@@ -51,7 +54,39 @@ public abstract class AbstractCanvasHandlerRegistrationControl<H extends Abstrac
 
     @Override
     protected void doDisable() {
-        deregisterAll();
+        doOnAllHandlers(disableEventHandler());
+    }
+
+    @Override
+    public void enable(H canvasHandler) {
+        super.enable(canvasHandler);
+        doOnAllHandlers(enableEventHandler());
+    }
+
+    private void doOnAllHandlers(Consumer<Shape> handlerFunction) {
+        if (!handlers.isEmpty() && Objects.nonNull(canvasHandler)) {
+            handlers.keySet().stream()
+                    .filter(this::isRegistered)
+                    .map(uuid -> canvasHandler.getCanvas().getShape(uuid))
+                    .filter(Objects::nonNull)
+                    .filter(shape -> shape.getShapeView() instanceof HasEventHandlers)
+                    .forEach(handlerFunction);
+        }
+    }
+    private Consumer<Shape> disableEventHandler() {
+        return shape -> {
+            ViewHandler<?> eventHandler = handlers.get(shape.getUUID());
+            ((HasEventHandlers) shape.getShapeView()).removeHandler(eventHandler);
+            disabledHandlers.put(shape.getUUID(), eventHandler);
+        };
+    }
+
+    private Consumer<Shape> enableEventHandler() {
+        return shape -> {
+            ViewHandler<?> eventHandler = disabledHandlers.get(shape.getUUID());
+            ((HasEventHandlers) shape.getShapeView()).addHandler(eventHandler.getType(), eventHandler);
+            disabledHandlers.remove(shape.getUUID());
+        };
     }
 
     public void deregisterAll() {
@@ -59,6 +94,7 @@ public abstract class AbstractCanvasHandlerRegistrationControl<H extends Abstrac
                 .stream()
                 .forEach(this::deregister);
         handlers.clear();
+        disabledHandlers.clear();
     }
 
     @Override
@@ -108,6 +144,7 @@ public abstract class AbstractCanvasHandlerRegistrationControl<H extends Abstrac
             final HasEventHandlers hasEventHandlers = (HasEventHandlers) shape.getShapeView();
             hasEventHandlers.removeHandler(handler);
             handlers.remove(shape.getUUID());
+            disabledHandlers.remove(shape.getUUID());
         }
     }
 }

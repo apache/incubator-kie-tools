@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
+import java.util.Objects;
+
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -38,6 +40,11 @@ public class DeleteCanvasConnectorCommand extends AbstractCanvasCommand {
 
     @Override
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
+        if (!checkShapeNotNull(context, candidate.getUUID())) {
+            //it is already not present on canvas
+            return buildResult();
+        }
+
         context.deregister(candidate);
         if (null != source) {
             context.notifyCanvasElementUpdated(source);

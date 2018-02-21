@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.Node
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.Observer;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.ClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ControlPointControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
@@ -62,9 +63,11 @@ public class CaseManagementCanvasFactory
     private final ManagedInstance<ClipboardControl> clipboardControls;
     private final ManagedInstance<AbstractCanvas> canvasInstances;
     private final ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances;
+    private final ManagedInstance<ControlPointControl> controlPointControls;
 
     protected CaseManagementCanvasFactory() {
         this(null,
+             null,
              null,
              null,
              null,
@@ -95,7 +98,8 @@ public class CaseManagementCanvasFactory
                                        final ManagedInstance<KeyboardControl> keyboardControls,
                                        final ManagedInstance<ClipboardControl> clipboardControls,
                                        final @CaseManagementEditor ManagedInstance<AbstractCanvas> canvasInstances,
-                                       final @CaseManagementEditor ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances) {
+                                       final @CaseManagementEditor ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances,
+                                       final ManagedInstance<ControlPointControl> controlPointControls) {
         this.connectionAcceptorControls = connectionAcceptorControls;
         this.containmentAcceptorControls = containmentAcceptorControls;
         this.dockingAcceptorControls = dockingAcceptorControls;
@@ -110,6 +114,7 @@ public class CaseManagementCanvasFactory
         this.canvasInstances = canvasInstances;
         this.canvasHandlerInstances = canvasHandlerInstances;
         this.clipboardControls = clipboardControls;
+        this.controlPointControls = controlPointControls;
     }
 
     @PostConstruct
@@ -138,7 +143,9 @@ public class CaseManagementCanvasFactory
                 .register(KeyboardControl.class,
                           keyboardControls)
                 .register(ClipboardControl.class,
-                          clipboardControls);
+                          clipboardControls)
+                .register(ControlPointControl.class,
+                          controlPointControls);
     }
 
     @Override

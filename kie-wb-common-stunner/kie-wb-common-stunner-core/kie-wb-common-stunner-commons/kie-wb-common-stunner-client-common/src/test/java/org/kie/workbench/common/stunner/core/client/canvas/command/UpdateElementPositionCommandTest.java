@@ -42,8 +42,8 @@ public class UpdateElementPositionCommandTest extends AbstractCanvasCommandTest 
 
     @Before
     @SuppressWarnings("unchecked")
-    public void setup() throws Exception {
-        super.setup();
+    public void setUp() throws Exception {
+        super.setUp();
         when(candidate.getUUID()).thenReturn("uuid1");
         when(candidate.getContent()).thenReturn(content);
         when(content.getBounds()).thenReturn(new BoundsImpl(

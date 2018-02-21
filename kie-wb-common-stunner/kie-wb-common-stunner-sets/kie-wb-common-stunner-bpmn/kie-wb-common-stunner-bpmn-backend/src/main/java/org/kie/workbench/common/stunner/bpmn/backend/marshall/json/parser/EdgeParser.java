@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.Bpmn2OryxManager;
@@ -25,7 +26,9 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser.common
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser.common.StringFieldParser;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.HasControlPoints;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.DiscreteConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -66,33 +69,39 @@ public class EdgeParser extends ElementParser<Edge<View, Node>> {
             super.addParser(outgoingParser);
         }
         // Use dockers
+        ArrayParser dockersParser = new ArrayParser("dockers");
         ViewConnector viewConnector = (ViewConnector) element.getContent();
-        ObjectParser docker1ObjParser = createDockerObjectParser(viewConnector.getSourceConnection());
-        ObjectParser docker2ObjParser = createDockerObjectParser(viewConnector.getTargetConnection());
-        ArrayParser dockersParser = new ArrayParser("dockers")
-                .addParser(docker1ObjParser)
-                .addParser(docker2ObjParser);
+
+        //insert source
+        dockersParser.addParser(createDockerObjectParser(viewConnector.getSourceConnection()));
+
+        //inserting ControlPoints
+        viewConnector.getControlPoints().stream()
+                .sequential()
+                .map(ControlPoint::getLocation)
+                .map(this::createDockerObjectParser)
+                .forEach(dockersParser::addParser);
+
+        //insert target
+        dockersParser.addParser(createDockerObjectParser(viewConnector.getTargetConnection()));
         super.addParser(dockersParser);
     }
 
     private ObjectParser createDockerObjectParser(Optional<Connection> magnet) {
-        if (magnet.isPresent() && magnet.get().getLocation() != null) {
-            Point2D location = magnet.get().getLocation();
-            return createDockerObjectParser(Double.valueOf(location.getX()).intValue(),
-                                            Double.valueOf(location.getY()).intValue());
-        } else {
-            return createDockerObjectParser(-1,
-                                            -1);
-        }
+        return (magnet.isPresent() ? createDockerObjectParser(magnet.get().getLocation()) :
+                createDockerObjectParser(-1, -1));
     }
 
-    private ObjectParser createDockerObjectParser(final int x,
-                                                  final int y) {
+    private ObjectParser createDockerObjectParser(Point2D location) {
+        return (Objects.nonNull(location) ? createDockerObjectParser(Double.valueOf(location.getX()).intValue(),
+                                                Double.valueOf(location.getY()).intValue())
+                : createDockerObjectParser(-1, -1));
+    }
+
+    private ObjectParser createDockerObjectParser(final int x, final int y) {
         return new ObjectParser("")
-                .addParser(new IntegerFieldParser("x",
-                                                  x))
-                .addParser(new IntegerFieldParser("y",
-                                                  y));
+                .addParser(new IntegerFieldParser("x",x))
+                .addParser(new IntegerFieldParser("y",y));
     }
 
     private void appendConnAuto(final Connection connection,

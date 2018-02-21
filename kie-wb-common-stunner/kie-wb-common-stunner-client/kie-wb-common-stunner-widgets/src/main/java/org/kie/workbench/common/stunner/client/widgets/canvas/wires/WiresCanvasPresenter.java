@@ -40,12 +40,10 @@ public class WiresCanvasPresenter extends WiresCanvas implements IsWidget {
 
     private static final int PADDING = 15;
 
-    private final WiresControlFactory wiresControlFactory;
     private final LienzoPanel lienzoPanel;
 
     protected WiresCanvasPresenter() {
         this(null,
-             null,
              null,
              null,
              null,
@@ -62,9 +60,8 @@ public class WiresCanvasPresenter extends WiresCanvas implements IsWidget {
                                 final Event<CanvasDrawnEvent> canvasDrawnEvent,
                                 final Event<CanvasFocusedEvent> canvasFocusedEvent,
                                 final @Lienzo Layer layer,
-                                final WiresCanvas.View view,
-                                final LienzoPanel lienzoPanel,
-                                final @Default WiresControlFactory wiresControlFactory) {
+                                final @Default WiresCanvas.View view,
+                                final LienzoPanel lienzoPanel) {
         super(canvasClearEvent,
               canvasShapeAddedEvent,
               canvasShapeRemovedEvent,
@@ -73,17 +70,11 @@ public class WiresCanvasPresenter extends WiresCanvas implements IsWidget {
               layer,
               view);
         this.lienzoPanel = lienzoPanel;
-        this.wiresControlFactory = wiresControlFactory;
     }
 
     @Override
     public Widget asWidget() {
         return view.asWidget();
-    }
-
-    @Override
-    protected WiresControlFactory getWiresControlFactory() {
-        return wiresControlFactory;
     }
 
     @Override

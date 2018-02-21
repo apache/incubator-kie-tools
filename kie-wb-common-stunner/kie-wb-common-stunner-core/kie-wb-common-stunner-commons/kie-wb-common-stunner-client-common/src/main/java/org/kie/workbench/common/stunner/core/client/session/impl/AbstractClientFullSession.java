@@ -16,11 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.client.session.impl;
 
+import org.jboss.errai.ioc.client.api.Disposer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.ClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ControlPointControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
@@ -47,6 +49,7 @@ public abstract class AbstractClientFullSession extends AbstractClientReadOnlySe
     private ElementBuilderControl<AbstractCanvasHandler> builderControl;
     private KeyboardControl<AbstractCanvas, ClientSession> keyboardControl;
     private ClipboardControl<Element, AbstractCanvas, ClientSession> clipboardControl;
+    private ControlPointControl<AbstractCanvasHandler> controlPointControl;
 
     public AbstractClientFullSession(final AbstractCanvas canvas,
                                      final AbstractCanvasHandler canvasHandler,
@@ -62,12 +65,15 @@ public abstract class AbstractClientFullSession extends AbstractClientReadOnlySe
                                      final DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl,
                                      final ElementBuilderControl<AbstractCanvasHandler> builderControl,
                                      final KeyboardControl<AbstractCanvas, ClientSession> keyboardControl,
-                                     final ClipboardControl<Element, AbstractCanvas, ClientSession> clipboardControl) {
+                                     final ClipboardControl<Element, AbstractCanvas, ClientSession> clipboardControl,
+                                     final ControlPointControl<AbstractCanvasHandler> controlPointControl,
+                                     final Disposer disposer) {
         super(canvas,
               canvasHandler,
               selectionControl,
               zoomControl,
-              panControl);
+              panControl,
+              disposer);
         this.canvasCommandManager = canvasCommandManager;
         this.commandRegistry = commandRegistry;
         this.connectionAcceptorControl = connectionAcceptorControl;
@@ -76,6 +82,7 @@ public abstract class AbstractClientFullSession extends AbstractClientReadOnlySe
         this.builderControl = builderControl;
         this.keyboardControl = keyboardControl;
         this.clipboardControl = clipboardControl;
+        this.controlPointControl = controlPointControl;
         getRegistrationHandler().registerCanvasHandlerControl(connectionAcceptorControl);
         connectionAcceptorControl.setCommandManagerProvider(requestCommandManagerProvider);
         getRegistrationHandler().registerCanvasHandlerControl(containmentAcceptorControl);
@@ -85,12 +92,15 @@ public abstract class AbstractClientFullSession extends AbstractClientReadOnlySe
         getRegistrationHandler().registerCanvasHandlerControl(builderControl);
         builderControl.setCommandManagerProvider(sessionCommandManagerProvider);
         getRegistrationHandler().registerCanvasControl(keyboardControl);
+        getRegistrationHandler().registerCanvasHandlerControl(controlPointControl);
+        controlPointControl.setCommandManagerProvider(sessionCommandManagerProvider);
     }
 
     @Override
     protected void doOpen() {
         super.doOpen();
         getRegistrationHandler().bind(this);
+        getRegistrationHandler().setCommandManagerProvider(() -> getCommandManager());
     }
 
     @Override
@@ -155,5 +165,10 @@ public abstract class AbstractClientFullSession extends AbstractClientReadOnlySe
     @Override
     public ClipboardControl<Element, AbstractCanvas, ClientSession> getClipboardControl() {
         return clipboardControl;
+    }
+
+    @Override
+    public ControlPointControl<AbstractCanvasHandler> getControlPointControl() {
+        return controlPointControl;
     }
 }

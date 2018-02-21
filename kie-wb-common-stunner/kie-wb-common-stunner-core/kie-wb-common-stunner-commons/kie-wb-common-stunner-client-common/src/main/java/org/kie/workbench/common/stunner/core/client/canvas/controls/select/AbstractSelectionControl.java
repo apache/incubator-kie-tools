@@ -179,6 +179,7 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
     @Override
     public void bind(ClientFullSession session) {
         session.getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
+        selectionControl.setReadonly(false);
     }
 
     @Override

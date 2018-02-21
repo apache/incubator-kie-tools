@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires;
 
+import java.util.List;
+
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
@@ -38,7 +40,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
+import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
+import org.kie.workbench.common.stunner.core.graph.content.view.ControlPointImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
@@ -47,8 +52,10 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -59,7 +66,6 @@ public class WiresConnectorViewTest {
     @Mock
     private OrthogonalPolyLine line;
 
-    @Mock
     private Point2DArray point2DArray;
 
     @Mock
@@ -76,14 +82,19 @@ public class WiresConnectorViewTest {
 
     private WiresConnectorView tested;
 
+    @Mock
+    private WiresConnectorControl wiresConnectorControl;
+
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         Node lineNode = line;
         Node headPathNode = headPath;
         Node tailPathNode = tailPath;
-        when(line.getPoint2DArray()).thenReturn(new Point2DArray(10,
-                                                                 10));
+
+        point2DArray = new Point2DArray(new Point2D(0, 10), new Point2D(10, 10), new Point2D(20, 20), new Point2D(30, 30), new Point2D(40, 40));
+
+        when(line.getPoint2DArray()).thenReturn(point2DArray);
         when(line.asNode()).thenReturn(lineNode);
         when(line.setFillColor(anyString())).thenReturn(line);
         when(line.setFillColor(any(IColor.class))).thenReturn(line);
@@ -92,6 +103,7 @@ public class WiresConnectorViewTest {
         when(line.setStrokeColor(any(IColor.class))).thenReturn(line);
         when(line.setStrokeAlpha(anyDouble())).thenReturn(line);
         when(line.setStrokeWidth(anyDouble())).thenReturn(line);
+        when(line.isControlPointShape()).thenReturn(true);
         when(headDecorator.getPath()).thenReturn(headPath);
         when(tailDecorator.getPath()).thenReturn(tailPath);
         when(headPath.asNode()).thenReturn(headPathNode);
@@ -103,6 +115,8 @@ public class WiresConnectorViewTest {
         this.tested = new WiresConnectorView(line,
                                              headDecorator,
                                              tailDecorator);
+        this.tested.setControl(wiresConnectorControl);
+        tested = spy(tested);
     }
 
     @Test
@@ -360,5 +374,62 @@ public class WiresConnectorViewTest {
                times(1)).setAutoConnection(eq(false));
         verify(tailWiresConnection,
                times(1)).setMagnet(eq(tailMagnet2));
+    }
+
+    @Test
+    public void testAddControlPoint() {
+        Point2D point1 = point2DArray.get(1);
+        Point2D point2 = point2DArray.get(2);
+        Point2D point3 = point2DArray.get(3);
+
+        when(wiresConnectorControl.addControlPoint(point1.getX(), point1.getY())).thenReturn(1);
+        when(wiresConnectorControl.addControlPoint(point2.getX(), point2.getY())).thenReturn(2);
+        when(wiresConnectorControl.addControlPoint(point3.getX(), point3.getY())).thenReturn(3);
+
+        ControlPoint controlPoint1 = new ControlPointImpl(point1.getX(), point1.getY());
+        ControlPoint controlPoint2 = new ControlPointImpl(point2.getX(), point2.getY());
+        ControlPoint controlPoint3 = new ControlPointImpl(point3.getX(), point3.getY());
+
+        //without index
+        List<ControlPoint> addedControlPoint = tested.addControlPoint(controlPoint1, controlPoint2);
+        addedControlPoint.addAll(tested.addControlPoint(controlPoint3));
+
+        InOrder addControlPointOrder = inOrder(wiresConnectorControl);
+        addControlPointOrder.verify(wiresConnectorControl).addControlPoint(point1.getX(), point1.getY());
+        addControlPointOrder.verify(wiresConnectorControl).addControlPoint(point2.getX(), point2.getY());
+        addControlPointOrder.verify(wiresConnectorControl).addControlPoint(point3.getX(), point3.getY());
+
+        assertEquals(addedControlPoint.get(0).getIndex(), 1, 0);
+        assertEquals(addedControlPoint.get(1).getIndex(), 2, 0);
+        assertEquals(addedControlPoint.get(2).getIndex(), 3, 0);
+
+        //now with index
+        addedControlPoint = tested.addControlPoint(controlPoint1, controlPoint2, controlPoint3);
+        addControlPointOrder = inOrder(wiresConnectorControl);
+        addControlPointOrder.verify(wiresConnectorControl).addControlPointToLine(controlPoint1.getLocation().getX(),
+                                                                                 controlPoint1.getLocation().getY(),
+                                                                                 controlPoint1.getIndex());
+        addControlPointOrder.verify(wiresConnectorControl).addControlPointToLine(controlPoint2.getLocation().getX(),
+                                                                                 controlPoint2.getLocation().getY(),
+                                                                                 controlPoint2.getIndex());
+        addControlPointOrder.verify(wiresConnectorControl).addControlPointToLine(controlPoint3.getLocation().getX(),
+                                                                                 controlPoint3.getLocation().getY(),
+                                                                                 controlPoint3.getIndex());
+
+        assertEquals(addedControlPoint.get(0).getIndex(), 1, 0);
+        assertEquals(addedControlPoint.get(1).getIndex(), 2, 0);
+        assertEquals(addedControlPoint.get(2).getIndex(), 3, 0);
+    }
+
+    @Test
+    public void testGetShapeControlPoints() {
+        List<ControlPoint> controlPoints = tested.getShapeControlPoints();
+        for (int i = 1; i < controlPoints.size() - 1; i++) {
+            ControlPoint controlPoint = controlPoints.get(i);
+            Point2D point = point2DArray.get(i);
+            assertEquals(controlPoint.getLocation().getX(), point.getX(), 0);
+            assertEquals(controlPoint.getLocation().getY(), point.getY(), 0);
+            assertEquals(controlPoint.getIndex().intValue(), i);
+        }
     }
 }

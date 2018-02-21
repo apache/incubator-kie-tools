@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.client.shape.view;
 
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 
 public interface IsConnector<T> {
 

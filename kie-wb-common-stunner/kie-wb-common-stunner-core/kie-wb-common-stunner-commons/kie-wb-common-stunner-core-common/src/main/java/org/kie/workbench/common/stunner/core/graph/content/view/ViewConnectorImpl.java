@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.graph.content.view;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -30,6 +33,7 @@ public final class ViewConnectorImpl<W> implements ViewConnector<W> {
     protected Bounds bounds;
     private Connection sourceConnection;
     private Connection targetConnection;
+    private List<ControlPoint> controlPoints;
 
     public ViewConnectorImpl(final @MapsTo("definition") W definition,
                              final @MapsTo("bounds") Bounds bounds) {
@@ -37,6 +41,8 @@ public final class ViewConnectorImpl<W> implements ViewConnector<W> {
         this.bounds = bounds;
         this.sourceConnection = null;
         this.targetConnection = null;
+        this.controlPoints = new ArrayList<>();
+
     }
 
     @Override
@@ -76,11 +82,26 @@ public final class ViewConnectorImpl<W> implements ViewConnector<W> {
     }
 
     @Override
+    public List<ControlPoint> getControlPoints() {
+        return controlPoints;
+    }
+
+    @Override
+    public void setControlPoints(List<ControlPoint> controlPoints) {
+        this.controlPoints = controlPoints;
+    }
+
+    @Override
     public int hashCode() {
+        getControlPoints().stream().map(ControlPoint::hashCode).toArray(Integer[]::new);
         return HashUtil.combineHashCodes(definition.hashCode(),
                                          bounds.hashCode(),
                                          getSourceConnection().hashCode(),
-                                         getTargetConnection().hashCode());
+                                         getTargetConnection().hashCode(),
+                                         HashUtil.combineHashCodes(getControlPoints().stream()
+                                                                           .map(ControlPoint::hashCode)
+                                                                           .mapToInt(i -> i)
+                                                                           .toArray()));
     }
 
     @Override
@@ -90,7 +111,8 @@ public final class ViewConnectorImpl<W> implements ViewConnector<W> {
             return definition.equals(other.getDefinition()) &&
                     bounds.equals(other.getBounds()) &&
                     getSourceConnection().equals(other.getSourceConnection()) &&
-                    getTargetConnection().equals(other.getTargetConnection());
+                    getTargetConnection().equals(other.getTargetConnection()) &&
+                    getControlPoints().equals(other.getControlPoints());
         }
         return false;
     }

@@ -20,8 +20,11 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.util.ShapeUtils;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 /**
  * Adds a new connector shape into the canvas and updates its connections.
@@ -40,15 +43,20 @@ public class AddCanvasConnectorCommand extends AbstractCanvasCommand {
     @Override
     @SuppressWarnings("unchecked")
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
-        context.register(shapeSetId,
-                         candidate);
-        context.applyElementMutation(candidate,
-                                     MutationContext.STATIC);
-        ShapeUtils.updateEdgeConnections(candidate,
-                                         context);
-        ShapeUtils.applyConnections(candidate,
-                                    context,
-                                    MutationContext.STATIC);
+        context.register(shapeSetId, candidate);
+        context.applyElementMutation(candidate, MutationContext.STATIC);
+
+        if (candidate.getContent() instanceof ViewConnector) {
+            ControlPoint[] controlPoints = ((ViewConnector) candidate.getContent()).getControlPoints().stream().toArray(ControlPoint[]::new);
+            CommandResult<CanvasViolation> addControlPointsResult = new AddCanvasControlPointCommand(candidate, controlPoints).execute(context);
+            ShapeUtils.hideControlPoints(candidate, context);
+            if (CommandUtils.isError(addControlPointsResult)) {
+                return addControlPointsResult;
+            }
+        }
+
+        ShapeUtils.updateEdgeConnections(candidate, context);
+        ShapeUtils.applyConnections(candidate, context, MutationContext.STATIC);
         final Node source = candidate.getSourceNode();
         if (null != source) {
             context.notifyCanvasElementUpdated(source);

@@ -19,9 +19,11 @@ package org.kie.workbench.common.stunner.core.client.session.impl;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.Disposer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
@@ -32,12 +34,14 @@ public class ClientReadOnlySessionImpl extends AbstractClientReadOnlySession {
 
     @Inject
     @SuppressWarnings("unchecked")
-    public ClientReadOnlySessionImpl(final CanvasFactory<AbstractCanvas, AbstractCanvasHandler> factory) {
+    public ClientReadOnlySessionImpl(final CanvasFactory<AbstractCanvas, AbstractCanvasHandler> factory,
+                                     final Disposer<CanvasControl> canvasControlDisposer) {
         super(factory.newCanvas(),
               factory.newCanvasHandler(),
               factory.newControl(SelectionControl.class),
               factory.newControl(ZoomControl.class),
-              factory.newControl(PanControl.class));
+              factory.newControl(PanControl.class),
+              canvasControlDisposer);
     }
 
     @Override

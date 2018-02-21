@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.widgets.presenters.diagram.impl;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.jboss.errai.ioc.client.api.Disposer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,6 +56,9 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
     @Mock
     DiagramViewer.DiagramViewerCallback<Diagram> callback;
 
+    @Mock
+    Disposer disposer;
+
     private DiagramViewerImpl<Diagram, AbstractCanvasHandler, ClientSession> tested;
 
     @Before
@@ -66,7 +70,8 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
                                         canvasHandler,
                                         view,
                                         zoomControl,
-                                        selectionControl);
+                                        selectionControl,
+                                        disposer);
     }
 
     @Test

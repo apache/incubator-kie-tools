@@ -15,6 +15,10 @@
  */
 package org.kie.workbench.common.stunner.client.widgets.canvas.wires;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Default;
+import javax.inject.Inject;
+
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.wires.IConnectionAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IContainmentAcceptor;
@@ -28,19 +32,28 @@ import com.ait.lienzo.shared.core.types.Direction;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresConnectorView;
+import org.kie.workbench.common.stunner.client.lienzo.wires.WiresManagerFactory;
 import org.kie.workbench.common.stunner.client.widgets.canvas.view.CanvasView;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
 /**
  * This is the root Canvas view provided by Lienzo and wires
  */
+@Dependent
+@Default
 public class WiresCanvasView extends CanvasView implements WiresCanvas.View {
 
     protected WiresManager wiresManager;
+    private WiresManagerFactory wiresManagerFactory;
+
+    @Inject
+    public WiresCanvasView(@Default WiresManagerFactory wiresManagerFactory) {
+        this.wiresManagerFactory = wiresManagerFactory;
+    }
 
     public void init() {
         super.init();
-        wiresManager = WiresManager.get(canvasLayer);
+        wiresManager = wiresManagerFactory.newWiresManager(canvasLayer);
         wiresManager.setSpliceEnabled(false);
     }
 

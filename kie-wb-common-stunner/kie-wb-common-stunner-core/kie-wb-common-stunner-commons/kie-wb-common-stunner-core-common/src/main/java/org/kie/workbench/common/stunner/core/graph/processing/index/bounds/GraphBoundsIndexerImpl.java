@@ -218,7 +218,6 @@ public class GraphBoundsIndexerImpl implements GraphBoundsIndexer {
     public void destroy() {
         this.graph = null;
         this.rootUUID = null;
-        this.childrenTraverseProcessor = null;
     }
 
     private abstract class NodeBoundsTraverseCallback {

@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
+import java.util.Objects;
+
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
@@ -39,5 +41,9 @@ public abstract class AbstractCanvasCommand implements CanvasCommand<AbstractCan
     protected String getUUID(final
                              Element<?> element) {
         return null != element ? element.getUUID() : "null";
+    }
+
+    protected boolean checkShapeNotNull(final AbstractCanvasHandler context, final String uuid){
+        return Objects.nonNull(context.getCanvas().getShape(uuid));
     }
 }

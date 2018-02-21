@@ -57,8 +57,8 @@ public class CloneNodeCommandTest extends AbstractCanvasCommandTest {
     private ManagedInstance<ChildrenTraverseProcessor> childrenTraverseProcessorManagedInstance;
 
     @Before
-    public void setup() throws Exception {
-        super.setup();
+    public void setUp() throws Exception {
+        super.setUp();
         when(candidate.getUUID()).thenReturn(NODE_UUID);
         when(candidate.getContent()).thenReturn(candidateContent);
         when(childrenTraverseProcessorManagedInstance.get()).thenReturn(new ChildrenTraverseProcessorImpl(new TreeWalkTraverseProcessorImpl()));

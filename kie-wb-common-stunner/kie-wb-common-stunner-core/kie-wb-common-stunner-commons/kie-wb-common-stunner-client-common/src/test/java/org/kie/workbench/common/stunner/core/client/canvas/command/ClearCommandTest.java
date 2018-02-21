@@ -30,8 +30,8 @@ public class ClearCommandTest extends AbstractCanvasCommandTest {
     private ClearCommand tested;
 
     @Before
-    public void setup() throws Exception {
-        super.setup();
+    public void setUp() throws Exception {
+        super.setUp();
         this.tested = new ClearCommand();
     }
 

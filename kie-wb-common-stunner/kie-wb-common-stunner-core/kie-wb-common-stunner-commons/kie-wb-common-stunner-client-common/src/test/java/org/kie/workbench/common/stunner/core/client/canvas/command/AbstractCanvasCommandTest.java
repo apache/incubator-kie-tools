@@ -49,9 +49,9 @@ public abstract class AbstractCanvasCommandTest {
     @Mock
     protected CanvasCommandFactory canvasCommandFactory;
 
-    public void setup() throws Exception {
+    public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        ;
+
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(canvasHandler.getGraphIndex()).thenReturn(graphIndex);

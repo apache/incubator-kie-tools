@@ -37,8 +37,8 @@ public class RemoveChildCommandTest extends AbstractCanvasCommandTest {
     private RemoveChildCommand tested;
 
     @Before
-    public void setup() throws Exception {
-        super.setup();
+    public void setUp() throws Exception {
+        super.setUp();
         when(parent.getUUID()).thenReturn("uuid1");
         when(candidate.getUUID()).thenReturn("uuid2");
         this.tested = new RemoveChildCommand(parent,

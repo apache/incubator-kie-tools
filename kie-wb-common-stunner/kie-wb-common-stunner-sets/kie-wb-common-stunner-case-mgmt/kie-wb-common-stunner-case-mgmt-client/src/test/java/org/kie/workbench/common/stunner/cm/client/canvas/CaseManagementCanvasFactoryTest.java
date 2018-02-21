@@ -43,6 +43,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl
 import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.ClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.LocalClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ControlPointControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
@@ -73,6 +74,8 @@ public class CaseManagementCanvasFactoryTest {
     private ManagedInstance<ClipboardControl> clipboardControls;
     private ManagedInstance<AbstractCanvas> canvasInstances;
     private ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances;
+    private ManagedInstance<ControlPointControl> controlPointControls;
+
 
     @Mock
     private Layer layer;
@@ -98,6 +101,7 @@ public class CaseManagementCanvasFactoryTest {
         this.panControls = mockManagedInstance(PanControlImpl.class);
         this.keyboardControls = mockManagedInstance(KeyboardControlImpl.class);
         this.clipboardControls = mockManagedInstance(LocalClipboardControl.class);
+        this.controlPointControls = mockManagedInstance(ControlPointControl.class);
         this.canvasInstances = mockManagedInstance(CaseManagementCanvasPresenter.class,
                                                    (c) -> when(c.getWiresManager()).thenReturn(wiresManager));
         this.canvasHandlerInstances = mockManagedInstance(CaseManagementCanvasHandler.class);
@@ -115,7 +119,8 @@ public class CaseManagementCanvasFactoryTest {
                                                        keyboardControls,
                                                        clipboardControls,
                                                        canvasInstances,
-                                                       canvasHandlerInstances);
+                                                       canvasHandlerInstances,
+                                                       controlPointControls);
         factory.init();
     }
 

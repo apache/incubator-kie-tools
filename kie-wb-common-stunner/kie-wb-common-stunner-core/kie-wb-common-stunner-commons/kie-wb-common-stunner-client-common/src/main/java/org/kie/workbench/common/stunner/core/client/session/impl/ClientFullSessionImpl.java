@@ -19,13 +19,16 @@ package org.kie.workbench.common.stunner.core.client.session.impl;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.Disposer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasInPlaceTextEditorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.ClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ControlPointControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.LocationControl;
@@ -56,7 +59,8 @@ public class ClientFullSessionImpl extends AbstractClientFullSession {
                                  final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
                                  final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                  final @Request SessionCommandManager<AbstractCanvasHandler> requestCommandManager,
-                                 final RegistryFactory registryFactory) {
+                                 final RegistryFactory registryFactory,
+                                 final Disposer<CanvasControl> canvasControlDisposer) {
         super(factory.newCanvas(),
               factory.newCanvasHandler(),
               factory.newControl(SelectionControl.class),
@@ -71,7 +75,9 @@ public class ClientFullSessionImpl extends AbstractClientFullSession {
               factory.newControl(DockingAcceptorControl.class),
               factory.newControl(ElementBuilderControl.class),
               factory.newControl(KeyboardControl.class),
-              factory.newControl(ClipboardControl.class));
+              factory.newControl(ClipboardControl.class),
+              factory.newControl(ControlPointControl.class),
+              canvasControlDisposer);
         this.locationControl = factory.newControl(LocationControl.class);
         this.resizeControl = factory.newControl(ResizeControl.class);
         this.canvasInPlaceTextEditorControl = factory.newControl(CanvasInPlaceTextEditorControl.class);

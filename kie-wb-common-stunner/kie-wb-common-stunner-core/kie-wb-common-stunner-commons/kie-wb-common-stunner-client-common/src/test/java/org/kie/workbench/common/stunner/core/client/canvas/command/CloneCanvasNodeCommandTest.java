@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.core.client.canvas.command;
 import java.util.Objects;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
@@ -27,6 +26,7 @@ import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.shape.EdgeShape;
+import org.kie.workbench.common.stunner.core.client.shape.impl.ConnectorShape;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.command.impl.AbstractCompositeCommand;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -56,7 +56,7 @@ public class CloneCanvasNodeCommandTest extends AbstractCanvasCommandTest {
     private CloneCanvasNodeCommand cloneCanvasNodeCommand;
 
     @Mock
-    private EdgeShape edgeShape;
+    private ConnectorShape edgeShape;
 
     @Mock
     private ShapeView shapeView;
@@ -65,8 +65,8 @@ public class CloneCanvasNodeCommandTest extends AbstractCanvasCommandTest {
     private ManagedInstance<ChildrenTraverseProcessor> childrenTraverseProcessorManagedInstance;
 
     @Before
-    public void setup() throws Exception {
-        super.setup();
+    public void setUp() throws Exception {
+        super.setUp();
 
         graphInstance = TestingGraphInstanceBuilder.newGraph2(new TestingGraphMockHandler());
         graph = graphInstance.graph;

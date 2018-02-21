@@ -103,7 +103,8 @@ public class StunnerWiresShapeHighlightTest {
 
     @Test
     public void testHighlightBodyForStunnerShape() {
-        tested.highlightBody(stunnerShape);
+        tested.highlightBody(stunnerShape,
+                             "color");
         verify(decorator, times(1)).animate(any(AnimationTweener.class),
                                             any(AnimationProperties.class),
                                             anyDouble(),
@@ -119,7 +120,8 @@ public class StunnerWiresShapeHighlightTest {
 
     @Test
     public void testRestore() {
-        tested.highlightBody(stunnerShape);
+        tested.highlightBody(stunnerShape,
+                             "color");
         tested.restore();
         verify(delegate, times(1)).restore();
         verify(decorator, times(2)).animate(any(AnimationTweener.class),

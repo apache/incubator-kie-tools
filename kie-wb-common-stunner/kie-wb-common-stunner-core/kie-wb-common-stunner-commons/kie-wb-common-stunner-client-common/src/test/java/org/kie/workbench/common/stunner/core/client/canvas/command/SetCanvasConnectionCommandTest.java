@@ -72,8 +72,8 @@ public class SetCanvasConnectionCommandTest extends AbstractCanvasCommandTest {
 
     @Before
     @SuppressWarnings("unchecked")
-    public void setup() throws Exception {
-        super.setup();
+    public void setUp() throws Exception {
+        super.setUp();
         when(edge.getUUID()).thenReturn(EDGE_ID);
         when(edge.getContent()).thenReturn(edgeContent);
         when(edgeContent.getSourceConnection()).thenReturn(Optional.empty());

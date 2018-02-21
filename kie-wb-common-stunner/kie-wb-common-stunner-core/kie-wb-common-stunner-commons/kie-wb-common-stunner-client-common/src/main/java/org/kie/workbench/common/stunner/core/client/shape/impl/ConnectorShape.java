@@ -16,17 +16,21 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.impl;
 
+import java.util.List;
+
 import org.kie.workbench.common.stunner.core.client.shape.EdgeShape;
 import org.kie.workbench.common.stunner.core.client.shape.Lifecycle;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasManageableControlPoints;
 import org.kie.workbench.common.stunner.core.client.shape.view.IsConnector;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeViewDef;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 /**
@@ -69,11 +73,31 @@ public class ConnectorShape<W, D extends ShapeViewDef<W, V>, V extends ShapeView
         final Connection sourceConnection = (Connection) connectionContent.getSourceConnection().orElse(null);
         final Connection targetConnection = (Connection) connectionContent.getTargetConnection().orElse(null);
         if (null != source && null != target) {
-            ((IsConnector) getShapeView()).connect(source,
-                                                   sourceConnection,
-                                                   target,
-                                                   targetConnection);
+            IsConnector shapeView = (IsConnector) getShapeView();
+            shapeView.connect(source,
+                              sourceConnection,
+                              target,
+                              targetConnection);
         }
+    }
+
+    public List<ControlPoint> addControlPoints(ControlPoint... controlPoints) {
+        return getShapeViewWithControlPoints().addControlPoint(controlPoints);
+    }
+
+    public void removeControlPoints(ControlPoint... controlPoints) {
+        getShapeViewWithControlPoints().removeControlPoint(controlPoints);
+    }
+
+    public List<ControlPoint> getControlPoints() {
+        return getShapeViewWithControlPoints().getShapeControlPoints();
+    }
+
+    private HasManageableControlPoints getShapeViewWithControlPoints() {
+        if (!(getShapeView() instanceof HasManageableControlPoints)) {
+            throw new IllegalArgumentException("ShapeView should be a HasManageableControlPoints. " + getShapeView());
+        }
+        return (HasManageableControlPoints) getShapeView();
     }
 
     @Override

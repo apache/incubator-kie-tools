@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.client.session.impl;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.jboss.errai.ioc.client.api.Disposer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +28,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasInPlaceTextEditorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ControlPointControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.LocationControl;
@@ -115,6 +117,12 @@ public class ClientFullSessionTest {
     @Mock
     private KeyboardControl<Canvas, ClientSession> keyboardControl;
 
+    @Mock
+    private ControlPointControl controlPointControl;
+
+    @Mock
+    private Disposer disposer;
+
     private ClientFullSessionImpl tested;
 
     @Before
@@ -133,6 +141,7 @@ public class ClientFullSessionTest {
         when(factory.newControl(eq(ToolboxControl.class))).thenReturn(toolboxControl);
         when(factory.newControl(eq(ElementBuilderControl.class))).thenReturn(builderControl);
         when(factory.newControl(eq(KeyboardControl.class))).thenReturn(keyboardControl);
+        when(factory.newControl(eq(ControlPointControl.class))).thenReturn(controlPointControl);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
     }
 
@@ -171,6 +180,8 @@ public class ClientFullSessionTest {
                      tested.getBuilderControl());
         assertEquals(keyboardControl,
                      tested.getKeyboardControl());
+        assertEquals(controlPointControl,
+                     tested.getControlPointControl());
 
         // Assert setting the right command manager for each control.
         final ArgumentCaptor<RequiresCommandManager.CommandManagerProvider> conn =
@@ -249,6 +260,8 @@ public class ClientFullSessionTest {
                times(1)).enable(eq(canvasHandler));
         verify(keyboardControl,
                times(1)).bind(eq(tested));
+        verify(controlPointControl,
+               times(1)).enable(eq(canvasHandler));
     }
 
     @Test
@@ -287,7 +300,9 @@ public class ClientFullSessionTest {
         verify(builderControl,
                times(1)).disable();
         verify(keyboardControl,
-               times(1)).unbind();
+               times(1)).disable();
+        verify(controlPointControl,
+               times(1)).disable();
     }
 
     private void buildTestedInstance() {
@@ -295,6 +310,7 @@ public class ClientFullSessionTest {
                                                 canvasCommandManager,
                                                 sessionCommandManager,
                                                 requestCommandManager,
-                                                registryFactory);
+                                                registryFactory,
+                                                disposer);
     }
 }

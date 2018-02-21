@@ -52,6 +52,7 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
     private final Consumer<CanvasClearSelectionEvent> clearSelectionEventConsumer;
     private MouseClickHandler layerClickHandler;
     private final Map<String, Boolean> items = new HashMap<>();
+    private boolean readonly;
 
     public static <H extends AbstractCanvasHandler> MapSelectionControl<H> build(final Consumer<CanvasSelectionEvent> selectionEventConsumer,
                                                                                  final Consumer<CanvasClearSelectionEvent> clearSelectionEventConsumer) {
@@ -142,6 +143,14 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
         return super.isEnabled() && null != canvasHandler.getCanvas();
     }
 
+    public boolean isReadonly() {
+        return readonly;
+    }
+
+    public void setReadonly(boolean readonly) {
+        this.readonly = readonly;
+    }
+
     public SelectionControl<H, Element> select(final Collection<String> uuids) {
         uuids.stream()
                 .filter(itemsRegistered())
@@ -182,7 +191,9 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
             final List<Shape> shapes = getCanvas().getShapes();
             for (final Shape shape : shapes) {
                 final boolean isSelected = isSelected(shape.getUUID());
-                if (isSelected) {
+                if (isSelected && isReadonly()) {
+                    shape.applyState(ShapeState.HIGHLIGHT);
+                }else if(isSelected) {
                     shape.applyState(ShapeState.SELECTED);
                 } else {
                     shape.applyState(ShapeState.NONE);

@@ -42,8 +42,8 @@ public class SetConnectionSourceNodeCommandTest extends AbstractCanvasCommandTes
 
     @Before
     @SuppressWarnings("unchecked")
-    public void setup() throws Exception {
-        super.setup();
+    public void setUp() throws Exception {
+        super.setUp();
         when(edge.getUUID()).thenReturn("e1");
         when(node.getUUID()).thenReturn("n1");
         this.tested = new SetConnectionSourceNodeCommand(node,

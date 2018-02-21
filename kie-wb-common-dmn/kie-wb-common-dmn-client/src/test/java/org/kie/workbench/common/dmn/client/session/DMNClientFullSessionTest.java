@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.session;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.jboss.errai.ioc.client.api.Disposer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,9 +25,11 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasInPlaceTextEditorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ControlPointControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.LocationControl;
@@ -116,6 +119,12 @@ public class DMNClientFullSessionTest {
 
     private DMNClientFullSession session;
 
+    @Mock
+    private Disposer<CanvasControl> canvasControlDisposer;
+
+    @Mock
+    private ControlPointControl controlPointControl;
+
     @Before
     public void setup() throws Exception {
         when(factory.newCanvas()).thenReturn(canvas);
@@ -132,12 +141,14 @@ public class DMNClientFullSessionTest {
         when(factory.newControl(eq(ToolboxControl.class))).thenReturn(toolboxControl);
         when(factory.newControl(eq(ElementBuilderControl.class))).thenReturn(builderControl);
         when(factory.newControl(eq(KeyboardControl.class))).thenReturn(keyboardControl);
+        when(factory.newControl(eq(ControlPointControl.class))).thenReturn(controlPointControl);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         this.session = new DMNClientFullSession(factory,
                                                 canvasCommandManager,
                                                 sessionCommandManager,
                                                 requestCommandManager,
-                                                registryFactory);
+                                                registryFactory,
+                                                canvasControlDisposer);
     }
 
     @Test
@@ -236,7 +247,9 @@ public class DMNClientFullSessionTest {
         verify(builderControl,
                times(1)).disable();
         verify(keyboardControl,
-               times(1)).unbind();
+               times(1)).disable();
+        verify(controlPointControl,
+               times(1)).disable();
     }
 
     @Test

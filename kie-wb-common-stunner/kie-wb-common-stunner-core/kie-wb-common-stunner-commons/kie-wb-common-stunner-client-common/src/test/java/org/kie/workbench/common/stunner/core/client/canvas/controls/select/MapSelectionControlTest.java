@@ -123,6 +123,7 @@ public class MapSelectionControlTest {
         when(shapeEventHandler.supports(eq(ViewEventType.MOUSE_CLICK))).thenReturn(true);
         this.tested = new MapSelectionControl(e -> elementSelectedEvent.fire((CanvasSelectionEvent) e),
                                               e -> clearSelectionEvent.fire((CanvasClearSelectionEvent) e));
+        this.tested.setReadonly(false);
     }
 
     @Test
@@ -227,6 +228,18 @@ public class MapSelectionControlTest {
         final CanvasSelectionEvent event = elementSelectedEventArgumentCaptor.getValue();
         assertEquals(1, event.getIdentifiers().size());
         assertEquals(ELEMENT_UUID, event.getIdentifiers().iterator().next());
+    }
+
+    @Test
+    public void testSelectReadOnly(){
+        tested.enable(canvasHandler);
+        tested.register(element);
+        tested.setReadonly(true);
+        tested.select(element);
+        verify(shape, never()).applyState(eq(ShapeState.SELECTED));
+        verify(shape, never()).applyState(eq(ShapeState.NONE));
+        verify(shape, never()).applyState(eq(ShapeState.INVALID));
+        verify(shape, times(1)).applyState(eq(ShapeState.HIGHLIGHT));
     }
 
     @Test

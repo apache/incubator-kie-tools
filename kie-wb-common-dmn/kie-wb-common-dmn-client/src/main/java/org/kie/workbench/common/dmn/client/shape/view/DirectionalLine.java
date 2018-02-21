@@ -69,7 +69,7 @@ public class DirectionalLine extends AbstractDirectionalMultiPointShape<Directio
 
     @Override
     public boolean isControlPointShape() {
-        return true;
+        return false;
     }
 
     @Override
@@ -86,7 +86,7 @@ public class DirectionalLine extends AbstractDirectionalMultiPointShape<Directio
             final Point2D p1 = points.get(0);
             final double x1 = p1.getX();
             final double y1 = p1.getY();
-            final Point2D p2 = points.get(1);
+            final Point2D p2 = points.get(points.size() -1);
             final double x2 = p2.getX();
             final double y2 = p2.getY();
             getPathPartList()

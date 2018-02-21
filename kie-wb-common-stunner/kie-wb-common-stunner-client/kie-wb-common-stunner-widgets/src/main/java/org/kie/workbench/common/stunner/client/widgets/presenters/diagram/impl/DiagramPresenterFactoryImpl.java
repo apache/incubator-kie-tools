@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.client.widgets.presenters.diagram.impl;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.Disposer;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramEditor;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramPresenterFactory;
@@ -28,6 +29,7 @@ import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
@@ -43,9 +45,11 @@ public class DiagramPresenterFactoryImpl implements DiagramPresenterFactory<Diag
     private final ShapeManager shapeManager;
     private final ManagedInstance<WidgetWrapperView> viewInstances;
     private final ManagedInstance<CanvasCommandManager<AbstractCanvasHandler>> commandManagerInstances;
+    private final Disposer<CanvasControl> canvasControlDisposer;
 
     protected DiagramPresenterFactoryImpl() {
         this(null,
+             null,
              null,
              null);
     }
@@ -53,10 +57,12 @@ public class DiagramPresenterFactoryImpl implements DiagramPresenterFactory<Diag
     @Inject
     public DiagramPresenterFactoryImpl(final ShapeManager shapeManager,
                                        final ManagedInstance<WidgetWrapperView> viewInstances,
-                                       final ManagedInstance<CanvasCommandManager<AbstractCanvasHandler>> commandManagerInstances) {
+                                       final ManagedInstance<CanvasCommandManager<AbstractCanvasHandler>> commandManagerInstances,
+                                       final Disposer<CanvasControl> canvasControlDisposer) {
         this.shapeManager = shapeManager;
         this.viewInstances = viewInstances;
         this.commandManagerInstances = commandManagerInstances;
+        this.canvasControlDisposer = canvasControlDisposer;
     }
 
     @Override
@@ -71,7 +77,8 @@ public class DiagramPresenterFactoryImpl implements DiagramPresenterFactory<Diag
                                        canvasHandler,
                                        viewInstances.get(),
                                        zoomControl,
-                                       selectionControl);
+                                       selectionControl,
+                                       canvasControlDisposer);
     }
 
     @Override
@@ -86,6 +93,7 @@ public class DiagramPresenterFactoryImpl implements DiagramPresenterFactory<Diag
                                        commandManagerInstances.get(),
                                        connectionAcceptorControl,
                                        containmentAcceptorControl,
-                                       dockingAcceptorControl);
+                                       dockingAcceptorControl,
+                                       canvasControlDisposer);
     }
 }

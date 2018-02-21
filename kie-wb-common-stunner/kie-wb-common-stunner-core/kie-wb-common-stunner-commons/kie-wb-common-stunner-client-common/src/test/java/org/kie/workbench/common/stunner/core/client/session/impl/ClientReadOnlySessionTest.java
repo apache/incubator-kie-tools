@@ -16,6 +16,7 @@
 package org.kie.workbench.common.stunner.core.client.session.impl;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.jboss.errai.ioc.client.api.Disposer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,6 +54,8 @@ public class ClientReadOnlySessionTest {
     ZoomControl<AbstractCanvas> zoomControl;
     @Mock
     PanControl<AbstractCanvas> panControl;
+    @Mock
+    Disposer disposer;
 
     private ClientReadOnlySessionImpl tested;
 
@@ -64,7 +67,7 @@ public class ClientReadOnlySessionTest {
         when(factory.newControl(eq(PanControl.class))).thenReturn(panControl);
         when(factory.newControl(eq(SelectionControl.class))).thenReturn(selectionControl);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
-        this.tested = new ClientReadOnlySessionImpl(factory);
+        this.tested = new ClientReadOnlySessionImpl(factory, disposer);
     }
 
     @Test

@@ -16,13 +16,17 @@
 
 package org.kie.workbench.common.stunner.core.graph.content.view;
 
+import java.util.List;
 import java.util.Optional;
+
+import org.kie.workbench.common.stunner.core.graph.content.HasControlPoints;
 
 /**
  * Indicates that the view for the node/edge represents a physical connector that will the drawn in the canvas.
  * @param <W> The Definition of the connector's graphical view representation.
  */
-public interface ViewConnector<W> extends View<W> {
+public interface ViewConnector<W> extends View<W>,
+                                          HasControlPoints {
 
     Optional<Connection> getSourceConnection();
 

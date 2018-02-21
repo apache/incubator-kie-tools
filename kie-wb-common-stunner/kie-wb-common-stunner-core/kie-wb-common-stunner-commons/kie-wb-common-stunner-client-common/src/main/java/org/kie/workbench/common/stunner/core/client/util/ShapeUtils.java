@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.client.util;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -28,12 +29,15 @@ import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.shape.EdgeShape;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
+import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
+import org.kie.workbench.common.stunner.core.client.shape.impl.ConnectorShape;
 import org.kie.workbench.common.stunner.core.client.shape.view.BoundingBox;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -58,6 +62,38 @@ public class ShapeUtils {
                                    source != null ? source.getShapeView() : null,
                                    target != null ? target.getShapeView() : null,
                                    mutationContext);
+    }
+
+    public static List<ControlPoint> addControlPoints(final Edge edge, final CanvasHandler canvasHandler, final ControlPoint... controlPoints) {
+        return getConnectorShape(edge, canvasHandler).addControlPoints(controlPoints);
+    }
+
+    private static ConnectorShape getConnectorShape(Edge edge, CanvasHandler canvasHandler) {
+        validateConnector(edge);
+        return (ConnectorShape) canvasHandler.getCanvas().getShape(edge.getUUID());
+    }
+
+    public static void removeControlPoints(final Edge edge, final CanvasHandler canvasHandler, final ControlPoint... controlPoints) {
+        getConnectorShape(edge, canvasHandler).removeControlPoints(controlPoints);
+    }
+
+    public static List<ControlPoint> getControlPoints(final Edge edge, final CanvasHandler canvasHandler) {
+        return getConnectorShape(edge, canvasHandler).getControlPoints();
+    }
+
+    public static void hideControlPoints(final Edge edge, final CanvasHandler canvasHandler){
+        getConnectorShape(edge, canvasHandler).applyState(ShapeState.NONE);
+    }
+
+    public static void showControlPoints(final Edge edge, final CanvasHandler canvasHandler){
+        getConnectorShape(edge, canvasHandler).applyState(ShapeState.SELECTED);
+    }
+
+    private static void validateConnector(Edge edge) {
+        Objects.requireNonNull(edge, "Edge should not be null");
+        if (!(edge.getContent() instanceof ViewConnector)) {
+            throw new IllegalArgumentException("Edge content should be a ViewConnector. Edge UUID: " + edge.getUUID());
+        }
     }
 
     @SuppressWarnings("unchecked")

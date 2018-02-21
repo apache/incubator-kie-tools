@@ -82,9 +82,6 @@ public class CaseManagementCanvasPresenterTest {
     @Mock
     private CaseManagementCanvasView view;
 
-    @Mock
-    private WiresControlFactory caseManagementControlFactory;
-
     private CaseManagementCanvasPresenter presenter;
 
     @Before
@@ -101,8 +98,7 @@ public class CaseManagementCanvasPresenterTest {
                                                            canvasFocusedEvent,
                                                            layer,
                                                            view,
-                                                           lienzoPanel,
-                                                           caseManagementControlFactory);
+                                                           lienzoPanel);
     }
 
     @Test

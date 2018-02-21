@@ -53,8 +53,8 @@ public class CanvasCommandHasGraphTest extends AbstractCanvasCommandTest {
     private HasGraphCommandStub tested;
 
     @Before
-    public void setup() throws Exception {
-        super.setup();
+    public void setUp() throws Exception {
+        super.setUp();
         when(canvasHandler.getGraphExecutionContext()).thenReturn(graphCommandExecutionContext);
         when(successGraphCommandResult.getType()).thenReturn(CommandResult.Type.INFO);
         when(successGraphCommandResult.getViolations()).thenReturn(null);

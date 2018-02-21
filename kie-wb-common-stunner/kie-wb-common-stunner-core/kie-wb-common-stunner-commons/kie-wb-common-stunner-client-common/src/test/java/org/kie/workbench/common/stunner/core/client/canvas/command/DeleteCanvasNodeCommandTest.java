@@ -46,8 +46,8 @@ public class DeleteCanvasNodeCommandTest extends AbstractCanvasCommandTest {
     private DeleteCanvasNodeCommand tested;
 
     @Before
-    public void setup() throws Exception {
-        super.setup();
+    public void setUp() throws Exception {
+        super.setUp();
         when(candidate.getUUID()).thenReturn(C_ID);
         when(parent.getUUID()).thenReturn(P_ID);
         this.tested = new DeleteCanvasNodeCommand(candidate,
