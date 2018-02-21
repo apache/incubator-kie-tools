@@ -4,9 +4,11 @@ import com.ait.lienzo.client.core.shape.wires.WiresShape;
 
 public interface WiresShapeHighlight<P> {
 
-    void highlight(final WiresShape shape,
+    void highlight(WiresShape shape,
                    P part);
 
-    void restore();
+    void error(WiresShape shape,
+               P part);
 
+    void restore();
 }

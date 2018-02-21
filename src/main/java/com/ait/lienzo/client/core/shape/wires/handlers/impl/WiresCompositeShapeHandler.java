@@ -54,11 +54,16 @@ public class WiresCompositeShapeHandler
         }
 
         boolean shouldRestore = true;
-        if (shapeControl.isAllowed()) {
-            final WiresContainer parent = shapeControl.getSharedParent();
-            if (null != parent && parent instanceof WiresShape) {
+
+        final WiresContainer parent = shapeControl.getSharedParent();
+        if (null != parent && parent instanceof WiresShape) {
+            if (shapeControl.isAllowed()) {
                 highlight.highlight((WiresShape) parent,
                                     PickerPart.ShapePart.BODY);
+                shouldRestore = false;
+            } else {
+                highlight.error((WiresShape) parent,
+                                PickerPart.ShapePart.BODY);
                 shouldRestore = false;
             }
         }

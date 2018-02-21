@@ -11,6 +11,7 @@ import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.MouseEvent;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresCompositeControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorHandler;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.types.Point2D;
 
@@ -70,7 +71,7 @@ public class WiresCompositeControlImpl
         m_connectorsWithSpecialConnections = connectors.values().toArray(new WiresConnector[connectors.size()]);
 
         for (WiresConnector connector : selectedConnectors) {
-            WiresConnector.WiresConnectorHandler handler = connector.getWiresConnectorHandler();
+            WiresConnectorHandler handler = connector.getWiresConnectorHandler();
             handler.getControl().onMoveStart(x,
                                              y); // records the start position of all the points
             WiresConnector.updateHeadTailForRefreshedConnector(connector);
@@ -130,7 +131,7 @@ public class WiresCompositeControlImpl
         if (!connectors.isEmpty()) {
             // Update connectors and connections.
             for (WiresConnector connector : connectors) {
-                WiresConnector.WiresConnectorHandler handler = connector.getWiresConnectorHandler();
+                WiresConnectorHandler handler = connector.getWiresConnectorHandler();
                 handler.getControl().move(dx,
                                           dy,
                                           true,
@@ -249,7 +250,7 @@ public class WiresCompositeControlImpl
         }
 
         for (WiresConnector connector : selectedConnectors) {
-            WiresConnector.WiresConnectorHandler handler = connector.getWiresConnectorHandler();
+            WiresConnectorHandler handler = connector.getWiresConnectorHandler();
             WiresConnector.updateHeadTailForRefreshedConnector(connector);
         }
 
@@ -275,7 +276,7 @@ public class WiresCompositeControlImpl
             enableDocking(shape.getControl());
         }
         for (WiresConnector connector : selectedConnectors) {
-            WiresConnector.WiresConnectorHandler handler = connector.getWiresConnectorHandler();
+            WiresConnectorHandler handler = connector.getWiresConnectorHandler();
             handler.getControl().reset();
             WiresConnector.updateHeadTailForRefreshedConnector(connector);
         }

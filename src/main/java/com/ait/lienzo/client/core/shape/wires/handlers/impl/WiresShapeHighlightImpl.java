@@ -4,30 +4,35 @@ import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeHighlight;
-import com.ait.lienzo.client.core.types.FillGradient;
-import com.ait.lienzo.client.core.types.LinearGradient;
-import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.lienzo.client.core.types.RadialGradient;
 
 public class WiresShapeHighlightImpl implements WiresShapeHighlight<PickerPart.ShapePart> {
 
     private final int borderSize;
+    private WiresShape parent;
+    private String m_priorColor;
+    private Double m_priorSize;
+    private Double m_priorAlpha;
+    private MultiPath m_path;
 
     public WiresShapeHighlightImpl(int borderSize) {
         this.borderSize = borderSize;
     }
 
     @Override
-    public void highlight(final WiresShape shape, 
+    public void highlight(final WiresShape shape,
                           final PickerPart.ShapePart part) {
-        switch (part) {
-            case BODY:
-                highlightBody(shape);
-                break;
-            default:
-                highlightBorder(shape);
-        }
+        highlight(shape,
+                  part,
+                  "#0000FF");
+    }
+
+    @Override
+    public void error(final WiresShape shape,
+                      final PickerPart.ShapePart part) {
+        highlight(shape,
+                  part,
+                  "#FF0000");
     }
 
     @Override
@@ -35,19 +40,28 @@ public class WiresShapeHighlightImpl implements WiresShapeHighlight<PickerPart.S
         doRestore();
     }
 
-    private WiresShape parent;
-    private String m_priorFill;
-    private FillGradient m_priorFillGradient;
-    private Double m_priorAlpha;
-    private MultiPath m_path;
+    private void highlight(final WiresShape shape,
+                           final PickerPart.ShapePart part,
+                           final String color) {
+        switch (part) {
+            case BODY:
+                highlightBody(shape,
+                              color);
+                break;
+            default:
+                highlightBorder(shape);
+        }
+    }
 
-    private void highlightBody(final WiresShape parent) {
+    private void highlightBody(final WiresShape parent,
+                               final String color) {
         if (!isBodyHighlight()) {
-            m_priorFill = parent.getPath().getFillColor();
-            m_priorFillGradient = parent.getPath().getFillGradient();
-            m_priorAlpha = parent.getPath().getFillAlpha();
-            parent.getPath().setFillColor("#CCCCCC");
-            parent.getPath().setFillAlpha(0.8);
+            m_priorColor = parent.getPath().getStrokeColor();
+            m_priorAlpha = parent.getPath().getStrokeAlpha();
+            m_priorSize = parent.getPath().getStrokeWidth();
+            parent.getPath().setStrokeColor(color);
+            parent.getPath().setStrokeAlpha(0.8);
+            parent.getPath().setStrokeWidth(m_priorSize > 0 ? m_priorSize * 2.5 : 3d);
             this.parent = parent;
             drawLayer();
         }
@@ -61,7 +75,7 @@ public class WiresShapeHighlightImpl implements WiresShapeHighlight<PickerPart.S
             final Point2D absLoc = path.getComputedLocation();
             m_path.setX(absLoc.getX());
             m_path.setY(absLoc.getY());
-            m_path.setStrokeColor("#CC1100");
+            m_path.setStrokeColor("#0000FF");
             m_path.setStrokeAlpha(0.8);
             parent.getGroup().getOverLayer().add(m_path);
             this.parent = parent;
@@ -77,17 +91,11 @@ public class WiresShapeHighlightImpl implements WiresShapeHighlight<PickerPart.S
 
     private void restoreBody() {
         if (isBodyHighlight()) {
-            parent.getPath().setFillColor(m_priorFill);
-            if (m_priorFillGradient instanceof LinearGradient) {
-                parent.getPath().setFillGradient((LinearGradient) m_priorFillGradient);
-            } else if (m_priorFillGradient instanceof PatternGradient) {
-                parent.getPath().setFillGradient((PatternGradient) m_priorFillGradient);
-            } else if (m_priorFillGradient instanceof RadialGradient) {
-                parent.getPath().setFillGradient((RadialGradient) m_priorFillGradient);
-            }
-            parent.getPath().setFillAlpha(getPriorAlpha());
-            m_priorFill = null;
-            m_priorFillGradient = null;
+            parent.getPath().setStrokeColor(m_priorColor);
+            parent.getPath().setStrokeAlpha(getPriorAlpha());
+            parent.getPath().setStrokeWidth(m_priorSize);
+            m_priorColor = null;
+            m_priorSize = null;
             m_priorAlpha = null;
             drawLayer();
         }
@@ -102,7 +110,7 @@ public class WiresShapeHighlightImpl implements WiresShapeHighlight<PickerPart.S
     }
 
     private boolean isBodyHighlight() {
-        return null != m_priorFill || null != m_priorFillGradient || null != m_priorAlpha;
+        return null != m_priorColor || null != m_priorAlpha;
     }
 
     private double getPriorAlpha() {

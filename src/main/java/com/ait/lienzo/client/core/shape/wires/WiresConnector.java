@@ -17,23 +17,13 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import com.ait.lienzo.client.core.event.NodeDragEndEvent;
-import com.ait.lienzo.client.core.event.NodeDragEndHandler;
-import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
-import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
-import com.ait.lienzo.client.core.event.NodeDragStartEvent;
-import com.ait.lienzo.client.core.event.NodeDragStartHandler;
-import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
-import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
-import com.ait.lienzo.client.core.event.NodeMouseDoubleClickEvent;
-import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
 import com.ait.lienzo.client.core.shape.OrthogonalPolyLine;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorHandler;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
@@ -80,13 +70,6 @@ public class WiresConnector
             c.getTailDecorator().draw(tailPoints);
         }
         return false;
-    }
-
-    public interface WiresConnectorHandler extends NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler, NodeMouseClickHandler, NodeMouseDoubleClickHandler
-    {
-
-        public WiresConnectorControl getControl();
-
     }
 
     private WiresConnection                       m_headConnection;
@@ -192,10 +175,18 @@ public class WiresConnector
         final Group group = getGroup();
 
         m_registrationManager.register(group.addNodeDragStartHandler(handler));
-
         m_registrationManager.register(group.addNodeDragMoveHandler(handler));
-
         m_registrationManager.register(group.addNodeDragEndHandler(handler));
+
+        if (m_HandlerRegistrationManager != null)
+        {
+            m_HandlerRegistrationManager.removeHandler();
+        }
+        m_HandlerRegistrationManager = new HandlerRegistrationManager();
+        m_HandlerRegistrationManager.register(getLine().addNodeMouseClickHandler(handler));
+        m_HandlerRegistrationManager.register(getLine().addNodeMouseDoubleClickHandler(handler));
+        m_HandlerRegistrationManager.register(getHead().addNodeMouseClickHandler(handler));
+        m_HandlerRegistrationManager.register(getTail().addNodeMouseClickHandler(handler));
 
         m_wiresConnectorHandler = handler;
     }
@@ -733,77 +724,8 @@ public class WiresConnector
         return new WiresMagnet[] {headM, tailM};
     }
 
-
-    static class WiresConnectorHandlerImpl implements WiresConnectorHandler
-    {
-        private final WiresConnectorControl m_control;
-
-        private final WiresConnector        m_connector;
-
-        private final WiresManager          m_wiresManager;
-
-        WiresConnectorHandlerImpl(WiresConnector connector, WiresManager wiresManager)
-        {
-            this.m_control = wiresManager.getControlFactory().newConnectorControl(connector, wiresManager);
-            this.m_connector = connector;
-            m_wiresManager = wiresManager;
-            init();
-        }
-
-        private void init()
-        {
-            if (m_connector.m_HandlerRegistrationManager != null)
-            {
-                m_connector.m_HandlerRegistrationManager.removeHandler();
-            }
-
-            m_connector.m_HandlerRegistrationManager = new HandlerRegistrationManager();
-
-            m_connector.m_HandlerRegistrationManager.register(m_connector.getLine().addNodeMouseClickHandler(this));
-            m_connector.m_HandlerRegistrationManager.register(m_connector.getLine().addNodeMouseDoubleClickHandler(this));
-            m_connector.m_HandlerRegistrationManager.register(m_connector.getHead().addNodeMouseClickHandler(this));
-            m_connector.m_HandlerRegistrationManager.register(m_connector.getTail().addNodeMouseClickHandler(this));
-        }
-
-        @Override
-        public void onNodeDragStart(NodeDragStartEvent event)
-        {
-            this.m_control.onMoveStart(event.getDragContext().getDragStartX(),
-                                       event.getDragContext().getDragStartY());
-        }
-
-        @Override
-        public void onNodeDragMove(NodeDragMoveEvent event)
-        {
-            this.m_control.onMove(event.getDragContext().getDragStartX(),
-                                  event.getDragContext().getDragStartY());
-        }
-
-        @Override
-        public void onNodeDragEnd(NodeDragEndEvent event)
-        {
-            this.m_control.onMoveComplete();
-        }
-
-
-        @Override
-        public void onNodeMouseClick(NodeMouseClickEvent event)
-        {
-            if (m_wiresManager.getSelectionManager() != null )
-            {
-                m_wiresManager.getSelectionManager().selected(m_connector, event.isShiftKeyDown());
-            }
-        }
-
-        @Override public void onNodeMouseDoubleClick(NodeMouseDoubleClickEvent event)
-        {
-            m_control.addControlPoint(event.getX(), event.getY());
-        }
-
-        public WiresConnectorControl getControl()
-        {
-            return m_control;
-        }
+    public Point2DArray getControlPoints(){
+        return m_line.getPoint2DArray();
     }
 
     @Override public boolean equals(Object o)
