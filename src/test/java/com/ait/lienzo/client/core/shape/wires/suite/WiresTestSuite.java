@@ -22,6 +22,9 @@ import com.ait.lienzo.client.core.shape.wires.WiresContainerTest;
 import com.ait.lienzo.client.core.shape.wires.WiresManagerTest;
 import com.ait.lienzo.client.core.shape.wires.WiresShapeControlHandleListTest;
 import com.ait.lienzo.client.core.shape.wires.WiresShapeTest;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeHandlerImplTest;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresCompositeShapeHandlerTest;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresConnectorControlImplTest;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresParentPickerControlImplTest;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeLocationControlImplTest;
 import org.junit.AfterClass;
@@ -40,6 +43,9 @@ import org.junit.runners.Suite;
         WiresShapeControlHandleListTest.class,
         WiresShapeLocationControlImplTest.class,
         WiresParentPickerControlImplTest.class,
+        WiresConnectorControlImplTest.class,
+        WiresShapeHandlerImplTest.class,
+        WiresCompositeShapeHandlerTest.class,
         WiresManagerTest.class,
         TextBoundsWrapTest.class,
         TextLineBreakWrapTest.class})

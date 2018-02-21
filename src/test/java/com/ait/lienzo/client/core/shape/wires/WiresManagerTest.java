@@ -27,8 +27,9 @@ import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndEvent;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorHandler;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresHandlerFactory;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
-import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeHandler;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.client.widget.DragContext;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
@@ -183,17 +184,26 @@ public class WiresManagerTest
         final MultiPath head = mock(MultiPath.class);
         final MultiPath tail = mock(MultiPath.class);
         final WiresConnector connector = mock(WiresConnector.class);
+        final WiresHandlerFactory wiresHandlerFactory = mock(WiresHandlerFactory.class);
+        final WiresConnectorHandler wiresConnectorHandler = mock(WiresConnectorHandler.class);
+        final WiresConnectorControl wiresConnectorControl = mock(WiresConnectorControl.class);
         doReturn(shapeGroup).when(connector).getGroup();
         doReturn(line).when(connector).getLine();
         doReturn(head).when(connector).getHead();
         doReturn(tail).when(connector).getTail();
         doReturn(group.uuid()).when(connector).uuid();
+        doReturn(wiresConnectorHandler).when(wiresHandlerFactory).newConnectorHandler(connector, spied);
+        doReturn(wiresConnectorControl).when(wiresConnectorHandler).getControl();
+
+        spied.setWiresHandlerFactory(wiresHandlerFactory);
+        assertEquals(spied.getWiresHandlerFactory(), wiresHandlerFactory);
         final WiresConnectorControl connectorControl = spied.register(connector);
         assertNotNull(connectorControl);
         assertFalse(spied.getConnectorList().isEmpty());
         verify(connector, times(1)).setConnectionAcceptor(eq(connectionAcceptor));
-        verify(connector, times(1)).setWiresConnectorHandler(eq(handlerRegistrationManager), any(WiresConnector.WiresConnectorHandler.class));
+        verify(connector, times(1)).setWiresConnectorHandler(eq(handlerRegistrationManager), any(WiresConnectorHandler.class));
         verify(connector, times(1)).addToLayer(eq(layer));
+        verify(wiresHandlerFactory, times(1)).newConnectorHandler(connector, spied);
     }
 
     @Test
