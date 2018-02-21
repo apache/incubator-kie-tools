@@ -22,7 +22,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
@@ -36,6 +35,7 @@ import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -47,7 +47,7 @@ import org.kie.workbench.common.stunner.core.client.session.Session;
 @ApplicationScoped
 public class RelationEditorDefinition extends BaseEditorDefinition<Relation> {
 
-    private ManagedInstance<RelationGridControls> controlsProvider;
+    private ListSelector listSelector;
 
     public RelationEditorDefinition() {
         //CDI proxy
@@ -61,7 +61,7 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation> {
                                     final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                                     final CellEditorControls cellEditorControls,
                                     final TranslationService translationService,
-                                    final ManagedInstance<RelationGridControls> controlsProvider) {
+                                    final ListSelector listSelector) {
         super(gridPanel,
               gridLayer,
               sessionManager,
@@ -69,7 +69,7 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation> {
               editorSelectedEvent,
               cellEditorControls,
               translationService);
-        this.controlsProvider = controlsProvider;
+        this.listSelector = listSelector;
     }
 
     @Override
@@ -111,6 +111,6 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation> {
                                             editorSelectedEvent,
                                             cellEditorControls,
                                             translationService,
-                                            controlsProvider.get()));
+                                            listSelector));
     }
 }

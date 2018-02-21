@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.relation;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import javax.enterprise.event.Event;
@@ -31,11 +32,16 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.AddRelationColumnCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.AddRelationRowCommand;
+import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationColumnCommand;
+import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationRowCommand;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -45,11 +51,12 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
-public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMapper> implements RelationGridControls.Presenter {
+public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMapper> implements HasListSelectorControl {
 
-    private final RelationGridControls controls;
+    private final ListSelector listSelector;
 
     private final TextAreaSingletonDOMElementFactory factory;
     private final TextBoxSingletonDOMElementFactory headerFactory;
@@ -65,7 +72,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
                         final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                         final CellEditorControls cellEditorControls,
                         final TranslationService translationService,
-                        final RelationGridControls controls) {
+                        final ListSelector listSelector) {
         super(parent,
               hasExpression,
               expression,
@@ -84,7 +91,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
               cellEditorControls,
               translationService,
               false);
-        this.controls = controls;
+        this.listSelector = listSelector;
 
         this.factory = new TextAreaSingletonDOMElementFactory(gridPanel,
                                                               gridLayer,
@@ -104,8 +111,6 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
         setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
 
         super.doInitialisation();
-
-        controls.init(this);
     }
 
     @Override
@@ -117,7 +122,8 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
     @Override
     public RelationUIModelMapper makeUiModelMapper() {
         return new RelationUIModelMapper(this::getModel,
-                                         () -> expression);
+                                         () -> expression,
+                                         listSelector);
     }
 
     @Override
@@ -160,11 +166,60 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
 
     @Override
     public Optional<IsElement> getEditorControls() {
-        return Optional.of(controls);
+        return Optional.empty();
     }
 
     @Override
-    public void addColumn() {
+    @SuppressWarnings("unused")
+    public java.util.List<ListSelectorItem> getItems(final int uiRowIndex,
+                                                     final int uiColumnIndex) {
+        final java.util.List<ListSelectorItem> items = new ArrayList<>();
+        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_InsertColumnBefore),
+                                             uiColumnIndex > 0,
+                                             () -> {
+                                                 cellEditorControls.hide();
+                                                 expression.ifPresent(e -> addColumn(uiColumnIndex));
+                                             }));
+        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_InsertColumnAfter),
+                                             uiColumnIndex > 0,
+                                             () -> {
+                                                 cellEditorControls.hide();
+                                                 expression.ifPresent(e -> addColumn(uiColumnIndex + 1));
+                                             }));
+        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_DeleteColumn),
+                                             model.getColumnCount() - RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT > 1 && uiColumnIndex > 0,
+                                             () -> {
+                                                 cellEditorControls.hide();
+                                                 expression.ifPresent(e -> deleteColumn(uiColumnIndex));
+                                             }));
+        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_InsertRowAbove),
+                                             true,
+                                             () -> {
+                                                 cellEditorControls.hide();
+                                                 expression.ifPresent(e -> addRow(uiRowIndex));
+                                             }));
+        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_InsertRowBelow),
+                                             true,
+                                             () -> {
+                                                 cellEditorControls.hide();
+                                                 expression.ifPresent(e -> addRow(uiRowIndex + 1));
+                                             }));
+        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_DeleteRow),
+                                             model.getRowCount() > 1,
+                                             () -> {
+                                                 cellEditorControls.hide();
+                                                 expression.ifPresent(e -> deleteRow(uiRowIndex));
+                                             }));
+        return items;
+    }
+
+    @Override
+    public void onItemSelected(final ListSelectorItem item) {
+        final ListSelectorTextItem li = (ListSelectorTextItem) item;
+        li.getCommand().execute();
+    }
+
+    void addColumn(final int index) {
         expression.ifPresent(relation -> {
             final InformationItem informationItem = new InformationItem();
             informationItem.setName(new Name("Column"));
@@ -175,6 +230,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
                                                                        informationItem,
                                                                        model,
                                                                        relationColumn,
+                                                                       index,
                                                                        uiModelMapper,
                                                                        () -> {
                                                                            relationColumn.updateWidthOfPeers();
@@ -185,20 +241,55 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
         });
     }
 
-    @Override
-    public void addRow() {
+    void addRow(final int index) {
         expression.ifPresent(relation -> {
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           new AddRelationRowCommand(relation,
                                                                     new List(),
                                                                     model,
                                                                     new DMNGridRow(),
+                                                                    index,
                                                                     uiModelMapper,
                                                                     () -> {
                                                                         gridPanel.refreshScrollPosition();
                                                                         gridPanel.updatePanelSize();
                                                                         gridLayer.batch();
                                                                     }));
+        });
+    }
+
+    void deleteColumn(final int index) {
+        expression.ifPresent(relation -> {
+            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                          new DeleteRelationColumnCommand(relation,
+                                                                          model,
+                                                                          index,
+                                                                          uiModelMapper,
+                                                                          () -> {
+                                                                              final int parentColumnIndex = getParentInformation().getColumnIndex();
+                                                                              final GridData parentGridData = getParentInformation().getGridData();
+                                                                              final GridColumn<?> parentColumn = parentGridData.getColumns().get(parentColumnIndex);
+                                                                              parentColumn.setWidth(getWidth() + getPadding() * 2);
+
+                                                                              gridPanel.refreshScrollPosition();
+                                                                              gridPanel.updatePanelSize();
+                                                                              gridLayer.batch();
+                                                                          }));
+        });
+    }
+
+    void deleteRow(final int index) {
+        expression.ifPresent(relation -> {
+            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                          new DeleteRelationRowCommand(relation,
+                                                                       model,
+                                                                       index,
+                                                                       uiModelMapper,
+                                                                       () -> {
+                                                                           gridPanel.refreshScrollPosition();
+                                                                           gridPanel.updatePanelSize();
+                                                                           gridLayer.batch();
+                                                                       }));
         });
     }
 }

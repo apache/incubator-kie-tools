@@ -33,9 +33,15 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.AddRelationColumnCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.AddRelationRowCommand;
+import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationColumnCommand;
+import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationRowCommand;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNClientFullSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -45,20 +51,46 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.mvp.Command;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class RelationGridTest {
 
-    @Mock
+    private final static int INSERT_COLUMN_BEFORE = 0;
+
+    private final static int INSERT_COLUMN_AFTER = 1;
+
+    private final static int DELETE_COLUMN = 2;
+
+    private final static int INSERT_ROW_ABOVE = 3;
+
+    private final static int INSERT_ROW_BELOW = 4;
+
+    private final static int DELETE_ROW = 5;
+
     private GridCellTuple parent;
+
+    private GridData parentUiModel;
+
+    @Mock
+    private GridColumn parentUiColumn;
 
     @Mock
     private HasExpression hasExpression;
@@ -90,19 +122,25 @@ public class RelationGridTest {
     private Event<ExpressionEditorSelectedEvent> editorSelectedEvent;
 
     @Mock
-    private RelationGridControls controls;
-
-    @Mock
     private CellEditorControls cellEditorControls;
 
     @Mock
     private TranslationService translationService;
 
+    @Mock
+    private ListSelector listSelector;
+
     @Captor
     private ArgumentCaptor<AddRelationColumnCommand> addColumnCommand;
 
     @Captor
+    private ArgumentCaptor<DeleteRelationColumnCommand> deleteColumnCommand;
+
+    @Captor
     private ArgumentCaptor<AddRelationRowCommand> addRowCommand;
+
+    @Captor
+    private ArgumentCaptor<DeleteRelationRowCommand> deleteRowCommand;
 
     private RelationGrid relationGrid;
 
@@ -111,22 +149,30 @@ public class RelationGridTest {
         editorSelectedEvent = new EventSourceMock<>();
         doReturn(abstractCanvasHandler).when(dmnClientFullSession).getCanvasHandler();
         doReturn(dmnClientFullSession).when(sessionManager).getCurrentSession();
+        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
+        parentUiModel = new DMNGridData(gridLayer);
+        parentUiModel.appendColumn(parentUiColumn);
+        parent = new GridCellTuple(0, 0, parentUiModel);
+    }
+
+    private void makeRelationGrid() {
+        relationGrid = spy(new RelationGrid(parent,
+                                            hasExpression,
+                                            expression,
+                                            hasName,
+                                            gridPanel,
+                                            gridLayer,
+                                            sessionManager,
+                                            sessionCommandManager,
+                                            editorSelectedEvent,
+                                            cellEditorControls,
+                                            translationService,
+                                            listSelector));
     }
 
     @Test
     public void testInitialiseUiColumnsEmptyModel() throws Exception {
-        relationGrid = new RelationGrid(parent,
-                                        hasExpression,
-                                        expression,
-                                        hasName,
-                                        gridPanel,
-                                        gridLayer,
-                                        sessionManager,
-                                        sessionCommandManager,
-                                        editorSelectedEvent,
-                                        cellEditorControls,
-                                        translationService,
-                                        controls);
+        makeRelationGrid();
 
         assertEquals(0, relationGrid.getModel().getRowCount());
         assertEquals(1, relationGrid.getModel().getColumns().size());
@@ -139,18 +185,8 @@ public class RelationGridTest {
         relation.getColumn().add(new InformationItem() {{
             getName().setValue(columnHeader);
         }});
-        relationGrid = new RelationGrid(parent,
-                                        hasExpression,
-                                        expression,
-                                        hasName,
-                                        gridPanel,
-                                        gridLayer,
-                                        sessionManager,
-                                        sessionCommandManager,
-                                        editorSelectedEvent,
-                                        cellEditorControls,
-                                        translationService,
-                                        controls);
+
+        makeRelationGrid();
 
         assertEquals(2, relationGrid.getModel().getColumns().size());
         assertTrue(relationGrid.getModel().getColumns().get(0) instanceof RowNumberColumn);
@@ -174,18 +210,8 @@ public class RelationGridTest {
                 setText(secondRowValue);
             }});
         }});
-        relationGrid = new RelationGrid(parent,
-                                        hasExpression,
-                                        expression,
-                                        hasName,
-                                        gridPanel,
-                                        gridLayer,
-                                        sessionManager,
-                                        sessionCommandManager,
-                                        editorSelectedEvent,
-                                        cellEditorControls,
-                                        translationService,
-                                        controls);
+
+        makeRelationGrid();
 
         assertEquals(2, relationGrid.getModel().getRowCount());
         assertEquals(firstRowValue, relationGrid.getModel().getRow(0).getCells().get(1).getValue().getValue());
@@ -193,21 +219,193 @@ public class RelationGridTest {
     }
 
     @Test
-    public void testAddColumn() throws Exception {
-        relationGrid = new RelationGrid(parent,
-                                        hasExpression,
-                                        expression,
-                                        hasName,
-                                        gridPanel,
-                                        gridLayer,
-                                        sessionManager,
-                                        sessionCommandManager,
-                                        editorSelectedEvent,
-                                        cellEditorControls,
-                                        translationService,
-                                        controls);
+    public void testGetItems() {
+        makeRelationGrid();
 
-        relationGrid.addColumn();
+        final java.util.List<HasListSelectorControl.ListSelectorItem> items = relationGrid.getItems(0, 0);
+
+        assertThat(items.size()).isEqualTo(6);
+        assertListSelectorItem(items.get(INSERT_COLUMN_BEFORE),
+                               DMNEditorConstants.RelationEditor_InsertColumnBefore);
+        assertListSelectorItem(items.get(INSERT_COLUMN_AFTER),
+                               DMNEditorConstants.RelationEditor_InsertColumnAfter);
+        assertListSelectorItem(items.get(DELETE_COLUMN),
+                               DMNEditorConstants.RelationEditor_DeleteColumn);
+        assertListSelectorItem(items.get(INSERT_ROW_ABOVE),
+                               DMNEditorConstants.RelationEditor_InsertRowAbove);
+        assertListSelectorItem(items.get(INSERT_ROW_BELOW),
+                               DMNEditorConstants.RelationEditor_InsertRowBelow);
+        assertListSelectorItem(items.get(DELETE_ROW),
+                               DMNEditorConstants.RelationEditor_DeleteRow);
+    }
+
+    private void assertListSelectorItem(final HasListSelectorControl.ListSelectorItem item,
+                                        final String text) {
+        assertThat(item).isInstanceOf(HasListSelectorControl.ListSelectorTextItem.class);
+        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) item;
+        assertThat(ti.getText()).isEqualTo(text);
+    }
+
+    @Test
+    public void testOnItemSelected() {
+        makeRelationGrid();
+
+        final Command command = mock(Command.class);
+        final HasListSelectorControl.ListSelectorTextItem listSelectorItem = mock(HasListSelectorControl.ListSelectorTextItem.class);
+        when(listSelectorItem.getCommand()).thenReturn(command);
+
+        relationGrid.onItemSelected(listSelectorItem);
+
+        verify(command).execute();
+    }
+
+    @Test
+    public void testOnItemSelectedInsertColumnBefore() {
+        makeRelationGrid();
+
+        final java.util.List<HasListSelectorControl.ListSelectorItem> items = relationGrid.getItems(0, 0);
+        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(INSERT_COLUMN_BEFORE);
+
+        relationGrid.onItemSelected(ti);
+
+        verify(cellEditorControls).hide();
+        verify(relationGrid).addColumn(eq(0));
+    }
+
+    @Test
+    public void testOnItemSelectedInsertColumnAfter() {
+        makeRelationGrid();
+
+        final java.util.List<HasListSelectorControl.ListSelectorItem> items = relationGrid.getItems(0, 0);
+        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(INSERT_COLUMN_AFTER);
+
+        relationGrid.onItemSelected(ti);
+
+        verify(cellEditorControls).hide();
+        verify(relationGrid).addColumn(eq(1));
+    }
+
+    @Test
+    public void testOnItemSelectedInsertColumnEnabled() {
+        makeRelationGrid();
+
+        assertListSelectorItemEnabled(0, 0, INSERT_COLUMN_BEFORE, false);
+        assertListSelectorItemEnabled(0, 1, INSERT_COLUMN_BEFORE, true);
+
+        assertListSelectorItemEnabled(0, 0, INSERT_COLUMN_AFTER, false);
+        assertListSelectorItemEnabled(0, 1, INSERT_COLUMN_AFTER, true);
+    }
+
+    @Test
+    public void testOnItemSelectedDeleteColumn() {
+        relation.getColumn().add(new InformationItem());
+        makeRelationGrid();
+
+        //Cannot delete column 0 since it is the RowNumber column. The first Relation column is 1.
+        final java.util.List<HasListSelectorControl.ListSelectorItem> items = relationGrid.getItems(0, RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT);
+        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(DELETE_COLUMN);
+
+        relationGrid.onItemSelected(ti);
+
+        verify(cellEditorControls).hide();
+        verify(relationGrid).deleteColumn(eq(1));
+    }
+
+    @Test
+    public void testOnItemSelectedDeleteColumnEnabled() {
+        makeRelationGrid();
+
+        //Grid has one Relation column that cannot be deleted.
+        relationGrid.getModel().appendColumn(mock(RelationColumn.class));
+        assertListSelectorItemEnabled(0, 0, DELETE_COLUMN, false);
+        assertListSelectorItemEnabled(0, 1, DELETE_COLUMN, false);
+
+        //Grid has two Relation columns. Columns 1 and 2 can be deleted.
+        relationGrid.getModel().appendColumn(mock(RelationColumn.class));
+        assertListSelectorItemEnabled(0, 0, DELETE_COLUMN, false);
+        assertListSelectorItemEnabled(0, 1, DELETE_COLUMN, true);
+        assertListSelectorItemEnabled(0, 2, DELETE_COLUMN, true);
+    }
+
+    @Test
+    public void testOnItemSelectedInsertRowAbove() {
+        makeRelationGrid();
+
+        final java.util.List<HasListSelectorControl.ListSelectorItem> items = relationGrid.getItems(0, 0);
+        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(INSERT_ROW_ABOVE);
+
+        relationGrid.onItemSelected(ti);
+
+        verify(cellEditorControls).hide();
+        verify(relationGrid).addRow(eq(0));
+    }
+
+    @Test
+    public void testOnItemSelectedInsertRowBelow() {
+        makeRelationGrid();
+
+        final java.util.List<HasListSelectorControl.ListSelectorItem> items = relationGrid.getItems(0, 0);
+        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(INSERT_ROW_BELOW);
+
+        relationGrid.onItemSelected(ti);
+
+        verify(cellEditorControls).hide();
+        verify(relationGrid).addRow(eq(1));
+    }
+
+    @Test
+    public void testOnItemSelectedInsertRowEnabled() {
+        makeRelationGrid();
+
+        assertListSelectorItemEnabled(0, 0, INSERT_ROW_ABOVE, true);
+        assertListSelectorItemEnabled(1, 0, INSERT_ROW_ABOVE, true);
+
+        assertListSelectorItemEnabled(0, 0, INSERT_ROW_BELOW, true);
+        assertListSelectorItemEnabled(1, 0, INSERT_ROW_BELOW, true);
+    }
+
+    @Test
+    public void testOnItemSelectedDeleteRow() {
+        relation.getRow().add(new List());
+        makeRelationGrid();
+
+        final java.util.List<HasListSelectorControl.ListSelectorItem> items = relationGrid.getItems(0, 0);
+        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(DELETE_ROW);
+
+        relationGrid.onItemSelected(ti);
+
+        verify(cellEditorControls).hide();
+        verify(relationGrid).deleteRow(eq(0));
+    }
+
+    @Test
+    public void testOnItemSelectedDeleteRowEnabled() {
+        makeRelationGrid();
+
+        //Grid has one row that cannot be deleted.
+        relationGrid.getModel().appendRow(new BaseGridRow());
+        assertListSelectorItemEnabled(0, 0, DELETE_ROW, false);
+
+        //Grid has two rows. Rows 1 and 2 can be deleted.
+        relationGrid.getModel().appendRow(new BaseGridRow());
+        assertListSelectorItemEnabled(0, 0, DELETE_ROW, true);
+        assertListSelectorItemEnabled(1, 0, DELETE_ROW, true);
+    }
+
+    private void assertListSelectorItemEnabled(final int uiRowIndex,
+                                               final int uiColumnIndex,
+                                               final int listItemIndex,
+                                               final boolean enabled) {
+        final java.util.List<HasListSelectorControl.ListSelectorItem> items = relationGrid.getItems(uiRowIndex, uiColumnIndex);
+        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(listItemIndex);
+        assertThat(ti.isEnabled()).isEqualTo(enabled);
+    }
+
+    @Test
+    public void testAddColumn() throws Exception {
+        makeRelationGrid();
+
+        relationGrid.addColumn(0);
 
         verify(sessionCommandManager).execute(eq(abstractCanvasHandler), addColumnCommand.capture());
 
@@ -218,25 +416,46 @@ public class RelationGridTest {
     }
 
     @Test
-    public void testAddRow() throws Exception {
-        relationGrid = new RelationGrid(parent,
-                                        hasExpression,
-                                        expression,
-                                        hasName,
-                                        gridPanel,
-                                        gridLayer,
-                                        sessionManager,
-                                        sessionCommandManager,
-                                        editorSelectedEvent,
-                                        cellEditorControls,
-                                        translationService,
-                                        controls);
+    public void testDeleteColumn() throws Exception {
+        relation.getColumn().add(new InformationItem());
+        makeRelationGrid();
 
-        relationGrid.addRow();
+        //Cannot delete column 0 since it is the RowNumber column. The first Relation column is 1.
+        relationGrid.deleteColumn(RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT);
+
+        verify(sessionCommandManager).execute(eq(abstractCanvasHandler), deleteColumnCommand.capture());
+
+        deleteColumnCommand.getValue().execute(abstractCanvasHandler);
+        verify(parentUiColumn).setWidth(relationGrid.getWidth() + relationGrid.getPadding() * 2);
+        verify(gridPanel).refreshScrollPosition();
+        verify(gridPanel).updatePanelSize();
+        verify(gridLayer).batch();
+    }
+
+    @Test
+    public void testAddRow() throws Exception {
+        makeRelationGrid();
+
+        relationGrid.addRow(0);
 
         verify(sessionCommandManager).execute(eq(abstractCanvasHandler), addRowCommand.capture());
 
         addRowCommand.getValue().execute(abstractCanvasHandler);
+        verify(gridPanel).refreshScrollPosition();
+        verify(gridPanel).updatePanelSize();
+        verify(gridLayer).batch();
+    }
+
+    @Test
+    public void testDeleteRow() throws Exception {
+        relation.getRow().add(new List());
+        makeRelationGrid();
+
+        relationGrid.deleteRow(0);
+
+        verify(sessionCommandManager).execute(eq(abstractCanvasHandler), deleteRowCommand.capture());
+
+        deleteRowCommand.getValue().execute(abstractCanvasHandler);
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
         verify(gridLayer).batch();

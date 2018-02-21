@@ -95,8 +95,9 @@ public class DeleteCellValueCommand extends AbstractCanvasGraphCommand implement
         return new AbstractCanvasCommand() {
             @Override
             public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
-                cellTuple.getGridData().deleteCell(cellTuple.getRowIndex(),
-                                                   cellTuple.getColumnIndex());
+                cellTuple.getGridData().setCellValue(cellTuple.getRowIndex(),
+                                                     cellTuple.getColumnIndex(),
+                                                     null);
                 canvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;

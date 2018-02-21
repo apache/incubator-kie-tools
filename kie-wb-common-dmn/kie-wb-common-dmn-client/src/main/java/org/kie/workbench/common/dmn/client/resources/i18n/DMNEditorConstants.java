@@ -57,4 +57,22 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String ContextEditor_DeleteContextEntry = "ContextEditor.DeleteContextEntry";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RelationEditor_InsertRowAbove = "RelationEditor.InsertRowAbove";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RelationEditor_InsertRowBelow = "RelationEditor.InsertRowBelow";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RelationEditor_DeleteRow = "RelationEditor.DeleteRow";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RelationEditor_InsertColumnBefore = "RelationEditor.InsertColumnBefore";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RelationEditor_InsertColumnAfter = "RelationEditor.InsertColumnAfter";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RelationEditor_DeleteColumn = "RelationEditor.DeleteColumn";
 }

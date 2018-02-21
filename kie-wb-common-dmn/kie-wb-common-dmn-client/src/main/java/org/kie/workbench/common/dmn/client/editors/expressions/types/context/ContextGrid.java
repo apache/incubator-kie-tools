@@ -32,6 +32,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.context.AddContextEntryCommand;
+import org.kie.workbench.common.dmn.client.commands.expressions.types.context.DeleteContextEntryCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
@@ -54,7 +55,6 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState;
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState.GridWidgetHandlersOperation;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
-import org.uberfire.mvp.Command;
 
 public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMapper> implements HasRowDragRestrictions,
                                                                                               HasListSelectorControl {
@@ -187,66 +187,24 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
     public List<ListSelectorItem> getItems(final int uiRowIndex,
                                            final int uiColumnIndex) {
         final List<ListSelectorItem> items = new ArrayList<>();
-        items.add(new ListSelectorTextItem() {
-
-            @Override
-            public String getText() {
-                return translationService.format(DMNEditorConstants.ContextEditor_InsertContextEntryAbove);
-            }
-
-            @Override
-            public boolean isEnabled() {
-                return true;
-            }
-
-            @Override
-            public Command getCommand() {
-                return () -> {
-                    cellEditorControls.hide();
-                    expression.ifPresent(e -> addContextEntry(uiRowIndex));
-                };
-            }
-        });
-        items.add(new ListSelectorTextItem() {
-
-            @Override
-            public String getText() {
-                return translationService.format(DMNEditorConstants.ContextEditor_InsertContextEntryBelow);
-            }
-
-            @Override
-            public boolean isEnabled() {
-                return true;
-            }
-
-            @Override
-            public Command getCommand() {
-                return () -> {
-                    cellEditorControls.hide();
-                    expression.ifPresent(e -> addContextEntry(uiRowIndex + 1));
-                };
-            }
-        });
-        items.add(new ListSelectorTextItem() {
-
-            @Override
-            public String getText() {
-                return translationService.format(DMNEditorConstants.ContextEditor_DeleteContextEntry);
-            }
-
-            @Override
-            public boolean isEnabled() {
-                return false;
-            }
-
-            @Override
-            public Command getCommand() {
-                return () -> {
-                    cellEditorControls.hide();
-                    deleteContextEntry();
-                };
-            }
-        });
+        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.ContextEditor_InsertContextEntryAbove),
+                                             true,
+                                             () -> {
+                                                 cellEditorControls.hide();
+                                                 expression.ifPresent(e -> addContextEntry(uiRowIndex));
+                                             }));
+        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.ContextEditor_InsertContextEntryBelow),
+                                             true,
+                                             () -> {
+                                                 cellEditorControls.hide();
+                                                 expression.ifPresent(e -> addContextEntry(uiRowIndex + 1));
+                                             }));
+        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.ContextEditor_DeleteContextEntry),
+                                             model.getRowCount() > 2 && uiRowIndex < model.getRowCount() - 1,
+                                             () -> {
+                                                 cellEditorControls.hide();
+                                                 deleteContextEntry(uiRowIndex);
+                                             }));
         return items;
     }
 
@@ -276,6 +234,18 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
         });
     }
 
-    void deleteContextEntry() {
+    void deleteContextEntry(final int index) {
+        expression.ifPresent(c -> {
+            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                          new DeleteContextEntryCommand(c,
+                                                                        model,
+                                                                        index,
+                                                                        () -> {
+                                                                            parent.onResize();
+                                                                            gridPanel.refreshScrollPosition();
+                                                                            gridPanel.updatePanelSize();
+                                                                            gridLayer.batch();
+                                                                        }));
+        });
     }
 }

@@ -53,6 +53,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManage
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -186,6 +187,22 @@ public class CommandUtilsTest {
     }
 
     @Test
+    public void testUpdateParentInformation_WithExpressionColumnNullValues() {
+        setupUiModelNullValues(Pair.newPair(new ExpressionEditorColumn(new BaseHeaderMetaData("column"), gridWidget),
+                                            (rowIndex) -> {
+                                                final BaseExpressionGrid grid = mock(BaseExpressionGrid.class);
+                                                final GridCellTuple gct = new GridCellTuple(rowIndex, 0, mock(GridData.class));
+                                                when(grid.getParentInformation()).thenReturn(gct);
+                                                return new ExpressionCellValue(Optional.of(grid));
+                                            }));
+        try {
+            CommandUtils.updateParentInformation(uiModel);
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
     public void testUpdateParentInformation_WithMultipleColumns() {
         setupUiModel(Pair.newPair(new ExpressionEditorColumn(new BaseHeaderMetaData("column"), gridWidget),
                                   (rowIndex) -> {
@@ -218,16 +235,21 @@ public class CommandUtilsTest {
 
     @SafeVarargs
     private final void setupUiModel(final Pair<GridColumn, Function<Integer, GridCellValue>>... columns) {
-        Arrays.asList(columns).forEach(column -> uiModel.appendColumn(column.getK1()));
-        IntStream.range(0, ROW_COUNT).forEach(rowIndex -> {
-            uiModel.appendRow(new DMNGridRow());
-        });
+        setupUiModelNullValues(columns);
         Arrays.asList(columns).forEach(column -> {
             IntStream.range(0, ROW_COUNT).forEach(rowIndex -> {
                 uiModel.setCellValue(rowIndex,
                                      uiModel.getColumns().indexOf(column.getK1()),
                                      column.getK2().apply(rowIndex));
             });
+        });
+    }
+
+    @SafeVarargs
+    private final void setupUiModelNullValues(final Pair<GridColumn, Function<Integer, GridCellValue>>... columns) {
+        Arrays.asList(columns).forEach(column -> uiModel.appendColumn(column.getK1()));
+        IntStream.range(0, ROW_COUNT).forEach(rowIndex -> {
+            uiModel.appendRow(new DMNGridRow());
         });
     }
 }

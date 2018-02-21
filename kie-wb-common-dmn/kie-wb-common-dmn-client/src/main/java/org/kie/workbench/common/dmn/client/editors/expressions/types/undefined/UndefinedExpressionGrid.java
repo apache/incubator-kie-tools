@@ -52,7 +52,6 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
-import org.uberfire.mvp.Command;
 
 public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, UndefinedExpressionUIModelMapper> implements HasListSelectorControl {
 
@@ -179,26 +178,12 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
     }
 
     ListSelectorTextItem makeListSelectorItem(final ExpressionEditorDefinition definition) {
-        return new ListSelectorTextItem() {
-
-            @Override
-            public String getText() {
-                return definition.getName();
-            }
-
-            @Override
-            public boolean isEnabled() {
-                return true;
-            }
-
-            @Override
-            public Command getCommand() {
-                return () -> {
-                    cellEditorControls.hide();
-                    onExpressionTypeChanged(definition.getType());
-                };
-            }
-        };
+        return ListSelectorTextItem.build(definition.getName(),
+                                          true,
+                                          () -> {
+                                              cellEditorControls.hide();
+                                              onExpressionTypeChanged(definition.getType());
+                                          });
     }
 
     @Override

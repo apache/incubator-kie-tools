@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.relation;
 
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.IntStream;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +27,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.List;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -35,6 +37,7 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionStrategy;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
 
@@ -49,6 +52,9 @@ public class RelationUIModelMapperTest {
 
     @Mock
     private RelationColumn uiRelationColumn2;
+
+    @Mock
+    private ListSelector listSelector;
 
     private BaseGridData uiModel;
 
@@ -91,7 +97,8 @@ public class RelationUIModelMapperTest {
         }});
 
         this.mapper = new RelationUIModelMapper(() -> uiModel,
-                                                () -> Optional.of(relation));
+                                                () -> Optional.of(relation),
+                                                listSelector);
         this.cellValueSupplier = Optional::empty;
     }
 
@@ -126,6 +133,23 @@ public class RelationUIModelMapperTest {
                      uiModel.getCell(1, 1).getValue().getValue());
         assertEquals("le(2,1)",
                      uiModel.getCell(1, 2).getValue().getValue());
+    }
+
+    @Test
+    public void testFromDMNModelCellTypes() {
+        IntStream.range(0, 2).forEach(rowIndex -> {
+            mapper.fromDMNModel(rowIndex, 0);
+            mapper.fromDMNModel(rowIndex, 1);
+            mapper.fromDMNModel(rowIndex, 2);
+        });
+
+        assertThat(uiModel.getCell(0, 0)).isInstanceOf(RelationGridCell.class);
+        assertThat(uiModel.getCell(0, 1)).isInstanceOf(RelationGridCell.class);
+        assertThat(uiModel.getCell(0, 2)).isInstanceOf(RelationGridCell.class);
+
+        assertThat(uiModel.getCell(1, 0)).isInstanceOf(RelationGridCell.class);
+        assertThat(uiModel.getCell(1, 1)).isInstanceOf(RelationGridCell.class);
+        assertThat(uiModel.getCell(1, 2)).isInstanceOf(RelationGridCell.class);
     }
 
     @Test

@@ -79,13 +79,15 @@ public class CommandUtils {
             final int columnIndex = uiModel.getColumns().indexOf(c);
             for (int rowIndex = 0; rowIndex < uiModel.getRowCount(); rowIndex++) {
                 final GridCell<?> cell = uiModel.getCell(rowIndex, columnIndex);
-                final GridCellValue<?> value = cell.getValue();
-                if (value instanceof ExpressionCellValue) {
-                    final ExpressionCellValue ecv = (ExpressionCellValue) value;
-                    if (ecv.getValue().isPresent()) {
-                        final BaseExpressionGrid beg = ecv.getValue().get();
-                        beg.getParentInformation().setRowIndex(rowIndex);
-                        beg.getParentInformation().setColumnIndex(columnIndex);
+                if (cell != null) {
+                    final GridCellValue<?> value = cell.getValue();
+                    if (value instanceof ExpressionCellValue) {
+                        final ExpressionCellValue ecv = (ExpressionCellValue) value;
+                        if (ecv.getValue().isPresent()) {
+                            final BaseExpressionGrid beg = ecv.getValue().get();
+                            beg.getParentInformation().setRowIndex(rowIndex);
+                            beg.getParentInformation().setColumnIndex(columnIndex);
+                        }
                     }
                 }
             }

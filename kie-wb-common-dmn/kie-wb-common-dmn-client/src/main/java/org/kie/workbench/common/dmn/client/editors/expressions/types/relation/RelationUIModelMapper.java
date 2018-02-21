@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -30,10 +31,14 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowS
 
 public class RelationUIModelMapper extends BaseUIModelMapper<Relation> {
 
+    private ListSelector listSelector;
+
     public RelationUIModelMapper(final Supplier<GridData> uiModel,
-                                 final Supplier<Optional<Relation>> dmnModel) {
+                                 final Supplier<Optional<Relation>> dmnModel,
+                                 final ListSelector listSelector) {
         super(uiModel,
               dmnModel);
+        this.listSelector = listSelector;
     }
 
     @Override
@@ -43,9 +48,10 @@ public class RelationUIModelMapper extends BaseUIModelMapper<Relation> {
             final RelationUIModelMapperHelper.RelationSection section = RelationUIModelMapperHelper.getSection(relation, columnIndex);
             switch (section) {
                 case ROW_INDEX:
-                    uiModel.get().setCellValue(rowIndex,
-                                               columnIndex,
-                                               new BaseGridCellValue<>(rowIndex + 1));
+                    uiModel.get().setCell(rowIndex,
+                                          columnIndex,
+                                          () -> new RelationGridCell<>(new BaseGridCellValue<>(rowIndex + 1),
+                                                                       listSelector));
                     uiModel.get().getCell(rowIndex,
                                           columnIndex).setSelectionStrategy(RowSelectionStrategy.INSTANCE);
                     break;
@@ -60,9 +66,10 @@ public class RelationUIModelMapper extends BaseUIModelMapper<Relation> {
                         // to limit ourselves to LiteralExpressions. Our Grid-system supports ANY (nested) expression too; however
                         // the simplification has been made for the benefit of USERS.
                         final LiteralExpression le = (LiteralExpression) ex;
-                        uiModel.get().setCellValue(rowIndex,
-                                                   columnIndex,
-                                                   new BaseGridCellValue<>(le.getText()));
+                        uiModel.get().setCell(rowIndex,
+                                              columnIndex,
+                                              () -> new RelationGridCell<>(new BaseGridCellValue<>(le.getText()),
+                                                                           listSelector));
                     });
             }
         });

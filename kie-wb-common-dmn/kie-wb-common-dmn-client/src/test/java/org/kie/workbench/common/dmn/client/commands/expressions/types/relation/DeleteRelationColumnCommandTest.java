@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,14 +44,15 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AddRelationColumnCommandTest {
+public class DeleteRelationColumnCommandTest {
+
+    private static final String VALUE = "value";
 
     @Mock
     private RowNumberColumn uiRowNumberColumn;
@@ -82,32 +83,38 @@ public class AddRelationColumnCommandTest {
 
     private RelationUIModelMapper uiModelMapper;
 
-    private AddRelationColumnCommand command;
+    private DeleteRelationColumnCommand command;
 
     @Before
     public void setup() {
         this.relation = new Relation();
         this.informationItem = new InformationItem();
+        this.relation.getColumn().add(informationItem);
         this.uiModel = new BaseGridData();
         this.uiModel.appendColumn(uiRowNumberColumn);
-        this.uiModelMapper = new RelationUIModelMapper(() -> uiModel,
-                                                       () -> Optional.of(relation),
-                                                       listSelector);
+        this.uiModel.appendColumn(uiModelColumn);
 
-        this.command = spy(new AddRelationColumnCommand(relation,
-                                                        informationItem,
-                                                        uiModel,
-                                                        uiModelColumn,
-                                                        1,
-                                                        uiModelMapper,
-                                                        canvasOperation));
         doReturn(ruleManager).when(handler).getRuleManager();
         doReturn(0).when(uiRowNumberColumn).getIndex();
         doReturn(1).when(uiModelColumn).getIndex();
+
+        this.uiModelMapper = new RelationUIModelMapper(() -> uiModel,
+                                                       () -> Optional.of(relation),
+                                                       listSelector);
+    }
+
+    private void makeCommand() {
+        this.command = spy(new DeleteRelationColumnCommand(relation,
+                                                           uiModel,
+                                                           1,
+                                                           uiModelMapper,
+                                                           canvasOperation));
     }
 
     @Test
     public void testGraphCommandAllow() {
+        makeCommand();
+
         final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
@@ -117,62 +124,32 @@ public class AddRelationColumnCommandTest {
     @Test
     public void testGraphCommandExecuteWithRows() {
         relation.getRow().add(new List());
+        relation.getRow().get(0).getExpression().add(new LiteralExpression());
+
+        makeCommand();
 
         final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      c.execute(gce));
-        assertEquals(1,
+        assertEquals(0,
                      relation.getColumn().size());
-        assertEquals(informationItem,
-                     relation.getColumn().get(0));
         assertEquals(1,
                      relation.getRow().size());
-        assertEquals(1,
+        assertEquals(0,
                      relation.getRow().get(0).getExpression().size());
-        assertTrue(relation.getRow().get(0).getExpression().get(0) instanceof LiteralExpression);
-    }
-
-    @Test
-    public void testGraphCommandExecuteWithExistingColumn_InsertBefore() {
-        final InformationItem existingInformationItem = new InformationItem();
-        relation.getColumn().add(existingInformationItem);
-
-        final List row = new List();
-        relation.getRow().add(row);
-
-        final LiteralExpression existingLiteralExpression = new LiteralExpression();
-        row.getExpression().add(0, existingLiteralExpression);
-
-        final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
-
-        assertEquals(GraphCommandResultBuilder.SUCCESS,
-                     c.execute(gce));
-        assertEquals(2,
-                     relation.getColumn().size());
-        assertEquals(informationItem,
-                     relation.getColumn().get(0));
-        assertEquals(existingInformationItem,
-                     relation.getColumn().get(1));
-        assertEquals(1,
-                     relation.getRow().size());
-        assertEquals(2,
-                     relation.getRow().get(0).getExpression().size());
-        assertTrue(relation.getRow().get(0).getExpression().get(0) instanceof LiteralExpression);
-        assertEquals(existingLiteralExpression,
-                     relation.getRow().get(0).getExpression().get(1));
     }
 
     @Test
     public void testGraphCommandExecuteWithNoRows() {
+        makeCommand();
+
         final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      c.execute(gce));
-        assertEquals(1,
+        assertEquals(0,
                      relation.getColumn().size());
-        assertEquals(informationItem,
-                     relation.getColumn().get(0));
         assertEquals(0,
                      relation.getRow().size());
     }
@@ -180,32 +157,41 @@ public class AddRelationColumnCommandTest {
     @Test
     public void testGraphCommandUndoWithRows() {
         relation.getRow().add(new List());
+        final LiteralExpression literalExpression = new LiteralExpression();
+        literalExpression.setText(VALUE);
+        relation.getRow().get(0).getExpression().add(literalExpression);
+
+        makeCommand();
 
         final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
 
-        //Add column and then undo
+        //Delete column and then undo
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      c.execute(gce));
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      c.undo(gce));
-        assertEquals(0,
+        assertEquals(1,
                      relation.getColumn().size());
         assertEquals(1,
                      relation.getRow().size());
-        assertEquals(0,
+        assertEquals(1,
                      relation.getRow().get(0).getExpression().size());
+        assertEquals(VALUE,
+                     ((LiteralExpression) relation.getRow().get(0).getExpression().get(0)).getText());
     }
 
     @Test
     public void testGraphCommandUndoWithNoRows() {
+        makeCommand();
+
         final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
 
-        //Add column and then undo
+        //Delete column and then undo
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      c.execute(gce));
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      c.undo(gce));
-        assertEquals(0,
+        assertEquals(1,
                      relation.getColumn().size());
         assertEquals(0,
                      relation.getRow().size());
@@ -213,6 +199,8 @@ public class AddRelationColumnCommandTest {
 
     @Test
     public void testCanvasCommandAllow() {
+        makeCommand();
+
         final Command<AbstractCanvasHandler, CanvasViolation> c = command.newCanvasCommand(handler);
 
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
@@ -222,30 +210,27 @@ public class AddRelationColumnCommandTest {
     @Test
     public void testCanvasCommandExecuteWithRows() {
         relation.getRow().add(new List());
+        relation.getRow().get(0).getExpression().add(new LiteralExpression());
         uiModel.appendRow(new DMNGridRow());
         uiModelMapper.fromDMNModel(0, 0);
+        uiModelMapper.fromDMNModel(0, 1);
 
-        //Add Graph column first as RelationUIModelMapper relies on the model being first updated
-        command.newGraphCommand(handler).execute(gce);
+        makeCommand();
 
         final Command<AbstractCanvasHandler, CanvasViolation> cc = command.newCanvasCommand(handler);
 
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      cc.execute(handler));
-        assertEquals(2,
+        assertEquals(1,
                      uiModel.getColumnCount());
         assertEquals(uiRowNumberColumn,
                      uiModel.getColumns().get(0));
-        assertEquals(uiModelColumn,
-                     uiModel.getColumns().get(1));
         assertEquals(1,
                      uiModel.getRowCount());
-        assertEquals(2,
+        assertEquals(1,
                      uiModel.getRows().get(0).getCells().size());
         assertEquals(1,
                      uiModel.getCell(0, 0).getValue().getValue());
-        assertEquals("",
-                     uiModel.getCell(0, 1).getValue().getValue());
 
         verify(command).updateParentInformation();
 
@@ -254,19 +239,16 @@ public class AddRelationColumnCommandTest {
 
     @Test
     public void testCanvasCommandExecuteWithNoRows() {
-        //Add Graph column first as RelationUIModelMapper relies on the model being first updated
-        command.newGraphCommand(handler).execute(gce);
+        makeCommand();
 
         final Command<AbstractCanvasHandler, CanvasViolation> cc = command.newCanvasCommand(handler);
 
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      cc.execute(handler));
-        assertEquals(2,
+        assertEquals(1,
                      uiModel.getColumnCount());
         assertEquals(uiRowNumberColumn,
                      uiModel.getColumns().get(0));
-        assertEquals(uiModelColumn,
-                     uiModel.getColumns().get(1));
         assertEquals(0,
                      uiModel.getRowCount());
 
@@ -278,13 +260,15 @@ public class AddRelationColumnCommandTest {
     @Test
     public void testCanvasCommandUndoWithRows() {
         relation.getRow().add(new List());
+        final LiteralExpression literalExpression = new LiteralExpression();
+        literalExpression.setText(VALUE);
+        relation.getRow().get(0).getExpression().add(literalExpression);
         uiModel.appendRow(new DMNGridRow());
-        uiModelMapper.fromDMNModel(0, 0);
+        uiModelMapper.fromDMNModel(0, 1);
 
-        //Add Graph column first as RelationUIModelMapper relies on the model being first updated
-        command.newGraphCommand(handler).execute(gce);
+        makeCommand();
 
-        //Add column and then undo
+        //Delete column and then undo
         final Command<AbstractCanvasHandler, CanvasViolation> cc = command.newCanvasCommand(handler);
 
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
@@ -294,16 +278,18 @@ public class AddRelationColumnCommandTest {
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      cc.undo(handler));
 
-        assertEquals(1,
+        assertEquals(2,
                      uiModel.getColumnCount());
         assertEquals(uiRowNumberColumn,
                      uiModel.getColumns().get(0));
+        assertEquals(uiModelColumn,
+                     uiModel.getColumns().get(1));
         assertEquals(1,
                      uiModel.getRowCount());
         assertEquals(1,
                      uiModel.getRows().get(0).getCells().size());
-        assertEquals(1,
-                     uiModel.getCell(0, 0).getValue().getValue());
+        assertEquals(VALUE,
+                     uiModel.getCell(0, 1).getValue().getValue());
 
         verify(command).updateParentInformation();
 
@@ -312,10 +298,9 @@ public class AddRelationColumnCommandTest {
 
     @Test
     public void testCanvasCommandUndoWithNoRows() {
-        //Add Graph column first as RelationUIModelMapper relies on the model being first updated
-        command.newGraphCommand(handler).execute(gce);
+        makeCommand();
 
-        //Add column and then undo
+        //Delete column and then undo
         final Command<AbstractCanvasHandler, CanvasViolation> cc = command.newCanvasCommand(handler);
 
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
@@ -325,10 +310,12 @@ public class AddRelationColumnCommandTest {
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      cc.undo(handler));
 
-        assertEquals(1,
+        assertEquals(2,
                      uiModel.getColumnCount());
         assertEquals(uiRowNumberColumn,
                      uiModel.getColumns().get(0));
+        assertEquals(uiModelColumn,
+                     uiModel.getColumns().get(1));
         assertEquals(0,
                      uiModel.getRowCount());
 

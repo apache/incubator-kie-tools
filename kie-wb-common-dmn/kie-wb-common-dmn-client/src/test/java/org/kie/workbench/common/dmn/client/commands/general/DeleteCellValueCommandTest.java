@@ -165,8 +165,9 @@ public class DeleteCellValueCommandTest {
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.getCanvasCommand(canvasHandler).execute(canvasHandler));
 
-        verify(gridModel).deleteCell(eq(ROW_INDEX),
-                                     eq(COLUMN_INDEX));
+        verify(gridModel).setCellValue(eq(ROW_INDEX),
+                                       eq(COLUMN_INDEX),
+                                       eq(null));
         verify(gridLayer).batch();
     }
 

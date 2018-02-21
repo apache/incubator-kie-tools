@@ -33,6 +33,27 @@ public interface HasListSelectorControl {
         boolean isEnabled();
 
         Command getCommand();
+
+        static ListSelectorTextItem build(final String text,
+                                          final boolean isEnabled,
+                                          final Command command) {
+            return new ListSelectorTextItem() {
+                @Override
+                public String getText() {
+                    return text;
+                }
+
+                @Override
+                public boolean isEnabled() {
+                    return isEnabled;
+                }
+
+                @Override
+                public Command getCommand() {
+                    return command;
+                }
+            };
+        }
     }
 
     class ListSelectorDividerItem implements ListSelectorItem {

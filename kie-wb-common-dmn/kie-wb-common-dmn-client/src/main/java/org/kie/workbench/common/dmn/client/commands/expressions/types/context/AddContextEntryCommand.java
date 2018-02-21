@@ -45,7 +45,7 @@ public class AddContextEntryCommand extends AbstractCanvasGraphCommand implement
     private final ContextEntry contextEntry;
     private final GridData uiModel;
     private final DMNGridRow uiModelRow;
-    private final int index;
+    private final int uiRowIndex;
     private final ContextUIModelMapper uiModelMapper;
     private final org.uberfire.mvp.Command canvasOperation;
 
@@ -53,14 +53,14 @@ public class AddContextEntryCommand extends AbstractCanvasGraphCommand implement
                                   final ContextEntry contextEntry,
                                   final GridData uiModel,
                                   final DMNGridRow uiModelRow,
-                                  final int index,
+                                  final int uiRowIndex,
                                   final ContextUIModelMapper uiModelMapper,
                                   final org.uberfire.mvp.Command canvasOperation) {
         this.context = context;
         this.contextEntry = contextEntry;
         this.uiModel = uiModel;
         this.uiModelRow = uiModelRow;
-        this.index = index;
+        this.uiRowIndex = uiRowIndex;
         this.uiModelMapper = uiModelMapper;
         this.canvasOperation = canvasOperation;
     }
@@ -75,7 +75,7 @@ public class AddContextEntryCommand extends AbstractCanvasGraphCommand implement
 
             @Override
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext gce) {
-                context.getContextEntry().add(index,
+                context.getContextEntry().add(uiRowIndex,
                                               contextEntry);
 
                 return GraphCommandResultBuilder.SUCCESS;
@@ -94,13 +94,13 @@ public class AddContextEntryCommand extends AbstractCanvasGraphCommand implement
         return new AbstractCanvasCommand() {
             @Override
             public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler handler) {
-                uiModel.insertRow(index,
+                uiModel.insertRow(uiRowIndex,
                                   uiModelRow);
-                uiModelMapper.fromDMNModel(index,
+                uiModelMapper.fromDMNModel(uiRowIndex,
                                            0);
-                uiModelMapper.fromDMNModel(index,
+                uiModelMapper.fromDMNModel(uiRowIndex,
                                            1);
-                uiModelMapper.fromDMNModel(index,
+                uiModelMapper.fromDMNModel(uiRowIndex,
                                            2);
 
                 updateRowNumbers();

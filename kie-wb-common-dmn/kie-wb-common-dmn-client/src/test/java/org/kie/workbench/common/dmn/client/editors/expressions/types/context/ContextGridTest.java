@@ -32,6 +32,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.context.AddContextEntryCommand;
+import org.kie.workbench.common.dmn.client.commands.expressions.types.context.DeleteContextEntryCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionEditorDefinition;
@@ -53,6 +54,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState;
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState.GridWidgetHandlersOperation;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
@@ -78,6 +80,12 @@ import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class ContextGridTest {
+
+    private final static int INSERT_ROW_ABOVE = 0;
+
+    private final static int INSERT_ROW_BELOW = 1;
+
+    private final static int DELETE_ROW = 2;
 
     @Mock
     private DMNGridPanel gridPanel;
@@ -135,6 +143,9 @@ public class ContextGridTest {
 
     @Captor
     private ArgumentCaptor<AddContextEntryCommand> addContextEntryCommandCaptor;
+
+    @Captor
+    private ArgumentCaptor<DeleteContextEntryCommand> deleteContextEntryCommandCaptor;
 
     private LiteralExpression literalExpression = new LiteralExpression();
 
@@ -257,11 +268,11 @@ public class ContextGridTest {
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
 
         assertThat(items.size()).isEqualTo(3);
-        assertListSelectorItem(items.get(0),
+        assertListSelectorItem(items.get(INSERT_ROW_ABOVE),
                                DMNEditorConstants.ContextEditor_InsertContextEntryAbove);
-        assertListSelectorItem(items.get(1),
+        assertListSelectorItem(items.get(INSERT_ROW_BELOW),
                                DMNEditorConstants.ContextEditor_InsertContextEntryBelow);
-        assertListSelectorItem(items.get(2),
+        assertListSelectorItem(items.get(DELETE_ROW),
                                DMNEditorConstants.ContextEditor_DeleteContextEntry);
     }
 
@@ -286,7 +297,7 @@ public class ContextGridTest {
     @Test
     public void testOnItemSelectedInsertRowAbove() {
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
-        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(0);
+        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(INSERT_ROW_ABOVE);
 
         grid.onItemSelected(ti);
 
@@ -297,12 +308,42 @@ public class ContextGridTest {
     @Test
     public void testOnItemSelectedInsertRowBelow() {
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
-        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(1);
+        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(INSERT_ROW_BELOW);
 
         grid.onItemSelected(ti);
 
         verify(cellEditorControls).hide();
         verify(grid).addContextEntry(eq(1));
+    }
+
+    @Test
+    public void testOnItemSelectedDeleteRow() {
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
+        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(DELETE_ROW);
+
+        grid.onItemSelected(ti);
+
+        verify(cellEditorControls).hide();
+        verify(grid).deleteContextEntry(eq(0));
+    }
+
+    @Test
+    public void testOnItemSelectedDeleteRowEnabled() {
+        //Grid has two rows from Context model. Neither can be deleted.
+        assertDeleteRowEnabled(0, false);
+        assertDeleteRowEnabled(1, false);
+
+        //Grid has three rows. Rows 1 and 2 can be deleted.
+        grid.getModel().appendRow(new BaseGridRow());
+        assertDeleteRowEnabled(0, true);
+        assertDeleteRowEnabled(1, true);
+        assertDeleteRowEnabled(2, false);
+    }
+
+    private void assertDeleteRowEnabled(final int uiRowIndex, final boolean enabled) {
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(uiRowIndex, 0);
+        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(DELETE_ROW);
+        assertThat(ti.isEnabled()).isEqualTo(enabled);
     }
 
     @Test
@@ -314,6 +355,22 @@ public class ContextGridTest {
 
         final AddContextEntryCommand addContextEntryCommand = addContextEntryCommandCaptor.getValue();
         addContextEntryCommand.execute(handler);
+
+        verify(parent).onResize();
+        verify(gridPanel).refreshScrollPosition();
+        verify(gridPanel).updatePanelSize();
+        verify(gridLayer).batch();
+    }
+
+    @Test
+    public void testDeleteContextEntry() {
+        grid.deleteContextEntry(0);
+
+        verify(sessionCommandManager).execute(eq(handler),
+                                              deleteContextEntryCommandCaptor.capture());
+
+        final DeleteContextEntryCommand deleteContextEntryCommand = deleteContextEntryCommandCaptor.getValue();
+        deleteContextEntryCommand.execute(handler);
 
         verify(parent).onResize();
         verify(gridPanel).refreshScrollPosition();
