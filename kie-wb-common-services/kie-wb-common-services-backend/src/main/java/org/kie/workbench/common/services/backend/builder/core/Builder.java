@@ -194,7 +194,7 @@ public class Builder implements Serializable {
 
         if (this.kieBuilder != null) {
             kieBuilder = createKieBuilder(kieFileSystemClone);
-            kieBuilder.setkModule((MemoryKieModule) this.kieBuilder.getKieModule());
+            kieBuilder.setkModule((MemoryKieModule) ((InternalKieBuilder) this.kieBuilder).getKieModuleIgnoringErrors());
             kieBuilder.setTrgMfs(((KieFileSystemImpl) kieFileSystemClone).getMfs());
         }
 
