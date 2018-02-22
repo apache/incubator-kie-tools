@@ -69,8 +69,6 @@ public interface ProjectExplorerConstants
 
     String LoadingDotDotDot();
 
-    String downloadRepository();
-
     String downloadProject();
 
     String openProjectEditor();

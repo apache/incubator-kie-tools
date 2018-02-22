@@ -49,8 +49,6 @@ public class ExplorerMenuViewImpl
     private final AnchorListItem treeExplorer = new AnchorListItem(ProjectExplorerConstants.INSTANCE.showAsFolders());
     private final AnchorListItem breadcrumbExplorer = new AnchorListItem(ProjectExplorerConstants.INSTANCE.showAsLinks());
     private final AnchorListItem showTagFilter = new AnchorListItem(ProjectExplorerConstants.INSTANCE.enableTagFiltering());
-    private final AnchorListItem archiveRepository = new AnchorListItem(ProjectExplorerConstants.INSTANCE.downloadRepository());
-
     private final AnchorListItem archiveProject = new AnchorListItem(ProjectExplorerConstants.INSTANCE.downloadProject());
 
     private ExplorerMenu presenter;
@@ -107,14 +105,6 @@ public class ExplorerMenuViewImpl
             @Override
             public void onClick(ClickEvent event) {
                 presenter.onArchiveActiveProject();
-            }
-        });
-
-        archiveRepository.setIcon(IconType.DOWNLOAD);
-        archiveRepository.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                presenter.onArchiveActiveRepository();
             }
         });
     }
@@ -201,7 +191,6 @@ public class ExplorerMenuViewImpl
                                         add(showTagFilter);
                                         add(new Divider());
                                         add(archiveProject);
-                                        add(archiveRepository);
                                     }});
                                 }};
                             }
