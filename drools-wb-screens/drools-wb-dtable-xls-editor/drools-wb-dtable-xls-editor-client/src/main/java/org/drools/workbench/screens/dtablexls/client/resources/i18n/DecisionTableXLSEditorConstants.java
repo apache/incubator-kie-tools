@@ -40,6 +40,8 @@ public interface DecisionTableXLSEditorConstants
 
     String Upload();
 
+    String FileType();
+
     String Uploading();
 
     String Download();

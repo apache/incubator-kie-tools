@@ -61,12 +61,12 @@ public class NewGuidedRuleHandler extends DefaultNewResourceHandler {
     @Inject
     private BusyIndicatorView busyIndicatorView;
 
-    private CheckBox useDSLCheckbox = new CheckBox( GuidedRuleEditorResources.CONSTANTS.UseDSL() );
+    private CheckBox useDSLCheckbox = new CheckBox( GuidedRuleEditorResources.CONSTANTS.showDslSentences() );
 
     @PostConstruct
     private void setupExtensions() {
-        extensions.add( new Pair<String, CheckBox>( GuidedRuleEditorResources.CONSTANTS.UseDSL(),
-                                                    useDSLCheckbox ) );
+        extensions.add(Pair.newPair(GuidedRuleEditorResources.CONSTANTS.UseDSL(),
+                                    useDSLCheckbox));
     }
 
     @Override

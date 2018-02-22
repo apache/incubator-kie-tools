@@ -120,8 +120,6 @@ public interface GuidedDecisionTableConstants
 
     String PredicatesInfo();
 
-    String Options();
-
     String DeleteColumnWarning(String p0);
 
     String NewColumn();

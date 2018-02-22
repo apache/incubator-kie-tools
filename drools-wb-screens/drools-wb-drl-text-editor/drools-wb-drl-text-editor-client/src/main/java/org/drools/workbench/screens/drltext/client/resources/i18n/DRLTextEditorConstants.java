@@ -38,11 +38,7 @@ public interface DRLTextEditorConstants
 
     String DRL();
 
-    String drlEditorTitle();
-
     String drlResourceTypeDescription();
-
-    String dslrEditorTitle();
 
     String dslrResourceTypeDescription();
 
@@ -55,4 +51,6 @@ public interface DRLTextEditorConstants
     String dslConditions();
 
     String dslActions();
+
+    String showDslSentences();
 }

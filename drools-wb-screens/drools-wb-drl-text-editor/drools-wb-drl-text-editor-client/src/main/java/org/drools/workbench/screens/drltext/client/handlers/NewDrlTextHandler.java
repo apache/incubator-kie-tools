@@ -61,7 +61,7 @@ public class NewDrlTextHandler extends DefaultNewResourceHandler {
     @Inject
     private BusyIndicatorView busyIndicatorView;
 
-    private CheckBox useDSLCheckbox = new CheckBox( DRLTextEditorConstants.INSTANCE.useDSL() );
+    private CheckBox useDSLCheckbox = new CheckBox( DRLTextEditorConstants.INSTANCE.showDslSentences() );
 
     @PostConstruct
     private void setupExtensions() {

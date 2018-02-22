@@ -92,10 +92,10 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
                         decisionTableXLSResourceType.getSuffix(),
                         decisionTableXLSXResourceType.getSuffix() } );
 
-        extensions.add( new Pair<String, FileExtensionSelector>( "File Type",
-                                                                 fileExtensionSelector ) );
-        extensions.add( new Pair<String, AttachmentFileWidget>( DecisionTableXLSEditorConstants.INSTANCE.Upload(),
-                                                                uploadWidget ) );
+        extensions.add(Pair.newPair(DecisionTableXLSEditorConstants.INSTANCE.FileType(),
+                                    fileExtensionSelector));
+        extensions.add(Pair.newPair(DecisionTableXLSEditorConstants.INSTANCE.Upload(),
+                                    uploadWidget));
     }
 
     @Override

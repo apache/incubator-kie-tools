@@ -80,8 +80,8 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
 
     @PostConstruct
     private void setupExtensions() {
-        extensions.add(new Pair<String, GuidedDecisionTableOptions>(GuidedDecisionTableConstants.INSTANCE.Options(),
-                                                                    options));
+        extensions.add(Pair.newPair("", // not needed GuidedDecisionTableOptions describes the extension itself
+                                    options));
     }
 
     @Override

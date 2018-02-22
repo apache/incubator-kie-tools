@@ -350,7 +350,7 @@ public interface Constants
 
     String AreasMarkedWithRedAreMandatoryPleaseSetAValueBeforeSaving();
 
-    String GuidedRuleEditorTitle();  
+    String showDslSentences();
     
     String guidedRuleDRLResourceTypeDescription();
 
