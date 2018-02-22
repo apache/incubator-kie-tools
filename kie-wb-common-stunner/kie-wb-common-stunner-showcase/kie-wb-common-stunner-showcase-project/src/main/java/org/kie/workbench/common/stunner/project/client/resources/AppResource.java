@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.project.shared;
+package org.kie.workbench.common.stunner.project.client.resources;
 
-import org.guvnor.common.services.project.model.WorkspaceProject;
-import org.jboss.errai.bus.server.annotations.Remote;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.ClientBundle;
 
-@Remote
-public interface ShowcaseService {
+public interface AppResource
+        extends
+        ClientBundle {
 
-    WorkspaceProject getShowcaseProject();
-
+    AppResource INSTANCE = GWT.create(AppResource.class);
 }

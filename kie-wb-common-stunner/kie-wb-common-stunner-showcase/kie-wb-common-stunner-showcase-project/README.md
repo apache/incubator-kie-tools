@@ -6,6 +6,23 @@ Stunner Showcase built on top of KIE workbench, commons and guvnor services and 
 Running the application
 -----------------------
 
+**Fast compilation profile**
+
+Advantages:
+- It is more stable than gwt:run (see next chapter)
+- It is faster than gwt:run
+- Not so RAM consuming which can be critical for laptop with 16 GB owners
+
+Disadvantages:
+- Support only Chrome browser. All browsers after some modifications of StunnerProjectShowcaseWithSourceMap.gwt.xml, for more details see comments inside of file.
+- No hot fix recompilation
+- Manual deploy of result war file
+
+To compile showcase project with source map execute following commands:
+    
+    cd kie-wb-common/kie-wb-common-stunner/kie-wb-common-stunner-showcase/kie-wb-common-stunner-showcase-project
+    mvn clean package -Psourcemaps
+
 **SuperDevMove - Running from command line**                                          
 
     cd kie-wb-common/kie-wb-common-stunner/kie-wb-common-stunner-showcase/kie-wb-common-stunner-showcase-project

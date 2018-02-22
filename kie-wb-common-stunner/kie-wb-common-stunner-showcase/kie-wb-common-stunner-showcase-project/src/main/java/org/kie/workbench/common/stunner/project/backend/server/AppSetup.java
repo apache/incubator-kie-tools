@@ -16,20 +16,17 @@
 
 package org.kie.workbench.common.stunner.project.backend.server;
 
-import java.util.Collection;
-
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.guvnor.common.services.project.model.GAV;
-import org.guvnor.common.services.project.model.POM;
-import org.guvnor.common.services.project.model.WorkspaceProject;
-import org.guvnor.common.services.project.service.WorkspaceProjectService;
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.RepositoryService;
+import org.guvnor.structure.server.config.ConfigGroup;
+import org.guvnor.structure.server.config.ConfigItem;
+import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
@@ -39,53 +36,82 @@ import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
 import org.uberfire.io.IOService;
 
+//This is a temporary solution when running in PROD-MODE as /webapp/.niogit/system.git folder
+//is not deployed to the Application Servers /bin folder. This will be remedied when an
+//installer is written to create the system.git repository in the correct location.
 @Startup(StartupType.BOOTSTRAP)
 @ApplicationScoped
 public class AppSetup extends BaseAppSetup {
 
-    private WorkspaceProjectService projectService;
+    // default groups
+    private static final String DROOLS_WB_ORGANIZATIONAL_UNIT1 = "demo";
+    private static final String DROOLS_WB_ORGANIZATIONAL_UNIT1_OWNER = "demo@drools.org";
+    // default repository section - end
 
+    @Inject
     private Event<ApplicationStarted> applicationStartedEvent;
 
     protected AppSetup() {
-
     }
 
     @Inject
-    public AppSetup(@Named("ioStrategy") IOService ioService,
-                    RepositoryService repositoryService,
-                    OrganizationalUnitService organizationalUnitService,
-                    KieModuleService moduleService,
-                    ConfigurationService configurationService,
-                    ConfigurationFactory configurationFactory,
-                    WorkspaceProjectService projectService,
-                    Event<ApplicationStarted> applicationStartedEvent) {
+    public AppSetup(@Named("ioStrategy") final IOService ioService,
+                    final RepositoryService repositoryService,
+                    final OrganizationalUnitService organizationalUnitService,
+                    final KieModuleService moduleService,
+                    final ConfigurationService configurationService,
+                    final ConfigurationFactory configurationFactory,
+                    final Event<ApplicationStarted> applicationStartedEvent) {
         super(ioService,
               repositoryService,
               organizationalUnitService,
               moduleService,
               configurationService,
               configurationFactory);
-        this.projectService = projectService;
         this.applicationStartedEvent = applicationStartedEvent;
+    }
 
-        OrganizationalUnit ou = organizationalUnitService.getOrganizationalUnit("Stunner");
-        if (ou == null) {
-            ou = organizationalUnitService.createOrganizationalUnit("StunnerOU",
-                                                                    "stunner",
-                                                                    "stunner-showcase");
-        }
+    @PostConstruct
+    public void assertPlayground() {
+        try {
+            configurationService.startBatch();
 
-        Collection<WorkspaceProject> projects = projectService.getAllWorkspaceProjectsByName(ou,
-                                                                                             "StunnerShowcase");
-        if (projects.isEmpty()) {
-            projectService.newProject(ou,
-                                      new POM("StunnerShowcase",
-                                              "Stunner showcase project",
-                                              new GAV("stunner-showcase",
-                                                      "stunner-showcase",
-                                                      "1.0")));
+            // Setup mandatory properties for Drools-Workbench
+            final ConfigItem<String> supportRuntimeDeployConfigItem = new ConfigItem<>();
+            supportRuntimeDeployConfigItem.setName("support.runtime.deploy");
+            supportRuntimeDeployConfigItem.setValue("false");
+            setupConfigurationGroup(ConfigType.GLOBAL,
+                                    GLOBAL_SETTINGS,
+                                    getGlobalConfiguration(),
+                                    supportRuntimeDeployConfigItem);
+
+            // notify components that bootstrap is completed to start post setups
+            applicationStartedEvent.fire(new ApplicationStarted());
+        } catch (final Exception e) {
+            logger.error("Error during update config", e);
+            throw new RuntimeException(e);
+        } finally {
+            configurationService.endBatch();
         }
-        applicationStartedEvent.fire(new ApplicationStarted());
+    }
+
+    private ConfigGroup getGlobalConfiguration() {
+        //Global Configurations used by many of Drools Workbench editors
+        final ConfigGroup group = configurationFactory.newConfigGroup(ConfigType.GLOBAL,
+                                                                      GLOBAL_SETTINGS,
+                                                                      "");
+        group.addConfigItem(configurationFactory.newConfigItem("drools.dateformat",
+                                                               "dd-MMM-yyyy"));
+        group.addConfigItem(configurationFactory.newConfigItem("drools.datetimeformat",
+                                                               "dd-MMM-yyyy hh:mm:ss"));
+        group.addConfigItem(configurationFactory.newConfigItem("drools.defaultlanguage",
+                                                               "en"));
+        group.addConfigItem(configurationFactory.newConfigItem("drools.defaultcountry",
+                                                               "US"));
+        group.addConfigItem(configurationFactory.newConfigItem("build.enable-incremental",
+                                                               "true"));
+        group.addConfigItem(configurationFactory.newConfigItem("rule-modeller-onlyShowDSLStatements",
+                                                               "false"));
+        return group;
     }
 }

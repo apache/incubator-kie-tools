@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kie.workbench.common.stunner.project.client.navbar;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.workbench.Header;
-import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
+import org.uberfire.client.workbench.widgets.menu.megamenu.WorkbenchMegaMenuPresenter;
 
 import static java.lang.Integer.MAX_VALUE;
 
@@ -37,12 +37,11 @@ public class AppNavBar implements Header {
     Div header;
 
     @Inject
-    private WorkbenchMenuBarPresenter menuBarPresenter;
+    private WorkbenchMegaMenuPresenter menuBarPresenter;
 
     @PostConstruct
     public void setup() {
-        DOMUtil.appendWidgetToElement(header,
-                                      menuBarPresenter.getView().asWidget());
+        header.appendChild(menuBarPresenter.getView().getElement());
     }
 
     @Override
@@ -52,6 +51,6 @@ public class AppNavBar implements Header {
 
     @Override
     public int getOrder() {
-        return MAX_VALUE;
+        return MAX_VALUE - 1;
     }
 }
