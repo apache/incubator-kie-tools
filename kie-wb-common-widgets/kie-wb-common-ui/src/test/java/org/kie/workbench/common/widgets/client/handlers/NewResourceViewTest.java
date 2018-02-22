@@ -22,8 +22,10 @@ import java.util.List;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwtmockito.GwtMock;
+import com.google.gwtmockito.GwtMockito;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
+import com.google.gwtmockito.fakes.FakeProvider;
 import org.guvnor.common.services.project.model.Package;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.HelpBlock;
@@ -45,7 +47,12 @@ import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @WithClassesToStub(ModalHeader.class)
 @RunWith(GwtMockitoTestRunner.class)
@@ -71,6 +78,9 @@ public class NewResourceViewTest {
     @Mock
     private NewResourceHandler handler;
 
+    @Mock
+    private FormLabel extensionLabel;
+
     private ArgumentCaptor<ValidatorWithReasonCallback> callbackCaptor = ArgumentCaptor.forClass(ValidatorWithReasonCallback.class);
 
     @Before
@@ -88,6 +98,13 @@ public class NewResourceViewTest {
         when(view.handlerExtensionsGroup.getStyle()).thenReturn(handlerExtensionsGroupStyle);
 
         when(handler.getDescription()).thenReturn(HANDLER_DESCRIPTION);
+
+        GwtMockito.useProviderForType(FormLabel.class, new FakeProvider<FormLabel>() {
+            @Override
+            public FormLabel getFake(Class<?> aClass) {
+                return extensionLabel;
+            }
+        });
     }
 
     @Test
@@ -115,11 +132,11 @@ public class NewResourceViewTest {
 
     @Test
     public void testSetHandlerWithExtensions() {
-        IsWidget extension = mock(IsWidget.class);
-        List<Pair<String, ? extends IsWidget>> extensions = new ArrayList<>();
+        final IsWidget extension = mock(IsWidget.class);
+        final List<Pair<String, ? extends IsWidget>> extensions = new ArrayList<>();
 
-        extensions.add(new Pair<>("",
-                                  extension));
+        final String extensionName = "extension name";
+        extensions.add(Pair.newPair(extensionName, extension));
 
         when(handler.getExtensions()).thenReturn(extensions);
 
@@ -129,7 +146,31 @@ public class NewResourceViewTest {
         verify(packageListBox).setUp(anyBoolean());
         verify(view.handlerExtensions).clear();
         verify(handlerExtensionsGroupStyle).setDisplay(Style.Display.BLOCK);
+        verify(view.handlerExtensions).add(extensionLabel);
         verify(view.handlerExtensions).add(extension);
+        verify(extensionLabel).setText(extensionName);
+    }
+
+    @Test
+    public void testSetHandlerWithExtensionsWithoutLabel() {
+        final IsWidget extension = mock(IsWidget.class);
+        final List<Pair<String, ? extends IsWidget>> extensions = new ArrayList<>();
+
+        final String extensionName = "";
+        extensions.add(Pair.newPair(extensionName, extension));
+
+        when(handler.getExtensions()).thenReturn(extensions);
+
+        view.setActiveHandler(handler);
+
+        verify(view.fileTypeLabel).setText(HANDLER_DESCRIPTION);
+        verify(packageListBox).setUp(anyBoolean());
+        verify(view.handlerExtensions).clear();
+        verify(handlerExtensionsGroupStyle).setDisplay(Style.Display.BLOCK);
+        verify(view.handlerExtensions, never()).add(extensionLabel);
+        verify(view.handlerExtensions).add(extension);
+        verify(extensionLabel, never()).setText(eq(extensionName));
+        verify(extensionLabel, never()).setText(anyString());
     }
 
     @Test

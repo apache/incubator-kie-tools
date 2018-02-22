@@ -34,8 +34,6 @@ public interface GuvnorDefaultEditorConstants
 
     String NewFileDescription();
 
-    String Options();
-
     String Uploading();
 
 }

@@ -69,8 +69,8 @@ public class NewFileUploader
 
     @PostConstruct
     private void setupExtensions() {
-        extensions.add(new Pair<String, DefaultEditorNewFileUpload>(GuvnorDefaultEditorConstants.INSTANCE.Options(),
-                                                                    options));
+        extensions.add(Pair.newPair("", // not needed DefaultEditorNewFileUpload describes the extension itself
+                                    options));
     }
 
     @Override

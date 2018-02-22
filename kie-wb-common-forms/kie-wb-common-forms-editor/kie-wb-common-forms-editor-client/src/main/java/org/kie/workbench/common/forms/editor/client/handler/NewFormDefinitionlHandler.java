@@ -75,8 +75,8 @@ public class NewFormDefinitionlHandler extends DefaultNewResourceHandler {
 
     @PostConstruct
     private void setupExtensions() {
-        extensions.add(new Pair<String, IsWidget>(translationService.getTranslation(FormEditorConstants.NewFormDefinitionlHandlerSelectFormUse),
-                                                  formModelsPresenter));
+        extensions.add(Pair.newPair("", // not needed FormModelsPresenter describes the extension itself
+                                    formModelsPresenter));
     }
 
     @Override

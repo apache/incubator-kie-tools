@@ -17,10 +17,12 @@
 package org.kie.workbench.common.widgets.client.handlers;
 
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style;
@@ -140,6 +142,11 @@ public class NewResourceViewImpl implements NewResourceView,
         handlerExtensionsGroup.getStyle().setDisplay(showExtensions ? Style.Display.BLOCK : Style.Display.NONE);
         if (showExtensions) {
             extensions.forEach(pair -> {
+                if (pair.getK1() != null && !pair.getK1().isEmpty()) {
+                    final FormLabel extensionLabel = GWT.create(FormLabel.class);
+                    extensionLabel.setText(pair.getK1());
+                    handlerExtensions.add(extensionLabel);
+                }
                 handlerExtensions.add(pair.getK2());
             });
         }
