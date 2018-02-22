@@ -31,6 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemOperation;
+import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
@@ -38,6 +39,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.server.UserServicesImpl;
 import org.uberfire.backend.server.VFSLockServiceImpl;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.commons.async.DescriptiveThreadFactory;
@@ -348,6 +350,52 @@ public class ExplorerServiceHelperTest {
         doReturn(true).when(helper).hasAssets(childPkg);
 
         assertTrue(helper.hasAssets(pkg));
+    }
+
+    @Test
+    public void getPathSegmentsRootTest() {
+        doAnswer(invocationOnMock -> {
+            final Path p = Paths.convert((org.uberfire.java.nio.file.Path) invocationOnMock.getArguments()[0]);
+            return new FolderItem(p,
+                                  p.getFileName(),
+                                  FolderItemType.FOLDER);
+        }).when(helper).toFolderItem(any(org.uberfire.java.nio.file.Path.class));
+
+        Path path = PathFactory.newPath("/",
+                                        "default://master@myproject/");
+
+        final List<FolderItem> pathSegments = helper.getPathSegments(path);
+
+        assertEquals(0,
+                     pathSegments.size());
+    }
+
+    @Test
+    public void getPathSegmentsTest() {
+        doAnswer(invocationOnMock -> {
+            final Path p = Paths.convert((org.uberfire.java.nio.file.Path) invocationOnMock.getArguments()[0]);
+            return new FolderItem(p,
+                                  p.getFileName(),
+                                  FolderItemType.FOLDER);
+        }).when(helper).toFolderItem(any(org.uberfire.java.nio.file.Path.class));
+
+        Path path = PathFactory.newPath("myproject",
+                                        "default://master@myproject/src/main/java/org/myproject");
+
+        final List<FolderItem> pathSegments = helper.getPathSegments(path);
+
+        assertEquals(5,
+                     pathSegments.size());
+        assertEquals("/",
+                     pathSegments.get(0).getFileName());
+        assertEquals("src",
+                     pathSegments.get(1).getFileName());
+        assertEquals("main",
+                     pathSegments.get(2).getFileName());
+        assertEquals("java",
+                     pathSegments.get(3).getFileName());
+        assertEquals("org",
+                     pathSegments.get(4).getFileName());
     }
 
     private void givenThatOperationHasRestrictions(FolderItemOperation operation) {

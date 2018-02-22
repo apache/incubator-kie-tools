@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -250,7 +249,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
     public void onNewResourceCreated(@Observes final NewResourceSuccessEvent newResourceSuccessEvent) {
         if (isLibraryPerspectiveOpen()) {
             assetDetailEvent.fire(new AssetDetailEvent(projectContext.getActiveWorkspaceProject()
-                                                                     .orElseThrow(() -> new IllegalStateException("Cannot fire asset detail event without an active project.")),
+                                                               .orElseThrow(() -> new IllegalStateException("Cannot fire asset detail event without an active project.")),
                                                        newResourceSuccessEvent.getPath()));
         }
     }
@@ -267,8 +266,8 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         if (isLibraryPerspectiveOpen() && isRepoForActiveProject(repositoryRemovedEvent)) {
             closeAllPlaces();
             WorkspaceProjectContextChangeEvent contextChangeEvent = projectContext.getActiveOrganizationalUnit()
-                                                                                  .map(ou -> new WorkspaceProjectContextChangeEvent(ou))
-                                                                                  .orElseGet(() -> new WorkspaceProjectContextChangeEvent());
+                    .map(ou -> new WorkspaceProjectContextChangeEvent(ou))
+                    .orElseGet(() -> new WorkspaceProjectContextChangeEvent());
             projectContextChangeEvent.fire(contextChangeEvent);
             goToLibrary();
             notificationEvent.fire(new NotificationEvent(ts.getTranslation(LibraryConstants.ProjectDeleted),
@@ -278,30 +277,30 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
 
     private boolean isRepoForActiveProject(RepositoryRemovedEvent repositoryRemovedEvent) {
         return projectContext.getActiveWorkspaceProject()
-                             .filter(project -> {
-                                 Repository activeRepo = project.getRepository();
-                                 Repository eventRepo = repositoryRemovedEvent.getRepository();
-                                 return activeRepo.getIdentifier().equals(eventRepo.getIdentifier());
-                             })
-                             .isPresent();
+                .filter(project -> {
+                    Repository activeRepo = project.getRepository();
+                    Repository eventRepo = repositoryRemovedEvent.getRepository();
+                    return activeRepo.getIdentifier().equals(eventRepo.getIdentifier());
+                })
+                .isPresent();
     }
 
     public void onOrganizationalUnitRemoved(@Observes final RemoveOrganizationalUnitEvent removedOrganizationalUnitEvent) {
         if (isLibraryPerspectiveOpen()) {
             projectContext.getActiveOrganizationalUnit()
-            .filter(active -> active.equals(removedOrganizationalUnitEvent.getOrganizationalUnit()))
-            .ifPresent(active -> {
-                projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent());
-            });
+                    .filter(active -> active.equals(removedOrganizationalUnitEvent.getOrganizationalUnit()))
+                    .ifPresent(active -> {
+                        projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent());
+                    });
         }
     }
 
     public void onProjectRenamed(@Observes final RenameModuleEvent renameModuleEvent) {
         if (isLibraryPerspectiveOpen()) {
             projectContext.getActiveWorkspaceProject()
-                .map(proj -> proj.getMainModule())
-                .filter(module -> renameModuleEvent.getOldModule().equals(module))
-                .ifPresent(module -> refresh(null));
+                    .map(proj -> proj.getMainModule())
+                    .filter(module -> renameModuleEvent.getOldModule().equals(module))
+                    .ifPresent(module -> refresh(null));
         }
     }
 
@@ -407,11 +406,11 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
                                   translationUtils.getOrganizationalUnitAliasInPlural(),
                                   () -> goToOrganizationalUnits());
         projectContext.getActiveOrganizationalUnit()
-                      .ifPresent(ou -> {
-                          breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
-                                                    ou.getName(),
-                                                    () -> goToLibrary());
-                      });
+                .ifPresent(ou -> {
+                    breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
+                                              ou.getName(),
+                                              () -> goToLibrary());
+                });
 
         if (project != null) {
             breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
@@ -429,8 +428,8 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
                                   () -> goToOrganizationalUnits());
         breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
                                   projectContext.getActiveOrganizationalUnit()
-                                                .orElseThrow(() -> new IllegalStateException("Cannot create library breadcrumb without active organizational unit."))
-                                                .getName(),
+                                          .orElseThrow(() -> new IllegalStateException("Cannot create library breadcrumb without active space."))
+                                          .getName(),
                                   () -> goToLibrary());
         breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
                                   ts.getTranslation(LibraryConstants.ImportProjects),
@@ -444,8 +443,8 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
                                   () -> goToOrganizationalUnits());
         breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
                                   projectContext.getActiveOrganizationalUnit()
-                                                .orElseThrow(() -> new IllegalStateException("Cannot create library breadcrumb without active organizational unit."))
-                                                .getName(),
+                                          .orElseThrow(() -> new IllegalStateException("Cannot create library breadcrumb without active space."))
+                                          .getName(),
                                   () -> goToLibrary());
         breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
                                   ts.getTranslation(LibraryConstants.TrySamples),
@@ -518,13 +517,13 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
     public void goToLibrary() {
         if (!projectContext.getActiveOrganizationalUnit().isPresent()) {
             libraryService.call(
-                new RemoteCallback<OrganizationalUnit>() {
-                    @Override
-                    public void callback(OrganizationalUnit organizationalUnit) {
-                        projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(organizationalUnit));
-                        setupLibraryPerspective();
+                    new RemoteCallback<OrganizationalUnit>() {
+                        @Override
+                        public void callback(OrganizationalUnit organizationalUnit) {
+                            projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(organizationalUnit));
+                            setupLibraryPerspective();
+                        }
                     }
-                }
             ).getDefaultOrganizationalUnit();
         } else {
             setupLibraryPerspective();
@@ -533,7 +532,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
 
     private void setupLibraryPerspective() {
         OrganizationalUnit activeOu = projectContext.getActiveOrganizationalUnit()
-                                                    .orElseThrow(() -> new IllegalStateException("Cannot setup library perspective without active organizational unit."));
+                .orElseThrow(() -> new IllegalStateException("Cannot setup library perspective without active space."));
         PortablePreconditions.checkNotNull("libraryPerspective",
                                            libraryPerspective);
 
@@ -556,8 +555,8 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
 
     public void goToProject(final WorkspaceProject project) {
         if (projectContext.getActiveWorkspaceProject()
-                          .map(activeProject -> !activeProject.equals(project))
-                          .orElse(true)) {
+                .map(activeProject -> !activeProject.equals(project))
+                .orElse(true)) {
             if (closeAllPlacesOrNothing()) {
                 projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(project,
                                                                                       project.getMainModule()));
@@ -576,7 +575,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
 
     private void goToProject(final Command callback) {
         setupLibraryBreadCrumbs(projectContext.getActiveWorkspaceProject()
-                                              .orElseThrow(() -> new IllegalStateException("Cannot go to project when no project is active.")));
+                                        .orElseThrow(() -> new IllegalStateException("Cannot go to project when no project is active.")));
 
         final PartDefinitionImpl part = new PartDefinitionImpl(new DefaultPlaceRequest(LibraryPlaces.PROJECT_SCREEN));
         part.setSelectable(false);
@@ -606,7 +605,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
                           libraryPerspective.getRootPanel());
         setupLibraryBreadCrumbsForProjectMetrics();
         projectMetricsEvent.fire(new WorkbenchProjectMetricsEvent(projectContext.getActiveWorkspaceProject()
-                                                                                .orElseThrow(() -> new IllegalStateException("Cannot fire event for project metrics without an active project."))));
+                                                                          .orElseThrow(() -> new IllegalStateException("Cannot fire event for project metrics without an active project."))));
     }
 
     public void goToAsset(final Path path) {
@@ -673,7 +672,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
 
     public void goToSettings() {
         assetDetailEvent.fire(new AssetDetailEvent(projectContext.getActiveWorkspaceProject()
-                                                                 .orElseThrow(() -> new IllegalStateException("Cannot fire asset detail event without an active project.")),
+                                                           .orElseThrow(() -> new IllegalStateException("Cannot fire asset detail event without an active project.")),
                                                    null));
     }
 
@@ -737,14 +736,13 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
     }
 
     @Override
-    public void onChange(WorkspaceProjectContextChangeEvent previous, WorkspaceProjectContextChangeEvent current) {
+    public void onChange(WorkspaceProjectContextChangeEvent previous,
+                         WorkspaceProjectContextChangeEvent current) {
         if (current.getWorkspaceProject() != null) {
             if (!current.getWorkspaceProject().equals(previous.getWorkspaceProject())) {
                 if (closeAllPlacesOrNothing()) {
                     goToProject();
                 }
-            } else {
-                goToProject();
             }
         }
     }

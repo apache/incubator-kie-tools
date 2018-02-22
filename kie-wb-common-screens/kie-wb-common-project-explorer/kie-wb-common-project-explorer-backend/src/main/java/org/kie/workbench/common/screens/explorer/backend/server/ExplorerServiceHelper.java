@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -303,19 +302,20 @@ public class ExplorerServiceHelper {
         return folderItems;
     }
 
-    private List<FolderItem> getPathSegments(final Path path) {
-        org.uberfire.java.nio.file.Path nioSegmentPath = Paths.convert(path).getParent();
-        //We're not interested in the terminal segment prior to root (i.e. the Module name)
+    List<FolderItem> getPathSegments(final Path path) {
+        org.uberfire.java.nio.file.Path nioSegmentPath = Paths.convert(path);
+
         final int segmentCount = nioSegmentPath.getNameCount();
         if (segmentCount < 1) {
-            return new ArrayList<FolderItem>();
+            return new ArrayList<>();
         }
-        //Order from root to leaf (as we use getParent from the leaf we add them in reverse order)
+
         final FolderItem[] segments = new FolderItem[segmentCount];
         for (int idx = segmentCount; idx > 0; idx--) {
-            segments[idx - 1] = toFolderItem(nioSegmentPath);
             nioSegmentPath = nioSegmentPath.getParent();
+            segments[idx - 1] = toFolderItem(nioSegmentPath);
         }
+
         return Arrays.asList(segments);
     }
 

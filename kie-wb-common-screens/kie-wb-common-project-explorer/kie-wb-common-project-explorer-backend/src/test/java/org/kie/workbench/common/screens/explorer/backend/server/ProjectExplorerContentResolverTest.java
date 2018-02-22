@@ -16,17 +16,11 @@
 
 package org.kie.workbench.common.screens.explorer.backend.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.guvnor.common.services.project.model.Module;
@@ -52,10 +46,15 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 import org.uberfire.spaces.Space;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProjectExplorerContentResolverTest {
@@ -74,6 +73,9 @@ public class ProjectExplorerContentResolverTest {
     @Mock
     private WorkspaceProjectService projectService;
 
+    @Mock
+    private ExplorerServiceHelper explorerServiceHelper;
+
     @Before
     public void setUp() throws Exception {
 
@@ -82,7 +84,6 @@ public class ProjectExplorerContentResolverTest {
 
         final KieModuleService moduleService = mock(KieModuleService.class);
         final ExplorerServiceHelper helper = mock(ExplorerServiceHelper.class);
-        final ExplorerServiceHelper explorerServiceHelper = mock(ExplorerServiceHelper.class);
 
         space = new Space("test-realm");
 
@@ -130,11 +131,11 @@ public class ProjectExplorerContentResolverTest {
         when(moduleService.getAllModules(devBranch)).thenReturn(devModules);
         when(moduleService.resolveDefaultPackage(any(Module.class))).thenReturn(new Package());
 
-        resolver = new ProjectExplorerContentResolver(
+        resolver = spy(new ProjectExplorerContentResolver(
                 moduleService,
                 helper,
                 explorerServiceHelper,
-                projectService);
+                projectService));
     }
 
     private FolderItem getFileItem() {
@@ -305,11 +306,62 @@ public class ProjectExplorerContentResolverTest {
                                                                             null,
                                                                             getFileItem()));
 
-        assertEquals("demo", content.getSelectedProject().getOrganizationalUnit().getName());
-        assertEquals("master", content.getSelectedProject().getBranch().getName());
-        assertEquals("file://master@module/", content.getSelectedProject().getRootPath().toURI());
+        assertEquals("demo",
+                     content.getSelectedProject().getOrganizationalUnit().getName());
+        assertEquals("master",
+                     content.getSelectedProject().getBranch().getName());
+        assertEquals("file://master@module/",
+                     content.getSelectedProject().getRootPath().toURI());
         assertNull(content.getSelectedItem());
         assertNull(content.getSelectedPackage());
+    }
+
+    @Test
+    public void getSegmentSiblingsRootTest() {
+        doAnswer(invocationOnMock -> {
+            final Path p = Paths.convert((org.uberfire.java.nio.file.Path) invocationOnMock.getArguments()[0]);
+            return new FolderItem(p,
+                                  p.getFileName(),
+                                  FolderItemType.FOLDER);
+        }).when(explorerServiceHelper).toFolderItem(any(org.uberfire.java.nio.file.Path.class));
+
+        Path path = PathFactory.newPath("/",
+                                        "default://master@myproject/");
+
+        final List<FolderItem> siblings = resolver.getSegmentSiblings(path);
+
+        assertEquals(1,
+                     siblings.size());
+        assertEquals("/",
+                     siblings.get(0).getFileName());
+    }
+
+    @Test
+    public void getSegmentSiblingsTest() {
+        doAnswer(invocationOnMock -> {
+            final Path p = Paths.convert((org.uberfire.java.nio.file.Path) invocationOnMock.getArguments()[0]);
+            return new FolderItem(p,
+                                  p.getFileName(),
+                                  FolderItemType.FOLDER);
+        }).when(explorerServiceHelper).toFolderItem(any(org.uberfire.java.nio.file.Path.class));
+
+        Path path = PathFactory.newPath("src",
+                                        "default://master@myproject/src");
+
+        final List<org.uberfire.java.nio.file.Path> mockedSiblings = new ArrayList<>();
+        mockedSiblings.add(Paths.convert(path));
+        mockedSiblings.add(Paths.convert(PathFactory.newPath("src",
+                                                             "default://master@myproject/pom.xml")));
+        doReturn(mockedSiblings).when(resolver).getDirectoryIterator(any(org.uberfire.java.nio.file.Path.class));
+
+        final List<FolderItem> siblings = resolver.getSegmentSiblings(path);
+
+        assertEquals(2,
+                     siblings.size());
+        assertEquals("src",
+                     siblings.get(0).getFileName());
+        assertEquals("pom.xml",
+                     siblings.get(1).getFileName());
     }
 
     private Module createModule(final String branchName,
@@ -331,7 +383,8 @@ public class ProjectExplorerContentResolverTest {
                                       repository,
                                       branch,
                                       module
-        )).when(projectService).resolveProject(space, branch);
+        )).when(projectService).resolveProject(space,
+                                               branch);
 
         return module;
     }
@@ -391,7 +444,8 @@ public class ProjectExplorerContentResolverTest {
     }
 
     private GitRepository getGitRepository() {
-        final GitRepository repository = new GitRepository("alias", space);
+        final GitRepository repository = new GitRepository("alias",
+                                                           space);
 
         final HashMap<String, Branch> branches = new HashMap<>();
         masterBranch = new Branch("master",

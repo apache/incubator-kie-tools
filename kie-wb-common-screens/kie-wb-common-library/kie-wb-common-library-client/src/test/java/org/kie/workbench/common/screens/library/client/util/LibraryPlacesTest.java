@@ -16,25 +16,9 @@
 
 package org.kie.workbench.common.screens.library.client.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
 import javax.enterprise.event.Event;
 
 import org.ext.uberfire.social.activities.model.ExtendedTypes;
@@ -90,6 +74,12 @@ import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInf
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LibraryPlacesTest {
@@ -252,7 +242,8 @@ public class LibraryPlacesTest {
     public void onChange() {
 
         when(current.getModule()).thenReturn(null);
-        libraryPlaces.onChange(previous, current);
+        libraryPlaces.onChange(previous,
+                               current);
 
         verify(libraryPlaces).goToProject();
     }
@@ -261,7 +252,8 @@ public class LibraryPlacesTest {
     public void onChangeWithActiveModule() {
 
         when(current.getModule()).thenReturn(mock(Module.class));
-        libraryPlaces.onChange(previous, current);
+        libraryPlaces.onChange(previous,
+                               current);
 
         verify(libraryPlaces).goToProject();
     }
@@ -273,9 +265,11 @@ public class LibraryPlacesTest {
         when(current.getModule()).thenReturn(mock(Module.class));
         when(current.getWorkspaceProject()).thenReturn(null);
 
-        libraryPlaces.onChange(previous, current);
+        libraryPlaces.onChange(previous,
+                               current);
 
-        verify(libraryPlaces, never()).goToProject();
+        verify(libraryPlaces,
+               never()).goToProject();
     }
 
     @Test
@@ -283,10 +277,13 @@ public class LibraryPlacesTest {
         when(previous.getWorkspaceProject()).thenReturn(activeProject);
         when(current.getWorkspaceProject()).thenReturn(activeProject);
 
-        libraryPlaces.onChange(previous, current);
+        libraryPlaces.onChange(previous,
+                               current);
 
-        verify(libraryPlaces).goToProject();
-        verify(libraryPlaces, never()).closeAllPlacesOrNothing();
+        verify(libraryPlaces,
+               never()).goToProject();
+        verify(libraryPlaces,
+               never()).closeAllPlacesOrNothing();
     }
 
     @Test
@@ -471,8 +468,10 @@ public class LibraryPlacesTest {
         verify(projectContextChangeEvent).fire(eventArgumentCaptor.capture());
 
         final WorkspaceProjectContextChangeEvent value = eventArgumentCaptor.getValue();
-        assertEquals(activeProject, value.getWorkspaceProject());
-        assertEquals(activeModule, value.getModule());
+        assertEquals(activeProject,
+                     value.getWorkspaceProject());
+        assertEquals(activeModule,
+                     value.getModule());
         assertNull(value.getPackage());
     }
 
@@ -491,18 +490,24 @@ public class LibraryPlacesTest {
 
         verify(projectContextChangeEvent).fire(projectContextChangeEventArgumentCaptor.capture());
         final WorkspaceProjectContextChangeEvent contextChangeEvent = projectContextChangeEventArgumentCaptor.getValue();
-        assertEquals(activeProject, contextChangeEvent.getWorkspaceProject());
-        assertEquals(activeModule, contextChangeEvent.getModule());
-        assertEquals(pkg, contextChangeEvent.getPackage());
+        assertEquals(activeProject,
+                     contextChangeEvent.getWorkspaceProject());
+        assertEquals(activeModule,
+                     contextChangeEvent.getModule());
+        assertEquals(pkg,
+                     contextChangeEvent.getPackage());
 
         verify(placeManager).goTo(pathPlaceRequest);
         final ArgumentCaptor<WorkspaceProjectContextChangeEvent> eventArgumentCaptor = ArgumentCaptor.forClass(WorkspaceProjectContextChangeEvent.class);
         verify(projectContextChangeEvent).fire(eventArgumentCaptor.capture());
 
         final WorkspaceProjectContextChangeEvent value = eventArgumentCaptor.getValue();
-        assertEquals(activeProject, value.getWorkspaceProject());
-        assertEquals(activeModule, value.getModule());
-        assertEquals(pkg, value.getPackage());
+        assertEquals(activeProject,
+                     value.getWorkspaceProject());
+        assertEquals(activeModule,
+                     value.getModule());
+        assertEquals(pkg,
+                     value.getPackage());
     }
 
     @Test
@@ -517,7 +522,7 @@ public class LibraryPlacesTest {
     @Test
     public void goToLibraryWithDefaultOrganizationalUnitTest() {
         when(projectContext.getActiveOrganizationalUnit()).thenReturn(Optional.empty())
-                                                          .thenReturn(Optional.of(mock(OrganizationalUnit.class)));
+                .thenReturn(Optional.of(mock(OrganizationalUnit.class)));
         doReturn(Optional.empty()).when(projectContext).getActiveWorkspaceProject();
         doReturn(Optional.empty()).when(projectContext).getActiveModule();
 
@@ -657,7 +662,7 @@ public class LibraryPlacesTest {
         params.put("repositoryUrl",
                    "repositoryUrl");
         final PlaceRequest importProjectsScreen = new DefaultPlaceRequest(LibraryPlaces.IMPORT_PROJECTS_SCREEN,
-                                                                      params);
+                                                                          params);
         final PartDefinitionImpl part = new PartDefinitionImpl(importProjectsScreen);
         part.setSelectable(false);
 
@@ -704,9 +709,11 @@ public class LibraryPlacesTest {
                                                               activeModule);
         libraryPlaces.goToProject(project);
 
-        verify(projectContextChangeEvent, never()).fire(any(WorkspaceProjectContextChangeEvent.class));
+        verify(projectContextChangeEvent,
+               never()).fire(any(WorkspaceProjectContextChangeEvent.class));
 
-        verify(placeManager, never()).closeAllPlacesOrNothing();
+        verify(placeManager,
+               never()).closeAllPlacesOrNothing();
     }
 
     @Test
@@ -817,5 +824,4 @@ public class LibraryPlacesTest {
         verify(placeManager).goTo(libraryPerspective);
         verify(libraryPlaces).goToAsset(any(Path.class));
     }
-
 }
