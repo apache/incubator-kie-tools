@@ -52,9 +52,9 @@ public class FileExportScriptInjectorTest {
         final String jsPdfNsObject = FileExportScriptInjector.buildNamespaceObject(JsPdf.class.getName());
         assertEquals("var " +
                              fsNsObject +
-                             " = function(blob, fileName) {\n" +
+                             " = function(blob, fileName, disableAutoBOM) {\n" +
                              "fileSaver\n" +
-                             "return saveAs(blob, fileName);};\n" +
+                             "return saveAs(blob, fileName, disableAutoBOM);};\n" +
                              jsPdfNsObject +
                              " = function(settings) {\n" +
                              "jsPdf\n" +

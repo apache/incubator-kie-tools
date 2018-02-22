@@ -32,8 +32,10 @@ public class JsFileSaver {
      * Saves the given blob's content into a file.
      * @param blob The blob data.
      * @param fileName The file name.
+     * @param disableAutoBOM true if you don't want FileSaver.js to automatically provide Unicode text encoding hints.
      */
     @JsMethod
     public static native void saveAs(Blob blob,
-                                     String fileName);
+                                     String fileName,
+                                     boolean disableAutoBOM);
 }

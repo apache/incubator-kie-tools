@@ -58,9 +58,9 @@ public class FileExportScriptInjector {
     private String getFileSaverSource() {
         final String fsScript = FileExportResources.INSTANCE.fileSaver().getText();
         final String fsNsObject = buildNamespaceObject(NS + "JsFileSaver.saveAs");
-        return fsNsObject + " = function(blob, fileName) {" + "\n" +
+        return fsNsObject + " = function(blob, fileName, disableAutoBOM) {" + "\n" +
                 fsScript + "\n" +
-                "return saveAs(blob, fileName);};";
+                "return saveAs(blob, fileName, disableAutoBOM);};";
     }
 
     private String getJsPdfSource() {
