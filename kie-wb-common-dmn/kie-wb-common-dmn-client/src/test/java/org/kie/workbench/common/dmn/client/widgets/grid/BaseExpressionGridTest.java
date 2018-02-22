@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -73,6 +74,9 @@ public abstract class BaseExpressionGridTest {
 
     @Mock
     protected Node gridParent;
+
+    @Mock
+    protected GridCellTuple parentCell;
 
     protected BaseExpressionGrid grid;
 

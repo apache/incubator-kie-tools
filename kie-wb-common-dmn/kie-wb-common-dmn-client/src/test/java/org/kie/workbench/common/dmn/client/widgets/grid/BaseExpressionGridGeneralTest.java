@@ -17,11 +17,15 @@
 package org.kie.workbench.common.dmn.client.widgets.grid;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import org.assertj.core.api.Assertions;
 import org.jboss.errai.common.client.api.IsElement;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,12 +36,14 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Exp
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridCell;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -55,12 +61,11 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     @Override
     @SuppressWarnings("unchecked")
     public BaseExpressionGrid getGrid() {
-        final GridCellTuple parent = new GridCellTuple(0, 0, null);
         final HasExpression hasExpression = mock(HasExpression.class);
         final Optional<LiteralExpression> expression = Optional.of(mock(LiteralExpression.class));
         final Optional<HasName> hasName = Optional.of(mock(HasName.class));
 
-        return new BaseExpressionGrid(parent,
+        return new BaseExpressionGrid(parentCell,
                                       hasExpression,
                                       expression,
                                       hasName,
@@ -99,7 +104,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     public void testGetMinimumWidthNoColumns() {
         assertMinimumWidth(0.0);
 
-        grid.getMinimumWidth();
+        Assertions.assertThat(grid.getMinimumWidth()).isEqualTo(0);
     }
 
     @Test
@@ -298,6 +303,68 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
         assertThat(grid.getPadding()).isEqualTo(0.0);
     }
 
+    @Test
+    public void testWidthIncreased() throws Exception {
+        testUpdateWidthOfPeers(0, 150);
+    }
+
+    @Test
+    public void testWidthIncreasedMultipleChildColumnsFirstUpdated() throws Exception {
+        testUpdateWidthOfPeers(0, 150, 180);
+    }
+
+    @Test
+    public void testWidthIncreasedMultipleChildColumnsLastUpdated() throws Exception {
+        testUpdateWidthOfPeers(1, 150, 180);
+    }
+
+    @Test
+    public void testWidthDecreased() throws Exception {
+        testUpdateWidthOfPeers(0, 80);
+    }
+
+    @Test
+    public void testWidthDecreasedMultipleChildColumnsFirstUpdated() throws Exception {
+        testUpdateWidthOfPeers(0, 35, 45);
+    }
+
+    @Test
+    public void testWidthDecreasedMultipleChildColumnsLastUpdated() throws Exception {
+        testUpdateWidthOfPeers(1, 35, 45);
+    }
+
+    /*
+     * Test that parent column width is updated to sum of nested columns
+     * The update is forced from nested column at position indexOfColumnToUpdate
+     * The default width of parent column is 100
+     */
+    private void testUpdateWidthOfPeers(final int indexOfColumnToUpdate,
+                                        final double... widthsOfNestedColumns) {
+        // parent column
+        final BaseExpressionGrid parentGrid = mock(BaseExpressionGrid.class);
+        final GridData parentGridData = mock(GridData.class);
+        final DMNGridColumn parentColumn = mockColumn(100, null);
+        doReturn(parentGridData).when(parentCell).getGridData();
+        doReturn(parentGridData).when(parentGrid).getModel();
+        doReturn(Collections.singletonList(parentColumn)).when(parentGridData).getColumns();
+        doReturn(Collections.singleton(parentGrid)).when(gridLayer).getGridWidgets();
+
+
+        // nested columns
+        final List<DMNGridColumn> columns = Arrays.stream(widthsOfNestedColumns)
+                .mapToObj(width -> mockColumn(width, grid))
+                .collect(Collectors.toList());
+        grid.getModel().appendRow(new DMNGridRow());
+        columns.stream().forEach(column -> grid.getModel().appendColumn(column));
+
+        // force the peers width update
+        columns.get(indexOfColumnToUpdate).updateWidthOfPeers();
+
+        // assert parent width is equal to sum of nested columns widths
+        final double padding = BaseExpressionGrid.DEFAULT_PADDING * 2;
+        Assertions.assertThat(parentColumn.getWidth()).isEqualTo(Arrays.stream(widthsOfNestedColumns).sum() + padding);
+    }
+
     private void assertMinimumWidth(final double expectedMinimumWidth,
                                     final MockColumnData... columnData) {
         Arrays.asList(columnData).forEach(cd -> {
@@ -333,5 +400,16 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
             this.width = width;
             this.minWidth = minWidth;
         }
+    }
+
+    private DMNGridColumn mockColumn(final double width,
+                                     final GridWidget gridWidget) {
+        final GridColumn.HeaderMetaData headerMetaData = mock(GridColumn.HeaderMetaData.class);
+        final GridColumnRenderer columnRenderer = mock(GridColumnRenderer.class);
+        return new DMNGridColumn(headerMetaData,
+                                 columnRenderer,
+                                 gridWidget) {{
+            setWidth(width);
+        }};
     }
 }
