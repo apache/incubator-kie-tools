@@ -37,7 +37,8 @@ public class ExpressionContainer extends BaseGridWidget {
               new ExpressionContainerRenderer());
         setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
 
-        final GridColumn expressionColumn = new ExpressionEditorColumn(new BaseHeaderMetaData(COLUMN_GROUP),
+        final GridColumn expressionColumn = new ExpressionEditorColumn(gridLayer,
+                                                                       new BaseHeaderMetaData(COLUMN_GROUP),
                                                                        this);
         expressionColumn.setMovable(false);
         expressionColumn.setResizable(true);

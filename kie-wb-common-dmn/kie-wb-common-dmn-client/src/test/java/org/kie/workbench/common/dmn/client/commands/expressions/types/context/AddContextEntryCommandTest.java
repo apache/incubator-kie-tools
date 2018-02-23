@@ -48,6 +48,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 import static org.junit.Assert.assertEquals;
@@ -63,6 +64,9 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AddContextEntryCommandTest {
+
+    @Mock
+    private GridWidget gridWidget;
 
     @Mock
     private RowNumberColumn uiRowNumberColumn;
@@ -136,6 +140,7 @@ public class AddContextEntryCommandTest {
         this.uiModel.appendColumn(uiNameColumn);
         this.uiModel.appendColumn(uiExpressionEditorColumn);
 
+        doReturn(uiModel).when(gridWidget).getModel();
         doReturn(ruleManager).when(handler).getRuleManager();
         doReturn(0).when(uiRowNumberColumn).getIndex();
         doReturn(1).when(uiNameColumn).getIndex();
@@ -155,7 +160,8 @@ public class AddContextEntryCommandTest {
                                                                                                              any(Optional.class),
                                                                                                              any(Optional.class),
                                                                                                              anyBoolean());
-        this.uiModelMapper = new ContextUIModelMapper(() -> uiModel,
+        this.uiModelMapper = new ContextUIModelMapper(gridWidget,
+                                                      () -> uiModel,
                                                       () -> Optional.of(context),
                                                       () -> expressionEditorDefinitions,
                                                       listSelector);

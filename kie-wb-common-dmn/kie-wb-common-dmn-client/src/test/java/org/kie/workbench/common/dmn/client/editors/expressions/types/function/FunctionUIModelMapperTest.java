@@ -39,6 +39,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -48,6 +49,9 @@ import static org.mockito.Mockito.doReturn;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FunctionUIModelMapperTest {
+
+    @Mock
+    private GridWidget gridWidget;
 
     @Mock
     private ExpressionEditorColumn uiExpressionEditorColumn;
@@ -90,6 +94,7 @@ public class FunctionUIModelMapperTest {
         this.uiModel.appendRow(new DMNGridRow());
         this.uiModel.appendColumn(uiExpressionEditorColumn);
         doReturn(0).when(uiExpressionEditorColumn).getIndex();
+        doReturn(uiModel).when(gridWidget).getModel();
 
         //Core Editor definitions
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
@@ -119,7 +124,8 @@ public class FunctionUIModelMapperTest {
 
         this.function = new FunctionDefinition();
 
-        this.mapper = new FunctionUIModelMapper(() -> uiModel,
+        this.mapper = new FunctionUIModelMapper(gridWidget,
+                                                () -> uiModel,
                                                 () -> Optional.of(function),
                                                 expressionEditorDefinitionsSupplier,
                                                 supplementaryEditorDefinitionsSupplier);

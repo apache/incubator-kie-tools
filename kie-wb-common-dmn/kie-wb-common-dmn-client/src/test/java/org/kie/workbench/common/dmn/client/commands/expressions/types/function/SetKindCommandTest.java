@@ -40,6 +40,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -49,6 +50,9 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SetKindCommandTest {
+
+    @Mock
+    private GridWidget gridWidget;
 
     @Mock
     private GridColumn mockColumn;
@@ -99,13 +103,14 @@ public class SetKindCommandTest {
                                   0,
                                   new ExpressionCellValue(Optional.of(originalEditor)));
 
+        doReturn(uiModel).when(gridWidget).getModel();
         doReturn(ruleManager).when(handler).getRuleManager();
     }
 
     private void setupCommand() {
         final GridCellValueTuple gcv = new GridCellValueTuple<>(0,
                                                                 0,
-                                                                uiModel,
+                                                                gridWidget,
                                                                 new ExpressionCellValue(Optional.of(newEditor)));
         this.command = new SetKindCommand(gcv,
                                           function,

@@ -267,7 +267,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
                                                                           uiModelMapper,
                                                                           () -> {
                                                                               final int parentColumnIndex = getParentInformation().getColumnIndex();
-                                                                              final GridData parentGridData = getParentInformation().getGridData();
+                                                                              final GridData parentGridData = getParentInformation().getGridWidget().getModel();
                                                                               final GridColumn<?> parentColumn = parentGridData.getColumns().get(parentColumnIndex);
                                                                               parentColumn.setWidth(getWidth() + getPadding() * 2);
 

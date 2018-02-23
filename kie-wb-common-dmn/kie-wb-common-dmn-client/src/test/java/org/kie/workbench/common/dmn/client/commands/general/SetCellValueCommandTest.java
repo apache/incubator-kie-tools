@@ -37,6 +37,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -59,6 +60,9 @@ public class SetCellValueCommandTest {
 
     @Mock
     private DMNGridLayer gridLayer;
+
+    @Mock
+    private GridWidget gridWidget;
 
     @Mock
     private GridData gridModel;
@@ -106,10 +110,11 @@ public class SetCellValueCommandTest {
         }
         when(newGridCell.getValue()).thenReturn(newGridCellValue);
         when(newGridCellValue.getValue()).thenReturn(NEW_CELL_VALUE);
+        when(gridWidget.getModel()).thenReturn(gridModel);
 
         this.command = new SetCellValueCommand(new GridCellValueTuple<>(ROW_INDEX,
                                                                         COLUMN_INDEX,
-                                                                        gridModel,
+                                                                        gridWidget,
                                                                         newGridCellValue),
                                                () -> uiModelMapper,
                                                gridLayer::batch);

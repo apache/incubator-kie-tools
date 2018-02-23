@@ -32,7 +32,8 @@ public class ContextUIModelMapperTest extends BaseContextUIModelMapperTest<Conte
 
     @Override
     protected ContextUIModelMapper getMapper() {
-        return new ContextUIModelMapper(() -> uiModel,
+        return new ContextUIModelMapper(gridWidget,
+                                        () -> uiModel,
                                         () -> Optional.of(context),
                                         expressionEditorDefinitionsSupplier,
                                         listSelector);

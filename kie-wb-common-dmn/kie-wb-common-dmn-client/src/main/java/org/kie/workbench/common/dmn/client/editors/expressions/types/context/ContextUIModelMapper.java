@@ -33,22 +33,27 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionStrategy;
 
 public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
 
     public static final String DEFAULT_ROW_CAPTION = "default";
 
-    private ListSelector listSelector;
+    private GridWidget gridWidget;
 
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
 
-    public ContextUIModelMapper(final Supplier<GridData> uiModel,
+    private ListSelector listSelector;
+
+    public ContextUIModelMapper(final GridWidget gridWidget,
+                                final Supplier<GridData> uiModel,
                                 final Supplier<Optional<Context>> dmnModel,
                                 final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                 final ListSelector listSelector) {
         super(uiModel,
               dmnModel);
+        this.gridWidget = gridWidget;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.listSelector = listSelector;
     }
@@ -96,7 +101,7 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
                     expressionEditorDefinition.ifPresent(ed -> {
                         final Optional<BaseExpressionGrid> editor = ed.getEditor(new GridCellTuple(rowIndex,
                                                                                                    columnIndex,
-                                                                                                   uiModel.get()),
+                                                                                                   gridWidget),
                                                                                  ce,
                                                                                  expression,
                                                                                  Optional.ofNullable(ce.getVariable()),

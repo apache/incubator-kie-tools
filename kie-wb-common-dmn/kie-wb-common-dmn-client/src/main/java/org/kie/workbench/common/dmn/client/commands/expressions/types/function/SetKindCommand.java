@@ -73,8 +73,8 @@ public class SetKindCommand extends AbstractCanvasGraphCommand implements VetoEx
 
     GridCellValue<?> extractGridCellValue(final int rowIndex,
                                           final int columnIndex) {
-        final GridCell<?> cell = cellTuple.getGridData().getCell(rowIndex,
-                                                                 columnIndex);
+        final GridCell<?> cell = cellTuple.getGridWidget().getModel().getCell(rowIndex,
+                                                                              columnIndex);
         return cell == null ? null : cell.getValue();
     }
 
@@ -121,7 +121,7 @@ public class SetKindCommand extends AbstractCanvasGraphCommand implements VetoEx
         return new AbstractCanvasCommand() {
             @Override
             public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler handler) {
-                final GridData gridData = cellTuple.getGridData();
+                final GridData gridData = cellTuple.getGridWidget().getModel();
                 gridData.setCellValue(cellTuple.getRowIndex(),
                                       cellTuple.getColumnIndex(),
                                       cellTuple.getValue());
@@ -134,12 +134,12 @@ public class SetKindCommand extends AbstractCanvasGraphCommand implements VetoEx
             @Override
             public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler handler) {
                 if (oldCellValue.isPresent()) {
-                    cellTuple.getGridData().setCellValue(cellTuple.getRowIndex(),
-                                                         cellTuple.getColumnIndex(),
-                                                         oldCellValue.get());
+                    cellTuple.getGridWidget().getModel().setCellValue(cellTuple.getRowIndex(),
+                                                                      cellTuple.getColumnIndex(),
+                                                                      oldCellValue.get());
                 } else {
-                    cellTuple.getGridData().deleteCell(cellTuple.getRowIndex(),
-                                                       cellTuple.getColumnIndex());
+                    cellTuple.getGridWidget().getModel().deleteCell(cellTuple.getRowIndex(),
+                                                                    cellTuple.getColumnIndex());
                 }
 
                 canvasOperation.execute();

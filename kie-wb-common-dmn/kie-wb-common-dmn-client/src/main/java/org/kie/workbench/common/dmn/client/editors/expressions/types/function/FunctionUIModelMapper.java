@@ -31,18 +31,22 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition> {
 
+    private GridWidget gridWidget;
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier;
 
-    public FunctionUIModelMapper(final Supplier<GridData> uiModel,
+    public FunctionUIModelMapper(final GridWidget gridWidget,
+                                 final Supplier<GridData> uiModel,
                                  final Supplier<Optional<FunctionDefinition>> dmnModel,
                                  final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                  final Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier) {
         super(uiModel,
               dmnModel);
+        this.gridWidget = gridWidget;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.supplementaryEditorDefinitionsSupplier = supplementaryEditorDefinitionsSupplier;
     }
@@ -81,7 +85,9 @@ public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition>
                                   final int columnIndex,
                                   final FunctionDefinition function,
                                   final ExpressionEditorDefinition<Expression> ed) {
-        final GridCellTuple expressionParent = new GridCellTuple(0, 0, uiModel.get());
+        final GridCellTuple expressionParent = new GridCellTuple(0,
+                                                                 0,
+                                                                 gridWidget);
         final Optional<Expression> expression = Optional.ofNullable(function.getExpression());
         final Optional<BaseExpressionGrid> editor = ed.getEditor(expressionParent,
                                                                  function,

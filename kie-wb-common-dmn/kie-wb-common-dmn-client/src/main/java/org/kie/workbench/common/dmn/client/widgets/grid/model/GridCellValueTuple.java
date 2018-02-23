@@ -17,7 +17,7 @@
 package org.kie.workbench.common.dmn.client.widgets.grid.model;
 
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
-import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 public class GridCellValueTuple<T extends GridCellValue> extends GridCellTuple {
 
@@ -25,11 +25,11 @@ public class GridCellValueTuple<T extends GridCellValue> extends GridCellTuple {
 
     public GridCellValueTuple(final int rowIndex,
                               final int columnIndex,
-                              final GridData uiModel,
+                              final GridWidget gridWidget,
                               final T value) {
         super(rowIndex,
               columnIndex,
-              uiModel);
+              gridWidget);
         this.value = value;
     }
 

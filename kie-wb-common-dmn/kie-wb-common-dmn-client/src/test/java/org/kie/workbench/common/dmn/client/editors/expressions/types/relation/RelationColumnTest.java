@@ -42,6 +42,7 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -61,6 +62,9 @@ public class RelationColumnTest {
 
     @Mock
     private RelationGrid gridWidget;
+
+    @Mock
+    private GridWidget parentGridWidget;
 
     @Mock
     private GridBodyCellRenderContext context;
@@ -95,8 +99,9 @@ public class RelationColumnTest {
         parentUiModel.appendRow(new BaseGridRow());
         parentUiModel.appendRow(new BaseGridRow());
         parentUiModel.appendColumn(mock(ExpressionEditorColumn.class));
-        parent = new GridCellTuple(0, 0, parentUiModel);
+        parent = new GridCellTuple(0, 0, parentGridWidget);
 
+        doReturn(parentUiModel).when(parentGridWidget).getModel();
         doReturn(textArea).when(textAreaDOMElement).getWidget();
         doReturn(parent).when(gridWidget).getParentInformation();
         doReturn(100.0).when(gridWidget).getWidth();

@@ -33,6 +33,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionStrategy;
 
 public class InvocationUIModelMapper extends BaseUIModelMapper<Invocation> {
@@ -43,13 +44,17 @@ public class InvocationUIModelMapper extends BaseUIModelMapper<Invocation> {
 
     public static final int BINDING_EXPRESSION_COLUMN_INDEX = 2;
 
+    private GridWidget gridWidget;
+
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
 
-    public InvocationUIModelMapper(final Supplier<GridData> uiModel,
+    public InvocationUIModelMapper(final GridWidget gridWidget,
+                                   final Supplier<GridData> uiModel,
                                    final Supplier<Optional<Invocation>> dmnModel,
                                    final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
         super(uiModel,
               dmnModel);
+        this.gridWidget = gridWidget;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
     }
 
@@ -80,7 +85,7 @@ public class InvocationUIModelMapper extends BaseUIModelMapper<Invocation> {
                     expressionEditorDefinition.ifPresent(ed -> {
                         final Optional<BaseExpressionGrid> editor = ed.getEditor(new GridCellTuple(rowIndex,
                                                                                                    columnIndex,
-                                                                                                   uiModel.get()),
+                                                                                                   gridWidget),
                                                                                  binding,
                                                                                  expression,
                                                                                  Optional.ofNullable(binding.getParameter()),

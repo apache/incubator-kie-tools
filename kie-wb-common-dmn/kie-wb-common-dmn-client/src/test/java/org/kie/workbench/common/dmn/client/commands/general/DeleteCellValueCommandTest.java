@@ -38,6 +38,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -59,6 +60,9 @@ public class DeleteCellValueCommandTest {
 
     @Mock
     private DMNGridLayer gridLayer;
+
+    @Mock
+    private GridWidget gridWidget;
 
     @Mock
     private GridData gridModel;
@@ -93,10 +97,11 @@ public class DeleteCellValueCommandTest {
                                COLUMN_INDEX)).thenReturn(gridCell);
         when(gridCell.getValue()).thenReturn(gridCellValue);
         when(gridCellValue.getValue()).thenReturn(CELL_VALUE);
+        when(gridWidget.getModel()).thenReturn(gridModel);
 
         this.command = new DeleteCellValueCommand(new GridCellTuple(ROW_INDEX,
                                                                     COLUMN_INDEX,
-                                                                    gridModel),
+                                                                    gridWidget),
                                                   () -> uiModelMapper,
                                                   gridLayer::batch);
     }

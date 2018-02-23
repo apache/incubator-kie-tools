@@ -42,6 +42,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 import static org.junit.Assert.assertEquals;
@@ -57,6 +58,9 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AddParameterBindingCommandTest {
+
+    @Mock
+    private GridWidget gridWidget;
 
     @Mock
     private RowNumberColumn uiRowNumberColumn;
@@ -109,7 +113,8 @@ public class AddParameterBindingCommandTest {
         this.uiModel.appendColumn(uiNameColumn);
         this.uiModel.appendColumn(uiExpressionEditorColumn);
 
-        this.uiModelMapper = new InvocationUIModelMapper(() -> uiModel,
+        this.uiModelMapper = new InvocationUIModelMapper(gridWidget,
+                                                         () -> uiModel,
                                                          () -> Optional.of(invocation),
                                                          () -> expressionEditorDefinitions);
 
@@ -124,6 +129,7 @@ public class AddParameterBindingCommandTest {
         doReturn(0).when(uiRowNumberColumn).getIndex();
         doReturn(1).when(uiNameColumn).getIndex();
         doReturn(2).when(uiExpressionEditorColumn).getIndex();
+        doReturn(uiModel).when(gridWidget).getModel();
 
         doReturn(Optional.empty()).when(expressionEditorDefinitions).getExpressionEditorDefinition(any(Optional.class));
     }

@@ -103,7 +103,7 @@ public class ExpressionEditorColumnTest {
     public void setUp() throws Exception {
         gridData = new BaseGridData();
         widget = new BaseGridWidget(gridData, selectionManager, pinnedModeManager, renderer);
-        column = new ExpressionEditorColumn(new BaseHeaderMetaData("column header"), widget);
+        column = new ExpressionEditorColumn(gridLayer, new BaseHeaderMetaData("column header"), widget);
     }
 
     @Test

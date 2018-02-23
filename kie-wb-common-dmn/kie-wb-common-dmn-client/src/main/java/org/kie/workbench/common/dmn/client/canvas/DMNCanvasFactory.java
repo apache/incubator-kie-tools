@@ -164,7 +164,7 @@ public class DMNCanvasFactory
                 .register(ClipboardControl.class,
                           clipboardControls)
                 .register(ControlPointControl.class,
-                        controlPointControls);
+                          controlPointControls);
     }
 
     @Override

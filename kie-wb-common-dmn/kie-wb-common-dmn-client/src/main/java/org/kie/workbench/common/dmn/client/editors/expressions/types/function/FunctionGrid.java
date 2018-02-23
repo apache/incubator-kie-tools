@@ -113,7 +113,8 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
 
     @Override
     public FunctionUIModelMapper makeUiModelMapper() {
-        return new FunctionUIModelMapper(this::getModel,
+        return new FunctionUIModelMapper(this,
+                                         this::getModel,
                                          () -> expression,
                                          expressionEditorDefinitionsSupplier,
                                          supplementaryEditorDefinitionsSupplier);
@@ -128,7 +129,8 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
                                                                                                       sessionCommandManager,
                                                                                                       newHeaderHasNoValueCommand(),
                                                                                                       newHeaderHasValueCommand());
-        final GridColumn expressionColumn = new ExpressionEditorColumn(Arrays.asList(new FunctionColumnNameHeaderMetaData(() -> hasName.orElse(HasName.NOP).getName().getValue(),
+        final GridColumn expressionColumn = new ExpressionEditorColumn(gridLayer,
+                                                                       Arrays.asList(new FunctionColumnNameHeaderMetaData(() -> hasName.orElse(HasName.NOP).getName().getValue(),
                                                                                                                           (s) -> hasName.orElse(HasName.NOP).getName().setValue(s),
                                                                                                                           headerFactory),
                                                                                      new FunctionColumnParametersHeaderMetaData(this::extractExpressionLanguage,
@@ -242,7 +244,9 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
                            final FunctionDefinition function,
                            final Optional<ExpressionEditorDefinition<Expression>> oDefinition) {
         oDefinition.ifPresent(definition -> {
-            final GridCellTuple expressionParent = new GridCellTuple(0, 0, model);
+            final GridCellTuple expressionParent = new GridCellTuple(0,
+                                                                     0,
+                                                                     this);
             final Optional<Expression> expression = definition.getModelClass();
             final Optional<BaseExpressionGrid> gridWidget = definition.getEditor(expressionParent,
                                                                                  hasExpression,
@@ -262,7 +266,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
                    final Optional<BaseExpressionGrid> editor) {
         final GridCellValueTuple gcv = new GridCellValueTuple<>(0,
                                                                 0,
-                                                                model,
+                                                                this,
                                                                 new ExpressionCellValue(editor));
         sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                       new SetKindCommand(gcv,
@@ -277,7 +281,9 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
         final Optional<ExpressionEditorDefinition<Expression>> expressionEditorDefinition = expressionEditorDefinitionsSupplier.get().getExpressionEditorDefinition(type);
         expressionEditorDefinition.ifPresent(ed -> {
             final Optional<Expression> expression = ed.getModelClass();
-            final GridCellTuple expressionParent = new GridCellTuple(0, 0, model);
+            final GridCellTuple expressionParent = new GridCellTuple(0,
+                                                                     0,
+                                                                     this);
             final Optional<BaseExpressionGrid> editor = ed.getEditor(expressionParent,
                                                                      hasExpression,
                                                                      expression,
@@ -285,7 +291,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
                                                                      true);
             final GridCellValueTuple gcv = new GridCellValueTuple<>(0,
                                                                     0,
-                                                                    model,
+                                                                    this,
                                                                     new ExpressionCellValue(editor));
 
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),

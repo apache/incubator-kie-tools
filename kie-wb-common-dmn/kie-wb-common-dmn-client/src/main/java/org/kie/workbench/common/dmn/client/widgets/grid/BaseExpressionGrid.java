@@ -62,6 +62,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
@@ -357,7 +358,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
     }
 
     @Override
-    protected void executeRenderQueueCommands() {
+    protected void executeRenderQueueCommands(final boolean isSelectionLayer) {
         final List<Pair<Group, GridRenderer.RendererCommand>> gridLineCommands = new ArrayList<>();
         final List<Pair<Group, GridRenderer.RendererCommand>> allOtherCommands = new ArrayList<>();
         final List<Pair<Group, GridRenderer.RendererCommand>> selectedCellsCommands = new ArrayList<>();
@@ -385,9 +386,11 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
             return true;
         };
 
-        allOtherCommands.stream().filter(renderHeader).forEach(p -> p.getK2().execute(p.getK1()));
-        gridLineCommands.stream().filter(renderHeader).forEach(p -> p.getK2().execute(p.getK1()));
-        selectedCellsCommands.stream().filter(renderHeader).forEach(p -> p.getK2().execute(p.getK1()));
+        renderQueue.clear();
+        allOtherCommands.stream().filter(renderHeader).forEach(p -> addCommandToRenderQueue(p.getK1(), p.getK2()));
+        gridLineCommands.stream().filter(renderHeader).forEach(p -> addCommandToRenderQueue(p.getK1(), p.getK2()));
+        selectedCellsCommands.stream().filter(renderHeader).forEach(p -> addCommandToRenderQueue(p.getK1(), p.getK2()));
+        super.executeRenderQueueCommands(isSelectionLayer);
     }
 
     public GridCellTuple getParentInformation() {
@@ -442,12 +445,10 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
     }
 
     protected Optional<BaseExpressionGrid> findParentGrid() {
-        final GridData parentUiModel = parent.getGridData();
-        return gridLayer.getGridWidgets()
-                .stream()
-                .filter(gridWidget -> gridWidget instanceof BaseExpressionGrid)
-                .filter(gridWidget -> gridWidget.getModel().equals(parentUiModel))
-                .map(gridWidget -> (BaseExpressionGrid) gridWidget)
-                .findFirst();
+        final GridWidget gridWidget = parent.getGridWidget();
+        if (gridWidget instanceof BaseExpressionGrid) {
+            return Optional.of((BaseExpressionGrid) gridWidget);
+        }
+        return Optional.empty();
     }
 }

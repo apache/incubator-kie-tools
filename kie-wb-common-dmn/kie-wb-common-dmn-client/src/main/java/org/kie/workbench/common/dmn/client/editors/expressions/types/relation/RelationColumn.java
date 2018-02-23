@@ -64,7 +64,7 @@ public class RelationColumn extends DMNGridColumn<String> implements HasSingleto
 
     private double getMinimumWidthOfPeers() {
         final GridCellTuple parent = ((RelationGrid) gridWidget).getParentInformation();
-        final GridData parentUiModel = parent.getGridData();
+        final GridData parentUiModel = parent.getGridWidget().getModel();
         final int parentUiRowIndex = parent.getRowIndex();
         final int parentUiColumnIndex = parent.getColumnIndex();
 

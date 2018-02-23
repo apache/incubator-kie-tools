@@ -20,12 +20,20 @@ import java.util.Optional;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.google.gwt.core.client.GWT;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.impl.BaseGridColumnRenderer;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.GridWidgetRegistry;
 
 public class ExpressionEditorColumnRenderer extends BaseGridColumnRenderer<Optional<BaseExpressionGrid>> {
+
+    private final GridWidgetRegistry registry;
+
+    public ExpressionEditorColumnRenderer(final GridWidgetRegistry registry) {
+        this.registry = PortablePreconditions.checkNotNull("registry", registry);
+    }
 
     @Override
     public Group renderCell(final GridCell<Optional<BaseExpressionGrid>> cell,
@@ -37,7 +45,10 @@ public class ExpressionEditorColumnRenderer extends BaseGridColumnRenderer<Optio
         final Group g = GWT.create(Group.class);
         if (cell.getValue() != null && cell.getValue() instanceof ExpressionCellValue) {
             final ExpressionCellValue ecv = (ExpressionCellValue) cell.getValue();
-            ecv.getValue().ifPresent(editor -> g.add(editor.setX(editor.getPadding()).setY(editor.getPadding())));
+            ecv.getValue().ifPresent(editor -> {
+                g.add(editor.setX(editor.getPadding()).setY(editor.getPadding()));
+                registry.register(editor);
+            });
         }
 
         return g;

@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.jboss.errai.common.client.api.IsElement;
@@ -42,6 +41,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyRenderCon
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBoundaryRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer.GridRendererContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer.RenderBodyGridBackgroundCommand;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer.RenderBodyGridContentCommand;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer.RenderBodyGridLinesCommand;
@@ -193,10 +193,10 @@ public class BaseExpressionGridRenderingTest extends BaseExpressionGridTest {
 
         grid.drawWithTransforms(context, 1.0, new BoundingBox());
 
-        verify(renderHeaderBackgroundCommand, never()).execute(any(Group.class));
-        verify(renderHeaderGridLinesCommand, never()).execute(any(Group.class));
-        verify(renderHeaderContentCommand, never()).execute(any(Group.class));
-        verify(renderHeaderBodyDividerCommand, never()).execute(any(Group.class));
+        verify(renderHeaderBackgroundCommand, never()).execute(any(GridRendererContext.class));
+        verify(renderHeaderGridLinesCommand, never()).execute(any(GridRendererContext.class));
+        verify(renderHeaderContentCommand, never()).execute(any(GridRendererContext.class));
+        verify(renderHeaderBodyDividerCommand, never()).execute(any(GridRendererContext.class));
 
         final InOrder order = inOrder(renderBodyGridBackgroundCommand,
                                       renderBodyGridContentCommand,
@@ -204,11 +204,11 @@ public class BaseExpressionGridRenderingTest extends BaseExpressionGridTest {
                                       renderGridBoundaryCommand,
                                       renderSelectedCellsCommand);
 
-        order.verify(renderBodyGridBackgroundCommand).execute(any(Group.class));
-        order.verify(renderBodyGridContentCommand).execute(any(Group.class));
-        order.verify(renderGridBoundaryCommand).execute(any(Group.class));
-        order.verify(renderBodyGridLinesCommand).execute(any(Group.class));
-        order.verify(renderSelectedCellsCommand).execute(any(Group.class));
+        order.verify(renderBodyGridBackgroundCommand).execute(any(GridRendererContext.class));
+        order.verify(renderBodyGridContentCommand).execute(any(GridRendererContext.class));
+        order.verify(renderGridBoundaryCommand).execute(any(GridRendererContext.class));
+        order.verify(renderBodyGridLinesCommand).execute(any(GridRendererContext.class));
+        order.verify(renderSelectedCellsCommand).execute(any(GridRendererContext.class));
     }
 
     @Test
@@ -226,13 +226,13 @@ public class BaseExpressionGridRenderingTest extends BaseExpressionGridTest {
                                       renderBodyGridLinesCommand,
                                       renderSelectedCellsCommand);
 
-        order.verify(renderHeaderBackgroundCommand).execute(any(Group.class));
-        order.verify(renderHeaderContentCommand).execute(any(Group.class));
-        order.verify(renderBodyGridBackgroundCommand).execute(any(Group.class));
-        order.verify(renderBodyGridContentCommand).execute(any(Group.class));
-        order.verify(renderGridBoundaryCommand).execute(any(Group.class));
-        order.verify(renderHeaderGridLinesCommand).execute(any(Group.class));
-        order.verify(renderBodyGridLinesCommand).execute(any(Group.class));
-        order.verify(renderSelectedCellsCommand).execute(any(Group.class));
+        order.verify(renderHeaderBackgroundCommand).execute(any(GridRendererContext.class));
+        order.verify(renderHeaderContentCommand).execute(any(GridRendererContext.class));
+        order.verify(renderBodyGridBackgroundCommand).execute(any(GridRendererContext.class));
+        order.verify(renderBodyGridContentCommand).execute(any(GridRendererContext.class));
+        order.verify(renderGridBoundaryCommand).execute(any(GridRendererContext.class));
+        order.verify(renderHeaderGridLinesCommand).execute(any(GridRendererContext.class));
+        order.verify(renderBodyGridLinesCommand).execute(any(GridRendererContext.class));
+        order.verify(renderSelectedCellsCommand).execute(any(GridRendererContext.class));
     }
 }

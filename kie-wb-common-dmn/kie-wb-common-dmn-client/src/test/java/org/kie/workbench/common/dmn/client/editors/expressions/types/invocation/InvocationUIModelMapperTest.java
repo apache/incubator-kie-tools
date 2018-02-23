@@ -40,6 +40,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionStrategy;
 
@@ -52,6 +53,9 @@ import static org.mockito.Mockito.doReturn;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InvocationUIModelMapperTest {
+
+    @Mock
+    private GridWidget gridWidget;
 
     @Mock
     private RowNumberColumn uiRowNumberColumn;
@@ -93,6 +97,7 @@ public class InvocationUIModelMapperTest {
         doReturn(0).when(uiRowNumberColumn).getIndex();
         doReturn(1).when(uiNameColumn).getIndex();
         doReturn(2).when(uiExpressionEditorColumn).getIndex();
+        doReturn(uiModel).when(gridWidget).getModel();
 
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add(literalExpressionEditorDefinition);
@@ -120,7 +125,8 @@ public class InvocationUIModelMapperTest {
         this.invocation.setExpression(invocationExpression);
         this.invocation.getBinding().add(binding);
 
-        this.mapper = new InvocationUIModelMapper(() -> uiModel,
+        this.mapper = new InvocationUIModelMapper(gridWidget,
+                                                  () -> uiModel,
                                                   () -> Optional.of(invocation),
                                                   expressionEditorDefinitionsSupplier);
         this.cellValueSupplier = Optional::empty;

@@ -25,7 +25,6 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
@@ -57,18 +56,17 @@ public class TextBoxDOMElement extends org.uberfire.ext.wires.core.grids.client.
     public void flush(final String value) {
         final int rowIndex = context.getRowIndex();
         final int columnIndex = context.getColumnIndex();
-        final GridData uiModel = gridWidget.getModel();
 
         if (value == null || value.trim().isEmpty()) {
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           hasNoValueCommand.apply(new GridCellTuple(rowIndex,
                                                                                     columnIndex,
-                                                                                    uiModel)));
+                                                                                    gridWidget)));
         } else {
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           hasValueCommand.apply(new GridCellValueTuple<>(rowIndex,
                                                                                          columnIndex,
-                                                                                         uiModel,
+                                                                                         gridWidget,
                                                                                          new BaseGridCellValue<>(value))));
         }
     }

@@ -160,7 +160,7 @@ public class LiteralExpressionGridTest {
     public void testFireExpressionEditorSelectedEventSelectsParentGridWidget() {
         final GridData mockParentUiModel = mock(GridData.class);
         final BaseExpressionGrid mockParentGrid = mock(BaseExpressionGrid.class);
-        doReturn(mockParentUiModel).when(parent).getGridData();
+        doReturn(mockParentGrid).when(parent).getGridWidget();
         doReturn(mockParentUiModel).when(mockParentGrid).getModel();
         doReturn(new HashSet<GridWidget>() {{
             add(mockParentGrid);
@@ -178,7 +178,7 @@ public class LiteralExpressionGridTest {
 
     @Test
     public void testGetItemsWithNoParent() {
-        when(parent.getGridData()).thenReturn(mock(GridData.class));
+        when(parent.getGridWidget()).thenReturn(mock(GridWidget.class));
         when(gridLayer.getGridWidgets()).thenReturn(Collections.singleton(mock(BaseGridWidget.class)));
 
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
@@ -192,7 +192,7 @@ public class LiteralExpressionGridTest {
         final GridData parentGridData = mock(GridData.class);
         final ContextGrid parentGridWidget = mock(ContextGrid.class);
         final HasListSelectorControl.ListSelectorItem listSelectorItem = mock(HasListSelectorControl.ListSelectorItem.class);
-        when(parent.getGridData()).thenReturn(parentGridData);
+        when(parent.getGridWidget()).thenReturn(parentGridWidget);
         when(gridLayer.getGridWidgets()).thenReturn(Collections.singleton(parentGridWidget));
         when(parentGridWidget.getModel()).thenReturn(parentGridData);
         when(parentGridWidget.getItems(anyInt(), anyInt())).thenReturn(Collections.singletonList(listSelectorItem));
@@ -211,7 +211,7 @@ public class LiteralExpressionGridTest {
         final GridData parentGridData = mock(GridData.class);
         final ContextGrid parentGridWidget = mock(ContextGrid.class);
         final HasListSelectorControl.ListSelectorItem listSelectorItem = mock(HasListSelectorControl.ListSelectorItem.class);
-        when(parent.getGridData()).thenReturn(parentGridData);
+        when(parent.getGridWidget()).thenReturn(parentGridWidget);
         when(gridLayer.getGridWidgets()).thenReturn(Collections.singleton(parentGridWidget));
         when(parentGridWidget.getModel()).thenReturn(parentGridData);
         when(parentGridWidget.getItems(anyInt(), anyInt())).thenReturn(Collections.singletonList(listSelectorItem));
@@ -226,7 +226,7 @@ public class LiteralExpressionGridTest {
     public void testGetItemsWithParentThatDoesNotSupportCellControls() {
         final GridData parentGridData = mock(GridData.class);
         final BaseExpressionGrid parentGridWidget = mock(BaseExpressionGrid.class);
-        when(parent.getGridData()).thenReturn(parentGridData);
+        when(parent.getGridWidget()).thenReturn(parentGridWidget);
         when(gridLayer.getGridWidgets()).thenReturn(Collections.singleton(parentGridWidget));
         when(parentGridWidget.getModel()).thenReturn(parentGridData);
 

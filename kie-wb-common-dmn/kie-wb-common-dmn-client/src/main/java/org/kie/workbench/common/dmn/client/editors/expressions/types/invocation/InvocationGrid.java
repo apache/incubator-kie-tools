@@ -108,7 +108,8 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIM
 
     @Override
     public InvocationUIModelMapper makeUiModelMapper() {
-        return new InvocationUIModelMapper(this::getModel,
+        return new InvocationUIModelMapper(this,
+                                           this::getModel,
                                            () -> expression,
                                            expressionEditorDefinitionsSupplier);
     }
@@ -139,7 +140,8 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIM
                                                                    expressionHeaderMetaData),
                                                      factory,
                                                      this);
-        final ExpressionEditorColumn expressionColumn = new ExpressionEditorColumn(Arrays.asList(new BaseHeaderMetaData("",
+        final ExpressionEditorColumn expressionColumn = new ExpressionEditorColumn(gridLayer,
+                                                                                   Arrays.asList(new BaseHeaderMetaData("",
                                                                                                                         EXPRESSION_COLUMN_GROUP),
                                                                                                  expressionHeaderMetaData),
                                                                                    this);

@@ -24,14 +24,17 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 public class FunctionSupplementaryGridUIModelMapper extends ContextUIModelMapper {
 
-    public FunctionSupplementaryGridUIModelMapper(final Supplier<GridData> uiModel,
+    public FunctionSupplementaryGridUIModelMapper(final GridWidget gridWidget,
+                                                  final Supplier<GridData> uiModel,
                                                   final Supplier<Optional<Context>> dmnModel,
                                                   final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                                   final ListSelector listSelector) {
-        super(uiModel,
+        super(gridWidget,
+              uiModel,
               dmnModel,
               expressionEditorDefinitionsSupplier,
               listSelector);

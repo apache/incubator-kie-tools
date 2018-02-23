@@ -161,7 +161,7 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
             if (grid instanceof HasListSelectorControl) {
                 final int parentUiRowIndex = getParentInformation().getRowIndex();
                 final int parentUiColumnIndex = getParentInformation().getColumnIndex();
-                final GridCell<?> parentCell = getParentInformation().getGridData().getCell(parentUiRowIndex, parentUiColumnIndex);
+                final GridCell<?> parentCell = getParentInformation().getGridWidget().getModel().getCell(parentUiRowIndex, parentUiColumnIndex);
 
                 if (parentCell instanceof HasCellEditorControls) {
                     final List<ListSelectorItem> parentItems = ((HasListSelectorControl) grid).getItems(parentUiRowIndex,
@@ -212,7 +212,7 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
                                                                      isNested);
             final GridCellValueTuple gcv = new GridCellValueTuple<>(parent.getRowIndex(),
                                                                     parent.getColumnIndex(),
-                                                                    parent.getGridData(),
+                                                                    parent.getGridWidget(),
                                                                     new ExpressionCellValue(editor));
 
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),

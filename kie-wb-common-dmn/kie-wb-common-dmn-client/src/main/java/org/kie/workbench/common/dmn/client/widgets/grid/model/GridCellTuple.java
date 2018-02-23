@@ -17,20 +17,20 @@
 package org.kie.workbench.common.dmn.client.widgets.grid.model;
 
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
-import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 public class GridCellTuple implements RequiresResize {
 
     private int rowIndex;
     private int columnIndex;
-    private final GridData uiModel;
+    private final GridWidget gridWidget;
 
     public GridCellTuple(final int rowIndex,
                          final int columnIndex,
-                         final GridData uiModel) {
+                         final GridWidget gridWidget) {
         this.rowIndex = rowIndex;
         this.columnIndex = columnIndex;
-        this.uiModel = uiModel;
+        this.gridWidget = gridWidget;
     }
 
     public int getRowIndex() {
@@ -49,18 +49,18 @@ public class GridCellTuple implements RequiresResize {
         this.columnIndex = columnIndex;
     }
 
-    public GridData getGridData() {
-        return uiModel;
+    public GridWidget getGridWidget() {
+        return gridWidget;
     }
 
     public void assertWidth(final double width) {
-        uiModel.getColumns().get(columnIndex).setWidth(width);
+        gridWidget.getModel().getColumns().get(columnIndex).setWidth(width);
     }
 
     @Override
     public void onResize() {
         //This may look like it does nothing; however it forces the column to resize it's children
-        final GridColumn<?> parentColumn = uiModel.getColumns().get(columnIndex);
+        final GridColumn<?> parentColumn = gridWidget.getModel().getColumns().get(columnIndex);
         parentColumn.setWidth(parentColumn.getWidth());
     }
 }

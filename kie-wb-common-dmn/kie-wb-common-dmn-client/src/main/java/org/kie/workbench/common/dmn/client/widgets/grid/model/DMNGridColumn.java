@@ -59,7 +59,7 @@ public class DMNGridColumn<T> extends BaseGridColumn<T> {
         if (gridWidget instanceof BaseExpressionGrid) {
             final BaseExpressionGrid beg = (BaseExpressionGrid) gridWidget;
             final int parentColumnIndex = beg.getParentInformation().getColumnIndex();
-            final GridData parentGridData = beg.getParentInformation().getGridData();
+            final GridData parentGridData = beg.getParentInformation().getGridWidget().getModel();
             if (parentGridData != null) {
                 final GridColumn<?> parentColumn = parentGridData.getColumns().get(parentColumnIndex);
                 parentColumn.setWidth(gridWidget.getWidth() + beg.getPadding() * 2);

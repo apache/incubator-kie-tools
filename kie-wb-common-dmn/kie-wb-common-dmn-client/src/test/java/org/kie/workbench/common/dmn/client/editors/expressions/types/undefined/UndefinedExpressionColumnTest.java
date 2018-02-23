@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.undefined;
 
+import java.util.Collections;
+
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,6 +25,8 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
@@ -39,6 +43,15 @@ public class UndefinedExpressionColumnTest {
     private UndefinedExpressionGrid gridWidget;
 
     @Mock
+    private GridWidget parentGridWidget;
+
+    @Mock
+    private GridData parentGridData;
+
+    @Mock
+    private GridColumn parentGridColumn;
+
+    @Mock
     private GridCellTuple parent;
 
     private UndefinedExpressionColumn column;
@@ -49,6 +62,9 @@ public class UndefinedExpressionColumnTest {
                                                         gridWidget));
 
         doReturn(parent).when(gridWidget).getParentInformation();
+        doReturn(parentGridWidget).when(parent).getGridWidget();
+        doReturn(parentGridData).when(parentGridWidget).getModel();
+        doReturn(Collections.singletonList(parentGridColumn)).when(parentGridData).getColumns();
     }
 
     @Test

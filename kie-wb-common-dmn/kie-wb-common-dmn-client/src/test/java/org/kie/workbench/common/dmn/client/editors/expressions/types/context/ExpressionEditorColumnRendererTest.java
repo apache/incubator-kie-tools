@@ -30,6 +30,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.GridWidgetRegistry;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
@@ -39,6 +40,9 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class ExpressionEditorColumnRendererTest {
+
+    @Mock
+    private GridWidgetRegistry registry;
 
     @Mock
     private GridBodyCellRenderContext context;
@@ -60,7 +64,7 @@ public class ExpressionEditorColumnRendererTest {
     public void setUp() throws Exception {
         GwtMockito.useProviderForType(Group.class, aClass -> renderedGroup);
 
-        renderer = new ExpressionEditorColumnRenderer();
+        renderer = new ExpressionEditorColumnRenderer(registry);
 
         doReturn(editorGroup).when(widget).setX(anyDouble());
         doReturn(editorGroup).when(editorGroup).setY(anyDouble());
@@ -78,5 +82,6 @@ public class ExpressionEditorColumnRendererTest {
         cell = new BaseGridCell<>(new ExpressionCellValue(Optional.of(widget)));
         renderer.renderCell(cell, context);
         verify(renderedGroup).add(editorGroup);
+        verify(registry).register(widget);
     }
 }

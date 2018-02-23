@@ -31,7 +31,8 @@ public class FunctionSupplementaryGridUIModelMapperTest extends BaseContextUIMod
 
     @Override
     protected FunctionSupplementaryGridUIModelMapper getMapper() {
-        return new FunctionSupplementaryGridUIModelMapper(() -> uiModel,
+        return new FunctionSupplementaryGridUIModelMapper(gridWidget,
+                                                          () -> uiModel,
                                                           () -> Optional.of(context),
                                                           expressionEditorDefinitionsSupplier,
                                                           listSelector);

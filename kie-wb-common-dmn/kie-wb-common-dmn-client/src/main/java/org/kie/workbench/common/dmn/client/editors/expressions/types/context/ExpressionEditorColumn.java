@@ -30,20 +30,24 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.GridWidgetRegistry;
 
 public class ExpressionEditorColumn extends DMNGridColumn<Optional<BaseExpressionGrid>> implements RequiresResize,
                                                                                                    HasDOMElementResources {
 
-    public ExpressionEditorColumn(final HeaderMetaData headerMetaData,
+    public ExpressionEditorColumn(final GridWidgetRegistry registry,
+                                  final HeaderMetaData headerMetaData,
                                   final GridWidget gridWidget) {
-        this(Collections.singletonList(headerMetaData),
+        this(registry,
+             Collections.singletonList(headerMetaData),
              gridWidget);
     }
 
-    public ExpressionEditorColumn(final List<HeaderMetaData> headerMetaData,
+    public ExpressionEditorColumn(final GridWidgetRegistry registry,
+                                  final List<HeaderMetaData> headerMetaData,
                                   final GridWidget gridWidget) {
         super(headerMetaData,
-              new ExpressionEditorColumnRenderer(),
+              new ExpressionEditorColumnRenderer(registry),
               gridWidget);
         setMovable(false);
         setResizable(false);

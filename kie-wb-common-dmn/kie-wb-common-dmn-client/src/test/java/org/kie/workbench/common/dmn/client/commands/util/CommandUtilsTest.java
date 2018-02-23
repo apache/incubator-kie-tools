@@ -42,7 +42,6 @@ import org.mockito.Mock;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
-import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -171,10 +170,11 @@ public class CommandUtilsTest {
 
     @Test
     public void testUpdateParentInformation_WithExpressionColumn() {
-        setupUiModel(Pair.newPair(new ExpressionEditorColumn(new BaseHeaderMetaData("column"), gridWidget),
+        setupUiModel(Pair.newPair(new ExpressionEditorColumn(gridLayer,
+                                                             new BaseHeaderMetaData("column"), gridWidget),
                                   (rowIndex) -> {
                                       final BaseExpressionGrid grid = mock(BaseExpressionGrid.class);
-                                      final GridCellTuple gct = new GridCellTuple(rowIndex, 0, mock(GridData.class));
+                                      final GridCellTuple gct = new GridCellTuple(rowIndex, 0, mock(GridWidget.class));
                                       when(grid.getParentInformation()).thenReturn(gct);
                                       return new ExpressionCellValue(Optional.of(grid));
                                   }));
@@ -188,10 +188,12 @@ public class CommandUtilsTest {
 
     @Test
     public void testUpdateParentInformation_WithExpressionColumnNullValues() {
-        setupUiModelNullValues(Pair.newPair(new ExpressionEditorColumn(new BaseHeaderMetaData("column"), gridWidget),
+        setupUiModelNullValues(Pair.newPair(new ExpressionEditorColumn(gridLayer,
+                                                                       new BaseHeaderMetaData("column"),
+                                                                       gridWidget),
                                             (rowIndex) -> {
                                                 final BaseExpressionGrid grid = mock(BaseExpressionGrid.class);
-                                                final GridCellTuple gct = new GridCellTuple(rowIndex, 0, mock(GridData.class));
+                                                final GridCellTuple gct = new GridCellTuple(rowIndex, 0, mock(GridWidget.class));
                                                 when(grid.getParentInformation()).thenReturn(gct);
                                                 return new ExpressionCellValue(Optional.of(grid));
                                             }));
@@ -204,10 +206,12 @@ public class CommandUtilsTest {
 
     @Test
     public void testUpdateParentInformation_WithMultipleColumns() {
-        setupUiModel(Pair.newPair(new ExpressionEditorColumn(new BaseHeaderMetaData("column"), gridWidget),
+        setupUiModel(Pair.newPair(new ExpressionEditorColumn(gridLayer,
+                                                             new BaseHeaderMetaData("column"),
+                                                             gridWidget),
                                   (rowIndex) -> {
                                       final BaseExpressionGrid grid = mock(BaseExpressionGrid.class);
-                                      final GridCellTuple gct = new GridCellTuple(rowIndex, 0, mock(GridData.class));
+                                      final GridCellTuple gct = new GridCellTuple(rowIndex, 0, mock(GridWidget.class));
                                       when(grid.getParentInformation()).thenReturn(gct);
                                       return new ExpressionCellValue(Optional.of(grid));
                                   }),

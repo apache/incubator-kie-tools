@@ -159,7 +159,7 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
             if (grid instanceof HasListSelectorControl) {
                 final int parentUiRowIndex = getParentInformation().getRowIndex();
                 final int parentUiColumnIndex = getParentInformation().getColumnIndex();
-                final GridCell<?> parentCell = getParentInformation().getGridData().getCell(parentUiRowIndex, parentUiColumnIndex);
+                final GridCell<?> parentCell = getParentInformation().getGridWidget().getModel().getCell(parentUiRowIndex, parentUiColumnIndex);
 
                 if (parentCell instanceof HasCellEditorControls) {
                     final List<ListSelectorItem> parentItems = ((HasListSelectorControl) grid).getItems(parentUiRowIndex,

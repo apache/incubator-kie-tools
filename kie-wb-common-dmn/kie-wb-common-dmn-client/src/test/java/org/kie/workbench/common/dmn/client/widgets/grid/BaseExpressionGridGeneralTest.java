@@ -344,11 +344,10 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
         final BaseExpressionGrid parentGrid = mock(BaseExpressionGrid.class);
         final GridData parentGridData = mock(GridData.class);
         final DMNGridColumn parentColumn = mockColumn(100, null);
-        doReturn(parentGridData).when(parentCell).getGridData();
+        doReturn(parentGrid).when(parentCell).getGridWidget();
         doReturn(parentGridData).when(parentGrid).getModel();
         doReturn(Collections.singletonList(parentColumn)).when(parentGridData).getColumns();
         doReturn(Collections.singleton(parentGrid)).when(gridLayer).getGridWidgets();
-
 
         // nested columns
         final List<DMNGridColumn> columns = Arrays.stream(widthsOfNestedColumns)
@@ -402,6 +401,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private DMNGridColumn mockColumn(final double width,
                                      final GridWidget gridWidget) {
         final GridColumn.HeaderMetaData headerMetaData = mock(GridColumn.HeaderMetaData.class);

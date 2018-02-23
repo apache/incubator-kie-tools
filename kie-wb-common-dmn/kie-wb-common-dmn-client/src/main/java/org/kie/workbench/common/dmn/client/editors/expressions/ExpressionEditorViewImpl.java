@@ -171,7 +171,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     GridCellTuple getExpressionContainerTuple() {
         return new GridCellTuple(0,
                                  0,
-                                 expressionContainer.getModel());
+                                 expressionContainer);
     }
 
     @Override

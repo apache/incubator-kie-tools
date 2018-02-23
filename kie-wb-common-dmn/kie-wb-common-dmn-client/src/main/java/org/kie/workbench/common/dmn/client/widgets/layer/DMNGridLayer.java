@@ -16,13 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.widgets.layer;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.google.gwt.user.client.Command;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.dnd.DelegatingGridWidgetDndMouseMoveHandler;
-import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDMouseMoveHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLayer;
@@ -39,34 +34,6 @@ public class DMNGridLayer extends DefaultGridLayer {
     @Override
     public TransformMediator getDefaultTransformMediator() {
         return defaultTransformMediator;
-    }
-
-    @Override
-    public Set<GridWidget> getGridWidgets() {
-        final Set<GridWidget> gridWidgets = super.getGridWidgets();
-        final Set<GridWidget> allGridWidgets = new HashSet<>();
-        gridWidgets.forEach(grid -> allGridWidgets.addAll(collectGridWidgets(grid)));
-        return allGridWidgets;
-    }
-
-    private Set<GridWidget> collectGridWidgets(final GridWidget gridWidget) {
-        final Set<GridWidget> allGridWidgets = new HashSet<>();
-        allGridWidgets.add(gridWidget);
-
-        gridWidget.getModel()
-                .getRows()
-                .stream()
-                .forEach(row -> row.getCells().values()
-                        .stream()
-                        .filter(cell -> cell != null && cell.getValue() != null)
-                        .map(GridCell::getValue)
-                        .filter(value -> value instanceof ExpressionCellValue)
-                        .map(value -> (ExpressionCellValue) value)
-                        .filter(value -> value.getValue().isPresent())
-                        .map(value -> value.getValue().get())
-                        .forEach(editor -> allGridWidgets.addAll(collectGridWidgets(editor))));
-
-        return allGridWidgets;
     }
 
     @Override

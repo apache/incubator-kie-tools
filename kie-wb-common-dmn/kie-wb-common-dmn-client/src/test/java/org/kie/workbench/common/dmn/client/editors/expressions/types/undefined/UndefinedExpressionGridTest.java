@@ -56,6 +56,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
@@ -113,6 +114,9 @@ public class UndefinedExpressionGridTest {
     private GridCellTuple parent;
 
     @Mock
+    private GridWidget parentGridWidget;
+
+    @Mock
     private HasExpression hasExpression;
 
     @Mock
@@ -163,7 +167,8 @@ public class UndefinedExpressionGridTest {
 
         doReturn(0).when(parent).getRowIndex();
         doReturn(0).when(parent).getColumnIndex();
-        doReturn(mock(GridData.class)).when(parent).getGridData();
+        doReturn(parentGridWidget).when(parent).getGridWidget();
+        doReturn(mock(GridData.class)).when(parentGridWidget).getModel();
 
         doReturn(session).when(sessionManager).getCurrentSession();
         doReturn(handler).when(session).getCanvasHandler();
@@ -210,7 +215,7 @@ public class UndefinedExpressionGridTest {
     public void testGetItemsWithParentWithoutCellControls() {
         final GridData parentGridData = mock(GridData.class);
         final BaseExpressionGrid parentGridWidget = mock(BaseExpressionGrid.class);
-        when(parent.getGridData()).thenReturn(parentGridData);
+        when(parent.getGridWidget()).thenReturn(parentGridWidget);
         when(gridLayer.getGridWidgets()).thenReturn(Collections.singleton(parentGridWidget));
         when(parentGridWidget.getModel()).thenReturn(parentGridData);
 
@@ -229,7 +234,7 @@ public class UndefinedExpressionGridTest {
         final GridData parentGridData = mock(GridData.class);
         final ContextGrid parentGridWidget = mock(ContextGrid.class);
         final HasListSelectorControl.ListSelectorItem listSelectorItem = mock(HasListSelectorControl.ListSelectorItem.class);
-        when(parent.getGridData()).thenReturn(parentGridData);
+        when(parent.getGridWidget()).thenReturn(parentGridWidget);
         when(gridLayer.getGridWidgets()).thenReturn(Collections.singleton(parentGridWidget));
         when(parentGridWidget.getModel()).thenReturn(parentGridData);
         when(parentGridWidget.getItems(anyInt(), anyInt())).thenReturn(Collections.singletonList(listSelectorItem));
@@ -254,7 +259,7 @@ public class UndefinedExpressionGridTest {
         final GridData parentGridData = mock(GridData.class);
         final ContextGrid parentGridWidget = mock(ContextGrid.class);
         final HasListSelectorControl.ListSelectorItem listSelectorItem = mock(HasListSelectorControl.ListSelectorItem.class);
-        when(parent.getGridData()).thenReturn(parentGridData);
+        when(parent.getGridWidget()).thenReturn(parentGridWidget);
         when(gridLayer.getGridWidgets()).thenReturn(Collections.singleton(parentGridWidget));
         when(parentGridWidget.getModel()).thenReturn(parentGridData);
         when(parentGridWidget.getItems(anyInt(), anyInt())).thenReturn(Collections.singletonList(listSelectorItem));
@@ -274,7 +279,7 @@ public class UndefinedExpressionGridTest {
     public void testGetItemsWithParentThatDoesNotSupportCellControls() {
         final GridData parentGridData = mock(GridData.class);
         final BaseExpressionGrid parentGridWidget = mock(BaseExpressionGrid.class);
-        when(parent.getGridData()).thenReturn(parentGridData);
+        when(parent.getGridWidget()).thenReturn(parentGridWidget);
         when(gridLayer.getGridWidgets()).thenReturn(Collections.singleton(parentGridWidget));
         when(parentGridWidget.getModel()).thenReturn(parentGridData);
 

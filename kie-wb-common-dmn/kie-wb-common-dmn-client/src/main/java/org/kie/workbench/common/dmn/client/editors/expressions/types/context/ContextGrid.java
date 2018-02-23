@@ -112,7 +112,8 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
 
     @Override
     public ContextUIModelMapper makeUiModelMapper() {
-        return new ContextUIModelMapper(this::getModel,
+        return new ContextUIModelMapper(this,
+                                        this::getModel,
                                         () -> expression,
                                         expressionEditorDefinitionsSupplier,
                                         listSelector);
@@ -140,7 +141,8 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
                                                                                   headerFactory),
                                                      factory,
                                                      this);
-        final ExpressionEditorColumn expressionColumn = new ExpressionEditorColumn(new BaseHeaderMetaData("",
+        final ExpressionEditorColumn expressionColumn = new ExpressionEditorColumn(gridLayer,
+                                                                                   new BaseHeaderMetaData("",
                                                                                                           EXPRESSION_COLUMN_GROUP),
                                                                                    this);
 

@@ -59,8 +59,8 @@ public class DeleteCellValueCommand extends AbstractCanvasGraphCommand implement
 
     GridCellValue<?> extractGridCellValue(final int rowIndex,
                                           final int columnIndex) {
-        final GridCell<?> cell = cellTuple.getGridData().getCell(rowIndex,
-                                                                 columnIndex);
+        final GridCell<?> cell = cellTuple.getGridWidget().getModel().getCell(rowIndex,
+                                                                              columnIndex);
         return cell == null ? null : cell.getValue();
     }
 
@@ -95,9 +95,9 @@ public class DeleteCellValueCommand extends AbstractCanvasGraphCommand implement
         return new AbstractCanvasCommand() {
             @Override
             public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
-                cellTuple.getGridData().setCellValue(cellTuple.getRowIndex(),
-                                                     cellTuple.getColumnIndex(),
-                                                     null);
+                cellTuple.getGridWidget().getModel().setCellValue(cellTuple.getRowIndex(),
+                                                                  cellTuple.getColumnIndex(),
+                                                                  null);
                 canvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
@@ -105,9 +105,9 @@ public class DeleteCellValueCommand extends AbstractCanvasGraphCommand implement
 
             @Override
             public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
-                oldCellValue.ifPresent(v -> cellTuple.getGridData().setCellValue(cellTuple.getRowIndex(),
-                                                                                 cellTuple.getColumnIndex(),
-                                                                                 v));
+                oldCellValue.ifPresent(v -> cellTuple.getGridWidget().getModel().setCellValue(cellTuple.getRowIndex(),
+                                                                                              cellTuple.getColumnIndex(),
+                                                                                              v));
                 canvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
