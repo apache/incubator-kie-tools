@@ -17,6 +17,7 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.i
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 
 import com.ait.lienzo.client.core.shape.BoundingBoxPathClipper;
 import com.ait.lienzo.client.core.shape.Group;
@@ -39,7 +40,8 @@ public abstract class BaseGridColumnRenderer<T> implements GridColumnRenderer<T>
     @SuppressWarnings("unchecked")
     public List<GridRenderer.RendererCommand> renderHeader(final List<GridColumn.HeaderMetaData> headerMetaData,
                                                            final GridHeaderColumnRenderContext context,
-                                                           final BaseGridRendererHelper.RenderingInformation renderingInformation) {
+                                                           final BaseGridRendererHelper.RenderingInformation renderingInformation,
+                                                           final BiFunction<Boolean, GridColumn<?>, Boolean> columnRenderingConstraint) {
         final GridData model = context.getModel();
         final GridRenderer renderer = context.getRenderer();
         final GridRendererTheme theme = renderer.getTheme();
@@ -59,115 +61,119 @@ public abstract class BaseGridColumnRenderer<T> implements GridColumnRenderer<T>
         final List<GridRenderer.RendererCommand> commands = new ArrayList<>();
 
         //Grid lines
-        commands.add((GridRenderer.RenderHeaderGridLinesCommand) (parent) -> {
-            final Group g = new Group().setX(x);
-            final MultiPath headerGrid = theme.getHeaderGridLine().setY(headerRowsYOffset);
+        commands.add((GridRenderer.RenderHeaderGridLinesCommand) (rc) -> {
+            if (!rc.isSelectionLayer()) {
+                final Group g = new Group().setX(x);
+                final MultiPath headerGrid = theme.getHeaderGridLine().setY(headerRowsYOffset);
 
-            for (int headerRowIndex = 0; headerRowIndex < headerMetaData.size(); headerRowIndex++) {
-                //Get extents of block for Header cell
-                final int blockStartColumnIndex = getBlockStartColumnIndex(allBlockColumns,
+                for (int headerRowIndex = 0; headerRowIndex < headerMetaData.size(); headerRowIndex++) {
+                    //Get extents of block for Header cell
+                    final int blockStartColumnIndex = getBlockStartColumnIndex(allBlockColumns,
+                                                                               headerMetaData.get(headerRowIndex),
+                                                                               headerRowIndex,
+                                                                               headerColumnIndex);
+                    final int blockEndColumnIndex = getBlockEndColumnIndex(allBlockColumns,
                                                                            headerMetaData.get(headerRowIndex),
                                                                            headerRowIndex,
                                                                            headerColumnIndex);
-                final int blockEndColumnIndex = getBlockEndColumnIndex(allBlockColumns,
-                                                                       headerMetaData.get(headerRowIndex),
-                                                                       headerRowIndex,
-                                                                       headerColumnIndex);
 
-                //Vertical grid lines
-                if (headerColumnIndex < model.getColumnCount() - 1) {
-                    if (blockEndColumnIndex == headerColumnIndex) {
-                        final double hx = column.getWidth();
-                        headerGrid.M(hx + 0.5,
-                                     headerRowIndex * rowHeight).L(hx + 0.5,
-                                                                   (headerRowIndex + 1) * rowHeight);
+                    //Vertical grid lines
+                    if (headerColumnIndex < model.getColumnCount() - 1) {
+                        if (blockEndColumnIndex == headerColumnIndex) {
+                            final double hx = column.getWidth();
+                            headerGrid.M(hx + 0.5,
+                                         headerRowIndex * rowHeight).L(hx + 0.5,
+                                                                       (headerRowIndex + 1) * rowHeight);
+                        }
+                    }
+
+                    //Check whether we need to render clipped cell (we only render once for blocks spanning multiple columns)
+                    boolean skip;
+                    if (blockStartColumnIndex >= headerStartColumnIndex) {
+                        skip = headerColumnIndex > blockStartColumnIndex;
+                    } else {
+                        skip = headerColumnIndex > headerStartColumnIndex;
+                    }
+                    if (skip) {
+                        continue;
+                    }
+
+                    //Get adjustments for the blocked Header cell
+                    final double offsetX = getBlockOffset(allBlockColumns,
+                                                          blockStartColumnIndex,
+                                                          headerColumnIndex);
+                    final double blockWidth = getBlockWidth(allBlockColumns,
+                                                            blockStartColumnIndex,
+                                                            blockEndColumnIndex);
+
+                    //Horizontal grid lines
+                    if (headerRowIndex > 0) {
+                        headerGrid.M(offsetX,
+                                     (headerRowIndex * rowHeight) + 0.5).L(offsetX + blockWidth,
+                                                                           (headerRowIndex * rowHeight) + 0.5);
                     }
                 }
-
-                //Check whether we need to render clipped cell (we only render once for blocks spanning multiple columns)
-                boolean skip;
-                if (blockStartColumnIndex >= headerStartColumnIndex) {
-                    skip = headerColumnIndex > blockStartColumnIndex;
-                } else {
-                    skip = headerColumnIndex > headerStartColumnIndex;
-                }
-                if (skip) {
-                    continue;
-                }
-
-                //Get adjustments for the blocked Header cell
-                final double offsetX = getBlockOffset(allBlockColumns,
-                                                      blockStartColumnIndex,
-                                                      headerColumnIndex);
-                final double blockWidth = getBlockWidth(allBlockColumns,
-                                                        blockStartColumnIndex,
-                                                        blockEndColumnIndex);
-
-                //Horizontal grid lines
-                if (headerRowIndex > 0) {
-                    headerGrid.M(offsetX,
-                                 (headerRowIndex * rowHeight) + 0.5).L(offsetX + blockWidth,
-                                                                       (headerRowIndex * rowHeight) + 0.5);
-                }
+                g.add(headerGrid);
+                rc.getGroup().add(g);
             }
-            g.add(headerGrid);
-            parent.add(g);
         });
 
         //Grid content
-        commands.add((GridRenderer.RenderHeaderContentCommand) (parent) -> {
-            final Group g = new Group().setX(x);
-            for (int headerRowIndex = 0; headerRowIndex < headerMetaData.size(); headerRowIndex++) {
-                //Get extents of block for Header cell
-                final int blockStartColumnIndex = getBlockStartColumnIndex(allBlockColumns,
+        commands.add((GridRenderer.RenderHeaderContentCommand) (rc) -> {
+            if (!rc.isSelectionLayer()) {
+                final Group g = new Group().setX(x);
+                for (int headerRowIndex = 0; headerRowIndex < headerMetaData.size(); headerRowIndex++) {
+                    //Get extents of block for Header cell
+                    final int blockStartColumnIndex = getBlockStartColumnIndex(allBlockColumns,
+                                                                               headerMetaData.get(headerRowIndex),
+                                                                               headerRowIndex,
+                                                                               headerColumnIndex);
+                    final int blockEndColumnIndex = getBlockEndColumnIndex(allBlockColumns,
                                                                            headerMetaData.get(headerRowIndex),
                                                                            headerRowIndex,
                                                                            headerColumnIndex);
-                final int blockEndColumnIndex = getBlockEndColumnIndex(allBlockColumns,
-                                                                       headerMetaData.get(headerRowIndex),
-                                                                       headerRowIndex,
-                                                                       headerColumnIndex);
 
-                //Check whether we need to render clipped cell (we only render once for blocks spanning multiple columns)
-                boolean skip;
-                if (blockStartColumnIndex >= headerStartColumnIndex) {
-                    skip = headerColumnIndex > blockStartColumnIndex;
-                } else {
-                    skip = headerColumnIndex > headerStartColumnIndex;
+                    //Check whether we need to render clipped cell (we only render once for blocks spanning multiple columns)
+                    boolean skip;
+                    if (blockStartColumnIndex >= headerStartColumnIndex) {
+                        skip = headerColumnIndex > blockStartColumnIndex;
+                    } else {
+                        skip = headerColumnIndex > headerStartColumnIndex;
+                    }
+                    if (skip) {
+                        continue;
+                    }
+
+                    //Get adjustments for the blocked Header cell
+                    final double offsetX = getBlockOffset(allBlockColumns,
+                                                          blockStartColumnIndex,
+                                                          headerColumnIndex);
+                    final double blockWidth = getBlockWidth(allBlockColumns,
+                                                            blockStartColumnIndex,
+                                                            blockEndColumnIndex);
+
+                    final String title = headerMetaData.get(headerRowIndex).getTitle();
+                    final Group headerGroup = new Group();
+                    final Text t = theme.getHeaderText()
+                            .setText(title)
+                            .setListening(false)
+                            .setX(blockWidth / 2)
+                            .setY(rowHeight / 2);
+                    headerGroup.add(t);
+
+                    //Clip Header Group
+                    final BoundingBox bb = new BoundingBox(0,
+                                                           0,
+                                                           blockWidth,
+                                                           rowHeight);
+                    final IPathClipper clipper = new BoundingBoxPathClipper(bb);
+                    headerGroup.setX(offsetX).setY(headerRowsYOffset + headerRowIndex * rowHeight).setPathClipper(clipper);
+                    clipper.setActive(true);
+
+                    g.add(headerGroup);
                 }
-                if (skip) {
-                    continue;
-                }
-
-                //Get adjustments for the blocked Header cell
-                final double offsetX = getBlockOffset(allBlockColumns,
-                                                      blockStartColumnIndex,
-                                                      headerColumnIndex);
-                final double blockWidth = getBlockWidth(allBlockColumns,
-                                                        blockStartColumnIndex,
-                                                        blockEndColumnIndex);
-
-                final String title = headerMetaData.get(headerRowIndex).getTitle();
-                final Group headerGroup = new Group();
-                final Text t = theme.getHeaderText()
-                        .setText(title)
-                        .setListening(false)
-                        .setX(blockWidth / 2)
-                        .setY(rowHeight / 2);
-                headerGroup.add(t);
-
-                //Clip Header Group
-                final BoundingBox bb = new BoundingBox(0,
-                                                       0,
-                                                       blockWidth,
-                                                       rowHeight);
-                final IPathClipper clipper = new BoundingBoxPathClipper(bb);
-                headerGroup.setX(offsetX).setY(headerRowsYOffset + headerRowIndex * rowHeight).setPathClipper(clipper);
-                clipper.setActive(true);
-
-                g.add(headerGroup);
+                rc.getGroup().add(g);
             }
-            parent.add(g);
         });
 
         return commands;
@@ -253,17 +259,20 @@ public abstract class BaseGridColumnRenderer<T> implements GridColumnRenderer<T>
     public List<GridRenderer.RendererCommand> renderColumn(final GridColumn<?> column,
                                                            final GridBodyColumnRenderContext context,
                                                            final BaseGridRendererHelper rendererHelper,
-                                                           final BaseGridRendererHelper.RenderingInformation renderingInformation) {
+                                                           final BaseGridRendererHelper.RenderingInformation renderingInformation,
+                                                           final BiFunction<Boolean, GridColumn<?>, Boolean> columnRenderingConstraint) {
         if (context.getModel().isMerged()) {
             return ColumnRenderingStrategyMerged.render(column,
                                                         context,
                                                         rendererHelper,
-                                                        renderingInformation);
+                                                        renderingInformation,
+                                                        columnRenderingConstraint);
         } else {
             return ColumnRenderingStrategyFlattened.render(column,
                                                            context,
                                                            rendererHelper,
-                                                           renderingInformation);
+                                                           renderingInformation,
+                                                           columnRenderingConstraint);
         }
     }
 }

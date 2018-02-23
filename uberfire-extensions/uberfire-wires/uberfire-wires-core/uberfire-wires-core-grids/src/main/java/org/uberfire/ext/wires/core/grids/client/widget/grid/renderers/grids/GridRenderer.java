@@ -33,10 +33,17 @@ import org.uberfire.mvp.ParameterizedCommand;
  */
 public interface GridRenderer {
 
+    interface GridRendererContext {
+
+        Group getGroup();
+
+        boolean isSelectionLayer();
+    }
+
     /**
      * Generic command to render a component of the grid
      */
-    interface RendererCommand extends ParameterizedCommand<Group> {
+    interface RendererCommand extends ParameterizedCommand<GridRendererContext> {
 
     }
 
@@ -69,13 +76,6 @@ public interface GridRenderer {
     }
 
     /**
-     * Generic command for all body related rendering.
-     */
-    interface RendererBodyCommand extends RendererCommand {
-
-    }
-
-    /**
      * Command to render the "Grid lines" components of the grid header
      */
     interface RenderHeaderGridLinesCommand extends RendererHeaderCommand {
@@ -93,6 +93,13 @@ public interface GridRenderer {
      * Command to render the "content" components of the grid header
      */
     interface RenderHeaderContentCommand extends RendererHeaderCommand {
+
+    }
+
+    /**
+     * Generic command for all body related rendering.
+     */
+    interface RendererBodyCommand extends RendererCommand {
 
     }
 

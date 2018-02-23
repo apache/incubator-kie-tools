@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager.PrioritizedCommand;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertSame;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class GridLayerRedrawManagerTest {

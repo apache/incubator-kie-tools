@@ -23,7 +23,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class GridColumnIndexingTest extends BaseGridTest {
 

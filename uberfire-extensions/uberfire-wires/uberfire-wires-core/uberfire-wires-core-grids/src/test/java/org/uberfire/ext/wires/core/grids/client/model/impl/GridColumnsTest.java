@@ -19,7 +19,7 @@ import org.junit.Test;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridTest.Expected.build;
 
 public class GridColumnsTest extends BaseGridTest {

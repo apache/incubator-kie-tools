@@ -32,7 +32,14 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.widget.scrollbars.GridLienzoScrollHandler;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class GridLienzoPanelTest {

@@ -35,7 +35,6 @@ public class GridBodyRenderContext {
     private final double absoluteColumnOffsetX;
     private final int minVisibleRowIndex;
     private final int maxVisibleRowIndex;
-    private final boolean isSelectionLayer;
     private final Transform transform;
     private final GridRenderer renderer;
     private final SelectionsTransformer transformer;
@@ -48,7 +47,6 @@ public class GridBodyRenderContext {
                                  final int minVisibleRowIndex,
                                  final int maxVisibleRowIndex,
                                  final List<GridColumn<?>> blockColumns,
-                                 final boolean isSelectionLayer,
                                  final Transform transform,
                                  final GridRenderer renderer,
                                  final SelectionsTransformer transformer) {
@@ -60,7 +58,6 @@ public class GridBodyRenderContext {
         this.minVisibleRowIndex = minVisibleRowIndex;
         this.maxVisibleRowIndex = maxVisibleRowIndex;
         this.blockColumns = blockColumns;
-        this.isSelectionLayer = isSelectionLayer;
         this.transform = transform;
         this.renderer = renderer;
         this.transformer = transformer;
@@ -130,14 +127,6 @@ public class GridBodyRenderContext {
      */
     public List<GridColumn<?>> getBlockColumns() {
         return blockColumns;
-    }
-
-    /**
-     * Returns a flag indicating whether the SelectionLayer is being rendered.
-     * @return true if the SelectionLayer is being rendered.
-     */
-    public boolean isSelectionLayer() {
-        return isSelectionLayer;
     }
 
     /**

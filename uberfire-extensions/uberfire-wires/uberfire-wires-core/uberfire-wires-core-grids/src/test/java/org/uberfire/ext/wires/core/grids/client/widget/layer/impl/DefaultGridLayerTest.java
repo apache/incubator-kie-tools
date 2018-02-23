@@ -20,6 +20,7 @@ import java.util.Set;
 import com.ait.lienzo.client.core.mediator.Mediators;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.widget.LienzoPanel;
@@ -35,11 +36,19 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
-import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.DefaultPinnedModeManager;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class DefaultGridLayerTest {
@@ -53,7 +62,7 @@ public class DefaultGridLayerTest {
     @Mock
     private Mediators mediators;
 
-    private GridLayer gridLayer;
+    private DefaultGridLayer gridLayer;
 
     private Transform transform;
 
@@ -260,5 +269,61 @@ public class DefaultGridLayerTest {
                      connectors.size());
         assertEquals(isVisible,
                      connectors.iterator().next().isVisible());
+    }
+
+    @Test
+    public void testRegister() {
+        final GridWidget gridWidget1 = mock(GridWidget.class);
+        final GridWidget gridWidget2 = mock(GridWidget.class);
+
+        gridLayer.register(gridWidget1);
+
+        assertThat(gridLayer.getGridWidgets().size()).isEqualTo(1);
+        assertThat(gridLayer.getGridWidgets()).contains(gridWidget1);
+
+        gridLayer.register(gridWidget2);
+
+        assertThat(gridLayer.getGridWidgets().size()).isEqualTo(2);
+        assertThat(gridLayer.getGridWidgets()).contains(gridWidget1, gridWidget2);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testRegisterAndAddAsPrimitive() {
+        final GridWidget gridWidget1 = mock(GridWidget.class);
+        final GridWidget gridWidget2 = mock(GridWidget.class);
+        when(gridWidget1.asNode()).thenReturn(mock(Node.class));
+        when(gridWidget1.getModel()).thenReturn(new BaseGridData());
+
+        gridLayer.add(gridWidget1);
+
+        assertThat(gridLayer.getGridWidgets().size()).isEqualTo(1);
+        assertThat(gridLayer.getGridWidgets()).contains(gridWidget1);
+
+        gridLayer.register(gridWidget2);
+
+        assertThat(gridLayer.getGridWidgets().size()).isEqualTo(2);
+        assertThat(gridLayer.getGridWidgets()).contains(gridWidget1, gridWidget2);
+    }
+
+    @Test
+    public void testDeregister() {
+        final GridWidget gridWidget1 = mock(GridWidget.class);
+        final GridWidget gridWidget2 = mock(GridWidget.class);
+
+        gridLayer.register(gridWidget1);
+        gridLayer.register(gridWidget2);
+
+        assertThat(gridLayer.getGridWidgets().size()).isEqualTo(2);
+        assertThat(gridLayer.getGridWidgets()).contains(gridWidget1, gridWidget2);
+
+        gridLayer.deregister(gridWidget1);
+
+        assertThat(gridLayer.getGridWidgets().size()).isEqualTo(1);
+        assertThat(gridLayer.getGridWidgets()).contains(gridWidget2);
+
+        gridLayer.deregister(gridWidget2);
+
+        assertThat(gridLayer.getGridWidgets()).isEmpty();
     }
 }

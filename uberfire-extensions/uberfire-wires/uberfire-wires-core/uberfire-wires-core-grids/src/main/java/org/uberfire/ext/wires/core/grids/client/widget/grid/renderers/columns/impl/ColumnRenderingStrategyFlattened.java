@@ -17,6 +17,7 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.i
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 
 import com.ait.lienzo.client.core.shape.BoundingBoxPathClipper;
 import com.ait.lienzo.client.core.shape.Group;
@@ -40,7 +41,8 @@ public class ColumnRenderingStrategyFlattened {
     public static List<GridRenderer.RendererCommand> render(final GridColumn<?> column,
                                                             final GridBodyColumnRenderContext context,
                                                             final BaseGridRendererHelper rendererHelper,
-                                                            final BaseGridRendererHelper.RenderingInformation renderingInformation) {
+                                                            final BaseGridRendererHelper.RenderingInformation renderingInformation,
+                                                            final BiFunction<Boolean, GridColumn<?>, Boolean> columnRenderingConstraint) {
         final double x = context.getX();
         final double absoluteGridY = context.getAbsoluteGridY();
         final double absoluteColumnX = context.getAbsoluteColumnX();
@@ -60,69 +62,73 @@ public class ColumnRenderingStrategyFlattened {
         final List<GridRenderer.RendererCommand> commands = new ArrayList<>();
 
         //Grid lines
-        commands.add((GridRenderer.RenderBodyGridLinesCommand) (parent) -> {
-            //- horizontal
-            final MultiPath bodyGrid = theme.getBodyGridLine();
-            for (int rowIndex = minVisibleRowIndex; rowIndex <= maxVisibleRowIndex; rowIndex++) {
-                if (rowIndex == 0) {
-                    continue;
+        commands.add((GridRenderer.RenderBodyGridLinesCommand) (rc) -> {
+            if (!rc.isSelectionLayer()) {
+                //- horizontal
+                final MultiPath bodyGrid = theme.getBodyGridLine();
+                for (int rowIndex = minVisibleRowIndex; rowIndex <= maxVisibleRowIndex; rowIndex++) {
+                    if (rowIndex == 0) {
+                        continue;
+                    }
+                    final double y = visibleRowOffsets.get(rowIndex - minVisibleRowIndex) - visibleRowOffsets.get(0);
+                    bodyGrid.M(x, y + 0.5)
+                            .L(x + columnWidth, y + 0.5);
                 }
-                final double y = visibleRowOffsets.get(rowIndex - minVisibleRowIndex) - visibleRowOffsets.get(0);
-                bodyGrid.M(x, y + 0.5)
-                        .L(x + columnWidth, y + 0.5);
-            }
 
-            //- vertical
-            final int columnIndex = model.getColumns().indexOf(column);
-            if (columnIndex < model.getColumnCount() - 1) {
-                bodyGrid.M(x + columnWidth + 0.5, 0)
-                        .L(x + columnWidth + 0.5, columnHeight);
-            }
+                //- vertical
+                final int columnIndex = model.getColumns().indexOf(column);
+                if (columnIndex < model.getColumnCount() - 1) {
+                    bodyGrid.M(x + columnWidth + 0.5, 0)
+                            .L(x + columnWidth + 0.5, columnHeight);
+                }
 
-            parent.add(bodyGrid);
+                rc.getGroup().add(bodyGrid);
+            }
         });
 
         //Column content
-        commands.add((GridRenderer.RenderBodyGridContentCommand) (parent) -> {
-            final Group columnGroup = new Group().setX(x);
-            final int columnIndex = model.getColumns().indexOf(column);
-            for (int rowIndex = minVisibleRowIndex; rowIndex <= maxVisibleRowIndex; rowIndex++) {
-                final double y = visibleRowOffsets.get(rowIndex - minVisibleRowIndex) - visibleRowOffsets.get(0);
-                final GridRow row = model.getRow(rowIndex);
-                final double rowHeight = row.getHeight();
-                final GridBodyCellRenderContext cellContext = new GridBodyCellRenderContext(absoluteColumnX,
-                                                                                            absoluteGridY + renderer.getHeaderHeight() + visibleRowOffsets.get(rowIndex - minVisibleRowIndex),
-                                                                                            columnWidth,
-                                                                                            rowHeight,
-                                                                                            clipMinY,
-                                                                                            clipMinX,
-                                                                                            rowIndex,
-                                                                                            columnIndex,
-                                                                                            isFloating,
-                                                                                            transform,
-                                                                                            renderer);
+        commands.add((GridRenderer.RenderBodyGridContentCommand) (rc) -> {
+            if (columnRenderingConstraint.apply(rc.isSelectionLayer(), column)) {
+                final Group columnGroup = new Group().setX(x);
+                final int columnIndex = model.getColumns().indexOf(column);
+                for (int rowIndex = minVisibleRowIndex; rowIndex <= maxVisibleRowIndex; rowIndex++) {
+                    final double y = visibleRowOffsets.get(rowIndex - minVisibleRowIndex) - visibleRowOffsets.get(0);
+                    final GridRow row = model.getRow(rowIndex);
+                    final double rowHeight = row.getHeight();
+                    final GridBodyCellRenderContext cellContext = new GridBodyCellRenderContext(absoluteColumnX,
+                                                                                                absoluteGridY + renderer.getHeaderHeight() + visibleRowOffsets.get(rowIndex - minVisibleRowIndex),
+                                                                                                columnWidth,
+                                                                                                rowHeight,
+                                                                                                clipMinY,
+                                                                                                clipMinX,
+                                                                                                rowIndex,
+                                                                                                columnIndex,
+                                                                                                isFloating,
+                                                                                                transform,
+                                                                                                renderer);
 
-                //Cell's content
-                final GridCell<?> cell = model.getCell(rowIndex,
-                                                       columnIndex);
-                final Group cc = column.getColumnRenderer().renderCell((GridCell) cell,
-                                                                       cellContext);
-                if (cc != null) {
-                    cc.setX(0).setY(y).setListening(true);
-                    columnGroup.add(cc);
+                    //Cell's content
+                    final GridCell<?> cell = model.getCell(rowIndex,
+                                                           columnIndex);
+                    final Group cc = column.getColumnRenderer().renderCell((GridCell) cell,
+                                                                           cellContext);
+                    if (cc != null) {
+                        cc.setX(0).setY(y).setListening(true);
+                        columnGroup.add(cc);
+                    }
                 }
+
+                //Clip Column Group
+                final BoundingBox bb = new BoundingBox(0,
+                                                       0,
+                                                       columnWidth,
+                                                       columnHeight);
+                final IPathClipper clipper = new BoundingBoxPathClipper(bb);
+                columnGroup.setPathClipper(clipper);
+                clipper.setActive(true);
+
+                rc.getGroup().add(columnGroup);
             }
-
-            //Clip Column Group
-            final BoundingBox bb = new BoundingBox(0,
-                                                   0,
-                                                   columnWidth,
-                                                   columnHeight);
-            final IPathClipper clipper = new BoundingBoxPathClipper(bb);
-            columnGroup.setPathClipper(clipper);
-            clipper.setActive(true);
-
-            parent.add(columnGroup);
         });
 
         return commands;

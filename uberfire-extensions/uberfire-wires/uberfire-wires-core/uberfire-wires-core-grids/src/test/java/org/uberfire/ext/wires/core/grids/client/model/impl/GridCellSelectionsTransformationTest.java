@@ -26,7 +26,9 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.FloatingSelectionsTransformer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.SelectedRange;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class GridCellSelectionsTransformationTest extends BaseGridTest {
 

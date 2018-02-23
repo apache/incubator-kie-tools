@@ -405,33 +405,35 @@ public class WiresGridsDemoPresenter implements WiresGridsDemoView.Presenter {
                                                               public RendererCommand renderSelector(final double width,
                                                                                                     final double height,
                                                                                                     final BaseGridRendererHelper.RenderingInformation renderingInformation) {
-                                                                  return (RenderSelectorCommand) (parent) -> {
-                                                                      final Group g = new Group();
-                                                                      final Bounds bounds = getSelectorBounds(width,
-                                                                                                              height,
-                                                                                                              renderingInformation);
+                                                                  return (RenderSelectorCommand) (rc) -> {
+                                                                      if (!rc.isSelectionLayer()) {
+                                                                          final Group g = new Group();
+                                                                          final Bounds bounds = getSelectorBounds(width,
+                                                                                                                  height,
+                                                                                                                  renderingInformation);
 
-                                                                      final MultiPath selector = theme.getSelector()
-                                                                              .M(bounds.getX() + 0.5,
-                                                                                 bounds.getY() + 0.5)
-                                                                              .L(bounds.getX() + 0.5,
-                                                                                 height)
-                                                                              .L(width,
-                                                                                 height)
-                                                                              .L(width,
-                                                                                 bounds.getY() + 0.5)
-                                                                              .L(bounds.getX() + 0.5,
-                                                                                 bounds.getY() + 0.5)
-                                                                              .setListening(false);
-                                                                      g.add(selector);
+                                                                          final MultiPath selector = theme.getSelector()
+                                                                                  .M(bounds.getX() + 0.5,
+                                                                                     bounds.getY() + 0.5)
+                                                                                  .L(bounds.getX() + 0.5,
+                                                                                     height)
+                                                                                  .L(width,
+                                                                                     height)
+                                                                                  .L(width,
+                                                                                     bounds.getY() + 0.5)
+                                                                                  .L(bounds.getX() + 0.5,
+                                                                                     bounds.getY() + 0.5)
+                                                                                  .setListening(false);
+                                                                          g.add(selector);
 
-                                                                      final Text t = theme.getHeaderText();
-                                                                      t.setText(translationService.getTranslation(WiresGridsDemoConstants.GridWidget4_Selector_Caption));
-                                                                      t.setX(bounds.getWidth() / 2);
-                                                                      t.setY(bounds.getY() - renderingInformation.getHeaderRowsYOffset() / 2);
-                                                                      g.add(t);
+                                                                          final Text t = theme.getHeaderText();
+                                                                          t.setText(translationService.getTranslation(WiresGridsDemoConstants.GridWidget4_Selector_Caption));
+                                                                          t.setX(bounds.getWidth() / 2);
+                                                                          t.setY(bounds.getY() - renderingInformation.getHeaderRowsYOffset() / 2);
+                                                                          g.add(t);
 
-                                                                      parent.add(g);
+                                                                          rc.getGroup().add(g);
+                                                                      }
                                                                   };
                                                               }
 

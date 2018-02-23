@@ -24,7 +24,8 @@ import org.junit.runner.RunWith;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseBounds;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class BoundaryTransformMediatorTest {

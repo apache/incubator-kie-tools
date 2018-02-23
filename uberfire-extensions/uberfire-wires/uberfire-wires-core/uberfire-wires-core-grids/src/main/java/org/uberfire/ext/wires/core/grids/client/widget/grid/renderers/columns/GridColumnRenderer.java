@@ -16,6 +16,7 @@
 package org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns;
 
 import java.util.List;
+import java.util.function.BiFunction;
 
 import com.ait.lienzo.client.core.shape.Group;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
@@ -33,11 +34,13 @@ public interface GridColumnRenderer<T> {
      * @param headerMetaData MetaData for the header
      * @param context Contextual information to support rendering
      * @param renderingInformation Calculated rendering information supporting rendering.
+     * @param columnRenderingConstraint Function to determine whether column should be rendered to the SelectionLayer
      * @return
      */
     List<GridRenderer.RendererCommand> renderHeader(final List<GridColumn.HeaderMetaData> headerMetaData,
                                                     final GridHeaderColumnRenderContext context,
-                                                    final BaseGridRendererHelper.RenderingInformation renderingInformation);
+                                                    final BaseGridRendererHelper.RenderingInformation renderingInformation,
+                                                    final BiFunction<Boolean, GridColumn<?>, Boolean> columnRenderingConstraint);
 
     /**
      * Renders the column.textual information to support rendering
@@ -45,12 +48,14 @@ public interface GridColumnRenderer<T> {
      * @param context Contextual information to support rendering
      * @param rendererHelper Helper for rendering.
      * @param renderingInformation Calculated rendering information supporting rendering.
+     * @param columnRenderingConstraint Function to determine whether column should be rendered to the SelectionLayer
      * @return
      */
     List<GridRenderer.RendererCommand> renderColumn(final GridColumn<?> column,
                                                     final GridBodyColumnRenderContext context,
                                                     final BaseGridRendererHelper rendererHelper,
-                                                    final BaseGridRendererHelper.RenderingInformation renderingInformation);
+                                                    final BaseGridRendererHelper.RenderingInformation renderingInformation,
+                                                    final BiFunction<Boolean, GridColumn<?>, Boolean> columnRenderingConstraint);
 
     /**
      * Renders a cell for the column for a row. Normally a column would use its logical index

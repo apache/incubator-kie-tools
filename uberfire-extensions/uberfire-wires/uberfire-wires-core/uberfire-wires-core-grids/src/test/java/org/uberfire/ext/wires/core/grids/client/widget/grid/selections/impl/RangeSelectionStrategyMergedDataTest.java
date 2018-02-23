@@ -22,7 +22,8 @@ import org.junit.Test;
 import org.uberfire.ext.wires.core.grids.client.model.GridData.SelectedCell;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionStrategy;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class RangeSelectionStrategyMergedDataTest extends BaseCellSelectionStrategyTest {
 

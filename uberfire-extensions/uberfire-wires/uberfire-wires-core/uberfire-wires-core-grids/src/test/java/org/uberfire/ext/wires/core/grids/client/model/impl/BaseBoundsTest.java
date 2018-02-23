@@ -18,7 +18,7 @@ package org.uberfire.ext.wires.core.grids.client.model.impl;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class BaseBoundsTest {
 

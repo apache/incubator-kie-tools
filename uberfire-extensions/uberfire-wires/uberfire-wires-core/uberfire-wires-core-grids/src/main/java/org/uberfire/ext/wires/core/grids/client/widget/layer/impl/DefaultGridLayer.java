@@ -50,6 +50,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.animation.GridWidgetScrollIntoViewAnimation;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.GridWidgetConnector;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.GridWidgetRegistry;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.BoundaryTransformMediator;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.DefaultPinnedModeManager;
@@ -57,7 +58,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.Defaul
 /**
  * Default implementation of GridLayer
  */
-public class DefaultGridLayer extends Layer implements GridLayer {
+public class DefaultGridLayer extends Layer implements GridLayer,
+                                                       GridWidgetRegistry {
 
     //This is helpful when debugging rendering issues to set the bounds smaller than the Viewport
     private static final int PADDING = 0;
@@ -67,7 +69,8 @@ public class DefaultGridLayer extends Layer implements GridLayer {
     private final GridWidgetDnDHandlersState state = new GridWidgetDnDHandlersState();
     private final TransformMediator defaultTransformMediator = new BoundaryTransformMediator();
     private final DefaultPinnedModeManager pinnedModeManager = new DefaultPinnedModeManager(this);
-    private Set<GridWidget> gridWidgets = new HashSet<GridWidget>();
+    private Set<GridWidget> explicitGridWidgets = new HashSet<>();
+    private Set<GridWidget> registeredGridWidgets = new HashSet<>();
     private Map<GridWidgetConnector, Line> gridWidgetConnectors = new HashMap<>();
     private final GridLayerRedrawManager.PrioritizedCommand REDRAW = new GridLayerRedrawManager.PrioritizedCommand(Integer.MIN_VALUE) {
         @Override
@@ -144,6 +147,9 @@ public class DefaultGridLayer extends Layer implements GridLayer {
 
     @Override
     public Layer draw() {
+        //Clear all transient registrations added as the Layer is rendered
+        registeredGridWidgets.clear();
+
         //We use Layer.batch() to ensure rendering is tied to the browser's requestAnimationFrame()
         //however this calls back into Layer.draw() so update dependent Shapes here.
         updateGridWidgetConnectors();
@@ -205,10 +211,15 @@ public class DefaultGridLayer extends Layer implements GridLayer {
         for (IPrimitive<?> c : all) {
             if (c instanceof GridWidget) {
                 final GridWidget gridWidget = (GridWidget) c;
-                gridWidgets.add(gridWidget);
+                explicitGridWidgets.add(gridWidget);
                 addGridWidgetConnectors();
             }
         }
+    }
+
+    @Override
+    public void register(final GridWidget gridWidget) {
+        registeredGridWidgets.add(gridWidget);
     }
 
     @Override
@@ -221,7 +232,7 @@ public class DefaultGridLayer extends Layer implements GridLayer {
     }
 
     private void addGridWidgetConnectors() {
-        for (GridWidget gridWidget : gridWidgets) {
+        for (GridWidget gridWidget : explicitGridWidgets) {
             final GridData gridModel = gridWidget.getModel();
             for (GridColumn<?> gridColumn : gridModel.getColumns()) {
                 if (gridColumn.isVisible()) {
@@ -257,7 +268,7 @@ public class DefaultGridLayer extends Layer implements GridLayer {
 
     private GridWidget getLinkedGridWidget(final GridColumn<?> linkedGridColumn) {
         GridWidget linkedGridWidget = null;
-        for (GridWidget gridWidget : gridWidgets) {
+        for (GridWidget gridWidget : explicitGridWidgets) {
             final GridData gridModel = gridWidget.getModel();
             if (gridModel.getColumns().contains(linkedGridColumn)) {
                 linkedGridWidget = gridWidget;
@@ -304,10 +315,15 @@ public class DefaultGridLayer extends Layer implements GridLayer {
         for (IPrimitive<?> c : all) {
             if (c instanceof GridWidget) {
                 final GridWidget gridWidget = (GridWidget) c;
-                gridWidgets.remove(gridWidget);
+                deregister(gridWidget);
                 removeGridWidgetConnectors(gridWidget);
             }
         }
+    }
+
+    @Override
+    public void deregister(final GridWidget gridWidget) {
+        registeredGridWidgets.remove(gridWidget);
     }
 
     private void removeGridWidgetConnectors(final GridWidget gridWidget) {
@@ -327,8 +343,9 @@ public class DefaultGridLayer extends Layer implements GridLayer {
 
     @Override
     public Layer removeAll() {
-        gridWidgets.clear();
+        explicitGridWidgets.clear();
         gridWidgetConnectors.clear();
+        registeredGridWidgets.clear();
         return super.removeAll();
     }
 
@@ -370,7 +387,7 @@ public class DefaultGridLayer extends Layer implements GridLayer {
         if (!isGridPinned()) {
             return;
         }
-        for (GridWidget gw : gridWidgets) {
+        for (GridWidget gw : explicitGridWidgets) {
             gw.setAlpha(gw.equals(gridWidget) ? 1.0 : 0.0);
             gw.setVisible(gw.equals(gridWidget));
         }
@@ -410,7 +427,10 @@ public class DefaultGridLayer extends Layer implements GridLayer {
 
     @Override
     public Set<GridWidget> getGridWidgets() {
-        return Collections.unmodifiableSet(gridWidgets);
+        final Set<GridWidget> allGridWidgets = new HashSet<>();
+        allGridWidgets.addAll(explicitGridWidgets);
+        allGridWidgets.addAll(registeredGridWidgets);
+        return Collections.unmodifiableSet(allGridWidgets);
     }
 
     @Override

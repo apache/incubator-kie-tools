@@ -41,8 +41,18 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLay
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyDouble;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.uberfire.ext.wires.core.grids.client.widget.scrollbars.GridLienzoScrollHandler.DEFAULT_INTERNAL_SCROLL_HEIGHT;
 import static org.uberfire.ext.wires.core.grids.client.widget.scrollbars.GridLienzoScrollHandler.DEFAULT_INTERNAL_SCROLL_WIDTH;
 

@@ -137,7 +137,7 @@ public class BaseGridWidgetRenderingTest {
         when(renderer.renderHeader(any(GridData.class),
                                    any(GridHeaderRenderContext.class),
                                    eq(rendererHelper),
-                                   any(BaseGridRendererHelper.RenderingInformation.class))).thenReturn(Collections.singletonList((parent) -> parent.add(header)));
+                                   any(BaseGridRendererHelper.RenderingInformation.class))).thenReturn(Collections.singletonList((rc) -> rc.getGroup().add(header)));
     }
 
     @SuppressWarnings("unchecked")
@@ -146,7 +146,7 @@ public class BaseGridWidgetRenderingTest {
         when(renderer.renderBody(any(GridData.class),
                                  any(GridBodyRenderContext.class),
                                  eq(rendererHelper),
-                                 any(BaseGridRendererHelper.RenderingInformation.class))).thenReturn(Collections.singletonList((parent) -> parent.add(body)));
+                                 any(BaseGridRendererHelper.RenderingInformation.class))).thenReturn(Collections.singletonList((rc) -> rc.getGroup().add(body)));
     }
 
     @SuppressWarnings("unchecked")
@@ -154,13 +154,13 @@ public class BaseGridWidgetRenderingTest {
         when(selections.asNode()).thenReturn(mock(Node.class));
         when(renderer.renderSelectedCells(any(GridData.class),
                                           any(GridBodyRenderContext.class),
-                                          eq(rendererHelper))).thenReturn((parent) -> parent.add(selections));
+                                          eq(rendererHelper))).thenReturn((rc) -> rc.getGroup().add(selections));
     }
 
     @SuppressWarnings("unchecked")
     private void mockBoundary() {
         when(boundary.asNode()).thenReturn(mock(Node.class));
-        when(renderer.renderGridBoundary(any(GridBoundaryRenderContext.class))).thenReturn((parent) -> parent.add(boundary));
+        when(renderer.renderGridBoundary(any(GridBoundaryRenderContext.class))).thenReturn((rc) -> rc.getGroup().add(boundary));
     }
 
     @Test
@@ -189,11 +189,9 @@ public class BaseGridWidgetRenderingTest {
         verify(column,
                times(1)).freeUnusedResources();
         verify(gridWidget,
-               times(1)).drawHeader(eq(ri),
-                                    eq(false));
+               times(1)).drawHeader(eq(ri));
         verify(gridWidget,
-               times(1)).drawBody(eq(ri),
-                                  eq(false));
+               times(1)).drawBody(eq(ri));
     }
 
     @Test
@@ -221,10 +219,8 @@ public class BaseGridWidgetRenderingTest {
         verify(column,
                times(1)).freeUnusedResources();
         verify(gridWidget,
-               times(1)).drawHeader(eq(ri),
-                                    eq(false));
+               times(1)).drawHeader(eq(ri));
         verify(gridWidget,
-               never()).drawBody(any(BaseGridRendererHelper.RenderingInformation.class),
-                                 any(Boolean.class));
+               never()).drawBody(any(BaseGridRendererHelper.RenderingInformation.class));
     }
 }
