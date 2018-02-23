@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiModel;
@@ -34,6 +35,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer.GridRendererContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer.RenderBodyGridBackgroundCommand;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer.RenderBodyGridContentCommand;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer.RenderBodyGridLinesCommand;
@@ -44,7 +46,10 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.Grid
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class GuidedDecisionTableRendererTest {
@@ -66,6 +71,9 @@ public class GuidedDecisionTableRendererTest {
 
     @Mock
     private BaseGridRendererHelper.RenderingBlockInformation floatingBlockInformation;
+
+    @Mock
+    private Group parent;
 
     private GuidedDecisionTableUiModel uiModel;
 
@@ -138,6 +146,42 @@ public class GuidedDecisionTableRendererTest {
                                                                 renderingInformation);
         assertRenderingCommands(Collections.singletonList(command),
                                 RenderSelectorCommand.class);
+    }
+
+    @Test
+    public void testRenderSelectorIsSelectionLayer() {
+        final RendererCommand command = renderer.renderSelector(10.0,
+                                                                20.0,
+                                                                renderingInformation);
+
+        command.execute(makeGridRendererContext(true));
+
+        verify(parent, never()).add(any(Group.class));
+    }
+
+    @Test
+    public void testRenderSelectorIsNotSelectionLayer() {
+        final RendererCommand command = renderer.renderSelector(10.0,
+                                                                20.0,
+                                                                renderingInformation);
+
+        command.execute(makeGridRendererContext(false));
+
+        verify(parent).add(any(Group.class));
+    }
+
+    private GridRendererContext makeGridRendererContext(final boolean isSelectionLayer) {
+        return new GridRendererContext() {
+            @Override
+            public Group getGroup() {
+                return parent;
+            }
+
+            @Override
+            public boolean isSelectionLayer() {
+                return isSelectionLayer;
+            }
+        };
     }
 
     @Test

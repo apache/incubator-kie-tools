@@ -79,30 +79,32 @@ public class GuidedDecisionTableRenderer extends BaseGridRenderer {
     public RendererCommand renderSelector(final double width,
                                           final double height,
                                           final BaseGridRendererHelper.RenderingInformation renderingInformation) {
-        return (RenderSelectorCommand) (parent) -> {
-            final double captionWidth = getHeaderCaptionWidth();
-            final Bounds bounds = getSelectorBounds(width,
-                                                    height,
-                                                    renderingInformation);
-            final MultiPath selector = theme.getSelector()
-                    .M(bounds.getX() + 0.5,
-                       bounds.getY() + 0.5)
-                    .L(bounds.getX() + 0.5,
-                       height)
-                    .L(width,
-                       height)
-                    .L(width,
-                       bounds.getY() + GuidedDecisionTableViewImpl.HEADER_CAPTION_HEIGHT)
-                    .L(bounds.getX() + captionWidth,
-                       bounds.getY() + GuidedDecisionTableViewImpl.HEADER_CAPTION_HEIGHT)
-                    .L(bounds.getX() + captionWidth,
-                       bounds.getY() + 0.5)
-                    .L(bounds.getX() + GuidedDecisionTableViewImpl.HEADER_CAPTION_WIDTH,
-                       bounds.getY() + 0.5)
-                    .L(bounds.getX() + 0.5,
-                       bounds.getY() + 0.5)
-                    .setListening(false);
-            parent.add(selector);
+        return (RenderSelectorCommand) (rc) -> {
+            if (!rc.isSelectionLayer()) {
+                final double captionWidth = getHeaderCaptionWidth();
+                final Bounds bounds = getSelectorBounds(width,
+                                                        height,
+                                                        renderingInformation);
+                final MultiPath selector = theme.getSelector()
+                        .M(bounds.getX() + 0.5,
+                           bounds.getY() + 0.5)
+                        .L(bounds.getX() + 0.5,
+                           height)
+                        .L(width,
+                           height)
+                        .L(width,
+                           bounds.getY() + GuidedDecisionTableViewImpl.HEADER_CAPTION_HEIGHT)
+                        .L(bounds.getX() + captionWidth,
+                           bounds.getY() + GuidedDecisionTableViewImpl.HEADER_CAPTION_HEIGHT)
+                        .L(bounds.getX() + captionWidth,
+                           bounds.getY() + 0.5)
+                        .L(bounds.getX() + GuidedDecisionTableViewImpl.HEADER_CAPTION_WIDTH,
+                           bounds.getY() + 0.5)
+                        .L(bounds.getX() + 0.5,
+                           bounds.getY() + 0.5)
+                        .setListening(false);
+                rc.getGroup().add(selector);
+            }
         };
     }
 
@@ -136,21 +138,23 @@ public class GuidedDecisionTableRenderer extends BaseGridRenderer {
 
     @Override
     public RendererCommand renderHeaderBodyDivider(final double width) {
-        return (RenderHeaderGridLinesCommand) (parent) -> {
-            final Group g = new Group();
-            final Line dividerLine1 = theme.getGridHeaderBodyDivider();
-            final Line dividerLine2 = theme.getGridHeaderBodyDivider();
-            dividerLine1.setPoints(new Point2DArray(new Point2D(0,
-                                                                getHeaderHeight() - 1.5),
-                                                    new Point2D(width,
-                                                                getHeaderHeight() - 1.5)));
-            dividerLine2.setPoints(new Point2DArray(new Point2D(0,
-                                                                getHeaderHeight() + 0.5),
-                                                    new Point2D(width,
-                                                                getHeaderHeight() + 0.5)));
-            g.add(dividerLine1);
-            g.add(dividerLine2);
-            parent.add(g);
+        return (RenderHeaderGridLinesCommand) (rc) -> {
+            if (!rc.isSelectionLayer()) {
+                final Group g = new Group();
+                final Line dividerLine1 = theme.getGridHeaderBodyDivider();
+                final Line dividerLine2 = theme.getGridHeaderBodyDivider();
+                dividerLine1.setPoints(new Point2DArray(new Point2D(0,
+                                                                    getHeaderHeight() - 1.5),
+                                                        new Point2D(width,
+                                                                    getHeaderHeight() - 1.5)));
+                dividerLine2.setPoints(new Point2DArray(new Point2D(0,
+                                                                    getHeaderHeight() + 0.5),
+                                                        new Point2D(width,
+                                                                    getHeaderHeight() + 0.5)));
+                g.add(dividerLine1);
+                g.add(dividerLine2);
+                rc.getGroup().add(g);
+            }
         };
     }
 
@@ -175,12 +179,14 @@ public class GuidedDecisionTableRenderer extends BaseGridRenderer {
             final int _visibleRowIndex = _rowIndex - renderingInformation.getMinVisibleRowIndex();
             if (_rowIndex >= 0 && _rowIndex < model.getRowCount()) {
                 if (_visibleRowIndex >= 0 && _visibleRowIndex < model.getRowCount()) {
-                    commands.add((RenderSelectedCellsCommand) (parent) -> {
-                        parent.add(makeRowHighlight(_rowIndex,
-                                                    _visibleRowIndex,
-                                                    model,
-                                                    context,
-                                                    rendererHelper));
+                    commands.add((RenderSelectedCellsCommand) (rc) -> {
+                        if (!rc.isSelectionLayer()) {
+                            rc.getGroup().add(makeRowHighlight(_rowIndex,
+                                                               _visibleRowIndex,
+                                                               model,
+                                                               context,
+                                                               rendererHelper));
+                        }
                     });
                 }
             }

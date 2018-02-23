@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.table;
 
+import java.util.List;
+
 import javax.enterprise.event.Event;
 
 import com.ait.lienzo.client.core.event.INodeXYEvent;
@@ -28,6 +30,8 @@ import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
+import com.google.gwt.core.client.GWT;
+import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.themes.GuidedDecisionTableTheme;
@@ -80,29 +84,29 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
     }
 
     private Group makeHeaderCaption() {
-        final Group g = new Group();
+        final Group g = GWT.create(Group.class);
         final double captionWidth = getHeaderCaptionWidth();
         final GuidedDecisionTableTheme theme = (GuidedDecisionTableTheme) renderer.getTheme();
-        final Rectangle r = theme.getBaseRectangle(GuidedDecisionTableTheme.ModelColumnType.CAPTION)
-                .setWidth(captionWidth)
-                .setHeight(HEADER_CAPTION_HEIGHT);
+        final Rectangle r = theme.getBaseRectangle(GuidedDecisionTableTheme.ModelColumnType.CAPTION);
+        r.setWidth(captionWidth);
+        r.setHeight(HEADER_CAPTION_HEIGHT);
 
         final MultiPath border = theme.getBodyGridLine();
         border.M(0.5,
-                 HEADER_CAPTION_HEIGHT + 0.5)
-                .L(0.5,
-                   0.5)
-                .L(captionWidth + 0.5,
-                   0.5)
-                .L(captionWidth + 0.5,
-                   HEADER_CAPTION_HEIGHT + 0.5)
-                .L(0.5,
-                   HEADER_CAPTION_HEIGHT + 0.5);
+                 HEADER_CAPTION_HEIGHT + 0.5);
+        border.L(0.5,
+                 0.5);
+        border.L(captionWidth + 0.5,
+                 0.5);
+        border.L(captionWidth + 0.5,
+                 HEADER_CAPTION_HEIGHT + 0.5);
+        border.L(0.5,
+                 HEADER_CAPTION_HEIGHT + 0.5);
 
-        final Text caption = theme.getHeaderText()
-                .setText(model.getTableName())
-                .setX(captionWidth / 2)
-                .setY(HEADER_CAPTION_HEIGHT / 2);
+        final Text caption = theme.getHeaderText();
+        caption.setText(model.getTableName());
+        caption.setX(captionWidth / 2);
+        caption.setY(HEADER_CAPTION_HEIGHT / 2);
 
         //Clip Caption Group
         final BoundingBox bb = new BoundingBox(0,
@@ -121,7 +125,7 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
     }
 
     //Allow overriding in Unit Tests as BoundingBoxPathClipper cannot be mocked
-    private IPathClipper getPathClipper(final BoundingBox bb) {
+    IPathClipper getPathClipper(final BoundingBox bb) {
         return new BoundingBoxPathClipper(bb);
     }
 
@@ -164,22 +168,33 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
     }
 
     @Override
-    protected void drawHeader(final BaseGridRendererHelper.RenderingInformation renderingInformation,
-                              final boolean isSelectionLayer) {
-        super.drawHeader(renderingInformation,
-                         isSelectionLayer);
+    protected void drawHeader(final BaseGridRendererHelper.RenderingInformation renderingInformation) {
+        super.drawHeader(renderingInformation);
 
         headerCaption = makeHeaderCaption();
-        headerCaption.setY(header == null ? 0.0 : header.getY());
 
-        final BaseGridRendererHelper.RenderingBlockInformation floatingBlockInformation = renderingInformation.getFloatingBlockInformation();
-        if (!floatingBlockInformation.getColumns().isEmpty()) {
-            headerCaption.setX(floatingBlockInformation.getX());
-        } else {
-            headerCaption.setX(0.0);
+        if (!floatingColumns.isEmpty()) {
+            if (floatingHeader != null) {
+                addCommandToRenderQueue(floatingHeader,
+                                        (GridRenderer.RenderHeaderBackgroundCommand) (rc) -> {
+                                            rc.getGroup().add(headerCaption);
+                                        });
+            }
+        } else if (isRowNumberAndDescriptionColumnsShown()) {
+            if (header != null) {
+                addCommandToRenderQueue(header,
+                                        (GridRenderer.RenderHeaderBackgroundCommand) (rc) -> {
+                                            rc.getGroup().add(headerCaption);
+                                        });
+            }
         }
+    }
 
-        add(headerCaption);
+    private boolean isRowNumberAndDescriptionColumnsShown() {
+        final List<BaseColumn> allModelColumns = model.getExpandedColumns();
+        final int rowNumberColumnIndex = allModelColumns.indexOf(model.getRowNumberCol());
+        final int descriptionColumnIndex = allModelColumns.indexOf(model.getDescriptionCol());
+        return bodyColumns.contains(allColumns.get(rowNumberColumnIndex)) && bodyColumns.contains(allColumns.get(descriptionColumnIndex));
     }
 
     @Override
