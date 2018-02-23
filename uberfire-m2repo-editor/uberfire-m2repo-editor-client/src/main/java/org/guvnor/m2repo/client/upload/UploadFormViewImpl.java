@@ -67,7 +67,7 @@ public class UploadFormViewImpl
     }
 
     private Form doUploadForm() {
-        form.setAction(getWebContext() + "/maven2wb");
+        form.setAction(getWebContext() + "/maven2");
         form.setEncoding(FormPanel.ENCODING_MULTIPART);
         form.setMethod(FormPanel.METHOD_POST);
         form.setType(FormType.HORIZONTAL);
