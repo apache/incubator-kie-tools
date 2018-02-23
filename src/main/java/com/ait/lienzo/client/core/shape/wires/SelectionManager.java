@@ -961,7 +961,7 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
             }
             else
             {
-                Point2DArray intersections = Geometry.getIntersectPolyLinePath(points, connector.getLine().getPathPartList(), true);
+                Point2DArray intersections = Geometry.getIntersectPolyLinePath(points, connector.getLine().asShape().getPathPartList(), true);
                 if (intersections!=null && intersections.size()> 0)
                 {
                     addConnector(connector, externallyConnected, box, nodeBox);

@@ -35,8 +35,14 @@ import com.google.gwt.json.client.JSONObject;
  * PolyLine is a continuous line composed of one or more line segments.
  * To create a dashed PolyLine, use one of the setDashArray() methods. 
  */
-public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
+public class PolyLine extends AbstractDirectionalMultiPointShape<PolyLine>
 {
+    private static final double SEGMENT_SNAP_DISTANCE = 5d;
+
+    private Point2D      m_headOffsetPoint;
+
+    private Point2D      m_tailOffsetPoint;
+
     /**
      * Constructor. Creates an instance of a polyline.
      * 
@@ -92,19 +98,30 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
             {
                 final PathPartList path = getPathPartList();
 
-                path.M(list.get(0));
+                final double headOffset = attr.getHeadOffset();
+                final double tailOffset = attr.getTailOffset();
+
+                m_headOffsetPoint = Geometry.getProjection(list.get(0), list.get(1), headOffset);
+                m_tailOffsetPoint = Geometry.getProjection(list.get(size - 1), list.get(size - 2), tailOffset);
+
+                path.M(m_headOffsetPoint);
 
                 final double corner = getCornerRadius();
 
                 if (corner <= 0)
                 {
-                    for (int i = 1; i < size; i++)
+                    for (int i = 1; i < size - 1; i++)
                     {
                         path.L(list.get(i));
                     }
+
+                    path.L(m_tailOffsetPoint);
                 }
                 else
                 {
+                    list = list.copy();
+                    list.set(size - 1, m_tailOffsetPoint);
+
                     Geometry.drawArcJoinedLines(path, list, corner);
                 }
                 return true;
@@ -175,31 +192,81 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
     @Override
     public Point2D getTailOffsetPoint()
     {
-        final Point2DArray list = getPoints();
-
-        if ((null != list) && (list.size() > 1))
-        {
-            return list.get(0);
-        }
-        return null;
+        return m_tailOffsetPoint;
     }
 
     @Override
     public Point2D getHeadOffsetPoint()
     {
-        final Point2DArray list = getPoints();
-
-        if ((null != list) && (list.size() > 1))
-        {
-            return list.get(list.size() - 1);
-        }
-        return null;
+        return m_headOffsetPoint;
     }
 
     @Override
     public List<Attribute> getBoundingBoxAttributes()
     {
         return getBoundingBoxAttributesComposed(Attribute.POINTS, Attribute.CORNER_RADIUS);
+    }
+
+    @Override
+    public Point2D adjustPoint(double x, double y, double deltaX, double deltaY) {
+        Point2DArray points = getPoint2DArray();
+
+        Point2D before = null;
+        Point2D target = null;
+        Point2D after = null;
+
+        for (Point2D point: points) {
+            after = point;
+
+            if (target != null) {
+                if (target.getX() == x && target.getY() == y) {
+                    break;
+                }
+            }
+
+            before = target;
+            target = after;
+        }
+
+        if (target == after) {
+            after = null;
+        }
+
+        double xDiffBefore = Double.MAX_VALUE;
+        double yDiffBefore = Double.MAX_VALUE;
+
+        if (before != null) {
+            xDiffBefore = target.getX() - before.getX();
+            yDiffBefore = target.getY() - before.getY();
+        }
+
+        double xDiffAfter = Double.MAX_VALUE;
+        double yDiffAfter = Double.MAX_VALUE;
+
+        if (after != null) {
+            xDiffAfter = target.getX() - after.getX();
+            yDiffAfter = target.getY() - after.getY();
+        }
+
+        if (Math.abs(xDiffBefore) < Math.abs(xDiffAfter) && Math.abs(xDiffBefore) <= SEGMENT_SNAP_DISTANCE) {
+            target.setX(target.getX() - xDiffBefore);
+        } else if (Math.abs(xDiffAfter) <= SEGMENT_SNAP_DISTANCE) {
+            target.setX(target.getX() - xDiffAfter);
+        }
+
+        if (Math.abs(yDiffBefore) < Math.abs(yDiffAfter) && Math.abs(yDiffBefore) <= SEGMENT_SNAP_DISTANCE) {
+            target.setY(target.getY() - yDiffBefore);
+        } else if (Math.abs(yDiffAfter) <= SEGMENT_SNAP_DISTANCE) {
+            target.setY(target.getY() - yDiffAfter);
+        }
+
+        return new Point2D(target.getX(), target.getY());
+    }
+
+    @Override
+    public boolean isControlPointShape()
+    {
+        return true;
     }
 
     public static class PolyLineFactory extends AbstractOffsetMultiPointShapeFactory<PolyLine>

@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.Direction;
 
 public interface IDirectionalMultiPointShape<T extends Shape<T> & IDirectionalMultiPointShape<T>> extends IOffsetMultiPointShape<T>
@@ -31,4 +32,8 @@ public interface IDirectionalMultiPointShape<T extends Shape<T> & IDirectionalMu
     public double getCorrectionOffset();
 
     public T setCorrectionOffset(final double offset);
+
+    public boolean isPathPartListPrepared(final Attributes attr);
+
+    public Point2D adjustPoint(double x, double y, double deltaX, double deltaY);
 }

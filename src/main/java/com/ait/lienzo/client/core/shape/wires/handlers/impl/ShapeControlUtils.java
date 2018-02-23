@@ -3,7 +3,7 @@ package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
+import com.ait.lienzo.client.core.shape.IDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.OrthogonalPolyLine;
 import com.ait.lienzo.client.core.shape.wires.WiresConnection;
@@ -180,7 +180,7 @@ public class ShapeControlUtils {
                             newPoints2.push(oldPoints.get(i));
                         }
 
-                        AbstractDirectionalMultiPointShape<?> line = c.getLine().copy();
+                        IDirectionalMultiPointShape<?> line = c.getLine().copy();
                         line.setPoint2DArray(newPoints2);
                         c2 = new WiresConnector(line,
                                                 c.getHeadDecorator().copy(),

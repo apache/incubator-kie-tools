@@ -23,6 +23,7 @@ import java.util.List;
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
@@ -95,6 +96,11 @@ public abstract class AbstractDirectionalMultiPointShape<T extends AbstractDirec
         list.addAll(Arrays.asList(Attribute.HEAD_DIRECTION, Attribute.TAIL_DIRECTION));
 
         return list;
+    }
+
+    @Override
+    public Point2D adjustPoint(double x, double y, double deltaX, double deltaY) {
+        return null;
     }
 
     protected static abstract class AbstractDirectionalMultiPointShapeFactory<T extends AbstractDirectionalMultiPointShape<T>> extends AbstractOffsetMultiPointShapeFactory<T>

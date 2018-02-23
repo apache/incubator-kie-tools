@@ -1667,7 +1667,7 @@ public final class Geometry
         return new Point2D(box.getX() + box.getWidth() / 2, box.getY() + box.getHeight() / 2);
     }
 
-    private static Point2D getProjection(Point2D center, Point2D intersection, double length)
+    public static Point2D getProjection(Point2D center, Point2D intersection, double length)
     {
         Point2D unit = intersection.sub(center).unit();
 

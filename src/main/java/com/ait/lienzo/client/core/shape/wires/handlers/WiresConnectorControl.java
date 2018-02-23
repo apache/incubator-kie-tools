@@ -2,6 +2,7 @@ package com.ait.lienzo.client.core.shape.wires.handlers;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
+import com.ait.lienzo.client.core.types.Point2D;
 
 /**
  * Connector control handler provides user interaction common functions/logic in a way that they're decoupled
@@ -44,6 +45,8 @@ public interface WiresConnectorControl extends WiresMoveControl {
     void showControlPoints();
 
     void hideControlPoints();
+
+    Point2D adjustControlPointAt(double x, double y, double deltaX, double deltaY);
 
     WiresConnectionControl getHeadConnectionControl();
 

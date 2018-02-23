@@ -8,6 +8,7 @@ import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlPointHandler;
+import com.ait.lienzo.client.core.types.Point2D;
 
 public class WiresControlPointHandlerImpl implements WiresControlPointHandler {
 
@@ -39,6 +40,9 @@ public class WiresControlPointHandlerImpl implements WiresControlPointHandler {
 
     @Override
     public void onNodeDragMove(NodeDragMoveEvent event) {
-        //no default implementation
+        IPrimitive<?> primitive = (IPrimitive<?>) event.getSource();
+        Point2D adjust = m_connectorControl.adjustControlPointAt(primitive.getX(), primitive.getY(), event.getX(), event.getY());
+        primitive.setX(adjust.getX());
+        primitive.setY(adjust.getY());
     }
 }
