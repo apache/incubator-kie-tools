@@ -46,6 +46,9 @@ public class LienzoHandlerManagerTest {
     private Viewport viewport;
 
     @Mock
+    private Transform transform;
+
+    @Mock
     private LienzoPanel lienzoPanel;
 
     @Mock
@@ -113,6 +116,7 @@ public class LienzoHandlerManagerTest {
         doReturn(dragLayer).when(lienzoPanel).getDragLayer();
         doReturn(DragMouseControl.LEFT_MOUSE_ONLY).when(lienzoPanel).getDragMouseButtons();
         doReturn(viewport).when(lienzoPanel).getViewport();
+        doReturn(transform).when(viewport).getTransform();
 
         manager = spy(new LienzoHandlerManager(lienzoPanel));
     }

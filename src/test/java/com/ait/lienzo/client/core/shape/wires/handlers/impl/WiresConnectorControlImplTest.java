@@ -70,6 +70,9 @@ public class WiresConnectorControlImplTest {
     private AbstractDirectionalMultiPointShape line;
 
     @Mock
+    private Shape<?> lineShape;
+
+    @Mock
     private ScratchPad scratchPad;
 
     @Mock
@@ -160,6 +163,8 @@ public class WiresConnectorControlImplTest {
         when(line.getPathPartList()).thenReturn(pathPartList);
         when(line.getComputedLocation()).thenReturn(location);
         when(line.getBoundingBox()).thenReturn(boundingBox);
+        when(line.asShape()).thenReturn(lineShape);
+        when(lineShape.getPathPartList()).thenReturn(pathPartList);
         when(connector.getLine()).thenReturn(line);
         when(scratchPad.getContext()).thenReturn(context);
         when(context.getImageData(anyInt(), anyInt(), anyInt(), anyInt())).thenReturn(backImage);
