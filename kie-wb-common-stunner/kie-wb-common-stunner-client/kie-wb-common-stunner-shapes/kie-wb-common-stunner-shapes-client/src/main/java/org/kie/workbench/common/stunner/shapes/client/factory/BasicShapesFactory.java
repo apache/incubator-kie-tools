@@ -28,8 +28,8 @@ import org.kie.workbench.common.stunner.shapes.client.BasicConnectorShape;
 import org.kie.workbench.common.stunner.shapes.client.BasicContainerShape;
 import org.kie.workbench.common.stunner.shapes.client.PictureShape;
 import org.kie.workbench.common.stunner.shapes.client.RingShape;
+import org.kie.workbench.common.stunner.shapes.client.view.AbstractConnectorView;
 import org.kie.workbench.common.stunner.shapes.client.view.CircleView;
-import org.kie.workbench.common.stunner.shapes.client.view.ConnectorView;
 import org.kie.workbench.common.stunner.shapes.client.view.PictureShapeView;
 import org.kie.workbench.common.stunner.shapes.client.view.PolygonView;
 import org.kie.workbench.common.stunner.shapes.client.view.RectangleView;
@@ -137,10 +137,10 @@ public class BasicShapesFactory
     private Shape<ShapeView> newConnector(final Object instance,
                                           final BasicShapeDef shapeDef) {
         final ConnectorShapeDef cShapeDef = (ConnectorShapeDef) shapeDef;
-        final ConnectorView view = shapeViewFactory.connector(0,
-                                                              0,
-                                                              100,
-                                                              100);
+        final AbstractConnectorView view = shapeViewFactory.connector(0,
+                                                                      0,
+                                                                      100,
+                                                                      100);
         return new BasicConnectorShape(cShapeDef,
                                        view);
     }

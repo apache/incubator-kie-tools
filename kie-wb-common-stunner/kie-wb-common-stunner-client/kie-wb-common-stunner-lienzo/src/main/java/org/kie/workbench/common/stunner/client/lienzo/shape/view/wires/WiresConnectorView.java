@@ -84,7 +84,7 @@ public class WiresConnectorView<T> extends WiresConnector
     }
 
     private void init() {
-        getLine().setFillColor(ColorName.WHITE).setStrokeWidth(0);
+        getLine().asShape().setFillColor(ColorName.WHITE).setStrokeWidth(0);
     }
 
     @Override
@@ -228,13 +228,13 @@ public class WiresConnectorView<T> extends WiresConnector
 
     @Override
     public String getFillColor() {
-        return getLine().getFillColor();
+        return getLine().asShape().getFillColor();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T setFillColor(final String color) {
-        getLine().setFillColor(color);
+        getLine().asShape().setFillColor(color);
         if (null != getHead()) {
             getHead().setFillColor(color);
         }
@@ -264,13 +264,13 @@ public class WiresConnectorView<T> extends WiresConnector
 
     @Override
     public String getStrokeColor() {
-        return getLine().getStrokeColor();
+        return getLine().asShape().getStrokeColor();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T setStrokeColor(final String color) {
-        getLine().setStrokeColor(color);
+        getLine().asShape().setStrokeColor(color);
         if (null != getHead()) {
             getHead().setStrokeColor(color);
         }
@@ -300,13 +300,13 @@ public class WiresConnectorView<T> extends WiresConnector
 
     @Override
     public double getStrokeWidth() {
-        return getLine().getStrokeWidth();
+        return getLine().asShape().getStrokeWidth();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T setStrokeWidth(final double width) {
-        getLine().setStrokeWidth(width);
+        getLine().asShape().setStrokeWidth(width);
         if (null != getHead()) {
             getHead().setStrokeWidth(width);
         }
@@ -380,7 +380,7 @@ public class WiresConnectorView<T> extends WiresConnector
     @Override
     public List<Shape<?>> getDecorators() {
         final List<Shape<?>> decorators = new ArrayList<>(3);
-        decorators.add(getLine());
+        decorators.add(getLine().asShape());
         if (null != getHead()) {
             decorators.add(getHead());
         }

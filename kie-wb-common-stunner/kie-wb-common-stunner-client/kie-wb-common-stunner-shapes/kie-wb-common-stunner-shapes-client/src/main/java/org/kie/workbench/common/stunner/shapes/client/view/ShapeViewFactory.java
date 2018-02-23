@@ -79,7 +79,7 @@ public class ShapeViewFactory {
         return new PolygonView(radius);
     }
 
-    public ConnectorView connector(final double... points) {
-        return new ConnectorView(points);
+    public AbstractConnectorView connector(final double... points) {
+        return new OrthogonalPolyLineConnectorView(points);
     }
 }

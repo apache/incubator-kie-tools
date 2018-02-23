@@ -65,7 +65,7 @@ import org.kie.workbench.common.stunner.core.definition.adapter.binding.Bindable
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.shapes.client.BasicConnectorShape;
 import org.kie.workbench.common.stunner.shapes.client.factory.BasicShapesFactory;
-import org.kie.workbench.common.stunner.shapes.client.view.ConnectorView;
+import org.kie.workbench.common.stunner.shapes.client.view.AbstractConnectorView;
 import org.kie.workbench.common.stunner.shapes.client.view.PictureShapeView;
 import org.kie.workbench.common.stunner.shapes.client.view.ShapeViewFactory;
 import org.mockito.Mock;
@@ -108,7 +108,7 @@ public class CaseManagementShapeFactoryTest {
     private Glyph glyph;
 
     @Mock
-    private ConnectorView connectorShapeView;
+    private AbstractConnectorView connectorShapeView;
 
     private Consumer<Shape> nullAssertions = (shape) -> {
         assertNotNull(shape.getShapeView());

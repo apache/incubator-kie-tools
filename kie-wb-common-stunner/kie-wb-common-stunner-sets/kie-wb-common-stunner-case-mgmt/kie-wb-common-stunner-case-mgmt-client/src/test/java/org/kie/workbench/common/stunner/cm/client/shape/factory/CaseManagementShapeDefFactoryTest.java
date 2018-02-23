@@ -41,7 +41,7 @@ import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeDefFunctionalFactory;
-import org.kie.workbench.common.stunner.shapes.client.view.ConnectorView;
+import org.kie.workbench.common.stunner.shapes.client.view.AbstractConnectorView;
 import org.kie.workbench.common.stunner.shapes.client.view.PictureShapeView;
 import org.kie.workbench.common.stunner.shapes.client.view.ShapeViewFactory;
 import org.mockito.Mock;
@@ -75,7 +75,7 @@ public class CaseManagementShapeDefFactoryTest {
     private ActivityView activityView;
 
     @Mock
-    private ConnectorView connectorShapeView;
+    private AbstractConnectorView connectorShapeView;
 
     private CaseManagementShapeDefFactory tested;
     private PictureShapeView pictureShapeView;

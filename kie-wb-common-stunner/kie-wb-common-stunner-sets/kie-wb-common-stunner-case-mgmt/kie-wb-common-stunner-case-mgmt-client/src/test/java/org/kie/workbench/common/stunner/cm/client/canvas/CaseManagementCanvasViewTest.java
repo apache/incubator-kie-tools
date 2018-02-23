@@ -28,7 +28,8 @@ import org.kie.workbench.common.stunner.cm.client.wires.MockCaseManagementShape;
 import org.kie.workbench.common.stunner.core.client.canvas.event.controlpoint.CanvasControlPointDoubleClickEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.controlpoint.CanvasControlPointDragEndEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.controlpoint.CanvasControlPointDragStartEvent;
-import org.kie.workbench.common.stunner.shapes.client.view.ConnectorView;
+import org.kie.workbench.common.stunner.shapes.client.view.AbstractConnectorView;
+import org.kie.workbench.common.stunner.shapes.client.view.PolylineConnectorView;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
@@ -66,8 +67,8 @@ public class CaseManagementCanvasViewTest {
 
     @Test
     public void addWiresConnector() {
-        final ConnectorView connector = new ConnectorView(0.0,
-                                                          0.0);
+        final AbstractConnectorView connector = new PolylineConnectorView(0.0,
+                                                                          0.0);
         final String uuid = connector.uuid();
         connector.setUUID(uuid);
 

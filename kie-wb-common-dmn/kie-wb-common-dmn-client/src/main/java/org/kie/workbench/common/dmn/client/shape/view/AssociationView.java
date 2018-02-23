@@ -20,9 +20,9 @@ import com.ait.lienzo.client.core.shape.MultiPathDecorator;
 import com.ait.lienzo.client.core.types.DashArray;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresConnectorViewExt;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
-import org.kie.workbench.common.stunner.shapes.client.view.ConnectorView;
+import org.kie.workbench.common.stunner.shapes.client.view.AbstractConnectorView;
 
-public class AssociationView extends WiresConnectorViewExt<ConnectorView> {
+public class AssociationView extends WiresConnectorViewExt<AbstractConnectorView> {
 
     private static final double SELECTION_OFFSET = 30;
 

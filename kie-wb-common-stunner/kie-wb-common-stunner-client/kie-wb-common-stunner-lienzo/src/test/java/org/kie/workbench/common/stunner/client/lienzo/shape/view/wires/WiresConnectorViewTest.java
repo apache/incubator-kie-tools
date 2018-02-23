@@ -66,6 +66,9 @@ public class WiresConnectorViewTest {
     @Mock
     private OrthogonalPolyLine line;
 
+    @Mock
+    private Shape lineShape;
+
     private Point2DArray point2DArray;
 
     @Mock
@@ -95,14 +98,15 @@ public class WiresConnectorViewTest {
         point2DArray = new Point2DArray(new Point2D(0, 10), new Point2D(10, 10), new Point2D(20, 20), new Point2D(30, 30), new Point2D(40, 40));
 
         when(line.getPoint2DArray()).thenReturn(point2DArray);
+        when(line.asShape()).thenReturn(lineShape);
         when(line.asNode()).thenReturn(lineNode);
-        when(line.setFillColor(anyString())).thenReturn(line);
-        when(line.setFillColor(any(IColor.class))).thenReturn(line);
-        when(line.setFillAlpha(anyDouble())).thenReturn(line);
-        when(line.setStrokeColor(anyString())).thenReturn(line);
-        when(line.setStrokeColor(any(IColor.class))).thenReturn(line);
-        when(line.setStrokeAlpha(anyDouble())).thenReturn(line);
-        when(line.setStrokeWidth(anyDouble())).thenReturn(line);
+        when(lineShape.setFillColor(anyString())).thenReturn(lineShape);
+        when(lineShape.setFillColor(any(IColor.class))).thenReturn(lineShape);
+        when(lineShape.setFillAlpha(anyDouble())).thenReturn(lineShape);
+        when(lineShape.setStrokeColor(anyString())).thenReturn(lineShape);
+        when(lineShape.setStrokeColor(any(IColor.class))).thenReturn(lineShape);
+        when(lineShape.setStrokeAlpha(anyDouble())).thenReturn(lineShape);
+        when(lineShape.setStrokeWidth(anyDouble())).thenReturn(lineShape);
         when(line.isControlPointShape()).thenReturn(true);
         when(headDecorator.getPath()).thenReturn(headPath);
         when(tailDecorator.getPath()).thenReturn(tailPath);
@@ -153,7 +157,7 @@ public class WiresConnectorViewTest {
     public void testFillAttributes() {
         tested.setFillColor("color1");
         tested.setFillAlpha(0.53);
-        verify(line,
+        verify(lineShape,
                times(1)).setFillColor(eq("color1"));
         verify(line,
                times(1)).setFillAlpha(eq(0.53));
@@ -172,11 +176,11 @@ public class WiresConnectorViewTest {
         tested.setStrokeColor("color1");
         tested.setStrokeWidth(3.89);
         tested.setStrokeAlpha(0.53);
-        verify(line,
+        verify(lineShape,
                times(1)).setStrokeColor(eq("color1"));
         verify(line,
                times(1)).setStrokeAlpha(eq(0.53));
-        verify(line,
+        verify(lineShape,
                times(1)).setStrokeWidth(eq(3.89));
         verify(headPath,
                times(1)).setStrokeColor(eq("color1"));

@@ -16,32 +16,34 @@
 
 package org.kie.workbench.common.stunner.shapes.client.view;
 
+import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
-import com.ait.lienzo.client.core.shape.OrthogonalPolyLine;
+import com.ait.lienzo.client.core.shape.PolyLine;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.shared.core.types.ColorName;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresConnectorViewExt;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
+import org.kie.workbench.common.stunner.shapes.client.factory.LineConnectorFactory;
 
-public class ConnectorView extends WiresConnectorViewExt<ConnectorView> {
+public abstract class AbstractConnectorView extends WiresConnectorViewExt<AbstractConnectorView> {
 
     private static final double SELECTION_OFFSET = 30;
     private static final double DECORATOR_WIDTH = 10;
     private static final double DECORATOR_HEIGHT = 15;
 
-    public ConnectorView(final double... points) {
-        this(createLine(points));
+    public AbstractConnectorView(LineConnectorFactory lineFactory, final double... points) {
+        this(createLine(lineFactory, points));
     }
 
-    private ConnectorView(final Object[] line) {
+    private AbstractConnectorView(final Object[] line) {
         super(ShapeViewSupportedEvents.DESKTOP_CONNECTOR_EVENT_TYPES,
-              (OrthogonalPolyLine) line[0],
+              (PolyLine) line[0],
               (MultiPathDecorator) line[1],
               (MultiPathDecorator) line[2]);
     }
 
-    static Object[] createLine(final double... points) {
+    static Object[] createLine(LineConnectorFactory lineFactory, final double... points) {
         // The head decorator must be not visible, as connectors are unidirectional.
         final MultiPath head = new MultiPath();
         final MultiPath tail = new MultiPath()
@@ -54,13 +56,14 @@ public class ConnectorView extends WiresConnectorViewExt<ConnectorView> {
                 .Z()
                 .setFillColor(ColorName.BLACK)
                 .setFillAlpha(1);
-        final OrthogonalPolyLine line =
-                new OrthogonalPolyLine(Point2DArray.fromArrayOfDouble(points));
-        line.setCornerRadius(5);
+
+        final AbstractDirectionalMultiPointShape<?> line = lineFactory.createLine(Point2DArray.fromArrayOfDouble(points));
+
         line.setDraggable(true);
         line.setSelectionStrokeOffset(SELECTION_OFFSET);
         line.setHeadOffset(head.getBoundingBox().getHeight());
         line.setTailOffset(tail.getBoundingBox().getHeight());
+
         final MultiPathDecorator headDecorator = new MultiPathDecorator(head);
         final MultiPathDecorator tailDecorator = new MultiPathDecorator(tail);
         return new Object[]{line, headDecorator, tailDecorator};

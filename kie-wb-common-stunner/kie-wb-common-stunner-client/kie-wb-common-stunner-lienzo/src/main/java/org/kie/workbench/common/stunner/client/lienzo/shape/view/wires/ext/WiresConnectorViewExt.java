@@ -70,8 +70,8 @@ public class WiresConnectorViewExt<T> extends WiresConnectorView<T>
     protected void init(final ViewEventType[] supportedEventTypes) {
         this.textPosition = WiresLayoutContainer.Layout.CENTER;
         this.textRotationDegrees = 0;
-        this.eventHandlerManager = new ViewEventHandlerManager(getLine(),
-                                                               getLine(),
+        this.eventHandlerManager = new ViewEventHandlerManager(getLine().asShape(),
+                                                               getLine().asShape(),
                                                                supportedEventTypes);
     }
 
@@ -82,7 +82,7 @@ public class WiresConnectorViewExt<T> extends WiresConnectorView<T>
 
     @Override
     public Shape<?> getAttachableShape() {
-        return getLine();
+        return getLine().asShape();
     }
 
     @Override

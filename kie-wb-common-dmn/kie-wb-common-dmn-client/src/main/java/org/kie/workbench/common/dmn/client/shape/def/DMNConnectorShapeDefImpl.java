@@ -19,12 +19,12 @@ import java.util.function.BiConsumer;
 
 import org.kie.workbench.common.dmn.api.definition.DMNDefinition;
 import org.kie.workbench.common.dmn.client.shape.view.handlers.DMNViewHandlers;
-import org.kie.workbench.common.stunner.shapes.client.view.ConnectorView;
+import org.kie.workbench.common.stunner.shapes.client.view.AbstractConnectorView;
 
-public class DMNConnectorShapeDefImpl implements DMNConnectorShapeDef<DMNDefinition, ConnectorView> {
+public class DMNConnectorShapeDefImpl implements DMNConnectorShapeDef<DMNDefinition, AbstractConnectorView> {
 
     @Override
-    public BiConsumer<DMNDefinition, ConnectorView> viewHandler() {
+    public BiConsumer<DMNDefinition, AbstractConnectorView> viewHandler() {
         return DMNViewHandlers.CONNECTOR_ATTRIBUTES_HANDLER::handle;
     }
 }
