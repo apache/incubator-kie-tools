@@ -105,7 +105,7 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
             final D diagram = factoryManager.newDiagram(name,
                                                         defSetId,
                                                         metadata);
-            final String[] raw = serizalize(diagram);
+            final String[] raw = serialize(diagram);
             ioService.write(kiePath,
                             raw[0]);
             return Paths.convert(kiePath);
@@ -114,6 +114,17 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
                       e);
         }
         return null;
+    }
+
+    @Override
+    public String getRawContent(D diagram) {
+        try {
+            return serialize(diagram)[0];
+        } catch (java.io.IOException e) {
+            LOG.error("Error while getting raw content for diagram with UUID [" + diagram.getName() + "].",
+                      e);
+            throw new RuntimeException(e);
+        }
     }
 
     protected abstract Class<? extends Metadata> getMetadataType();
@@ -203,7 +214,7 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
     @SuppressWarnings("unchecked")
     private M register(final D diagram) {
         try {
-            String[] raw = serizalize(diagram);
+            String[] raw = serialize(diagram);
             return doSave(diagram,
                           raw[0],
                           raw[1]);
@@ -215,7 +226,7 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
     }
 
     @SuppressWarnings("unchecked")
-    protected String[] serizalize(final D diagram) throws java.io.IOException {
+    protected String[] serialize(final D diagram) throws java.io.IOException {
         final String defSetId = diagram.getMetadata().getDefinitionSetId();
         final DefinitionSetService services = getServiceById(defSetId);
         // Serialize using the concrete marshalling service.
@@ -254,7 +265,9 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
                                              }
                                          } catch (Exception e) {
                                              //skipping add diagram to the result
-                                             LOG.error("Error getting diagram for path {}", file, e);
+                                             LOG.error("Error getting diagram for path {}",
+                                                       file,
+                                                       e);
                                          }
                                      }
                                      return FileVisitResult.CONTINUE;

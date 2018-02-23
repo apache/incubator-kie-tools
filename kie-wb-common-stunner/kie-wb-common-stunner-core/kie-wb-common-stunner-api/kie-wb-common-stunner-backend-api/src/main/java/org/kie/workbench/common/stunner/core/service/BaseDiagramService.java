@@ -23,7 +23,7 @@ import org.uberfire.backend.vfs.Path;
 
 /**
  * Base service type for Diagrams of type <code>D</code>.
- * @param <D> The type of the Diagram that this service suports.
+ * @param <D> The type of the Diagram that this service supports.
  */
 public interface BaseDiagramService<M extends Metadata, D extends Diagram<Graph, M>> {
 
@@ -63,4 +63,11 @@ public interface BaseDiagramService<M extends Metadata, D extends Diagram<Graph,
      * @return <code>true</code> if the operation result is success, <code>false</code> otherwise.
      */
     boolean delete(final D diagram);
+
+    /**
+     * Gets the content of the diagram in the internal format. e.g. gets the bpmn2 representation of the process.
+     * @param diagram The diagram for getting the raw content.
+     * @return Returns the raw content representation for the current diagram.
+     */
+    String getRawContent(final D diagram);
 }

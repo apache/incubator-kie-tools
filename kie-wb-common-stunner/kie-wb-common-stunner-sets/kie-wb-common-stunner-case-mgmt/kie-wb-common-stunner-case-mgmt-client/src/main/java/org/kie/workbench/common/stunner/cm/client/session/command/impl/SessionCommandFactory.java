@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSt
 import org.kie.workbench.common.stunner.core.client.session.command.impl.CopySelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.CutSelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.DeleteSelectionSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToBpmnSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToJpgSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPdfSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPngSessionCommand;
@@ -56,6 +57,7 @@ public class SessionCommandFactory extends org.kie.workbench.common.stunner.core
                                  final ManagedInstance<ExportToPngSessionCommand> exportImageSessionCommand,
                                  final ManagedInstance<ExportToJpgSessionCommand> exportImageJPGSessionCommand,
                                  final ManagedInstance<ExportToPdfSessionCommand> exportPDFSessionCommand,
+                                 final ManagedInstance<ExportToBpmnSessionCommand> exportBPMNSessionCommand,
                                  final ManagedInstance<CopySelectionSessionCommand> copySelectionSessionCommand,
                                  final @CaseManagementEditor ManagedInstance<PasteSelectionSessionCommand> pasteSelectionSessionCommand,
                                  final ManagedInstance<CutSelectionSessionCommand> cutSelectionSessionCommand) {
@@ -70,6 +72,7 @@ public class SessionCommandFactory extends org.kie.workbench.common.stunner.core
               exportImageSessionCommand,
               exportImageJPGSessionCommand,
               exportPDFSessionCommand,
+              exportBPMNSessionCommand,
               copySelectionSessionCommand,
               pasteSelectionSessionCommand,
               cutSelectionSessionCommand);

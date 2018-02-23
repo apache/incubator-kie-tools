@@ -20,7 +20,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 
 @ApplicationScoped
 public class SessionCommandFactory {
@@ -36,12 +35,14 @@ public class SessionCommandFactory {
     private final ManagedInstance<ExportToPngSessionCommand> exportImagePNGSessionCommand;
     private final ManagedInstance<ExportToJpgSessionCommand> exportImageJPGSessionCommand;
     private final ManagedInstance<ExportToPdfSessionCommand> exportPDFSessionCommand;
+    private final ManagedInstance<ExportToBpmnSessionCommand> exportBPMNSessionCommand;
     private final ManagedInstance<CopySelectionSessionCommand> copySelectionSessionCommand;
     private final ManagedInstance<PasteSelectionSessionCommand> pasteSelectionSessionCommand;
     private final ManagedInstance<CutSelectionSessionCommand> cutSelectionSessionCommand;
 
     protected SessionCommandFactory() {
         this(null,
+             null,
              null,
              null,
              null,
@@ -69,6 +70,7 @@ public class SessionCommandFactory {
                                  final ManagedInstance<ExportToPngSessionCommand> exportImageSessionCommand,
                                  final ManagedInstance<ExportToJpgSessionCommand> exportImageJPGSessionCommand,
                                  final ManagedInstance<ExportToPdfSessionCommand> exportPDFSessionCommand,
+                                 final ManagedInstance<ExportToBpmnSessionCommand> exportBPMNSessionCommand,
                                  final ManagedInstance<CopySelectionSessionCommand> copySelectionSessionCommand,
                                  final ManagedInstance<PasteSelectionSessionCommand> pasteSelectionSessionCommand,
                                  final ManagedInstance<CutSelectionSessionCommand> cutSelectionSessionCommand) {
@@ -83,6 +85,7 @@ public class SessionCommandFactory {
         this.exportImagePNGSessionCommand = exportImageSessionCommand;
         this.exportImageJPGSessionCommand = exportImageJPGSessionCommand;
         this.exportPDFSessionCommand = exportPDFSessionCommand;
+        this.exportBPMNSessionCommand = exportBPMNSessionCommand;
         this.copySelectionSessionCommand = copySelectionSessionCommand;
         this.pasteSelectionSessionCommand = pasteSelectionSessionCommand;
         this.cutSelectionSessionCommand = cutSelectionSessionCommand;
@@ -142,5 +145,9 @@ public class SessionCommandFactory {
 
     public ExportToPdfSessionCommand newExportToPdfSessionCommand() {
         return exportPDFSessionCommand.get();
+    }
+
+    public ExportToBpmnSessionCommand newExportToBpmnSessionCommand() {
+        return exportBPMNSessionCommand.get();
     }
 }

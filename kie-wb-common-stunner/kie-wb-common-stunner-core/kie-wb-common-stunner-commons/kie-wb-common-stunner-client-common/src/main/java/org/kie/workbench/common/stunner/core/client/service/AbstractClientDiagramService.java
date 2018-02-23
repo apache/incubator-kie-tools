@@ -104,6 +104,18 @@ public abstract class AbstractClientDiagramService<M extends Metadata, D extends
                                         }).lookup(request);
     }
 
+    public void getRawContent(final D diagram,
+                              final ServiceCallback<String> callback) {
+        diagramServiceCaller.call(rawContent -> {
+                                      callback.onSuccess((String) rawContent);
+                                  },
+                                  (message, throwable) -> {
+                                      callback.onError(new ClientRuntimeError(throwable));
+                                      return false;
+                                  }
+        ).getRawContent(diagram);
+    }
+
     protected void updateClientMetadata(final D diagram) {
         if (null != diagram) {
             final Metadata metadata = diagram.getMetadata();

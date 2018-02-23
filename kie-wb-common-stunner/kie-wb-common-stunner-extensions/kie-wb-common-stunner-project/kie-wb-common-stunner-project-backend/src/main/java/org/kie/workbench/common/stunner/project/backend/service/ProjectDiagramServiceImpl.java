@@ -79,12 +79,11 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
         this.sessionInfo = sessionInfo;
         this.resourceOpenedEvent = resourceOpenedEvent;
         this.commentedOptionFactory = commentedOptionFactory;
-        this.controller =
-                new ProjectDiagramServiceController(definitionManager,
-                                                    factoryManager,
-                                                    definitionSetServiceInstances,
-                                                    ioService,
-                                                    registryFactory);
+        this.controller = buildController(definitionManager,
+                                          factoryManager,
+                                          definitionSetServiceInstances,
+                                          registryFactory,
+                                          ioService);
     }
 
     @PostConstruct
@@ -165,5 +164,22 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
                        final String comment) {
         controller.delete(path,
                           comment);
+    }
+
+    @Override
+    public String getRawContent(ProjectDiagram diagram) {
+        return controller.getRawContent(diagram);
+    }
+
+    protected ProjectDiagramServiceController buildController(final DefinitionManager definitionManager,
+                                                              final FactoryManager factoryManager,
+                                                              final Instance<DefinitionSetService> definitionSetServiceInstances,
+                                                              final BackendRegistryFactory registryFactory,
+                                                              final IOService ioService) {
+        return new ProjectDiagramServiceController(definitionManager,
+                                                   factoryManager,
+                                                   definitionSetServiceInstances,
+                                                   ioService,
+                                                   registryFactory);
     }
 }

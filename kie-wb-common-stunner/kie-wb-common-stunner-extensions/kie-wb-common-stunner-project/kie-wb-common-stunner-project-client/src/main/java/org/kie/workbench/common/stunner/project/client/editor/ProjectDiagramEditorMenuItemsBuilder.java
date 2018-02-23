@@ -190,35 +190,43 @@ public class ProjectDiagramEditorMenuItemsBuilder {
 
     public MenuItem newExportsItem(final Command exportPNGCommand,
                                    final Command exportJPGCommand,
-                                   final Command exportPDFCommand) {
+                                   final Command exportPDFCommand,
+                                   final Command exportBPMNCommand) {
         final DropDownMenu menu = new DropDownMenu() {{
             setPull(Pull.RIGHT);
         }};
-        menu.add(new AnchorListItem("Export to PNG") {{
+        menu.add(new AnchorListItem("Download as PNG") {{
             setIcon(IconType.FILE_IMAGE_O);
             setIconPosition(IconPosition.LEFT);
-            setTitle("Export to PNG");
+            setTitle("Download as PNG");
             addClickHandler(event -> exportPNGCommand.execute());
         }});
-        menu.add(new AnchorListItem("Export to JPG") {{
+        menu.add(new AnchorListItem("Download as JPG") {{
             setIcon(IconType.FILE_IMAGE_O);
             setIconPosition(IconPosition.LEFT);
-            setTitle("Export to JPG");
+            setTitle("Download as JPG");
             addClickHandler(event -> exportJPGCommand.execute());
         }});
-        menu.add(new AnchorListItem("Export to PDF") {{
+        menu.add(new AnchorListItem("Download as PDF") {{
             setIcon(IconType.FILE_PDF_O);
             setIconPosition(IconPosition.LEFT);
-            setTitle("Export to PDF");
+            setTitle("Download as PDF");
             addClickHandler(event -> exportPDFCommand.execute());
         }});
+        menu.add(new AnchorListItem("Download as BPMN") {{
+            setIcon(IconType.FILE_TEXT_O);
+            setIconPosition(IconPosition.LEFT);
+            setTitle("Download as BPMN");
+            addClickHandler(event -> exportBPMNCommand.execute());
+        }});
+
         final IsWidget group = new ButtonGroup() {{
             add(new Button() {{
                 setToggleCaret(true);
                 setDataToggle(Toggle.DROPDOWN);
                 setIcon(IconType.IMAGE);
                 setSize(ButtonSize.SMALL);
-                setTitle("Export diagram");
+                setTitle("Download diagram");
             }});
             add(menu);
         }};

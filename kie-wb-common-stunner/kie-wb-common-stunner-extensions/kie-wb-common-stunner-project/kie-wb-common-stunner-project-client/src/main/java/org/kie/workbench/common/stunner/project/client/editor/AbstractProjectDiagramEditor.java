@@ -46,6 +46,7 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSt
 import org.kie.workbench.common.stunner.core.client.session.command.impl.CopySelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.CutSelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.DeleteSelectionSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToBpmnSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToJpgSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPdfSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPngSessionCommand;
@@ -116,7 +117,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     private ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder;
     private ProjectMessagesListener projectMessagesListener;
 
-    private Map<Class,ClientSessionCommand> commands;
+    private Map<Class, ClientSessionCommand> commands;
 
     private Event<OnDiagramFocusEvent> onDiagramFocusEvent;
     private Event<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent;
@@ -173,6 +174,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         commands.put(ExportToPngSessionCommand.class, sessionCommandFactory.newExportToPngSessionCommand());
         commands.put(ExportToJpgSessionCommand.class, sessionCommandFactory.newExportToJpgSessionCommand());
         commands.put(ExportToPdfSessionCommand.class, sessionCommandFactory.newExportToPdfSessionCommand());
+        commands.put(ExportToBpmnSessionCommand.class, sessionCommandFactory.newExportToBpmnSessionCommand());
         commands.put(CopySelectionSessionCommand.class, sessionCommandFactory.newCopySelectionCommand());
         commands.put(PasteSelectionSessionCommand.class, sessionCommandFactory.newPasteSelectionCommand());
         commands.put(CutSelectionSessionCommand.class, sessionCommandFactory.newCutSelectionCommand());
@@ -350,10 +352,12 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
         final MenuItem exportsItem = menuItemsBuilder.newExportsItem(AbstractProjectDiagramEditor.this::export_imagePNG,
                                                                      AbstractProjectDiagramEditor.this::export_imageJPG,
-                                                                     AbstractProjectDiagramEditor.this::export_imagePDF);
+                                                                     AbstractProjectDiagramEditor.this::export_imagePDF,
+                                                                     AbstractProjectDiagramEditor.this::export_fileBPMN);
         getCommand(ExportToPngSessionCommand.class).listen(() -> exportsItem.setEnabled(getCommand(ExportToPngSessionCommand.class).isEnabled()));
         getCommand(ExportToJpgSessionCommand.class).listen(() -> exportsItem.setEnabled(getCommand(ExportToJpgSessionCommand.class).isEnabled()));
         getCommand(ExportToPdfSessionCommand.class).listen(() -> exportsItem.setEnabled(getCommand(ExportToPdfSessionCommand.class).isEnabled()));
+        getCommand(ExportToBpmnSessionCommand.class).listen(() -> exportsItem.setEnabled(getCommand(ExportToBpmnSessionCommand.class).isEnabled()));
         final MenuItem copyItem = menuItemsBuilder.newCopyItem(() -> getCommand(CopySelectionSessionCommand.class).execute());
         final MenuItem cutItem = menuItemsBuilder.newCutItem(() -> getCommand(CutSelectionSessionCommand.class).execute());
         final MenuItem pasteItem = menuItemsBuilder.newPasteItem(() -> getCommand(PasteSelectionSessionCommand.class).execute());
@@ -450,6 +454,10 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     private void export_imagePDF() {
         getCommand(ExportToPdfSessionCommand.class).execute();
+    }
+
+    private void export_fileBPMN() {
+        getCommand(ExportToBpmnSessionCommand.class).execute();
     }
 
     protected void doOpen() {

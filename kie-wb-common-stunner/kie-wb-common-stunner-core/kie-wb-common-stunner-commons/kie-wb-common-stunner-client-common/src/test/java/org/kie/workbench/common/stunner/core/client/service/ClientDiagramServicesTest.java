@@ -173,4 +173,18 @@ public class ClientDiagramServicesTest {
         verify(metadata,
                times(3)).setShapeSetId(eq(ssid));
     }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGetRawContent() {
+        ServiceCallback<String> callback = mock(ServiceCallback.class);
+        tested.getRawContent(diagram,
+                             callback);
+        verify(diagramService,
+               times(1)).getRawContent(eq(diagram));
+        verify(callback,
+               times(1)).onSuccess(any(String.class));
+        verify(callback,
+               times(0)).onError(any(ClientRuntimeError.class));
+    }
 }

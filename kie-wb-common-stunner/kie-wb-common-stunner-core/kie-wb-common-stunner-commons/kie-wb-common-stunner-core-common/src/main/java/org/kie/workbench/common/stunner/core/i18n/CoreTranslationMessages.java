@@ -71,6 +71,8 @@ public class CoreTranslationMessages {
 
     public static final String EXPORT_JPG = "org.kie.workbench.common.stunner.core.client.toolbox.ExportJPG";
 
+    public static final String EXPORT_BPMN = "org.kie.workbench.common.stunner.core.client.toolbox.ExportBPMN";
+
     public static final String DELETE_SELECTION = "org.kie.workbench.common.stunner.core.client.toolbox.DeleteSelection";
 
     public static final String CLEAR_DIAGRAM = "org.kie.workbench.common.stunner.core.client.toolbox.ClearDiagram";

@@ -129,7 +129,7 @@ class ProjectDiagramServiceController extends AbstractVFSDiagramService<ProjectM
                      final Map<String, ?> attributes,
                      final OpenOption... comment) {
         try {
-            String[] raw = serizalize(diagram);
+            String[] raw = serialize(diagram);
             getIoService().write(Paths.convert(path),
                                  raw[0],
                                  attributes,
