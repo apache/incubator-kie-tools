@@ -27,11 +27,11 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.cellview.client.ColumnSortList;
 import com.google.gwt.user.cellview.client.RowStyles;
+import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.CellPreviewEvent;
 import com.google.gwt.view.client.HasData;
@@ -42,7 +42,6 @@ import com.google.gwt.view.client.RowCountChangeEvent;
 import com.google.gwt.view.client.SelectionModel;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Label;
-import org.uberfire.client.views.pfly.sys.PatternFlyBootstrapper;
 import org.uberfire.ext.widgets.table.client.resources.UFTableResources;
 
 /**
@@ -59,9 +58,9 @@ public class UberfireSimpleTable<T>
     @UiField(provided = true)
     public DataGrid<T> dataGrid;
     @UiField
-    public HorizontalPanel toolbarContainer;
+    public ComplexPanel toolbarContainer;
     @UiField
-    public HorizontalPanel rightToolbar;
+    public ComplexPanel rightToolbar;
     @UiField
     public FlowPanel rightActionsToolbar;
     @UiField
@@ -125,8 +124,6 @@ public class UberfireSimpleTable<T>
     }
 
     protected void setupDataGrid() {
-        PatternFlyBootstrapper.ensurejQueryIsAvailable();
-
         dataGrid.setSkipRowHoverCheck(false);
         dataGrid.setSkipRowHoverStyleUpdate(false);
         dataGrid.addStyleName(UFTableResources.INSTANCE.CSS().dataGridMain());

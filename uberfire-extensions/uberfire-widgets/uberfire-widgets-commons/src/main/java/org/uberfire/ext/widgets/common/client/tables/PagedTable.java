@@ -17,6 +17,8 @@
 package org.uberfire.ext.widgets.common.client.tables;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -39,8 +41,9 @@ public class PagedTable<T>
         extends SimpleTable<T> {
 
     public static final int DEFAULT_PAGE_SIZE = 10;
-    public static final int ROW_HEIGHT_PX = 33;
-    public static final int HEIGHT_OFFSET_PX = 56;
+    public static final int ROW_HEIGHT_PX = 30;
+    public static final int FIXED_HEIGHT_OFFSET_PX = 56;
+    public static final int HEIGHT_OFFSET_PX = 30;
     private static Binder uiBinder = GWT.create(Binder.class);
 
     @UiField
@@ -55,6 +58,7 @@ public class PagedTable<T>
     protected boolean showPageSizesSelector = false;
     private int pageSize;
     private AbstractDataProvider<T> dataProvider;
+    private boolean useFixedHeight = true;
 
     public PagedTable() {
         this(DEFAULT_PAGE_SIZE);
@@ -100,8 +104,25 @@ public class PagedTable<T>
                       final boolean showPageSizesSelector,
                       final boolean showFFButton,
                       final boolean showLButton) {
+        this(pageSize,
+             providesKey,
+             gridGlobalPreferences,
+             showPageSizesSelector,
+             showFFButton,
+             showLButton,
+             true);
+    }
+
+    public PagedTable(final int pageSize,
+                      final ProvidesKey<T> providesKey,
+                      final GridGlobalPreferences gridGlobalPreferences,
+                      final boolean showPageSizesSelector,
+                      final boolean showFFButton,
+                      final boolean showLButton,
+                      final boolean useFixedHeight) {
         super(providesKey,
               gridGlobalPreferences);
+        this.useFixedHeight = useFixedHeight;
         this.showPageSizesSelector = showPageSizesSelector;
         this.pageSize = pageSize;
         this.dataGrid.setPageStart(0);
@@ -115,6 +136,13 @@ public class PagedTable<T>
         createPageSizesListBox(5,
                                20,
                                5);
+
+        if (useFixedHeight == false) {
+            dataGrid.addRangeChangeHandler(e -> Scheduler.get().scheduleDeferred(() -> setTableHeight()));
+            dataGrid.addRowCountChangeHandler(e -> Scheduler.get().scheduleDeferred(() -> setTableHeight()));
+            dataGrid.getElement().getStyle().setMarginBottom(10,
+                                                             Style.Unit.PX);
+        }
     }
 
     @Override
@@ -144,7 +172,12 @@ public class PagedTable<T>
         this.dataGrid.setPageStart(0);
         this.dataGrid.setPageSize(pageSize);
         this.pager.setPageSize(pageSize);
-        int height = ((pageSize <= 0 ? 1 : pageSize) * ROW_HEIGHT_PX) + HEIGHT_OFFSET_PX;
+        setTableHeight();
+    }
+
+    protected void setTableHeight() {
+        int base = useFixedHeight ? pageSize : dataGrid.getRowCount() - dataGrid.getVisibleRange().getStart();
+        int height = ((base <= 0 ? 1 : base) * ROW_HEIGHT_PX) + (useFixedHeight ? FIXED_HEIGHT_OFFSET_PX : HEIGHT_OFFSET_PX);
         this.dataGrid.setHeight(height + "px");
     }
 

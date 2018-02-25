@@ -37,22 +37,40 @@ public class PagedTableTest {
 
     @Test
     public void testSetDataProvider() throws Exception {
-    	PagedTable pagedTable = new PagedTable(5);
+        PagedTable pagedTable = new PagedTable(5);
 
         pagedTable.setDataProvider(dataProvider);
         verify(dataProvider).addDataDisplay(pagedTable);
     }
-    
+
+    @Test
+    public void testDataGridFixedHeight() throws Exception {
+        final int PAGE_SIZE = 10;
+        final int EXPECTED_HEIGHT_PX = (PAGE_SIZE * PagedTable.ROW_HEIGHT_PX) + PagedTable.FIXED_HEIGHT_OFFSET_PX;
+        PagedTable pagedTable = new PagedTable(PAGE_SIZE);
+        pagedTable.dataGrid = spy(pagedTable.dataGrid);
+
+        verify(pagedTable.dataGrid,
+               times(0)).setHeight(anyString());
+        pagedTable.loadPageSizePreferences();
+        verify(pagedTable.dataGrid,
+               times(1)).setHeight(eq(EXPECTED_HEIGHT_PX + "px"));
+    }
+
     @Test
     public void testDataGridHeight() throws Exception {
-    	final int PAGE_SIZE = 10;
-    	final int EXPECTED_HEIGHT_PX = (PAGE_SIZE * PagedTable.ROW_HEIGHT_PX) + PagedTable.HEIGHT_OFFSET_PX;
-    	PagedTable pagedTable = new PagedTable(PAGE_SIZE);
-    	pagedTable.dataGrid = spy(pagedTable.dataGrid);
-        
-        verify(pagedTable.dataGrid, times(0)).setHeight(anyString());
+        final int PAGE_SIZE = 10;
+        final int ROWS = 2;
+        final int EXPECTED_HEIGHT_PX = (ROWS * PagedTable.ROW_HEIGHT_PX) + PagedTable.HEIGHT_OFFSET_PX;
+        PagedTable pagedTable = new PagedTable(PAGE_SIZE, null, null, false, false, false, false);
+        pagedTable.dataGrid = spy(pagedTable.dataGrid);
+        when(pagedTable.dataGrid.getRowCount()).thenReturn(ROWS);
+
+        verify(pagedTable.dataGrid,
+               times(0)).setHeight(anyString());
         pagedTable.loadPageSizePreferences();
-        verify(pagedTable.dataGrid, times(1)).setHeight(eq(EXPECTED_HEIGHT_PX + "px"));
+        verify(pagedTable.dataGrid,
+               times(1)).setHeight(eq(EXPECTED_HEIGHT_PX + "px"));
     }
 
     @Test
@@ -62,11 +80,11 @@ public class PagedTableTest {
         PagedTable pagedTable = new PagedTable(PAGE_SIZE);
         pagedTable.dataGrid = spy(pagedTable.dataGrid);
 
-        verify(pagedTable.dataGrid, times(0)).setPageStart(0);
+        verify(pagedTable.dataGrid,
+               times(0)).setPageStart(0);
 
         pagedTable.loadPageSizePreferences();
-        verify(pagedTable.dataGrid, times(1)).setPageStart(0);
+        verify(pagedTable.dataGrid,
+               times(1)).setPageStart(0);
     }
-
-    
 }

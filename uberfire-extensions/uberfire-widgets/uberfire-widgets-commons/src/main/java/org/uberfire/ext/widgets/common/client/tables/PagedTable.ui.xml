@@ -19,6 +19,7 @@
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
              xmlns:bg="urn:import:org.gwtbootstrap3.client.ui.gwt"
+             xmlns:bh="urn:import:org.gwtbootstrap3.client.ui.html"
              xmlns:uf="urn:import:org.uberfire.ext.widgets.table.client">
 
   <ui:style>
@@ -33,7 +34,7 @@
     }
 
     .rightToolBar {
-      float: right;
+      display: inline;
       text-align: right;
     }
 
@@ -50,31 +51,33 @@
     <b:Row>
       <b:Column size="MD_12" ui:field="topToolbar"/>
     </b:Row>
-    <g:HorizontalPanel ui:field="toolbarContainer" width="100%">
-      <g:cell width="33%">
+    <b:Row ui:field="toolbarContainer">
+      <b:Column size="MD_4">
         <g:FlowPanel width="100%" ui:field="leftToolbar" addStyleNames="{style.leftToolBar}"></g:FlowPanel>
-      </g:cell>
-      <g:cell width="33%">
+      </b:Column>
+      <b:Column size="MD_4">
         <g:FlowPanel width="100%" ui:field="centerToolbar" addStyleNames="{style.centerToolBar}"></g:FlowPanel>
-      </g:cell>
-      <g:cell width="33%" horizontalAlignment="right">
-        <g:HorizontalPanel ui:field="rightToolbar">
+      </b:Column>
+      <b:Column size="MD_4">
+        <bh:Div ui:field="rightToolbar" pull="RIGHT">
           <g:FlowPanel width="100%" ui:field="rightActionsToolbar" addStyleNames="{style.rightToolBar}"/>
           <b:Button ui:field="columnPickerButton" dataToggle="BUTTON" icon="COLUMNS"/>
-        </g:HorizontalPanel>
-      </g:cell>
-    </g:HorizontalPanel>
-    <g:SimplePanel>
-      <bg:DataGrid ui:field="dataGrid" />
-    </g:SimplePanel>
-    <g:HorizontalPanel width="100%">
-      <g:cell width="50%" horizontalAlignment="left" verticalAlignment="middle">
+        </bh:Div>
+      </b:Column>
+    </b:Row>
+    <b:Row>
+      <b:Column size="MD_12">
+        <bg:DataGrid ui:field="dataGrid"/>
+      </b:Column>
+    </b:Row>
+    <b:Row>
+      <b:Column size="MD_6">
         <b:ListBox ui:field="pageSizesSelector" width="100px"/>
-      </g:cell>
-      <g:cell width="50%" horizontalAlignment="right" verticalAlignment="top">
+      </b:Column>
+      <b:Column size="MD_6">
         <uf:UberfireSimplePager ui:field="pager" addStyleNames="pagination pagination-right pull-right {style.pager}"/>
-      </g:cell>
-    </g:HorizontalPanel>
+      </b:Column>
+    </b:Row>
   </g:FlowPanel>
 
 </ui:UiBinder>
