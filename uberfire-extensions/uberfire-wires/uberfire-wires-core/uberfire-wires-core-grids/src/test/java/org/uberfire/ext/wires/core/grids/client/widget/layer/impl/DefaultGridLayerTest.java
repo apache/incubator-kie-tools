@@ -326,4 +326,27 @@ public class DefaultGridLayerTest {
 
         assertThat(gridLayer.getGridWidgets()).isEmpty();
     }
+
+    @Test
+    public void testDeregisterAsPrimitive() {
+        final GridWidget gridWidget1 = mock(GridWidget.class);
+        final GridWidget gridWidget2 = mock(GridWidget.class);
+        when(gridWidget2.asNode()).thenReturn(mock(Node.class));
+        when(gridWidget2.getModel()).thenReturn(new BaseGridData());
+
+        gridLayer.register(gridWidget1);
+        gridLayer.register(gridWidget2);
+
+        assertThat(gridLayer.getGridWidgets().size()).isEqualTo(2);
+        assertThat(gridLayer.getGridWidgets()).contains(gridWidget1, gridWidget2);
+
+        gridLayer.deregister(gridWidget1);
+
+        assertThat(gridLayer.getGridWidgets().size()).isEqualTo(1);
+        assertThat(gridLayer.getGridWidgets()).contains(gridWidget2);
+
+        gridLayer.remove(gridWidget2);
+
+        assertThat(gridLayer.getGridWidgets()).isEmpty();
+    }
 }

@@ -19,12 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 
-import com.ait.lienzo.client.core.shape.BoundingBoxPathClipper;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPathClipper;
 import com.ait.lienzo.client.core.shape.MultiPath;
-import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Transform;
+import com.google.gwt.core.client.GWT;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -89,7 +88,8 @@ public class ColumnRenderingStrategyFlattened {
         //Column content
         commands.add((GridRenderer.RenderBodyGridContentCommand) (rc) -> {
             if (columnRenderingConstraint.apply(rc.isSelectionLayer(), column)) {
-                final Group columnGroup = new Group().setX(x);
+                final Group columnGroup = GWT.create(Group.class);
+                columnGroup.setX(x);
                 final int columnIndex = model.getColumns().indexOf(column);
                 for (int rowIndex = minVisibleRowIndex; rowIndex <= maxVisibleRowIndex; rowIndex++) {
                     final double y = visibleRowOffsets.get(rowIndex - minVisibleRowIndex) - visibleRowOffsets.get(0);
@@ -119,11 +119,11 @@ public class ColumnRenderingStrategyFlattened {
                 }
 
                 //Clip Column Group
-                final BoundingBox bb = new BoundingBox(0,
-                                                       0,
-                                                       columnWidth,
-                                                       columnHeight);
-                final IPathClipper clipper = new BoundingBoxPathClipper(bb);
+                final BoundingBoxPathClipperFactory boundingBoxPathClipperFactory = GWT.create(BoundingBoxPathClipperFactory.class);
+                final IPathClipper clipper = boundingBoxPathClipperFactory.newClipper(0,
+                                                                                      0,
+                                                                                      columnWidth,
+                                                                                      columnHeight);
                 columnGroup.setPathClipper(clipper);
                 clipper.setActive(true);
 
