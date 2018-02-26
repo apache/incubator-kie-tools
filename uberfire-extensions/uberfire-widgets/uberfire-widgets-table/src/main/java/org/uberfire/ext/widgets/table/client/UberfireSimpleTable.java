@@ -33,13 +33,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.CellPreviewEvent;
-import com.google.gwt.view.client.HasData;
-import com.google.gwt.view.client.ProvidesKey;
-import com.google.gwt.view.client.Range;
-import com.google.gwt.view.client.RangeChangeEvent;
-import com.google.gwt.view.client.RowCountChangeEvent;
-import com.google.gwt.view.client.SelectionModel;
+import com.google.gwt.view.client.*;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Label;
 import org.uberfire.ext.widgets.table.client.resources.UFTableResources;
@@ -87,6 +81,13 @@ public class UberfireSimpleTable<T>
         $wnd.jQuery(grid).find('table:last').addClass(content);
     }-*/;
 
+    public void addDataGridStyles(final String header,
+                                  final String content) {
+        addDataGridStyles(dataGrid.getElement(),
+                          header,
+                          content);
+    }
+
     protected void setupGridTable() {
         setupDataGrid();
         setEmptyTableWidget();
@@ -129,8 +130,7 @@ public class UberfireSimpleTable<T>
         dataGrid.addStyleName(UFTableResources.INSTANCE.CSS().dataGridMain());
         dataGrid.addStyleName(UFTableResources.INSTANCE.CSS().dataGrid());
         dataGrid.setRowStyles((row, rowIndex) -> UFTableResources.INSTANCE.CSS().dataGridRow());
-        addDataGridStyles(dataGrid.getElement(),
-                          UFTableResources.INSTANCE.CSS().dataGridHeader(),
+        addDataGridStyles(UFTableResources.INSTANCE.CSS().dataGridHeader(),
                           UFTableResources.INSTANCE.CSS().dataGridContent());
     }
 
