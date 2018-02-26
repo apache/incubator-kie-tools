@@ -193,8 +193,6 @@ final class LienzoHandlerManager
                 m_mouse_button_middle = (event.getNativeButton() == NativeEvent.BUTTON_MIDDLE);
                 m_mouse_button_right = (event.getNativeButton() == NativeEvent.BUTTON_RIGHT);
 
-                event.preventDefault();
-
                 m_viewport.getOnEventHandlers().getOnMouseClickEventHandle().onMouseEventAfter(event);
             }
         });
@@ -306,8 +304,6 @@ final class LienzoHandlerManager
                 m_mouse_button_right = (event.getNativeButton() == NativeEvent.BUTTON_RIGHT);
 
                 onNodeMouseDown(nevent);
-
-                event.preventDefault();
 
                 m_viewport.getOnEventHandlers().getOnMouseDownEventHandle().onMouseEventBefore(event);
             }
