@@ -304,6 +304,19 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     }
 
     @Test
+    public void testFindParentGrid() throws Exception {
+        final GridWidget parentGrid = mock(BaseExpressionGrid.class);
+        doReturn(parentGrid).when(parentCell).getGridWidget();
+
+        assertThat(grid.findParentGrid().get()).isEqualTo(parentGrid);
+    }
+
+    @Test
+    public void testFindParentGridNoParent() throws Exception {
+        assertThat(grid.findParentGrid()).isEmpty();
+    }
+
+    @Test
     public void testWidthIncreased() throws Exception {
         testUpdateWidthOfPeers(0, 150);
     }

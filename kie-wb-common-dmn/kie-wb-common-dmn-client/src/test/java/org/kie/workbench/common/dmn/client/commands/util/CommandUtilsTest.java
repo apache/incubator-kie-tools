@@ -40,8 +40,10 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.mockito.Mock;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -53,6 +55,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedM
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -223,6 +226,37 @@ public class CommandUtilsTest {
         CommandUtils.updateParentInformation(uiModel);
 
         assertParentInformationValues(1);
+    }
+
+    @Test
+    public void testExtractCellValueNoValue() throws Exception {
+        final int rowIndex = 123;
+        final int columnIndex = 456;
+        final GridData gridData = mock(GridData.class);
+        final GridWidget gridWidget = mock(GridWidget.class);
+        final GridCellTuple cellTuple = new GridCellTuple(rowIndex, columnIndex, gridWidget);
+
+        doReturn(gridData).when(gridWidget).getModel();
+        doReturn(null).when(gridData).getCell(rowIndex, columnIndex);
+
+        Assertions.assertThat(CommandUtils.extractGridCellValue(cellTuple)).isEmpty();
+    }
+
+    @Test
+    public void testExtractCellValue() throws Exception {
+        final int rowIndex = 123;
+        final int columnIndex = 456;
+        final GridCellValue gridCellValue = mock(GridCellValue.class);
+        final GridCell gridCell = mock(GridCell.class);
+        final GridData gridData = mock(GridData.class);
+        final GridWidget gridWidget = mock(GridWidget.class);
+        final GridCellTuple cellTuple = new GridCellTuple(rowIndex, columnIndex, gridWidget);
+
+        doReturn(gridData).when(gridWidget).getModel();
+        doReturn(gridCell).when(gridData).getCell(rowIndex, columnIndex);
+        doReturn(gridCellValue).when(gridCell).getValue();
+
+        Assertions.assertThat(CommandUtils.extractGridCellValue(cellTuple)).hasValue(gridCellValue);
     }
 
     private void assertParentInformationValues(final int expressionColumnIndex) {

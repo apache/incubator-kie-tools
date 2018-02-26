@@ -23,6 +23,7 @@ import java.util.stream.IntStream;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -92,5 +93,11 @@ public class CommandUtils {
                 }
             }
         });
+    }
+
+    public static Optional<GridCellValue<?>> extractGridCellValue(final GridCellTuple cellTuple) {
+        final GridCell<?> cell = cellTuple.getGridWidget().getModel().getCell(cellTuple.getRowIndex(),
+                                                                              cellTuple.getColumnIndex());
+        return Optional.ofNullable(cell == null ? null : cell.getValue());
     }
 }

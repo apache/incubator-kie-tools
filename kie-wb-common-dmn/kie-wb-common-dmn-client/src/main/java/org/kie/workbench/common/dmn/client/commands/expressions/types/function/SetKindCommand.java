@@ -37,9 +37,10 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.command.impl.AbstractGraphCommand;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+
+import static org.kie.workbench.common.dmn.client.commands.util.CommandUtils.extractGridCellValue;
 
 public class SetKindCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
                                                                           VetoUndoCommand {
@@ -67,16 +68,10 @@ public class SetKindCommand extends AbstractCanvasGraphCommand implements VetoEx
 
         this.oldKind = getKind();
         this.oldExpression = Optional.ofNullable(function.getExpression());
-        this.oldCellValue = Optional.ofNullable(extractGridCellValue(cellTuple.getRowIndex(),
-                                                                     cellTuple.getColumnIndex()));
+        this.oldCellValue = extractGridCellValue(cellTuple);
     }
 
-    GridCellValue<?> extractGridCellValue(final int rowIndex,
-                                          final int columnIndex) {
-        final GridCell<?> cell = cellTuple.getGridWidget().getModel().getCell(rowIndex,
-                                                                              columnIndex);
-        return cell == null ? null : cell.getValue();
-    }
+
 
     @Override
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler handler) {
